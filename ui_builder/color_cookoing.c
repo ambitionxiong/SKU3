@@ -11,9 +11,9 @@
 
 
 
-void updown_bbq_cooking_create(ui_manager_t *ui)
+void color_cookoing_create(ui_manager_t *ui)
 {
-    updown_bbq_cooking_t *scr = updown_bbq_cooking_get(ui);
+    color_cookoing_t *scr = color_cookoing_get(ui);
 
     if (!ui->auto_del && scr->obj) {
         return;
@@ -47,16 +47,16 @@ void updown_bbq_cooking_create(ui_manager_t *ui)
     lv_obj_set_style_text_font(scr->righttime_label, fs_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->righttime_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->updown_label
-    scr->updown_label = lv_label_create(scr->obj);
-    lv_label_set_text(scr->updown_label, "| 上下烧烤 | 180℃ | 1小时20分钟");
-    lv_label_set_long_mode(scr->updown_label, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->updown_label, 274, 232);
-    lv_obj_set_size(scr->updown_label, 490, 39);
+    // Init scr->status_label
+    scr->status_label = lv_label_create(scr->obj);
+    lv_label_set_text(scr->status_label, "| 额外上色 | 5分钟");
+    lv_label_set_long_mode(scr->status_label, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->status_label, 274, 232);
+    lv_obj_set_size(scr->status_label, 490, 39);
 
-    // Set style of scr->updown_label
-    lv_obj_set_style_text_font(scr->updown_label, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->updown_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    // Set style of scr->status_label
+    lv_obj_set_style_text_font(scr->status_label, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->status_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->time_label
     scr->time_label = lv_label_create(scr->obj);
@@ -113,39 +113,24 @@ void updown_bbq_cooking_create(ui_manager_t *ui)
     lv_obj_set_pos(scr->ball_img, 740, 325);
     lv_obj_add_flag(scr->ball_img, LV_OBJ_FLAG_HIDDEN);
 
-    // Init scr->updown_img
-    scr->updown_img = lv_img_create(scr->obj);
-    lv_img_set_src(scr->updown_img, LVGL_IMAGE_PATH(updown_img.png));
-    lv_img_set_pivot(scr->updown_img, 50, 50);
-    lv_img_set_angle(scr->updown_img, 0);
-    lv_obj_set_style_img_opa(scr->updown_img, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->updown_img, 115, 161);
+    // Init scr->color_img
+    scr->color_img = lv_img_create(scr->obj);
+    lv_img_set_src(scr->color_img, LVGL_IMAGE_PATH(color.png));
+    lv_img_set_pivot(scr->color_img, 50, 50);
+    lv_img_set_angle(scr->color_img, 0);
+    lv_obj_set_style_img_opa(scr->color_img, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(scr->color_img, 95, 163);
 
-    // Init scr->label_10
-    scr->label_10 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_10, "烹饪中...");
-    lv_label_set_long_mode(scr->label_10, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_10, 273, 157);
-    lv_obj_set_size(scr->label_10, 235, 60);
+    // Init scr->cooking_label
+    scr->cooking_label = lv_label_create(scr->obj);
+    lv_label_set_text(scr->cooking_label, "烹饪中...");
+    lv_label_set_long_mode(scr->cooking_label, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->cooking_label, 273, 157);
+    lv_obj_set_size(scr->cooking_label, 255, 60);
 
-    // Set style of scr->label_10
-    lv_obj_set_style_text_font(scr->label_10, fs_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->label_10, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    // Init scr->little_button
-    scr->little_button = lv_btn_create(scr->obj);
-    lv_obj_t *little_button_label = lv_label_create(scr->little_button);
-    lv_label_set_text(little_button_label, "");
-    lv_obj_align(little_button_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->little_button, 609, 170);
-    lv_obj_set_size(scr->little_button, 50, 43);
-
-    // Set style of scr->little_button
-    lv_obj_set_style_bg_opa(scr->little_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->little_button, LVGL_IMAGE_PATH(little.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->little_button, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_width(scr->little_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_shadow_width(scr->little_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    // Set style of scr->cooking_label
+    lv_obj_set_style_text_font(scr->cooking_label, fs_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->cooking_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
 
 }

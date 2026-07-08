@@ -27,9 +27,6 @@ void waitmenu_12_create(ui_manager_t *ui)
     lv_obj_set_style_bg_color(scr->obj, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->obj, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->obj, LVGL_IMAGE_PATH(bg.jpg), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_image_opa(scr->obj, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_recolor(scr->obj, lv_color_hex(0xb6244b), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_recolor_opa(scr->obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->time_label
     scr->time_label = lv_label_create(scr->obj);

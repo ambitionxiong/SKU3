@@ -188,11 +188,75 @@ typedef struct {
     lv_obj_t *obj;
     lv_obj_t *timer_img;
     lv_obj_t *righttime_label;
-    lv_obj_t *cooking_img;
-    lv_obj_t *bar;
     lv_obj_t *updown_label;
     lv_obj_t *time_label;
+    lv_obj_t *stop_button;
+    lv_obj_t *barbk_img;
+    lv_obj_t *bar;
+    lv_obj_t *ball_img;
+    lv_obj_t *updown_img;
+    lv_obj_t *label_10;
+    lv_obj_t *little_button;
 } updown_bbq_cooking_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *timer_img;
+    lv_obj_t *barbk_img;
+    lv_obj_t *statu_label;
+    lv_obj_t *bar_3;
+    lv_obj_t *ball_img;
+    lv_obj_t *show_img;
+    lv_obj_t *like_img;
+    lv_obj_t *righttime_label;
+    lv_obj_t *updown_img;
+    lv_obj_t *complete_label;
+    lv_obj_t *image_26;
+    lv_obj_t *little_button;
+} updown_bbq_complete_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *timer_img;
+    lv_obj_t *righttime_label;
+    lv_obj_t *status_label;
+    lv_obj_t *time_label;
+    lv_obj_t *start_button;
+    lv_obj_t *barbk_img;
+    lv_obj_t *bar;
+    lv_obj_t *ball_img;
+    lv_obj_t *color_img;
+    lv_obj_t *color_label;
+} extra_color_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *timer_img;
+    lv_obj_t *righttime_label;
+    lv_obj_t *status_label;
+    lv_obj_t *time_label;
+    lv_obj_t *stop_button;
+    lv_obj_t *barbk_img;
+    lv_obj_t *bar;
+    lv_obj_t *ball_img;
+    lv_obj_t *color_img;
+    lv_obj_t *cooking_label;
+} color_cookoing_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *timer_img;
+    lv_obj_t *barbk_img;
+    lv_obj_t *status_label;
+    lv_obj_t *bar;
+    lv_obj_t *ball_img;
+    lv_obj_t *shoe_img;
+    lv_obj_t *like_img;
+    lv_obj_t *righttime_label;
+    lv_obj_t *complete_label;
+    lv_obj_t *color_img;
+    lv_obj_t *careful_label;
+} colorcooking_complete_t;
 
 
 typedef struct {
@@ -208,6 +272,10 @@ typedef struct {
     special_menu_tz_t special_menu_tz;
     updown_bbq_set_t updown_bbq_set;
     updown_bbq_cooking_t updown_bbq_cooking;
+    updown_bbq_complete_t updown_bbq_complete;
+    extra_color_t extra_color;
+    color_cookoing_t color_cookoing;
+    colorcooking_complete_t colorcooking_complete;
 
 } ui_manager_t;
 
@@ -272,6 +340,26 @@ static inline updown_bbq_cooking_t *updown_bbq_cooking_get(ui_manager_t *ui)
     return &ui->updown_bbq_cooking;
 }
 
+static inline updown_bbq_complete_t *updown_bbq_complete_get(ui_manager_t *ui)
+{
+    return &ui->updown_bbq_complete;
+}
+
+static inline extra_color_t *extra_color_get(ui_manager_t *ui)
+{
+    return &ui->extra_color;
+}
+
+static inline color_cookoing_t *color_cookoing_get(ui_manager_t *ui)
+{
+    return &ui->color_cookoing;
+}
+
+static inline colorcooking_complete_t *colorcooking_complete_get(ui_manager_t *ui)
+{
+    return &ui->colorcooking_complete;
+}
+
 
 void cookmenu_create(ui_manager_t *ui);
 void updown_bbq_menu_create(ui_manager_t *ui);
@@ -284,6 +372,10 @@ void special_menu_create(ui_manager_t *ui);
 void special_menu_tz_create(ui_manager_t *ui);
 void updown_bbq_set_create(ui_manager_t *ui);
 void updown_bbq_cooking_create(ui_manager_t *ui);
+void updown_bbq_complete_create(ui_manager_t *ui);
+void extra_color_create(ui_manager_t *ui);
+void color_cookoing_create(ui_manager_t *ui);
+void colorcooking_complete_create(ui_manager_t *ui);
 
 
 extern lv_font_t *fs_montserratmedium_16;

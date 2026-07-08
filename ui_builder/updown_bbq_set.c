@@ -27,8 +27,6 @@ void updown_bbq_set_create(ui_manager_t *ui)
     lv_obj_set_style_bg_color(scr->obj, lv_color_hex(0xfcfcfc), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->obj, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->obj, LVGL_IMAGE_PATH(bg.jpg), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_image_opa(scr->obj, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_recolor_opa(scr->obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->updown_label
     scr->updown_label = lv_label_create(scr->obj);
@@ -219,7 +217,6 @@ void updown_bbq_set_create(ui_manager_t *ui)
     lv_img_set_angle(scr->timer_img, 0);
     lv_obj_set_style_img_opa(scr->timer_img, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_pos(scr->timer_img, 627, 24);
-    lv_obj_add_flag(scr->timer_img, LV_OBJ_FLAG_HIDDEN);
 
     // Init scr->place_img
     scr->place_img = lv_img_create(scr->obj);
