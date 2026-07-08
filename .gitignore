@@ -1,0 +1,23 @@
+# 编译产物
+build/
+*.exe
+*.obj
+*.dll
+*.a
+*.o
+*.ilk
+*.pdb
+*.exp
+
+# VS Code
+.vscode/
+
+# UiBuilder 模板素材
+.obsidian/
+
+# 模拟器三方库（AiUIBuilder 自带）
+simulator/lvgl/
+simulator/ffmpeg/
+simulator/freetype/
+simulator/lib/
+simulator/build/
