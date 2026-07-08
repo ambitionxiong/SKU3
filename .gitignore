@@ -21,3 +21,7 @@ simulator/ffmpeg/
 simulator/freetype/
 simulator/lib/
 simulator/build/
+
+# UiBuilder 设计源素材（可重新生成）
+img_sources/
+resources/
