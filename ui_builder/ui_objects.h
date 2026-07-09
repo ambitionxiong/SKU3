@@ -44,19 +44,23 @@ typedef struct {
 typedef struct {
     lv_obj_t *obj;
     lv_obj_t *next_button;
-    lv_obj_t *image_1;
-    lv_obj_t *image_2;
+    lv_obj_t *bk1_img;
+    lv_obj_t *bk2_img;
     lv_obj_t *label_1;
-    lv_obj_t *label_2;
-    lv_obj_t *label_3;
-    lv_obj_t *label_4;
-    lv_obj_t *label_5;
-    lv_obj_t *label_6;
-    lv_obj_t *label_7;
-    lv_obj_t *label_8;
-    lv_obj_t *label_9;
-    lv_obj_t *label_12;
-    lv_obj_t *label_10;
+    lv_obj_t *tempnum_label;
+    lv_obj_t *temp_label;
+    lv_obj_t *cook_label;
+    lv_obj_t *hournum_label;
+    lv_obj_t *hour_label;
+    lv_obj_t *min_label;
+    lv_obj_t *minnum_label;
+    lv_obj_t *updown_label;
+    lv_obj_t *next_label;
+    lv_obj_t *righttime_label;
+    lv_obj_t *temeline_long;
+    lv_obj_t *templine_short;
+    lv_obj_t *hourline;
+    lv_obj_t *minline;
 } updown_bbq_menu_t;
 
 typedef struct {
@@ -158,16 +162,14 @@ typedef struct {
     lv_obj_t *wen_label;
     lv_obj_t *du_label;
     lv_obj_t *cooktime_label;
-    lv_obj_t *temimg_1;
-    lv_obj_t *temimg_2;
-    lv_obj_t *temp_num_label;
-    lv_obj_t *dir_label;
-    lv_obj_t *dir_label_2;
-    lv_obj_t *temp_num_label_2;
-    lv_obj_t *icon_label_1_2;
-    lv_obj_t *icon_label_1;
-    lv_obj_t *time_label;
-    lv_obj_t *time_label_2;
+    lv_obj_t *up3_tempnum_label;
+    lv_obj_t *up3_dir_label;
+    lv_obj_t *down2_dir_label;
+    lv_obj_t *down2_tempnum_label;
+    lv_obj_t *down2_icon_label;
+    lv_obj_t *up3_icon_label;
+    lv_obj_t *hour_label;
+    lv_obj_t *min_label;
     lv_obj_t *shi_label;
     lv_obj_t *fen_label;
     lv_obj_t *timer_img;
@@ -179,9 +181,18 @@ typedef struct {
     lv_obj_t *yan_label;
     lv_obj_t *chi_label;
     lv_obj_t *contain_label;
-    lv_obj_t *button_3;
-    lv_obj_t *button_4;
-    lv_obj_t *button_5;
+    lv_obj_t *preheat_button;
+    lv_obj_t *delay_button;
+    lv_obj_t *contain_button;
+    lv_obj_t *down3_dir_label;
+    lv_obj_t *down3_tempnum_label;
+    lv_obj_t *down3_icon_label;
+    lv_obj_t *up2_dir_label;
+    lv_obj_t *up2_tempnum_label;
+    lv_obj_t *up2_icon_label;
+    lv_obj_t *uptemp_button;
+    lv_obj_t *downtemp_button;
+    lv_obj_t *sure_label;
 } updown_bbq_set_t;
 
 typedef struct {
@@ -380,7 +391,6 @@ void colorcooking_complete_create(ui_manager_t *ui);
 
 extern lv_font_t *fs_montserratmedium_16;
 extern lv_font_t *fs_taiwanpearl_regular_30;
-extern lv_font_t *fs_taiwanpearl_regular_23;
 extern lv_font_t *fs_taiwanpearl_regular_24;
 extern lv_font_t *fs_taiwanpearl_regular_72;
 extern lv_font_t *fs_taiwanpearl_regular_36;

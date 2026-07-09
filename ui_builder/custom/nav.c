@@ -34,6 +34,91 @@ static lv_group_t *group_create_for_page(lv_obj_t **btns, int count);
 static void bind_events(void);
 static void on_cook_updown_click(lv_event_t *e);
 static void on_updown_next_click(lv_event_t *e);
+static void on_edit_focus(lv_event_t *e);
+static void validate_constraints(void);
+
+// ==============================
+// 可编辑字段注册表
+// ==============================
+
+#define MAX_EDIT_FIELDS 8
+static edit_field_t edit_fields[MAX_EDIT_FIELDS];
+static int edit_count = 0;
+
+void edit_clear(void)
+{
+    edit_count = 0;
+}
+
+void edit_register(lv_obj_t *label, lv_obj_t *ind_s, lv_obj_t *ind_l,
+                   int *value, int min, int max, int step, const char *fmt)
+{
+    if (edit_count < MAX_EDIT_FIELDS) {
+        edit_fields[edit_count].label = label;
+        edit_fields[edit_count].ind_short = ind_s;
+        edit_fields[edit_count].ind_long = ind_l;
+        edit_fields[edit_count].value = value;
+        edit_fields[edit_count].min = min;
+        edit_fields[edit_count].max = max;
+        edit_fields[edit_count].step = step;
+        edit_fields[edit_count].fmt = fmt;
+        edit_count++;
+    }
+}
+
+static edit_field_t *find_edit_field(lv_obj_t *obj)
+{
+    for (int i = 0; i < edit_count; i++)
+        if (edit_fields[i].label == obj)
+            return &edit_fields[i];
+    return NULL;
+}
+
+static void adjust_value(edit_field_t *f, int delta)
+{
+    int new_val = *f->value + f->step * delta;
+
+    /* 循环 */
+    if (new_val > f->max) new_val = f->min;
+    if (new_val < f->min) new_val = f->max;
+
+    *f->value = new_val;
+    lv_label_set_text_fmt(f->label, f->fmt, new_val);
+
+    /* 温度线切换 */
+    if (f->ind_short && f->ind_long) {
+        lv_obj_add_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
+        if (new_val < 100)
+            lv_obj_clear_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
+        else
+            lv_obj_clear_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
+    }
+
+    validate_constraints();
+}
+
+static void validate_constraints(void)
+{
+    if (set_hour == 0 && set_min < 5) {
+        set_min = 5;
+        for (int i = 0; i < edit_count; i++) {
+            if (edit_fields[i].value == &set_min) {
+                lv_label_set_text_fmt(edit_fields[i].label, edit_fields[i].fmt, set_min);
+                break;
+            }
+        }
+    }
+    if (set_hour == 4 && set_min != 0) {
+        set_min = 0;
+        for (int i = 0; i < edit_count; i++) {
+            if (edit_fields[i].value == &set_min) {
+                lv_label_set_text_fmt(edit_fields[i].label, edit_fields[i].fmt, set_min);
+                break;
+            }
+        }
+    }
+}
 
 // ==============================
 // 页面栈操作
@@ -156,18 +241,51 @@ static void page_pop(void)
         {
             updown_bbq_menu_t *bbq = updown_bbq_menu_get(&ui_manager);
             if (bbq) {
-                lv_obj_t *btns[] = { bbq->next_button };
+                lv_obj_t *btns[] = {
+                    bbq->tempnum_label, bbq->hournum_label, bbq->minnum_label,
+                    bbq->next_button,
+                };
                 if (g_updown_bbq_menu) lv_group_del(g_updown_bbq_menu);
-                g_updown_bbq_menu = group_create_for_page(btns, 1);
+                g_updown_bbq_menu = group_create_for_page(btns, 4);
 
-                /* 根据 child 恢复焦点 */
-                if (child == PAGE_UPDOWN_BBQ_SET && bbq->next_button)
-                    lv_group_focus_obj(bbq->next_button);
+                /* 注册编辑字段 */
+                edit_clear();
+                edit_register(bbq->tempnum_label, bbq->templine_short, bbq->temeline_long,
+                              &set_temp, 30, 300, 5, "%d");
+                edit_register(bbq->hournum_label, bbq->hourline, NULL,
+                              &set_hour, 0, 4, 1, "%02d");
+                edit_register(bbq->minnum_label, bbq->minline, NULL,
+                              &set_min, 0, 59, 1, "%02d");
+
+                /* 绑定 focus 高亮 */
+                lv_obj_add_event_cb(bbq->tempnum_label, on_edit_focus, LV_EVENT_FOCUSED, NULL);
+                lv_obj_add_event_cb(bbq->hournum_label, on_edit_focus, LV_EVENT_FOCUSED, NULL);
+                lv_obj_add_event_cb(bbq->minnum_label, on_edit_focus, LV_EVENT_FOCUSED, NULL);
+                lv_obj_add_event_cb(bbq->next_button, on_edit_focus, LV_EVENT_FOCUSED, NULL);
+
+                /* 初始化数值显示 */
+                lv_label_set_text_fmt(bbq->tempnum_label, "%d", set_temp);
+                lv_label_set_text_fmt(bbq->hournum_label, "%02d", set_hour);
+                lv_label_set_text_fmt(bbq->minnum_label, "%02d", set_min);
+
+                /* 初始显示温度线 */
+                lv_obj_add_flag(bbq->templine_short, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(bbq->temeline_long, LV_OBJ_FLAG_HIDDEN);
+                if (set_temp < 100)
+                    lv_obj_clear_flag(bbq->templine_short, LV_OBJ_FLAG_HIDDEN);
+                else
+                    lv_obj_clear_flag(bbq->temeline_long, LV_OBJ_FLAG_HIDDEN);
 
                 /* 新按钮重新绑定事件 */
                 if (bbq->next_button)
                     lv_obj_add_event_cb(bbq->next_button, on_updown_next_click,
                                         LV_EVENT_CLICKED, NULL);
+
+                /* 根据 child 恢复焦点 */
+                if (child == PAGE_UPDOWN_BBQ_SET && bbq->next_button)
+                    lv_group_focus_obj(bbq->next_button);
+                else if (bbq->next_button)
+                    lv_group_focus_obj(bbq->next_button);
             }
             current_group = g_updown_bbq_menu;
         }
@@ -340,12 +458,47 @@ static void jump_to_updown_bbq_menu(void)
 
     updown_bbq_menu_t *bbq = updown_bbq_menu_get(&ui_manager);
     if (bbq) {
-        lv_obj_t *btns[] = { bbq->next_button };
+        lv_obj_t *btns[] = {
+            bbq->tempnum_label, bbq->hournum_label, bbq->minnum_label,
+            bbq->next_button,
+        };
         if (g_updown_bbq_menu) lv_group_del(g_updown_bbq_menu);
-        g_updown_bbq_menu = group_create_for_page(btns, sizeof(btns) / sizeof(btns[0]));
+        g_updown_bbq_menu = group_create_for_page(btns, 4);
+
+        /* 注册编辑字段 */
+        edit_clear();
+        edit_register(bbq->tempnum_label, bbq->templine_short, bbq->temeline_long,
+                      &set_temp, 30, 300, 5, "%d");
+        edit_register(bbq->hournum_label, bbq->hourline, NULL,
+                      &set_hour, 0, 4, 1, "%02d");
+        edit_register(bbq->minnum_label, bbq->minline, NULL,
+                      &set_min, 0, 59, 1, "%02d");
+
+        /* 绑定 focus 高亮 */
+        lv_obj_add_event_cb(bbq->tempnum_label, on_edit_focus, LV_EVENT_FOCUSED, NULL);
+        lv_obj_add_event_cb(bbq->hournum_label, on_edit_focus, LV_EVENT_FOCUSED, NULL);
+        lv_obj_add_event_cb(bbq->minnum_label, on_edit_focus, LV_EVENT_FOCUSED, NULL);
+        lv_obj_add_event_cb(bbq->next_button, on_edit_focus, LV_EVENT_FOCUSED, NULL);
+
+        /* 初始化数值显示（覆盖 UiBuilder 默认值） */
+        lv_label_set_text_fmt(bbq->tempnum_label, "%d", set_temp);
+        lv_label_set_text_fmt(bbq->hournum_label, "%02d", set_hour);
+        lv_label_set_text_fmt(bbq->minnum_label, "%02d", set_min);
+
+        /* 初始显示温度线 */
+        lv_obj_add_flag(bbq->templine_short, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(bbq->temeline_long, LV_OBJ_FLAG_HIDDEN);
+        if (set_temp < 100)
+            lv_obj_clear_flag(bbq->templine_short, LV_OBJ_FLAG_HIDDEN);
+        else
+            lv_obj_clear_flag(bbq->temeline_long, LV_OBJ_FLAG_HIDDEN);
     }
 
     current_group = g_updown_bbq_menu;
+
+    /* 默认焦点在 next_button */
+    if (bbq && bbq->next_button)
+        lv_group_focus_obj(bbq->next_button);
 
     /* 绑定 next_button 事件 */
     if (bbq && bbq->next_button)
@@ -418,21 +571,45 @@ static void process_key(uint8_t key)
     case KEY_BACK:          // 21: 返回
         page_pop();
         break;
-    case KEY_ENCODER_CW:    // 31: 焦点下移
+    case KEY_ENCODER_CW: {  // 31: 焦点下移 / 数值+
         if (!current_group) break;
-        lv_group_focus_next(current_group);
-        printf("[nav] focus next\n");
+        lv_obj_t *focused = lv_group_get_focused(current_group);
+        edit_field_t *ef = find_edit_field(focused);
+        if (ef) {
+            adjust_value(ef, +1);
+            printf("[nav] adjust +: %d\n", *ef->value);
+        } else {
+            lv_group_focus_next(current_group);
+            printf("[nav] focus next\n");
+        }
         break;
-    case KEY_ENCODER_CCW:   // 41: 焦点上移
+    }
+    case KEY_ENCODER_CCW: {  // 41: 焦点上移 / 数值-
         if (!current_group) break;
-        lv_group_focus_prev(current_group);
-        printf("[nav] focus prev\n");
+        lv_obj_t *focused = lv_group_get_focused(current_group);
+        edit_field_t *ef = find_edit_field(focused);
+        if (ef) {
+            adjust_value(ef, -1);
+            printf("[nav] adjust -: %d\n", *ef->value);
+        } else {
+            lv_group_focus_prev(current_group);
+            printf("[nav] focus prev\n");
+        }
         break;
-    case KEY_ENCODER_PRESS: // 51: 确认
+    }
+    case KEY_ENCODER_PRESS: { // 51: 确认 / 跳到下一焦点
         if (!current_group) break;
-        lv_obj_send_event(lv_group_get_focused(current_group), LV_EVENT_CLICKED, NULL);
-        printf("[nav] press\n");
+        lv_obj_t *focused = lv_group_get_focused(current_group);
+        edit_field_t *ef = find_edit_field(focused);
+        if (ef) {
+            lv_group_focus_next(current_group);
+            printf("[nav] press -> next focus\n");
+        } else {
+            lv_obj_send_event(focused, LV_EVENT_CLICKED, NULL);
+            printf("[nav] press -> click\n");
+        }
         break;
+    }
     default:
         printf("[nav] unknown key: %d\n", key);
         break;
@@ -513,6 +690,30 @@ static void on_updown_next_click(lv_event_t *e)
     lv_obj_t *act_scr = lv_scr_act();
     if (!screen_is_loading(act_scr))
         jump_to_updown_bbq_set();
+}
+
+static void on_edit_focus(lv_event_t *e)
+{
+    /* 隐藏所有指示线 */
+    for (int i = 0; i < edit_count; i++) {
+        if (edit_fields[i].ind_short)
+            lv_obj_add_flag(edit_fields[i].ind_short, LV_OBJ_FLAG_HIDDEN);
+        if (edit_fields[i].ind_long)
+            lv_obj_add_flag(edit_fields[i].ind_long, LV_OBJ_FLAG_HIDDEN);
+    }
+    /* 显示当前焦点的指示线 */
+    lv_obj_t *target = lv_event_get_target(e);
+    edit_field_t *f = find_edit_field(target);
+    if (f) {
+        if (f->ind_short && f->ind_long) {
+            if (*f->value < 100)
+                lv_obj_clear_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
+            else
+                lv_obj_clear_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
+        } else if (f->ind_short) {
+            lv_obj_clear_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
+        }
+    }
 }
 
 // 为 major_menu 的三个按钮绑定 LV_EVENT_CLICKED 回调

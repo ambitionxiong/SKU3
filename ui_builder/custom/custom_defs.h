@@ -109,4 +109,16 @@ extern int test_uart(int argc, char *argv[]);
 }
 #endif
 
+// ===== 可编辑字段描述 =====
+typedef struct {
+    lv_obj_t *label;
+    lv_obj_t *ind_short;   // temp<100 时用 / 小时/分钟用这个
+    lv_obj_t *ind_long;    // temp≥100 时用（对小时/分钟=NULL）
+    int *value;
+    int min;
+    int max;
+    int step;
+    const char *fmt;     // 显示格式："%d" 或 "%02d"
+} edit_field_t;
+
 #endif // CUSTOM_DEFS_H

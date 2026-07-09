@@ -38,26 +38,28 @@ void updown_bbq_menu_create(ui_manager_t *ui)
 
     // Set style of scr->next_button
     lv_obj_set_style_bg_opa(scr->next_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->next_button, LVGL_IMAGE_PATH(nextstep_bk.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->next_button, LVGL_IMAGE_PATH(nextbk.png), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(scr->next_button, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->next_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->next_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(scr->next_button, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->next_button, LVGL_IMAGE_PATH(nextstep_bk.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
-    // Init scr->image_1
-    scr->image_1 = lv_img_create(scr->obj);
-    lv_img_set_src(scr->image_1, LVGL_IMAGE_PATH(div2bk.png));
-    lv_img_set_pivot(scr->image_1, 50, 50);
-    lv_img_set_angle(scr->image_1, 0);
-    lv_obj_set_style_img_opa(scr->image_1, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->image_1, 24, 118);
+    // Init scr->bk1_img
+    scr->bk1_img = lv_img_create(scr->obj);
+    lv_img_set_src(scr->bk1_img, LVGL_IMAGE_PATH(div2bk.png));
+    lv_img_set_pivot(scr->bk1_img, 50, 50);
+    lv_img_set_angle(scr->bk1_img, 0);
+    lv_obj_set_style_img_opa(scr->bk1_img, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(scr->bk1_img, 24, 118);
 
-    // Init scr->image_2
-    scr->image_2 = lv_img_create(scr->obj);
-    lv_img_set_src(scr->image_2, LVGL_IMAGE_PATH(div2bk.png));
-    lv_img_set_pivot(scr->image_2, 50, 50);
-    lv_img_set_angle(scr->image_2, 0);
-    lv_obj_set_style_img_opa(scr->image_2, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->image_2, 645, 118);
+    // Init scr->bk2_img
+    scr->bk2_img = lv_img_create(scr->obj);
+    lv_img_set_src(scr->bk2_img, LVGL_IMAGE_PATH(div2bk.png));
+    lv_img_set_pivot(scr->bk2_img, 50, 50);
+    lv_img_set_angle(scr->bk2_img, 0);
+    lv_obj_set_style_img_opa(scr->bk2_img, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(scr->bk2_img, 645, 118);
 
     // Init scr->label_1
     scr->label_1 = lv_label_create(scr->obj);
@@ -70,116 +72,154 @@ void updown_bbq_menu_create(ui_manager_t *ui)
     lv_obj_set_style_text_font(scr->label_1, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_1, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->label_2
-    scr->label_2 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_2, "180");
-    lv_label_set_long_mode(scr->label_2, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_2, 252, 249);
-    lv_obj_set_size(scr->label_2, 120, 72);
+    // Init scr->tempnum_label
+    scr->tempnum_label = lv_label_create(scr->obj);
+    lv_label_set_text(scr->tempnum_label, "180");
+    lv_label_set_long_mode(scr->tempnum_label, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->tempnum_label, 252, 249);
+    lv_obj_set_size(scr->tempnum_label, 120, 72);
 
-    // Set style of scr->label_2
-    lv_obj_set_style_text_font(scr->label_2, fs_taiwanpearl_regular_72, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->label_2, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    // Set style of scr->tempnum_label
+    lv_obj_set_style_text_font(scr->tempnum_label, fs_taiwanpearl_regular_72, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->tempnum_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->tempnum_label, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_color(scr->tempnum_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->label_3
-    scr->label_3 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_3, "℃");
-    lv_label_set_long_mode(scr->label_3, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_3, 372, 281);
-    lv_obj_set_size(scr->label_3, 38, 32);
+    // Init scr->temp_label
+    scr->temp_label = lv_label_create(scr->obj);
+    lv_label_set_text(scr->temp_label, "℃");
+    lv_label_set_long_mode(scr->temp_label, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->temp_label, 372, 281);
+    lv_obj_set_size(scr->temp_label, 38, 32);
 
-    // Set style of scr->label_3
-    lv_obj_set_style_text_font(scr->label_3, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->label_3, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    // Set style of scr->temp_label
+    lv_obj_set_style_text_font(scr->temp_label, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->temp_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->label_4
-    scr->label_4 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_4, "烹饪时间");
-    lv_label_set_long_mode(scr->label_4, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_4, 891, 137);
-    lv_obj_set_size(scr->label_4, 125, 32);
+    // Init scr->cook_label
+    scr->cook_label = lv_label_create(scr->obj);
+    lv_label_set_text(scr->cook_label, "烹饪时间");
+    lv_label_set_long_mode(scr->cook_label, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->cook_label, 891, 137);
+    lv_obj_set_size(scr->cook_label, 125, 32);
 
-    // Set style of scr->label_4
-    lv_obj_set_style_text_font(scr->label_4, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->label_4, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    // Set style of scr->cook_label
+    lv_obj_set_style_text_font(scr->cook_label, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->cook_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->label_5
-    scr->label_5 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_5, "01");
-    lv_label_set_long_mode(scr->label_5, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_5, 793, 248);
-    lv_obj_set_size(scr->label_5, 84, 72);
+    // Init scr->hournum_label
+    scr->hournum_label = lv_label_create(scr->obj);
+    lv_label_set_text(scr->hournum_label, "00");
+    lv_label_set_long_mode(scr->hournum_label, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->hournum_label, 793, 248);
+    lv_obj_set_size(scr->hournum_label, 84, 72);
 
-    // Set style of scr->label_5
-    lv_obj_set_style_text_font(scr->label_5, fs_taiwanpearl_regular_72, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->label_5, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    // Set style of scr->hournum_label
+    lv_obj_set_style_text_font(scr->hournum_label, fs_taiwanpearl_regular_72, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->hournum_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->label_6
-    scr->label_6 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_6, "时");
-    lv_label_set_long_mode(scr->label_6, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_6, 872, 280);
-    lv_obj_set_size(scr->label_6, 38, 32);
+    // Init scr->hour_label
+    scr->hour_label = lv_label_create(scr->obj);
+    lv_label_set_text(scr->hour_label, "时");
+    lv_label_set_long_mode(scr->hour_label, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->hour_label, 872, 280);
+    lv_obj_set_size(scr->hour_label, 38, 32);
 
-    // Set style of scr->label_6
-    lv_obj_set_style_text_font(scr->label_6, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->label_6, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    // Set style of scr->hour_label
+    lv_obj_set_style_text_font(scr->hour_label, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->hour_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->label_7
-    scr->label_7 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_7, "分");
-    lv_label_set_long_mode(scr->label_7, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_7, 1075, 281);
-    lv_obj_set_size(scr->label_7, 38, 32);
+    // Init scr->min_label
+    scr->min_label = lv_label_create(scr->obj);
+    lv_label_set_text(scr->min_label, "分");
+    lv_label_set_long_mode(scr->min_label, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->min_label, 1075, 281);
+    lv_obj_set_size(scr->min_label, 38, 32);
 
-    // Set style of scr->label_7
-    lv_obj_set_style_text_font(scr->label_7, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->label_7, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    // Set style of scr->min_label
+    lv_obj_set_style_text_font(scr->min_label, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->min_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->label_8
-    scr->label_8 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_8, "20");
-    lv_label_set_long_mode(scr->label_8, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_8, 995, 248);
-    lv_obj_set_size(scr->label_8, 84, 72);
+    // Init scr->minnum_label
+    scr->minnum_label = lv_label_create(scr->obj);
+    lv_label_set_text(scr->minnum_label, "30");
+    lv_label_set_long_mode(scr->minnum_label, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->minnum_label, 995, 248);
+    lv_obj_set_size(scr->minnum_label, 84, 72);
 
-    // Set style of scr->label_8
-    lv_obj_set_style_text_font(scr->label_8, fs_taiwanpearl_regular_72, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->label_8, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    // Set style of scr->minnum_label
+    lv_obj_set_style_text_font(scr->minnum_label, fs_taiwanpearl_regular_72, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->minnum_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->label_9
-    scr->label_9 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_9, "上下烧烤");
-    lv_label_set_long_mode(scr->label_9, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_9, 24, 25);
-    lv_obj_set_size(scr->label_9, 144, 32);
+    // Init scr->updown_label
+    scr->updown_label = lv_label_create(scr->obj);
+    lv_label_set_text(scr->updown_label, "上下烧烤");
+    lv_label_set_long_mode(scr->updown_label, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->updown_label, 24, 25);
+    lv_obj_set_size(scr->updown_label, 144, 32);
 
-    // Set style of scr->label_9
-    lv_obj_set_style_text_font(scr->label_9, fs_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->label_9, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    // Set style of scr->updown_label
+    lv_obj_set_style_text_font(scr->updown_label, fs_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->updown_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->label_12
-    scr->label_12 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_12, "下一步");
-    lv_label_set_long_mode(scr->label_12, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_12, 996, 39);
-    lv_obj_set_size(scr->label_12, 117, 32);
+    // Init scr->next_label
+    scr->next_label = lv_label_create(scr->obj);
+    lv_label_set_text(scr->next_label, "下一步");
+    lv_label_set_long_mode(scr->next_label, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->next_label, 996, 39);
+    lv_obj_set_size(scr->next_label, 117, 32);
 
-    // Set style of scr->label_12
-    lv_obj_set_style_text_font(scr->label_12, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->label_12, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    // Set style of scr->next_label
+    lv_obj_set_style_text_font(scr->next_label, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->next_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->label_10
-    scr->label_10 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_10, "12:00");
-    lv_label_set_long_mode(scr->label_10, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_10, 1179, 24);
-    lv_obj_set_size(scr->label_10, 77, 32);
+    // Init scr->righttime_label
+    scr->righttime_label = lv_label_create(scr->obj);
+    lv_label_set_text(scr->righttime_label, "12:00");
+    lv_label_set_long_mode(scr->righttime_label, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->righttime_label, 1179, 24);
+    lv_obj_set_size(scr->righttime_label, 77, 32);
 
-    // Set style of scr->label_10
-    lv_obj_set_style_text_font(scr->label_10, fs_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->label_10, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(scr->label_10, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
+    // Set style of scr->righttime_label
+    lv_obj_set_style_text_font(scr->righttime_label, fs_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->righttime_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->righttime_label, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // Init scr->temeline_long
+    scr->temeline_long = lv_img_create(scr->obj);
+    lv_img_set_src(scr->temeline_long, LVGL_IMAGE_PATH(underline.png));
+    lv_img_set_pivot(scr->temeline_long, 50, 50);
+    lv_img_set_angle(scr->temeline_long, 0);
+    lv_obj_set_style_img_opa(scr->temeline_long, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(scr->temeline_long, 252, 328);
+    lv_obj_add_flag(scr->temeline_long, LV_OBJ_FLAG_HIDDEN);
+
+    // Init scr->templine_short
+    scr->templine_short = lv_img_create(scr->obj);
+    lv_img_set_src(scr->templine_short, LVGL_IMAGE_PATH(underline_120x4.png));
+    lv_img_set_pivot(scr->templine_short, 50, 50);
+    lv_img_set_angle(scr->templine_short, 0);
+    lv_obj_set_style_img_opa(scr->templine_short, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(scr->templine_short, 289, 328);
+    lv_obj_add_flag(scr->templine_short, LV_OBJ_FLAG_HIDDEN);
+
+    // Init scr->hourline
+    scr->hourline = lv_img_create(scr->obj);
+    lv_img_set_src(scr->hourline, LVGL_IMAGE_PATH(underline_120x4.png));
+    lv_img_set_pivot(scr->hourline, 50, 50);
+    lv_img_set_angle(scr->hourline, 0);
+    lv_obj_set_style_img_opa(scr->hourline, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(scr->hourline, 790, 328);
+    lv_obj_add_flag(scr->hourline, LV_OBJ_FLAG_HIDDEN);
+
+    // Init scr->minline
+    scr->minline = lv_img_create(scr->obj);
+    lv_img_set_src(scr->minline, LVGL_IMAGE_PATH(underline_120x4.png));
+    lv_img_set_pivot(scr->minline, 50, 50);
+    lv_img_set_angle(scr->minline, 0);
+    lv_obj_set_style_img_opa(scr->minline, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(scr->minline, 993, 328);
+    lv_obj_add_flag(scr->minline, LV_OBJ_FLAG_HIDDEN);
 
 
 }

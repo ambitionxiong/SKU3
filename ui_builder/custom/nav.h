@@ -17,6 +17,14 @@ extern lv_group_t *g_updown_bbq_set;
 
 extern lv_group_t *current_group;
 
+extern int set_temp;
+extern int set_hour;
+extern int set_min;
+
+void edit_clear(void);
+void edit_register(lv_obj_t *label, lv_obj_t *ind_s, lv_obj_t *ind_l,
+                   int *value, int min, int max, int step, const char *fmt);
+
 void nav_handle_key(uint8_t key);
 void nav_init(void);
 

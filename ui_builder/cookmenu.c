@@ -282,11 +282,11 @@ void cookmenu_create(ui_manager_t *ui)
     scr->pengren_labal = lv_label_create(scr->obj);
     lv_label_set_text(scr->pengren_labal, "烹饪功能");
     lv_label_set_long_mode(scr->pengren_labal, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->pengren_labal, 24, 24);
+    lv_obj_set_pos(scr->pengren_labal, 24, 22);
     lv_obj_set_size(scr->pengren_labal, 97, 25);
 
     // Set style of scr->pengren_labal
-    lv_obj_set_style_text_font(scr->pengren_labal, fs_taiwanpearl_regular_23, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->pengren_labal, fs_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->pengren_labal, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->hot_bbq_labal

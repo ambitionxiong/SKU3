@@ -14,7 +14,6 @@ ui_manager_t ui_manager;
 
 lv_font_t *fs_montserratmedium_16;
 lv_font_t *fs_taiwanpearl_regular_30;
-lv_font_t *fs_taiwanpearl_regular_23;
 lv_font_t *fs_taiwanpearl_regular_24;
 lv_font_t *fs_taiwanpearl_regular_72;
 lv_font_t *fs_taiwanpearl_regular_36;
@@ -26,7 +25,6 @@ void ui_init(void)
 {
     fs_montserratmedium_16 = ui_font_init(LVGL_FONT_PATH(montserratMedium.ttf), 16);
     fs_taiwanpearl_regular_30 = ui_font_init(LVGL_FONT_PATH(TaiwanPearl_Regular.ttf), 30);
-    fs_taiwanpearl_regular_23 = ui_font_init(LVGL_FONT_PATH(TaiwanPearl_Regular.ttf), 23);
     fs_taiwanpearl_regular_24 = ui_font_init(LVGL_FONT_PATH(TaiwanPearl_Regular.ttf), 24);
     fs_taiwanpearl_regular_72 = ui_font_init(LVGL_FONT_PATH(TaiwanPearl_Regular.ttf), 72);
     fs_taiwanpearl_regular_36 = ui_font_init(LVGL_FONT_PATH(TaiwanPearl_Regular.ttf), 36);
@@ -39,10 +37,6 @@ void ui_init(void)
     }
     if (!fs_taiwanpearl_regular_30) {
     	LV_LOG_ERROR("Failed to init fs_taiwanpearl_regular_30");
-    	return;
-    }
-    if (!fs_taiwanpearl_regular_23) {
-    	LV_LOG_ERROR("Failed to init fs_taiwanpearl_regular_23");
     	return;
     }
     if (!fs_taiwanpearl_regular_24) {
