@@ -20,6 +20,9 @@ extern lv_group_t *current_group;
 extern int set_temp;
 extern int set_hour;
 extern int set_min;
+extern uint8_t preheat_on;
+extern uint8_t delay_on;
+extern uint8_t contain_on;
 
 void edit_clear(void);
 void edit_register(lv_obj_t *label, lv_obj_t *ind_s, lv_obj_t *ind_l,

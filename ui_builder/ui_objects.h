@@ -162,12 +162,6 @@ typedef struct {
     lv_obj_t *wen_label;
     lv_obj_t *du_label;
     lv_obj_t *cooktime_label;
-    lv_obj_t *up3_tempnum_label;
-    lv_obj_t *up3_dir_label;
-    lv_obj_t *down2_dir_label;
-    lv_obj_t *down2_tempnum_label;
-    lv_obj_t *down2_icon_label;
-    lv_obj_t *up3_icon_label;
     lv_obj_t *hour_label;
     lv_obj_t *min_label;
     lv_obj_t *shi_label;
@@ -180,6 +174,8 @@ typedef struct {
     lv_obj_t *preheat_label;
     lv_obj_t *yan_label;
     lv_obj_t *chi_label;
+    lv_obj_t *downtemp_button;
+    lv_obj_t *uptemp_button;
     lv_obj_t *contain_label;
     lv_obj_t *preheat_button;
     lv_obj_t *delay_button;
@@ -190,9 +186,16 @@ typedef struct {
     lv_obj_t *up2_dir_label;
     lv_obj_t *up2_tempnum_label;
     lv_obj_t *up2_icon_label;
-    lv_obj_t *uptemp_button;
-    lv_obj_t *downtemp_button;
     lv_obj_t *sure_label;
+    lv_obj_t *preheat_on_button;
+    lv_obj_t *delay_on_button;
+    lv_obj_t *contain_on_button;
+    lv_obj_t *up3_icon_label;
+    lv_obj_t *down2_icon_label;
+    lv_obj_t *down2_tempnum_label;
+    lv_obj_t *down2_dir_label;
+    lv_obj_t *up3_dir_label;
+    lv_obj_t *up3_tempnum_label;
 } updown_bbq_set_t;
 
 typedef struct {

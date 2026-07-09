@@ -15,6 +15,10 @@ int set_temp = 180;
 int set_hour = 0;
 int set_min  = 30;
 
+uint8_t preheat_on = 0;
+uint8_t delay_on = 0;
+uint8_t contain_on = 0;
+
 void custom_init()
 {
     /* Add your codes here */

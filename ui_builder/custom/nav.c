@@ -36,6 +36,9 @@ static void on_cook_updown_click(lv_event_t *e);
 static void on_updown_next_click(lv_event_t *e);
 static void on_edit_focus(lv_event_t *e);
 static void validate_constraints(void);
+static void on_preheat_toggle(lv_event_t *e);
+static void on_delay_toggle(lv_event_t *e);
+static void on_contain_toggle(lv_event_t *e);
 
 // ==============================
 // 可编辑字段注册表
@@ -301,10 +304,52 @@ static void page_pop(void)
             updown_bbq_set_t *set = updown_bbq_set_get(&ui_manager);
             if (set) {
                 lv_obj_t *btns[] = {
-                    set->sure_button, set->button_3, set->button_4, set->button_5,
+                    set->sure_button, set->uptemp_button, set->downtemp_button,
+            set->preheat_button, set->preheat_on_button,
+            set->delay_button, set->delay_on_button,
+            set->contain_button, set->contain_on_button,
                 };
                 if (g_updown_bbq_set) lv_group_del(g_updown_bbq_set);
-                g_updown_bbq_set = group_create_for_page(btns, 4);
+                g_updown_bbq_set = group_create_for_page(btns, 6);
+
+                /* 隐藏所有温度相关组件 */
+                lv_obj_add_flag(set->up2_tempnum_label, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(set->up2_dir_label, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(set->up2_icon_label, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(set->down2_tempnum_label, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(set->down2_dir_label, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(set->down2_icon_label, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(set->up3_tempnum_label, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(set->up3_dir_label, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(set->up3_icon_label, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(set->down3_tempnum_label, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(set->down3_dir_label, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(set->down3_icon_label, LV_OBJ_FLAG_HIDDEN);
+
+                /* 根据温度选 2 位或 3 位 */
+                if (set_temp < 100) {
+                    lv_label_set_text_fmt(set->up2_tempnum_label, "%d", set_temp);
+                    lv_label_set_text_fmt(set->down2_tempnum_label, "%d", set_temp);
+                    lv_obj_clear_flag(set->up2_tempnum_label, LV_OBJ_FLAG_HIDDEN);
+                    lv_obj_clear_flag(set->up2_dir_label, LV_OBJ_FLAG_HIDDEN);
+                    lv_obj_clear_flag(set->up2_icon_label, LV_OBJ_FLAG_HIDDEN);
+                    lv_obj_clear_flag(set->down2_tempnum_label, LV_OBJ_FLAG_HIDDEN);
+                    lv_obj_clear_flag(set->down2_dir_label, LV_OBJ_FLAG_HIDDEN);
+                    lv_obj_clear_flag(set->down2_icon_label, LV_OBJ_FLAG_HIDDEN);
+                } else {
+                    lv_label_set_text_fmt(set->up3_tempnum_label, "%d", set_temp);
+                    lv_label_set_text_fmt(set->down3_tempnum_label, "%d", set_temp);
+                    lv_obj_clear_flag(set->up3_tempnum_label, LV_OBJ_FLAG_HIDDEN);
+                    lv_obj_clear_flag(set->up3_dir_label, LV_OBJ_FLAG_HIDDEN);
+                    lv_obj_clear_flag(set->up3_icon_label, LV_OBJ_FLAG_HIDDEN);
+                    lv_obj_clear_flag(set->down3_tempnum_label, LV_OBJ_FLAG_HIDDEN);
+                    lv_obj_clear_flag(set->down3_dir_label, LV_OBJ_FLAG_HIDDEN);
+                    lv_obj_clear_flag(set->down3_icon_label, LV_OBJ_FLAG_HIDDEN);
+                }
+
+                /* 时间显示 */
+                lv_label_set_text_fmt(set->hour_label, "%02d", set_hour);
+                lv_label_set_text_fmt(set->min_label, "%02d", set_min);
             }
             current_group = g_updown_bbq_set;
         }
@@ -522,10 +567,68 @@ static void jump_to_updown_bbq_set(void)
     updown_bbq_set_t *set = updown_bbq_set_get(&ui_manager);
     if (set) {
         lv_obj_t *btns[] = {
-            set->sure_button, set->button_3, set->button_4, set->button_5,
+            set->sure_button, set->uptemp_button, set->downtemp_button,
+            set->preheat_button, set->preheat_on_button,
+            set->delay_button, set->delay_on_button,
+            set->contain_button, set->contain_on_button,
         };
         if (g_updown_bbq_set) lv_group_del(g_updown_bbq_set);
         g_updown_bbq_set = group_create_for_page(btns, sizeof(btns) / sizeof(btns[0]));
+
+        /* 隐藏所有温度相关组件 */
+        lv_obj_add_flag(set->up2_tempnum_label, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->up2_dir_label, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->up2_icon_label, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->down2_tempnum_label, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->down2_dir_label, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->down2_icon_label, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->up3_tempnum_label, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->up3_dir_label, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->up3_icon_label, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->down3_tempnum_label, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->down3_dir_label, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->down3_icon_label, LV_OBJ_FLAG_HIDDEN);
+
+        /* 根据温度选 2 位或 3 位 */
+        if (set_temp < 100) {
+            lv_label_set_text_fmt(set->up2_tempnum_label, "%d", set_temp);
+            lv_label_set_text_fmt(set->down2_tempnum_label, "%d", set_temp);
+            lv_obj_clear_flag(set->up2_tempnum_label, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(set->up2_dir_label, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(set->up2_icon_label, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(set->down2_tempnum_label, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(set->down2_dir_label, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(set->down2_icon_label, LV_OBJ_FLAG_HIDDEN);
+        } else {
+            lv_label_set_text_fmt(set->up3_tempnum_label, "%d", set_temp);
+            lv_label_set_text_fmt(set->down3_tempnum_label, "%d", set_temp);
+            lv_obj_clear_flag(set->up3_tempnum_label, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(set->up3_dir_label, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(set->up3_icon_label, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(set->down3_tempnum_label, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(set->down3_dir_label, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(set->down3_icon_label, LV_OBJ_FLAG_HIDDEN);
+        }
+
+        /* 时间显示 */
+        lv_label_set_text_fmt(set->hour_label, "%02d", set_hour);
+        lv_label_set_text_fmt(set->min_label, "%02d", set_min);
+
+        /* 按钮状态重置（OFF 显示，ON 隐藏） */
+        lv_obj_clear_flag(set->preheat_button, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->preheat_on_button, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(set->delay_button, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->delay_on_button, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(set->contain_button, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->contain_on_button, LV_OBJ_FLAG_HIDDEN);
+
+        /* 绑定 toggle 事件 */
+        lv_obj_add_event_cb(set->preheat_button, on_preheat_toggle, LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->preheat_on_button, on_preheat_toggle, LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->delay_button, on_delay_toggle, LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->delay_on_button, on_delay_toggle, LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->contain_button, on_contain_toggle, LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->contain_on_button, on_contain_toggle, LV_EVENT_CLICKED, NULL);
     }
 
     current_group = g_updown_bbq_set;
@@ -713,6 +816,54 @@ static void on_edit_focus(lv_event_t *e)
         } else if (f->ind_short) {
             lv_obj_clear_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
         }
+    }
+}
+
+static void on_preheat_toggle(lv_event_t *e)
+{
+    updown_bbq_set_t *set = updown_bbq_set_get(&ui_manager);
+    if (!set) return;
+    preheat_on = !preheat_on;
+    if (preheat_on) {
+        lv_obj_add_flag(set->preheat_button, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(set->preheat_on_button, LV_OBJ_FLAG_HIDDEN);
+        lv_group_focus_obj(set->preheat_on_button);
+    } else {
+        lv_obj_add_flag(set->preheat_on_button, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(set->preheat_button, LV_OBJ_FLAG_HIDDEN);
+        lv_group_focus_obj(set->preheat_button);
+    }
+}
+
+static void on_delay_toggle(lv_event_t *e)
+{
+    updown_bbq_set_t *set = updown_bbq_set_get(&ui_manager);
+    if (!set) return;
+    delay_on = !delay_on;
+    if (delay_on) {
+        lv_obj_add_flag(set->delay_button, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(set->delay_on_button, LV_OBJ_FLAG_HIDDEN);
+        lv_group_focus_obj(set->delay_on_button);
+    } else {
+        lv_obj_add_flag(set->delay_on_button, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(set->delay_button, LV_OBJ_FLAG_HIDDEN);
+        lv_group_focus_obj(set->delay_button);
+    }
+}
+
+static void on_contain_toggle(lv_event_t *e)
+{
+    updown_bbq_set_t *set = updown_bbq_set_get(&ui_manager);
+    if (!set) return;
+    contain_on = !contain_on;
+    if (contain_on) {
+        lv_obj_add_flag(set->contain_button, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(set->contain_on_button, LV_OBJ_FLAG_HIDDEN);
+        lv_group_focus_obj(set->contain_on_button);
+    } else {
+        lv_obj_add_flag(set->contain_on_button, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(set->contain_button, LV_OBJ_FLAG_HIDDEN);
+        lv_group_focus_obj(set->contain_button);
     }
 }
 
