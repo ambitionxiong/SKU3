@@ -7,6 +7,8 @@ typedef enum {
     PAGE_COOKMENU,
     PAGE_COOKMENU_4,
     PAGE_SPECIAL_MENU,
+    PAGE_UPDOWN_BBQ_MENU,
+    PAGE_UPDOWN_BBQ_SET,
 } page_id_t;
 
 // === 页面栈 ===
@@ -21,6 +23,8 @@ lv_group_t *g_special_menu;
 lv_group_t *g_cook_menu_tz;
 lv_group_t *g_major_menu_tz;
 lv_group_t *g_special_menu_tz;
+lv_group_t *g_updown_bbq_menu;
+lv_group_t *g_updown_bbq_set;
 
 lv_group_t *current_group = NULL;  // 当前活跃的焦点组，nav_handle_key 操作的就是这个组
 
@@ -28,6 +32,8 @@ lv_group_t *current_group = NULL;  // 当前活跃的焦点组，nav_handle_key 
 static void groups_create(void);
 static lv_group_t *group_create_for_page(lv_obj_t **btns, int count);
 static void bind_events(void);
+static void on_cook_updown_click(lv_event_t *e);
+static void on_updown_next_click(lv_event_t *e);
 
 // ==============================
 // 页面栈操作
@@ -108,6 +114,15 @@ static void page_pop(void)
                 g_cookmenu = group_create_for_page(btns, sizeof(btns) / sizeof(btns[0]));
             }
             current_group = g_cookmenu;
+
+            /* 根据 child 恢复焦点 */
+            if (child == PAGE_UPDOWN_BBQ_MENU && cook->up_down_button)
+                lv_group_focus_obj(cook->up_down_button);
+
+            /* 新按钮需要重新绑定事件 */
+            if (cook && cook->up_down_button)
+                lv_obj_add_event_cb(cook->up_down_button, on_cook_updown_click,
+                                    LV_EVENT_CLICKED, NULL);
         }
         lv_scr_load_anim(cookmenu_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
@@ -134,6 +149,51 @@ static void page_pop(void)
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
                          ui_manager.auto_del);
         printf("[nav] back to special_menu\n");
+        break;
+
+    case PAGE_UPDOWN_BBQ_MENU:
+        updown_bbq_menu_create(&ui_manager);
+        {
+            updown_bbq_menu_t *bbq = updown_bbq_menu_get(&ui_manager);
+            if (bbq) {
+                lv_obj_t *btns[] = { bbq->next_button };
+                if (g_updown_bbq_menu) lv_group_del(g_updown_bbq_menu);
+                g_updown_bbq_menu = group_create_for_page(btns, 1);
+
+                /* 根据 child 恢复焦点 */
+                if (child == PAGE_UPDOWN_BBQ_SET && bbq->next_button)
+                    lv_group_focus_obj(bbq->next_button);
+
+                /* 新按钮重新绑定事件 */
+                if (bbq->next_button)
+                    lv_obj_add_event_cb(bbq->next_button, on_updown_next_click,
+                                        LV_EVENT_CLICKED, NULL);
+            }
+            current_group = g_updown_bbq_menu;
+        }
+        lv_scr_load_anim(updown_bbq_menu_get(&ui_manager)->obj,
+                         LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                         ui_manager.auto_del);
+        printf("[nav] back to updown_bbq_menu\n");
+        break;
+
+    case PAGE_UPDOWN_BBQ_SET:
+        updown_bbq_set_create(&ui_manager);
+        {
+            updown_bbq_set_t *set = updown_bbq_set_get(&ui_manager);
+            if (set) {
+                lv_obj_t *btns[] = {
+                    set->sure_button, set->button_3, set->button_4, set->button_5,
+                };
+                if (g_updown_bbq_set) lv_group_del(g_updown_bbq_set);
+                g_updown_bbq_set = group_create_for_page(btns, 4);
+            }
+            current_group = g_updown_bbq_set;
+        }
+        lv_scr_load_anim(updown_bbq_set_get(&ui_manager)->obj,
+                         LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                         ui_manager.auto_del);
+        printf("[nav] back to updown_bbq_set\n");
         break;
 
     case PAGE_WAITMENU_24:
@@ -231,6 +291,11 @@ static void jump_to_cookmenu(void)
 
     current_group = g_cookmenu;
 
+    /* 绑定 cookmenu 按钮的点击事件 */
+    if (cook && cook->up_down_button)
+        lv_obj_add_event_cb(cook->up_down_button, on_cook_updown_click,
+                            LV_EVENT_CLICKED, NULL);
+
     lv_scr_load_anim(cookmenu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
@@ -264,6 +329,59 @@ static void jump_to_special_menu(void)
                      ui_manager.auto_del);
 
     printf("[nav] jump: major_menu -> special_menu\n");
+}
+
+// cookmenu → updown_bbq_menu
+static void jump_to_updown_bbq_menu(void)
+{
+    page_push(PAGE_UPDOWN_BBQ_MENU);
+    lv_obj_clean(lv_scr_act());
+    updown_bbq_menu_create(&ui_manager);
+
+    updown_bbq_menu_t *bbq = updown_bbq_menu_get(&ui_manager);
+    if (bbq) {
+        lv_obj_t *btns[] = { bbq->next_button };
+        if (g_updown_bbq_menu) lv_group_del(g_updown_bbq_menu);
+        g_updown_bbq_menu = group_create_for_page(btns, sizeof(btns) / sizeof(btns[0]));
+    }
+
+    current_group = g_updown_bbq_menu;
+
+    /* 绑定 next_button 事件 */
+    if (bbq && bbq->next_button)
+        lv_obj_add_event_cb(bbq->next_button, on_updown_next_click,
+                            LV_EVENT_CLICKED, NULL);
+
+    lv_scr_load_anim(updown_bbq_menu_get(&ui_manager)->obj,
+                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                     ui_manager.auto_del);
+
+    printf("[nav] jump: cookmenu -> updown_bbq_menu\n");
+}
+
+// updown_bbq_menu → updown_bbq_set
+static void jump_to_updown_bbq_set(void)
+{
+    page_push(PAGE_UPDOWN_BBQ_SET);
+    lv_obj_clean(lv_scr_act());
+    updown_bbq_set_create(&ui_manager);
+
+    updown_bbq_set_t *set = updown_bbq_set_get(&ui_manager);
+    if (set) {
+        lv_obj_t *btns[] = {
+            set->sure_button, set->button_3, set->button_4, set->button_5,
+        };
+        if (g_updown_bbq_set) lv_group_del(g_updown_bbq_set);
+        g_updown_bbq_set = group_create_for_page(btns, sizeof(btns) / sizeof(btns[0]));
+    }
+
+    current_group = g_updown_bbq_set;
+
+    lv_scr_load_anim(updown_bbq_set_get(&ui_manager)->obj,
+                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                     ui_manager.auto_del);
+
+    printf("[nav] jump: updown_bbq_menu -> updown_bbq_set\n");
 }
 
 // ==============================
@@ -381,6 +499,20 @@ static void on_major_special_click(lv_event_t *e)
 static void on_major_cook4_click(lv_event_t *e)
 {
     printf("[nav] cook4 jump not implemented yet\n");
+}
+
+static void on_cook_updown_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (!screen_is_loading(act_scr))
+        jump_to_updown_bbq_menu();
+}
+
+static void on_updown_next_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (!screen_is_loading(act_scr))
+        jump_to_updown_bbq_set();
 }
 
 // 为 major_menu 的三个按钮绑定 LV_EVENT_CLICKED 回调

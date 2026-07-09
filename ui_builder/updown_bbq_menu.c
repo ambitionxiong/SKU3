@@ -173,12 +173,13 @@ void updown_bbq_menu_create(ui_manager_t *ui)
     scr->label_10 = lv_label_create(scr->obj);
     lv_label_set_text(scr->label_10, "12:00");
     lv_label_set_long_mode(scr->label_10, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_10, 1196, 25);
-    lv_obj_set_size(scr->label_10, 65, 32);
+    lv_obj_set_pos(scr->label_10, 1179, 24);
+    lv_obj_set_size(scr->label_10, 77, 32);
 
     // Set style of scr->label_10
     lv_obj_set_style_text_font(scr->label_10, fs_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_10, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->label_10, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
 
 
 }

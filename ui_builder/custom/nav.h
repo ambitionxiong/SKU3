@@ -12,6 +12,8 @@ extern lv_group_t *g_special_menu;
 extern lv_group_t *g_cook_menu_tz;
 extern lv_group_t *g_major_menu_tz;
 extern lv_group_t *g_special_menu_tz;
+extern lv_group_t *g_updown_bbq_menu;
+extern lv_group_t *g_updown_bbq_set;
 
 extern lv_group_t *current_group;
 
