@@ -103,6 +103,23 @@ static void adjust_value(edit_field_t *f, int delta)
 
 static void validate_constraints(void)
 {
+    /* 根据 hour 动态调整 minute 的循环范围 */
+    for (int i = 0; i < edit_count; i++) {
+        if (edit_fields[i].value == &set_min) {
+            if (set_hour == 0) {
+                edit_fields[i].min = 5;    // 5-59 循环，锁住 0-4
+            } else if (set_hour == 4) {
+                edit_fields[i].min = 0;    // hour=4 时 minute 不可调
+                edit_fields[i].max = 0;
+            } else {
+                edit_fields[i].min = 0;    // 0-59 正常循环
+                edit_fields[i].max = 59;
+            }
+            break;
+        }
+    }
+
+    /* 纠正 minute 值（如果当前值超出新范围） */
     if (set_hour == 0 && set_min < 5) {
         set_min = 5;
         for (int i = 0; i < edit_count; i++) {
@@ -211,6 +228,11 @@ static void page_pop(void)
             if (cook && cook->up_down_button)
                 lv_obj_add_event_cb(cook->up_down_button, on_cook_updown_click,
                                     LV_EVENT_CLICKED, NULL);
+
+            /* 退出 updown_bbq 流程后清空临时值 */
+            set_temp = 180;
+            set_hour = 0;
+            set_min = 30;
         }
         lv_scr_load_anim(cookmenu_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
@@ -283,6 +305,9 @@ static void page_pop(void)
                 if (bbq->next_button)
                     lv_obj_add_event_cb(bbq->next_button, on_updown_next_click,
                                         LV_EVENT_CLICKED, NULL);
+
+                /* 初始化约束（设置 min/max 匹配当前 hour） */
+                validate_constraints();
 
                 /* 根据 child 恢复焦点 */
                 if (child == PAGE_UPDOWN_BBQ_SET && bbq->next_button)
@@ -551,6 +576,9 @@ static void jump_to_updown_bbq_menu(void)
         else
             lv_obj_clear_flag(bbq->temeline_long, LV_OBJ_FLAG_HIDDEN);
     }
+
+    /* 初始化约束（设置 min/max 匹配当前 hour） */
+    validate_constraints();
 
     current_group = g_updown_bbq_menu;
 
