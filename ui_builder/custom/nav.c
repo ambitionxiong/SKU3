@@ -310,7 +310,19 @@ static void page_pop(void)
             set->contain_button, set->contain_on_button,
                 };
                 if (g_updown_bbq_set) lv_group_del(g_updown_bbq_set);
-                g_updown_bbq_set = group_create_for_page(btns, 6);
+                g_updown_bbq_set = group_create_for_page(btns, 9);
+
+                /* 强制清除所有按钮的 FOCUSED 状态，防止渲染缓存残留 */
+                lv_obj_clear_state(set->sure_button, LV_STATE_FOCUSED);
+                lv_obj_clear_state(set->uptemp_button, LV_STATE_FOCUSED);
+                lv_obj_clear_state(set->downtemp_button, LV_STATE_FOCUSED);
+                lv_obj_clear_state(set->preheat_button, LV_STATE_FOCUSED);
+                lv_obj_clear_state(set->preheat_on_button, LV_STATE_FOCUSED);
+                lv_obj_clear_state(set->delay_button, LV_STATE_FOCUSED);
+                lv_obj_clear_state(set->delay_on_button, LV_STATE_FOCUSED);
+                lv_obj_clear_state(set->contain_button, LV_STATE_FOCUSED);
+                lv_obj_clear_state(set->contain_on_button, LV_STATE_FOCUSED);
+                lv_group_focus_obj(set->sure_button);
 
                 /* 隐藏所有温度相关组件 */
                 lv_obj_add_flag(set->up2_tempnum_label, LV_OBJ_FLAG_HIDDEN);
@@ -574,6 +586,18 @@ static void jump_to_updown_bbq_set(void)
         };
         if (g_updown_bbq_set) lv_group_del(g_updown_bbq_set);
         g_updown_bbq_set = group_create_for_page(btns, sizeof(btns) / sizeof(btns[0]));
+
+        /* 强制清除所有按钮的 FOCUSED 状态，防止渲染缓存残留 */
+        lv_obj_clear_state(set->sure_button, LV_STATE_FOCUSED);
+        lv_obj_clear_state(set->uptemp_button, LV_STATE_FOCUSED);
+        lv_obj_clear_state(set->downtemp_button, LV_STATE_FOCUSED);
+        lv_obj_clear_state(set->preheat_button, LV_STATE_FOCUSED);
+        lv_obj_clear_state(set->preheat_on_button, LV_STATE_FOCUSED);
+        lv_obj_clear_state(set->delay_button, LV_STATE_FOCUSED);
+        lv_obj_clear_state(set->delay_on_button, LV_STATE_FOCUSED);
+        lv_obj_clear_state(set->contain_button, LV_STATE_FOCUSED);
+        lv_obj_clear_state(set->contain_on_button, LV_STATE_FOCUSED);
+        lv_group_focus_obj(set->sure_button);
 
         /* 隐藏所有温度相关组件 */
         lv_obj_add_flag(set->up2_tempnum_label, LV_OBJ_FLAG_HIDDEN);
