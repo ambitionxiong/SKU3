@@ -170,7 +170,6 @@ typedef struct {
     lv_obj_t *place_img;
     lv_obj_t *place_label;
     lv_obj_t *sure_button;
-    lv_obj_t *righttime_label;
     lv_obj_t *preheat_label;
     lv_obj_t *yan_label;
     lv_obj_t *chi_label;
@@ -196,6 +195,7 @@ typedef struct {
     lv_obj_t *down2_dir_label;
     lv_obj_t *up3_dir_label;
     lv_obj_t *up3_tempnum_label;
+    lv_obj_t *righttime_label;
 } updown_bbq_set_t;
 
 typedef struct {

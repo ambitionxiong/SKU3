@@ -103,40 +103,35 @@ static void adjust_value(edit_field_t *f, int delta)
 
 static void validate_constraints(void)
 {
-    /* 根据 hour 动态调整 minute 的循环范围 */
+    /* 找到 minute 字段 */
+    edit_field_t *min_field = NULL;
     for (int i = 0; i < edit_count; i++) {
         if (edit_fields[i].value == &set_min) {
-            if (set_hour == 0) {
-                edit_fields[i].min = 5;    // 5-59 循环，锁住 0-4
-            } else if (set_hour == 4) {
-                edit_fields[i].min = 0;    // hour=4 时 minute 不可调
-                edit_fields[i].max = 0;
-            } else {
-                edit_fields[i].min = 0;    // 0-59 正常循环
-                edit_fields[i].max = 59;
-            }
+            min_field = &edit_fields[i];
             break;
         }
+    }
+    if (!min_field) return;
+
+    /* 根据 hour 动态调整 minute 的循环范围 */
+    if (set_hour == 0) {
+        min_field->min = 5;    // 5-59 循环，锁住 0-4
+    } else if (set_hour == 4) {
+        min_field->min = 0;    // hour=4 时 minute 不可调
+        min_field->max = 0;
+    } else {
+        min_field->min = 0;    // 0-59 正常循环
+        min_field->max = 59;
     }
 
     /* 纠正 minute 值（如果当前值超出新范围） */
     if (set_hour == 0 && set_min < 5) {
         set_min = 5;
-        for (int i = 0; i < edit_count; i++) {
-            if (edit_fields[i].value == &set_min) {
-                lv_label_set_text_fmt(edit_fields[i].label, edit_fields[i].fmt, set_min);
-                break;
-            }
-        }
+        lv_label_set_text_fmt(min_field->label, min_field->fmt, set_min);
     }
     if (set_hour == 4 && set_min != 0) {
         set_min = 0;
-        for (int i = 0; i < edit_count; i++) {
-            if (edit_fields[i].value == &set_min) {
-                lv_label_set_text_fmt(edit_fields[i].label, edit_fields[i].fmt, set_min);
-                break;
-            }
-        }
+        lv_label_set_text_fmt(min_field->label, min_field->fmt, set_min);
     }
 }
 
@@ -310,9 +305,7 @@ static void page_pop(void)
                 validate_constraints();
 
                 /* 根据 child 恢复焦点 */
-                if (child == PAGE_UPDOWN_BBQ_SET && bbq->next_button)
-                    lv_group_focus_obj(bbq->next_button);
-                else if (bbq->next_button)
+                if (bbq->next_button)
                     lv_group_focus_obj(bbq->next_button);
             }
             current_group = g_updown_bbq_menu;
@@ -330,9 +323,9 @@ static void page_pop(void)
             if (set) {
                 lv_obj_t *btns[] = {
                     set->sure_button, set->uptemp_button, set->downtemp_button,
-            set->preheat_button, set->preheat_on_button,
-            set->delay_button, set->delay_on_button,
-            set->contain_button, set->contain_on_button,
+                    set->preheat_button, set->preheat_on_button,
+                    set->delay_button, set->delay_on_button,
+                    set->contain_button, set->contain_on_button,
                 };
                 if (g_updown_bbq_set) lv_group_del(g_updown_bbq_set);
                 g_updown_bbq_set = group_create_for_page(btns, 9);
@@ -703,7 +696,6 @@ static uint8_t active_key = 0;
 static uint32_t active_key_time = 0;
 
 #define ENC_REPEAT_MS   50    // 编码器长按时重复间隔
-#define KEY_REPEAT_MS   300   // 触控键长按时重复间隔
 
 static void process_key(uint8_t key)
 {
