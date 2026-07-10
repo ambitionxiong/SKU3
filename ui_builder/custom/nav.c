@@ -399,6 +399,7 @@ static void groups_create(void)
         return;
     }
 
+    if (g_major_menu) lv_group_del(g_major_menu);
     g_major_menu = lv_group_create();
     if (!g_major_menu) {
         printf("[nav] failed to create major_menu group\n");
