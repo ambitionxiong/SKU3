@@ -9,6 +9,7 @@ typedef enum {
     PAGE_SPECIAL_MENU,
     PAGE_UPDOWN_BBQ_MENU,
     PAGE_UPDOWN_BBQ_SET,
+    PAGE_UPDOWN_BBQ_COOKING,
 } page_id_t;
 
 // === 页面栈 ===
@@ -25,6 +26,7 @@ lv_group_t *g_major_menu_tz;
 lv_group_t *g_special_menu_tz;
 lv_group_t *g_updown_bbq_menu;
 lv_group_t *g_updown_bbq_set;
+lv_group_t *g_updown_bbq_cooking;
 
 lv_group_t *current_group = NULL;  // 当前活跃的焦点组，nav_handle_key 操作的就是这个组
 
@@ -39,6 +41,7 @@ static void validate_constraints(void);
 static void on_preheat_toggle(lv_event_t *e);
 static void on_delay_toggle(lv_event_t *e);
 static void on_contain_toggle(lv_event_t *e);
+static void on_sure_click(lv_event_t *e);
 
 // ==============================
 // 可编辑字段注册表
@@ -380,6 +383,44 @@ static void page_pop(void)
                 /* 时间显示 */
                 lv_label_set_text_fmt(set->hour_label, "%02d", set_hour);
                 lv_label_set_text_fmt(set->min_label, "%02d", set_min);
+
+                /* 恢复 toggle 状态（跟随变量） */
+                if (preheat_on) {
+                    lv_obj_add_flag(set->preheat_button, LV_OBJ_FLAG_HIDDEN);
+                    lv_obj_clear_flag(set->preheat_on_button, LV_OBJ_FLAG_HIDDEN);
+                } else {
+                    lv_obj_clear_flag(set->preheat_button, LV_OBJ_FLAG_HIDDEN);
+                    lv_obj_add_flag(set->preheat_on_button, LV_OBJ_FLAG_HIDDEN);
+                }
+                if (delay_on) {
+                    lv_obj_add_flag(set->delay_button, LV_OBJ_FLAG_HIDDEN);
+                    lv_obj_clear_flag(set->delay_on_button, LV_OBJ_FLAG_HIDDEN);
+                } else {
+                    lv_obj_clear_flag(set->delay_button, LV_OBJ_FLAG_HIDDEN);
+                    lv_obj_add_flag(set->delay_on_button, LV_OBJ_FLAG_HIDDEN);
+                }
+                if (contain_on) {
+                    lv_obj_add_flag(set->contain_button, LV_OBJ_FLAG_HIDDEN);
+                    lv_obj_clear_flag(set->contain_on_button, LV_OBJ_FLAG_HIDDEN);
+                } else {
+                    lv_obj_clear_flag(set->contain_button, LV_OBJ_FLAG_HIDDEN);
+                    lv_obj_add_flag(set->contain_on_button, LV_OBJ_FLAG_HIDDEN);
+                }
+
+                /* 绑定 toggle 事件 */
+                lv_obj_add_event_cb(set->preheat_button, on_preheat_toggle, LV_EVENT_CLICKED, NULL);
+                lv_obj_add_event_cb(set->preheat_on_button, on_preheat_toggle, LV_EVENT_CLICKED, NULL);
+                lv_obj_add_event_cb(set->delay_button, on_delay_toggle, LV_EVENT_CLICKED, NULL);
+                lv_obj_add_event_cb(set->delay_on_button, on_delay_toggle, LV_EVENT_CLICKED, NULL);
+                lv_obj_add_event_cb(set->contain_button, on_contain_toggle, LV_EVENT_CLICKED, NULL);
+                lv_obj_add_event_cb(set->contain_on_button, on_contain_toggle, LV_EVENT_CLICKED, NULL);
+
+                /* 绑定 sure_button 事件 */
+                lv_obj_add_event_cb(set->sure_button, on_sure_click, LV_EVENT_CLICKED, NULL);
+
+                /* 焦点恢复 */
+                if (child == PAGE_UPDOWN_BBQ_COOKING && set->sure_button)
+                    lv_group_focus_obj(set->sure_button);
             }
             current_group = g_updown_bbq_set;
         }
@@ -598,6 +639,11 @@ static void jump_to_updown_bbq_set(void)
     lv_obj_clean(lv_scr_act());
     updown_bbq_set_create(&ui_manager);
 
+    /* 复位 toggle 状态（全新进入，默认全关） */
+    preheat_on = 0;
+    delay_on = 0;
+    contain_on = 0;
+
     updown_bbq_set_t *set = updown_bbq_set_get(&ui_manager);
     if (set) {
         lv_obj_t *btns[] = {
@@ -660,13 +706,28 @@ static void jump_to_updown_bbq_set(void)
         lv_label_set_text_fmt(set->hour_label, "%02d", set_hour);
         lv_label_set_text_fmt(set->min_label, "%02d", set_min);
 
-        /* 按钮状态重置（OFF 显示，ON 隐藏） */
-        lv_obj_clear_flag(set->preheat_button, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_add_flag(set->preheat_on_button, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_clear_flag(set->delay_button, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_add_flag(set->delay_on_button, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_clear_flag(set->contain_button, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_add_flag(set->contain_on_button, LV_OBJ_FLAG_HIDDEN);
+        /* 按钮状态重置（跟随变量） */
+        if (preheat_on) {
+            lv_obj_add_flag(set->preheat_button, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(set->preheat_on_button, LV_OBJ_FLAG_HIDDEN);
+        } else {
+            lv_obj_clear_flag(set->preheat_button, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(set->preheat_on_button, LV_OBJ_FLAG_HIDDEN);
+        }
+        if (delay_on) {
+            lv_obj_add_flag(set->delay_button, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(set->delay_on_button, LV_OBJ_FLAG_HIDDEN);
+        } else {
+            lv_obj_clear_flag(set->delay_button, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(set->delay_on_button, LV_OBJ_FLAG_HIDDEN);
+        }
+        if (contain_on) {
+            lv_obj_add_flag(set->contain_button, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(set->contain_on_button, LV_OBJ_FLAG_HIDDEN);
+        } else {
+            lv_obj_clear_flag(set->contain_button, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(set->contain_on_button, LV_OBJ_FLAG_HIDDEN);
+        }
 
         /* 绑定 toggle 事件 */
         lv_obj_add_event_cb(set->preheat_button, on_preheat_toggle, LV_EVENT_CLICKED, NULL);
@@ -675,6 +736,9 @@ static void jump_to_updown_bbq_set(void)
         lv_obj_add_event_cb(set->delay_on_button, on_delay_toggle, LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(set->contain_button, on_contain_toggle, LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(set->contain_on_button, on_contain_toggle, LV_EVENT_CLICKED, NULL);
+
+        /* 绑定 sure_button 事件 */
+        lv_obj_add_event_cb(set->sure_button, on_sure_click, LV_EVENT_CLICKED, NULL);
     }
 
     current_group = g_updown_bbq_set;
@@ -684,6 +748,42 @@ static void jump_to_updown_bbq_set(void)
                      ui_manager.auto_del);
 
     printf("[nav] jump: updown_bbq_menu -> updown_bbq_set\n");
+}
+
+// updown_bbq_set → updown_bbq_cooking
+static void jump_to_updown_bbq_cooking(void)
+{
+    page_push(PAGE_UPDOWN_BBQ_COOKING);
+    lv_obj_clean(lv_scr_act());
+    updown_bbq_cooking_create(&ui_manager);
+
+    updown_bbq_cooking_t *cook = updown_bbq_cooking_get(&ui_manager);
+    if (cook) {
+        lv_obj_t *btns[] = {
+            cook->stop_button, cook->little_button,
+        };
+        if (g_updown_bbq_cooking) lv_group_del(g_updown_bbq_cooking);
+        g_updown_bbq_cooking = group_create_for_page(btns, sizeof(btns) / sizeof(btns[0]));
+
+        /* 更新界面显示 */
+        if (set_hour == 0) {
+            lv_label_set_text_fmt(cook->updown_label,
+                "| 上下烧烤 | %d℃ | %02d分钟",
+                set_temp, set_min);
+        } else {
+            lv_label_set_text_fmt(cook->updown_label,
+                "| 上下烧烤 | %d℃ | %d小时%02d分钟",
+                set_temp, set_hour, set_min);
+        }
+    }
+
+    current_group = g_updown_bbq_cooking;
+
+    lv_scr_load_anim(updown_bbq_cooking_get(&ui_manager)->obj,
+                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                     ui_manager.auto_del);
+
+    printf("[nav] jump: updown_bbq_set -> updown_bbq_cooking\n");
 }
 
 // ==============================
@@ -910,6 +1010,13 @@ static void on_contain_toggle(lv_event_t *e)
         lv_obj_clear_flag(set->contain_button, LV_OBJ_FLAG_HIDDEN);
         lv_group_focus_obj(set->contain_button);
     }
+}
+
+static void on_sure_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (!screen_is_loading(act_scr))
+        jump_to_updown_bbq_cooking();
 }
 
 // 为 major_menu 的三个按钮绑定 LV_EVENT_CLICKED 回调
