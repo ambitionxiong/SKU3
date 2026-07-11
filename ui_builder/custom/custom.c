@@ -19,6 +19,10 @@ uint8_t preheat_on = 0;
 uint8_t delay_on = 0;
 uint8_t contain_on = 0;
 
+int cook_total_ms = 0;
+uint32_t cook_start_time = 0;
+lv_timer_t *cook_timer = NULL;
+
 void custom_init()
 {
     /* Add your codes here */

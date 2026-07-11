@@ -207,7 +207,6 @@ typedef struct {
     lv_obj_t *stop_button;
     lv_obj_t *barbk_img;
     lv_obj_t *bar;
-    lv_obj_t *ball_img;
     lv_obj_t *updown_img;
     lv_obj_t *label_10;
     lv_obj_t *little_button;

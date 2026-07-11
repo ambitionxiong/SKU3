@@ -42,6 +42,7 @@ static void on_preheat_toggle(lv_event_t *e);
 static void on_delay_toggle(lv_event_t *e);
 static void on_contain_toggle(lv_event_t *e);
 static void on_sure_click(lv_event_t *e);
+static void cooking_timer_cb(lv_timer_t *timer);
 
 // ==============================
 // 可编辑字段注册表
@@ -320,6 +321,9 @@ static void page_pop(void)
         break;
 
     case PAGE_UPDOWN_BBQ_SET:
+        /* 关闭烹饪倒计时 */
+        if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
+
         updown_bbq_set_create(&ui_manager);
         {
             updown_bbq_set_t *set = updown_bbq_set_get(&ui_manager);
@@ -777,6 +781,30 @@ static void jump_to_updown_bbq_cooking(void)
         }
     }
 
+    /* 立即显示倒计时初始值（覆盖 UiBuilder 默认值） */
+    if (cook)
+        lv_label_set_text_fmt(cook->time_label, "%02d:%02d:%02d", set_hour, set_min, 0);
+
+    /* 初始化进度条 + 启动动画（连续无级平滑） */
+    cook_total_ms = (set_hour * 3600 + set_min * 60) * 1000;
+    if (cook) {
+        lv_bar_set_range(cook->bar, 0, 100);
+        lv_bar_set_value(cook->bar, 3, LV_ANIM_OFF);
+
+        lv_anim_t a;
+        lv_anim_init(&a);
+        lv_anim_set_var(&a, cook->bar);
+        lv_anim_set_exec_cb(&a, (lv_anim_exec_xcb_t)lv_bar_set_value);
+        lv_anim_set_values(&a, 3, 100);
+        lv_anim_set_time(&a, cook_total_ms);
+        lv_anim_start(&a);
+    }
+
+    /* 启动时间显示定时器 */
+    cook_start_time = lv_tick_get();
+    if (cook_timer) lv_timer_del(cook_timer);
+    cook_timer = lv_timer_create(cooking_timer_cb, 1000, NULL);
+
     current_group = g_updown_bbq_cooking;
 
     lv_scr_load_anim(updown_bbq_cooking_get(&ui_manager)->obj,
@@ -1017,6 +1045,30 @@ static void on_sure_click(lv_event_t *e)
     lv_obj_t *act_scr = lv_scr_act();
     if (!screen_is_loading(act_scr))
         jump_to_updown_bbq_cooking();
+}
+
+static void cooking_timer_cb(lv_timer_t *timer)
+{
+    updown_bbq_cooking_t *cook = updown_bbq_cooking_get(&ui_manager);
+    if (!cook) return;
+
+    uint32_t elapsed = lv_tick_get() - cook_start_time;
+    if (elapsed >= (uint32_t)cook_total_ms) {
+        lv_timer_del(cook_timer);
+        cook_timer = NULL;
+        lv_label_set_text_fmt(cook->time_label, "%02d:%02d:%02d", 0, 0, 0);
+        return;
+    }
+
+    /* 时间显示（半秒四舍五入） */
+    int elapsed_sec = (elapsed + 500) / 1000;
+    int total_sec = set_hour * 3600 + set_min * 60;
+    int remaining_sec = total_sec - elapsed_sec;
+    if (remaining_sec < 0) remaining_sec = 0;
+    int h = remaining_sec / 3600;
+    int m = (remaining_sec % 3600) / 60;
+    int s = remaining_sec % 60;
+    lv_label_set_text_fmt(cook->time_label, "%02d:%02d:%02d", h, m, s);
 }
 
 // 为 major_menu 的三个按钮绑定 LV_EVENT_CLICKED 回调

@@ -24,6 +24,9 @@ extern int set_min;
 extern uint8_t preheat_on;
 extern uint8_t delay_on;
 extern uint8_t contain_on;
+extern int cook_total_ms;
+extern uint32_t cook_start_time;
+extern lv_timer_t *cook_timer;
 
 void edit_clear(void);
 void edit_register(lv_obj_t *label, lv_obj_t *ind_s, lv_obj_t *ind_l,
