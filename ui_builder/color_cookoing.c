@@ -60,7 +60,7 @@ void color_cookoing_create(ui_manager_t *ui)
 
     // Init scr->time_label
     scr->time_label = lv_label_create(scr->obj);
-    lv_label_set_text(scr->time_label, "00:19:59");
+    lv_label_set_text(scr->time_label, "00:05:00");
     lv_label_set_long_mode(scr->time_label, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->time_label, 907, 157);
     lv_obj_set_size(scr->time_label, 235, 60);
