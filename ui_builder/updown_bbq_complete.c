@@ -68,15 +68,6 @@ void updown_bbq_complete_create(ui_manager_t *ui)
     lv_obj_set_style_bg_opa(scr->bar_3, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(scr->bar_3, lv_color_hex(0xffffff), LV_PART_INDICATOR | LV_STATE_DEFAULT);
 
-    // Init scr->ball_img
-    scr->ball_img = lv_img_create(scr->obj);
-    lv_img_set_src(scr->ball_img, LVGL_IMAGE_PATH(ball.png));
-    lv_img_set_pivot(scr->ball_img, 50, 50);
-    lv_img_set_angle(scr->ball_img, 0);
-    lv_obj_set_style_img_opa(scr->ball_img, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->ball_img, 740, 325);
-    lv_obj_add_flag(scr->ball_img, LV_OBJ_FLAG_HIDDEN);
-
     // Init scr->show_img
     scr->show_img = lv_img_create(scr->obj);
     lv_img_set_src(scr->show_img, LVGL_IMAGE_PATH(show.png));

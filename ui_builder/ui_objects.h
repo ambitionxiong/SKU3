@@ -218,7 +218,6 @@ typedef struct {
     lv_obj_t *barbk_img;
     lv_obj_t *statu_label;
     lv_obj_t *bar_3;
-    lv_obj_t *ball_img;
     lv_obj_t *show_img;
     lv_obj_t *like_img;
     lv_obj_t *righttime_label;
@@ -237,7 +236,6 @@ typedef struct {
     lv_obj_t *start_button;
     lv_obj_t *barbk_img;
     lv_obj_t *bar;
-    lv_obj_t *ball_img;
     lv_obj_t *color_img;
     lv_obj_t *color_label;
 } extra_color_t;
@@ -251,7 +249,6 @@ typedef struct {
     lv_obj_t *stop_button;
     lv_obj_t *barbk_img;
     lv_obj_t *bar;
-    lv_obj_t *ball_img;
     lv_obj_t *color_img;
     lv_obj_t *cooking_label;
 } color_cookoing_t;
@@ -262,7 +259,6 @@ typedef struct {
     lv_obj_t *barbk_img;
     lv_obj_t *status_label;
     lv_obj_t *bar;
-    lv_obj_t *ball_img;
     lv_obj_t *shoe_img;
     lv_obj_t *like_img;
     lv_obj_t *righttime_label;

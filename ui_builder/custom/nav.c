@@ -10,6 +10,7 @@ typedef enum {
     PAGE_UPDOWN_BBQ_MENU,
     PAGE_UPDOWN_BBQ_SET,
     PAGE_UPDOWN_BBQ_COOKING,
+    PAGE_UPDOWN_BBQ_COMPLETE,
 } page_id_t;
 
 // === 页面栈 ===
@@ -27,6 +28,7 @@ lv_group_t *g_special_menu_tz;
 lv_group_t *g_updown_bbq_menu;
 lv_group_t *g_updown_bbq_set;
 lv_group_t *g_updown_bbq_cooking;
+lv_group_t *g_updown_bbq_complete;
 
 lv_group_t *current_group = NULL;  // 当前活跃的焦点组，nav_handle_key 操作的就是这个组
 
@@ -43,6 +45,7 @@ static void on_delay_toggle(lv_event_t *e);
 static void on_contain_toggle(lv_event_t *e);
 static void on_sure_click(lv_event_t *e);
 static void cooking_timer_cb(lv_timer_t *timer);
+static void jump_to_updown_bbq_complete(void);
 
 // ==============================
 // 可编辑字段注册表
@@ -119,7 +122,7 @@ static void validate_constraints(void)
 
     /* 根据 hour 动态调整 minute 的循环范围 */
     if (set_hour == 0) {
-        min_field->min = 5;    // 5-59 循环，锁住 0-4
+        min_field->min = 0;    // 0-59 正常循环
     } else if (set_hour == 4) {
         min_field->min = 0;    // hour=4 时 minute 不可调
         min_field->max = 0;
@@ -129,10 +132,6 @@ static void validate_constraints(void)
     }
 
     /* 纠正 minute 值（如果当前值超出新范围） */
-    if (set_hour == 0 && set_min < 5) {
-        set_min = 5;
-        lv_label_set_text_fmt(min_field->label, min_field->fmt, set_min);
-    }
     if (set_hour == 4 && set_min != 0) {
         set_min = 0;
         lv_label_set_text_fmt(min_field->label, min_field->fmt, set_min);
@@ -320,7 +319,12 @@ static void page_pop(void)
         printf("[nav] back to updown_bbq_menu\n");
         break;
 
+    case PAGE_UPDOWN_BBQ_COOKING:
+        /* 完成页返回 → 重建设置页（cooking 已完成，不回 cooking） */
+        goto rebuild_updown_bbq_set;
+
     case PAGE_UPDOWN_BBQ_SET:
+    rebuild_updown_bbq_set:
         /* 关闭烹饪倒计时 */
         if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
 
@@ -814,6 +818,29 @@ static void jump_to_updown_bbq_cooking(void)
     printf("[nav] jump: updown_bbq_set -> updown_bbq_cooking\n");
 }
 
+// updown_bbq_cooking → updown_bbq_complete
+static void jump_to_updown_bbq_complete(void)
+{
+    page_push(PAGE_UPDOWN_BBQ_COMPLETE);
+    lv_obj_clean(lv_scr_act());
+    updown_bbq_complete_create(&ui_manager);
+
+    updown_bbq_complete_t *cook = updown_bbq_complete_get(&ui_manager);
+    if (cook) {
+        lv_obj_t *btns[] = { cook->little_button };
+        if (g_updown_bbq_complete) lv_group_del(g_updown_bbq_complete);
+        g_updown_bbq_complete = group_create_for_page(btns, 1);
+    }
+
+    current_group = g_updown_bbq_complete;
+
+    lv_scr_load_anim(updown_bbq_complete_get(&ui_manager)->obj,
+                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                     ui_manager.auto_del);
+
+    printf("[nav] jump: updown_bbq_cooking -> updown_bbq_complete\n");
+}
+
 // ==============================
 // 按键处理（状态机防抖）
 // ==============================
@@ -1055,8 +1082,8 @@ static void cooking_timer_cb(lv_timer_t *timer)
     uint32_t elapsed = lv_tick_get() - cook_start_time;
     if (elapsed >= (uint32_t)cook_total_ms) {
         lv_timer_del(cook_timer);
-        cook_timer = NULL;
-        lv_label_set_text_fmt(cook->time_label, "%02d:%02d:%02d", 0, 0, 0);
+        cook_timer = NULL;  
+        jump_to_updown_bbq_complete();
         return;
     }
 
