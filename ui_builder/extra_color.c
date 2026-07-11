@@ -72,17 +72,19 @@ void extra_color_create(ui_manager_t *ui)
     // Init scr->start_button
     scr->start_button = lv_btn_create(scr->obj);
     lv_obj_t *start_button_label = lv_label_create(scr->start_button);
-    lv_label_set_text(start_button_label, "");
+    lv_label_set_text(start_button_label, "开 始");
     lv_obj_align(start_button_label, LV_ALIGN_CENTER, 0, 0);
     lv_obj_set_pos(scr->start_button, 958, 306);
     lv_obj_set_size(scr->start_button, 129, 63);
 
     // Set style of scr->start_button
     lv_obj_set_style_bg_opa(scr->start_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->start_button, LVGL_IMAGE_PATH(start.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->start_button, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->start_button, LVGL_IMAGE_PATH(stopbk1.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->start_button, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->start_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->start_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(scr->start_button, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->start_button, LVGL_IMAGE_PATH(stopbk2.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
     // Init scr->barbk_img
     scr->barbk_img = lv_img_create(scr->obj);
