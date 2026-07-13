@@ -23,6 +23,7 @@ int cook_total_ms = 0;
 uint32_t cook_start_time = 0;
 uint8_t cook_is_color = 0;
 uint32_t cook_elapsed_saved = 0;
+int cook_bar_saved = 0;
 lv_timer_t *cook_timer = NULL;
 
 void custom_init()

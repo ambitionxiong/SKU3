@@ -32,6 +32,7 @@ extern uint32_t cook_start_time;
 extern uint8_t cook_is_color;
 extern lv_timer_t *cook_timer;
 extern uint32_t cook_elapsed_saved;
+extern int cook_bar_saved;
 
 extern lv_group_t *g_updown_bbq_complete;
 extern lv_group_t *g_extra_color;

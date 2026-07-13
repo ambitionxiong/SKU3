@@ -1133,6 +1133,15 @@ static void process_key(uint8_t key)
         if (ef) {
             adjust_value(ef, -1);
             printf("[nav] adjust -: %d\n", *ef->value);
+        } else if (current_group == g_updown_bbq_menu) {
+            updown_bbq_menu_t *bbq = updown_bbq_menu_get(&ui_manager);
+            if (bbq && focused == bbq->next_button) {
+                lv_group_focus_obj(bbq->tempnum_label);
+                printf("[nav] focus wrap to tempnum\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[nav] focus prev\n");
+            }
         } else {
             lv_group_focus_prev(current_group);
             printf("[nav] focus prev\n");
@@ -1404,6 +1413,12 @@ static void jump_to_updown_bbq_stop(void)
     cook_elapsed_saved = lv_tick_get() - cook_start_time;
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
 
+    /* 保存 cooking bar 的实际值（动画从 3→100，与 time-based 有偏移） */
+    {
+        updown_bbq_cooking_t *cook = updown_bbq_cooking_get(&ui_manager);
+        cook_bar_saved = cook ? lv_bar_get_value(cook->bar) : 0;
+    }
+
     page_push(PAGE_UPDOWN_BBQ_STOP);
     lv_obj_clean(lv_scr_act());
     updown_bbq_stop_create(&ui_manager);
@@ -1436,9 +1451,8 @@ static void jump_to_updown_bbq_stop(void)
                 "| 上下烧烤 | %d℃ | %d小时%02d分钟", set_temp, set_hour, set_min);
 
         lv_bar_set_range(stop->bar_1, 0, 100);
-        int progress = (int)((int64_t)cook_elapsed_saved * 100 / cook_total_ms);
-        if (progress > 100) progress = 100;
-        lv_bar_set_value(stop->bar_1, progress, LV_ANIM_OFF);
+        if (cook_bar_saved > 100) cook_bar_saved = 100;
+        lv_bar_set_value(stop->bar_1, cook_bar_saved, LV_ANIM_OFF);
     }
     current_group = g_updown_bbq_stop;
 
@@ -1549,17 +1563,15 @@ static void stop_resume_cooking(void)
         int s = remaining_sec % 60;
         lv_label_set_text_fmt(cook->time_label, "%02d:%02d:%02d", h, m, s);
 
-        /* 进度条从当前进度 → 100 */
-        int progress = (int)((int64_t)cook_elapsed_saved * 100 / cook_total_ms);
-        if (progress > 100) progress = 100;
+        /* 进度条从保存的实际值 → 100 */
         lv_bar_set_range(cook->bar, 0, 100);
-        lv_bar_set_value(cook->bar, progress, LV_ANIM_OFF);
+        lv_bar_set_value(cook->bar, cook_bar_saved, LV_ANIM_OFF);
 
         lv_anim_t a;
         lv_anim_init(&a);
         lv_anim_set_var(&a, cook->bar);
         lv_anim_set_exec_cb(&a, anim_bar_set_value);
-        lv_anim_set_values(&a, progress, 100);
+        lv_anim_set_values(&a, cook_bar_saved, 100);
         lv_anim_set_time(&a, cook_total_ms - (int)cook_elapsed_saved);
         lv_anim_start(&a);
     }
@@ -1585,7 +1597,7 @@ static void on_stop_back_sure_click(lv_event_t *e)
 
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
     set_temp = 180; set_hour = 0; set_min = 30;
-    cook_elapsed_saved = 0;
+    cook_elapsed_saved = 0; cook_bar_saved = 0;
 
     depth = 2;  /* 保留 WAITMENU_24 + MAJOR_MENU */
     lv_obj_clean(lv_scr_act());
