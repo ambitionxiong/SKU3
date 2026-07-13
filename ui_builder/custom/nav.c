@@ -14,6 +14,8 @@ typedef enum {
     PAGE_EXTRA_COLOR,
     PAGE_COLOR_COOKING,
     PAGE_COLOR_COOKING_COMPLETE,
+    PAGE_UPDOWN_BBQ_STOP,
+    PAGE_UPDOWN_BBQ_STOP_BACK,
 } page_id_t;
 
 // === 页面栈 ===
@@ -34,6 +36,8 @@ lv_group_t *g_updown_bbq_cooking;
 lv_group_t *g_updown_bbq_complete;
 lv_group_t *g_extra_color;
 lv_group_t *g_color_cookoing;
+lv_group_t *g_updown_bbq_stop;
+lv_group_t *g_updown_bbq_stop_back;
 
 lv_group_t *current_group = NULL;  // 当前活跃的焦点组，nav_handle_key 操作的就是这个组
 
@@ -55,6 +59,14 @@ static void jump_to_color_cookoing(void);
 static void jump_to_color_complete(void);
 static void on_color_start_click(lv_event_t *e);
 static void anim_bar_set_value(void *obj, int32_t v);
+static void on_cook_stop_click(lv_event_t *e);
+static void on_stop_start_click(lv_event_t *e);
+static void on_stop_back_sure_click(lv_event_t *e);
+static void on_stop_littal_click(lv_event_t *e);
+static void on_stop_back_littal_click(lv_event_t *e);
+static void jump_to_updown_bbq_stop(void);
+static void jump_to_updown_bbq_stop_back(void);
+static void stop_resume_cooking(void);
 
 // ==============================
 // 可编辑字段注册表
@@ -331,6 +343,83 @@ static void page_pop(void)
     case PAGE_UPDOWN_BBQ_COOKING:
         /* 完成页 / 返回 → 重建设置页 */
         goto rebuild_updown_bbq_set;
+
+    case PAGE_UPDOWN_BBQ_STOP:
+        updown_bbq_stop_create(&ui_manager);
+        {
+            updown_bbq_stop_t *stop = updown_bbq_stop_get(&ui_manager);
+            if (stop) {
+                lv_obj_t *btns[] = { stop->start_button, stop->little_button };
+                if (g_updown_bbq_stop) lv_group_del(g_updown_bbq_stop);
+                g_updown_bbq_stop = group_create_for_page(btns, 2);
+                lv_obj_add_event_cb(stop->start_button, on_stop_start_click,
+                                    LV_EVENT_CLICKED, NULL);
+                lv_obj_add_event_cb(stop->little_button, on_stop_littal_click,
+                                    LV_EVENT_CLICKED, NULL);
+
+                /* 同步显示（与暂停时刻一致） */
+                int elapsed_sec = (cook_elapsed_saved + 500) / 1000;
+                int total_sec = cook_total_ms / 1000;
+                int remaining_sec = total_sec - elapsed_sec;
+                if (remaining_sec < 0) remaining_sec = 0;
+                int h = remaining_sec / 3600;
+                int m = (remaining_sec % 3600) / 60;
+                int s = remaining_sec % 60;
+                lv_label_set_text_fmt(stop->time_label, "%02d:%02d:%02d", h, m, s);
+
+                if (set_hour == 0)
+                    lv_label_set_text_fmt(stop->statu_label,
+                        "| 上下烧烤 | %d℃ | %02d分钟", set_temp, set_min);
+                else
+                    lv_label_set_text_fmt(stop->statu_label,
+                        "| 上下烧烤 | %d℃ | %d小时%02d分钟", set_temp, set_hour, set_min);
+
+                lv_bar_set_range(stop->bar_1, 0, 100);
+                int progress = (int)((int64_t)cook_elapsed_saved * 100 / cook_total_ms);
+                if (progress > 100) progress = 100;
+                lv_bar_set_value(stop->bar_1, progress, LV_ANIM_OFF);
+            }
+            current_group = g_updown_bbq_stop;
+        }
+        lv_scr_load_anim(updown_bbq_stop_get(&ui_manager)->obj,
+                         LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                         ui_manager.auto_del);
+        printf("[nav] back to updown_bbq_stop\n");
+        break;
+
+    case PAGE_UPDOWN_BBQ_STOP_BACK:
+        updown_bbq_stop_back_create(&ui_manager);
+        {
+            updown_bbq_stop_back_t *back = updown_bbq_stop_back_get(&ui_manager);
+            if (back) {
+                lv_obj_t *btns[] = { back->sure_button, back->littal_button };
+                if (g_updown_bbq_stop_back) lv_group_del(g_updown_bbq_stop_back);
+                g_updown_bbq_stop_back = group_create_for_page(btns, 2);
+                lv_obj_add_event_cb(back->sure_button, on_stop_back_sure_click,
+                                    LV_EVENT_CLICKED, NULL);
+                lv_obj_add_event_cb(back->littal_button, on_stop_back_littal_click,
+                                    LV_EVENT_CLICKED, NULL);
+
+                /* 同步显示（与暂停页一致） */
+                if (set_hour == 0)
+                    lv_label_set_text_fmt(back->statu_label,
+                        "| 上下烧烤 | %d℃ | %02d分钟", set_temp, set_min);
+                else
+                    lv_label_set_text_fmt(back->statu_label,
+                        "| 上下烧烤 | %d℃ | %d小时%02d分钟", set_temp, set_hour, set_min);
+
+                lv_bar_set_range(back->bar_2, 0, 100);
+                int progress = (int)((int64_t)cook_elapsed_saved * 100 / cook_total_ms);
+                if (progress > 100) progress = 100;
+                lv_bar_set_value(back->bar_2, progress, LV_ANIM_OFF);
+            }
+            current_group = g_updown_bbq_stop_back;
+        }
+        lv_scr_load_anim(updown_bbq_stop_back_get(&ui_manager)->obj,
+                         LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                         ui_manager.auto_del);
+        printf("[nav] back to updown_bbq_stop_back\n");
+        break;
 
     case PAGE_UPDOWN_BBQ_COMPLETE:
         updown_bbq_complete_create(&ui_manager);
@@ -827,6 +916,10 @@ static void jump_to_updown_bbq_cooking(void)
         if (g_updown_bbq_cooking) lv_group_del(g_updown_bbq_cooking);
         g_updown_bbq_cooking = group_create_for_page(btns, sizeof(btns) / sizeof(btns[0]));
 
+        /* 绑定停止按钮 */
+        lv_obj_add_event_cb(cook->stop_button, on_cook_stop_click,
+                            LV_EVENT_CLICKED, NULL);
+
         /* 更新界面显示 */
         if (set_hour == 0) {
             lv_label_set_text_fmt(cook->updown_label,
@@ -1010,7 +1103,15 @@ static void process_key(uint8_t key)
         printf("[nav] jump: -> extra_color\n");
         break;
     case KEY_BACK:          // 21: 返回
-        page_pop();
+        {
+            page_id_t cur = page_stack[depth - 1];
+            if (cur == PAGE_UPDOWN_BBQ_COOKING)
+                jump_to_updown_bbq_stop();
+            else if (cur == PAGE_UPDOWN_BBQ_STOP)
+                jump_to_updown_bbq_stop_back();
+            else
+                page_pop();
+        }
         break;
     case KEY_ENCODER_CW: {  // 31: 焦点下移 / 数值+
         if (!current_group) break;
@@ -1291,6 +1392,211 @@ static void bind_events(void)
                             LV_EVENT_CLICKED, NULL);
     else
         printf("[nav] cannot bind cook4_button: NULL\n");
+}
+
+// ==============================
+// 暂停 / 恢复
+// ==============================
+
+// cooking → stop（暂停）
+static void jump_to_updown_bbq_stop(void)
+{
+    cook_elapsed_saved = lv_tick_get() - cook_start_time;
+    if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
+
+    page_push(PAGE_UPDOWN_BBQ_STOP);
+    lv_obj_clean(lv_scr_act());
+    updown_bbq_stop_create(&ui_manager);
+
+    updown_bbq_stop_t *stop = updown_bbq_stop_get(&ui_manager);
+    if (stop) {
+        lv_obj_t *btns[] = { stop->start_button, stop->little_button };
+        if (g_updown_bbq_stop) lv_group_del(g_updown_bbq_stop);
+        g_updown_bbq_stop = group_create_for_page(btns, 2);
+        lv_obj_add_event_cb(stop->start_button, on_stop_start_click,
+                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(stop->little_button, on_stop_littal_click,
+                            LV_EVENT_CLICKED, NULL);
+
+        /* 同步 time_label / statu_label / bar_1 */
+        int elapsed_sec = (cook_elapsed_saved + 500) / 1000;
+        int total_sec = cook_total_ms / 1000;
+        int remaining_sec = total_sec - elapsed_sec;
+        if (remaining_sec < 0) remaining_sec = 0;
+        int h = remaining_sec / 3600;
+        int m = (remaining_sec % 3600) / 60;
+        int s = remaining_sec % 60;
+        lv_label_set_text_fmt(stop->time_label, "%02d:%02d:%02d", h, m, s);
+
+        if (set_hour == 0)
+            lv_label_set_text_fmt(stop->statu_label,
+                "| 上下烧烤 | %d℃ | %02d分钟", set_temp, set_min);
+        else
+            lv_label_set_text_fmt(stop->statu_label,
+                "| 上下烧烤 | %d℃ | %d小时%02d分钟", set_temp, set_hour, set_min);
+
+        lv_bar_set_range(stop->bar_1, 0, 100);
+        int progress = (int)((int64_t)cook_elapsed_saved * 100 / cook_total_ms);
+        if (progress > 100) progress = 100;
+        lv_bar_set_value(stop->bar_1, progress, LV_ANIM_OFF);
+    }
+    current_group = g_updown_bbq_stop;
+
+    lv_scr_load_anim(updown_bbq_stop_get(&ui_manager)->obj,
+                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                     ui_manager.auto_del);
+    printf("[nav] jump: cooking -> updown_bbq_stop (pause)\n");
+}
+
+// stop → stop_back（确认退出）
+static void jump_to_updown_bbq_stop_back(void)
+{
+    page_push(PAGE_UPDOWN_BBQ_STOP_BACK);
+    lv_obj_clean(lv_scr_act());
+    updown_bbq_stop_back_create(&ui_manager);
+
+    updown_bbq_stop_back_t *back = updown_bbq_stop_back_get(&ui_manager);
+    if (back) {
+        lv_obj_t *btns[] = { back->sure_button, back->littal_button };
+        if (g_updown_bbq_stop_back) lv_group_del(g_updown_bbq_stop_back);
+        g_updown_bbq_stop_back = group_create_for_page(btns, 2);
+        lv_obj_add_event_cb(back->sure_button, on_stop_back_sure_click,
+                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(back->littal_button, on_stop_back_littal_click,
+                            LV_EVENT_CLICKED, NULL);
+
+        /* 同步 statu_label / bar_2 */
+        if (set_hour == 0)
+            lv_label_set_text_fmt(back->statu_label,
+                "| 上下烧烤 | %d℃ | %02d分钟", set_temp, set_min);
+        else
+            lv_label_set_text_fmt(back->statu_label,
+                "| 上下烧烤 | %d℃ | %d小时%02d分钟", set_temp, set_hour, set_min);
+
+        lv_bar_set_range(back->bar_2, 0, 100);
+        int progress = (int)((int64_t)cook_elapsed_saved * 100 / cook_total_ms);
+        if (progress > 100) progress = 100;
+        lv_bar_set_value(back->bar_2, progress, LV_ANIM_OFF);
+    }
+    current_group = g_updown_bbq_stop_back;
+
+    lv_scr_load_anim(updown_bbq_stop_back_get(&ui_manager)->obj,
+                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                     ui_manager.auto_del);
+    printf("[nav] jump: stop -> updown_bbq_stop_back\n");
+}
+
+// cooking 暂停按钮点击
+static void on_cook_stop_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (!screen_is_loading(act_scr))
+        jump_to_updown_bbq_stop();
+}
+
+// stop 开始按钮点击 → 恢复计时
+static void on_stop_start_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (!screen_is_loading(act_scr))
+        stop_resume_cooking();
+}
+
+// stop 小按钮点击 → 确认退出页
+static void on_stop_littal_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (!screen_is_loading(act_scr))
+        jump_to_updown_bbq_stop_back();
+}
+
+// stop_back 小按钮点击 → 返回暂停页
+static void on_stop_back_littal_click(lv_event_t *e)
+{
+    page_pop();
+}
+
+// stop 恢复 cooking（不经过 page_pop，直接重建）
+static void stop_resume_cooking(void)
+{
+    depth--;  /* pop STOP 栈顶 */
+    lv_obj_clean(lv_scr_act());
+    updown_bbq_cooking_create(&ui_manager);
+
+    updown_bbq_cooking_t *cook = updown_bbq_cooking_get(&ui_manager);
+    if (cook) {
+        lv_obj_t *btns[] = { cook->stop_button, cook->little_button };
+        if (g_updown_bbq_cooking) lv_group_del(g_updown_bbq_cooking);
+        g_updown_bbq_cooking = group_create_for_page(btns, 2);
+        lv_obj_add_event_cb(cook->stop_button, on_cook_stop_click,
+                            LV_EVENT_CLICKED, NULL);
+
+        /* 恢复状态标签 */
+        if (set_hour == 0)
+            lv_label_set_text_fmt(cook->updown_label,
+                "| 上下烧烤 | %d℃ | %02d分钟", set_temp, set_min);
+        else
+            lv_label_set_text_fmt(cook->updown_label,
+                "| 上下烧烤 | %d℃ | %d小时%02d分钟", set_temp, set_hour, set_min);
+
+        /* 恢复时间显示 */
+        int elapsed_sec = (cook_elapsed_saved + 500) / 1000;
+        int total_sec = cook_total_ms / 1000;
+        int remaining_sec = total_sec - elapsed_sec;
+        if (remaining_sec < 0) remaining_sec = 0;
+        int h = remaining_sec / 3600;
+        int m = (remaining_sec % 3600) / 60;
+        int s = remaining_sec % 60;
+        lv_label_set_text_fmt(cook->time_label, "%02d:%02d:%02d", h, m, s);
+
+        /* 进度条从当前进度 → 100 */
+        int progress = (int)((int64_t)cook_elapsed_saved * 100 / cook_total_ms);
+        if (progress > 100) progress = 100;
+        lv_bar_set_range(cook->bar, 0, 100);
+        lv_bar_set_value(cook->bar, progress, LV_ANIM_OFF);
+
+        lv_anim_t a;
+        lv_anim_init(&a);
+        lv_anim_set_var(&a, cook->bar);
+        lv_anim_set_exec_cb(&a, anim_bar_set_value);
+        lv_anim_set_values(&a, progress, 100);
+        lv_anim_set_time(&a, cook_total_ms - (int)cook_elapsed_saved);
+        lv_anim_start(&a);
+    }
+
+    /* 恢复定时器 */
+    cook_start_time = lv_tick_get() - cook_elapsed_saved;
+    if (cook_timer) lv_timer_del(cook_timer);
+    cook_timer = lv_timer_create(cooking_timer_cb, 1000, NULL);
+
+    current_group = g_updown_bbq_cooking;
+
+    lv_scr_load_anim(updown_bbq_cooking_get(&ui_manager)->obj,
+                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                     ui_manager.auto_del);
+    printf("[nav] resume: stop -> updown_bbq_cooking\n");
+}
+
+// stop_back 确定 → 退出到 major_menu
+static void on_stop_back_sure_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (screen_is_loading(act_scr)) return;
+
+    if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
+    set_temp = 180; set_hour = 0; set_min = 30;
+    cook_elapsed_saved = 0;
+
+    depth = 2;  /* 保留 WAITMENU_24 + MAJOR_MENU */
+    lv_obj_clean(lv_scr_act());
+    major_menu_create(&ui_manager);
+    groups_create();
+    bind_events();
+    current_group = g_major_menu;
+    lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
+                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                     ui_manager.auto_del);
+    printf("[nav] stop_back sure -> major_menu\n");
 }
 
 // ==============================

@@ -214,6 +214,34 @@ typedef struct {
 
 typedef struct {
     lv_obj_t *obj;
+    lv_obj_t *image_1;
+    lv_obj_t *label_1;
+    lv_obj_t *statu_label;
+    lv_obj_t *time_label;
+    lv_obj_t *start_button;
+    lv_obj_t *image_2;
+    lv_obj_t *bar_1;
+    lv_obj_t *image_3;
+    lv_obj_t *label_4;
+    lv_obj_t *little_button;
+} updown_bbq_stop_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *statu_label;
+    lv_obj_t *image_6;
+    lv_obj_t *bar_2;
+    lv_obj_t *image_7;
+    lv_obj_t *label_8;
+    lv_obj_t *littal_button;
+    lv_obj_t *container_1;
+    lv_obj_t *label_10;
+    lv_obj_t *label_11;
+    lv_obj_t *sure_button;
+} updown_bbq_stop_back_t;
+
+typedef struct {
+    lv_obj_t *obj;
     lv_obj_t *timer_img;
     lv_obj_t *barbk_img;
     lv_obj_t *statu_label;
@@ -281,6 +309,8 @@ typedef struct {
     special_menu_tz_t special_menu_tz;
     updown_bbq_set_t updown_bbq_set;
     updown_bbq_cooking_t updown_bbq_cooking;
+    updown_bbq_stop_t updown_bbq_stop;
+    updown_bbq_stop_back_t updown_bbq_stop_back;
     updown_bbq_complete_t updown_bbq_complete;
     extra_color_t extra_color;
     color_cookoing_t color_cookoing;
@@ -349,6 +379,16 @@ static inline updown_bbq_cooking_t *updown_bbq_cooking_get(ui_manager_t *ui)
     return &ui->updown_bbq_cooking;
 }
 
+static inline updown_bbq_stop_t *updown_bbq_stop_get(ui_manager_t *ui)
+{
+    return &ui->updown_bbq_stop;
+}
+
+static inline updown_bbq_stop_back_t *updown_bbq_stop_back_get(ui_manager_t *ui)
+{
+    return &ui->updown_bbq_stop_back;
+}
+
 static inline updown_bbq_complete_t *updown_bbq_complete_get(ui_manager_t *ui)
 {
     return &ui->updown_bbq_complete;
@@ -381,6 +421,8 @@ void special_menu_create(ui_manager_t *ui);
 void special_menu_tz_create(ui_manager_t *ui);
 void updown_bbq_set_create(ui_manager_t *ui);
 void updown_bbq_cooking_create(ui_manager_t *ui);
+void updown_bbq_stop_create(ui_manager_t *ui);
+void updown_bbq_stop_back_create(ui_manager_t *ui);
 void updown_bbq_complete_create(ui_manager_t *ui);
 void extra_color_create(ui_manager_t *ui);
 void color_cookoing_create(ui_manager_t *ui);

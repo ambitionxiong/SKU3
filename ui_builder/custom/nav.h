@@ -16,6 +16,8 @@ extern lv_group_t *g_updown_bbq_menu;
 extern lv_group_t *g_updown_bbq_set;
 extern lv_group_t *g_updown_bbq_cooking;
 extern lv_group_t *g_updown_bbq_complete;
+extern lv_group_t *g_updown_bbq_stop;
+extern lv_group_t *g_updown_bbq_stop_back;
 
 extern lv_group_t *current_group;
 
@@ -29,6 +31,7 @@ extern int cook_total_ms;
 extern uint32_t cook_start_time;
 extern uint8_t cook_is_color;
 extern lv_timer_t *cook_timer;
+extern uint32_t cook_elapsed_saved;
 
 extern lv_group_t *g_updown_bbq_complete;
 extern lv_group_t *g_extra_color;
