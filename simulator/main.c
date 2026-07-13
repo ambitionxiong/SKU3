@@ -79,22 +79,20 @@ int main(int argc, char **argv)
 	while(1) {
 		lv_timer_handler();
 
-		/* 读键状态模拟编码器（上升沿触发，避免按住连击） */
-		static uint8_t prev_key = 0;
+		/* 读键状态模拟编码器 */
+		SDL_PumpEvents();
 		const Uint8 *keys = SDL_GetKeyboardState(NULL);
 		uint8_t sim_key = 0;
-		if      (keys[SDL_SCANCODE_TAB])    sim_key = KEY_MENU;
-		else if (keys[SDL_SCANCODE_ESCAPE]) sim_key = KEY_BACK;
+		if      (keys[SDL_SCANCODE_TAB])       sim_key = KEY_MENU;
+		else if (keys[SDL_SCANCODE_C])         sim_key = KEY_EXTRA_COLOR;
+		else if (keys[SDL_SCANCODE_ESCAPE])    sim_key = KEY_BACK;
 		else if (keys[SDL_SCANCODE_RIGHT] ||
 		         keys[SDL_SCANCODE_DOWN])   sim_key = KEY_ENCODER_CW;
 		else if (keys[SDL_SCANCODE_LEFT]  ||
 		         keys[SDL_SCANCODE_UP])     sim_key = KEY_ENCODER_CCW;
 		else if (keys[SDL_SCANCODE_SPACE])  sim_key = KEY_ENCODER_PRESS;
 
-		if (sim_key != prev_key) {
-			nav_handle_key(sim_key);
-			prev_key = sim_key;
-		}
+		nav_handle_key(sim_key);
 
 		usleep(5 * 1000);
 	}
