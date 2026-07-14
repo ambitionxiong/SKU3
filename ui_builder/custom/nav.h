@@ -15,10 +15,13 @@ extern lv_group_t *g_updown_bbq_cooking;
 extern lv_group_t *g_updown_bbq_complete;
 extern lv_group_t *g_updown_bbq_stop;
 extern lv_group_t *g_updown_bbq_stop_back;
+extern lv_group_t *g_updown_bbq_setting;
 
 extern lv_group_t *current_group;
 
 extern int set_temp;
+extern int set_temp_up;
+extern int set_temp_down;
 extern int set_hour;
 extern int set_min;
 extern uint8_t preheat_on;

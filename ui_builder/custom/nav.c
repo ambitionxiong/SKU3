@@ -17,6 +17,7 @@ typedef enum {
     PAGE_UPDOWN_BBQ_STOP_BACK,
     PAGE_COLOR_STOP,
     PAGE_COLOR_STOP_BACK,
+    PAGE_UPDOWN_BBQ_SETTING,
 } page_id_t;
 
 // === 页面栈 ===
@@ -36,6 +37,7 @@ lv_group_t *g_extra_color;
 lv_group_t *g_color_cookoing;
 lv_group_t *g_color_stop;
 lv_group_t *g_color_stop_back;
+lv_group_t *g_updown_bbq_setting;
 lv_group_t *g_updown_bbq_stop;
 lv_group_t *g_updown_bbq_stop_back;
 
@@ -73,6 +75,11 @@ static void color_resume_cooking(void);
 static void on_color_stop_click(lv_event_t *e);
 static void on_color_stop_start_click(lv_event_t *e);
 static void on_color_stop_back_sure_click(lv_event_t *e);
+static void jump_to_updown_bbq_setting(void);
+static void on_cook_setting_click(lv_event_t *e);
+static void on_setting_edit_focus(lv_event_t *e);
+static void on_setting_sure_click(lv_event_t *e);
+static void update_setting_dir_icon(updown_bbq_setting_t *set);
 
 // ==============================
 // 可编辑字段注册表
@@ -133,6 +140,12 @@ static void adjust_value(edit_field_t *f, int delta)
     }
 
     validate_constraints();
+
+    /* 设置页调值后即时更新 dir/icon */
+    if (current_group == g_updown_bbq_setting) {
+        updown_bbq_setting_t *set = updown_bbq_setting_get(&ui_manager);
+        update_setting_dir_icon(set);
+    }
 }
 
 static void validate_constraints(void)
@@ -435,10 +448,54 @@ static void page_pop(void)
         break;
 
     case PAGE_UPDOWN_BBQ_COOKING:
-        /* 完成页返回 → 主菜单；其他返回 → 设值页 */
         if (child == PAGE_UPDOWN_BBQ_COMPLETE)
             goto pop_to_major_menu;
-        goto rebuild_updown_bbq_set;
+        if (child == PAGE_UPDOWN_BBQ_SETTING) {
+            /* 从设置页返回 → 重建 cooking，恢复定时器 */
+            updown_bbq_cooking_create(&ui_manager);
+            {
+                updown_bbq_cooking_t *cook = updown_bbq_cooking_get(&ui_manager);
+                if (cook) {
+                    lv_obj_t *btns[] = { cook->stop_button, cook->little_button };
+                    if (g_updown_bbq_cooking) lv_group_del(g_updown_bbq_cooking);
+                    g_updown_bbq_cooking = group_create_for_page(btns, 2);
+                    lv_obj_add_event_cb(cook->stop_button, on_cook_stop_click,
+                                        LV_EVENT_CLICKED, NULL);
+                    lv_obj_add_event_cb(cook->little_button, on_cook_setting_click,
+                                        LV_EVENT_CLICKED, NULL);
+
+                    set_status_label(cook->updown_label, set_temp, set_hour, set_min);
+                    uint32_t elapsed = lv_tick_get() - cook_start_time;
+                    int elapsed_sec = (elapsed + 500) / 1000;
+                    int total_sec = cook_total_ms / 1000;
+                    int remaining_sec = total_sec - elapsed_sec;
+                    if (remaining_sec < 0) remaining_sec = 0;
+                    int h = remaining_sec / 3600;
+                    int m = (remaining_sec % 3600) / 60;
+                    int s = remaining_sec % 60;
+                    lv_label_set_text_fmt(cook->time_label, "%02d:%02d:%02d", h, m, s);
+                    lv_bar_set_range(cook->bar, 0, 100);
+                    int progress = (int)((int64_t)elapsed * 100 / cook_total_ms);
+                    if (progress > 100) progress = 100;
+                    lv_bar_set_value(cook->bar, progress, LV_ANIM_OFF);
+                    lv_anim_t a;
+                    lv_anim_init(&a);
+                    lv_anim_set_var(&a, cook->bar);
+                    lv_anim_set_exec_cb(&a, anim_bar_set_value);
+                    lv_anim_set_values(&a, progress, 100);
+                    lv_anim_set_time(&a, cook_total_ms - (int)elapsed);
+                    lv_anim_start(&a);
+                }
+                current_group = g_updown_bbq_cooking;
+            }
+            lv_scr_load_anim(updown_bbq_cooking_get(&ui_manager)->obj,
+                             LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                             ui_manager.auto_del);
+            printf("[nav] back from setting -> updown_bbq_cooking\n");
+        } else {
+            goto rebuild_updown_bbq_set;
+        }
+        break;
 
     case PAGE_UPDOWN_BBQ_STOP:
         updown_bbq_stop_create(&ui_manager);
@@ -503,6 +560,85 @@ static void page_pop(void)
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
                          ui_manager.auto_del);
         printf("[nav] back to updown_bbq_stop_back\n");
+        break;
+
+    case PAGE_UPDOWN_BBQ_SETTING:
+        updown_bbq_setting_create(&ui_manager);
+        {
+            updown_bbq_setting_t *set = updown_bbq_setting_get(&ui_manager);
+            if (set) {
+                lv_obj_t *btns[] = {
+                    set->tempup_label, set->tempdown_label,
+                    set->hour_label, set->min_label,
+                    set->sure_button,
+                };
+                if (g_updown_bbq_setting) lv_group_del(g_updown_bbq_setting);
+                g_updown_bbq_setting = group_create_for_page(btns, 5);
+
+                edit_clear();
+                edit_register(set->tempup_label, set->shortup_templine_img, set->longup_templine_img,
+                              &set_temp_up, 30, 300, 5, "%d");
+                edit_register(set->tempdown_label, set->shordown_templine_img, set->longdown_templine_img,
+                              &set_temp_down, 30, 300, 5, "%d");
+                edit_register(set->hour_label, set->hourline_img, NULL,
+                              &set_hour, 0, 4, 1, "%02d");
+                edit_register(set->min_label, set->minline_label, NULL,
+                              &set_min, 0, 59, 1, "%02d");
+
+                lv_obj_add_event_cb(set->tempup_label, on_setting_edit_focus,
+                                    LV_EVENT_FOCUSED, NULL);
+                lv_obj_add_event_cb(set->tempdown_label, on_setting_edit_focus,
+                                    LV_EVENT_FOCUSED, NULL);
+                lv_obj_add_event_cb(set->hour_label, on_setting_edit_focus,
+                                    LV_EVENT_FOCUSED, NULL);
+                lv_obj_add_event_cb(set->min_label, on_setting_edit_focus,
+                                    LV_EVENT_FOCUSED, NULL);
+                lv_obj_add_event_cb(set->sure_button, on_setting_edit_focus,
+                                    LV_EVENT_FOCUSED, NULL);
+                lv_obj_add_event_cb(set->sure_button, on_setting_sure_click,
+                                    LV_EVENT_CLICKED, NULL);
+
+                uint32_t elapsed = lv_tick_get() - cook_start_time;
+                int elapsed_sec = (elapsed + 500) / 1000;
+                int total_sec = cook_total_ms / 1000;
+                int remaining_sec = total_sec - elapsed_sec;
+                if (remaining_sec < 0) remaining_sec = 0;
+                int h = remaining_sec / 3600;
+                int m = (remaining_sec % 3600) / 60;
+                int s = remaining_sec % 60;
+                set_hour = h;
+                set_min = m;
+                lv_label_set_text_fmt(set->time_label, "%02d:%02d:%02d", h, m, s);
+                lv_label_set_text_fmt(set->hour_label, "%02d", h);
+                lv_label_set_text_fmt(set->min_label, "%02d", m);
+                lv_label_set_text_fmt(set->tempup_label, "%d", set_temp_up);
+                lv_label_set_text_fmt(set->tempdown_label, "%d", set_temp_down);
+
+                lv_obj_add_flag(set->shortup_templine_img, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(set->longup_templine_img, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(set->shordown_templine_img, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(set->longdown_templine_img, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(set->hourline_img, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(set->minline_label, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(set->dirup2_label, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(set->dirup3_label, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(set->icon2_label1, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(set->icon3_label1, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(set->dirdown2_label, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(set->dirdown3_label, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(set->icon2_label2, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(set->icon3_label2, LV_OBJ_FLAG_HIDDEN);
+
+                lv_group_focus_obj(set->tempup_label);
+
+                update_setting_dir_icon(set);
+            }
+            current_group = g_updown_bbq_setting;
+        }
+        lv_scr_load_anim(updown_bbq_setting_get(&ui_manager)->obj,
+                         LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                         ui_manager.auto_del);
+        printf("[nav] back to updown_bbq_setting\n");
         break;
 
     case PAGE_UPDOWN_BBQ_COMPLETE:
@@ -924,6 +1060,10 @@ static void jump_to_updown_bbq_cooking(void)
         lv_obj_add_event_cb(cook->stop_button, on_cook_stop_click,
                             LV_EVENT_CLICKED, NULL);
 
+        /* 绑定设置按钮 */
+        lv_obj_add_event_cb(cook->little_button, on_cook_setting_click,
+                            LV_EVENT_CLICKED, NULL);
+
         /* 更新界面显示 */
         set_status_label(cook->updown_label, set_temp, set_hour, set_min);
     }
@@ -1144,6 +1284,15 @@ static void process_key(uint8_t key)
                 lv_group_focus_prev(current_group);
                 printf("[nav] focus prev\n");
             }
+        } else if (current_group == g_updown_bbq_setting) {
+            updown_bbq_setting_t *set = updown_bbq_setting_get(&ui_manager);
+            if (set && focused == set->sure_button) {
+                lv_group_focus_obj(set->tempup_label);
+                printf("[nav] setting focus wrap to tempup\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[nav] focus prev\n");
+            }
         } else {
             lv_group_focus_prev(current_group);
             printf("[nav] focus prev\n");
@@ -1342,20 +1491,28 @@ static void cooking_timer_cb(lv_timer_t *timer)
 {
     lv_obj_t *time_label = NULL;
 
-    if (cook_is_color) {
+    if (current_group == g_updown_bbq_setting) {
+        updown_bbq_setting_t *set = updown_bbq_setting_get(&ui_manager);
+        if (set) time_label = set->time_label;
+    } else if (cook_is_color) {
         color_cookoing_t *cc = color_cookoing_get(&ui_manager);
-        if (!cc) return;
-        time_label = cc->time_label;
+        if (cc) time_label = cc->time_label;
     } else {
         updown_bbq_cooking_t *cook = updown_bbq_cooking_get(&ui_manager);
-        if (!cook) return;
-        time_label = cook->time_label;
+        if (cook) time_label = cook->time_label;
     }
+
+    if (!time_label) return;
 
     uint32_t elapsed = lv_tick_get() - cook_start_time;
     if (elapsed >= (uint32_t)cook_total_ms) {
         lv_timer_del(cook_timer);
         cook_timer = NULL;
+        if (current_group == g_updown_bbq_setting) {
+            /* 计时结束，设置页时直接跳转 */
+            depth--;
+            lv_obj_clean(lv_scr_act());
+        }
         if (cook_is_color) {
             cook_is_color = 0;
             jump_to_color_complete();
@@ -1534,6 +1691,9 @@ static void stop_resume_cooking(void)
         if (g_updown_bbq_cooking) lv_group_del(g_updown_bbq_cooking);
         g_updown_bbq_cooking = group_create_for_page(btns, 2);
         lv_obj_add_event_cb(cook->stop_button, on_cook_stop_click,
+                            LV_EVENT_CLICKED, NULL);
+
+        lv_obj_add_event_cb(cook->little_button, on_cook_setting_click,
                             LV_EVENT_CLICKED, NULL);
 
         /* 恢复状态标签 */
@@ -1762,6 +1922,193 @@ static void on_color_stop_back_sure_click(lv_event_t *e)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[nav] color_stop_back sure -> major_menu\n");
+}
+
+// ==============================
+// Cooking 设置页
+// ==============================
+
+// cooking little_button → 设置页（计时器继续运行，实时更新 time_label）
+static void jump_to_updown_bbq_setting(void)
+{
+    set_temp_up = set_temp;
+    set_temp_down = set_temp;
+
+    page_push(PAGE_UPDOWN_BBQ_SETTING);
+    lv_obj_clean(lv_scr_act());
+    updown_bbq_setting_create(&ui_manager);
+
+    updown_bbq_setting_t *set = updown_bbq_setting_get(&ui_manager);
+    if (set) {
+        lv_obj_t *btns[] = {
+            set->tempup_label, set->tempdown_label,
+            set->hour_label, set->min_label,
+            set->sure_button,
+        };
+        if (g_updown_bbq_setting) lv_group_del(g_updown_bbq_setting);
+        g_updown_bbq_setting = group_create_for_page(btns, 5);
+
+        edit_clear();
+        edit_register(set->tempup_label, set->shortup_templine_img, set->longup_templine_img,
+                      &set_temp_up, 30, 300, 5, "%d");
+        edit_register(set->tempdown_label, set->shordown_templine_img, set->longdown_templine_img,
+                      &set_temp_down, 30, 300, 5, "%d");
+        edit_register(set->hour_label, set->hourline_img, NULL,
+                      &set_hour, 0, 4, 1, "%02d");
+        edit_register(set->min_label, set->minline_label, NULL,
+                      &set_min, 0, 59, 1, "%02d");
+
+        lv_obj_add_event_cb(set->tempup_label, on_setting_edit_focus,
+                            LV_EVENT_FOCUSED, NULL);
+        lv_obj_add_event_cb(set->tempdown_label, on_setting_edit_focus,
+                            LV_EVENT_FOCUSED, NULL);
+        lv_obj_add_event_cb(set->hour_label, on_setting_edit_focus,
+                            LV_EVENT_FOCUSED, NULL);
+        lv_obj_add_event_cb(set->min_label, on_setting_edit_focus,
+                            LV_EVENT_FOCUSED, NULL);
+        lv_obj_add_event_cb(set->sure_button, on_setting_edit_focus,
+                            LV_EVENT_FOCUSED, NULL);
+
+        lv_obj_add_event_cb(set->sure_button, on_setting_sure_click,
+                            LV_EVENT_CLICKED, NULL);
+
+        /* 同步显示（读当前实时耗时，避免初始闪烁） */
+        uint32_t elapsed = lv_tick_get() - cook_start_time;
+        int elapsed_sec = (elapsed + 500) / 1000;
+        int total_sec = cook_total_ms / 1000;
+        int remaining_sec = total_sec - elapsed_sec;
+        if (remaining_sec < 0) remaining_sec = 0;
+        int h = remaining_sec / 3600;
+        int m = (remaining_sec % 3600) / 60;
+        int s = remaining_sec % 60;
+        set_hour = h;
+        set_min = m;
+        lv_label_set_text_fmt(set->time_label, "%02d:%02d:%02d", h, m, s);
+        lv_label_set_text_fmt(set->hour_label, "%02d", h);
+        lv_label_set_text_fmt(set->min_label, "%02d", m);
+        lv_label_set_text_fmt(set->tempup_label, "%d", set_temp_up);
+        lv_label_set_text_fmt(set->tempdown_label, "%d", set_temp_down);
+
+        /* 初始隐藏所有指示线 + dir/icon */
+        lv_obj_add_flag(set->shortup_templine_img, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->longup_templine_img, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->shordown_templine_img, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->longdown_templine_img, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->hourline_img, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->minline_label, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->dirup2_label, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->dirup3_label, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->icon2_label1, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->icon3_label1, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->dirdown2_label, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->dirdown3_label, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->icon2_label2, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->icon3_label2, LV_OBJ_FLAG_HIDDEN);
+
+        lv_group_focus_obj(set->tempup_label);
+
+        update_setting_dir_icon(set);
+    }
+    current_group = g_updown_bbq_setting;
+
+    lv_scr_load_anim(updown_bbq_setting_get(&ui_manager)->obj,
+                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                     ui_manager.auto_del);
+    printf("[nav] jump: cooking -> updown_bbq_setting\n");
+}
+
+// cooking little_button 点击
+static void on_cook_setting_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (!screen_is_loading(act_scr))
+        jump_to_updown_bbq_setting();
+}
+
+// 设置页 dir/icon 即时更新
+static void update_setting_dir_icon(updown_bbq_setting_t *set)
+{
+    if (!set) return;
+    lv_obj_add_flag(set->dirup2_label, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(set->dirup3_label, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(set->icon2_label1, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(set->icon3_label1, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(set->dirdown2_label, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(set->dirdown3_label, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(set->icon2_label2, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(set->icon3_label2, LV_OBJ_FLAG_HIDDEN);
+
+    if (set_temp_up < 100) {
+        lv_obj_clear_flag(set->dirup2_label, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(set->icon2_label1, LV_OBJ_FLAG_HIDDEN);
+    } else {
+        lv_obj_clear_flag(set->dirup3_label, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(set->icon3_label1, LV_OBJ_FLAG_HIDDEN);
+    }
+    if (set_temp_down < 100) {
+        lv_obj_clear_flag(set->dirdown2_label, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(set->icon2_label2, LV_OBJ_FLAG_HIDDEN);
+    } else {
+        lv_obj_clear_flag(set->dirdown3_label, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(set->icon3_label2, LV_OBJ_FLAG_HIDDEN);
+    }
+}
+
+// 设置页 focus 回调（线随焦点，dir/icon 按数值固定显示）
+static void on_setting_edit_focus(lv_event_t *e)
+{
+    on_edit_focus(e);
+    update_setting_dir_icon(updown_bbq_setting_get(&ui_manager));
+}
+
+// 设置页确定 → 应用新参数回到 cooking
+static void on_setting_sure_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (screen_is_loading(act_scr)) return;
+
+    set_temp = set_temp_up;
+    cook_total_ms = (set_hour * 3600 + set_min * 60) * 1000;
+
+    depth--;
+    lv_obj_clean(lv_scr_act());
+    updown_bbq_cooking_create(&ui_manager);
+
+    updown_bbq_cooking_t *cook = updown_bbq_cooking_get(&ui_manager);
+    if (cook) {
+        lv_obj_t *btns[] = { cook->stop_button, cook->little_button };
+        if (g_updown_bbq_cooking) lv_group_del(g_updown_bbq_cooking);
+        g_updown_bbq_cooking = group_create_for_page(btns, 2);
+        lv_obj_add_event_cb(cook->stop_button, on_cook_stop_click,
+                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(cook->little_button, on_cook_setting_click,
+                            LV_EVENT_CLICKED, NULL);
+
+        set_status_label(cook->updown_label, set_temp, set_hour, set_min);
+        lv_label_set_text_fmt(cook->time_label, "%02d:%02d:%02d", set_hour, set_min, 0);
+
+        lv_bar_set_range(cook->bar, 0, 100);
+        lv_bar_set_value(cook->bar, 3, LV_ANIM_OFF);
+
+        lv_anim_t a;
+        lv_anim_init(&a);
+        lv_anim_set_var(&a, cook->bar);
+        lv_anim_set_exec_cb(&a, anim_bar_set_value);
+        lv_anim_set_values(&a, 3, 100);
+        lv_anim_set_time(&a, cook_total_ms);
+        lv_anim_start(&a);
+    }
+
+    cook_start_time = lv_tick_get();
+    if (cook_timer) lv_timer_del(cook_timer);
+    cook_timer = lv_timer_create(cooking_timer_cb, 1000, NULL);
+
+    current_group = g_updown_bbq_cooking;
+
+    lv_scr_load_anim(updown_bbq_cooking_get(&ui_manager)->obj,
+                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                     ui_manager.auto_del);
+    printf("[nav] setting sure -> updown_bbq_cooking\n");
 }
 
 // ==============================
