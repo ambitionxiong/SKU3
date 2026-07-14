@@ -120,7 +120,8 @@ static edit_field_t *find_edit_field(lv_obj_t *obj)
 
 static void adjust_value(edit_field_t *f, int delta)
 {
-    int new_val = *f->value + f->step * delta;
+    int old_val = *f->value;
+    int new_val = old_val + f->step * delta;
 
     /* 循环 */
     if (new_val > f->max) new_val = f->min;
@@ -141,9 +142,23 @@ static void adjust_value(edit_field_t *f, int delta)
 
     validate_constraints();
 
-    /* 设置页调值后即时更新 dir/icon */
+    /* 设置页：上下温差 ≤ 20°C，超限则回弹 */
     if (current_group == g_updown_bbq_setting) {
+        int diff = set_temp_up - set_temp_down;
+        if (diff < 0) diff = -diff;
         updown_bbq_setting_t *set = updown_bbq_setting_get(&ui_manager);
+        if (diff > 20) {
+            *f->value = old_val;
+            lv_label_set_text_fmt(f->label, f->fmt, old_val);
+            if (f->ind_short && f->ind_long) {
+                lv_obj_add_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
+                if (old_val < 100)
+                    lv_obj_clear_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
+                else
+                    lv_obj_clear_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
+            }
+        }
         update_setting_dir_icon(set);
     }
 }
@@ -188,6 +203,12 @@ static void set_status_label(lv_obj_t *label, int temp, int hour, int min)
         lv_label_set_text_fmt(label, "| 上下烧烤 | %d℃ | %02d分钟", temp, min);
     else
         lv_label_set_text_fmt(label, "| 上下烧烤 | %d℃ | %d小时%02d分钟", temp, hour, min);
+}
+
+static void set_status_label_min(lv_obj_t *label, int temp_up, int temp_down, int hour, int min)
+{
+    int t = temp_up < temp_down ? temp_up : temp_down;
+    set_status_label(label, t, hour, min);
 }
 
 static void set_time_label(lv_obj_t *label, int remaining_ms)
@@ -464,7 +485,7 @@ static void page_pop(void)
                     lv_obj_add_event_cb(cook->little_button, on_cook_setting_click,
                                         LV_EVENT_CLICKED, NULL);
 
-                    set_status_label(cook->updown_label, set_temp, set_hour, set_min);
+                    set_status_label_min(cook->updown_label, set_temp_up, set_temp_down, set_hour, set_min);
                     uint32_t elapsed = lv_tick_get() - cook_start_time;
                     int elapsed_sec = (elapsed + 500) / 1000;
                     int total_sec = cook_total_ms / 1000;
@@ -763,7 +784,7 @@ static void page_pop(void)
     pop_to_major_menu:
         /* 关闭定时器 */
         if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
-        set_temp = 180; set_hour = 0; set_min = 30;
+        set_temp = 180; set_temp_up = 180; set_temp_down = 180; set_hour = 0; set_min = 30;
         cook_is_color = 0;
         cook_elapsed_saved = 0; cook_bar_saved = 0;
 
@@ -1065,12 +1086,16 @@ static void jump_to_updown_bbq_cooking(void)
                             LV_EVENT_CLICKED, NULL);
 
         /* 更新界面显示 */
-        set_status_label(cook->updown_label, set_temp, set_hour, set_min);
+        set_status_label_min(cook->updown_label, set_temp_up, set_temp_down, set_hour, set_min);
     }
 
     /* 立即显示倒计时初始值（覆盖 UiBuilder 默认值） */
     if (cook)
         lv_label_set_text_fmt(cook->time_label, "%02d:%02d:%02d", set_hour, set_min, 0);
+
+    /* 初始化上下温度（从 set 页带入） */
+    set_temp_up = set_temp;
+    set_temp_down = set_temp;
 
     /* 初始化进度条 + 启动动画（连续无级平滑） */
     cook_total_ms = (set_hour * 3600 + set_min * 60) * 1000;
@@ -1697,7 +1722,7 @@ static void stop_resume_cooking(void)
                             LV_EVENT_CLICKED, NULL);
 
         /* 恢复状态标签 */
-        set_status_label(cook->updown_label, set_temp, set_hour, set_min);
+        set_status_label_min(cook->updown_label, set_temp_up, set_temp_down, set_hour, set_min);
 
         /* 恢复时间显示 */
         int elapsed_sec = (cook_elapsed_saved + 500) / 1000;
@@ -1742,7 +1767,7 @@ static void on_stop_back_sure_click(lv_event_t *e)
     if (screen_is_loading(act_scr)) return;
 
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
-    set_temp = 180; set_hour = 0; set_min = 30;
+    set_temp = 180; set_temp_up = 180; set_temp_down = 180; set_hour = 0; set_min = 30;
     cook_elapsed_saved = 0; cook_bar_saved = 0;
 
     depth = 2;  /* 保留 WAITMENU_24 + MAJOR_MENU */
@@ -1908,7 +1933,7 @@ static void on_color_stop_back_sure_click(lv_event_t *e)
     if (screen_is_loading(act_scr)) return;
 
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
-    set_temp = 180; set_hour = 0; set_min = 30;
+    set_temp = 180; set_temp_up = 180; set_temp_down = 180; set_hour = 0; set_min = 30;
     cook_is_color = 0;
     cook_elapsed_saved = 0; cook_bar_saved = 0;
 
@@ -1931,9 +1956,6 @@ static void on_color_stop_back_sure_click(lv_event_t *e)
 // cooking little_button → 设置页（计时器继续运行，实时更新 time_label）
 static void jump_to_updown_bbq_setting(void)
 {
-    set_temp_up = set_temp;
-    set_temp_down = set_temp;
-
     page_push(PAGE_UPDOWN_BBQ_SETTING);
     lv_obj_clean(lv_scr_act());
     updown_bbq_setting_create(&ui_manager);
@@ -2067,6 +2089,10 @@ static void on_setting_sure_click(lv_event_t *e)
     lv_obj_t *act_scr = lv_scr_act();
     if (screen_is_loading(act_scr)) return;
 
+    /* 温差钳位 */
+    if (set_temp_up - set_temp_down > 20) set_temp_up = set_temp_down + 20;
+    else if (set_temp_down - set_temp_up > 20) set_temp_down = set_temp_up + 20;
+
     set_temp = set_temp_up;
     cook_total_ms = (set_hour * 3600 + set_min * 60) * 1000;
 
@@ -2084,7 +2110,7 @@ static void on_setting_sure_click(lv_event_t *e)
         lv_obj_add_event_cb(cook->little_button, on_cook_setting_click,
                             LV_EVENT_CLICKED, NULL);
 
-        set_status_label(cook->updown_label, set_temp, set_hour, set_min);
+        set_status_label_min(cook->updown_label, set_temp_up, set_temp_down, set_hour, set_min);
         lv_label_set_text_fmt(cook->time_label, "%02d:%02d:%02d", set_hour, set_min, 0);
 
         lv_bar_set_range(cook->bar, 0, 100);
