@@ -9,9 +9,6 @@
 extern lv_group_t *g_major_menu;
 extern lv_group_t *g_cookmenu;
 extern lv_group_t *g_special_menu;
-extern lv_group_t *g_cook_menu_tz;
-extern lv_group_t *g_major_menu_tz;
-extern lv_group_t *g_special_menu_tz;
 extern lv_group_t *g_updown_bbq_menu;
 extern lv_group_t *g_updown_bbq_set;
 extern lv_group_t *g_updown_bbq_cooking;
@@ -37,6 +34,8 @@ extern int cook_bar_saved;
 extern lv_group_t *g_updown_bbq_complete;
 extern lv_group_t *g_extra_color;
 extern lv_group_t *g_color_cookoing;
+extern lv_group_t *g_color_stop;
+extern lv_group_t *g_color_stop_back;
 
 void edit_clear(void);
 void edit_register(lv_obj_t *label, lv_obj_t *ind_s, lv_obj_t *ind_l,

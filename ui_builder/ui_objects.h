@@ -214,6 +214,38 @@ typedef struct {
 
 typedef struct {
     lv_obj_t *obj;
+    lv_obj_t *image_16;
+    lv_obj_t *label_22;
+    lv_obj_t *time_label;
+    lv_obj_t *container_3;
+    lv_obj_t *settingbk_img;
+    lv_obj_t *temp_label;
+    lv_obj_t *cook_label;
+    lv_obj_t *dirup3_label;
+    lv_obj_t *icon3_label1;
+    lv_obj_t *tempup_label;
+    lv_obj_t *longup_templine_img;
+    lv_obj_t *tempdown_label;
+    lv_obj_t *dirdown3_label;
+    lv_obj_t *icon3_label2;
+    lv_obj_t *longdown_templine_img;
+    lv_obj_t *hour_label;
+    lv_obj_t *min_label;
+    lv_obj_t *shi_label;
+    lv_obj_t *fen_label;
+    lv_obj_t *hourline_img;
+    lv_obj_t *minline_label;
+    lv_obj_t *icon2_label1;
+    lv_obj_t *dirup2_label;
+    lv_obj_t *shortup_templine_img;
+    lv_obj_t *shordown_templine_img;
+    lv_obj_t *dirdown2_label;
+    lv_obj_t *icon2_label2;
+    lv_obj_t *sure_button;
+} updown_bbq_setting_t;
+
+typedef struct {
+    lv_obj_t *obj;
     lv_obj_t *image_1;
     lv_obj_t *label_1;
     lv_obj_t *statu_label;
@@ -283,6 +315,34 @@ typedef struct {
 
 typedef struct {
     lv_obj_t *obj;
+    lv_obj_t *image_10;
+    lv_obj_t *label_12;
+    lv_obj_t *label_13;
+    lv_obj_t *time_label;
+    lv_obj_t *button_6;
+    lv_obj_t *image_11;
+    lv_obj_t *bar_3;
+    lv_obj_t *image_12;
+    lv_obj_t *label_15;
+} color_stop_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_13;
+    lv_obj_t *label_16;
+    lv_obj_t *label_17;
+    lv_obj_t *image_14;
+    lv_obj_t *bar_4;
+    lv_obj_t *image_15;
+    lv_obj_t *label_19;
+    lv_obj_t *container_2;
+    lv_obj_t *label_20;
+    lv_obj_t *label_21;
+    lv_obj_t *button_7;
+} color_stop_back_t;
+
+typedef struct {
+    lv_obj_t *obj;
     lv_obj_t *timer_img;
     lv_obj_t *barbk_img;
     lv_obj_t *status_label;
@@ -309,11 +369,14 @@ typedef struct {
     special_menu_tz_t special_menu_tz;
     updown_bbq_set_t updown_bbq_set;
     updown_bbq_cooking_t updown_bbq_cooking;
+    updown_bbq_setting_t updown_bbq_setting;
     updown_bbq_stop_t updown_bbq_stop;
     updown_bbq_stop_back_t updown_bbq_stop_back;
     updown_bbq_complete_t updown_bbq_complete;
     extra_color_t extra_color;
     color_cookoing_t color_cookoing;
+    color_stop_t color_stop;
+    color_stop_back_t color_stop_back;
     colorcooking_complete_t colorcooking_complete;
 
 } ui_manager_t;
@@ -379,6 +442,11 @@ static inline updown_bbq_cooking_t *updown_bbq_cooking_get(ui_manager_t *ui)
     return &ui->updown_bbq_cooking;
 }
 
+static inline updown_bbq_setting_t *updown_bbq_setting_get(ui_manager_t *ui)
+{
+    return &ui->updown_bbq_setting;
+}
+
 static inline updown_bbq_stop_t *updown_bbq_stop_get(ui_manager_t *ui)
 {
     return &ui->updown_bbq_stop;
@@ -404,6 +472,16 @@ static inline color_cookoing_t *color_cookoing_get(ui_manager_t *ui)
     return &ui->color_cookoing;
 }
 
+static inline color_stop_t *color_stop_get(ui_manager_t *ui)
+{
+    return &ui->color_stop;
+}
+
+static inline color_stop_back_t *color_stop_back_get(ui_manager_t *ui)
+{
+    return &ui->color_stop_back;
+}
+
 static inline colorcooking_complete_t *colorcooking_complete_get(ui_manager_t *ui)
 {
     return &ui->colorcooking_complete;
@@ -421,11 +499,14 @@ void special_menu_create(ui_manager_t *ui);
 void special_menu_tz_create(ui_manager_t *ui);
 void updown_bbq_set_create(ui_manager_t *ui);
 void updown_bbq_cooking_create(ui_manager_t *ui);
+void updown_bbq_setting_create(ui_manager_t *ui);
 void updown_bbq_stop_create(ui_manager_t *ui);
 void updown_bbq_stop_back_create(ui_manager_t *ui);
 void updown_bbq_complete_create(ui_manager_t *ui);
 void extra_color_create(ui_manager_t *ui);
 void color_cookoing_create(ui_manager_t *ui);
+void color_stop_create(ui_manager_t *ui);
+void color_stop_back_create(ui_manager_t *ui);
 void colorcooking_complete_create(ui_manager_t *ui);
 
 
