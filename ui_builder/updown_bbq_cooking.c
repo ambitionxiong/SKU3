@@ -28,25 +28,6 @@ void updown_bbq_cooking_create(ui_manager_t *ui)
     lv_obj_set_style_bg_opa(scr->obj, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->obj, LVGL_IMAGE_PATH(bg.jpg), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->timer_img
-    scr->timer_img = lv_img_create(scr->obj);
-    lv_img_set_src(scr->timer_img, LVGL_IMAGE_PATH(timer.png));
-    lv_img_set_pivot(scr->timer_img, 50, 50);
-    lv_img_set_angle(scr->timer_img, 0);
-    lv_obj_set_style_img_opa(scr->timer_img, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->timer_img, 24, 24);
-
-    // Init scr->righttime_label
-    scr->righttime_label = lv_label_create(scr->obj);
-    lv_label_set_text(scr->righttime_label, "12:00");
-    lv_label_set_long_mode(scr->righttime_label, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->righttime_label, 1197, 25);
-    lv_obj_set_size(scr->righttime_label, 65, 32);
-
-    // Set style of scr->righttime_label
-    lv_obj_set_style_text_font(scr->righttime_label, fs_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->righttime_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-
     // Init scr->updown_label
     scr->updown_label = lv_label_create(scr->obj);
     lv_label_set_text(scr->updown_label, "| 上下烧烤 | 180℃ | 1小时20分钟");

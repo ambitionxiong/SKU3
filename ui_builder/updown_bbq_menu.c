@@ -173,18 +173,6 @@ void updown_bbq_menu_create(ui_manager_t *ui)
     lv_obj_set_style_text_font(scr->next_label, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->next_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->righttime_label
-    scr->righttime_label = lv_label_create(scr->obj);
-    lv_label_set_text(scr->righttime_label, "12:00");
-    lv_label_set_long_mode(scr->righttime_label, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->righttime_label, 1179, 24);
-    lv_obj_set_size(scr->righttime_label, 77, 32);
-
-    // Set style of scr->righttime_label
-    lv_obj_set_style_text_font(scr->righttime_label, fs_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->righttime_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(scr->righttime_label, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
-
     // Init scr->temeline_long
     scr->temeline_long = lv_img_create(scr->obj);
     lv_img_set_src(scr->temeline_long, LVGL_IMAGE_PATH(underline.png));

@@ -28,15 +28,6 @@ void updown_bbq_complete_create(ui_manager_t *ui)
     lv_obj_set_style_bg_opa(scr->obj, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->obj, LVGL_IMAGE_PATH(bg.jpg), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->timer_img
-    scr->timer_img = lv_img_create(scr->obj);
-    lv_img_set_src(scr->timer_img, LVGL_IMAGE_PATH(timer.png));
-    lv_img_set_pivot(scr->timer_img, 50, 50);
-    lv_img_set_angle(scr->timer_img, 0);
-    lv_obj_set_style_img_opa(scr->timer_img, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->timer_img, 108, 24);
-    lv_obj_add_flag(scr->timer_img, LV_OBJ_FLAG_HIDDEN);
-
     // Init scr->barbk_img
     scr->barbk_img = lv_img_create(scr->obj);
     lv_img_set_src(scr->barbk_img, LVGL_IMAGE_PATH(bar.png));
@@ -67,35 +58,6 @@ void updown_bbq_complete_create(ui_manager_t *ui)
     lv_obj_set_style_bg_color(scr->bar_3, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->bar_3, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(scr->bar_3, lv_color_hex(0xffffff), LV_PART_INDICATOR | LV_STATE_DEFAULT);
-
-    // Init scr->show_img
-    scr->show_img = lv_img_create(scr->obj);
-    lv_img_set_src(scr->show_img, LVGL_IMAGE_PATH(show.png));
-    lv_img_set_pivot(scr->show_img, 50, 50);
-    lv_img_set_angle(scr->show_img, 0);
-    lv_obj_set_style_img_opa(scr->show_img, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->show_img, 24, 24);
-    lv_obj_add_flag(scr->show_img, LV_OBJ_FLAG_HIDDEN);
-
-    // Init scr->like_img
-    scr->like_img = lv_img_create(scr->obj);
-    lv_img_set_src(scr->like_img, LVGL_IMAGE_PATH(like.png));
-    lv_img_set_pivot(scr->like_img, 50, 50);
-    lv_img_set_angle(scr->like_img, 0);
-    lv_obj_set_style_img_opa(scr->like_img, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->like_img, 158, 24);
-    lv_obj_add_flag(scr->like_img, LV_OBJ_FLAG_HIDDEN);
-
-    // Init scr->righttime_label
-    scr->righttime_label = lv_label_create(scr->obj);
-    lv_label_set_text(scr->righttime_label, "12:00");
-    lv_label_set_long_mode(scr->righttime_label, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->righttime_label, 1197, 25);
-    lv_obj_set_size(scr->righttime_label, 65, 32);
-
-    // Set style of scr->righttime_label
-    lv_obj_set_style_text_font(scr->righttime_label, fs_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->righttime_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->updown_img
     scr->updown_img = lv_img_create(scr->obj);

@@ -28,25 +28,6 @@ void color_stop_create(ui_manager_t *ui)
     lv_obj_set_style_bg_opa(scr->obj, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->obj, LVGL_IMAGE_PATH(bg.jpg), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->image_10
-    scr->image_10 = lv_img_create(scr->obj);
-    lv_img_set_src(scr->image_10, LVGL_IMAGE_PATH(timer.png));
-    lv_img_set_pivot(scr->image_10, 50, 50);
-    lv_img_set_angle(scr->image_10, 0);
-    lv_obj_set_style_img_opa(scr->image_10, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->image_10, 24, 24);
-
-    // Init scr->label_12
-    scr->label_12 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_12, "12:00");
-    lv_label_set_long_mode(scr->label_12, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_12, 1197, 25);
-    lv_obj_set_size(scr->label_12, 65, 32);
-
-    // Set style of scr->label_12
-    lv_obj_set_style_text_font(scr->label_12, fs_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->label_12, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-
     // Init scr->label_13
     scr->label_13 = lv_label_create(scr->obj);
     lv_label_set_text(scr->label_13, "| 额外上色 | 5分钟");

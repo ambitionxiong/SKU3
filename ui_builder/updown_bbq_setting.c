@@ -28,25 +28,6 @@ void updown_bbq_setting_create(ui_manager_t *ui)
     lv_obj_set_style_bg_opa(scr->obj, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->obj, LVGL_IMAGE_PATH(bg.jpg), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->image_16
-    scr->image_16 = lv_img_create(scr->obj);
-    lv_img_set_src(scr->image_16, LVGL_IMAGE_PATH(timer.png));
-    lv_img_set_pivot(scr->image_16, 50, 50);
-    lv_img_set_angle(scr->image_16, 0);
-    lv_obj_set_style_img_opa(scr->image_16, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->image_16, 24, 24);
-
-    // Init scr->label_22
-    scr->label_22 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_22, "12:00");
-    lv_label_set_long_mode(scr->label_22, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_22, 1197, 25);
-    lv_obj_set_size(scr->label_22, 65, 32);
-
-    // Set style of scr->label_22
-    lv_obj_set_style_text_font(scr->label_22, fs_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->label_22, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-
     // Init scr->time_label
     scr->time_label = lv_label_create(scr->obj);
     lv_label_set_text(scr->time_label, "00:19:59");

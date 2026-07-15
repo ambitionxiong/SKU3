@@ -6,6 +6,36 @@
 #include "ui_util.h"
 #include "custom_defs.h"
 
+// === 页面 ID 枚举 ===
+typedef enum {
+    PAGE_WAITMENU_24,     // 等待界面（根页，开机首页）
+    PAGE_MAJOR_MENU,
+    PAGE_COOKMENU,
+    PAGE_SPECIAL_MENU,
+    PAGE_UPDOWN_BBQ_MENU,
+    PAGE_UPDOWN_BBQ_SET,
+    PAGE_UPDOWN_BBQ_COOKING,
+    PAGE_UPDOWN_BBQ_COMPLETE,
+    PAGE_EXTRA_COLOR,
+    PAGE_COLOR_COOKING,
+    PAGE_COLOR_COOKING_COMPLETE,
+    PAGE_UPDOWN_BBQ_STOP,
+    PAGE_UPDOWN_BBQ_STOP_BACK,
+    PAGE_UPDOWN_BBQ_SETTING,
+    PAGE_COLOR_STOP,
+    PAGE_COLOR_STOP_BACK,
+    PAGE_TOP_BBQ_MENU,
+    PAGE_TOP_BBQ_SET,
+    PAGE_TOP_BBQ_COOKING,
+    PAGE_TOP_BBQ_SETTING,
+    PAGE_TOP_BBQ_STOP,
+    PAGE_TOP_BBQ_STOP_BACK,
+    PAGE_TOP_BBQ_COMPLETE,
+} page_id_t;
+
+extern page_id_t page_stack[];
+extern int depth;
+
 extern lv_group_t *g_major_menu;
 extern lv_group_t *g_cookmenu;
 extern lv_group_t *g_special_menu;
@@ -16,6 +46,14 @@ extern lv_group_t *g_updown_bbq_complete;
 extern lv_group_t *g_updown_bbq_stop;
 extern lv_group_t *g_updown_bbq_stop_back;
 extern lv_group_t *g_updown_bbq_setting;
+
+extern lv_group_t *g_top_bbq_menu;
+extern lv_group_t *g_top_bbq_set;
+extern lv_group_t *g_top_bbq_cooking;
+extern lv_group_t *g_top_bbq_setting;
+extern lv_group_t *g_top_bbq_stop;
+extern lv_group_t *g_top_bbq_stop_back;
+extern lv_group_t *g_top_bbq_complete;
 
 extern lv_group_t *current_group;
 
@@ -46,5 +84,36 @@ void edit_register(lv_obj_t *label, lv_obj_t *ind_s, lv_obj_t *ind_l,
 
 void nav_handle_key(uint8_t key);
 void nav_init(void);
+void page_push(page_id_t id);
+void page_pop(void);
+
+lv_group_t *group_create_for_page(lv_obj_t **btns, int count);
+void set_time_label(lv_obj_t *label, int remaining_ms);
+void set_bar_progress(lv_obj_t *bar, int64_t elapsed_ms, int total_ms);
+void apply_toggle_state(lv_obj_t *btn_off, lv_obj_t *btn_on, int on);
+void clear_focus_states(lv_obj_t **btns, int count);
+void update_top_bbq_dir_icon(top_bbq_setting_t *set);
+void on_edit_focus(lv_event_t *e);
+void validate_constraints(void);
+void groups_create(void);
+void bind_events(void);
+void anim_bar_set_value(void *obj, int32_t v);
+void cooking_timer_cb(lv_timer_t *timer);
+
+void jump_to_top_bbq_menu(void);
+void jump_to_top_bbq_set(void);
+void jump_to_top_bbq_stop(void);
+void jump_to_top_bbq_stop_back(void);
+void jump_to_top_bbq_setting(void);
+void top_bbq_resume_cooking(void);
+void jump_to_top_bbq_complete(void);
+
+void top_bbq_rebuild_menu(page_id_t child);
+void top_bbq_rebuild_set(page_id_t child);
+void top_bbq_rebuild_cooking(page_id_t child);
+void top_bbq_rebuild_setting(void);
+void top_bbq_rebuild_stop(void);
+void top_bbq_rebuild_stop_back(void);
+void top_bbq_rebuild_complete(void);
 
 #endif
