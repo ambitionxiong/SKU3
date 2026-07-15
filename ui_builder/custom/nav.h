@@ -38,6 +38,13 @@ typedef enum {
     PAGE_BOTTOM_BBQ_STOP,
     PAGE_BOTTOM_BBQ_STOP_BACK,
     PAGE_BOTTOM_BBQ_COMPLETE,
+    PAGE_HOT_BBQ_MENU,
+    PAGE_HOT_BBQ_SET,
+    PAGE_HOT_BBQ_COOKING,
+    PAGE_HOT_BBQ_SETTING,
+    PAGE_HOT_BBQ_STOP,
+    PAGE_HOT_BBQ_STOP_BACK,
+    PAGE_HOT_BBQ_COMPLETE,
 } page_id_t;
 
 extern page_id_t page_stack[];
@@ -69,6 +76,14 @@ extern lv_group_t *g_bottom_bbq_setting;
 extern lv_group_t *g_bottom_bbq_stop;
 extern lv_group_t *g_bottom_bbq_stop_back;
 extern lv_group_t *g_bottom_bbq_complete;
+
+extern lv_group_t *g_hot_bbq_menu;
+extern lv_group_t *g_hot_bbq_set;
+extern lv_group_t *g_hot_bbq_cooking;
+extern lv_group_t *g_hot_bbq_setting;
+extern lv_group_t *g_hot_bbq_stop;
+extern lv_group_t *g_hot_bbq_stop_back;
+extern lv_group_t *g_hot_bbq_complete;
 
 extern lv_group_t *current_group;
 
@@ -109,6 +124,23 @@ void apply_toggle_state(lv_obj_t *btn_off, lv_obj_t *btn_on, int on);
 void clear_focus_states(lv_obj_t **btns, int count);
 void update_top_bbq_dir_icon(top_bbq_setting_t *set);
 void update_bottom_bbq_dir_icon(bottom_bbq_setting_t *set);
+void update_hot_bbq_dir_icon(hot_bbq_setting_t *set);
+
+void jump_to_hot_bbq_menu(void);
+void jump_to_hot_bbq_set(void);
+void jump_to_hot_bbq_stop(void);
+void jump_to_hot_bbq_stop_back(void);
+void jump_to_hot_bbq_setting(void);
+void hot_bbq_resume_cooking(void);
+void jump_to_hot_bbq_complete(void);
+
+void hot_bbq_rebuild_menu(page_id_t child);
+void hot_bbq_rebuild_set(page_id_t child);
+void hot_bbq_rebuild_cooking(page_id_t child);
+void hot_bbq_rebuild_setting(void);
+void hot_bbq_rebuild_stop(void);
+void hot_bbq_rebuild_stop_back(void);
+void hot_bbq_rebuild_complete(void);
 void on_edit_focus(lv_event_t *e);
 void validate_constraints(void);
 void groups_create(void);
