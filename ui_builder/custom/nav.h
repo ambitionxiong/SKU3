@@ -31,6 +31,13 @@ typedef enum {
     PAGE_TOP_BBQ_STOP,
     PAGE_TOP_BBQ_STOP_BACK,
     PAGE_TOP_BBQ_COMPLETE,
+    PAGE_BOTTOM_BBQ_MENU,
+    PAGE_BOTTOM_BBQ_SET,
+    PAGE_BOTTOM_BBQ_COOKING,
+    PAGE_BOTTOM_BBQ_SETTING,
+    PAGE_BOTTOM_BBQ_STOP,
+    PAGE_BOTTOM_BBQ_STOP_BACK,
+    PAGE_BOTTOM_BBQ_COMPLETE,
 } page_id_t;
 
 extern page_id_t page_stack[];
@@ -54,6 +61,14 @@ extern lv_group_t *g_top_bbq_setting;
 extern lv_group_t *g_top_bbq_stop;
 extern lv_group_t *g_top_bbq_stop_back;
 extern lv_group_t *g_top_bbq_complete;
+
+extern lv_group_t *g_bottom_bbq_menu;
+extern lv_group_t *g_bottom_bbq_set;
+extern lv_group_t *g_bottom_bbq_cooking;
+extern lv_group_t *g_bottom_bbq_setting;
+extern lv_group_t *g_bottom_bbq_stop;
+extern lv_group_t *g_bottom_bbq_stop_back;
+extern lv_group_t *g_bottom_bbq_complete;
 
 extern lv_group_t *current_group;
 
@@ -93,6 +108,7 @@ void set_bar_progress(lv_obj_t *bar, int64_t elapsed_ms, int total_ms);
 void apply_toggle_state(lv_obj_t *btn_off, lv_obj_t *btn_on, int on);
 void clear_focus_states(lv_obj_t **btns, int count);
 void update_top_bbq_dir_icon(top_bbq_setting_t *set);
+void update_bottom_bbq_dir_icon(bottom_bbq_setting_t *set);
 void on_edit_focus(lv_event_t *e);
 void validate_constraints(void);
 void groups_create(void);
@@ -115,5 +131,21 @@ void top_bbq_rebuild_setting(void);
 void top_bbq_rebuild_stop(void);
 void top_bbq_rebuild_stop_back(void);
 void top_bbq_rebuild_complete(void);
+
+void jump_to_bottom_bbq_menu(void);
+void jump_to_bottom_bbq_set(void);
+void jump_to_bottom_bbq_stop(void);
+void jump_to_bottom_bbq_stop_back(void);
+void jump_to_bottom_bbq_setting(void);
+void bottom_bbq_resume_cooking(void);
+void jump_to_bottom_bbq_complete(void);
+
+void bottom_bbq_rebuild_menu(page_id_t child);
+void bottom_bbq_rebuild_set(page_id_t child);
+void bottom_bbq_rebuild_cooking(page_id_t child);
+void bottom_bbq_rebuild_setting(void);
+void bottom_bbq_rebuild_stop(void);
+void bottom_bbq_rebuild_stop_back(void);
+void bottom_bbq_rebuild_complete(void);
 
 #endif

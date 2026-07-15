@@ -308,8 +308,8 @@ void updown_bbq_setting_create(ui_manager_t *ui)
     lv_obj_t *sure_button_label = lv_label_create(scr->sure_button);
     lv_label_set_text(sure_button_label, "确 认");
     lv_obj_align(sure_button_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->sure_button, 958, 306);
-    lv_obj_set_size(scr->sure_button, 129, 63);
+    lv_obj_set_pos(scr->sure_button, 959, 295);
+    lv_obj_set_size(scr->sure_button, 129, 83);
 
     // Set style of scr->sure_button
     lv_obj_set_style_bg_opa(scr->sure_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);

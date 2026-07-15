@@ -55,8 +55,8 @@ void extra_color_create(ui_manager_t *ui)
     lv_obj_t *start_button_label = lv_label_create(scr->start_button);
     lv_label_set_text(start_button_label, "开 始");
     lv_obj_align(start_button_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->start_button, 958, 306);
-    lv_obj_set_size(scr->start_button, 129, 63);
+    lv_obj_set_pos(scr->start_button, 959, 295);
+    lv_obj_set_size(scr->start_button, 129, 83);
 
     // Set style of scr->start_button
     lv_obj_set_style_bg_opa(scr->start_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);

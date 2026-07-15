@@ -123,8 +123,8 @@ void color_stop_back_create(ui_manager_t *ui)
     lv_obj_t *button_7_label = lv_label_create(scr->button_7);
     lv_label_set_text(button_7_label, "确 定");
     lv_obj_align(button_7_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->button_7, 958, 306);
-    lv_obj_set_size(scr->button_7, 129, 63);
+    lv_obj_set_pos(scr->button_7, 959, 295);
+    lv_obj_set_size(scr->button_7, 129, 83);
 
     // Set style of scr->button_7
     lv_obj_set_style_bg_opa(scr->button_7, 0, LV_PART_MAIN | LV_STATE_DEFAULT);

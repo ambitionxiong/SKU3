@@ -55,8 +55,8 @@ void updown_bbq_cooking_create(ui_manager_t *ui)
     lv_obj_t *stop_button_label = lv_label_create(scr->stop_button);
     lv_label_set_text(stop_button_label, "暂 停");
     lv_obj_align(stop_button_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->stop_button, 958, 306);
-    lv_obj_set_size(scr->stop_button, 129, 63);
+    lv_obj_set_pos(scr->stop_button, 959, 295);
+    lv_obj_set_size(scr->stop_button, 129, 83);
 
     // Set style of scr->stop_button
     lv_obj_set_style_bg_opa(scr->stop_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);

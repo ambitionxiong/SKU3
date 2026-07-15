@@ -28,44 +28,44 @@ void bottom_bbq_cooking_create(ui_manager_t *ui)
     lv_obj_set_style_bg_opa(scr->obj, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->obj, LVGL_IMAGE_PATH(bg.jpg), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->label_135
-    scr->label_135 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_135, "| 顶部烧烤 | 180℃ | 1小时20分钟");
-    lv_label_set_long_mode(scr->label_135, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_135, 274, 232);
-    lv_obj_set_size(scr->label_135, 490, 39);
+    // Init scr->status
+    scr->status = lv_label_create(scr->obj);
+    lv_label_set_text(scr->status, "| 底部烧烤 | 180℃ | 1小时20分钟");
+    lv_label_set_long_mode(scr->status, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->status, 274, 232);
+    lv_obj_set_size(scr->status, 490, 39);
 
-    // Set style of scr->label_135
-    lv_obj_set_style_text_font(scr->label_135, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->label_135, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    // Set style of scr->status
+    lv_obj_set_style_text_font(scr->status, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->status, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->label_136
-    scr->label_136 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_136, "00:19:59");
-    lv_label_set_long_mode(scr->label_136, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_136, 907, 157);
-    lv_obj_set_size(scr->label_136, 235, 60);
+    // Init scr->timelabel
+    scr->timelabel = lv_label_create(scr->obj);
+    lv_label_set_text(scr->timelabel, "00:19:59");
+    lv_label_set_long_mode(scr->timelabel, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->timelabel, 907, 157);
+    lv_obj_set_size(scr->timelabel, 235, 60);
 
-    // Set style of scr->label_136
-    lv_obj_set_style_text_font(scr->label_136, fs_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->label_136, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    // Set style of scr->timelabel
+    lv_obj_set_style_text_font(scr->timelabel, fs_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->timelabel, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->button_36
-    scr->button_36 = lv_btn_create(scr->obj);
-    lv_obj_t *button_36_label = lv_label_create(scr->button_36);
-    lv_label_set_text(button_36_label, "暂 停");
-    lv_obj_align(button_36_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->button_36, 958, 306);
-    lv_obj_set_size(scr->button_36, 129, 63);
+    // Init scr->stop
+    scr->stop = lv_btn_create(scr->obj);
+    lv_obj_t *stop_label = lv_label_create(scr->stop);
+    lv_label_set_text(stop_label, "暂 停");
+    lv_obj_align(stop_label, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_pos(scr->stop, 959, 295);
+    lv_obj_set_size(scr->stop, 129, 83);
 
-    // Set style of scr->button_36
-    lv_obj_set_style_bg_opa(scr->button_36, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->button_36, LVGL_IMAGE_PATH(stopbk1.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->button_36, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_width(scr->button_36, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_shadow_width(scr->button_36, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(scr->button_36, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->button_36, LVGL_IMAGE_PATH(stopbk2.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    // Set style of scr->stop
+    lv_obj_set_style_bg_opa(scr->stop, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->stop, LVGL_IMAGE_PATH(stopbk1.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->stop, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(scr->stop, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(scr->stop, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(scr->stop, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->stop, LVGL_IMAGE_PATH(stopbk2.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
     // Init scr->image_63
     scr->image_63 = lv_img_create(scr->obj);
@@ -98,26 +98,26 @@ void bottom_bbq_cooking_create(ui_manager_t *ui)
     lv_obj_set_style_text_font(scr->label_137, fs_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_137, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->button_37
-    scr->button_37 = lv_btn_create(scr->obj);
-    lv_obj_t *button_37_label = lv_label_create(scr->button_37);
-    lv_label_set_text(button_37_label, "");
-    lv_obj_align(button_37_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->button_37, 609, 170);
-    lv_obj_set_size(scr->button_37, 50, 43);
+    // Init scr->littlebutton
+    scr->littlebutton = lv_btn_create(scr->obj);
+    lv_obj_t *littlebutton_label = lv_label_create(scr->littlebutton);
+    lv_label_set_text(littlebutton_label, "");
+    lv_obj_align(littlebutton_label, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_pos(scr->littlebutton, 609, 170);
+    lv_obj_set_size(scr->littlebutton, 50, 43);
 
-    // Set style of scr->button_37
-    lv_obj_set_style_bg_opa(scr->button_37, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->button_37, LVGL_IMAGE_PATH(little.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->button_37, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_width(scr->button_37, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_shadow_width(scr->button_37, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(scr->button_37, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->button_37, LVGL_IMAGE_PATH(little100.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    // Set style of scr->littlebutton
+    lv_obj_set_style_bg_opa(scr->littlebutton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->littlebutton, LVGL_IMAGE_PATH(little.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->littlebutton, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(scr->littlebutton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(scr->littlebutton, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(scr->littlebutton, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->littlebutton, LVGL_IMAGE_PATH(little100.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
     // Init scr->image_64
     scr->image_64 = lv_img_create(scr->obj);
-    lv_img_set_src(scr->image_64, LVGL_IMAGE_PATH(upbbq.png));
+    lv_img_set_src(scr->image_64, LVGL_IMAGE_PATH(dwbbqicon.png));
     lv_img_set_pivot(scr->image_64, 50, 50);
     lv_img_set_angle(scr->image_64, 0);
     lv_obj_set_style_img_opa(scr->image_64, 255, LV_PART_MAIN | LV_STATE_DEFAULT);

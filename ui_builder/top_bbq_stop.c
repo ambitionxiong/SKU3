@@ -55,8 +55,8 @@ void top_bbq_stop_create(ui_manager_t *ui)
     lv_obj_t *start_label = lv_label_create(scr->start);
     lv_label_set_text(start_label, "开 始");
     lv_obj_align(start_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->start, 958, 306);
-    lv_obj_set_size(scr->start, 129, 63);
+    lv_obj_set_pos(scr->start, 959, 295);
+    lv_obj_set_size(scr->start, 129, 83);
 
     // Set style of scr->start
     lv_obj_set_style_bg_opa(scr->start, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
