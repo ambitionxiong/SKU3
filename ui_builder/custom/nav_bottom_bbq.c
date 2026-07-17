@@ -1,13 +1,5 @@
 #include "nav.h"
 
-// === 页面焦点组 ===
-lv_group_t *g_bottom_bbq_menu;
-lv_group_t *g_bottom_bbq_set;
-lv_group_t *g_bottom_bbq_cooking;
-lv_group_t *g_bottom_bbq_setting;
-lv_group_t *g_bottom_bbq_stop;
-lv_group_t *g_bottom_bbq_stop_back;
-lv_group_t *g_bottom_bbq_complete;
 
 static void on_bottom_bbq_menu_next_click(lv_event_t *e);
 static void on_bottom_bbq_set_sure_click(lv_event_t *e);

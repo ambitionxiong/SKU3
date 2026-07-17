@@ -687,6 +687,398 @@ typedef struct {
     lv_obj_t *image_97;
 } hot_bbq_complete_t;
 
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *next;
+    lv_obj_t *image_98;
+    lv_obj_t *image_99;
+    lv_obj_t *label_205;
+    lv_obj_t *temp;
+    lv_obj_t *label_207;
+    lv_obj_t *label_208;
+    lv_obj_t *hour;
+    lv_obj_t *label_210;
+    lv_obj_t *label_211;
+    lv_obj_t *min;
+    lv_obj_t *label_213;
+    lv_obj_t *label_214;
+    lv_obj_t *templine3;
+    lv_obj_t *templine2;
+    lv_obj_t *hourline;
+    lv_obj_t *minline;
+} hotwind_bbq_menu_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *label_215;
+    lv_obj_t *label_216;
+    lv_obj_t *label_217;
+    lv_obj_t *label_218;
+    lv_obj_t *hour;
+    lv_obj_t *min;
+    lv_obj_t *label_221;
+    lv_obj_t *label_222;
+    lv_obj_t *image_104;
+    lv_obj_t *label_223;
+    lv_obj_t *sure;
+    lv_obj_t *label_224;
+    lv_obj_t *label_225;
+    lv_obj_t *label_226;
+    lv_obj_t *label_227;
+    lv_obj_t *offpreheat;
+    lv_obj_t *offdelay;
+    lv_obj_t *offcontain;
+    lv_obj_t *temp;
+    lv_obj_t *label_229;
+    lv_obj_t *onpreheat;
+    lv_obj_t *ondelay;
+    lv_obj_t *oncontain;
+    lv_obj_t *label_230;
+} hotwind_bbq_set_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *status;
+    lv_obj_t *timelabel;
+    lv_obj_t *stop;
+    lv_obj_t *image_105;
+    lv_obj_t *bar_18;
+    lv_obj_t *label_233;
+    lv_obj_t *little;
+    lv_obj_t *image_106;
+} hotwind_bbq_cooking_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *status;
+    lv_obj_t *timelabel;
+    lv_obj_t *start;
+    lv_obj_t *image_107;
+    lv_obj_t *bar_19;
+    lv_obj_t *label_236;
+    lv_obj_t *little;
+    lv_obj_t *image_108;
+} hotwind_bbq_stop_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_109;
+    lv_obj_t *status;
+    lv_obj_t *image_110;
+    lv_obj_t *bar_20;
+    lv_obj_t *label_238;
+    lv_obj_t *button_72;
+    lv_obj_t *container_10;
+    lv_obj_t *label_239;
+    lv_obj_t *label_240;
+    lv_obj_t *sure;
+} hotwind_bbq_stop_back_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_111;
+    lv_obj_t *status;
+    lv_obj_t *bar_21;
+    lv_obj_t *label_242;
+    lv_obj_t *image_112;
+    lv_obj_t *button_74;
+    lv_obj_t *image_113;
+} hotwind_bbq_complete_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *next;
+    lv_obj_t *image_114;
+    lv_obj_t *image_115;
+    lv_obj_t *label_243;
+    lv_obj_t *temp;
+    lv_obj_t *label_245;
+    lv_obj_t *label_246;
+    lv_obj_t *hour;
+    lv_obj_t *label_248;
+    lv_obj_t *label_249;
+    lv_obj_t *min;
+    lv_obj_t *label_251;
+    lv_obj_t *label_252;
+    lv_obj_t *line3;
+    lv_obj_t *line2;
+    lv_obj_t *hourline;
+    lv_obj_t *minline;
+} save_bbq_menu_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *label_253;
+    lv_obj_t *label_254;
+    lv_obj_t *label_255;
+    lv_obj_t *label_256;
+    lv_obj_t *hour;
+    lv_obj_t *min;
+    lv_obj_t *label_259;
+    lv_obj_t *label_260;
+    lv_obj_t *image_120;
+    lv_obj_t *label_261;
+    lv_obj_t *sure;
+    lv_obj_t *label_262;
+    lv_obj_t *label_263;
+    lv_obj_t *label_264;
+    lv_obj_t *label_265;
+    lv_obj_t *offpreheat;
+    lv_obj_t *offdelay;
+    lv_obj_t *offcontain;
+    lv_obj_t *temp;
+    lv_obj_t *label_267;
+    lv_obj_t *onpreheat;
+    lv_obj_t *ondelay;
+    lv_obj_t *oncontain;
+    lv_obj_t *label_268;
+} save_bbq_set_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *status;
+    lv_obj_t *timelabel;
+    lv_obj_t *stop;
+    lv_obj_t *image_121;
+    lv_obj_t *bar_22;
+    lv_obj_t *label_271;
+    lv_obj_t *little;
+    lv_obj_t *image_122;
+} save_bbq_cooking_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *status;
+    lv_obj_t *timelabel;
+    lv_obj_t *start;
+    lv_obj_t *image_123;
+    lv_obj_t *bar_23;
+    lv_obj_t *label_274;
+    lv_obj_t *little;
+    lv_obj_t *image_124;
+} save_bbq_stop_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_125;
+    lv_obj_t *status;
+    lv_obj_t *image_126;
+    lv_obj_t *bar_24;
+    lv_obj_t *label_276;
+    lv_obj_t *button_87;
+    lv_obj_t *container_11;
+    lv_obj_t *label_277;
+    lv_obj_t *label_278;
+    lv_obj_t *sure;
+} save_bbq_stop_back_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_127;
+    lv_obj_t *status;
+    lv_obj_t *bar_25;
+    lv_obj_t *label_280;
+    lv_obj_t *image_128;
+    lv_obj_t *button_89;
+    lv_obj_t *image_129;
+} save_bbq_complete_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *next;
+    lv_obj_t *image_130;
+    lv_obj_t *image_131;
+    lv_obj_t *label_281;
+    lv_obj_t *temp;
+    lv_obj_t *label_283;
+    lv_obj_t *label_284;
+    lv_obj_t *hour;
+    lv_obj_t *label_286;
+    lv_obj_t *label_287;
+    lv_obj_t *min;
+    lv_obj_t *label_289;
+    lv_obj_t *label_290;
+    lv_obj_t *templine3;
+    lv_obj_t *templine2;
+    lv_obj_t *hourline;
+    lv_obj_t *minline;
+} central_bbq_menu_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *label_291;
+    lv_obj_t *label_292;
+    lv_obj_t *label_293;
+    lv_obj_t *label_294;
+    lv_obj_t *hour;
+    lv_obj_t *min;
+    lv_obj_t *label_297;
+    lv_obj_t *label_298;
+    lv_obj_t *image_136;
+    lv_obj_t *label_299;
+    lv_obj_t *sure;
+    lv_obj_t *label_300;
+    lv_obj_t *label_301;
+    lv_obj_t *label_302;
+    lv_obj_t *label_303;
+    lv_obj_t *offpreheat;
+    lv_obj_t *offdelay;
+    lv_obj_t *offcontain;
+    lv_obj_t *temp;
+    lv_obj_t *label_305;
+    lv_obj_t *onpreheat;
+    lv_obj_t *ondelay;
+    lv_obj_t *oncontain;
+    lv_obj_t *label_306;
+} central_bbq_set_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *status;
+    lv_obj_t *timelabel;
+    lv_obj_t *stop;
+    lv_obj_t *image_137;
+    lv_obj_t *bar_26;
+    lv_obj_t *label_309;
+    lv_obj_t *little;
+    lv_obj_t *image_138;
+} central_bbq_cooking_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *status;
+    lv_obj_t *timelabel;
+    lv_obj_t *start;
+    lv_obj_t *image_139;
+    lv_obj_t *bar_27;
+    lv_obj_t *label_312;
+    lv_obj_t *little;
+    lv_obj_t *image_140;
+} central_bbq_stop_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_141;
+    lv_obj_t *status;
+    lv_obj_t *image_142;
+    lv_obj_t *bar_28;
+    lv_obj_t *label_314;
+    lv_obj_t *button_102;
+    lv_obj_t *container_12;
+    lv_obj_t *label_315;
+    lv_obj_t *label_316;
+    lv_obj_t *sure;
+} central_bbq_stop_back_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_143;
+    lv_obj_t *status;
+    lv_obj_t *bar_29;
+    lv_obj_t *label_318;
+    lv_obj_t *image_144;
+    lv_obj_t *button_104;
+    lv_obj_t *image_145;
+} central_bbq_complete_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *next;
+    lv_obj_t *image_146;
+    lv_obj_t *image_147;
+    lv_obj_t *label_319;
+    lv_obj_t *temp;
+    lv_obj_t *label_321;
+    lv_obj_t *label_322;
+    lv_obj_t *hour;
+    lv_obj_t *label_324;
+    lv_obj_t *label_325;
+    lv_obj_t *min;
+    lv_obj_t *label_327;
+    lv_obj_t *label_328;
+    lv_obj_t *templine3;
+    lv_obj_t *templine2;
+    lv_obj_t *hourline;
+    lv_obj_t *minline;
+} windchange_bbq_menu_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *label_329;
+    lv_obj_t *label_330;
+    lv_obj_t *label_331;
+    lv_obj_t *label_332;
+    lv_obj_t *hour;
+    lv_obj_t *min;
+    lv_obj_t *label_335;
+    lv_obj_t *label_336;
+    lv_obj_t *image_152;
+    lv_obj_t *label_337;
+    lv_obj_t *sure;
+    lv_obj_t *label_338;
+    lv_obj_t *label_339;
+    lv_obj_t *label_340;
+    lv_obj_t *label_341;
+    lv_obj_t *offpreheat;
+    lv_obj_t *offdelay;
+    lv_obj_t *offcontain;
+    lv_obj_t *temp;
+    lv_obj_t *label_343;
+    lv_obj_t *onpreheat;
+    lv_obj_t *ondelay;
+    lv_obj_t *oncontain;
+    lv_obj_t *label_344;
+} windchange_bbq_set_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *status;
+    lv_obj_t *timelabel;
+    lv_obj_t *stop;
+    lv_obj_t *image_153;
+    lv_obj_t *bar_30;
+    lv_obj_t *label_347;
+    lv_obj_t *little;
+    lv_obj_t *image_154;
+} windchange_bbq_cooking_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *status;
+    lv_obj_t *timelabel;
+    lv_obj_t *start;
+    lv_obj_t *image_155;
+    lv_obj_t *bar_31;
+    lv_obj_t *label_350;
+    lv_obj_t *little;
+    lv_obj_t *image_156;
+} windchange_bbq_stop_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_157;
+    lv_obj_t *status;
+    lv_obj_t *image_158;
+    lv_obj_t *bar_32;
+    lv_obj_t *label_352;
+    lv_obj_t *button_117;
+    lv_obj_t *container_13;
+    lv_obj_t *label_353;
+    lv_obj_t *label_354;
+    lv_obj_t *sure;
+} windchange_bbq_stop_back_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_159;
+    lv_obj_t *status;
+    lv_obj_t *bar_33;
+    lv_obj_t *label_356;
+    lv_obj_t *image_160;
+    lv_obj_t *button_119;
+    lv_obj_t *image_161;
+} windchange_bbq_complete_t;
+
 
 typedef struct {
     bool auto_del;
@@ -731,6 +1123,30 @@ typedef struct {
     hot_bbq_stop_t hot_bbq_stop;
     hot_bbq_stop_back_t hot_bbq_stop_back;
     hot_bbq_complete_t hot_bbq_complete;
+    hotwind_bbq_menu_t hotwind_bbq_menu;
+    hotwind_bbq_set_t hotwind_bbq_set;
+    hotwind_bbq_cooking_t hotwind_bbq_cooking;
+    hotwind_bbq_stop_t hotwind_bbq_stop;
+    hotwind_bbq_stop_back_t hotwind_bbq_stop_back;
+    hotwind_bbq_complete_t hotwind_bbq_complete;
+    save_bbq_menu_t save_bbq_menu;
+    save_bbq_set_t save_bbq_set;
+    save_bbq_cooking_t save_bbq_cooking;
+    save_bbq_stop_t save_bbq_stop;
+    save_bbq_stop_back_t save_bbq_stop_back;
+    save_bbq_complete_t save_bbq_complete;
+    central_bbq_menu_t central_bbq_menu;
+    central_bbq_set_t central_bbq_set;
+    central_bbq_cooking_t central_bbq_cooking;
+    central_bbq_stop_t central_bbq_stop;
+    central_bbq_stop_back_t central_bbq_stop_back;
+    central_bbq_complete_t central_bbq_complete;
+    windchange_bbq_menu_t windchange_bbq_menu;
+    windchange_bbq_set_t windchange_bbq_set;
+    windchange_bbq_cooking_t windchange_bbq_cooking;
+    windchange_bbq_stop_t windchange_bbq_stop;
+    windchange_bbq_stop_back_t windchange_bbq_stop_back;
+    windchange_bbq_complete_t windchange_bbq_complete;
 
 } ui_manager_t;
 
@@ -945,6 +1361,126 @@ static inline hot_bbq_complete_t *hot_bbq_complete_get(ui_manager_t *ui)
     return &ui->hot_bbq_complete;
 }
 
+static inline hotwind_bbq_menu_t *hotwind_bbq_menu_get(ui_manager_t *ui)
+{
+    return &ui->hotwind_bbq_menu;
+}
+
+static inline hotwind_bbq_set_t *hotwind_bbq_set_get(ui_manager_t *ui)
+{
+    return &ui->hotwind_bbq_set;
+}
+
+static inline hotwind_bbq_cooking_t *hotwind_bbq_cooking_get(ui_manager_t *ui)
+{
+    return &ui->hotwind_bbq_cooking;
+}
+
+static inline hotwind_bbq_stop_t *hotwind_bbq_stop_get(ui_manager_t *ui)
+{
+    return &ui->hotwind_bbq_stop;
+}
+
+static inline hotwind_bbq_stop_back_t *hotwind_bbq_stop_back_get(ui_manager_t *ui)
+{
+    return &ui->hotwind_bbq_stop_back;
+}
+
+static inline hotwind_bbq_complete_t *hotwind_bbq_complete_get(ui_manager_t *ui)
+{
+    return &ui->hotwind_bbq_complete;
+}
+
+static inline save_bbq_menu_t *save_bbq_menu_get(ui_manager_t *ui)
+{
+    return &ui->save_bbq_menu;
+}
+
+static inline save_bbq_set_t *save_bbq_set_get(ui_manager_t *ui)
+{
+    return &ui->save_bbq_set;
+}
+
+static inline save_bbq_cooking_t *save_bbq_cooking_get(ui_manager_t *ui)
+{
+    return &ui->save_bbq_cooking;
+}
+
+static inline save_bbq_stop_t *save_bbq_stop_get(ui_manager_t *ui)
+{
+    return &ui->save_bbq_stop;
+}
+
+static inline save_bbq_stop_back_t *save_bbq_stop_back_get(ui_manager_t *ui)
+{
+    return &ui->save_bbq_stop_back;
+}
+
+static inline save_bbq_complete_t *save_bbq_complete_get(ui_manager_t *ui)
+{
+    return &ui->save_bbq_complete;
+}
+
+static inline central_bbq_menu_t *central_bbq_menu_get(ui_manager_t *ui)
+{
+    return &ui->central_bbq_menu;
+}
+
+static inline central_bbq_set_t *central_bbq_set_get(ui_manager_t *ui)
+{
+    return &ui->central_bbq_set;
+}
+
+static inline central_bbq_cooking_t *central_bbq_cooking_get(ui_manager_t *ui)
+{
+    return &ui->central_bbq_cooking;
+}
+
+static inline central_bbq_stop_t *central_bbq_stop_get(ui_manager_t *ui)
+{
+    return &ui->central_bbq_stop;
+}
+
+static inline central_bbq_stop_back_t *central_bbq_stop_back_get(ui_manager_t *ui)
+{
+    return &ui->central_bbq_stop_back;
+}
+
+static inline central_bbq_complete_t *central_bbq_complete_get(ui_manager_t *ui)
+{
+    return &ui->central_bbq_complete;
+}
+
+static inline windchange_bbq_menu_t *windchange_bbq_menu_get(ui_manager_t *ui)
+{
+    return &ui->windchange_bbq_menu;
+}
+
+static inline windchange_bbq_set_t *windchange_bbq_set_get(ui_manager_t *ui)
+{
+    return &ui->windchange_bbq_set;
+}
+
+static inline windchange_bbq_cooking_t *windchange_bbq_cooking_get(ui_manager_t *ui)
+{
+    return &ui->windchange_bbq_cooking;
+}
+
+static inline windchange_bbq_stop_t *windchange_bbq_stop_get(ui_manager_t *ui)
+{
+    return &ui->windchange_bbq_stop;
+}
+
+static inline windchange_bbq_stop_back_t *windchange_bbq_stop_back_get(ui_manager_t *ui)
+{
+    return &ui->windchange_bbq_stop_back;
+}
+
+static inline windchange_bbq_complete_t *windchange_bbq_complete_get(ui_manager_t *ui)
+{
+    return &ui->windchange_bbq_complete;
+}
+
 
 void waitmenu_24_create(ui_manager_t *ui);
 void special_menu_tz_create(ui_manager_t *ui);
@@ -987,6 +1523,30 @@ void hot_bbq_setting_create(ui_manager_t *ui);
 void hot_bbq_stop_create(ui_manager_t *ui);
 void hot_bbq_stop_back_create(ui_manager_t *ui);
 void hot_bbq_complete_create(ui_manager_t *ui);
+void hotwind_bbq_menu_create(ui_manager_t *ui);
+void hotwind_bbq_set_create(ui_manager_t *ui);
+void hotwind_bbq_cooking_create(ui_manager_t *ui);
+void hotwind_bbq_stop_create(ui_manager_t *ui);
+void hotwind_bbq_stop_back_create(ui_manager_t *ui);
+void hotwind_bbq_complete_create(ui_manager_t *ui);
+void save_bbq_menu_create(ui_manager_t *ui);
+void save_bbq_set_create(ui_manager_t *ui);
+void save_bbq_cooking_create(ui_manager_t *ui);
+void save_bbq_stop_create(ui_manager_t *ui);
+void save_bbq_stop_back_create(ui_manager_t *ui);
+void save_bbq_complete_create(ui_manager_t *ui);
+void central_bbq_menu_create(ui_manager_t *ui);
+void central_bbq_set_create(ui_manager_t *ui);
+void central_bbq_cooking_create(ui_manager_t *ui);
+void central_bbq_stop_create(ui_manager_t *ui);
+void central_bbq_stop_back_create(ui_manager_t *ui);
+void central_bbq_complete_create(ui_manager_t *ui);
+void windchange_bbq_menu_create(ui_manager_t *ui);
+void windchange_bbq_set_create(ui_manager_t *ui);
+void windchange_bbq_cooking_create(ui_manager_t *ui);
+void windchange_bbq_stop_create(ui_manager_t *ui);
+void windchange_bbq_stop_back_create(ui_manager_t *ui);
+void windchange_bbq_complete_create(ui_manager_t *ui);
 
 
 extern lv_font_t *fs_montserratmedium_16;

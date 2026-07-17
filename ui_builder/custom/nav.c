@@ -5,6 +5,10 @@
 page_id_t page_stack[MAX_STACK];  // 栈数组，stack[0]=根页，stack[depth-1]=当前页
 int depth = 0;                     // 栈高度，depth=1 时只有根页
 
+int set_temp_up = 180;
+int set_temp_down = 180;
+int cook_bar_saved = 0;
+
 // === 各页面焦点组（NULL=未创建）===
 lv_group_t *g_major_menu;
 lv_group_t *g_cookmenu;
@@ -20,6 +24,14 @@ lv_group_t *g_color_stop_back;
 lv_group_t *g_updown_bbq_setting;
 lv_group_t *g_updown_bbq_stop;
 lv_group_t *g_updown_bbq_stop_back;
+
+lv_group_t *g_top_bbq_menu;
+lv_group_t *g_top_bbq_set;
+lv_group_t *g_top_bbq_cooking;
+lv_group_t *g_top_bbq_setting;
+lv_group_t *g_top_bbq_stop;
+lv_group_t *g_top_bbq_stop_back;
+lv_group_t *g_top_bbq_complete;
 
 lv_group_t *g_bottom_bbq_menu;
 lv_group_t *g_bottom_bbq_set;
@@ -137,6 +149,7 @@ static void adjust_value(edit_field_t *f, int delta)
             lv_obj_clear_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
         else
             lv_obj_clear_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_invalidate(lv_scr_act());
     }
 
     validate_constraints();

@@ -12,8 +12,6 @@ uint8_t uart_data_receive[18];
 uint8_t uart_data_send[24];
 
 int set_temp = 180;
-int set_temp_up = 180;
-int set_temp_down = 180;
 int set_hour = 0;
 int set_min  = 30;
 
@@ -25,7 +23,6 @@ int cook_total_ms = 0;
 uint32_t cook_start_time = 0;
 uint8_t cook_is_color = 0;
 uint32_t cook_elapsed_saved = 0;
-int cook_bar_saved = 0;
 lv_timer_t *cook_timer = NULL;
 
 void custom_init()
