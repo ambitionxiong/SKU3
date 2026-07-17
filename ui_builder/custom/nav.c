@@ -1,4 +1,5 @@
 #include "nav.h"
+#include "protocol.h"
 
 // === 页面栈 ===
 #define MAX_STACK 16
@@ -8,6 +9,30 @@ int depth = 0;                     // 栈高度，depth=1 时只有根页
 int set_temp_up = 180;
 int set_temp_down = 180;
 int cook_bar_saved = 0;
+
+#ifdef LV_USE_AIC_SIMULATOR
+static uint8_t key1_long_pressed = 0;
+#define LONG_PRESS_MS 2000
+
+static void uart_print(void)
+{
+    uart_send_fill();
+    printf("[UART]");
+    for (int i = 0; i < 24; i++) printf(" %02X", uart_data_send[i]);
+    static const char *st[] = {"stdby","set","cook","pause","done","sleep"};
+    static const char *md[] = {"none","","","updown","top","bottom","","","hot","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","color"};
+    printf("\n[UART] decoded: st=%s(%d) mode=%s(%d) t=%d t_lo=%d time=%02d:%02d:%02d buz=%d\n",
+           st[g_send.iface_status<=5?g_send.iface_status:0], g_send.iface_status,
+           md[g_send.cook_mode<=38?g_send.cook_mode:0], g_send.cook_mode,
+           g_send.set_temp, g_send.set_temp_lower,
+           uart_data_send[SEND_TIME_HOUR],
+           uart_data_send[SEND_TIME_MIN],
+           uart_data_send[SEND_TIME_SEC],
+           uart_data_send[SEND_BUZZER]);
+}
+#else
+#define uart_print() ((void)0)
+#endif
 
 // === 各页面焦点组（NULL=未创建）===
 lv_group_t *g_major_menu;
@@ -160,6 +185,7 @@ static void adjust_value(edit_field_t *f, int delta)
         if (diff < 0) diff = -diff;
         updown_bbq_setting_t *set = updown_bbq_setting_get(&ui_manager);
         if (diff > 20) {
+            g_send.buzzer_req = BUZZER_KEY_INVALID;
             *f->value = old_val;
             lv_label_set_text_fmt(f->label, f->fmt, old_val);
             if (f->ind_short && f->ind_long) {
@@ -586,7 +612,7 @@ void page_pop(void)
                 int s = remaining_sec % 60;
                 lv_label_set_text_fmt(stop->time_label, "%02d:%02d:%02d", h, m, s);
 
-                set_status_label(stop->statu_label, set_temp, set_hour, set_min);
+                set_status_label_min(stop->statu_label, set_temp_up, set_temp_down, set_hour, set_min);
 
                 lv_bar_set_range(stop->bar_1, 0, 100);
                 if (cook_bar_saved > 100) cook_bar_saved = 100;
@@ -614,7 +640,7 @@ void page_pop(void)
                                     LV_EVENT_CLICKED, NULL);
 
                 /* 同步显示（与暂停页一致） */
-                set_status_label(back->statu_label, set_temp, set_hour, set_min);
+                set_status_label_min(back->statu_label, set_temp_up, set_temp_down, set_hour, set_min);
 
                 lv_bar_set_range(back->bar_2, 0, 100);
                 if (cook_bar_saved > 100) cook_bar_saved = 100;
@@ -923,6 +949,12 @@ void page_pop(void)
         cook_is_color = 0;
         cook_elapsed_saved = 0; cook_bar_saved = 0;
 
+        g_send.iface_status = IFACE_SETTING;
+        g_send.cook_mode = MODE_NONE;
+        g_send.set_temp = 0;
+        g_send.set_temp_lower = 0;
+        g_send.remaining_ms = -1;
+
         depth = 2;  /* 保留 WAITMENU_24 + MAJOR_MENU */
         lv_obj_clean(lv_scr_act());
         major_menu_create(&ui_manager);
@@ -941,6 +973,7 @@ void page_pop(void)
         lv_scr_load_anim(waitmenu_24_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
                          ui_manager.auto_del);
+        g_send.iface_status = IFACE_STANDBY;
         printf("[nav] back to waitmenu_24\n");
         break;
 
@@ -1143,6 +1176,7 @@ static void jump_to_updown_bbq_menu(void)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
 
+    g_send.cook_mode = MODE_UPDOWN_BBQ;
     printf("[nav] jump: cookmenu -> updown_bbq_menu\n");
 }
 
@@ -1267,6 +1301,11 @@ static void jump_to_updown_bbq_cooking(void)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
 
+    g_send.iface_status = IFACE_COOKING;
+    g_send.set_temp = (uint16_t)set_temp_up;
+    g_send.set_temp_lower = (uint16_t)set_temp_down;
+    g_send.remaining_ms = cook_total_ms;
+
     printf("[nav] jump: updown_bbq_set -> updown_bbq_cooking\n");
 }
 
@@ -1290,6 +1329,8 @@ static void jump_to_updown_bbq_complete(void)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
 
+    g_send.iface_status = IFACE_COMPLETE;
+    g_send.remaining_ms = 0;
     printf("[nav] jump: updown_bbq_cooking -> updown_bbq_complete\n");
 }
 
@@ -1376,6 +1417,7 @@ static void process_key(uint8_t key)
 
     switch (key) {
     case KEY_MENU:          // 3: 从 waitmenu_24 进入主菜单
+        g_send.buzzer_req = BUZZER_KEY_VALID;
         if (depth == 1 && page_stack[0] == PAGE_WAITMENU_24) {
             page_push(PAGE_MAJOR_MENU);
             lv_obj_clean(lv_scr_act());
@@ -1386,10 +1428,17 @@ static void process_key(uint8_t key)
             lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0,
                              ui_manager.auto_del);
+            g_send.iface_status = IFACE_SETTING;
+            g_send.cook_mode = MODE_NONE;
+            g_send.set_temp = 0;
+            g_send.set_temp_lower = 0;
+            g_send.remaining_ms = -1;
             printf("[nav] jump: waitmenu_24 -> major_menu\n");
         }
+        uart_print();
         break;
     case KEY_EXTRA_COLOR:   // 5: 进入额外上色
+        g_send.buzzer_req = BUZZER_KEY_VALID;
         page_push(PAGE_EXTRA_COLOR);
         lv_obj_clean(lv_scr_act());
         extra_color_create(&ui_manager);
@@ -1408,8 +1457,10 @@ static void process_key(uint8_t key)
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
                          ui_manager.auto_del);
         printf("[nav] jump: -> extra_color\n");
+        uart_print();
         break;
     case KEY_BACK:          // 21: 返回
+        g_send.buzzer_req = BUZZER_KEY_VALID;
         {
             page_id_t cur = page_stack[depth - 1];
             if (cur == PAGE_UPDOWN_BBQ_COOKING)
@@ -1435,25 +1486,31 @@ static void process_key(uint8_t key)
             else
                 page_pop();
         }
+        uart_print();
         break;
     case KEY_ENCODER_CW: {  // 31: 焦点下移 / 数值+
         if (!current_group) break;
         lv_obj_t *focused = lv_group_get_focused(current_group);
         edit_field_t *ef = find_edit_field(focused);
         if (ef) {
+            g_send.buzzer_req = BUZZER_ENCODER;
             adjust_value(ef, +1);
             printf("[nav] adjust +: %d\n", *ef->value);
         } else {
+            g_send.buzzer_req = BUZZER_ENCODER;
             lv_group_focus_next(current_group);
             printf("[nav] focus next\n");
         }
+        uart_print();
         break;
     }
     case KEY_ENCODER_CCW: {  // 41: 焦点上移 / 数值-
         if (!current_group) break;
+        g_send.buzzer_req = BUZZER_ENCODER;
         lv_obj_t *focused = lv_group_get_focused(current_group);
         edit_field_t *ef = find_edit_field(focused);
         if (ef) {
+            g_send.buzzer_req = BUZZER_ENCODER;
             adjust_value(ef, -1);
             printf("[nav] adjust -: %d\n", *ef->value);
         } else if (current_group == g_updown_bbq_menu) {
@@ -1532,9 +1589,11 @@ static void process_key(uint8_t key)
             lv_group_focus_prev(current_group);
             printf("[nav] focus prev\n");
         }
+        uart_print();
         break;
     }
     case KEY_ENCODER_PRESS: { // 51: 确认 / 跳到下一焦点
+        g_send.buzzer_req = BUZZER_KEY_VALID;
         if (!current_group) break;
         lv_obj_t *focused = lv_group_get_focused(current_group);
         edit_field_t *ef = find_edit_field(focused);
@@ -1545,6 +1604,7 @@ static void process_key(uint8_t key)
             lv_obj_send_event(focused, LV_EVENT_CLICKED, NULL);
             printf("[nav] press -> click\n");
         }
+        uart_print();
         break;
     }
     default:
@@ -1555,6 +1615,15 @@ static void process_key(uint8_t key)
 
 void nav_handle_key(uint8_t key)
 {
+#ifdef LV_USE_AIC_SIMULATOR
+    if (key) {
+        static const char *kn[] = {
+            [1]="KEY1", [3]="MENU", [5]="COLOR", [21]="BACK",
+            [31]="CW", [41]="CCW", [51]="PRESS"
+        };
+        printf("[KEY] %s (%d)\n", key<=51&&kn[key]?kn[key]:"?", key);
+    }
+#endif
     uint32_t now = lv_tick_get();
 
     switch (key_state) {
@@ -1581,6 +1650,15 @@ void nav_handle_key(uint8_t key)
                 active_key_time = now;
                 process_key(key);
             }
+            // KEY1 长按 → 省电态
+#ifdef LV_USE_AIC_SIMULATOR
+            if (active_key == KEY1 && interval >= LONG_PRESS_MS && !key1_long_pressed) {
+                key1_long_pressed = 1;
+                g_send.iface_status = IFACE_SLEEP;
+                uart_send_fill();
+                printf("[KEY] KEY1 long press -> SLEEP\n");
+            }
+#endif
             // 触控键按住不重复（只有 KEY_IDLE 后的第一次触发）
         } else {
             // 键值变化（如编码器方向切换）
@@ -1782,6 +1860,7 @@ void cooking_timer_cb(lv_timer_t *timer)
     if (elapsed >= (uint32_t)cook_total_ms) {
         lv_timer_del(cook_timer);
         cook_timer = NULL;
+        g_send.buzzer_req = BUZZER_COOK_DONE;
         if (current_group == g_updown_bbq_setting) {
             depth--;
             lv_obj_clean(lv_scr_act());
@@ -1835,6 +1914,7 @@ void cooking_timer_cb(lv_timer_t *timer)
     int m = (remaining_sec % 3600) / 60;
     int s = remaining_sec % 60;
     lv_label_set_text_fmt(time_label, "%02d:%02d:%02d", h, m, s);
+    g_send.remaining_ms = remaining_sec * 1000;
 }
 
 // 为 major_menu 的三个按钮绑定 LV_EVENT_CLICKED 回调
@@ -1906,7 +1986,7 @@ static void jump_to_updown_bbq_stop(void)
         int s = remaining_sec % 60;
         lv_label_set_text_fmt(stop->time_label, "%02d:%02d:%02d", h, m, s);
 
-        set_status_label(stop->statu_label, set_temp, set_hour, set_min);
+        set_status_label_min(stop->statu_label, set_temp_up, set_temp_down, set_hour, set_min);
 
         lv_bar_set_range(stop->bar_1, 0, 100);
         if (cook_bar_saved > 100) cook_bar_saved = 100;
@@ -1917,6 +1997,9 @@ static void jump_to_updown_bbq_stop(void)
     lv_scr_load_anim(updown_bbq_stop_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
+    g_send.iface_status = IFACE_PAUSE;
+    g_send.remaining_ms = (cook_total_ms > (int)cook_elapsed_saved)
+                          ? cook_total_ms - (int)cook_elapsed_saved : 0;
     printf("[nav] jump: cooking -> updown_bbq_stop (pause)\n");
 }
 
@@ -1938,7 +2021,7 @@ static void jump_to_updown_bbq_stop_back(void)
                             LV_EVENT_CLICKED, NULL);
 
         /* 同步 statu_label / bar_2 */
-        set_status_label(back->statu_label, set_temp, set_hour, set_min);
+        set_status_label_min(back->statu_label, set_temp_up, set_temp_down, set_hour, set_min);
 
         lv_bar_set_range(back->bar_2, 0, 100);
         if (cook_bar_saved > 100) cook_bar_saved = 100;
@@ -2036,6 +2119,12 @@ static void stop_resume_cooking(void)
     lv_scr_load_anim(updown_bbq_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
+    {
+        int rem = cook_total_ms - (int)cook_elapsed_saved;
+        if (rem < 0) rem = 0;
+        g_send.iface_status = IFACE_COOKING;
+        g_send.remaining_ms = rem;
+    }
     printf("[nav] resume: stop -> updown_bbq_cooking\n");
 }
 
@@ -2048,6 +2137,12 @@ static void on_stop_back_sure_click(lv_event_t *e)
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
     set_temp = 180; set_temp_up = 180; set_temp_down = 180; set_hour = 0; set_min = 30;
     cook_elapsed_saved = 0; cook_bar_saved = 0;
+
+    g_send.iface_status = IFACE_SETTING;
+    g_send.cook_mode = MODE_NONE;
+    g_send.set_temp = 0;
+    g_send.set_temp_lower = 0;
+    g_send.remaining_ms = -1;
 
     depth = 2;  /* 保留 WAITMENU_24 + MAJOR_MENU */
     lv_obj_clean(lv_scr_act());
@@ -2315,6 +2410,7 @@ static void jump_to_updown_bbq_setting(void)
     lv_scr_load_anim(updown_bbq_setting_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
+    g_send.iface_status = (cook_timer != NULL) ? IFACE_COOKING : IFACE_SETTING;
     printf("[nav] jump: cooking -> updown_bbq_setting\n");
 }
 
@@ -2415,6 +2511,10 @@ static void on_setting_sure_click(lv_event_t *e)
     lv_scr_load_anim(updown_bbq_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
+    g_send.iface_status = IFACE_COOKING;
+    g_send.set_temp = (uint16_t)set_temp_up;
+    g_send.set_temp_lower = (uint16_t)set_temp_down;
+    g_send.remaining_ms = cook_total_ms;
     printf("[nav] setting sure -> updown_bbq_cooking\n");
 }
 
@@ -2435,9 +2535,18 @@ void nav_init(void)
     }
 
     printf("[nav] init start\n");
-    // groups_create / bind_events 在 KEY_MENU 跳转时调用
-    current_group = NULL;               // waitmenu_24 无焦点组
     depth = 0;
     page_push(PAGE_WAITMENU_24);        // 根页 = waitmenu_24
-    printf("[nav] init done\n");
+    page_push(PAGE_MAJOR_MENU);         // 上电自动进入 major_menu
+    lv_obj_clean(lv_scr_act());
+    major_menu_create(&ui_manager);
+    groups_create();
+    bind_events();
+    current_group = g_major_menu;
+    lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
+                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                     ui_manager.auto_del);
+
+    g_send.iface_status = IFACE_SETTING;
+    printf("[nav] init done -> major_menu\n");
 }

@@ -26,6 +26,7 @@ typedef enum {
 #define Send_data_Data_Sum          23
 
 // 按键值（接收数据 BUF[15]）
+#define KEY1                  1    // 开关机键（长按触发省电）
 #define KEY_MENU              3    // 进入主菜单
 #define KEY_EXTRA_COLOR       5    // 进入额外上色
 #define KEY_BACK              21   // 返回键（触控板或按键板）

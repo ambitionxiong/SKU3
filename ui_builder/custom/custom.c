@@ -7,6 +7,7 @@
 
 #include "custom.h"
 #include "nav.h"
+#include "protocol.h"
 
 uint8_t uart_data_receive[18];
 uint8_t uart_data_send[24];
@@ -29,6 +30,6 @@ void custom_init()
 {
     /* Add your codes here */
 
-
     nav_init();
+    protocol_init();
 }

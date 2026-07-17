@@ -92,6 +92,7 @@ int main(int argc, char **argv)
 		else if (keys[SDL_SCANCODE_LEFT]  ||
 		         keys[SDL_SCANCODE_UP])     sim_key = KEY_ENCODER_CCW;
 		else if (keys[SDL_SCANCODE_SPACE])  sim_key = KEY_ENCODER_PRESS;
+		else if (keys[SDL_SCANCODE_1])      sim_key = KEY1;
 
 		if (sim_key != prev_key) {
 			nav_handle_key(sim_key);
