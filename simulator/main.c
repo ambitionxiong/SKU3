@@ -99,6 +99,16 @@ int main(int argc, char **argv)
 			prev_key = sim_key;
 		}
 
+		/* 按住期间周期调用状态机（编码器重复 + KEY1 长按） */
+		if (sim_key != 0) {
+			static uint32_t last_hold = SDL_GetTicks();
+			uint32_t now = SDL_GetTicks();
+			if (now - last_hold >= 50) {
+				nav_handle_key(sim_key);
+				last_hold = now;
+			}
+		}
+
 		usleep(5 * 1000);
 	}
 

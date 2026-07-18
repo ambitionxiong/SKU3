@@ -11,8 +11,6 @@ int set_temp_down = 180;
 int cook_bar_saved = 0;
 
 #ifdef LV_USE_AIC_SIMULATOR
-static uint8_t key1_long_pressed = 0;
-#define LONG_PRESS_MS 2000
 
 static void uart_print(void)
 {
@@ -451,6 +449,7 @@ void page_pop(void)
             set_temp = 180;
             set_hour = 0;
             set_min = 30;
+            g_send.cook_mode = MODE_NONE;
         }
         lv_scr_load_anim(cookmenu_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
@@ -1416,6 +1415,8 @@ static void process_key(uint8_t key)
     uart_data_receive[Receive_data_Touch_Key] = 0;
 
     switch (key) {
+    case KEY1:              // 1: 开关机键，短按无操作
+        break;
     case KEY_MENU:          // 3: 从 waitmenu_24 进入主菜单
         g_send.buzzer_req = BUZZER_KEY_VALID;
         if (depth == 1 && page_stack[0] == PAGE_WAITMENU_24) {
@@ -1613,22 +1614,62 @@ static void process_key(uint8_t key)
     }
 }
 
+void nav_key1_long_press(void)
+{
+    if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
+    cook_elapsed_saved = 0; cook_bar_saved = 0;
+    set_temp = 180; set_temp_up = 180; set_temp_down = 180; set_hour = 0; set_min = 30;
+    g_send.cook_mode = MODE_NONE;
+    g_send.set_temp = 0;
+    g_send.set_temp_lower = 0;
+    g_send.remaining_ms = -1;
+
+    if (g_send.iface_status != IFACE_SLEEP) {
+        g_send.buzzer_req = BUZZER_POWER_OFF;
+        g_send.iface_status = IFACE_SLEEP;
+        lv_obj_clean(lv_scr_act());
+        lv_obj_t *scr = lv_obj_create(NULL);
+        lv_obj_set_style_bg_color(scr, lv_color_black(), 0);
+        lv_scr_load(scr);
+#ifndef LV_USE_AIC_SIMULATOR
+        backlight_set_level(0);
+#endif
+        printf("[KEY] KEY1 long press -> SLEEP\n");
+    } else {
+        depth = 0;
+        page_push(PAGE_WAITMENU_24);
+        lv_obj_clean(lv_scr_act());
+        waitmenu_24_create(&ui_manager);
+        current_group = NULL;
+        lv_scr_load_anim(waitmenu_24_get(&ui_manager)->obj,
+                         LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                         ui_manager.auto_del);
+        g_send.buzzer_req = BUZZER_POWER_ON;
+        g_send.iface_status = IFACE_STANDBY;
+#ifndef LV_USE_AIC_SIMULATOR
+        backlight_set_level(100);
+#endif
+        printf("[KEY] KEY1 long press -> WAKE (waitmenu)\n");
+    }
+#ifdef LV_USE_AIC_SIMULATOR
+    uart_print();
+#endif
+}
+
 void nav_handle_key(uint8_t key)
 {
-#ifdef LV_USE_AIC_SIMULATOR
-    if (key) {
-        static const char *kn[] = {
-            [1]="KEY1", [3]="MENU", [5]="COLOR", [21]="BACK",
-            [31]="CW", [41]="CCW", [51]="PRESS"
-        };
-        printf("[KEY] %s (%d)\n", key<=51&&kn[key]?kn[key]:"?", key);
-    }
-#endif
     uint32_t now = lv_tick_get();
 
     switch (key_state) {
     case KEY_IDLE:
         if (key != 0) {
+#ifdef LV_USE_AIC_SIMULATOR
+            static const char *kn[] = {
+                [1]="KEY1", [3]="MENU", [5]="COLOR", [21]="BACK",
+                [31]="CW", [41]="CCW", [51]="PRESS"
+            };
+            printf("[KEY] %s (%d)\n", key<=51&&kn[key]?kn[key]:"?", key);
+#endif
             active_key = key;
             active_key_time = now;
             key_state = KEY_PRESSED;
@@ -1639,6 +1680,9 @@ void nav_handle_key(uint8_t key)
     case KEY_PRESSED:
         if (key == 0) {
             // 松开 → 回到空闲
+#ifdef LV_USE_AIC_SIMULATOR
+            printf("[KEY] release\n");
+#endif
             key_state = KEY_IDLE;
             active_key = 0;
         } else if (key == active_key) {
@@ -1650,15 +1694,10 @@ void nav_handle_key(uint8_t key)
                 active_key_time = now;
                 process_key(key);
             }
-            // KEY1 长按 → 省电态
-#ifdef LV_USE_AIC_SIMULATOR
-            if (active_key == KEY1 && interval >= LONG_PRESS_MS && !key1_long_pressed) {
-                key1_long_pressed = 1;
-                g_send.iface_status = IFACE_SLEEP;
-                uart_send_fill();
-                printf("[KEY] KEY1 long press -> SLEEP\n");
+            if (active_key == KEY1 && interval >= 2000) {
+                active_key_time = now;
+                nav_key1_long_press();
             }
-#endif
             // 触控键按住不重复（只有 KEY_IDLE 后的第一次触发）
         } else {
             // 键值变化（如编码器方向切换）

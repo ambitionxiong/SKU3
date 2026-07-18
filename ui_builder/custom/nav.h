@@ -113,6 +113,7 @@ void edit_register(lv_obj_t *label, lv_obj_t *ind_s, lv_obj_t *ind_l,
                    int *value, int min, int max, int step, const char *fmt);
 
 void nav_handle_key(uint8_t key);
+void nav_key1_long_press(void);
 void nav_init(void);
 void page_push(page_id_t id);
 void page_pop(void);

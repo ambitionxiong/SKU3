@@ -28,7 +28,6 @@ void updown_bbq_stop_back_create(ui_manager_t *ui)
     lv_obj_set_style_bg_opa(scr->obj, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->obj, LVGL_IMAGE_PATH(bg.jpg), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_recolor(scr->obj, lv_color_hex(0x550000), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_recolor_opa(scr->obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->statu_label
     scr->statu_label = lv_label_create(scr->obj);
