@@ -92,6 +92,8 @@ void hot_bbq_complete_create(ui_manager_t *ui)
     lv_obj_set_style_text_font(scr->button_59, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->button_59, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->button_59, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(scr->button_59, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->button_59, LVGL_IMAGE_PATH(little100.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
     // Init scr->image_97
     scr->image_97 = lv_img_create(scr->obj);
