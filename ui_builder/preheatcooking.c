@@ -49,6 +49,7 @@ void preheatcooking_create(ui_manager_t *ui)
     // Set style of scr->temp
     lv_obj_set_style_text_font(scr->temp, fs_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->temp, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->temp, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->stop
     scr->stop = lv_btn_create(scr->obj);

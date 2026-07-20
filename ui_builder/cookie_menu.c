@@ -74,7 +74,7 @@ void cookie_menu_create(ui_manager_t *ui)
 
     // Init scr->temp
     scr->temp = lv_label_create(scr->obj);
-    lv_label_set_text(scr->temp, "180");
+    lv_label_set_text(scr->temp, "135");
     lv_label_set_long_mode(scr->temp, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->temp, 252, 249);
     lv_obj_set_size(scr->temp, 120, 72);
@@ -153,7 +153,7 @@ void cookie_menu_create(ui_manager_t *ui)
 
     // Init scr->label_96
     scr->label_96 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_96, "曲奇饼");
+    lv_label_set_text(scr->label_96, "饼干");
     lv_label_set_long_mode(scr->label_96, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->label_96, 24, 25);
     lv_obj_set_size(scr->label_96, 144, 32);

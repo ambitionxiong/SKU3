@@ -38,31 +38,6 @@ typedef struct {
 
 typedef struct {
     lv_obj_t *obj;
-    lv_obj_t *fajiao_button;
-    lv_obj_t *corn_button;
-    lv_obj_t *heat_contain_button;
-    lv_obj_t *some_cook_button;
-    lv_obj_t *unfrozen_button;
-    lv_obj_t *slow_cook_button;
-    lv_obj_t *frozen_cook_button;
-    lv_obj_t *piza_button;
-    lv_obj_t *air_button;
-    lv_obj_t *air_label;
-    lv_obj_t *fajiao_label;
-    lv_obj_t *frozen_cook_label;
-    lv_obj_t *corn_label;
-    lv_obj_t *slow_cook_label;
-    lv_obj_t *heat_contain_label;
-    lv_obj_t *unfrozen_label;
-    lv_obj_t *some_cook_label;
-    lv_obj_t *special_label;
-    lv_obj_t *piza_label;
-    lv_obj_t *major_img;
-    lv_obj_t *time_label;
-} special_menu_t;
-
-typedef struct {
-    lv_obj_t *obj;
     lv_obj_t *time_label;
     lv_obj_t *week_label;
     lv_obj_t *year_month_label;
@@ -420,7 +395,8 @@ typedef struct {
     lv_obj_t *onpreheat_button;
     lv_obj_t *ondelay_button;
     lv_obj_t *oncontain_button;
-    lv_obj_t *label_99;
+    lv_obj_t *icon3;
+    lv_obj_t *icon2;
 } top_bbq_set_t;
 
 typedef struct {
@@ -539,7 +515,8 @@ typedef struct {
     lv_obj_t *onpreheat;
     lv_obj_t *ondelay;
     lv_obj_t *oncontain;
-    lv_obj_t *label_134;
+    lv_obj_t *icon3;
+    lv_obj_t *icon2;
 } bottom_bbq_set_t;
 
 typedef struct {
@@ -658,7 +635,8 @@ typedef struct {
     lv_obj_t *onpreheat;
     lv_obj_t *ondelay;
     lv_obj_t *oncontain;
-    lv_obj_t *label_182;
+    lv_obj_t *icon3;
+    lv_obj_t *icon2;
 } hot_bbq_set_t;
 
 typedef struct {
@@ -777,7 +755,8 @@ typedef struct {
     lv_obj_t *onpreheat;
     lv_obj_t *ondelay;
     lv_obj_t *oncontain;
-    lv_obj_t *label_230;
+    lv_obj_t *icon3;
+    lv_obj_t *icon2;
 } hotwind_bbq_set_t;
 
 typedef struct {
@@ -896,7 +875,8 @@ typedef struct {
     lv_obj_t *onpreheat;
     lv_obj_t *ondelay;
     lv_obj_t *oncontain;
-    lv_obj_t *label_268;
+    lv_obj_t *icon3;
+    lv_obj_t *icon2;
 } save_bbq_set_t;
 
 typedef struct {
@@ -1015,7 +995,8 @@ typedef struct {
     lv_obj_t *onpreheat;
     lv_obj_t *ondelay;
     lv_obj_t *oncontain;
-    lv_obj_t *label_306;
+    lv_obj_t *icon3;
+    lv_obj_t *icon2;
 } central_bbq_set_t;
 
 typedef struct {
@@ -1134,7 +1115,8 @@ typedef struct {
     lv_obj_t *onpreheat;
     lv_obj_t *ondelay;
     lv_obj_t *oncontain;
-    lv_obj_t *label_344;
+    lv_obj_t *icon3;
+    lv_obj_t *icon2;
 } windchange_bbq_set_t;
 
 typedef struct {
@@ -1294,12 +1276,504 @@ typedef struct {
     lv_obj_t *minline;
 } cookie_menu_t;
 
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *label_98;
+    lv_obj_t *label_99;
+    lv_obj_t *label_100;
+    lv_obj_t *label_101;
+    lv_obj_t *hour;
+    lv_obj_t *min;
+    lv_obj_t *label_104;
+    lv_obj_t *label_105;
+    lv_obj_t *image_57;
+    lv_obj_t *label_106;
+    lv_obj_t *sure;
+    lv_obj_t *label_108;
+    lv_obj_t *label_109;
+    lv_obj_t *label_110;
+    lv_obj_t *offdelay;
+    lv_obj_t *offcontain;
+    lv_obj_t *temp;
+    lv_obj_t *label_112;
+    lv_obj_t *ondelay;
+    lv_obj_t *oncontain;
+    lv_obj_t *icon3;
+    lv_obj_t *icon2;
+} cookie_set_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *status;
+    lv_obj_t *timelabel;
+    lv_obj_t *stop;
+    lv_obj_t *image_58;
+    lv_obj_t *bar_4;
+    lv_obj_t *label_124;
+    lv_obj_t *little;
+    lv_obj_t *image_59;
+} cookie_cooking_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *timelabel;
+    lv_obj_t *container_7;
+    lv_obj_t *image_60;
+    lv_obj_t *label_126;
+    lv_obj_t *label_127;
+    lv_obj_t *temp;
+    lv_obj_t *icon3;
+    lv_obj_t *templine2;
+    lv_obj_t *templine3;
+    lv_obj_t *hour;
+    lv_obj_t *min;
+    lv_obj_t *label_132;
+    lv_obj_t *label_133;
+    lv_obj_t *hourline;
+    lv_obj_t *minline;
+    lv_obj_t *icon2;
+    lv_obj_t *sure;
+} cookie_setting_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *status;
+    lv_obj_t *timelabel;
+    lv_obj_t *start;
+    lv_obj_t *image_65;
+    lv_obj_t *bar_5;
+    lv_obj_t *label_137;
+    lv_obj_t *little;
+    lv_obj_t *image_66;
+} cookie_stop_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_67;
+    lv_obj_t *status;
+    lv_obj_t *image_68;
+    lv_obj_t *bar_6;
+    lv_obj_t *label_139;
+    lv_obj_t *button_29;
+    lv_obj_t *container_8;
+    lv_obj_t *label_140;
+    lv_obj_t *label_141;
+    lv_obj_t *sure;
+} cookie_stop_back_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_69;
+    lv_obj_t *status;
+    lv_obj_t *bar_7;
+    lv_obj_t *label_143;
+    lv_obj_t *image_70;
+    lv_obj_t *little;
+    lv_obj_t *image_71;
+} cookie_complete_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *next;
+    lv_obj_t *image_72;
+    lv_obj_t *image_73;
+    lv_obj_t *label_144;
+    lv_obj_t *temp;
+    lv_obj_t *label_146;
+    lv_obj_t *label_147;
+    lv_obj_t *hour;
+    lv_obj_t *label_149;
+    lv_obj_t *label_150;
+    lv_obj_t *min;
+    lv_obj_t *label_152;
+    lv_obj_t *label_153;
+    lv_obj_t *templine3;
+    lv_obj_t *templine2;
+    lv_obj_t *hourline;
+    lv_obj_t *minline;
+} west_menu_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *label_154;
+    lv_obj_t *label_155;
+    lv_obj_t *label_156;
+    lv_obj_t *label_157;
+    lv_obj_t *hour;
+    lv_obj_t *min;
+    lv_obj_t *label_160;
+    lv_obj_t *label_161;
+    lv_obj_t *image_78;
+    lv_obj_t *label_162;
+    lv_obj_t *sure;
+    lv_obj_t *label_164;
+    lv_obj_t *label_165;
+    lv_obj_t *label_166;
+    lv_obj_t *offdelay;
+    lv_obj_t *offcontain;
+    lv_obj_t *temp;
+    lv_obj_t *label_168;
+    lv_obj_t *ondelay;
+    lv_obj_t *oncontain;
+    lv_obj_t *icon3;
+    lv_obj_t *icon2;
+} west_set_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *status;
+    lv_obj_t *timelabel;
+    lv_obj_t *stop;
+    lv_obj_t *image_79;
+    lv_obj_t *bar_8;
+    lv_obj_t *label_173;
+    lv_obj_t *little;
+    lv_obj_t *image_80;
+} west_cooking_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *timelabel;
+    lv_obj_t *container_9;
+    lv_obj_t *image_81;
+    lv_obj_t *label_175;
+    lv_obj_t *label_176;
+    lv_obj_t *temp;
+    lv_obj_t *icon3;
+    lv_obj_t *templine2;
+    lv_obj_t *templine3;
+    lv_obj_t *hour;
+    lv_obj_t *min;
+    lv_obj_t *label_181;
+    lv_obj_t *label_182;
+    lv_obj_t *hourline;
+    lv_obj_t *minline;
+    lv_obj_t *icon2;
+    lv_obj_t *sure;
+} west_setting_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *status;
+    lv_obj_t *timelabel;
+    lv_obj_t *start;
+    lv_obj_t *image_86;
+    lv_obj_t *bar_9;
+    lv_obj_t *label_186;
+    lv_obj_t *little;
+    lv_obj_t *image_87;
+} west_stop_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_88;
+    lv_obj_t *status;
+    lv_obj_t *image_89;
+    lv_obj_t *bar_10;
+    lv_obj_t *label_188;
+    lv_obj_t *little;
+    lv_obj_t *container_10;
+    lv_obj_t *label_189;
+    lv_obj_t *label_190;
+    lv_obj_t *sure;
+} west_stop_back_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_90;
+    lv_obj_t *status;
+    lv_obj_t *bar_11;
+    lv_obj_t *label_192;
+    lv_obj_t *image_91;
+    lv_obj_t *little;
+    lv_obj_t *image_92;
+} west_complete_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *next;
+    lv_obj_t *image_93;
+    lv_obj_t *image_94;
+    lv_obj_t *label_193;
+    lv_obj_t *temp;
+    lv_obj_t *label_195;
+    lv_obj_t *label_196;
+    lv_obj_t *hour;
+    lv_obj_t *label_198;
+    lv_obj_t *label_199;
+    lv_obj_t *min;
+    lv_obj_t *label_201;
+    lv_obj_t *label_202;
+    lv_obj_t *templine3;
+    lv_obj_t *templine2;
+    lv_obj_t *hourline;
+    lv_obj_t *minline;
+} pizza_menu_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *label_203;
+    lv_obj_t *label_204;
+    lv_obj_t *label_205;
+    lv_obj_t *label_206;
+    lv_obj_t *hour;
+    lv_obj_t *min;
+    lv_obj_t *label_209;
+    lv_obj_t *label_210;
+    lv_obj_t *image_99;
+    lv_obj_t *label_211;
+    lv_obj_t *sure;
+    lv_obj_t *label_212;
+    lv_obj_t *label_213;
+    lv_obj_t *label_214;
+    lv_obj_t *offdelay;
+    lv_obj_t *offcontain;
+    lv_obj_t *temp;
+    lv_obj_t *label_216;
+    lv_obj_t *ondelay;
+    lv_obj_t *oncontain;
+    lv_obj_t *icon3;
+    lv_obj_t *icon2;
+} pizza_set_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *status;
+    lv_obj_t *timelabel;
+    lv_obj_t *stop;
+    lv_obj_t *image_100;
+    lv_obj_t *bar_12;
+    lv_obj_t *label_221;
+    lv_obj_t *little;
+    lv_obj_t *image_101;
+} pizza_cooking_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *timelabel;
+    lv_obj_t *container_11;
+    lv_obj_t *image_102;
+    lv_obj_t *label_223;
+    lv_obj_t *label_224;
+    lv_obj_t *temp;
+    lv_obj_t *icon3;
+    lv_obj_t *templine2;
+    lv_obj_t *templine3;
+    lv_obj_t *hour;
+    lv_obj_t *min;
+    lv_obj_t *label_229;
+    lv_obj_t *label_230;
+    lv_obj_t *hourline;
+    lv_obj_t *minline;
+    lv_obj_t *icon2;
+    lv_obj_t *sure;
+} pizza_setting_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *status;
+    lv_obj_t *timelabel;
+    lv_obj_t *start;
+    lv_obj_t *image_107;
+    lv_obj_t *bar_13;
+    lv_obj_t *label_234;
+    lv_obj_t *little;
+    lv_obj_t *image_108;
+} pizza_stop_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_109;
+    lv_obj_t *status;
+    lv_obj_t *image_110;
+    lv_obj_t *bar_14;
+    lv_obj_t *label_236;
+    lv_obj_t *little;
+    lv_obj_t *container_12;
+    lv_obj_t *label_237;
+    lv_obj_t *label_238;
+    lv_obj_t *sure;
+} pizza_stop_back_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_111;
+    lv_obj_t *status;
+    lv_obj_t *bar_15;
+    lv_obj_t *label_240;
+    lv_obj_t *image_112;
+    lv_obj_t *little;
+    lv_obj_t *image_113;
+} pizza_complete_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *next;
+    lv_obj_t *image_114;
+    lv_obj_t *image_115;
+    lv_obj_t *label_241;
+    lv_obj_t *temp;
+    lv_obj_t *label_243;
+    lv_obj_t *label_244;
+    lv_obj_t *hour;
+    lv_obj_t *label_246;
+    lv_obj_t *label_247;
+    lv_obj_t *min;
+    lv_obj_t *label_249;
+    lv_obj_t *label_250;
+    lv_obj_t *templine3;
+    lv_obj_t *templine2;
+    lv_obj_t *hourline;
+    lv_obj_t *minline;
+} menu_menu_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *label_251;
+    lv_obj_t *label_252;
+    lv_obj_t *label_253;
+    lv_obj_t *label_254;
+    lv_obj_t *hour;
+    lv_obj_t *min;
+    lv_obj_t *label_257;
+    lv_obj_t *label_258;
+    lv_obj_t *image_120;
+    lv_obj_t *label_259;
+    lv_obj_t *sure;
+    lv_obj_t *label_260;
+    lv_obj_t *label_261;
+    lv_obj_t *label_262;
+    lv_obj_t *offdelay;
+    lv_obj_t *offcontain;
+    lv_obj_t *temp;
+    lv_obj_t *label_264;
+    lv_obj_t *ondelay;
+    lv_obj_t *oncontain;
+    lv_obj_t *icon3;
+    lv_obj_t *icon2;
+} menu_set_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *status;
+    lv_obj_t *timelabel;
+    lv_obj_t *stop;
+    lv_obj_t *image_121;
+    lv_obj_t *bar_16;
+    lv_obj_t *label_269;
+    lv_obj_t *little;
+    lv_obj_t *image_122;
+} menu_cooking_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *timelabel;
+    lv_obj_t *container_13;
+    lv_obj_t *image_123;
+    lv_obj_t *label_271;
+    lv_obj_t *label_272;
+    lv_obj_t *temp;
+    lv_obj_t *icon3;
+    lv_obj_t *templine2;
+    lv_obj_t *templine3;
+    lv_obj_t *hour;
+    lv_obj_t *min;
+    lv_obj_t *label_277;
+    lv_obj_t *label_278;
+    lv_obj_t *hourline;
+    lv_obj_t *minline;
+    lv_obj_t *icon2;
+    lv_obj_t *sure;
+} menu_setting_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *status;
+    lv_obj_t *timelabel;
+    lv_obj_t *start;
+    lv_obj_t *image_128;
+    lv_obj_t *bar_17;
+    lv_obj_t *label_282;
+    lv_obj_t *little;
+    lv_obj_t *image_129;
+} menu_stop_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_130;
+    lv_obj_t *status;
+    lv_obj_t *image_131;
+    lv_obj_t *bar_18;
+    lv_obj_t *label_284;
+    lv_obj_t *little;
+    lv_obj_t *container_14;
+    lv_obj_t *label_285;
+    lv_obj_t *label_286;
+    lv_obj_t *sure;
+} menu_stop_back_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_132;
+    lv_obj_t *status;
+    lv_obj_t *bar_19;
+    lv_obj_t *label_288;
+    lv_obj_t *image_133;
+    lv_obj_t *little;
+    lv_obj_t *image_134;
+} menu_complete_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *fajiao_button;
+    lv_obj_t *corn_button;
+    lv_obj_t *heat_contain_button;
+    lv_obj_t *some_cook_button;
+    lv_obj_t *unfrozen_button;
+    lv_obj_t *slow_cook_button;
+    lv_obj_t *frozen_cook_button;
+    lv_obj_t *piza_button;
+    lv_obj_t *air_button;
+    lv_obj_t *air_label;
+    lv_obj_t *fajiao_label;
+    lv_obj_t *frozen_cook_label;
+    lv_obj_t *corn_label;
+    lv_obj_t *slow_cook_label;
+    lv_obj_t *heat_contain_label;
+    lv_obj_t *unfrozen_label;
+    lv_obj_t *some_cook_label;
+    lv_obj_t *special_label;
+    lv_obj_t *piza_label;
+    lv_obj_t *major_img;
+    lv_obj_t *time_label;
+} special_menu_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *button_74;
+    lv_obj_t *image_135;
+    lv_obj_t *image_136;
+    lv_obj_t *label_289;
+    lv_obj_t *label_290;
+    lv_obj_t *label_291;
+    lv_obj_t *label_292;
+    lv_obj_t *label_293;
+    lv_obj_t *label_294;
+    lv_obj_t *label_295;
+    lv_obj_t *label_296;
+    lv_obj_t *label_297;
+    lv_obj_t *label_298;
+    lv_obj_t *image_137;
+    lv_obj_t *image_138;
+    lv_obj_t *image_139;
+    lv_obj_t *minline;
+} airfry_menu_t;
+
 
 typedef struct {
     bool auto_del;
     waitmenu_24_t waitmenu_24;
     special_menu_tz_t special_menu_tz;
-    special_menu_t special_menu;
     waitmenu_12_t waitmenu_12;
     cook_menu_tz_t cook_menu_tz;
     major_menu_tz_t major_menu_tz;
@@ -1374,6 +1848,35 @@ typedef struct {
     preheatcomplete_t preheatcomplete;
     cook4menu_t cook4menu;
     cookie_menu_t cookie_menu;
+    cookie_set_t cookie_set;
+    cookie_cooking_t cookie_cooking;
+    cookie_setting_t cookie_setting;
+    cookie_stop_t cookie_stop;
+    cookie_stop_back_t cookie_stop_back;
+    cookie_complete_t cookie_complete;
+    west_menu_t west_menu;
+    west_set_t west_set;
+    west_cooking_t west_cooking;
+    west_setting_t west_setting;
+    west_stop_t west_stop;
+    west_stop_back_t west_stop_back;
+    west_complete_t west_complete;
+    pizza_menu_t pizza_menu;
+    pizza_set_t pizza_set;
+    pizza_cooking_t pizza_cooking;
+    pizza_setting_t pizza_setting;
+    pizza_stop_t pizza_stop;
+    pizza_stop_back_t pizza_stop_back;
+    pizza_complete_t pizza_complete;
+    menu_menu_t menu_menu;
+    menu_set_t menu_set;
+    menu_cooking_t menu_cooking;
+    menu_setting_t menu_setting;
+    menu_stop_t menu_stop;
+    menu_stop_back_t menu_stop_back;
+    menu_complete_t menu_complete;
+    special_menu_t special_menu;
+    airfry_menu_t airfry_menu;
 
 } ui_manager_t;
 
@@ -1391,11 +1894,6 @@ static inline waitmenu_24_t *waitmenu_24_get(ui_manager_t *ui)
 static inline special_menu_tz_t *special_menu_tz_get(ui_manager_t *ui)
 {
     return &ui->special_menu_tz;
-}
-
-static inline special_menu_t *special_menu_get(ui_manager_t *ui)
-{
-    return &ui->special_menu;
 }
 
 static inline waitmenu_12_t *waitmenu_12_get(ui_manager_t *ui)
@@ -1768,10 +2266,154 @@ static inline cookie_menu_t *cookie_menu_get(ui_manager_t *ui)
     return &ui->cookie_menu;
 }
 
+static inline cookie_set_t *cookie_set_get(ui_manager_t *ui)
+{
+    return &ui->cookie_set;
+}
+
+static inline cookie_cooking_t *cookie_cooking_get(ui_manager_t *ui)
+{
+    return &ui->cookie_cooking;
+}
+
+static inline cookie_setting_t *cookie_setting_get(ui_manager_t *ui)
+{
+    return &ui->cookie_setting;
+}
+
+static inline cookie_stop_t *cookie_stop_get(ui_manager_t *ui)
+{
+    return &ui->cookie_stop;
+}
+
+static inline cookie_stop_back_t *cookie_stop_back_get(ui_manager_t *ui)
+{
+    return &ui->cookie_stop_back;
+}
+
+static inline cookie_complete_t *cookie_complete_get(ui_manager_t *ui)
+{
+    return &ui->cookie_complete;
+}
+
+static inline west_menu_t *west_menu_get(ui_manager_t *ui)
+{
+    return &ui->west_menu;
+}
+
+static inline west_set_t *west_set_get(ui_manager_t *ui)
+{
+    return &ui->west_set;
+}
+
+static inline west_cooking_t *west_cooking_get(ui_manager_t *ui)
+{
+    return &ui->west_cooking;
+}
+
+static inline west_setting_t *west_setting_get(ui_manager_t *ui)
+{
+    return &ui->west_setting;
+}
+
+static inline west_stop_t *west_stop_get(ui_manager_t *ui)
+{
+    return &ui->west_stop;
+}
+
+static inline west_stop_back_t *west_stop_back_get(ui_manager_t *ui)
+{
+    return &ui->west_stop_back;
+}
+
+static inline west_complete_t *west_complete_get(ui_manager_t *ui)
+{
+    return &ui->west_complete;
+}
+
+static inline pizza_menu_t *pizza_menu_get(ui_manager_t *ui)
+{
+    return &ui->pizza_menu;
+}
+
+static inline pizza_set_t *pizza_set_get(ui_manager_t *ui)
+{
+    return &ui->pizza_set;
+}
+
+static inline pizza_cooking_t *pizza_cooking_get(ui_manager_t *ui)
+{
+    return &ui->pizza_cooking;
+}
+
+static inline pizza_setting_t *pizza_setting_get(ui_manager_t *ui)
+{
+    return &ui->pizza_setting;
+}
+
+static inline pizza_stop_t *pizza_stop_get(ui_manager_t *ui)
+{
+    return &ui->pizza_stop;
+}
+
+static inline pizza_stop_back_t *pizza_stop_back_get(ui_manager_t *ui)
+{
+    return &ui->pizza_stop_back;
+}
+
+static inline pizza_complete_t *pizza_complete_get(ui_manager_t *ui)
+{
+    return &ui->pizza_complete;
+}
+
+static inline menu_menu_t *menu_menu_get(ui_manager_t *ui)
+{
+    return &ui->menu_menu;
+}
+
+static inline menu_set_t *menu_set_get(ui_manager_t *ui)
+{
+    return &ui->menu_set;
+}
+
+static inline menu_cooking_t *menu_cooking_get(ui_manager_t *ui)
+{
+    return &ui->menu_cooking;
+}
+
+static inline menu_setting_t *menu_setting_get(ui_manager_t *ui)
+{
+    return &ui->menu_setting;
+}
+
+static inline menu_stop_t *menu_stop_get(ui_manager_t *ui)
+{
+    return &ui->menu_stop;
+}
+
+static inline menu_stop_back_t *menu_stop_back_get(ui_manager_t *ui)
+{
+    return &ui->menu_stop_back;
+}
+
+static inline menu_complete_t *menu_complete_get(ui_manager_t *ui)
+{
+    return &ui->menu_complete;
+}
+
+static inline special_menu_t *special_menu_get(ui_manager_t *ui)
+{
+    return &ui->special_menu;
+}
+
+static inline airfry_menu_t *airfry_menu_get(ui_manager_t *ui)
+{
+    return &ui->airfry_menu;
+}
+
 
 void waitmenu_24_create(ui_manager_t *ui);
 void special_menu_tz_create(ui_manager_t *ui);
-void special_menu_create(ui_manager_t *ui);
 void waitmenu_12_create(ui_manager_t *ui);
 void cook_menu_tz_create(ui_manager_t *ui);
 void major_menu_tz_create(ui_manager_t *ui);
@@ -1846,6 +2488,35 @@ void preheatstop_create(ui_manager_t *ui);
 void preheatcomplete_create(ui_manager_t *ui);
 void cook4menu_create(ui_manager_t *ui);
 void cookie_menu_create(ui_manager_t *ui);
+void cookie_set_create(ui_manager_t *ui);
+void cookie_cooking_create(ui_manager_t *ui);
+void cookie_setting_create(ui_manager_t *ui);
+void cookie_stop_create(ui_manager_t *ui);
+void cookie_stop_back_create(ui_manager_t *ui);
+void cookie_complete_create(ui_manager_t *ui);
+void west_menu_create(ui_manager_t *ui);
+void west_set_create(ui_manager_t *ui);
+void west_cooking_create(ui_manager_t *ui);
+void west_setting_create(ui_manager_t *ui);
+void west_stop_create(ui_manager_t *ui);
+void west_stop_back_create(ui_manager_t *ui);
+void west_complete_create(ui_manager_t *ui);
+void pizza_menu_create(ui_manager_t *ui);
+void pizza_set_create(ui_manager_t *ui);
+void pizza_cooking_create(ui_manager_t *ui);
+void pizza_setting_create(ui_manager_t *ui);
+void pizza_stop_create(ui_manager_t *ui);
+void pizza_stop_back_create(ui_manager_t *ui);
+void pizza_complete_create(ui_manager_t *ui);
+void menu_menu_create(ui_manager_t *ui);
+void menu_set_create(ui_manager_t *ui);
+void menu_cooking_create(ui_manager_t *ui);
+void menu_setting_create(ui_manager_t *ui);
+void menu_stop_create(ui_manager_t *ui);
+void menu_stop_back_create(ui_manager_t *ui);
+void menu_complete_create(ui_manager_t *ui);
+void special_menu_create(ui_manager_t *ui);
+void airfry_menu_create(ui_manager_t *ui);
 
 
 extern lv_font_t *fs_montserratmedium_16;

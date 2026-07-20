@@ -333,17 +333,29 @@ void windchange_bbq_set_create(ui_manager_t *ui)
     lv_obj_set_style_bg_opa(scr->oncontain, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
     lv_obj_set_style_bg_img_src(scr->oncontain, LVGL_IMAGE_PATH(on2.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
-    // Init scr->label_344
-    scr->label_344 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_344, "℃");
-    lv_label_set_long_mode(scr->label_344, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_344, 396, 157);
-    lv_obj_set_size(scr->label_344, 32, 30);
+    // Init scr->icon3
+    scr->icon3 = lv_label_create(scr->obj);
+    lv_label_set_text(scr->icon3, "℃");
+    lv_label_set_long_mode(scr->icon3, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->icon3, 396, 157);
+    lv_obj_set_size(scr->icon3, 32, 30);
 
-    // Set style of scr->label_344
-    lv_obj_set_style_text_font(scr->label_344, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->label_344, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(scr->label_344, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
+    // Set style of scr->icon3
+    lv_obj_set_style_text_font(scr->icon3, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->icon3, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->icon3, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // Init scr->icon2
+    scr->icon2 = lv_label_create(scr->obj);
+    lv_label_set_text(scr->icon2, "℃");
+    lv_label_set_long_mode(scr->icon2, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->icon2, 369, 157);
+    lv_obj_set_size(scr->icon2, 32, 30);
+
+    // Set style of scr->icon2
+    lv_obj_set_style_text_font(scr->icon2, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->icon2, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->icon2, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
 
 
 }

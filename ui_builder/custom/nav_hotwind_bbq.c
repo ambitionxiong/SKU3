@@ -248,6 +248,12 @@ void jump_to_hotwind_bbq_set(void)
         lv_group_focus_obj(set->sure);
 
         lv_label_set_text_fmt(set->temp, "%d", set_temp);
+        lv_obj_add_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->icon2, LV_OBJ_FLAG_HIDDEN);
+        if (set_temp < 100)
+            lv_obj_clear_flag(set->icon2, LV_OBJ_FLAG_HIDDEN);
+        else
+            lv_obj_clear_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
         lv_label_set_text_fmt(set->hour, "%02d", set_hour);
         lv_label_set_text_fmt(set->min, "%02d", set_min);
 
@@ -371,6 +377,12 @@ void jump_to_hotwind_bbq_setting(void)
         lv_label_set_text_fmt(set->hour, "%02d", h);
         lv_label_set_text_fmt(set->min, "%02d", m);
         lv_label_set_text_fmt(set->temp, "%d", set_temp);
+        lv_obj_add_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->icon2, LV_OBJ_FLAG_HIDDEN);
+        if (set_temp < 100)
+            lv_obj_clear_flag(set->icon2, LV_OBJ_FLAG_HIDDEN);
+        else
+            lv_obj_clear_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
 
         lv_obj_add_flag(set->templine3, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
@@ -689,6 +701,12 @@ void hotwind_bbq_rebuild_set(page_id_t child)
         lv_group_focus_obj(set->sure);
 
         lv_label_set_text_fmt(set->temp, "%d", set_temp);
+        lv_obj_add_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->icon2, LV_OBJ_FLAG_HIDDEN);
+        if (set_temp < 100)
+            lv_obj_clear_flag(set->icon2, LV_OBJ_FLAG_HIDDEN);
+        else
+            lv_obj_clear_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
         lv_label_set_text_fmt(set->hour, "%02d", set_hour);
         lv_label_set_text_fmt(set->min, "%02d", set_min);
 
@@ -811,6 +829,12 @@ void hotwind_bbq_rebuild_setting(void)
         lv_label_set_text_fmt(set->hour, "%02d", h);
         lv_label_set_text_fmt(set->min, "%02d", m);
         lv_label_set_text_fmt(set->temp, "%d", set_temp);
+        lv_obj_add_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->icon2, LV_OBJ_FLAG_HIDDEN);
+        if (set_temp < 100)
+            lv_obj_clear_flag(set->icon2, LV_OBJ_FLAG_HIDDEN);
+        else
+            lv_obj_clear_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
 
         lv_obj_add_flag(set->templine3, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
