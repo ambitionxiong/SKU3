@@ -15,6 +15,10 @@ typedef enum {
     PAGE_UPDOWN_BBQ_MENU,
     PAGE_UPDOWN_BBQ_MENU_TOP,
     PAGE_UPDOWN_BBQ_MENU_LOW,
+    PAGE_PREHEAT_MENU,
+    PAGE_PREHEAT_COOKING,
+    PAGE_PREHEAT_STOP,
+    PAGE_PREHEAT_COMPLETE,
     PAGE_UPDOWN_BBQ_SET,
     PAGE_UPDOWN_BBQ_COOKING,
     PAGE_UPDOWN_BBQ_COMPLETE,
@@ -86,6 +90,11 @@ extern lv_group_t *g_special_menu;
 extern lv_group_t *g_updown_bbq_menu;
 extern lv_group_t *g_updown_bbq_menu_top;
 extern lv_group_t *g_updown_bbq_menu_low;
+
+extern lv_group_t *g_preheat_menu;
+extern lv_group_t *g_preheat_cooking;
+extern lv_group_t *g_preheat_stop;
+extern lv_group_t *g_preheat_complete;
 extern lv_group_t *g_updown_bbq_set;
 extern lv_group_t *g_updown_bbq_cooking;
 extern lv_group_t *g_updown_bbq_complete;
@@ -174,6 +183,17 @@ extern lv_group_t *g_color_cookoing;
 extern lv_group_t *g_color_stop;
 extern lv_group_t *g_color_stop_back;
 
+uint16_t get_cavity_temp(void);
+void jump_to_cookmenu(void);
+void jump_to_preheat_menu(void);
+void jump_to_preheat_cooking(void);
+void jump_to_preheat_stop(void);
+void jump_to_preheat_stop_back(void);
+void preheat_resume_cooking(void);
+void jump_to_preheat_complete(void);
+#ifdef LV_USE_AIC_SIMULATOR
+extern uint16_t g_sim_cavity_temp;
+#endif
 void edit_clear(void);
 void edit_register(lv_obj_t *label, lv_obj_t *ind_s, lv_obj_t *ind_l,
                    int *value, int min, int max, int step, const char *fmt);

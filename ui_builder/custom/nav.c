@@ -43,6 +43,39 @@ lv_group_t *g_updown_bbq_complete;
 
 lv_group_t *g_updown_bbq_menu_top;
 lv_group_t *g_updown_bbq_menu_low;
+lv_group_t *g_preheat_menu;
+
+lv_group_t *g_preheat_cooking;
+
+lv_group_t *g_preheat_stop;
+
+lv_group_t *g_preheat_complete;
+
+
+#ifdef LV_USE_AIC_SIMULATOR
+
+uint16_t g_sim_cavity_temp = 25;
+
+#endif
+
+
+uint16_t get_cavity_temp(void)
+
+{
+
+#ifdef LV_USE_AIC_SIMULATOR
+
+    return g_sim_cavity_temp;
+
+#else
+
+    return ((uint16_t)uart_data_receive[Receive_data_QiangTi_Temp_H] << 8)
+
+           | uart_data_receive[Receive_data_QiangTi_Temp_L];
+
+#endif
+
+}
 lv_group_t *g_extra_color;
 lv_group_t *g_color_cookoing;
 lv_group_t *g_color_stop;
@@ -121,6 +154,7 @@ static void on_hotwind_click(lv_event_t *e);
 static void on_save_click(lv_event_t *e);
 static void on_central_click(lv_event_t *e);
 static void on_windchange_click(lv_event_t *e);
+static void on_preheat_click(lv_event_t *e);
 static void on_updown_next_click(lv_event_t *e);
 void on_edit_focus(lv_event_t *e);
 void validate_constraints(void);
@@ -540,6 +574,8 @@ void page_pop(void)
                 lv_group_focus_obj(cook->central_button);
             else if (child == PAGE_WINDCHANGE_BBQ_MENU && cook->windchange_buttonn)
                 lv_group_focus_obj(cook->windchange_buttonn);
+            else if (child == PAGE_PREHEAT_MENU && cook->preheater_button)
+                lv_group_focus_obj(cook->preheater_button);
 
             /* 新按钮需要重新绑定事件 */
             if (cook && cook->up_down_button)
@@ -565,6 +601,9 @@ void page_pop(void)
                                     LV_EVENT_CLICKED, NULL);
             if (cook && cook->windchange_buttonn)
                 lv_obj_add_event_cb(cook->windchange_buttonn, on_windchange_click,
+                                    LV_EVENT_CLICKED, NULL);
+            if (cook && cook->preheater_button)
+                lv_obj_add_event_cb(cook->preheater_button, on_preheat_click,
                                     LV_EVENT_CLICKED, NULL);
 
             /* 退出 updown_bbq 流程后清空临时值 */
@@ -1169,6 +1208,11 @@ void page_pop(void)
     case PAGE_WINDCHANGE_BBQ_COMPLETE:
         goto pop_to_major_menu;
 
+    case PAGE_PREHEAT_COOKING:
+    case PAGE_PREHEAT_STOP:
+    case PAGE_PREHEAT_COMPLETE:
+        goto pop_to_major_menu;
+
     pop_to_major_menu:
         /* 关闭定时器 */
         if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
@@ -1272,7 +1316,7 @@ lv_group_t *group_create_for_page(lv_obj_t **btns, int count)
 // ==============================
 
 // major_menu → cookmenu
-static void jump_to_cookmenu(void)
+void jump_to_cookmenu(void)
 {
     page_push(PAGE_COOKMENU);  // 推栈
     lv_obj_clean(lv_scr_act());
@@ -1311,6 +1355,8 @@ static void jump_to_cookmenu(void)
         lv_obj_add_event_cb(cook->central_button, on_central_click,
                             LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(cook->windchange_buttonn, on_windchange_click,
+                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(cook->preheater_button, on_preheat_click,
                             LV_EVENT_CLICKED, NULL);
 
     lv_scr_load_anim(cookmenu_get(&ui_manager)->obj,
@@ -1857,12 +1903,25 @@ static void process_key(uint8_t key)
                 jump_to_windchange_bbq_stop();
             else if (cur == PAGE_WINDCHANGE_BBQ_STOP)
                 jump_to_windchange_bbq_stop_back();
+            else if (cur == PAGE_PREHEAT_COOKING)
+                jump_to_preheat_stop();
+            else if (cur == PAGE_PREHEAT_STOP)
+                jump_to_preheat_stop_back();
             else
                 page_pop();
         }
         uart_print();
         break;
     case KEY_ENCODER_CW: {  // 31: 焦点下移 / 数值+
+#ifdef LV_USE_AIC_SIMULATOR
+        if (current_group == g_preheat_cooking) {
+            g_sim_cavity_temp += 5;
+            if (g_sim_cavity_temp > 300) g_sim_cavity_temp = 300;
+            g_send.buzzer_req = BUZZER_ENCODER;
+            uart_print();
+            break;
+        }
+#endif
         if (!current_group) break;
         lv_obj_t *focused = lv_group_get_focused(current_group);
         edit_field_t *ef = find_edit_field(focused);
@@ -1879,6 +1938,16 @@ static void process_key(uint8_t key)
         break;
     }
     case KEY_ENCODER_CCW: {  // 41: 焦点上移 / 数值-
+#ifdef LV_USE_AIC_SIMULATOR
+        if (current_group == g_preheat_cooking) {
+            g_sim_cavity_temp -= 5;
+            if (g_sim_cavity_temp > 300) g_sim_cavity_temp = 300;
+            if (g_sim_cavity_temp < 0) g_sim_cavity_temp = 0;
+            g_send.buzzer_req = BUZZER_ENCODER;
+            uart_print();
+            break;
+        }
+#endif
         if (!current_group) break;
         g_send.buzzer_req = BUZZER_ENCODER;
         lv_obj_t *focused = lv_group_get_focused(current_group);
@@ -2241,6 +2310,12 @@ static void on_windchange_click(lv_event_t *e)
     if (!screen_is_loading(act_scr))
         jump_to_windchange_bbq_menu();
 }
+static void on_preheat_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (!screen_is_loading(act_scr))
+        jump_to_preheat_menu();
+}
 
 static void on_updown_next_click(lv_event_t *e)
 {
@@ -2344,6 +2419,32 @@ static void on_color_start_click(lv_event_t *e)
 
 void cooking_timer_cb(lv_timer_t *timer)
 {
+    if (current_group == g_preheat_cooking) {
+        preheatcooking_t *cook = preheatcooking_get(&ui_manager);
+        if (cook) {
+            uint16_t cavity = get_cavity_temp();
+            int p = (cavity * 100) / (set_temp ? set_temp : 1);
+            if (p > 100) p = 100;
+            lv_bar_set_value(cook->bar_1, p, LV_ANIM_OFF);
+            if (p >= 100 && cook_timer) {
+                lv_timer_del(cook_timer);
+                cook_timer = NULL;
+                jump_to_preheat_complete();
+            }
+        }
+        return;
+    }
+    if (current_group == g_preheat_stop) {
+        preheatstop_t *stop = preheatstop_get(&ui_manager);
+        if (stop) {
+            uint16_t cavity = get_cavity_temp();
+            int p = (cavity * 100) / (set_temp ? set_temp : 1);
+            if (p > 100) p = 100;
+            lv_bar_set_value(stop->bar_2, p, LV_ANIM_OFF);
+        }
+        return;
+    }
+
     lv_obj_t *time_label = NULL;
 
     if (current_group == g_updown_bbq_setting) {
