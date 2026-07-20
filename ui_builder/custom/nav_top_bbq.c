@@ -539,6 +539,8 @@ static void on_top_bbq_setting_sure_click(lv_event_t *e)
     depth--;
     if (depth > 0 && page_stack[depth - 1] == PAGE_TOP_BBQ_STOP)
         depth--;
+    if (depth > 0 && page_stack[depth - 1] == PAGE_TOP_BBQ_COMPLETE)
+        depth--;
     lv_obj_clean(lv_scr_act());
     top_bbq_cooking_create(&ui_manager);
 
@@ -590,6 +592,16 @@ void jump_to_top_bbq_complete(void)
     lv_obj_clean(lv_scr_act());
     top_bbq_complete_create(&ui_manager);
 
+    {
+        top_bbq_complete_t *cook = top_bbq_complete_get(&ui_manager);
+        if (cook) {
+            lv_obj_t *btns[] = { cook->button_27 };
+            if (g_top_bbq_complete) lv_group_del(g_top_bbq_complete);
+            g_top_bbq_complete = group_create_for_page(btns, 1);
+            lv_obj_add_event_cb(cook->button_27, on_top_bbq_cooking_setting_click,
+                                LV_EVENT_CLICKED, NULL);
+        }
+    }
     current_group = g_top_bbq_complete;
 
     lv_scr_load_anim(top_bbq_complete_get(&ui_manager)->obj,

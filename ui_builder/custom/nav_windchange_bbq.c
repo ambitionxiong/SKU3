@@ -540,6 +540,8 @@ static void on_windchange_bbq_setting_sure_click(lv_event_t *e)
     depth--;
     if (depth > 0 && page_stack[depth - 1] == PAGE_WINDCHANGE_BBQ_STOP)
         depth--;
+    if (depth > 0 && page_stack[depth - 1] == PAGE_WINDCHANGE_BBQ_COMPLETE)
+        depth--;
     lv_obj_clean(lv_scr_act());
     windchange_bbq_cooking_create(&ui_manager);
 
@@ -591,6 +593,16 @@ void jump_to_windchange_bbq_complete(void)
     lv_obj_clean(lv_scr_act());
     windchange_bbq_complete_create(&ui_manager);
 
+    {
+        windchange_bbq_complete_t *cook = windchange_bbq_complete_get(&ui_manager);
+        if (cook) {
+            lv_obj_t *btns[] = { cook->button_119 };
+            if (g_windchange_bbq_complete) lv_group_del(g_windchange_bbq_complete);
+            g_windchange_bbq_complete = group_create_for_page(btns, 1);
+            lv_obj_add_event_cb(cook->button_119, on_windchange_bbq_cooking_setting_click,
+                                LV_EVENT_CLICKED, NULL);
+        }
+    }
     current_group = g_windchange_bbq_complete;
 
     lv_scr_load_anim(windchange_bbq_complete_get(&ui_manager)->obj,

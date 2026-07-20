@@ -164,17 +164,6 @@ void updown_bbq_menu_top_create(ui_manager_t *ui)
     lv_obj_set_pos(scr->line2, 289, 328);
     lv_obj_add_flag(scr->line2, LV_OBJ_FLAG_HIDDEN);
 
-    // Init scr->label_50
-    scr->label_50 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_50, "下一步");
-    lv_label_set_long_mode(scr->label_50, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_50, 996, 39);
-    lv_obj_set_size(scr->label_50, 117, 32);
-
-    // Set style of scr->label_50
-    lv_obj_set_style_text_font(scr->label_50, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->label_50, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-
     // Init scr->next
     scr->next = lv_btn_create(scr->obj);
     lv_obj_t *next_label = lv_label_create(scr->next);
@@ -191,6 +180,17 @@ void updown_bbq_menu_top_create(ui_manager_t *ui)
     lv_obj_set_style_shadow_width(scr->next, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->next, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
     lv_obj_set_style_bg_img_src(scr->next, LVGL_IMAGE_PATH(nextstep_bk.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+
+    // Init scr->label_50
+    scr->label_50 = lv_label_create(scr->obj);
+    lv_label_set_text(scr->label_50, "下一步");
+    lv_label_set_long_mode(scr->label_50, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->label_50, 996, 39);
+    lv_obj_set_size(scr->label_50, 117, 32);
+
+    // Set style of scr->label_50
+    lv_obj_set_style_text_font(scr->label_50, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->label_50, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->label_41
     scr->label_41 = lv_label_create(scr->obj);

@@ -13,6 +13,8 @@ typedef enum {
     PAGE_COOKMENU,
     PAGE_SPECIAL_MENU,
     PAGE_UPDOWN_BBQ_MENU,
+    PAGE_UPDOWN_BBQ_MENU_TOP,
+    PAGE_UPDOWN_BBQ_MENU_LOW,
     PAGE_UPDOWN_BBQ_SET,
     PAGE_UPDOWN_BBQ_COOKING,
     PAGE_UPDOWN_BBQ_COMPLETE,
@@ -82,6 +84,8 @@ extern lv_group_t *g_major_menu;
 extern lv_group_t *g_cookmenu;
 extern lv_group_t *g_special_menu;
 extern lv_group_t *g_updown_bbq_menu;
+extern lv_group_t *g_updown_bbq_menu_top;
+extern lv_group_t *g_updown_bbq_menu_low;
 extern lv_group_t *g_updown_bbq_set;
 extern lv_group_t *g_updown_bbq_cooking;
 extern lv_group_t *g_updown_bbq_complete;

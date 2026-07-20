@@ -40,6 +40,9 @@ lv_group_t *g_updown_bbq_menu;
 lv_group_t *g_updown_bbq_set;
 lv_group_t *g_updown_bbq_cooking;
 lv_group_t *g_updown_bbq_complete;
+
+lv_group_t *g_updown_bbq_menu_top;
+lv_group_t *g_updown_bbq_menu_low;
 lv_group_t *g_extra_color;
 lv_group_t *g_color_cookoing;
 lv_group_t *g_color_stop;
@@ -134,7 +137,13 @@ void anim_bar_set_value(void *obj, int32_t v);
 static void on_cook_stop_click(lv_event_t *e);
 static void on_stop_start_click(lv_event_t *e);
 static void on_stop_back_sure_click(lv_event_t *e);
+static void on_updown_uptemp_click(lv_event_t *e);
+static void on_updown_downtemp_click(lv_event_t *e);
+static void on_updown_top_next_click(lv_event_t *e);
+static void on_updown_low_next_click(lv_event_t *e);
 static void on_stop_littal_click(lv_event_t *e);
+static void jump_to_updown_bbq_menu_top(void);
+static void jump_to_updown_bbq_menu_low(void);
 static void on_stop_back_littal_click(lv_event_t *e);
 static void jump_to_updown_bbq_stop(void);
 static void jump_to_updown_bbq_stop_back(void);
@@ -232,6 +241,44 @@ static void adjust_value(edit_field_t *f, int delta)
             }
         }
         update_setting_dir_icon(set);
+    }
+    /* 上层温度页：上下温差 ≤ 20°C，超限则回弹 */
+    if (current_group == g_updown_bbq_menu_top) {
+        int diff = set_temp_up - set_temp_down;
+        if (diff < 0) diff = -diff;
+        if (diff > 20) {
+            g_send.buzzer_req = BUZZER_KEY_INVALID;
+            *f->value = old_val;
+            lv_label_set_text_fmt(f->label, f->fmt, old_val);
+            if (f->ind_short && f->ind_long) {
+                lv_obj_add_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
+                if (old_val < 100)
+                    lv_obj_clear_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
+                else
+                    lv_obj_clear_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
+            }
+            lv_obj_invalidate(lv_scr_act());
+        }
+    }
+    /* 下层温度页：上下温差 ≤ 20°C，超限则回弹 */
+    if (current_group == g_updown_bbq_menu_low) {
+        int diff = set_temp_up - set_temp_down;
+        if (diff < 0) diff = -diff;
+        if (diff > 20) {
+            g_send.buzzer_req = BUZZER_KEY_INVALID;
+            *f->value = old_val;
+            lv_label_set_text_fmt(f->label, f->fmt, old_val);
+            if (f->ind_short && f->ind_long) {
+                lv_obj_add_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
+                if (old_val < 100)
+                    lv_obj_clear_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
+                else
+                    lv_obj_clear_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
+            }
+            lv_obj_invalidate(lv_scr_act());
+        }
     }
 
     /* 顶部烧烤设置页 dir/icon 即时更新 */
@@ -357,7 +404,7 @@ void clear_focus_states(lv_obj_t **btns, int count)
 }
 
 // updown_bbq_set 温度组件显隐（2 位 / 3 位自动切换）
-static void setup_set_temp_display(updown_bbq_set_t *set, int temp)
+static void setup_set_temp_display(updown_bbq_set_t *set)
 {
     lv_obj_add_flag(set->up2_tempnum_label, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(set->up2_dir_label, LV_OBJ_FLAG_HIDDEN);
@@ -372,21 +419,24 @@ static void setup_set_temp_display(updown_bbq_set_t *set, int temp)
     lv_obj_add_flag(set->down3_dir_label, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(set->down3_icon_label, LV_OBJ_FLAG_HIDDEN);
 
-    if (temp < 100) {
-        lv_label_set_text_fmt(set->up2_tempnum_label, "%d", temp);
-        lv_label_set_text_fmt(set->down2_tempnum_label, "%d", temp);
+    if (set_temp_up < 100) {
+        lv_label_set_text_fmt(set->up2_tempnum_label, "%d", set_temp_up);
         lv_obj_clear_flag(set->up2_tempnum_label, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->up2_dir_label, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->up2_icon_label, LV_OBJ_FLAG_HIDDEN);
+    } else {
+        lv_label_set_text_fmt(set->up3_tempnum_label, "%d", set_temp_up);
+        lv_obj_clear_flag(set->up3_tempnum_label, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(set->up3_dir_label, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(set->up3_icon_label, LV_OBJ_FLAG_HIDDEN);
+    }
+    if (set_temp_down < 100) {
+        lv_label_set_text_fmt(set->down2_tempnum_label, "%d", set_temp_down);
         lv_obj_clear_flag(set->down2_tempnum_label, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->down2_dir_label, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->down2_icon_label, LV_OBJ_FLAG_HIDDEN);
     } else {
-        lv_label_set_text_fmt(set->up3_tempnum_label, "%d", temp);
-        lv_label_set_text_fmt(set->down3_tempnum_label, "%d", temp);
-        lv_obj_clear_flag(set->up3_tempnum_label, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_clear_flag(set->up3_dir_label, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_clear_flag(set->up3_icon_label, LV_OBJ_FLAG_HIDDEN);
+        lv_label_set_text_fmt(set->down3_tempnum_label, "%d", set_temp_down);
         lv_obj_clear_flag(set->down3_tempnum_label, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->down3_dir_label, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->down3_icon_label, LV_OBJ_FLAG_HIDDEN);
@@ -810,6 +860,10 @@ void page_pop(void)
     case PAGE_COLOR_COOKING_COMPLETE:
         goto pop_to_major_menu;
 
+    case PAGE_UPDOWN_BBQ_MENU_TOP:
+        goto rebuild_updown_bbq_set;
+    case PAGE_UPDOWN_BBQ_MENU_LOW:
+        goto rebuild_updown_bbq_set;
     case PAGE_UPDOWN_BBQ_SET:
     rebuild_updown_bbq_set:
         /* 关闭烹饪倒计时 */
@@ -833,7 +887,7 @@ void page_pop(void)
                 lv_group_focus_obj(set->sure_button);
 
                 /* 温度显示 */
-                setup_set_temp_display(set, set_temp);
+                setup_set_temp_display(set);
 
                 /* 时间显示 */
                 lv_label_set_text_fmt(set->hour_label, "%02d", set_hour);
@@ -855,9 +909,19 @@ void page_pop(void)
                 /* 绑定 sure_button 事件 */
                 lv_obj_add_event_cb(set->sure_button, on_sure_click, LV_EVENT_CLICKED, NULL);
 
+                /* 绑定温度按钮事件 */
+                lv_obj_add_event_cb(set->uptemp_button, on_updown_uptemp_click,
+                                    LV_EVENT_CLICKED, NULL);
+                lv_obj_add_event_cb(set->downtemp_button, on_updown_downtemp_click,
+                                    LV_EVENT_CLICKED, NULL);
+
                 /* 焦点恢复 */
                 if (child == PAGE_UPDOWN_BBQ_COOKING && set->sure_button)
                     lv_group_focus_obj(set->sure_button);
+                else if (child == PAGE_UPDOWN_BBQ_MENU_TOP && set->uptemp_button)
+                    lv_group_focus_obj(set->uptemp_button);
+                else if (child == PAGE_UPDOWN_BBQ_MENU_LOW && set->downtemp_button)
+                    lv_group_focus_obj(set->downtemp_button);
             }
             current_group = g_updown_bbq_set;
         }
@@ -1379,7 +1443,7 @@ static void jump_to_updown_bbq_set(void)
         lv_group_focus_obj(set->sure_button);
 
         /* 温度显示 */
-        setup_set_temp_display(set, set_temp);
+        setup_set_temp_display(set);
 
         /* 时间显示 */
         lv_label_set_text_fmt(set->hour_label, "%02d", set_hour);
@@ -1397,6 +1461,12 @@ static void jump_to_updown_bbq_set(void)
         lv_obj_add_event_cb(set->delay_on_button, on_delay_toggle, LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(set->contain_button, on_contain_toggle, LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(set->contain_on_button, on_contain_toggle, LV_EVENT_CLICKED, NULL);
+
+        /* 绑定温度按钮事件 */
+        lv_obj_add_event_cb(set->uptemp_button, on_updown_uptemp_click,
+                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->downtemp_button, on_updown_downtemp_click,
+                            LV_EVENT_CLICKED, NULL);
 
         /* 绑定 sure_button 事件 */
         lv_obj_add_event_cb(set->sure_button, on_sure_click, LV_EVENT_CLICKED, NULL);
@@ -1492,6 +1562,8 @@ static void jump_to_updown_bbq_complete(void)
         lv_obj_t *btns[] = { cook->little_button };
         if (g_updown_bbq_complete) lv_group_del(g_updown_bbq_complete);
         g_updown_bbq_complete = group_create_for_page(btns, 1);
+        lv_obj_add_event_cb(cook->little_button, on_cook_setting_click,
+                            LV_EVENT_CLICKED, NULL);
     }
 
     current_group = g_updown_bbq_complete;
@@ -1503,6 +1575,119 @@ static void jump_to_updown_bbq_complete(void)
     g_send.iface_status = IFACE_COMPLETE;
     g_send.remaining_ms = 0;
     printf("[nav] jump: updown_bbq_cooking -> updown_bbq_complete\n");
+}
+
+// updown_bbq_set → updown_bbq_menu_top（设置上层温度）
+static void on_updown_uptemp_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (!screen_is_loading(act_scr))
+        jump_to_updown_bbq_menu_top();
+}
+
+static void on_updown_downtemp_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (!screen_is_loading(act_scr))
+        jump_to_updown_bbq_menu_low();
+}
+
+static void on_updown_top_next_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (!screen_is_loading(act_scr))
+        page_pop();
+}
+
+static void on_updown_low_next_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (!screen_is_loading(act_scr))
+        page_pop();
+}
+
+static void jump_to_updown_bbq_menu_top(void)
+{
+    page_push(PAGE_UPDOWN_BBQ_MENU_TOP);
+    lv_obj_clean(lv_scr_act());
+    updown_bbq_menu_top_create(&ui_manager);
+
+    updown_bbq_menu_top_t *menu = updown_bbq_menu_top_get(&ui_manager);
+    if (menu) {
+        lv_obj_t *btns[] = { menu->temp, menu->next };
+        if (g_updown_bbq_menu_top) lv_group_del(g_updown_bbq_menu_top);
+        g_updown_bbq_menu_top = group_create_for_page(btns, 2);
+
+        edit_clear();
+        edit_register(menu->temp, menu->line2, menu->line3,
+                      &set_temp_up, 30, 300, 5, "%d");
+
+        lv_obj_add_event_cb(menu->temp, on_edit_focus, LV_EVENT_FOCUSED, NULL);
+        lv_obj_add_event_cb(menu->next, on_edit_focus, LV_EVENT_FOCUSED, NULL);
+
+        lv_label_set_text_fmt(menu->temp, "%d", set_temp_up);
+
+        lv_obj_add_flag(menu->line2, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(menu->line3, LV_OBJ_FLAG_HIDDEN);
+        if (set_temp_up < 100)
+            lv_obj_clear_flag(menu->line2, LV_OBJ_FLAG_HIDDEN);
+        else
+            lv_obj_clear_flag(menu->line3, LV_OBJ_FLAG_HIDDEN);
+
+        lv_group_focus_obj(menu->next);
+    }
+    current_group = g_updown_bbq_menu_top;
+
+    if (menu && menu->next)
+        lv_obj_add_event_cb(menu->next, on_updown_top_next_click,
+                            LV_EVENT_CLICKED, NULL);
+
+    lv_scr_load_anim(updown_bbq_menu_top_get(&ui_manager)->obj,
+                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                     ui_manager.auto_del);
+    printf("[nav] jump: updown_bbq_set -> updown_bbq_menu_top\n");
+}
+
+static void jump_to_updown_bbq_menu_low(void)
+{
+    page_push(PAGE_UPDOWN_BBQ_MENU_LOW);
+    lv_obj_clean(lv_scr_act());
+    updown_bbq_menu_low_create(&ui_manager);
+
+    updown_bbq_menu_low_t *menu = updown_bbq_menu_low_get(&ui_manager);
+    if (menu) {
+        lv_obj_t *btns[] = { menu->temp, menu->next };
+        if (g_updown_bbq_menu_low) lv_group_del(g_updown_bbq_menu_low);
+        g_updown_bbq_menu_low = group_create_for_page(btns, 2);
+
+        edit_clear();
+        edit_register(menu->temp, menu->line2, menu->line3,
+                      &set_temp_down, 30, 300, 5, "%d");
+
+        lv_obj_add_event_cb(menu->temp, on_edit_focus, LV_EVENT_FOCUSED, NULL);
+        lv_obj_add_event_cb(menu->next, on_edit_focus, LV_EVENT_FOCUSED, NULL);
+
+        lv_label_set_text_fmt(menu->temp, "%d", set_temp_down);
+
+        lv_obj_add_flag(menu->line2, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(menu->line3, LV_OBJ_FLAG_HIDDEN);
+        if (set_temp_down < 100)
+            lv_obj_clear_flag(menu->line2, LV_OBJ_FLAG_HIDDEN);
+        else
+            lv_obj_clear_flag(menu->line3, LV_OBJ_FLAG_HIDDEN);
+
+        lv_group_focus_obj(menu->next);
+    }
+    current_group = g_updown_bbq_menu_low;
+
+    if (menu && menu->next)
+        lv_obj_add_event_cb(menu->next, on_updown_low_next_click,
+                            LV_EVENT_CLICKED, NULL);
+
+    lv_scr_load_anim(updown_bbq_menu_low_get(&ui_manager)->obj,
+                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                     ui_manager.auto_del);
+    printf("[nav] jump: updown_bbq_set -> updown_bbq_menu_low\n");
 }
 
 // extra_color → color_cookoing（固定 5 分钟倒计时）
@@ -2873,6 +3058,8 @@ static void on_setting_sure_click(lv_event_t *e)
 
     depth--;
     if (depth > 0 && page_stack[depth - 1] == PAGE_UPDOWN_BBQ_STOP)
+        depth--;
+    if (depth > 0 && page_stack[depth - 1] == PAGE_UPDOWN_BBQ_COMPLETE)
         depth--;
     lv_obj_clean(lv_scr_act());
     updown_bbq_cooking_create(&ui_manager);

@@ -102,22 +102,22 @@ void preheatcomplete_create(ui_manager_t *ui)
     lv_obj_set_style_text_font(scr->label_82, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_82, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->start
-    scr->start = lv_btn_create(scr->obj);
-    lv_obj_t *start_label = lv_label_create(scr->start);
-    lv_label_set_text(start_label, "开 始");
-    lv_obj_align(start_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->start, 959, 295);
-    lv_obj_set_size(scr->start, 129, 83);
+    // Init scr->sure
+    scr->sure = lv_btn_create(scr->obj);
+    lv_obj_t *sure_label = lv_label_create(scr->sure);
+    lv_label_set_text(sure_label, "确 定");
+    lv_obj_align(sure_label, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_pos(scr->sure, 959, 295);
+    lv_obj_set_size(scr->sure, 129, 83);
 
-    // Set style of scr->start
-    lv_obj_set_style_bg_opa(scr->start, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->start, LVGL_IMAGE_PATH(stopbk1.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->start, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_width(scr->start, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_shadow_width(scr->start, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(scr->start, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->start, LVGL_IMAGE_PATH(stopbk2.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    // Set style of scr->sure
+    lv_obj_set_style_bg_opa(scr->sure, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->sure, LVGL_IMAGE_PATH(stopbk1.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->sure, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(scr->sure, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(scr->sure, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(scr->sure, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->sure, LVGL_IMAGE_PATH(stopbk2.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
 
 }

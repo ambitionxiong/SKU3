@@ -170,8 +170,8 @@ typedef struct {
     lv_obj_t *temp;
     lv_obj_t *line3;
     lv_obj_t *line2;
-    lv_obj_t *label_50;
     lv_obj_t *next;
+    lv_obj_t *label_50;
     lv_obj_t *label_41;
     lv_obj_t *label_43;
     lv_obj_t *label_49;
@@ -192,8 +192,8 @@ typedef struct {
     lv_obj_t *temp;
     lv_obj_t *line3;
     lv_obj_t *line2;
-    lv_obj_t *label_57;
     lv_obj_t *next;
+    lv_obj_t *label_57;
     lv_obj_t *label_58;
     lv_obj_t *label_59;
     lv_obj_t *label_60;
@@ -1209,22 +1209,22 @@ typedef struct {
 
 typedef struct {
     lv_obj_t *obj;
-    lv_obj_t *button_7;
+    lv_obj_t *next;
     lv_obj_t *image_33;
     lv_obj_t *label_61;
-    lv_obj_t *label_62;
+    lv_obj_t *temp;
     lv_obj_t *label_63;
     lv_obj_t *label_69;
     lv_obj_t *label_70;
-    lv_obj_t *image_35;
-    lv_obj_t *image_36;
+    lv_obj_t *line3;
+    lv_obj_t *line2;
 } preheatmenu_t;
 
 typedef struct {
     lv_obj_t *obj;
     lv_obj_t *label_71;
     lv_obj_t *temp;
-    lv_obj_t *button_8;
+    lv_obj_t *stop;
     lv_obj_t *image_39;
     lv_obj_t *bar_1;
     lv_obj_t *label_73;
@@ -1236,7 +1236,7 @@ typedef struct {
     lv_obj_t *obj;
     lv_obj_t *label_75;
     lv_obj_t *temp;
-    lv_obj_t *button_10;
+    lv_obj_t *start;
     lv_obj_t *image_41;
     lv_obj_t *bar_2;
     lv_obj_t *label_77;
@@ -1253,8 +1253,46 @@ typedef struct {
     lv_obj_t *image_44;
     lv_obj_t *label_81;
     lv_obj_t *label_82;
-    lv_obj_t *start;
+    lv_obj_t *sure;
 } preheatcomplete_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *label_83;
+    lv_obj_t *cookie;
+    lv_obj_t *west;
+    lv_obj_t *piza;
+    lv_obj_t *menu;
+    lv_obj_t *image_47;
+    lv_obj_t *image_48;
+    lv_obj_t *image_49;
+    lv_obj_t *image_50;
+    lv_obj_t *label_84;
+    lv_obj_t *label_85;
+    lv_obj_t *label_86;
+    lv_obj_t *label_87;
+} cook4menu_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *next;
+    lv_obj_t *image_51;
+    lv_obj_t *image_52;
+    lv_obj_t *label_88;
+    lv_obj_t *temp;
+    lv_obj_t *label_90;
+    lv_obj_t *label_91;
+    lv_obj_t *hour;
+    lv_obj_t *label_93;
+    lv_obj_t *label_94;
+    lv_obj_t *min;
+    lv_obj_t *label_96;
+    lv_obj_t *label_97;
+    lv_obj_t *line3;
+    lv_obj_t *line2;
+    lv_obj_t *hourline;
+    lv_obj_t *minline;
+} cookie_menu_t;
 
 
 typedef struct {
@@ -1334,6 +1372,8 @@ typedef struct {
     preheatcooking_t preheatcooking;
     preheatstop_t preheatstop;
     preheatcomplete_t preheatcomplete;
+    cook4menu_t cook4menu;
+    cookie_menu_t cookie_menu;
 
 } ui_manager_t;
 
@@ -1718,6 +1758,16 @@ static inline preheatcomplete_t *preheatcomplete_get(ui_manager_t *ui)
     return &ui->preheatcomplete;
 }
 
+static inline cook4menu_t *cook4menu_get(ui_manager_t *ui)
+{
+    return &ui->cook4menu;
+}
+
+static inline cookie_menu_t *cookie_menu_get(ui_manager_t *ui)
+{
+    return &ui->cookie_menu;
+}
+
 
 void waitmenu_24_create(ui_manager_t *ui);
 void special_menu_tz_create(ui_manager_t *ui);
@@ -1794,6 +1844,8 @@ void preheatmenu_create(ui_manager_t *ui);
 void preheatcooking_create(ui_manager_t *ui);
 void preheatstop_create(ui_manager_t *ui);
 void preheatcomplete_create(ui_manager_t *ui);
+void cook4menu_create(ui_manager_t *ui);
+void cookie_menu_create(ui_manager_t *ui);
 
 
 extern lv_font_t *fs_montserratmedium_16;

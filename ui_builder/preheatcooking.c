@@ -50,22 +50,22 @@ void preheatcooking_create(ui_manager_t *ui)
     lv_obj_set_style_text_font(scr->temp, fs_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->temp, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->button_8
-    scr->button_8 = lv_btn_create(scr->obj);
-    lv_obj_t *button_8_label = lv_label_create(scr->button_8);
-    lv_label_set_text(button_8_label, "暂 停");
-    lv_obj_align(button_8_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->button_8, 959, 295);
-    lv_obj_set_size(scr->button_8, 129, 83);
+    // Init scr->stop
+    scr->stop = lv_btn_create(scr->obj);
+    lv_obj_t *stop_label = lv_label_create(scr->stop);
+    lv_label_set_text(stop_label, "暂 停");
+    lv_obj_align(stop_label, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_pos(scr->stop, 959, 295);
+    lv_obj_set_size(scr->stop, 129, 83);
 
-    // Set style of scr->button_8
-    lv_obj_set_style_bg_opa(scr->button_8, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->button_8, LVGL_IMAGE_PATH(stopbk1.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->button_8, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_width(scr->button_8, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_shadow_width(scr->button_8, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(scr->button_8, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->button_8, LVGL_IMAGE_PATH(stopbk2.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    // Set style of scr->stop
+    lv_obj_set_style_bg_opa(scr->stop, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->stop, LVGL_IMAGE_PATH(stopbk1.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->stop, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(scr->stop, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(scr->stop, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(scr->stop, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->stop, LVGL_IMAGE_PATH(stopbk2.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
     // Init scr->image_39
     scr->image_39 = lv_img_create(scr->obj);
