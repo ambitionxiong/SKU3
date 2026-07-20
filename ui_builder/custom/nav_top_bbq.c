@@ -1,3 +1,4 @@
+#include "protocol.h"
 #include "nav.h"
 
 
@@ -150,6 +151,11 @@ static void on_top_bbq_stop_back_sure_click(lv_event_t *e)
     lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
+    g_send.iface_status = IFACE_SETTING;
+    g_send.cook_mode = MODE_NONE;
+    g_send.set_temp = 0;
+    g_send.set_temp_lower = 0;
+    g_send.remaining_ms = -1;
     printf("[top_bbq] stop_back sure -> major_menu\n");
 }
 
@@ -214,6 +220,7 @@ void jump_to_top_bbq_menu(void)
     lv_scr_load_anim(top_bbq_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
+        g_send.cook_mode = MODE_TOP_BBQ;
     printf("[top_bbq] jump: cookmenu -> top_bbq_menu\n");
 }
 
@@ -310,6 +317,10 @@ void jump_to_top_bbq_cooking(void)
     lv_scr_load_anim(top_bbq_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
+        g_send.iface_status = IFACE_COOKING;
+    g_send.set_temp = set_temp;
+    g_send.set_temp_lower = 0;
+    g_send.remaining_ms = cook_total_ms;
     printf("[top_bbq] jump: set -> top_bbq_cooking\n");
 }
 
@@ -375,6 +386,7 @@ void jump_to_top_bbq_setting(void)
     lv_scr_load_anim(top_bbq_setting_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
+        g_send.iface_status = (cook_timer != NULL) ? IFACE_COOKING : IFACE_SETTING;
     printf("[top_bbq] jump: cooking -> top_bbq_setting\n");
 }
 
@@ -422,6 +434,8 @@ void jump_to_top_bbq_stop(void)
     lv_scr_load_anim(top_bbq_stop_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
+        g_send.iface_status = IFACE_PAUSE;
+    g_send.remaining_ms = (cook_total_ms > (int)cook_elapsed_saved) ? cook_total_ms - (int)cook_elapsed_saved : 0;
     printf("[top_bbq] jump: cooking -> stop (pause)\n");
 }
 
@@ -505,6 +519,12 @@ void top_bbq_resume_cooking(void)
     lv_scr_load_anim(top_bbq_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
+        {
+        int rem = cook_total_ms - (int)cook_elapsed_saved;
+        if (rem < 0) rem = 0;
+        g_send.iface_status = IFACE_COOKING;
+        g_send.remaining_ms = rem;
+    }
     printf("[top_bbq] resume: stop -> cooking\n");
 }
 
@@ -557,6 +577,9 @@ static void on_top_bbq_setting_sure_click(lv_event_t *e)
     lv_scr_load_anim(top_bbq_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
+        g_send.iface_status = IFACE_COOKING;
+    g_send.set_temp = set_temp;
+    g_send.remaining_ms = cook_total_ms;
     printf("[top_bbq] setting sure -> cooking\n");
 }
 
@@ -572,6 +595,10 @@ void jump_to_top_bbq_complete(void)
     lv_scr_load_anim(top_bbq_complete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
+        g_send.iface_status = IFACE_COMPLETE;
+    g_send.remaining_ms = 0;
+        g_send.iface_status = IFACE_COMPLETE;
+    g_send.remaining_ms = 0;
     printf("[top_bbq] jump: cooking -> complete\n");
 }
 

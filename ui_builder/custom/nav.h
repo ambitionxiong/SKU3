@@ -45,6 +45,34 @@ typedef enum {
     PAGE_HOT_BBQ_STOP,
     PAGE_HOT_BBQ_STOP_BACK,
     PAGE_HOT_BBQ_COMPLETE,
+    PAGE_HOTWIND_BBQ_MENU,
+    PAGE_HOTWIND_BBQ_SET,
+    PAGE_HOTWIND_BBQ_COOKING,
+    PAGE_HOTWIND_BBQ_SETTING,
+    PAGE_HOTWIND_BBQ_STOP,
+    PAGE_HOTWIND_BBQ_STOP_BACK,
+    PAGE_HOTWIND_BBQ_COMPLETE,
+    PAGE_SAVE_BBQ_MENU,
+    PAGE_SAVE_BBQ_SET,
+    PAGE_SAVE_BBQ_COOKING,
+    PAGE_SAVE_BBQ_SETTING,
+    PAGE_SAVE_BBQ_STOP,
+    PAGE_SAVE_BBQ_STOP_BACK,
+    PAGE_SAVE_BBQ_COMPLETE,
+    PAGE_CENTRAL_BBQ_MENU,
+    PAGE_CENTRAL_BBQ_SET,
+    PAGE_CENTRAL_BBQ_COOKING,
+    PAGE_CENTRAL_BBQ_SETTING,
+    PAGE_CENTRAL_BBQ_STOP,
+    PAGE_CENTRAL_BBQ_STOP_BACK,
+    PAGE_CENTRAL_BBQ_COMPLETE,
+    PAGE_WINDCHANGE_BBQ_MENU,
+    PAGE_WINDCHANGE_BBQ_SET,
+    PAGE_WINDCHANGE_BBQ_COOKING,
+    PAGE_WINDCHANGE_BBQ_SETTING,
+    PAGE_WINDCHANGE_BBQ_STOP,
+    PAGE_WINDCHANGE_BBQ_STOP_BACK,
+    PAGE_WINDCHANGE_BBQ_COMPLETE,
 } page_id_t;
 
 extern page_id_t page_stack[];
@@ -85,6 +113,40 @@ extern lv_group_t *g_hot_bbq_stop;
 extern lv_group_t *g_hot_bbq_stop_back;
 extern lv_group_t *g_hot_bbq_complete;
 
+extern lv_group_t *g_hotwind_bbq_menu;
+extern lv_group_t *g_hotwind_bbq_set;
+extern lv_group_t *g_hotwind_bbq_cooking;
+extern lv_group_t *g_hotwind_bbq_setting;
+extern lv_group_t *g_hotwind_bbq_stop;
+extern lv_group_t *g_hotwind_bbq_stop_back;
+extern lv_group_t *g_hotwind_bbq_complete;
+
+extern lv_group_t *g_save_bbq_menu;
+extern lv_group_t *g_save_bbq_set;
+extern lv_group_t *g_save_bbq_cooking;
+extern lv_group_t *g_save_bbq_setting;
+extern lv_group_t *g_save_bbq_stop;
+extern lv_group_t *g_save_bbq_stop_back;
+extern lv_group_t *g_save_bbq_complete;
+
+extern lv_group_t *g_central_bbq_menu;
+extern lv_group_t *g_central_bbq_set;
+extern lv_group_t *g_central_bbq_cooking;
+extern lv_group_t *g_central_bbq_setting;
+extern lv_group_t *g_central_bbq_stop;
+extern lv_group_t *g_central_bbq_stop_back;
+extern lv_group_t *g_central_bbq_complete;
+
+extern lv_group_t *g_windchange_bbq_menu;
+
+extern lv_group_t *g_windchange_bbq_menu;
+extern lv_group_t *g_windchange_bbq_set;
+extern lv_group_t *g_windchange_bbq_cooking;
+extern lv_group_t *g_windchange_bbq_setting;
+extern lv_group_t *g_windchange_bbq_stop;
+extern lv_group_t *g_windchange_bbq_stop_back;
+extern lv_group_t *g_windchange_bbq_complete;
+
 extern lv_group_t *current_group;
 
 extern int set_temp;
@@ -114,6 +176,7 @@ void edit_register(lv_obj_t *label, lv_obj_t *ind_s, lv_obj_t *ind_l,
 
 void nav_handle_key(uint8_t key);
 void nav_key1_long_press(void);
+uint8_t nav_key1_hold_check(void);
 void nav_init(void);
 void page_push(page_id_t id);
 void page_pop(void);
@@ -126,6 +189,10 @@ void clear_focus_states(lv_obj_t **btns, int count);
 void update_top_bbq_dir_icon(top_bbq_setting_t *set);
 void update_bottom_bbq_dir_icon(bottom_bbq_setting_t *set);
 void update_hot_bbq_dir_icon(hot_bbq_setting_t *set);
+void update_hotwind_bbq_dir_icon(hotwind_bbq_setting_t *set);
+void update_save_bbq_dir_icon(save_bbq_setting_t *set);
+void update_central_bbq_dir_icon(central_bbq_setting_t *set);
+void update_windchange_bbq_dir_icon(windchange_bbq_setting_t *set);
 
 void jump_to_hot_bbq_menu(void);
 void jump_to_hot_bbq_set(void);
@@ -142,6 +209,67 @@ void hot_bbq_rebuild_setting(void);
 void hot_bbq_rebuild_stop(void);
 void hot_bbq_rebuild_stop_back(void);
 void hot_bbq_rebuild_complete(void);
+
+void jump_to_hotwind_bbq_menu(void);
+void jump_to_hotwind_bbq_set(void);
+void jump_to_hotwind_bbq_cooking(void);
+void jump_to_hotwind_bbq_setting(void);
+void jump_to_hotwind_bbq_stop(void);
+void jump_to_hotwind_bbq_stop_back(void);
+void jump_to_hotwind_bbq_complete(void);
+void hotwind_bbq_rebuild_menu(page_id_t child);
+void hotwind_bbq_rebuild_set(page_id_t child);
+void hotwind_bbq_rebuild_cooking(page_id_t child);
+void hotwind_bbq_rebuild_setting(void);
+void hotwind_bbq_rebuild_stop(void);
+void hotwind_bbq_rebuild_stop_back(void);
+void hotwind_bbq_rebuild_complete(void);
+
+void jump_to_save_bbq_menu(void);
+void jump_to_save_bbq_set(void);
+void jump_to_save_bbq_cooking(void);
+void jump_to_save_bbq_setting(void);
+void jump_to_save_bbq_stop(void);
+void jump_to_save_bbq_stop_back(void);
+void jump_to_save_bbq_complete(void);
+void save_bbq_rebuild_menu(page_id_t child);
+void save_bbq_rebuild_set(page_id_t child);
+void save_bbq_rebuild_cooking(page_id_t child);
+void save_bbq_rebuild_setting(void);
+void save_bbq_rebuild_stop(void);
+void save_bbq_rebuild_stop_back(void);
+void save_bbq_rebuild_complete(void);
+
+void jump_to_central_bbq_menu(void);
+void jump_to_central_bbq_set(void);
+void jump_to_central_bbq_cooking(void);
+void jump_to_central_bbq_setting(void);
+void jump_to_central_bbq_stop(void);
+void jump_to_central_bbq_stop_back(void);
+void jump_to_central_bbq_complete(void);
+void central_bbq_rebuild_menu(page_id_t child);
+void central_bbq_rebuild_set(page_id_t child);
+void central_bbq_rebuild_cooking(page_id_t child);
+void central_bbq_rebuild_setting(void);
+void central_bbq_rebuild_stop(void);
+void central_bbq_rebuild_stop_back(void);
+void central_bbq_rebuild_complete(void);
+
+void jump_to_windchange_bbq_menu(void);
+void jump_to_windchange_bbq_set(void);
+void jump_to_windchange_bbq_cooking(void);
+void jump_to_windchange_bbq_setting(void);
+void jump_to_windchange_bbq_stop(void);
+void jump_to_windchange_bbq_stop_back(void);
+void jump_to_windchange_bbq_complete(void);
+void windchange_bbq_rebuild_menu(page_id_t child);
+void windchange_bbq_rebuild_set(page_id_t child);
+void windchange_bbq_rebuild_cooking(page_id_t child);
+void windchange_bbq_rebuild_setting(void);
+void windchange_bbq_rebuild_stop(void);
+void windchange_bbq_rebuild_stop_back(void);
+void windchange_bbq_rebuild_complete(void);
+
 void on_edit_focus(lv_event_t *e);
 void validate_constraints(void);
 void groups_create(void);

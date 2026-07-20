@@ -63,6 +63,7 @@ static lv_timer_t *sim_scan_timer = NULL;
 
 static void sim_scan_cb(lv_timer_t *t)
 {
+    nav_key1_hold_check();
     uart_send_fill();
 }
 

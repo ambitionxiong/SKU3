@@ -2,34 +2,35 @@
 #include "nav.h"
 
 
-static void on_bottom_bbq_menu_next_click(lv_event_t *e);
-static void on_bottom_bbq_set_sure_click(lv_event_t *e);
-static void on_bottom_bbq_cooking_stop_click(lv_event_t *e);
-static void on_bottom_bbq_cooking_setting_click(lv_event_t *e);
-static void on_bottom_bbq_setting_sure_click(lv_event_t *e);
-static void on_bottom_bbq_stop_start_click(lv_event_t *e);
-static void on_bottom_bbq_stop_back_littal_click(lv_event_t *e);
-static void on_bottom_bbq_stop_back_sure_click(lv_event_t *e);
-static void on_bottom_bbq_edit_focus(lv_event_t *e);
-void update_bottom_bbq_dir_icon(bottom_bbq_setting_t *set);
-static void bottom_bbq_set_status(lv_obj_t *label, int temp, int hour, int min);
-static void bottom_bbq_preheat_toggle(lv_event_t *e);
-static void bottom_bbq_delay_toggle(lv_event_t *e);
-static void bottom_bbq_contain_toggle(lv_event_t *e);
-void jump_to_bottom_bbq_cooking(void);
-void jump_to_bottom_bbq_complete(void);
+static void on_windchange_bbq_menu_next_click(lv_event_t *e);
+static void on_windchange_bbq_set_sure_click(lv_event_t *e);
+static void on_windchange_bbq_cooking_stop_click(lv_event_t *e);
+static void on_windchange_bbq_cooking_setting_click(lv_event_t *e);
+static void on_windchange_bbq_setting_sure_click(lv_event_t *e);
+static void on_windchange_bbq_stop_start_click(lv_event_t *e);
+void windchange_bbq_resume_cooking(void);
+static void on_windchange_bbq_stop_back_littal_click(lv_event_t *e);
+static void on_windchange_bbq_stop_back_sure_click(lv_event_t *e);
+static void on_windchange_bbq_edit_focus(lv_event_t *e);
+void update_windchange_bbq_dir_icon(windchange_bbq_setting_t *set);
+static void windchange_bbq_set_status(lv_obj_t *label, int temp, int hour, int min);
+static void windchange_bbq_preheat_toggle(lv_event_t *e);
+static void windchange_bbq_delay_toggle(lv_event_t *e);
+static void windchange_bbq_contain_toggle(lv_event_t *e);
+void jump_to_windchange_bbq_cooking(void);
+void jump_to_windchange_bbq_complete(void);
 
-static void bottom_bbq_set_status(lv_obj_t *label, int temp, int hour, int min)
+static void windchange_bbq_set_status(lv_obj_t *label, int temp, int hour, int min)
 {
     if (hour == 0)
-        lv_label_set_text_fmt(label, "| 底部烧烤 | %d℃ | %02d分钟", temp, min);
+        lv_label_set_text_fmt(label, "| 顶部烧烤 | %d℃ | %02d分钟", temp, min);
     else
-        lv_label_set_text_fmt(label, "| 底部烧烤 | %d℃ | %d小时%02d分钟", temp, hour, min);
+        lv_label_set_text_fmt(label, "| 顶部烧烤 | %d℃ | %d小时%02d分钟", temp, hour, min);
 }
 
-static void bottom_bbq_preheat_toggle(lv_event_t *e)
+static void windchange_bbq_preheat_toggle(lv_event_t *e)
 {
-    bottom_bbq_set_t *set = bottom_bbq_set_get(&ui_manager);
+    windchange_bbq_set_t *set = windchange_bbq_set_get(&ui_manager);
     if (!set) return;
     preheat_on = !preheat_on;
     if (preheat_on) {
@@ -43,9 +44,9 @@ static void bottom_bbq_preheat_toggle(lv_event_t *e)
     }
 }
 
-static void bottom_bbq_delay_toggle(lv_event_t *e)
+static void windchange_bbq_delay_toggle(lv_event_t *e)
 {
-    bottom_bbq_set_t *set = bottom_bbq_set_get(&ui_manager);
+    windchange_bbq_set_t *set = windchange_bbq_set_get(&ui_manager);
     if (!set) return;
     delay_on = !delay_on;
     if (delay_on) {
@@ -59,9 +60,9 @@ static void bottom_bbq_delay_toggle(lv_event_t *e)
     }
 }
 
-static void bottom_bbq_contain_toggle(lv_event_t *e)
+static void windchange_bbq_contain_toggle(lv_event_t *e)
 {
-    bottom_bbq_set_t *set = bottom_bbq_set_get(&ui_manager);
+    windchange_bbq_set_t *set = windchange_bbq_set_get(&ui_manager);
     if (!set) return;
     contain_on = !contain_on;
     if (contain_on) {
@@ -75,7 +76,7 @@ static void bottom_bbq_contain_toggle(lv_event_t *e)
     }
 }
 
-void update_bottom_bbq_dir_icon(bottom_bbq_setting_t *set)
+void update_windchange_bbq_dir_icon(windchange_bbq_setting_t *set)
 {
     if (!set) return;
     lv_obj_add_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
@@ -86,56 +87,56 @@ void update_bottom_bbq_dir_icon(bottom_bbq_setting_t *set)
         lv_obj_clear_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
 }
 
-static void on_bottom_bbq_edit_focus(lv_event_t *e)
+static void on_windchange_bbq_edit_focus(lv_event_t *e)
 {
     on_edit_focus(e);
-    bottom_bbq_setting_t *set = bottom_bbq_setting_get(&ui_manager);
+    windchange_bbq_setting_t *set = windchange_bbq_setting_get(&ui_manager);
     if (set && lv_event_get_target(e) == set->temp)
-        update_bottom_bbq_dir_icon(set);
+        update_windchange_bbq_dir_icon(set);
 }
 
-static void on_bottom_bbq_menu_next_click(lv_event_t *e)
+static void on_windchange_bbq_menu_next_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
     if (!screen_is_loading(act_scr))
-        jump_to_bottom_bbq_set();
+        jump_to_windchange_bbq_set();
 }
 
-static void on_bottom_bbq_set_sure_click(lv_event_t *e)
+static void on_windchange_bbq_set_sure_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
     if (!screen_is_loading(act_scr))
-        jump_to_bottom_bbq_cooking();
+        jump_to_windchange_bbq_cooking();
 }
 
-static void on_bottom_bbq_cooking_stop_click(lv_event_t *e)
+static void on_windchange_bbq_cooking_stop_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
     if (!screen_is_loading(act_scr))
-        jump_to_bottom_bbq_stop();
+        jump_to_windchange_bbq_stop();
 }
 
-static void on_bottom_bbq_cooking_setting_click(lv_event_t *e)
+static void on_windchange_bbq_cooking_setting_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
     if (!screen_is_loading(act_scr))
-        jump_to_bottom_bbq_setting();
+        jump_to_windchange_bbq_setting();
 }
 
-static void on_bottom_bbq_stop_start_click(lv_event_t *e)
+static void on_windchange_bbq_stop_start_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
     if (!screen_is_loading(act_scr))
-        bottom_bbq_resume_cooking();
+        windchange_bbq_resume_cooking();
 }
 
 
-static void on_bottom_bbq_stop_back_littal_click(lv_event_t *e)
+static void on_windchange_bbq_stop_back_littal_click(lv_event_t *e)
 {
     page_pop();
 }
 
-static void on_bottom_bbq_stop_back_sure_click(lv_event_t *e)
+static void on_windchange_bbq_stop_back_sure_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
     if (screen_is_loading(act_scr)) return;
@@ -156,27 +157,27 @@ static void on_bottom_bbq_stop_back_sure_click(lv_event_t *e)
     g_send.set_temp = 0;
     g_send.set_temp_lower = 0;
     g_send.remaining_ms = -1;
-    printf("[bottom_bbq] stop_back sure -> major_menu\n");
+    printf("[windchange_bbq] stop_back sure -> major_menu\n");
 }
 
 // ==============================
 // Jump 函数
 // ==============================
 
-void jump_to_bottom_bbq_menu(void)
+void jump_to_windchange_bbq_menu(void)
 {
-    page_push(PAGE_BOTTOM_BBQ_MENU);
+    page_push(PAGE_WINDCHANGE_BBQ_MENU);
     lv_obj_clean(lv_scr_act());
-    bottom_bbq_menu_create(&ui_manager);
+    windchange_bbq_menu_create(&ui_manager);
 
-    bottom_bbq_menu_t *menu = bottom_bbq_menu_get(&ui_manager);
+    windchange_bbq_menu_t *menu = windchange_bbq_menu_get(&ui_manager);
     if (menu) {
         lv_obj_t *btns[] = {
             menu->temp, menu->hour, menu->min,
             menu->next,
         };
-        if (g_bottom_bbq_menu) lv_group_del(g_bottom_bbq_menu);
-        g_bottom_bbq_menu = group_create_for_page(btns, 4);
+        if (g_windchange_bbq_menu) lv_group_del(g_windchange_bbq_menu);
+        g_windchange_bbq_menu = group_create_for_page(btns, 4);
 
         edit_clear();
         edit_register(menu->temp, menu->templine2, menu->templine3,
@@ -186,17 +187,17 @@ void jump_to_bottom_bbq_menu(void)
         edit_register(menu->min, menu->minline, NULL,
                       &set_min, 0, 59, 1, "%02d");
 
-        lv_obj_add_event_cb(menu->temp, on_bottom_bbq_edit_focus,
+        lv_obj_add_event_cb(menu->temp, on_windchange_bbq_edit_focus,
                             LV_EVENT_FOCUSED, NULL);
-        lv_obj_add_event_cb(menu->hour, on_bottom_bbq_edit_focus,
+        lv_obj_add_event_cb(menu->hour, on_windchange_bbq_edit_focus,
                             LV_EVENT_FOCUSED, NULL);
-        lv_obj_add_event_cb(menu->min, on_bottom_bbq_edit_focus,
+        lv_obj_add_event_cb(menu->min, on_windchange_bbq_edit_focus,
                             LV_EVENT_FOCUSED, NULL);
-        lv_obj_add_event_cb(menu->next, on_bottom_bbq_edit_focus,
+        lv_obj_add_event_cb(menu->next, on_windchange_bbq_edit_focus,
                             LV_EVENT_FOCUSED, NULL);
 
         if (menu->next)
-            lv_obj_add_event_cb(menu->next, on_bottom_bbq_menu_next_click,
+            lv_obj_add_event_cb(menu->next, on_windchange_bbq_menu_next_click,
                                 LV_EVENT_CLICKED, NULL);
 
         lv_label_set_text_fmt(menu->temp, "%d", set_temp);
@@ -215,25 +216,25 @@ void jump_to_bottom_bbq_menu(void)
         if (menu->next)
             lv_group_focus_obj(menu->next);
     }
-    current_group = g_bottom_bbq_menu;
+    current_group = g_windchange_bbq_menu;
 
-    lv_scr_load_anim(bottom_bbq_menu_get(&ui_manager)->obj,
+    lv_scr_load_anim(windchange_bbq_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-        g_send.cook_mode = MODE_BOTTOM_BBQ;
-    printf("[bottom_bbq] jump: cookmenu -> bottom_bbq_menu\n");
+        g_send.cook_mode = MODE_WINDCHANGE_BBQ;
+    printf("[windchange_bbq] jump: cookmenu -> windchange_bbq_menu\n");
 }
 
 // menu → set
-void jump_to_bottom_bbq_set(void)
+void jump_to_windchange_bbq_set(void)
 {
-    page_push(PAGE_BOTTOM_BBQ_SET);
+    page_push(PAGE_WINDCHANGE_BBQ_SET);
     lv_obj_clean(lv_scr_act());
-    bottom_bbq_set_create(&ui_manager);
+    windchange_bbq_set_create(&ui_manager);
 
     preheat_on = 0; delay_on = 0; contain_on = 0;
 
-    bottom_bbq_set_t *set = bottom_bbq_set_get(&ui_manager);
+    windchange_bbq_set_t *set = windchange_bbq_set_get(&ui_manager);
     if (set) {
         lv_obj_t *btns[] = {
             set->sure,
@@ -241,8 +242,8 @@ void jump_to_bottom_bbq_set(void)
             set->offdelay, set->ondelay,
             set->offcontain, set->oncontain,
         };
-        if (g_bottom_bbq_set) lv_group_del(g_bottom_bbq_set);
-        g_bottom_bbq_set = group_create_for_page(btns, 7);
+        if (g_windchange_bbq_set) lv_group_del(g_windchange_bbq_set);
+        g_windchange_bbq_set = group_create_for_page(btns, 7);
         clear_focus_states(btns, 7);
         lv_group_focus_obj(set->sure);
 
@@ -254,53 +255,53 @@ void jump_to_bottom_bbq_set(void)
         apply_toggle_state(set->offdelay, set->ondelay, delay_on);
         apply_toggle_state(set->offcontain, set->oncontain, contain_on);
 
-        lv_obj_add_event_cb(set->offpreheat, bottom_bbq_preheat_toggle, LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(set->onpreheat, bottom_bbq_preheat_toggle, LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(set->offdelay, bottom_bbq_delay_toggle, LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(set->ondelay, bottom_bbq_delay_toggle, LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(set->offcontain, bottom_bbq_contain_toggle, LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(set->oncontain, bottom_bbq_contain_toggle, LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(set->sure, on_bottom_bbq_set_sure_click,
+        lv_obj_add_event_cb(set->offpreheat, windchange_bbq_preheat_toggle, LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->onpreheat, windchange_bbq_preheat_toggle, LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->offdelay, windchange_bbq_delay_toggle, LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->ondelay, windchange_bbq_delay_toggle, LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->offcontain, windchange_bbq_contain_toggle, LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->oncontain, windchange_bbq_contain_toggle, LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->sure, on_windchange_bbq_set_sure_click,
                             LV_EVENT_CLICKED, NULL);
     }
-    current_group = g_bottom_bbq_set;
+    current_group = g_windchange_bbq_set;
 
-    lv_scr_load_anim(bottom_bbq_set_get(&ui_manager)->obj,
+    lv_scr_load_anim(windchange_bbq_set_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[bottom_bbq] jump: menu -> bottom_bbq_set\n");
+    printf("[windchange_bbq] jump: menu -> windchange_bbq_set\n");
 }
 
 // set → cooking
-void jump_to_bottom_bbq_cooking(void)
+void jump_to_windchange_bbq_cooking(void)
 {
-    page_push(PAGE_BOTTOM_BBQ_COOKING);
+    page_push(PAGE_WINDCHANGE_BBQ_COOKING);
     lv_obj_clean(lv_scr_act());
-    bottom_bbq_cooking_create(&ui_manager);
+    windchange_bbq_cooking_create(&ui_manager);
 
-    bottom_bbq_cooking_t *cook = bottom_bbq_cooking_get(&ui_manager);
+    windchange_bbq_cooking_t *cook = windchange_bbq_cooking_get(&ui_manager);
     if (cook) {
-        lv_obj_t *btns[] = { cook->stop, cook->littlebutton };
-        if (g_bottom_bbq_cooking) lv_group_del(g_bottom_bbq_cooking);
-        g_bottom_bbq_cooking = group_create_for_page(btns, 2);
+        lv_obj_t *btns[] = { cook->stop, cook->little };
+        if (g_windchange_bbq_cooking) lv_group_del(g_windchange_bbq_cooking);
+        g_windchange_bbq_cooking = group_create_for_page(btns, 2);
 
-        lv_obj_add_event_cb(cook->stop, on_bottom_bbq_cooking_stop_click,
+        lv_obj_add_event_cb(cook->stop, on_windchange_bbq_cooking_stop_click,
                             LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(cook->littlebutton, on_bottom_bbq_cooking_setting_click,
+        lv_obj_add_event_cb(cook->little, on_windchange_bbq_cooking_setting_click,
                             LV_EVENT_CLICKED, NULL);
 
-        bottom_bbq_set_status(cook->status, set_temp, set_hour, set_min);
+        windchange_bbq_set_status(cook->status, set_temp, set_hour, set_min);
         lv_label_set_text_fmt(cook->timelabel, "%02d:%02d:%02d", set_hour, set_min, 0);
     }
 
     cook_total_ms = (set_hour * 3600 + set_min * 60) * 1000;
     if (cook) {
-        lv_bar_set_range(cook->bar_10, 0, 100);
-        lv_bar_set_value(cook->bar_10, 3, LV_ANIM_OFF);
+        lv_bar_set_range(cook->bar_30, 0, 100);
+        lv_bar_set_value(cook->bar_30, 3, LV_ANIM_OFF);
 
         lv_anim_t a;
         lv_anim_init(&a);
-        lv_anim_set_var(&a, cook->bar_10);
+        lv_anim_set_var(&a, cook->bar_30);
         lv_anim_set_exec_cb(&a, anim_bar_set_value);
         lv_anim_set_values(&a, 3, 100);
         lv_anim_set_time(&a, cook_total_ms);
@@ -312,30 +313,30 @@ void jump_to_bottom_bbq_cooking(void)
     if (cook_timer) lv_timer_del(cook_timer);
     cook_timer = lv_timer_create(cooking_timer_cb, 1000, NULL);
 
-    current_group = g_bottom_bbq_cooking;
+    current_group = g_windchange_bbq_cooking;
 
-    lv_scr_load_anim(bottom_bbq_cooking_get(&ui_manager)->obj,
+    lv_scr_load_anim(windchange_bbq_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         g_send.iface_status = IFACE_COOKING;
     g_send.set_temp = set_temp;
     g_send.set_temp_lower = 0;
     g_send.remaining_ms = cook_total_ms;
-    printf("[bottom_bbq] jump: set -> bottom_bbq_cooking\n");
+    printf("[windchange_bbq] jump: set -> windchange_bbq_cooking\n");
 }
 
 // cooking → setting（不暂停 timer）
-void jump_to_bottom_bbq_setting(void)
+void jump_to_windchange_bbq_setting(void)
 {
-    page_push(PAGE_BOTTOM_BBQ_SETTING);
+    page_push(PAGE_WINDCHANGE_BBQ_SETTING);
     lv_obj_clean(lv_scr_act());
-    bottom_bbq_setting_create(&ui_manager);
+    windchange_bbq_setting_create(&ui_manager);
 
-    bottom_bbq_setting_t *set = bottom_bbq_setting_get(&ui_manager);
+    windchange_bbq_setting_t *set = windchange_bbq_setting_get(&ui_manager);
     if (set) {
-        lv_obj_t *btns[] = { set->temp, set->hour, set->min, set->surebutton };
-        if (g_bottom_bbq_setting) lv_group_del(g_bottom_bbq_setting);
-        g_bottom_bbq_setting = group_create_for_page(btns, 4);
+        lv_obj_t *btns[] = { set->temp, set->hour, set->min, set->sure };
+        if (g_windchange_bbq_setting) lv_group_del(g_windchange_bbq_setting);
+        g_windchange_bbq_setting = group_create_for_page(btns, 4);
 
         edit_clear();
         edit_register(set->temp, set->templine2, set->templine3,
@@ -345,15 +346,15 @@ void jump_to_bottom_bbq_setting(void)
         edit_register(set->min, set->minline, NULL,
                       &set_min, 0, 59, 1, "%02d");
 
-        lv_obj_add_event_cb(set->temp, on_bottom_bbq_edit_focus,
+        lv_obj_add_event_cb(set->temp, on_windchange_bbq_edit_focus,
                             LV_EVENT_FOCUSED, NULL);
-        lv_obj_add_event_cb(set->hour, on_bottom_bbq_edit_focus,
+        lv_obj_add_event_cb(set->hour, on_windchange_bbq_edit_focus,
                             LV_EVENT_FOCUSED, NULL);
-        lv_obj_add_event_cb(set->min, on_bottom_bbq_edit_focus,
+        lv_obj_add_event_cb(set->min, on_windchange_bbq_edit_focus,
                             LV_EVENT_FOCUSED, NULL);
-        lv_obj_add_event_cb(set->surebutton, on_bottom_bbq_edit_focus,
+        lv_obj_add_event_cb(set->sure, on_windchange_bbq_edit_focus,
                             LV_EVENT_FOCUSED, NULL);
-        lv_obj_add_event_cb(set->surebutton, on_bottom_bbq_setting_sure_click,
+        lv_obj_add_event_cb(set->sure, on_windchange_bbq_setting_sure_click,
                             LV_EVENT_CLICKED, NULL);
 
         /* 从当前 timer 读剩余时间（支持 running 或 paused） */
@@ -379,40 +380,40 @@ void jump_to_bottom_bbq_setting(void)
         lv_obj_add_flag(set->minline, LV_OBJ_FLAG_HIDDEN);
 
         lv_group_focus_obj(set->temp);
-        update_bottom_bbq_dir_icon(set);
+        update_windchange_bbq_dir_icon(set);
     }
-    current_group = g_bottom_bbq_setting;
+    current_group = g_windchange_bbq_setting;
 
-    lv_scr_load_anim(bottom_bbq_setting_get(&ui_manager)->obj,
+    lv_scr_load_anim(windchange_bbq_setting_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         g_send.iface_status = (cook_timer != NULL) ? IFACE_COOKING : IFACE_SETTING;
-    printf("[bottom_bbq] jump: cooking -> bottom_bbq_setting\n");
+    printf("[windchange_bbq] jump: cooking -> windchange_bbq_setting\n");
 }
 
 // cooking → stop（暂停）
-void jump_to_bottom_bbq_stop(void)
+void jump_to_windchange_bbq_stop(void)
 {
     cook_elapsed_saved = lv_tick_get() - cook_start_time;
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
 
     {
-        bottom_bbq_cooking_t *cook = bottom_bbq_cooking_get(&ui_manager);
-        cook_bar_saved = cook ? lv_bar_get_value(cook->bar_10) : 0;
+        windchange_bbq_cooking_t *cook = windchange_bbq_cooking_get(&ui_manager);
+        cook_bar_saved = cook ? lv_bar_get_value(cook->bar_30) : 0;
     }
 
-    page_push(PAGE_BOTTOM_BBQ_STOP);
+    page_push(PAGE_WINDCHANGE_BBQ_STOP);
     lv_obj_clean(lv_scr_act());
-    bottom_bbq_stop_create(&ui_manager);
+    windchange_bbq_stop_create(&ui_manager);
 
-    bottom_bbq_stop_t *stop = bottom_bbq_stop_get(&ui_manager);
+    windchange_bbq_stop_t *stop = windchange_bbq_stop_get(&ui_manager);
     if (stop) {
-        lv_obj_t *btns[] = { stop->start, stop->littlebutton };
-        if (g_bottom_bbq_stop) lv_group_del(g_bottom_bbq_stop);
-        g_bottom_bbq_stop = group_create_for_page(btns, 2);
-        lv_obj_add_event_cb(stop->start, on_bottom_bbq_stop_start_click,
+        lv_obj_t *btns[] = { stop->start, stop->little };
+        if (g_windchange_bbq_stop) lv_group_del(g_windchange_bbq_stop);
+        g_windchange_bbq_stop = group_create_for_page(btns, 2);
+        lv_obj_add_event_cb(stop->start, on_windchange_bbq_stop_start_click,
                             LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(stop->littlebutton, on_bottom_bbq_cooking_setting_click,
+        lv_obj_add_event_cb(stop->little, on_windchange_bbq_cooking_setting_click,
                             LV_EVENT_CLICKED, NULL);
 
         int elapsed_sec = (cook_elapsed_saved + 500) / 1000;
@@ -423,70 +424,70 @@ void jump_to_bottom_bbq_stop(void)
         int m = (remaining_sec % 3600) / 60;
         int s = remaining_sec % 60;
         lv_label_set_text_fmt(stop->timelabel, "%02d:%02d:%02d", h, m, s);
-        bottom_bbq_set_status(stop->status, set_temp, set_hour, set_min);
+        windchange_bbq_set_status(stop->status, set_temp, set_hour, set_min);
 
-        lv_bar_set_range(stop->bar_11, 0, 100);
+        lv_bar_set_range(stop->bar_31, 0, 100);
         if (cook_bar_saved > 100) cook_bar_saved = 100;
-        lv_bar_set_value(stop->bar_11, cook_bar_saved, LV_ANIM_OFF);
+        lv_bar_set_value(stop->bar_31, cook_bar_saved, LV_ANIM_OFF);
     }
-    current_group = g_bottom_bbq_stop;
+    current_group = g_windchange_bbq_stop;
 
-    lv_scr_load_anim(bottom_bbq_stop_get(&ui_manager)->obj,
+    lv_scr_load_anim(windchange_bbq_stop_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         g_send.iface_status = IFACE_PAUSE;
     g_send.remaining_ms = (cook_total_ms > (int)cook_elapsed_saved) ? cook_total_ms - (int)cook_elapsed_saved : 0;
-    printf("[bottom_bbq] jump: cooking -> stop (pause)\n");
+    printf("[windchange_bbq] jump: cooking -> stop (pause)\n");
 }
 
 // stop → stop_back
-void jump_to_bottom_bbq_stop_back(void)
+void jump_to_windchange_bbq_stop_back(void)
 {
-    page_push(PAGE_BOTTOM_BBQ_STOP_BACK);
+    page_push(PAGE_WINDCHANGE_BBQ_STOP_BACK);
     lv_obj_clean(lv_scr_act());
-    bottom_bbq_stop_back_create(&ui_manager);
+    windchange_bbq_stop_back_create(&ui_manager);
 
-    bottom_bbq_stop_back_t *back = bottom_bbq_stop_back_get(&ui_manager);
+    windchange_bbq_stop_back_t *back = windchange_bbq_stop_back_get(&ui_manager);
     if (back) {
-        lv_obj_t *btns[] = { back->sure, back->little };
-        if (g_bottom_bbq_stop_back) lv_group_del(g_bottom_bbq_stop_back);
-        g_bottom_bbq_stop_back = group_create_for_page(btns, 2);
-        lv_obj_add_event_cb(back->sure, on_bottom_bbq_stop_back_sure_click,
+        lv_obj_t *btns[] = { back->sure, back->button_117 };
+        if (g_windchange_bbq_stop_back) lv_group_del(g_windchange_bbq_stop_back);
+        g_windchange_bbq_stop_back = group_create_for_page(btns, 2);
+        lv_obj_add_event_cb(back->sure, on_windchange_bbq_stop_back_sure_click,
                             LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(back->little, on_bottom_bbq_stop_back_littal_click,
+        lv_obj_add_event_cb(back->button_117, on_windchange_bbq_stop_back_littal_click,
                             LV_EVENT_CLICKED, NULL);
 
-        bottom_bbq_set_status(back->status, set_temp, set_hour, set_min);
-        lv_bar_set_range(back->bar_12, 0, 100);
+        windchange_bbq_set_status(back->status, set_temp, set_hour, set_min);
+        lv_bar_set_range(back->bar_32, 0, 100);
         if (cook_bar_saved > 100) cook_bar_saved = 100;
-        lv_bar_set_value(back->bar_12, cook_bar_saved, LV_ANIM_OFF);
+        lv_bar_set_value(back->bar_32, cook_bar_saved, LV_ANIM_OFF);
     }
-    current_group = g_bottom_bbq_stop_back;
+    current_group = g_windchange_bbq_stop_back;
 
-    lv_scr_load_anim(bottom_bbq_stop_back_get(&ui_manager)->obj,
+    lv_scr_load_anim(windchange_bbq_stop_back_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[bottom_bbq] jump: stop -> stop_back\n");
+    printf("[windchange_bbq] jump: stop -> stop_back\n");
 }
 
 // stop 恢复 cooking
-void bottom_bbq_resume_cooking(void)
+void windchange_bbq_resume_cooking(void)
 {
     depth--;
     lv_obj_clean(lv_scr_act());
-    bottom_bbq_cooking_create(&ui_manager);
+    windchange_bbq_cooking_create(&ui_manager);
 
-    bottom_bbq_cooking_t *cook = bottom_bbq_cooking_get(&ui_manager);
+    windchange_bbq_cooking_t *cook = windchange_bbq_cooking_get(&ui_manager);
     if (cook) {
-        lv_obj_t *btns[] = { cook->stop, cook->littlebutton };
-        if (g_bottom_bbq_cooking) lv_group_del(g_bottom_bbq_cooking);
-        g_bottom_bbq_cooking = group_create_for_page(btns, 2);
-        lv_obj_add_event_cb(cook->stop, on_bottom_bbq_cooking_stop_click,
+        lv_obj_t *btns[] = { cook->stop, cook->little };
+        if (g_windchange_bbq_cooking) lv_group_del(g_windchange_bbq_cooking);
+        g_windchange_bbq_cooking = group_create_for_page(btns, 2);
+        lv_obj_add_event_cb(cook->stop, on_windchange_bbq_cooking_stop_click,
                             LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(cook->littlebutton, on_bottom_bbq_cooking_setting_click,
+        lv_obj_add_event_cb(cook->little, on_windchange_bbq_cooking_setting_click,
                             LV_EVENT_CLICKED, NULL);
 
-        bottom_bbq_set_status(cook->status, set_temp, set_hour, set_min);
+        windchange_bbq_set_status(cook->status, set_temp, set_hour, set_min);
 
         int elapsed_sec = (cook_elapsed_saved + 500) / 1000;
         int total_sec = cook_total_ms / 1000;
@@ -497,13 +498,13 @@ void bottom_bbq_resume_cooking(void)
         int s = remaining_sec % 60;
         lv_label_set_text_fmt(cook->timelabel, "%02d:%02d:%02d", h, m, s);
 
-        lv_bar_set_range(cook->bar_10, 0, 100);
+        lv_bar_set_range(cook->bar_30, 0, 100);
         if (cook_bar_saved > 100) cook_bar_saved = 100;
-        lv_bar_set_value(cook->bar_10, cook_bar_saved, LV_ANIM_OFF);
+        lv_bar_set_value(cook->bar_30, cook_bar_saved, LV_ANIM_OFF);
 
         lv_anim_t a;
         lv_anim_init(&a);
-        lv_anim_set_var(&a, cook->bar_10);
+        lv_anim_set_var(&a, cook->bar_30);
         lv_anim_set_exec_cb(&a, anim_bar_set_value);
         lv_anim_set_values(&a, cook_bar_saved, 100);
         lv_anim_set_time(&a, cook_total_ms - (int)cook_elapsed_saved);
@@ -514,9 +515,9 @@ void bottom_bbq_resume_cooking(void)
     if (cook_timer) lv_timer_del(cook_timer);
     cook_timer = lv_timer_create(cooking_timer_cb, 1000, NULL);
 
-    current_group = g_bottom_bbq_cooking;
+    current_group = g_windchange_bbq_cooking;
 
-    lv_scr_load_anim(bottom_bbq_cooking_get(&ui_manager)->obj,
+    lv_scr_load_anim(windchange_bbq_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         {
@@ -525,11 +526,11 @@ void bottom_bbq_resume_cooking(void)
         g_send.iface_status = IFACE_COOKING;
         g_send.remaining_ms = rem;
     }
-    printf("[bottom_bbq] resume: stop -> cooking\n");
+    printf("[windchange_bbq] resume: stop -> cooking\n");
 }
 
 // setting 确定 → 回到 cooking
-static void on_bottom_bbq_setting_sure_click(lv_event_t *e)
+static void on_windchange_bbq_setting_sure_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
     if (screen_is_loading(act_scr)) return;
@@ -537,30 +538,30 @@ static void on_bottom_bbq_setting_sure_click(lv_event_t *e)
     cook_total_ms = (set_hour * 3600 + set_min * 60) * 1000;
 
     depth--;
-    if (depth > 0 && page_stack[depth - 1] == PAGE_BOTTOM_BBQ_STOP)
+    if (depth > 0 && page_stack[depth - 1] == PAGE_WINDCHANGE_BBQ_STOP)
         depth--;
     lv_obj_clean(lv_scr_act());
-    bottom_bbq_cooking_create(&ui_manager);
+    windchange_bbq_cooking_create(&ui_manager);
 
-    bottom_bbq_cooking_t *cook = bottom_bbq_cooking_get(&ui_manager);
+    windchange_bbq_cooking_t *cook = windchange_bbq_cooking_get(&ui_manager);
     if (cook) {
-        lv_obj_t *btns[] = { cook->stop, cook->littlebutton };
-        if (g_bottom_bbq_cooking) lv_group_del(g_bottom_bbq_cooking);
-        g_bottom_bbq_cooking = group_create_for_page(btns, 2);
-        lv_obj_add_event_cb(cook->stop, on_bottom_bbq_cooking_stop_click,
+        lv_obj_t *btns[] = { cook->stop, cook->little };
+        if (g_windchange_bbq_cooking) lv_group_del(g_windchange_bbq_cooking);
+        g_windchange_bbq_cooking = group_create_for_page(btns, 2);
+        lv_obj_add_event_cb(cook->stop, on_windchange_bbq_cooking_stop_click,
                             LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(cook->littlebutton, on_bottom_bbq_cooking_setting_click,
+        lv_obj_add_event_cb(cook->little, on_windchange_bbq_cooking_setting_click,
                             LV_EVENT_CLICKED, NULL);
 
-        bottom_bbq_set_status(cook->status, set_temp, set_hour, set_min);
+        windchange_bbq_set_status(cook->status, set_temp, set_hour, set_min);
         lv_label_set_text_fmt(cook->timelabel, "%02d:%02d:%02d", set_hour, set_min, 0);
 
-        lv_bar_set_range(cook->bar_10, 0, 100);
-        lv_bar_set_value(cook->bar_10, 3, LV_ANIM_OFF);
+        lv_bar_set_range(cook->bar_30, 0, 100);
+        lv_bar_set_value(cook->bar_30, 3, LV_ANIM_OFF);
 
         lv_anim_t a;
         lv_anim_init(&a);
-        lv_anim_set_var(&a, cook->bar_10);
+        lv_anim_set_var(&a, cook->bar_30);
         lv_anim_set_exec_cb(&a, anim_bar_set_value);
         lv_anim_set_values(&a, 3, 100);
         lv_anim_set_time(&a, cook_total_ms);
@@ -572,51 +573,51 @@ static void on_bottom_bbq_setting_sure_click(lv_event_t *e)
     if (cook_timer) lv_timer_del(cook_timer);
     cook_timer = lv_timer_create(cooking_timer_cb, 1000, NULL);
 
-    current_group = g_bottom_bbq_cooking;
+    current_group = g_windchange_bbq_cooking;
 
-    lv_scr_load_anim(bottom_bbq_cooking_get(&ui_manager)->obj,
+    lv_scr_load_anim(windchange_bbq_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         g_send.iface_status = IFACE_COOKING;
     g_send.set_temp = set_temp;
     g_send.remaining_ms = cook_total_ms;
-    printf("[bottom_bbq] setting sure -> cooking\n");
+    printf("[windchange_bbq] setting sure -> cooking\n");
 }
 
 // cooking → complete
-void jump_to_bottom_bbq_complete(void)
+void jump_to_windchange_bbq_complete(void)
 {
-    page_push(PAGE_BOTTOM_BBQ_COMPLETE);
+    page_push(PAGE_WINDCHANGE_BBQ_COMPLETE);
     lv_obj_clean(lv_scr_act());
-    bottom_bbq_complete_create(&ui_manager);
+    windchange_bbq_complete_create(&ui_manager);
 
-    current_group = g_bottom_bbq_complete;
+    current_group = g_windchange_bbq_complete;
 
-    lv_scr_load_anim(bottom_bbq_complete_get(&ui_manager)->obj,
+    lv_scr_load_anim(windchange_bbq_complete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         g_send.iface_status = IFACE_COMPLETE;
     g_send.remaining_ms = 0;
         g_send.iface_status = IFACE_COMPLETE;
     g_send.remaining_ms = 0;
-    printf("[bottom_bbq] jump: cooking -> complete\n");
+    printf("[windchange_bbq] jump: cooking -> complete\n");
 }
 
 // ==============================
 // Rebuild 函数（供 page_pop 调用）
 // ==============================
 
-void bottom_bbq_rebuild_menu(page_id_t child)
+void windchange_bbq_rebuild_menu(page_id_t child)
 {
-    bottom_bbq_menu_create(&ui_manager);
-    bottom_bbq_menu_t *menu = bottom_bbq_menu_get(&ui_manager);
+    windchange_bbq_menu_create(&ui_manager);
+    windchange_bbq_menu_t *menu = windchange_bbq_menu_get(&ui_manager);
     if (menu) {
         lv_obj_t *btns[] = {
             menu->temp, menu->hour, menu->min,
             menu->next,
         };
-        if (g_bottom_bbq_menu) lv_group_del(g_bottom_bbq_menu);
-        g_bottom_bbq_menu = group_create_for_page(btns, 4);
+        if (g_windchange_bbq_menu) lv_group_del(g_windchange_bbq_menu);
+        g_windchange_bbq_menu = group_create_for_page(btns, 4);
 
         edit_clear();
         edit_register(menu->temp, menu->templine2, menu->templine3,
@@ -626,16 +627,16 @@ void bottom_bbq_rebuild_menu(page_id_t child)
         edit_register(menu->min, menu->minline, NULL,
                       &set_min, 0, 59, 1, "%02d");
 
-        lv_obj_add_event_cb(menu->temp, on_bottom_bbq_edit_focus,
+        lv_obj_add_event_cb(menu->temp, on_windchange_bbq_edit_focus,
                             LV_EVENT_FOCUSED, NULL);
-        lv_obj_add_event_cb(menu->hour, on_bottom_bbq_edit_focus,
+        lv_obj_add_event_cb(menu->hour, on_windchange_bbq_edit_focus,
                             LV_EVENT_FOCUSED, NULL);
-        lv_obj_add_event_cb(menu->min, on_bottom_bbq_edit_focus,
+        lv_obj_add_event_cb(menu->min, on_windchange_bbq_edit_focus,
                             LV_EVENT_FOCUSED, NULL);
-        lv_obj_add_event_cb(menu->next, on_bottom_bbq_edit_focus,
+        lv_obj_add_event_cb(menu->next, on_windchange_bbq_edit_focus,
                             LV_EVENT_FOCUSED, NULL);
         if (menu->next)
-            lv_obj_add_event_cb(menu->next, on_bottom_bbq_menu_next_click,
+            lv_obj_add_event_cb(menu->next, on_windchange_bbq_menu_next_click,
                                 LV_EVENT_CLICKED, NULL);
 
         lv_label_set_text_fmt(menu->temp, "%d", set_temp);
@@ -652,17 +653,17 @@ void bottom_bbq_rebuild_menu(page_id_t child)
         validate_constraints();
         if (menu->next) lv_group_focus_obj(menu->next);
     }
-    current_group = g_bottom_bbq_menu;
-    lv_scr_load_anim(bottom_bbq_menu_get(&ui_manager)->obj,
+    current_group = g_windchange_bbq_menu;
+    lv_scr_load_anim(windchange_bbq_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[bottom_bbq] back to bottom_bbq_menu\n");
+    printf("[windchange_bbq] back to windchange_bbq_menu\n");
 }
 
-void bottom_bbq_rebuild_set(page_id_t child)
+void windchange_bbq_rebuild_set(page_id_t child)
 {
-    bottom_bbq_set_create(&ui_manager);
-    bottom_bbq_set_t *set = bottom_bbq_set_get(&ui_manager);
+    windchange_bbq_set_create(&ui_manager);
+    windchange_bbq_set_t *set = windchange_bbq_set_get(&ui_manager);
     if (set) {
         lv_obj_t *btns[] = {
             set->sure,
@@ -670,8 +671,8 @@ void bottom_bbq_rebuild_set(page_id_t child)
             set->offdelay, set->ondelay,
             set->offcontain, set->oncontain,
         };
-        if (g_bottom_bbq_set) lv_group_del(g_bottom_bbq_set);
-        g_bottom_bbq_set = group_create_for_page(btns, 7);
+        if (g_windchange_bbq_set) lv_group_del(g_windchange_bbq_set);
+        g_windchange_bbq_set = group_create_for_page(btns, 7);
         clear_focus_states(btns, 7);
         lv_group_focus_obj(set->sure);
 
@@ -683,41 +684,41 @@ void bottom_bbq_rebuild_set(page_id_t child)
         apply_toggle_state(set->offdelay, set->ondelay, delay_on);
         apply_toggle_state(set->offcontain, set->oncontain, contain_on);
 
-        lv_obj_add_event_cb(set->offpreheat, bottom_bbq_preheat_toggle, LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(set->onpreheat, bottom_bbq_preheat_toggle, LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(set->offdelay, bottom_bbq_delay_toggle, LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(set->ondelay, bottom_bbq_delay_toggle, LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(set->offcontain, bottom_bbq_contain_toggle, LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(set->oncontain, bottom_bbq_contain_toggle, LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(set->sure, on_bottom_bbq_set_sure_click,
+        lv_obj_add_event_cb(set->offpreheat, windchange_bbq_preheat_toggle, LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->onpreheat, windchange_bbq_preheat_toggle, LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->offdelay, windchange_bbq_delay_toggle, LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->ondelay, windchange_bbq_delay_toggle, LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->offcontain, windchange_bbq_contain_toggle, LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->oncontain, windchange_bbq_contain_toggle, LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->sure, on_windchange_bbq_set_sure_click,
                             LV_EVENT_CLICKED, NULL);
 
-        if (child == PAGE_BOTTOM_BBQ_COOKING && set->sure)
+        if (child == PAGE_WINDCHANGE_BBQ_COOKING && set->sure)
             lv_group_focus_obj(set->sure);
     }
-    current_group = g_bottom_bbq_set;
-    lv_scr_load_anim(bottom_bbq_set_get(&ui_manager)->obj,
+    current_group = g_windchange_bbq_set;
+    lv_scr_load_anim(windchange_bbq_set_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[bottom_bbq] back to bottom_bbq_set\n");
+    printf("[windchange_bbq] back to windchange_bbq_set\n");
 }
 
-void bottom_bbq_rebuild_cooking(page_id_t child)
+void windchange_bbq_rebuild_cooking(page_id_t child)
 {
-    bottom_bbq_cooking_create(&ui_manager);
-    bottom_bbq_cooking_t *cook = bottom_bbq_cooking_get(&ui_manager);
+    windchange_bbq_cooking_create(&ui_manager);
+    windchange_bbq_cooking_t *cook = windchange_bbq_cooking_get(&ui_manager);
     if (cook) {
-        lv_obj_t *btns[] = { cook->stop, cook->littlebutton };
-        if (g_bottom_bbq_cooking) lv_group_del(g_bottom_bbq_cooking);
-        g_bottom_bbq_cooking = group_create_for_page(btns, 2);
-        lv_obj_add_event_cb(cook->stop, on_bottom_bbq_cooking_stop_click,
+        lv_obj_t *btns[] = { cook->stop, cook->little };
+        if (g_windchange_bbq_cooking) lv_group_del(g_windchange_bbq_cooking);
+        g_windchange_bbq_cooking = group_create_for_page(btns, 2);
+        lv_obj_add_event_cb(cook->stop, on_windchange_bbq_cooking_stop_click,
                             LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(cook->littlebutton, on_bottom_bbq_cooking_setting_click,
+        lv_obj_add_event_cb(cook->little, on_windchange_bbq_cooking_setting_click,
                             LV_EVENT_CLICKED, NULL);
 
-        bottom_bbq_set_status(cook->status, set_temp, set_hour, set_min);
+        windchange_bbq_set_status(cook->status, set_temp, set_hour, set_min);
 
-        if (child == PAGE_BOTTOM_BBQ_SETTING) {
+        if (child == PAGE_WINDCHANGE_BBQ_SETTING) {
             uint32_t elapsed = lv_tick_get() - cook_start_time;
             int elapsed_sec = (elapsed + 500) / 1000;
             int total_sec = cook_total_ms / 1000;
@@ -727,24 +728,24 @@ void bottom_bbq_rebuild_cooking(page_id_t child)
             int m = (remaining_sec % 3600) / 60;
             int s = remaining_sec % 60;
             lv_label_set_text_fmt(cook->timelabel, "%02d:%02d:%02d", h, m, s);
-            lv_bar_set_range(cook->bar_10, 0, 100);
+            lv_bar_set_range(cook->bar_30, 0, 100);
             int progress = (int)((int64_t)elapsed * 100 / cook_total_ms);
             if (progress > 100) progress = 100;
-            lv_bar_set_value(cook->bar_10, progress, LV_ANIM_OFF);
+            lv_bar_set_value(cook->bar_30, progress, LV_ANIM_OFF);
             lv_anim_t a;
             lv_anim_init(&a);
-            lv_anim_set_var(&a, cook->bar_10);
+            lv_anim_set_var(&a, cook->bar_30);
             lv_anim_set_exec_cb(&a, anim_bar_set_value);
             lv_anim_set_values(&a, progress, 100);
             lv_anim_set_time(&a, cook_total_ms - (int)elapsed);
             lv_anim_start(&a);
         } else {
             lv_label_set_text_fmt(cook->timelabel, "%02d:%02d:%02d", set_hour, set_min, 0);
-            lv_bar_set_range(cook->bar_10, 0, 100);
-            lv_bar_set_value(cook->bar_10, 3, LV_ANIM_OFF);
+            lv_bar_set_range(cook->bar_30, 0, 100);
+            lv_bar_set_value(cook->bar_30, 3, LV_ANIM_OFF);
             lv_anim_t a;
             lv_anim_init(&a);
-            lv_anim_set_var(&a, cook->bar_10);
+            lv_anim_set_var(&a, cook->bar_30);
             lv_anim_set_exec_cb(&a, anim_bar_set_value);
             lv_anim_set_values(&a, 3, 100);
             lv_anim_set_time(&a, cook_total_ms);
@@ -754,21 +755,21 @@ void bottom_bbq_rebuild_cooking(page_id_t child)
             cook_timer = lv_timer_create(cooking_timer_cb, 1000, NULL);
         }
     }
-    current_group = g_bottom_bbq_cooking;
-    lv_scr_load_anim(bottom_bbq_cooking_get(&ui_manager)->obj,
+    current_group = g_windchange_bbq_cooking;
+    lv_scr_load_anim(windchange_bbq_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[bottom_bbq] back to bottom_bbq_cooking\n");
+    printf("[windchange_bbq] back to windchange_bbq_cooking\n");
 }
 
-void bottom_bbq_rebuild_setting(void)
+void windchange_bbq_rebuild_setting(void)
 {
-    bottom_bbq_setting_create(&ui_manager);
-    bottom_bbq_setting_t *set = bottom_bbq_setting_get(&ui_manager);
+    windchange_bbq_setting_create(&ui_manager);
+    windchange_bbq_setting_t *set = windchange_bbq_setting_get(&ui_manager);
     if (set) {
-        lv_obj_t *btns[] = { set->temp, set->hour, set->min, set->surebutton };
-        if (g_bottom_bbq_setting) lv_group_del(g_bottom_bbq_setting);
-        g_bottom_bbq_setting = group_create_for_page(btns, 4);
+        lv_obj_t *btns[] = { set->temp, set->hour, set->min, set->sure };
+        if (g_windchange_bbq_setting) lv_group_del(g_windchange_bbq_setting);
+        g_windchange_bbq_setting = group_create_for_page(btns, 4);
 
         edit_clear();
         edit_register(set->temp, set->templine2, set->templine3,
@@ -778,11 +779,11 @@ void bottom_bbq_rebuild_setting(void)
         edit_register(set->min, set->minline, NULL,
                       &set_min, 0, 59, 1, "%02d");
 
-        lv_obj_add_event_cb(set->temp, on_bottom_bbq_edit_focus, LV_EVENT_FOCUSED, NULL);
-        lv_obj_add_event_cb(set->hour, on_bottom_bbq_edit_focus, LV_EVENT_FOCUSED, NULL);
-        lv_obj_add_event_cb(set->min, on_bottom_bbq_edit_focus, LV_EVENT_FOCUSED, NULL);
-        lv_obj_add_event_cb(set->surebutton, on_bottom_bbq_edit_focus, LV_EVENT_FOCUSED, NULL);
-        lv_obj_add_event_cb(set->surebutton, on_bottom_bbq_setting_sure_click,
+        lv_obj_add_event_cb(set->temp, on_windchange_bbq_edit_focus, LV_EVENT_FOCUSED, NULL);
+        lv_obj_add_event_cb(set->hour, on_windchange_bbq_edit_focus, LV_EVENT_FOCUSED, NULL);
+        lv_obj_add_event_cb(set->min, on_windchange_bbq_edit_focus, LV_EVENT_FOCUSED, NULL);
+        lv_obj_add_event_cb(set->sure, on_windchange_bbq_edit_focus, LV_EVENT_FOCUSED, NULL);
+        lv_obj_add_event_cb(set->sure, on_windchange_bbq_setting_sure_click,
                             LV_EVENT_CLICKED, NULL);
 
         uint32_t elapsed = lv_tick_get() - cook_start_time;
@@ -807,26 +808,26 @@ void bottom_bbq_rebuild_setting(void)
         lv_obj_add_flag(set->minline, LV_OBJ_FLAG_HIDDEN);
 
         lv_group_focus_obj(set->temp);
-        update_bottom_bbq_dir_icon(set);
+        update_windchange_bbq_dir_icon(set);
     }
-    current_group = g_bottom_bbq_setting;
-    lv_scr_load_anim(bottom_bbq_setting_get(&ui_manager)->obj,
+    current_group = g_windchange_bbq_setting;
+    lv_scr_load_anim(windchange_bbq_setting_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[bottom_bbq] back to bottom_bbq_setting\n");
+    printf("[windchange_bbq] back to windchange_bbq_setting\n");
 }
 
-void bottom_bbq_rebuild_stop(void)
+void windchange_bbq_rebuild_stop(void)
 {
-    bottom_bbq_stop_create(&ui_manager);
-    bottom_bbq_stop_t *stop = bottom_bbq_stop_get(&ui_manager);
+    windchange_bbq_stop_create(&ui_manager);
+    windchange_bbq_stop_t *stop = windchange_bbq_stop_get(&ui_manager);
     if (stop) {
-        lv_obj_t *btns[] = { stop->start, stop->littlebutton };
-        if (g_bottom_bbq_stop) lv_group_del(g_bottom_bbq_stop);
-        g_bottom_bbq_stop = group_create_for_page(btns, 2);
-        lv_obj_add_event_cb(stop->start, on_bottom_bbq_stop_start_click,
+        lv_obj_t *btns[] = { stop->start, stop->little };
+        if (g_windchange_bbq_stop) lv_group_del(g_windchange_bbq_stop);
+        g_windchange_bbq_stop = group_create_for_page(btns, 2);
+        lv_obj_add_event_cb(stop->start, on_windchange_bbq_stop_start_click,
                             LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(stop->littlebutton, on_bottom_bbq_cooking_setting_click,
+        lv_obj_add_event_cb(stop->little, on_windchange_bbq_cooking_setting_click,
                             LV_EVENT_CLICKED, NULL);
 
         int elapsed_sec = (cook_elapsed_saved + 500) / 1000;
@@ -837,50 +838,50 @@ void bottom_bbq_rebuild_stop(void)
         int m = (remaining_sec % 3600) / 60;
         int s = remaining_sec % 60;
         lv_label_set_text_fmt(stop->timelabel, "%02d:%02d:%02d", h, m, s);
-        bottom_bbq_set_status(stop->status, set_temp, set_hour, set_min);
+        windchange_bbq_set_status(stop->status, set_temp, set_hour, set_min);
 
-        lv_bar_set_range(stop->bar_11, 0, 100);
+        lv_bar_set_range(stop->bar_31, 0, 100);
         if (cook_bar_saved > 100) cook_bar_saved = 100;
-        lv_bar_set_value(stop->bar_11, cook_bar_saved, LV_ANIM_OFF);
+        lv_bar_set_value(stop->bar_31, cook_bar_saved, LV_ANIM_OFF);
     }
-    current_group = g_bottom_bbq_stop;
-    lv_scr_load_anim(bottom_bbq_stop_get(&ui_manager)->obj,
+    current_group = g_windchange_bbq_stop;
+    lv_scr_load_anim(windchange_bbq_stop_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[bottom_bbq] back to bottom_bbq_stop\n");
+    printf("[windchange_bbq] back to windchange_bbq_stop\n");
 }
 
-void bottom_bbq_rebuild_stop_back(void)
+void windchange_bbq_rebuild_stop_back(void)
 {
-    bottom_bbq_stop_back_create(&ui_manager);
-    bottom_bbq_stop_back_t *back = bottom_bbq_stop_back_get(&ui_manager);
+    windchange_bbq_stop_back_create(&ui_manager);
+    windchange_bbq_stop_back_t *back = windchange_bbq_stop_back_get(&ui_manager);
     if (back) {
-        lv_obj_t *btns[] = { back->sure, back->little };
-        if (g_bottom_bbq_stop_back) lv_group_del(g_bottom_bbq_stop_back);
-        g_bottom_bbq_stop_back = group_create_for_page(btns, 2);
-        lv_obj_add_event_cb(back->sure, on_bottom_bbq_stop_back_sure_click,
+        lv_obj_t *btns[] = { back->sure, back->button_117 };
+        if (g_windchange_bbq_stop_back) lv_group_del(g_windchange_bbq_stop_back);
+        g_windchange_bbq_stop_back = group_create_for_page(btns, 2);
+        lv_obj_add_event_cb(back->sure, on_windchange_bbq_stop_back_sure_click,
                             LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(back->little, on_bottom_bbq_stop_back_littal_click,
+        lv_obj_add_event_cb(back->button_117, on_windchange_bbq_stop_back_littal_click,
                             LV_EVENT_CLICKED, NULL);
 
-        bottom_bbq_set_status(back->status, set_temp, set_hour, set_min);
-        lv_bar_set_range(back->bar_12, 0, 100);
+        windchange_bbq_set_status(back->status, set_temp, set_hour, set_min);
+        lv_bar_set_range(back->bar_32, 0, 100);
         if (cook_bar_saved > 100) cook_bar_saved = 100;
-        lv_bar_set_value(back->bar_12, cook_bar_saved, LV_ANIM_OFF);
+        lv_bar_set_value(back->bar_32, cook_bar_saved, LV_ANIM_OFF);
     }
-    current_group = g_bottom_bbq_stop_back;
-    lv_scr_load_anim(bottom_bbq_stop_back_get(&ui_manager)->obj,
+    current_group = g_windchange_bbq_stop_back;
+    lv_scr_load_anim(windchange_bbq_stop_back_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[bottom_bbq] back to bottom_bbq_stop_back\n");
+    printf("[windchange_bbq] back to windchange_bbq_stop_back\n");
 }
 
-void bottom_bbq_rebuild_complete(void)
+void windchange_bbq_rebuild_complete(void)
 {
-    bottom_bbq_complete_create(&ui_manager);
-    current_group = g_bottom_bbq_complete;
-    lv_scr_load_anim(bottom_bbq_complete_get(&ui_manager)->obj,
+    windchange_bbq_complete_create(&ui_manager);
+    current_group = g_windchange_bbq_complete;
+    lv_scr_load_anim(windchange_bbq_complete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[bottom_bbq] back to bottom_bbq_complete\n");
+    printf("[windchange_bbq] back to windchange_bbq_complete\n");
 }

@@ -43,6 +43,10 @@
 #define MODE_TOP_BBQ        4
 #define MODE_BOTTOM_BBQ     5
 #define MODE_HOT_BBQ        8
+#define MODE_HOTWIND_BBQ    2  // 热风对流 Forced Air
+#define MODE_WINDCHANGE_BBQ 25 // 加强热风对流 Conventional Bake
+#define MODE_CENTRAL_BBQ    26 // 小面积烧烤 Half width Grill
+#define MODE_SAVE_BBQ       27 // 节能热风 Eco Forced Air
 #define MODE_EXTRA_COLOR    38
 
 // ===== 蜂鸣器声音 (BUF[14]) =====
