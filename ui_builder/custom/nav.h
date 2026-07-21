@@ -19,6 +19,35 @@ typedef enum {
     PAGE_PREHEAT_COOKING,
     PAGE_PREHEAT_STOP,
     PAGE_PREHEAT_COMPLETE,
+    PAGE_COOK4_MENU,
+    PAGE_COOKIE_MENU,
+    PAGE_COOKIE_SET,
+    PAGE_COOKIE_COOKING,
+    PAGE_COOKIE_SETTING,
+    PAGE_COOKIE_STOP,
+    PAGE_COOKIE_STOP_BACK,
+    PAGE_COOKIE_COMPLETE,
+    PAGE_WEST_MENU,
+    PAGE_WEST_SET,
+    PAGE_WEST_COOKING,
+    PAGE_WEST_SETTING,
+    PAGE_WEST_STOP,
+    PAGE_WEST_STOP_BACK,
+    PAGE_WEST_COMPLETE,
+    PAGE_PIZZA_MENU,
+    PAGE_PIZZA_SET,
+    PAGE_PIZZA_COOKING,
+    PAGE_PIZZA_SETTING,
+    PAGE_PIZZA_STOP,
+    PAGE_PIZZA_STOP_BACK,
+    PAGE_PIZZA_COMPLETE,
+    PAGE_MENU_COOK_MENU,
+    PAGE_MENU_COOK_SET,
+    PAGE_MENU_COOK_COOKING,
+    PAGE_MENU_COOK_SETTING,
+    PAGE_MENU_COOK_STOP,
+    PAGE_MENU_COOK_STOP_BACK,
+    PAGE_MENU_COOK_COMPLETE,
     PAGE_UPDOWN_BBQ_SET,
     PAGE_UPDOWN_BBQ_COOKING,
     PAGE_UPDOWN_BBQ_COMPLETE,
@@ -95,6 +124,63 @@ extern lv_group_t *g_preheat_menu;
 extern lv_group_t *g_preheat_cooking;
 extern lv_group_t *g_preheat_stop;
 extern lv_group_t *g_preheat_complete;
+extern lv_group_t *g_cook4_menu;
+
+extern lv_group_t *g_cookie_menu;
+
+extern lv_group_t *g_cookie_set;
+
+extern lv_group_t *g_cookie_cooking;
+
+extern lv_group_t *g_cookie_setting;
+
+extern lv_group_t *g_cookie_stop;
+
+extern lv_group_t *g_cookie_stop_back;
+
+extern lv_group_t *g_cookie_complete;
+
+extern lv_group_t *g_west_menu;
+
+extern lv_group_t *g_west_set;
+
+extern lv_group_t *g_west_cooking;
+
+extern lv_group_t *g_west_setting;
+
+extern lv_group_t *g_west_stop;
+
+extern lv_group_t *g_west_stop_back;
+
+extern lv_group_t *g_west_complete;
+
+extern lv_group_t *g_pizza_menu;
+
+extern lv_group_t *g_pizza_set;
+
+extern lv_group_t *g_pizza_cooking;
+
+extern lv_group_t *g_pizza_setting;
+
+extern lv_group_t *g_pizza_stop;
+
+extern lv_group_t *g_pizza_stop_back;
+
+extern lv_group_t *g_pizza_complete;
+
+extern lv_group_t *g_menu_cook_menu;
+
+extern lv_group_t *g_menu_cook_set;
+
+extern lv_group_t *g_menu_cook_cooking;
+
+extern lv_group_t *g_menu_cook_setting;
+
+extern lv_group_t *g_menu_cook_stop;
+
+extern lv_group_t *g_menu_cook_stop_back;
+
+extern lv_group_t *g_menu_cook_complete;
 extern lv_group_t *g_updown_bbq_set;
 extern lv_group_t *g_updown_bbq_cooking;
 extern lv_group_t *g_updown_bbq_complete;
@@ -191,6 +277,7 @@ void jump_to_preheat_stop(void);
 void jump_to_preheat_stop_back(void);
 void preheat_resume_cooking(void);
 void jump_to_preheat_complete(void);
+void jump_to_cook4_menu(void);
 #ifdef LV_USE_AIC_SIMULATOR
 extern uint16_t g_sim_cavity_temp;
 #endif
@@ -217,6 +304,10 @@ void update_hotwind_bbq_dir_icon(hotwind_bbq_setting_t *set);
 void update_save_bbq_dir_icon(save_bbq_setting_t *set);
 void update_central_bbq_dir_icon(central_bbq_setting_t *set);
 void update_windchange_bbq_dir_icon(windchange_bbq_setting_t *set);
+void update_cookie_dir_icon(cookie_setting_t *set);
+void update_west_dir_icon(west_setting_t *set);
+void update_pizza_dir_icon(pizza_setting_t *set);
+void update_menu_dir_icon(menu_setting_t *set);
 
 void jump_to_hot_bbq_menu(void);
 void jump_to_hot_bbq_set(void);
@@ -332,5 +423,71 @@ void bottom_bbq_rebuild_setting(void);
 void bottom_bbq_rebuild_stop(void);
 void bottom_bbq_rebuild_stop_back(void);
 void bottom_bbq_rebuild_complete(void);
+
+void jump_to_cookie_menu(void);
+void jump_to_cookie_set(void);
+void jump_to_cookie_cooking(void);
+void jump_to_cookie_setting(void);
+void jump_to_cookie_stop(void);
+void jump_to_cookie_stop_back(void);
+void jump_to_cookie_complete(void);
+void cookie_rebuild_menu(page_id_t child);
+void cookie_rebuild_set(page_id_t child);
+void cookie_rebuild_cooking(page_id_t child);
+void cookie_rebuild_setting(void);
+void cookie_rebuild_stop(void);
+void cookie_rebuild_stop_back(void);
+void cookie_rebuild_complete(void);
+void cookie_resume_cooking(void);
+
+void jump_to_west_menu(void);
+void jump_to_west_set(void);
+void jump_to_west_cooking(void);
+void jump_to_west_setting(void);
+void jump_to_west_stop(void);
+void jump_to_west_stop_back(void);
+void jump_to_west_complete(void);
+void west_rebuild_menu(page_id_t child);
+void west_rebuild_set(page_id_t child);
+void west_rebuild_cooking(page_id_t child);
+void west_rebuild_setting(void);
+void west_rebuild_stop(void);
+void west_rebuild_stop_back(void);
+void west_rebuild_complete(void);
+void west_resume_cooking(void);
+
+void jump_to_pizza_menu(void);
+void jump_to_pizza_set(void);
+void jump_to_pizza_cooking(void);
+void jump_to_pizza_setting(void);
+void jump_to_pizza_stop(void);
+void jump_to_pizza_stop_back(void);
+void jump_to_pizza_complete(void);
+void pizza_rebuild_menu(page_id_t child);
+void pizza_rebuild_set(page_id_t child);
+void pizza_rebuild_cooking(page_id_t child);
+void pizza_rebuild_setting(void);
+void pizza_rebuild_stop(void);
+void pizza_rebuild_stop_back(void);
+void pizza_rebuild_complete(void);
+void pizza_resume_cooking(void);
+
+void jump_to_menu_menu(void);
+void jump_to_menu_set(void);
+void jump_to_menu_cooking(void);
+void jump_to_menu_setting(void);
+void jump_to_menu_stop(void);
+void jump_to_menu_stop_back(void);
+void jump_to_menu_complete(void);
+void menu_rebuild_menu(page_id_t child);
+void menu_rebuild_set(page_id_t child);
+void menu_rebuild_cooking(page_id_t child);
+void menu_rebuild_setting(void);
+void menu_rebuild_stop(void);
+void menu_rebuild_stop_back(void);
+void menu_rebuild_complete(void);
+void menu_resume_cooking(void);
+
+void cook4menu_rebuild(page_id_t child);
 
 #endif

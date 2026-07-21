@@ -50,6 +50,92 @@ lv_group_t *g_preheat_cooking;
 lv_group_t *g_preheat_stop;
 
 lv_group_t *g_preheat_complete;
+lv_group_t *g_cook4_menu;
+lv_group_t *g_cookie_menu;
+lv_group_t *g_cookie_set;
+lv_group_t *g_cookie_cooking;
+lv_group_t *g_cookie_setting;
+lv_group_t *g_cookie_stop;
+lv_group_t *g_cookie_stop_back;
+lv_group_t *g_cookie_complete;
+lv_group_t *g_west_menu;
+lv_group_t *g_west_set;
+lv_group_t *g_west_cooking;
+lv_group_t *g_west_setting;
+lv_group_t *g_west_stop;
+lv_group_t *g_west_stop_back;
+lv_group_t *g_west_complete;
+lv_group_t *g_pizza_menu;
+lv_group_t *g_pizza_set;
+lv_group_t *g_pizza_cooking;
+lv_group_t *g_pizza_setting;
+lv_group_t *g_pizza_stop;
+lv_group_t *g_pizza_stop_back;
+lv_group_t *g_pizza_complete;
+lv_group_t *g_menu_cook_menu;
+lv_group_t *g_menu_cook_set;
+lv_group_t *g_menu_cook_cooking;
+lv_group_t *g_menu_cook_setting;
+lv_group_t *g_menu_cook_stop;
+lv_group_t *g_menu_cook_stop_back;
+lv_group_t *g_menu_cook_complete;
+lv_group_t *g_cook4_menu;
+
+lv_group_t *g_cookie_menu;
+
+lv_group_t *g_cookie_set;
+
+lv_group_t *g_cookie_cooking;
+
+lv_group_t *g_cookie_setting;
+
+lv_group_t *g_cookie_stop;
+
+lv_group_t *g_cookie_stop_back;
+
+lv_group_t *g_cookie_complete;
+
+lv_group_t *g_west_menu;
+
+lv_group_t *g_west_set;
+
+lv_group_t *g_west_cooking;
+
+lv_group_t *g_west_setting;
+
+lv_group_t *g_west_stop;
+
+lv_group_t *g_west_stop_back;
+
+lv_group_t *g_west_complete;
+
+lv_group_t *g_pizza_menu;
+
+lv_group_t *g_pizza_set;
+
+lv_group_t *g_pizza_cooking;
+
+lv_group_t *g_pizza_setting;
+
+lv_group_t *g_pizza_stop;
+
+lv_group_t *g_pizza_stop_back;
+
+lv_group_t *g_pizza_complete;
+
+lv_group_t *g_menu_cook_menu;
+
+lv_group_t *g_menu_cook_set;
+
+lv_group_t *g_menu_cook_cooking;
+
+lv_group_t *g_menu_cook_setting;
+
+lv_group_t *g_menu_cook_stop;
+
+lv_group_t *g_menu_cook_stop_back;
+
+lv_group_t *g_menu_cook_complete;
 
 
 #ifdef LV_USE_AIC_SIMULATOR
@@ -193,6 +279,7 @@ static void on_cook_setting_click(lv_event_t *e);
 static void on_setting_edit_focus(lv_event_t *e);
 static void on_setting_sure_click(lv_event_t *e);
 static void update_setting_dir_icon(updown_bbq_setting_t *set);
+void cook4menu_rebuild(page_id_t child);
 
 // ==============================
 // 可编辑字段注册表
@@ -347,6 +434,22 @@ static void adjust_value(edit_field_t *f, int delta)
     if (current_group == g_windchange_bbq_setting) {
         windchange_bbq_setting_t *set = windchange_bbq_setting_get(&ui_manager);
         update_windchange_bbq_dir_icon(set);
+    }
+    if (current_group == g_cookie_setting) {
+        cookie_setting_t *set = cookie_setting_get(&ui_manager);
+        update_cookie_dir_icon(set);
+    }
+    if (current_group == g_west_setting) {
+        west_setting_t *set = west_setting_get(&ui_manager);
+        update_west_dir_icon(set);
+    }
+    if (current_group == g_pizza_setting) {
+        pizza_setting_t *set = pizza_setting_get(&ui_manager);
+        update_pizza_dir_icon(set);
+    }
+    if (current_group == g_menu_cook_setting) {
+        menu_setting_t *set = menu_setting_get(&ui_manager);
+        update_menu_dir_icon(set);
     }
 }
 
@@ -533,6 +636,8 @@ void page_pop(void)
                     lv_group_focus_obj(major->cook_button);
                 else if (child == PAGE_SPECIAL_MENU && major->special_button)
                     lv_group_focus_obj(major->special_button);
+                else if (child == PAGE_COOK4_MENU && major->cook4_button)
+                    lv_group_focus_obj(major->cook4_button);
             }
         }
         lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
@@ -1206,6 +1311,101 @@ void page_pop(void)
         windchange_bbq_rebuild_stop_back();
         break;
     case PAGE_WINDCHANGE_BBQ_COMPLETE:
+        goto pop_to_major_menu;
+
+    case PAGE_COOK4_MENU:
+        cook4menu_rebuild(child);
+        break;
+    case PAGE_COOKIE_MENU:
+        cookie_rebuild_menu(child);
+        break;
+    case PAGE_COOKIE_SET:
+        cookie_rebuild_set(child);
+        break;
+    case PAGE_COOKIE_COOKING:
+        if (child == PAGE_COOKIE_COMPLETE)
+            goto pop_to_major_menu;
+        cookie_rebuild_cooking(child);
+        break;
+    case PAGE_COOKIE_SETTING:
+        cookie_rebuild_setting();
+        break;
+    case PAGE_COOKIE_STOP:
+        cookie_rebuild_stop();
+        break;
+    case PAGE_COOKIE_STOP_BACK:
+        cookie_rebuild_stop_back();
+        break;
+    case PAGE_COOKIE_COMPLETE:
+        goto pop_to_major_menu;
+
+    case PAGE_WEST_MENU:
+        west_rebuild_menu(child);
+        break;
+    case PAGE_WEST_SET:
+        west_rebuild_set(child);
+        break;
+    case PAGE_WEST_COOKING:
+        if (child == PAGE_WEST_COMPLETE)
+            goto pop_to_major_menu;
+        west_rebuild_cooking(child);
+        break;
+    case PAGE_WEST_SETTING:
+        west_rebuild_setting();
+        break;
+    case PAGE_WEST_STOP:
+        west_rebuild_stop();
+        break;
+    case PAGE_WEST_STOP_BACK:
+        west_rebuild_stop_back();
+        break;
+    case PAGE_WEST_COMPLETE:
+        goto pop_to_major_menu;
+
+    case PAGE_PIZZA_MENU:
+        pizza_rebuild_menu(child);
+        break;
+    case PAGE_PIZZA_SET:
+        pizza_rebuild_set(child);
+        break;
+    case PAGE_PIZZA_COOKING:
+        if (child == PAGE_PIZZA_COMPLETE)
+            goto pop_to_major_menu;
+        pizza_rebuild_cooking(child);
+        break;
+    case PAGE_PIZZA_SETTING:
+        pizza_rebuild_setting();
+        break;
+    case PAGE_PIZZA_STOP:
+        pizza_rebuild_stop();
+        break;
+    case PAGE_PIZZA_STOP_BACK:
+        pizza_rebuild_stop_back();
+        break;
+    case PAGE_PIZZA_COMPLETE:
+        goto pop_to_major_menu;
+
+    case PAGE_MENU_COOK_MENU:
+        menu_rebuild_menu(child);
+        break;
+    case PAGE_MENU_COOK_SET:
+        menu_rebuild_set(child);
+        break;
+    case PAGE_MENU_COOK_COOKING:
+        if (child == PAGE_MENU_COOK_COMPLETE)
+            goto pop_to_major_menu;
+        menu_rebuild_cooking(child);
+        break;
+    case PAGE_MENU_COOK_SETTING:
+        menu_rebuild_setting();
+        break;
+    case PAGE_MENU_COOK_STOP:
+        menu_rebuild_stop();
+        break;
+    case PAGE_MENU_COOK_STOP_BACK:
+        menu_rebuild_stop_back();
+        break;
+    case PAGE_MENU_COOK_COMPLETE:
         goto pop_to_major_menu;
 
     case PAGE_PREHEAT_COOKING:
@@ -1907,6 +2107,22 @@ static void process_key(uint8_t key)
                 jump_to_preheat_stop();
             else if (cur == PAGE_PREHEAT_STOP)
                 jump_to_preheat_stop_back();
+            else if (cur == PAGE_COOKIE_COOKING)
+                jump_to_cookie_stop();
+            else if (cur == PAGE_COOKIE_STOP)
+                jump_to_cookie_stop_back();
+            else if (cur == PAGE_WEST_COOKING)
+                jump_to_west_stop();
+            else if (cur == PAGE_WEST_STOP)
+                jump_to_west_stop_back();
+            else if (cur == PAGE_PIZZA_COOKING)
+                jump_to_pizza_stop();
+            else if (cur == PAGE_PIZZA_STOP)
+                jump_to_pizza_stop_back();
+            else if (cur == PAGE_MENU_COOK_COOKING)
+                jump_to_menu_stop();
+            else if (cur == PAGE_MENU_COOK_STOP)
+                jump_to_menu_stop_back();
             else
                 page_pop();
         }
@@ -2247,6 +2463,7 @@ static void on_major_cook_click(lv_event_t *e)
         jump_to_cookmenu();
 }
 
+void jump_to_cook4_menu(void);
 static void on_major_special_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
@@ -2256,7 +2473,101 @@ static void on_major_special_click(lv_event_t *e)
 
 static void on_major_cook4_click(lv_event_t *e)
 {
-    printf("[nav] cook4 jump not implemented yet\n");
+    jump_to_cook4_menu();
+}
+
+static void on_cook4_cookie_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (!screen_is_loading(act_scr))
+        jump_to_cookie_menu();
+}
+
+static void on_cook4_west_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (!screen_is_loading(act_scr))
+        jump_to_west_menu();
+}
+
+static void on_cook4_pizza_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (!screen_is_loading(act_scr))
+        jump_to_pizza_menu();
+}
+
+static void on_cook4_menu_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (!screen_is_loading(act_scr))
+        jump_to_menu_menu();
+}
+
+void jump_to_cook4_menu(void)
+{
+    page_push(PAGE_COOK4_MENU);
+    lv_obj_clean(lv_scr_act());
+    cook4menu_create(&ui_manager);
+
+    cook4menu_t *c4 = cook4menu_get(&ui_manager);
+    if (c4) {
+        lv_obj_t *btns[] = { c4->cookie, c4->west, c4->piza, c4->menu };
+        if (g_cook4_menu) lv_group_del(g_cook4_menu);
+        g_cook4_menu = group_create_for_page(btns, 4);
+
+        lv_obj_add_event_cb(c4->cookie, on_cook4_cookie_click,
+                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(c4->west, on_cook4_west_click,
+                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(c4->piza, on_cook4_pizza_click,
+                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(c4->menu, on_cook4_menu_click,
+                            LV_EVENT_CLICKED, NULL);
+    }
+    current_group = g_cook4_menu;
+
+    lv_scr_load_anim(cook4menu_get(&ui_manager)->obj,
+                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                     ui_manager.auto_del);
+    printf("[nav] major_menu -> cook4_menu\n");
+}
+
+void cook4menu_rebuild(page_id_t child)
+{
+    lv_obj_clean(lv_scr_act());
+    cook4menu_create(&ui_manager);
+
+    cook4menu_t *c4 = cook4menu_get(&ui_manager);
+    if (c4) {
+        lv_obj_t *btns[] = { c4->cookie, c4->west, c4->piza, c4->menu };
+        if (g_cook4_menu) lv_group_del(g_cook4_menu);
+        g_cook4_menu = group_create_for_page(btns, 4);
+
+        lv_obj_add_event_cb(c4->cookie, on_cook4_cookie_click,
+                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(c4->west, on_cook4_west_click,
+                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(c4->piza, on_cook4_pizza_click,
+                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(c4->menu, on_cook4_menu_click,
+                            LV_EVENT_CLICKED, NULL);
+
+        if (child == PAGE_COOKIE_MENU && c4->cookie)
+            lv_group_focus_obj(c4->cookie);
+        else if (child == PAGE_WEST_MENU && c4->west)
+            lv_group_focus_obj(c4->west);
+        else if (child == PAGE_PIZZA_MENU && c4->piza)
+            lv_group_focus_obj(c4->piza);
+        else if (child == PAGE_MENU_COOK_MENU && c4->menu)
+            lv_group_focus_obj(c4->menu);
+    }
+    current_group = g_cook4_menu;
+
+    lv_scr_load_anim(cook4menu_get(&ui_manager)->obj,
+                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                     ui_manager.auto_del);
+    printf("[nav] back to cook4_menu\n");
 }
 
 void on_cook_updown_click(lv_event_t *e)
@@ -2495,6 +2806,30 @@ void cooking_timer_cb(lv_timer_t *timer)
     } else if (current_group == g_windchange_bbq_cooking) {
         windchange_bbq_cooking_t *cook = windchange_bbq_cooking_get(&ui_manager);
         if (cook) time_label = cook->timelabel;
+    } else if (current_group == g_cookie_cooking) {
+        cookie_cooking_t *cook = cookie_cooking_get(&ui_manager);
+        if (cook) time_label = cook->timelabel;
+    } else if (current_group == g_cookie_setting) {
+        cookie_setting_t *set = cookie_setting_get(&ui_manager);
+        if (set) time_label = set->timelabel;
+    } else if (current_group == g_west_cooking) {
+        west_cooking_t *cook = west_cooking_get(&ui_manager);
+        if (cook) time_label = cook->timelabel;
+    } else if (current_group == g_west_setting) {
+        west_setting_t *set = west_setting_get(&ui_manager);
+        if (set) time_label = set->timelabel;
+    } else if (current_group == g_pizza_cooking) {
+        pizza_cooking_t *cook = pizza_cooking_get(&ui_manager);
+        if (cook) time_label = cook->timelabel;
+    } else if (current_group == g_pizza_setting) {
+        pizza_setting_t *set = pizza_setting_get(&ui_manager);
+        if (set) time_label = set->timelabel;
+    } else if (current_group == g_menu_cook_cooking) {
+        menu_cooking_t *cook = menu_cooking_get(&ui_manager);
+        if (cook) time_label = cook->timelabel;
+    } else if (current_group == g_menu_cook_setting) {
+        menu_setting_t *set = menu_setting_get(&ui_manager);
+        if (set) time_label = set->timelabel;
     } else {
         updown_bbq_cooking_t *cook = updown_bbq_cooking_get(&ui_manager);
         if (cook) time_label = cook->time_label;
@@ -2580,6 +2915,46 @@ void cooking_timer_cb(lv_timer_t *timer)
             if (windchange_depth > 1) depth = windchange_depth;
             lv_obj_clean(lv_scr_act());
             jump_to_windchange_bbq_complete();
+            return;
+        } else if (current_group == g_cookie_cooking || current_group == g_cookie_setting) {
+            int c_depth = depth;
+            while (c_depth > 1 && page_stack[c_depth - 1] != PAGE_COOKIE_COOKING &&
+                   page_stack[c_depth - 1] != PAGE_COOKIE_SETTING) {
+                c_depth--;
+            }
+            if (c_depth > 1) depth = c_depth;
+            lv_obj_clean(lv_scr_act());
+            jump_to_cookie_complete();
+            return;
+        } else if (current_group == g_west_cooking || current_group == g_west_setting) {
+            int w_depth = depth;
+            while (w_depth > 1 && page_stack[w_depth - 1] != PAGE_WEST_COOKING &&
+                   page_stack[w_depth - 1] != PAGE_WEST_SETTING) {
+                w_depth--;
+            }
+            if (w_depth > 1) depth = w_depth;
+            lv_obj_clean(lv_scr_act());
+            jump_to_west_complete();
+            return;
+        } else if (current_group == g_pizza_cooking || current_group == g_pizza_setting) {
+            int p_depth = depth;
+            while (p_depth > 1 && page_stack[p_depth - 1] != PAGE_PIZZA_COOKING &&
+                   page_stack[p_depth - 1] != PAGE_PIZZA_SETTING) {
+                p_depth--;
+            }
+            if (p_depth > 1) depth = p_depth;
+            lv_obj_clean(lv_scr_act());
+            jump_to_pizza_complete();
+            return;
+        } else if (current_group == g_menu_cook_cooking || current_group == g_menu_cook_setting) {
+            int m_depth = depth;
+            while (m_depth > 1 && page_stack[m_depth - 1] != PAGE_MENU_COOK_COOKING &&
+                   page_stack[m_depth - 1] != PAGE_MENU_COOK_SETTING) {
+                m_depth--;
+            }
+            if (m_depth > 1) depth = m_depth;
+            lv_obj_clean(lv_scr_act());
+            jump_to_menu_complete();
             return;
         }
         if (cook_is_color) {
