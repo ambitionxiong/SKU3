@@ -60,7 +60,7 @@ void windchange_bbq_setting_create(ui_manager_t *ui)
     lv_img_set_src(scr->image_16, LVGL_IMAGE_PATH(settingbk.png));
     lv_img_set_pivot(scr->image_16, 50, 50);
     lv_img_set_angle(scr->image_16, 0);
-    lv_obj_set_style_img_opa(scr->image_16, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_img_opa(scr->image_16, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_pos(scr->image_16, 115, 115);
 
     // Init scr->label_32

@@ -748,7 +748,7 @@ void page_pop(void)
             if (sp) {
                 lv_obj_t *btns[] = {
                     sp->air_button, sp->piza_button, sp->frozen_cook_button,
-                    sp->slow_cook_button, sp->unfrozen_button, sp->fajiao_button,
+                    sp->slow_cook_button, sp->unfrozen_button, sp->rising_button,
                     sp->corn_button, sp->heat_contain_button, sp->some_cook_button,
                 };
                 if (g_special_menu) lv_group_del(g_special_menu);
@@ -1805,7 +1805,7 @@ static void jump_to_special_menu(void)
     if (sp) {
         lv_obj_t *btns[] = {
             sp->air_button, sp->piza_button, sp->frozen_cook_button,
-            sp->slow_cook_button, sp->unfrozen_button, sp->fajiao_button,
+            sp->slow_cook_button, sp->unfrozen_button, sp->rising_button,
             sp->corn_button, sp->heat_contain_button, sp->some_cook_button,
         };
 

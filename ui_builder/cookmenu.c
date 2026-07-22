@@ -183,7 +183,7 @@ void cookmenu_create(ui_manager_t *ui)
 
     // Init scr->mainimg_1
     scr->mainimg_1 = lv_img_create(scr->obj);
-    lv_img_set_src(scr->mainimg_1, LVGL_IMAGE_PATH(pengrenmenu.png));
+    lv_img_set_src(scr->mainimg_1, LVGL_IMAGE_PATH(cookmenuicon.png));
     lv_img_set_pivot(scr->mainimg_1, 50, 50);
     lv_img_set_angle(scr->mainimg_1, 0);
     lv_obj_set_style_img_opa(scr->mainimg_1, 255, LV_PART_MAIN | LV_STATE_DEFAULT);

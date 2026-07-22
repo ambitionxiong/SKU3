@@ -28,22 +28,22 @@ void special_menu_create(ui_manager_t *ui)
     lv_obj_set_style_bg_opa(scr->obj, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->obj, LVGL_IMAGE_PATH(bg.jpg), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->fajiao_button
-    scr->fajiao_button = lv_btn_create(scr->obj);
-    lv_obj_t *fajiao_button_label = lv_label_create(scr->fajiao_button);
-    lv_label_set_text(fajiao_button_label, "");
-    lv_obj_align(fajiao_button_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->fajiao_button, 266, 268);
-    lv_obj_set_size(scr->fajiao_button, 248, 193);
+    // Init scr->rising_button
+    scr->rising_button = lv_btn_create(scr->obj);
+    lv_obj_t *rising_button_label = lv_label_create(scr->rising_button);
+    lv_label_set_text(rising_button_label, "");
+    lv_obj_align(rising_button_label, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_pos(scr->rising_button, 266, 268);
+    lv_obj_set_size(scr->rising_button, 248, 193);
 
-    // Set style of scr->fajiao_button
-    lv_obj_set_style_bg_opa(scr->fajiao_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->fajiao_button, LVGL_IMAGE_PATH(bottombk.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->fajiao_button, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_width(scr->fajiao_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_shadow_width(scr->fajiao_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(scr->fajiao_button, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->fajiao_button, LVGL_IMAGE_PATH(div9_80bk.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    // Set style of scr->rising_button
+    lv_obj_set_style_bg_opa(scr->rising_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->rising_button, LVGL_IMAGE_PATH(bottombk.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->rising_button, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(scr->rising_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(scr->rising_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(scr->rising_button, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->rising_button, LVGL_IMAGE_PATH(div9_80bk.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
     // Init scr->corn_button
     scr->corn_button = lv_btn_create(scr->obj);

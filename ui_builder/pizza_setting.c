@@ -60,7 +60,7 @@ void pizza_setting_create(ui_manager_t *ui)
     lv_img_set_src(scr->image_102, LVGL_IMAGE_PATH(settingbk.png));
     lv_img_set_pivot(scr->image_102, 50, 50);
     lv_img_set_angle(scr->image_102, 0);
-    lv_obj_set_style_img_opa(scr->image_102, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_img_opa(scr->image_102, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_pos(scr->image_102, 115, 115);
 
     // Init scr->label_223
