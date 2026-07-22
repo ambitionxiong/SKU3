@@ -156,7 +156,7 @@ static void on_west_stop_back_sure_click(lv_event_t *e)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_SETTING;
-    g_send.cook_mode = MODE_NONE;
+    g_send.cook_mode = MODE_COOK4;
     g_send.set_temp = 0;
     g_send.set_temp_lower = 0;
     g_send.remaining_ms = -1;
@@ -224,7 +224,7 @@ void jump_to_west_menu(void)
     lv_scr_load_anim(west_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-        g_send.cook_mode = MODE_NONE;
+        g_send.cook_mode = MODE_COOK4;
     printf("[west] jump: cookmenu -> west_menu\n");
 }
 

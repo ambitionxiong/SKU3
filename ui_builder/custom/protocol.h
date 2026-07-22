@@ -47,6 +47,7 @@
 #define MODE_WINDCHANGE_BBQ 25 // 加强热风对流 Conventional Bake
 #define MODE_CENTRAL_BBQ    26 // 小面积烧烤 Half width Grill
 #define MODE_SAVE_BBQ       27 // 节能热风 Eco Forced Air
+#define MODE_COOK4          33 // 烘焙
 #define MODE_EXTRA_COLOR    38
 
 // ===== 蜂鸣器声音 (BUF[14]) =====

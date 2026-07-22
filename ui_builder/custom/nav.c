@@ -2543,7 +2543,43 @@ static void process_key(uint8_t key)
             lv_group_focus_prev(current_group);
             printf("[windchange_bbq] focus prev\n");
         }
-    } else {
+        } else if (current_group == g_cookie_menu) {
+            cookie_menu_t *menu = cookie_menu_get(&ui_manager);
+            if (menu && focused == menu->next) {
+                lv_group_focus_obj(menu->temp);
+                printf("[cookie] focus wrap to temp\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[cookie] focus prev\n");
+            }
+        } else if (current_group == g_west_menu) {
+            west_menu_t *menu = west_menu_get(&ui_manager);
+            if (menu && focused == menu->next) {
+                lv_group_focus_obj(menu->temp);
+                printf("[west] focus wrap to temp\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[west] focus prev\n");
+            }
+        } else if (current_group == g_pizza_menu) {
+            pizza_menu_t *menu = pizza_menu_get(&ui_manager);
+            if (menu && focused == menu->next) {
+                lv_group_focus_obj(menu->temp);
+                printf("[pizza] focus wrap to temp\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[pizza] focus prev\n");
+            }
+        } else if (current_group == g_menu_cook_menu) {
+            menu_menu_t *menu = menu_menu_get(&ui_manager);
+            if (menu && focused == menu->next) {
+                lv_group_focus_obj(menu->temp);
+                printf("[menu] focus wrap to temp\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[menu] focus prev\n");
+            }
+        } else {
             lv_group_focus_prev(current_group);
             printf("[nav] focus prev\n");
         }
@@ -2758,6 +2794,7 @@ void jump_to_cook4_menu(void)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[nav] major_menu -> cook4_menu\n");
+    g_send.cook_mode = MODE_COOK4;
 }
 
 void cook4menu_rebuild(page_id_t child)
@@ -2795,6 +2832,7 @@ void cook4menu_rebuild(page_id_t child)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[nav] back to cook4_menu\n");
+    g_send.cook_mode = MODE_COOK4;
 }
 
 void on_cook_updown_click(lv_event_t *e)
