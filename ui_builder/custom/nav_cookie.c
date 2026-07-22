@@ -2,6 +2,9 @@
 #include "protocol.h"
 #include "nav.h"
 
+/* setting 页进入时保存原始值，BACK 返回时恢复 */
+int cookie_setting_saved_temp, cookie_setting_saved_hour, cookie_setting_saved_min;
+
 
 static void on_cookie_menu_next_click(lv_event_t *e);
 static void on_cookie_set_sure_click(lv_event_t *e);
@@ -238,13 +241,12 @@ void jump_to_cookie_set(void)
     if (set) {
         lv_obj_t *btns[] = {
             set->sure,
-            set->offcontain, set->oncontain,
-            set->offcontain, set->oncontain,
+            set->offdelay, set->ondelay,
             set->offcontain, set->oncontain,
         };
         if (g_cookie_set) lv_group_del(g_cookie_set);
-        g_cookie_set = group_create_for_page(btns, 7);
-        clear_focus_states(btns, 7);
+        g_cookie_set = group_create_for_page(btns, 5);
+        clear_focus_states(btns, 5);
         lv_group_focus_obj(set->sure);
 
         lv_label_set_text_fmt(set->temp, "%d", set_temp);
@@ -257,14 +259,11 @@ void jump_to_cookie_set(void)
         lv_label_set_text_fmt(set->hour, "%02d", set_hour);
         lv_label_set_text_fmt(set->min, "%02d", set_min);
 
-        apply_toggle_state(set->offcontain, set->oncontain, preheat_on);
-        apply_toggle_state(set->offcontain, set->oncontain, delay_on);
+        apply_toggle_state(set->offdelay, set->ondelay, delay_on);
         apply_toggle_state(set->offcontain, set->oncontain, contain_on);
 
-        lv_obj_add_event_cb(set->offcontain, cookie_preheat_toggle, LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(set->oncontain, cookie_preheat_toggle, LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(set->offcontain, cookie_delay_toggle, LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(set->oncontain, cookie_delay_toggle, LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->offdelay, cookie_delay_toggle, LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->ondelay, cookie_delay_toggle, LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(set->offcontain, cookie_contain_toggle, LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(set->oncontain, cookie_contain_toggle, LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(set->sure, on_cookie_set_sure_click,
@@ -334,6 +333,7 @@ void jump_to_cookie_cooking(void)
 // cooking → setting（不暂停 timer）
 void jump_to_cookie_setting(void)
 {
+    cookie_setting_saved_temp = set_temp; cookie_setting_saved_hour = set_hour; cookie_setting_saved_min = set_min;
     page_push(PAGE_COOKIE_SETTING);
     lv_obj_clean(lv_scr_act());
     cookie_setting_create(&ui_manager);
@@ -685,13 +685,12 @@ void cookie_rebuild_set(page_id_t child)
     if (set) {
         lv_obj_t *btns[] = {
             set->sure,
-            set->offcontain, set->oncontain,
-            set->offcontain, set->oncontain,
+            set->offdelay, set->ondelay,
             set->offcontain, set->oncontain,
         };
         if (g_cookie_set) lv_group_del(g_cookie_set);
-        g_cookie_set = group_create_for_page(btns, 7);
-        clear_focus_states(btns, 7);
+        g_cookie_set = group_create_for_page(btns, 5);
+        clear_focus_states(btns, 5);
         lv_group_focus_obj(set->sure);
 
         lv_label_set_text_fmt(set->temp, "%d", set_temp);
@@ -704,14 +703,11 @@ void cookie_rebuild_set(page_id_t child)
         lv_label_set_text_fmt(set->hour, "%02d", set_hour);
         lv_label_set_text_fmt(set->min, "%02d", set_min);
 
-        apply_toggle_state(set->offcontain, set->oncontain, preheat_on);
-        apply_toggle_state(set->offcontain, set->oncontain, delay_on);
+        apply_toggle_state(set->offdelay, set->ondelay, delay_on);
         apply_toggle_state(set->offcontain, set->oncontain, contain_on);
 
-        lv_obj_add_event_cb(set->offcontain, cookie_preheat_toggle, LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(set->oncontain, cookie_preheat_toggle, LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(set->offcontain, cookie_delay_toggle, LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(set->oncontain, cookie_delay_toggle, LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->offdelay, cookie_delay_toggle, LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->ondelay, cookie_delay_toggle, LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(set->offcontain, cookie_contain_toggle, LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(set->oncontain, cookie_contain_toggle, LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(set->sure, on_cookie_set_sure_click,
@@ -873,6 +869,7 @@ void cookie_rebuild_stop(void)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[cookie] back to cookie_stop\n");
+    g_send.iface_status = IFACE_PAUSE;
 }
 
 void cookie_rebuild_stop_back(void)

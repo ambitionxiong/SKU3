@@ -292,6 +292,11 @@ extern int hotwind_bbq_setting_saved_temp, hotwind_bbq_setting_saved_hour, hotwi
 extern int save_bbq_setting_saved_temp, save_bbq_setting_saved_hour, save_bbq_setting_saved_min;
 extern int central_bbq_setting_saved_temp, central_bbq_setting_saved_hour, central_bbq_setting_saved_min;
 extern int windchange_bbq_setting_saved_temp, windchange_bbq_setting_saved_hour, windchange_bbq_setting_saved_min;
+extern int cookie_setting_saved_temp, cookie_setting_saved_hour, cookie_setting_saved_min;
+extern int west_setting_saved_temp, west_setting_saved_hour, west_setting_saved_min;
+extern int pizza_setting_saved_temp, pizza_setting_saved_hour, pizza_setting_saved_min;
+extern int menu_setting_saved_temp, menu_setting_saved_hour, menu_setting_saved_min;
+
 
 
 // ==============================
@@ -1479,12 +1484,29 @@ void page_pop(void)
     case PAGE_COOKIE_COOKING:
         if (child == PAGE_COOKIE_COMPLETE)
             goto pop_to_major_menu;
-        cookie_rebuild_cooking(child);
+        if (child == PAGE_COOKIE_SETTING) {
+            set_temp = cookie_setting_saved_temp;
+            set_hour = cookie_setting_saved_hour;
+            set_min = cookie_setting_saved_min;
+            cookie_rebuild_cooking(child);
+            g_send.iface_status = IFACE_COOKING;
+            g_send.set_temp = set_temp;
+            {
+                uint32_t e = lv_tick_get() - cook_start_time;
+                g_send.remaining_ms = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);
+            }
+        } else
+            cookie_rebuild_cooking(0);
         break;
     case PAGE_COOKIE_SETTING:
         cookie_rebuild_setting();
         break;
     case PAGE_COOKIE_STOP:
+        if (child == PAGE_COOKIE_SETTING) {
+            set_temp = cookie_setting_saved_temp;
+            set_hour = cookie_setting_saved_hour;
+            set_min = cookie_setting_saved_min;
+        }
         cookie_rebuild_stop();
         break;
     case PAGE_COOKIE_STOP_BACK:
@@ -1502,12 +1524,29 @@ void page_pop(void)
     case PAGE_WEST_COOKING:
         if (child == PAGE_WEST_COMPLETE)
             goto pop_to_major_menu;
-        west_rebuild_cooking(child);
+        if (child == PAGE_WEST_SETTING) {
+            set_temp = west_setting_saved_temp;
+            set_hour = west_setting_saved_hour;
+            set_min = west_setting_saved_min;
+            west_rebuild_cooking(child);
+            g_send.iface_status = IFACE_COOKING;
+            g_send.set_temp = set_temp;
+            {
+                uint32_t e = lv_tick_get() - cook_start_time;
+                g_send.remaining_ms = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);
+            }
+        } else
+            west_rebuild_cooking(0);
         break;
     case PAGE_WEST_SETTING:
         west_rebuild_setting();
         break;
     case PAGE_WEST_STOP:
+        if (child == PAGE_WEST_SETTING) {
+            set_temp = west_setting_saved_temp;
+            set_hour = west_setting_saved_hour;
+            set_min = west_setting_saved_min;
+        }
         west_rebuild_stop();
         break;
     case PAGE_WEST_STOP_BACK:
@@ -1525,12 +1564,29 @@ void page_pop(void)
     case PAGE_PIZZA_COOKING:
         if (child == PAGE_PIZZA_COMPLETE)
             goto pop_to_major_menu;
-        pizza_rebuild_cooking(child);
+        if (child == PAGE_PIZZA_SETTING) {
+            set_temp = pizza_setting_saved_temp;
+            set_hour = pizza_setting_saved_hour;
+            set_min = pizza_setting_saved_min;
+            pizza_rebuild_cooking(child);
+            g_send.iface_status = IFACE_COOKING;
+            g_send.set_temp = set_temp;
+            {
+                uint32_t e = lv_tick_get() - cook_start_time;
+                g_send.remaining_ms = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);
+            }
+        } else
+            pizza_rebuild_cooking(0);
         break;
     case PAGE_PIZZA_SETTING:
         pizza_rebuild_setting();
         break;
     case PAGE_PIZZA_STOP:
+        if (child == PAGE_PIZZA_SETTING) {
+            set_temp = pizza_setting_saved_temp;
+            set_hour = pizza_setting_saved_hour;
+            set_min = pizza_setting_saved_min;
+        }
         pizza_rebuild_stop();
         break;
     case PAGE_PIZZA_STOP_BACK:
@@ -1548,12 +1604,29 @@ void page_pop(void)
     case PAGE_MENU_COOK_COOKING:
         if (child == PAGE_MENU_COOK_COMPLETE)
             goto pop_to_major_menu;
-        menu_rebuild_cooking(child);
+        if (child == PAGE_MENU_COOK_SETTING) {
+            set_temp = menu_setting_saved_temp;
+            set_hour = menu_setting_saved_hour;
+            set_min = menu_setting_saved_min;
+            menu_rebuild_cooking(child);
+            g_send.iface_status = IFACE_COOKING;
+            g_send.set_temp = set_temp;
+            {
+                uint32_t e = lv_tick_get() - cook_start_time;
+                g_send.remaining_ms = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);
+            }
+        } else
+            menu_rebuild_cooking(0);
         break;
     case PAGE_MENU_COOK_SETTING:
         menu_rebuild_setting();
         break;
     case PAGE_MENU_COOK_STOP:
+        if (child == PAGE_MENU_COOK_SETTING) {
+            set_temp = menu_setting_saved_temp;
+            set_hour = menu_setting_saved_hour;
+            set_min = menu_setting_saved_min;
+        }
         menu_rebuild_stop();
         break;
     case PAGE_MENU_COOK_STOP_BACK:
