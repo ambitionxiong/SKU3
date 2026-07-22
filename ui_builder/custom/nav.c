@@ -1649,6 +1649,7 @@ void page_pop(void)
 
         g_send.iface_status = IFACE_SETTING;
         g_send.cook_mode = MODE_NONE;
+        g_send.cook_flag = 0;
         g_send.set_temp = 0;
         g_send.set_temp_lower = 0;
         g_send.remaining_ms = -1;

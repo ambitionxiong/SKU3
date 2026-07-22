@@ -34,6 +34,9 @@ static void on_preheat_complete_sure_click(lv_event_t *e)
 
 void jump_to_preheat_menu(void)
 {
+    g_send.cook_mode = MODE_PREHEAT;
+    g_send.cook_flag = 1;
+
     page_push(PAGE_PREHEAT_MENU);
     lv_obj_clean(lv_scr_act());
     preheatmenu_create(&ui_manager);
