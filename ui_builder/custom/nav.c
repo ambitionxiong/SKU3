@@ -281,6 +281,12 @@ static void on_setting_sure_click(lv_event_t *e);
 static void update_setting_dir_icon(updown_bbq_setting_t *set);
 void cook4menu_rebuild(page_id_t child);
 
+/* updown_bbq setting 页进入时保存原始值，BACK 返回时恢复 */
+static int updown_setting_saved_temp_up, updown_setting_saved_temp_down;
+static int updown_setting_saved_hour, updown_setting_saved_min;
+/* top_bbq setting 页保存值（在 nav_top_bbq.c 中定义） */
+extern int top_setting_saved_temp, top_setting_saved_hour, top_setting_saved_min;
+
 // ==============================
 // 可编辑字段注册表
 // ==============================
@@ -808,6 +814,11 @@ void page_pop(void)
         if (child == PAGE_UPDOWN_BBQ_COMPLETE)
             goto pop_to_major_menu;
         if (child == PAGE_UPDOWN_BBQ_SETTING) {
+            /* 恢复进入 setting 前的原始值 */
+            set_temp_up = updown_setting_saved_temp_up;
+            set_temp_down = updown_setting_saved_temp_down;
+            set_hour = updown_setting_saved_hour;
+            set_min = updown_setting_saved_min;
             /* 从设置页返回 → 重建 cooking，恢复定时器 */
             updown_bbq_cooking_create(&ui_manager);
             {
@@ -849,12 +860,25 @@ void page_pop(void)
                              LV_SCR_LOAD_ANIM_NONE, 0, 0,
                              ui_manager.auto_del);
             printf("[nav] back from setting -> updown_bbq_cooking\n");
+            g_send.iface_status = IFACE_COOKING;
+            g_send.set_temp = set_temp;
+            {
+                uint32_t e = lv_tick_get() - cook_start_time;
+                int rem = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);
+                g_send.remaining_ms = rem;
+            }
         } else {
             goto rebuild_updown_bbq_set;
         }
         break;
 
     case PAGE_UPDOWN_BBQ_STOP:
+        if (child == PAGE_UPDOWN_BBQ_SETTING) {
+            set_temp_up = updown_setting_saved_temp_up;
+            set_temp_down = updown_setting_saved_temp_down;
+            set_hour = updown_setting_saved_hour;
+            set_min = updown_setting_saved_min;
+        }
         updown_bbq_stop_create(&ui_manager);
         {
             updown_bbq_stop_t *stop = updown_bbq_stop_get(&ui_manager);
@@ -889,6 +913,7 @@ void page_pop(void)
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
                          ui_manager.auto_del);
         printf("[nav] back to updown_bbq_stop\n");
+        g_send.iface_status = IFACE_PAUSE;
         break;
 
     case PAGE_UPDOWN_BBQ_STOP_BACK:
@@ -1142,9 +1167,18 @@ void page_pop(void)
     case PAGE_TOP_BBQ_COOKING:
         if (child == PAGE_TOP_BBQ_COMPLETE)
             goto pop_to_major_menu;
-        if (child == PAGE_TOP_BBQ_SETTING)
+        if (child == PAGE_TOP_BBQ_SETTING) {
+            set_temp = top_setting_saved_temp;
+            set_hour = top_setting_saved_hour;
+            set_min = top_setting_saved_min;
             top_bbq_rebuild_cooking(child);
-        else
+            g_send.iface_status = IFACE_COOKING;
+            g_send.set_temp = set_temp;
+            {
+                uint32_t e = lv_tick_get() - cook_start_time;
+                g_send.remaining_ms = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);
+            }
+        } else
             top_bbq_rebuild_cooking(0);
         break;
 
@@ -1153,6 +1187,11 @@ void page_pop(void)
         break;
 
     case PAGE_TOP_BBQ_STOP:
+        if (child == PAGE_TOP_BBQ_SETTING) {
+            set_temp = top_setting_saved_temp;
+            set_hour = top_setting_saved_hour;
+            set_min = top_setting_saved_min;
+        }
         top_bbq_rebuild_stop();
         break;
 
@@ -3391,6 +3430,11 @@ static void on_color_stop_back_sure_click(lv_event_t *e)
 // cooking little_button → 设置页（计时器继续运行，实时更新 time_label）
 static void jump_to_updown_bbq_setting(void)
 {
+    updown_setting_saved_temp_up = set_temp_up;
+    updown_setting_saved_temp_down = set_temp_down;
+    updown_setting_saved_hour = set_hour;
+    updown_setting_saved_min = set_min;
+
     page_push(PAGE_UPDOWN_BBQ_SETTING);
     lv_obj_clean(lv_scr_act());
     updown_bbq_setting_create(&ui_manager);

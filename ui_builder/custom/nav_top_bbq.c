@@ -1,6 +1,8 @@
 #include "protocol.h"
 #include "nav.h"
 
+/* setting 页进入时保存原始值，BACK 返回时恢复 */
+int top_setting_saved_temp, top_setting_saved_hour, top_setting_saved_min;
 
 static void on_top_bbq_menu_next_click(lv_event_t *e);
 static void on_top_bbq_set_sure_click(lv_event_t *e);
@@ -333,6 +335,10 @@ void jump_to_top_bbq_cooking(void)
 // cooking → setting（不暂停 timer）
 void jump_to_top_bbq_setting(void)
 {
+    top_setting_saved_temp = set_temp;
+    top_setting_saved_hour = set_hour;
+    top_setting_saved_min = set_min;
+
     page_push(PAGE_TOP_BBQ_SETTING);
     lv_obj_clean(lv_scr_act());
     top_bbq_setting_create(&ui_manager);
@@ -872,6 +878,7 @@ void top_bbq_rebuild_stop(void)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[top_bbq] back to top_bbq_stop\n");
+    g_send.iface_status = IFACE_PAUSE;
 }
 
 void top_bbq_rebuild_stop_back(void)
