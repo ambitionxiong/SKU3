@@ -286,6 +286,13 @@ static int updown_setting_saved_temp_up, updown_setting_saved_temp_down;
 static int updown_setting_saved_hour, updown_setting_saved_min;
 /* top_bbq setting 页保存值（在 nav_top_bbq.c 中定义） */
 extern int top_setting_saved_temp, top_setting_saved_hour, top_setting_saved_min;
+extern int bottom_bbq_setting_saved_temp, bottom_bbq_setting_saved_hour, bottom_bbq_setting_saved_min;
+extern int hot_bbq_setting_saved_temp, hot_bbq_setting_saved_hour, hot_bbq_setting_saved_min;
+extern int hotwind_bbq_setting_saved_temp, hotwind_bbq_setting_saved_hour, hotwind_bbq_setting_saved_min;
+extern int save_bbq_setting_saved_temp, save_bbq_setting_saved_hour, save_bbq_setting_saved_min;
+extern int central_bbq_setting_saved_temp, central_bbq_setting_saved_hour, central_bbq_setting_saved_min;
+extern int windchange_bbq_setting_saved_temp, windchange_bbq_setting_saved_hour, windchange_bbq_setting_saved_min;
+
 
 // ==============================
 // 可编辑字段注册表
@@ -1213,7 +1220,20 @@ void page_pop(void)
     case PAGE_BOTTOM_BBQ_COOKING:
         if (child == PAGE_BOTTOM_BBQ_COMPLETE)
             goto pop_to_major_menu;
+        if (child == PAGE_BOTTOM_BBQ_SETTING) {
+            set_temp = bottom_bbq_setting_saved_temp;
+            set_hour = bottom_bbq_setting_saved_hour;
+            set_min = bottom_bbq_setting_saved_min;
+        }
         bottom_bbq_rebuild_cooking(child);
+        if (child == PAGE_BOTTOM_BBQ_SETTING) {
+            g_send.iface_status = IFACE_COOKING;
+            g_send.set_temp = set_temp;
+            {
+                uint32_t e = lv_tick_get() - cook_start_time;
+                g_send.remaining_ms = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);
+            }
+        }
         break;
 
     case PAGE_BOTTOM_BBQ_SETTING:
@@ -1221,6 +1241,11 @@ void page_pop(void)
         break;
 
     case PAGE_BOTTOM_BBQ_STOP:
+        if (child == PAGE_BOTTOM_BBQ_SETTING) {
+            set_temp = bottom_bbq_setting_saved_temp;
+            set_hour = bottom_bbq_setting_saved_hour;
+            set_min = bottom_bbq_setting_saved_min;
+        }
         bottom_bbq_rebuild_stop();
         break;
 
@@ -1242,7 +1267,20 @@ void page_pop(void)
     case PAGE_HOT_BBQ_COOKING:
         if (child == PAGE_HOT_BBQ_COMPLETE)
             goto pop_to_major_menu;
+        if (child == PAGE_HOT_BBQ_SETTING) {
+            set_temp = hot_bbq_setting_saved_temp;
+            set_hour = hot_bbq_setting_saved_hour;
+            set_min = hot_bbq_setting_saved_min;
+        }
         hot_bbq_rebuild_cooking(child);
+        if (child == PAGE_HOT_BBQ_SETTING) {
+            g_send.iface_status = IFACE_COOKING;
+            g_send.set_temp = set_temp;
+            {
+                uint32_t e = lv_tick_get() - cook_start_time;
+                g_send.remaining_ms = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);
+            }
+        }
         break;
 
     case PAGE_HOT_BBQ_SETTING:
@@ -1250,6 +1288,11 @@ void page_pop(void)
         break;
 
     case PAGE_HOT_BBQ_STOP:
+        if (child == PAGE_HOT_BBQ_SETTING) {
+            set_temp = hot_bbq_setting_saved_temp;
+            set_hour = hot_bbq_setting_saved_hour;
+            set_min = hot_bbq_setting_saved_min;
+        }
         hot_bbq_rebuild_stop();
         break;
 
@@ -1269,12 +1312,30 @@ void page_pop(void)
     case PAGE_HOTWIND_BBQ_COOKING:
         if (child == PAGE_HOTWIND_BBQ_COMPLETE)
             goto pop_to_major_menu;
+        if (child == PAGE_HOTWIND_BBQ_SETTING) {
+            set_temp = hotwind_bbq_setting_saved_temp;
+            set_hour = hotwind_bbq_setting_saved_hour;
+            set_min = hotwind_bbq_setting_saved_min;
+        }
         hotwind_bbq_rebuild_cooking(child);
+        if (child == PAGE_HOTWIND_BBQ_SETTING) {
+            g_send.iface_status = IFACE_COOKING;
+            g_send.set_temp = set_temp;
+            {
+                uint32_t e = lv_tick_get() - cook_start_time;
+                g_send.remaining_ms = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);
+            }
+        }
         break;
     case PAGE_HOTWIND_BBQ_SETTING:
         hotwind_bbq_rebuild_setting();
         break;
     case PAGE_HOTWIND_BBQ_STOP:
+        if (child == PAGE_HOTWIND_BBQ_SETTING) {
+            set_temp = hotwind_bbq_setting_saved_temp;
+            set_hour = hotwind_bbq_setting_saved_hour;
+            set_min = hotwind_bbq_setting_saved_min;
+        }
         hotwind_bbq_rebuild_stop();
         break;
     case PAGE_HOTWIND_BBQ_STOP_BACK:
@@ -1292,12 +1353,30 @@ void page_pop(void)
     case PAGE_SAVE_BBQ_COOKING:
         if (child == PAGE_SAVE_BBQ_COMPLETE)
             goto pop_to_major_menu;
+        if (child == PAGE_SAVE_BBQ_SETTING) {
+            set_temp = save_bbq_setting_saved_temp;
+            set_hour = save_bbq_setting_saved_hour;
+            set_min = save_bbq_setting_saved_min;
+        }
         save_bbq_rebuild_cooking(child);
+        if (child == PAGE_SAVE_BBQ_SETTING) {
+            g_send.iface_status = IFACE_COOKING;
+            g_send.set_temp = set_temp;
+            {
+                uint32_t e = lv_tick_get() - cook_start_time;
+                g_send.remaining_ms = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);
+            }
+        }
         break;
     case PAGE_SAVE_BBQ_SETTING:
         save_bbq_rebuild_setting();
         break;
     case PAGE_SAVE_BBQ_STOP:
+        if (child == PAGE_SAVE_BBQ_SETTING) {
+            set_temp = save_bbq_setting_saved_temp;
+            set_hour = save_bbq_setting_saved_hour;
+            set_min = save_bbq_setting_saved_min;
+        }
         save_bbq_rebuild_stop();
         break;
     case PAGE_SAVE_BBQ_STOP_BACK:
@@ -1315,12 +1394,30 @@ void page_pop(void)
     case PAGE_CENTRAL_BBQ_COOKING:
         if (child == PAGE_CENTRAL_BBQ_COMPLETE)
             goto pop_to_major_menu;
+        if (child == PAGE_CENTRAL_BBQ_SETTING) {
+            set_temp = central_bbq_setting_saved_temp;
+            set_hour = central_bbq_setting_saved_hour;
+            set_min = central_bbq_setting_saved_min;
+        }
         central_bbq_rebuild_cooking(child);
+        if (child == PAGE_CENTRAL_BBQ_SETTING) {
+            g_send.iface_status = IFACE_COOKING;
+            g_send.set_temp = set_temp;
+            {
+                uint32_t e = lv_tick_get() - cook_start_time;
+                g_send.remaining_ms = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);
+            }
+        }
         break;
     case PAGE_CENTRAL_BBQ_SETTING:
         central_bbq_rebuild_setting();
         break;
     case PAGE_CENTRAL_BBQ_STOP:
+        if (child == PAGE_CENTRAL_BBQ_SETTING) {
+            set_temp = central_bbq_setting_saved_temp;
+            set_hour = central_bbq_setting_saved_hour;
+            set_min = central_bbq_setting_saved_min;
+        }
         central_bbq_rebuild_stop();
         break;
     case PAGE_CENTRAL_BBQ_STOP_BACK:
@@ -1338,12 +1435,30 @@ void page_pop(void)
     case PAGE_WINDCHANGE_BBQ_COOKING:
         if (child == PAGE_WINDCHANGE_BBQ_COMPLETE)
             goto pop_to_major_menu;
+        if (child == PAGE_WINDCHANGE_BBQ_SETTING) {
+            set_temp = windchange_bbq_setting_saved_temp;
+            set_hour = windchange_bbq_setting_saved_hour;
+            set_min = windchange_bbq_setting_saved_min;
+        }
         windchange_bbq_rebuild_cooking(child);
+        if (child == PAGE_WINDCHANGE_BBQ_SETTING) {
+            g_send.iface_status = IFACE_COOKING;
+            g_send.set_temp = set_temp;
+            {
+                uint32_t e = lv_tick_get() - cook_start_time;
+                g_send.remaining_ms = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);
+            }
+        }
         break;
     case PAGE_WINDCHANGE_BBQ_SETTING:
         windchange_bbq_rebuild_setting();
         break;
     case PAGE_WINDCHANGE_BBQ_STOP:
+        if (child == PAGE_WINDCHANGE_BBQ_SETTING) {
+            set_temp = windchange_bbq_setting_saved_temp;
+            set_hour = windchange_bbq_setting_saved_hour;
+            set_min = windchange_bbq_setting_saved_min;
+        }
         windchange_bbq_rebuild_stop();
         break;
     case PAGE_WINDCHANGE_BBQ_STOP_BACK:
