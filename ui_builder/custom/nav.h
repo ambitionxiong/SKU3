@@ -115,6 +115,13 @@ typedef enum {
     PAGE_WINDCHANGE_BBQ_STOP,
     PAGE_WINDCHANGE_BBQ_STOP_BACK,
     PAGE_WINDCHANGE_BBQ_COMPLETE,
+    PAGE_PIZZA_2_MENU,
+    PAGE_PIZZA_2_SET,
+    PAGE_PIZZA_2_COOKING,
+    PAGE_PIZZA_2_SETTING,
+    PAGE_PIZZA_2_STOP,
+    PAGE_PIZZA_2_STOP_BACK,
+    PAGE_PIZZA_2_COMPLETE,
 } page_id_t;
 
 extern page_id_t page_stack[];
@@ -519,6 +526,30 @@ void air_rebuild_complete(void);
 void air_resume_cooking(void);
 void air_back_to_stop(void);
 void air_back_to_stop_back(void);
+
+extern lv_group_t *g_pizza_2_menu;
+extern lv_group_t *g_pizza_2_set;
+extern lv_group_t *g_pizza_2_cooking;
+extern lv_group_t *g_pizza_2_setting;
+extern lv_group_t *g_pizza_2_stop;
+extern lv_group_t *g_pizza_2_stop_back;
+extern lv_group_t *g_pizza_2_complete;
+
+void jump_to_pizza_2_menu(void);
+void jump_to_pizza_2_set(void);
+void jump_to_pizza_2_cooking(void);
+void jump_to_pizza_2_setting(void);
+void jump_to_pizza_2_stop(void);
+void jump_to_pizza_2_stop_back(void);
+void jump_to_pizza_2_complete(void);
+void pizza_2_rebuild_menu(page_id_t child);
+void pizza_2_rebuild_set(page_id_t child);
+void pizza_2_rebuild_cooking(page_id_t child);
+void pizza_2_rebuild_setting(void);
+void pizza_2_rebuild_stop(void);
+void pizza_2_rebuild_stop_back(void);
+void pizza_2_rebuild_complete(void);
+void pizza_2_resume_cooking(void);
 
 void cook4menu_rebuild(page_id_t child);
 
