@@ -79,6 +79,13 @@ lv_group_t *g_menu_cook_setting;
 lv_group_t *g_menu_cook_stop;
 lv_group_t *g_menu_cook_stop_back;
 lv_group_t *g_menu_cook_complete;
+lv_group_t *g_air_menu;
+lv_group_t *g_air_set;
+lv_group_t *g_air_cooking;
+lv_group_t *g_air_setting;
+lv_group_t *g_air_stop;
+lv_group_t *g_air_stop_back;
+lv_group_t *g_air_complete;
 lv_group_t *g_cook4_menu;
 
 lv_group_t *g_cookie_menu;
@@ -241,6 +248,8 @@ static void on_save_click(lv_event_t *e);
 static void on_central_click(lv_event_t *e);
 static void on_windchange_click(lv_event_t *e);
 static void on_preheat_click(lv_event_t *e);
+static void on_air_click(lv_event_t *e);
+static void on_pizza_click(lv_event_t *e);
 static void on_updown_next_click(lv_event_t *e);
 void on_edit_focus(lv_event_t *e);
 void validate_constraints(void);
@@ -296,6 +305,7 @@ extern int cookie_setting_saved_temp, cookie_setting_saved_hour, cookie_setting_
 extern int west_setting_saved_temp, west_setting_saved_hour, west_setting_saved_min;
 extern int pizza_setting_saved_temp, pizza_setting_saved_hour, pizza_setting_saved_min;
 extern int menu_setting_saved_temp, menu_setting_saved_hour, menu_setting_saved_min;
+extern int air_setting_saved_temp, air_setting_saved_hour, air_setting_saved_min;
 
 
 
@@ -753,6 +763,11 @@ void page_pop(void)
                 };
                 if (g_special_menu) lv_group_del(g_special_menu);
                 g_special_menu = group_create_for_page(btns, sizeof(btns) / sizeof(btns[0]));
+
+                lv_obj_add_event_cb(sp->air_button, on_air_click,
+                                    LV_EVENT_CLICKED, NULL);
+                lv_obj_add_event_cb(sp->piza_button, on_pizza_click,
+                                    LV_EVENT_CLICKED, NULL);
             }
             current_group = g_special_menu;
         }
@@ -1635,6 +1650,46 @@ void page_pop(void)
     case PAGE_MENU_COOK_COMPLETE:
         goto pop_to_major_menu;
 
+    case PAGE_AIR_MENU:
+        air_rebuild_menu(child);
+        break;
+    case PAGE_AIR_SET:
+        air_rebuild_set(child);
+        break;
+    case PAGE_AIR_COOKING:
+        if (child == PAGE_AIR_COMPLETE)
+            goto pop_to_major_menu;
+        if (child == PAGE_AIR_SETTING) {
+            set_temp = air_setting_saved_temp;
+            set_hour = air_setting_saved_hour;
+            set_min = air_setting_saved_min;
+            air_rebuild_cooking(child);
+            g_send.iface_status = IFACE_COOKING;
+            g_send.set_temp = set_temp;
+            {
+                uint32_t e = lv_tick_get() - cook_start_time;
+                g_send.remaining_ms = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);
+            }
+        } else
+            air_rebuild_cooking(0);
+        break;
+    case PAGE_AIR_SETTING:
+        air_rebuild_setting();
+        break;
+    case PAGE_AIR_STOP:
+        if (child == PAGE_AIR_SETTING) {
+            set_temp = air_setting_saved_temp;
+            set_hour = air_setting_saved_hour;
+            set_min = air_setting_saved_min;
+        }
+        air_rebuild_stop();
+        break;
+    case PAGE_AIR_STOP_BACK:
+        air_rebuild_stop_back();
+        break;
+    case PAGE_AIR_COMPLETE:
+        goto pop_to_major_menu;
+
     case PAGE_PREHEAT_COOKING:
     case PAGE_PREHEAT_STOP:
     case PAGE_PREHEAT_COMPLETE:
@@ -1811,6 +1866,11 @@ static void jump_to_special_menu(void)
 
         if (g_special_menu) lv_group_del(g_special_menu);
         g_special_menu = group_create_for_page(btns, sizeof(btns) / sizeof(btns[0]));
+
+        lv_obj_add_event_cb(sp->air_button, on_air_click,
+                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(sp->piza_button, on_pizza_click,
+                            LV_EVENT_CLICKED, NULL);
     }
 
     current_group = g_special_menu;
@@ -2351,6 +2411,10 @@ static void process_key(uint8_t key)
                 jump_to_menu_stop();
             else if (cur == PAGE_MENU_COOK_STOP)
                 jump_to_menu_stop_back();
+            else if (cur == PAGE_AIR_COOKING)
+                jump_to_air_stop();
+            else if (cur == PAGE_AIR_STOP)
+                jump_to_air_stop_back();
             else
                 page_pop();
         }
@@ -2579,6 +2643,24 @@ static void process_key(uint8_t key)
             } else {
                 lv_group_focus_prev(current_group);
                 printf("[menu] focus prev\n");
+            }
+        } else if (current_group == g_air_menu) {
+            air_menu_t *menu = air_menu_get(&ui_manager);
+            if (menu && focused == menu->next) {
+                lv_group_focus_obj(menu->temp);
+                printf("[air] focus wrap to temp\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[air] focus prev\n");
+            }
+        } else if (current_group == g_air_setting) {
+            air_setting_t *set = air_setting_get(&ui_manager);
+            if (set && focused == set->sure) {
+                lv_group_focus_obj(set->temp);
+                printf("[air] setting focus wrap to temp\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[air] setting focus prev\n");
             }
         } else {
             lv_group_focus_prev(current_group);
@@ -2894,6 +2976,20 @@ static void on_preheat_click(lv_event_t *e)
         jump_to_preheat_menu();
 }
 
+static void on_air_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (!screen_is_loading(act_scr))
+        jump_to_air_menu();
+}
+
+static void on_pizza_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (!screen_is_loading(act_scr))
+        jump_to_pizza_menu();
+}
+
 static void on_updown_next_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
@@ -3066,6 +3162,12 @@ void cooking_timer_cb(lv_timer_t *timer)
     } else if (current_group == g_central_bbq_cooking) {
         central_bbq_cooking_t *cook = central_bbq_cooking_get(&ui_manager);
         if (cook) time_label = cook->timelabel;
+    } else if (current_group == g_air_cooking) {
+        air_cooking_t *cook = air_cooking_get(&ui_manager);
+        if (cook) time_label = cook->timelabel;
+    } else if (current_group == g_air_setting) {
+        air_setting_t *set = air_setting_get(&ui_manager);
+        if (set) time_label = set->timelabel;
     } else if (current_group == g_windchange_bbq_setting) {
         windchange_bbq_setting_t *set = windchange_bbq_setting_get(&ui_manager);
         if (set) time_label = set->timelabel;
@@ -3211,6 +3313,16 @@ void cooking_timer_cb(lv_timer_t *timer)
             if (p_depth > 1) depth = p_depth;
             lv_obj_clean(lv_scr_act());
             jump_to_pizza_complete();
+            return;
+        } else if (current_group == g_air_cooking || current_group == g_air_setting) {
+            int a_depth = depth;
+            while (a_depth > 1 && page_stack[a_depth - 1] != PAGE_AIR_COOKING &&
+                   page_stack[a_depth - 1] != PAGE_AIR_SETTING) {
+                a_depth--;
+            }
+            if (a_depth > 1) depth = a_depth;
+            lv_obj_clean(lv_scr_act());
+            jump_to_air_complete();
             return;
         } else if (current_group == g_menu_cook_cooking || current_group == g_menu_cook_setting) {
             int m_depth = depth;

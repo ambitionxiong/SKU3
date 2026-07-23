@@ -5,10 +5,10 @@
         },
     ],
     "settings": {
-        "cmake.cmakePath": "C:\\ArtInChip\\AiUIBuilder\\tool\\cmake\\bin\\cmake.exe",
+        "cmake.cmakePath": "D:\\software\\AiUIBuilder\\tool\\cmake\\bin\\cmake.exe",
         "cmake.generator": "MinGW Makefiles",
         "cmake.environment": {
-            "PATH": "C:\\ArtInChip\\AiUIBuilder\\tool\\mingw\\bin;${env:PATH}"
+            "PATH": "D:\\software\\AiUIBuilder\\tool\\mingw\\bin;${env:PATH}"
         },
         "cmake.buildBeforeRun": true
     }

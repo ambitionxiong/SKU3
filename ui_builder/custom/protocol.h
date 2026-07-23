@@ -48,6 +48,7 @@
 #define MODE_CENTRAL_BBQ    26 // 小面积烧烤 Half width Grill
 #define MODE_SAVE_BBQ       27 // 节能热风 Eco Forced Air
 #define MODE_COOK4          33 // 烘焙
+#define MODE_AIR            13 // 空气炸
 #define MODE_PREHEAT        28 // 预热
 #define MODE_EXTRA_COLOR    38
 

@@ -48,6 +48,13 @@ typedef enum {
     PAGE_MENU_COOK_STOP,
     PAGE_MENU_COOK_STOP_BACK,
     PAGE_MENU_COOK_COMPLETE,
+    PAGE_AIR_MENU,
+    PAGE_AIR_SET,
+    PAGE_AIR_COOKING,
+    PAGE_AIR_SETTING,
+    PAGE_AIR_STOP,
+    PAGE_AIR_STOP_BACK,
+    PAGE_AIR_COMPLETE,
     PAGE_UPDOWN_BBQ_SET,
     PAGE_UPDOWN_BBQ_COOKING,
     PAGE_UPDOWN_BBQ_COMPLETE,
@@ -181,6 +188,13 @@ extern lv_group_t *g_menu_cook_stop;
 extern lv_group_t *g_menu_cook_stop_back;
 
 extern lv_group_t *g_menu_cook_complete;
+extern lv_group_t *g_air_menu;
+extern lv_group_t *g_air_set;
+extern lv_group_t *g_air_cooking;
+extern lv_group_t *g_air_setting;
+extern lv_group_t *g_air_stop;
+extern lv_group_t *g_air_stop_back;
+extern lv_group_t *g_air_complete;
 extern lv_group_t *g_updown_bbq_set;
 extern lv_group_t *g_updown_bbq_cooking;
 extern lv_group_t *g_updown_bbq_complete;
@@ -487,6 +501,24 @@ void menu_rebuild_stop(void);
 void menu_rebuild_stop_back(void);
 void menu_rebuild_complete(void);
 void menu_resume_cooking(void);
+
+void jump_to_air_menu(void);
+void jump_to_air_set(void);
+void jump_to_air_cooking(void);
+void jump_to_air_setting(void);
+void jump_to_air_stop(void);
+void jump_to_air_stop_back(void);
+void jump_to_air_complete(void);
+void air_rebuild_menu(page_id_t child);
+void air_rebuild_set(page_id_t child);
+void air_rebuild_cooking(page_id_t child);
+void air_rebuild_setting(void);
+void air_rebuild_stop(void);
+void air_rebuild_stop_back(void);
+void air_rebuild_complete(void);
+void air_resume_cooking(void);
+void air_back_to_stop(void);
+void air_back_to_stop_back(void);
 
 void cook4menu_rebuild(page_id_t child);
 
