@@ -44,8 +44,8 @@ void clean_menu_create(ui_manager_t *ui)
     lv_obj_t *waterclean_label = lv_label_create(scr->waterclean);
     lv_label_set_text(waterclean_label, "");
     lv_obj_align(waterclean_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->waterclean, -2, 66);
-    lv_obj_set_size(scr->waterclean, 665, 405);
+    lv_obj_set_pos(scr->waterclean, 12, 75);
+    lv_obj_set_size(scr->waterclean, 638, 387);
 
     // Set style of scr->waterclean
     lv_obj_set_style_bg_opa(scr->waterclean, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -61,8 +61,8 @@ void clean_menu_create(ui_manager_t *ui)
     lv_obj_t *button_2_label = lv_label_create(scr->button_2);
     lv_label_set_text(button_2_label, "");
     lv_obj_align(button_2_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->button_2, 619, 66);
-    lv_obj_set_size(scr->button_2, 665, 405);
+    lv_obj_set_pos(scr->button_2, 633, 74);
+    lv_obj_set_size(scr->button_2, 637, 389);
 
     // Set style of scr->button_2
     lv_obj_set_style_bg_opa(scr->button_2, 0, LV_PART_MAIN | LV_STATE_DEFAULT);

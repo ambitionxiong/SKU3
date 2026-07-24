@@ -57,6 +57,8 @@
 #define MODE_HEATCONTAIN    11 // 保温
 #define MODE_AIR            13 // 空气炸
 #define MODE_PREHEAT        28 // 快速预热
+#define MODE_WATER_CLEAN    20 // 自清洁
+#define MODE_HOT_CLEAN      41 // 高温清洁PYRO
 #define MODE_EXTRA_COLOR    38
 
 // ===== 蜂鸣器声音 (BUF[14]) =====

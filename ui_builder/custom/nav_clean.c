@@ -1,0 +1,79 @@
+#include "protocol.h"
+#include "nav.h"
+
+void on_clean_water_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (!screen_is_loading(act_scr))
+        jump_to_wc_set();
+}
+
+void on_clean_hot_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (!screen_is_loading(act_scr))
+        printf("[clean] hotclean not implemented yet\n");
+}
+
+void jump_to_clean_menu(void)
+{
+    page_push(PAGE_CLEAN_MENU);
+    lv_obj_clean(lv_scr_act());
+    clean_menu_create(&ui_manager);
+
+    clean_menu_t *cm = clean_menu_get(&ui_manager);
+    if (cm) {
+        lv_obj_t *btns[] = { cm->waterclean, cm->button_2 };
+        if (g_clean_menu) lv_group_del(g_clean_menu);
+        g_clean_menu = group_create_for_page(btns, 2);
+
+        lv_obj_add_event_cb(cm->waterclean, on_clean_water_click,
+                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(cm->button_2, on_clean_hot_click,
+                            LV_EVENT_CLICKED, NULL);
+
+        if (cm->waterclean) lv_group_focus_obj(cm->waterclean);
+    }
+    current_group = g_clean_menu;
+
+    lv_scr_load_anim(clean_menu_get(&ui_manager)->obj,
+                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                     ui_manager.auto_del);
+    g_send.iface_status = IFACE_SETTING;
+    g_send.cook_mode = MODE_NONE;
+    g_send.set_temp = 0;
+    g_send.set_temp_lower = 0;
+    g_send.remaining_ms = -1;
+    printf("[clean] jump: waitmenu_24 -> clean_menu\n");
+}
+
+void clean_rebuild(page_id_t child)
+{
+    clean_menu_create(&ui_manager);
+    clean_menu_t *cm = clean_menu_get(&ui_manager);
+    if (cm) {
+        lv_obj_t *btns[] = { cm->waterclean, cm->button_2 };
+        if (g_clean_menu) lv_group_del(g_clean_menu);
+        g_clean_menu = group_create_for_page(btns, 2);
+
+        lv_obj_add_event_cb(cm->waterclean, on_clean_water_click,
+                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(cm->button_2, on_clean_hot_click,
+                            LV_EVENT_CLICKED, NULL);
+
+        if (child == PAGE_WATER_CLEAN_SET && cm->waterclean)
+            lv_group_focus_obj(cm->waterclean);
+        else if (cm->waterclean)
+            lv_group_focus_obj(cm->waterclean);
+    }
+    current_group = g_clean_menu;
+    lv_scr_load_anim(clean_menu_get(&ui_manager)->obj,
+                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                     ui_manager.auto_del);
+    g_send.iface_status = IFACE_SETTING;
+    g_send.cook_mode = MODE_NONE;
+    g_send.set_temp = 0;
+    g_send.set_temp_lower = 0;
+    g_send.remaining_ms = -1;
+    printf("[clean] back to clean_menu\n");
+}
