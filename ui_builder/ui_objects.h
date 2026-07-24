@@ -65,7 +65,7 @@ typedef struct {
 
 typedef struct {
     lv_obj_t *obj;
-    lv_obj_t *label_4;
+    lv_obj_t *status;
     lv_obj_t *image_1;
     lv_obj_t *bar_1;
     lv_obj_t *image_2;
@@ -73,7 +73,7 @@ typedef struct {
     lv_obj_t *container_1;
     lv_obj_t *label_8;
     lv_obj_t *label_7;
-    lv_obj_t *button_1;
+    lv_obj_t *sure;
 } waterclean_stop_back_t;
 
 typedef struct {
@@ -3494,42 +3494,42 @@ typedef struct {
 
 typedef struct {
     lv_obj_t *obj;
-    lv_obj_t *label_9;
+    lv_obj_t *status;
     lv_obj_t *image_3;
     lv_obj_t *bar_2;
     lv_obj_t *image_4;
     lv_obj_t *label_11;
     lv_obj_t *button_3;
     lv_obj_t *container_2;
-    lv_obj_t *button_2;
+    lv_obj_t *sure;
     lv_obj_t *label_12;
     lv_obj_t *label_13;
 } hotcleanmiddle_stop_back_t;
 
 typedef struct {
     lv_obj_t *obj;
-    lv_obj_t *label_14;
+    lv_obj_t *status;
     lv_obj_t *image_5;
     lv_obj_t *bar_3;
     lv_obj_t *image_6;
     lv_obj_t *label_16;
     lv_obj_t *button_5;
     lv_obj_t *container_3;
-    lv_obj_t *button_4;
+    lv_obj_t *sure;
     lv_obj_t *label_17;
     lv_obj_t *label_18;
 } hotcleanhigh_stop_back_t;
 
 typedef struct {
     lv_obj_t *obj;
-    lv_obj_t *label_19;
+    lv_obj_t *status;
     lv_obj_t *image_7;
     lv_obj_t *bar_4;
     lv_obj_t *image_8;
     lv_obj_t *label_21;
     lv_obj_t *button_7;
     lv_obj_t *container_4;
-    lv_obj_t *button_6;
+    lv_obj_t *sure;
     lv_obj_t *label_22;
     lv_obj_t *label_23;
 } hotcleansave_stop_back_t;

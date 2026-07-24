@@ -28,16 +28,16 @@ void hotcleanmiddle_stop_back_create(ui_manager_t *ui)
     lv_obj_set_style_bg_opa(scr->obj, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->obj, LVGL_IMAGE_PATH(bg.jpg), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->label_9
-    scr->label_9 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_9, "| 热解自清洁 | 1小时40分钟 |");
-    lv_label_set_long_mode(scr->label_9, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_9, 274, 232);
-    lv_obj_set_size(scr->label_9, 490, 39);
+    // Init scr->status
+    scr->status = lv_label_create(scr->obj);
+    lv_label_set_text(scr->status, "| 热解自清洁 | 1小时40分钟 |");
+    lv_label_set_long_mode(scr->status, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->status, 274, 232);
+    lv_obj_set_size(scr->status, 490, 39);
 
-    // Set style of scr->label_9
-    lv_obj_set_style_text_font(scr->label_9, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->label_9, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    // Set style of scr->status
+    lv_obj_set_style_text_font(scr->status, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->status, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->image_3
     scr->image_3 = lv_img_create(scr->obj);
@@ -110,22 +110,22 @@ void hotcleanmiddle_stop_back_create(ui_manager_t *ui)
     lv_obj_set_style_pad_bottom(scr->container_2, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_left(scr->container_2, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->button_2
-    scr->button_2 = lv_btn_create(scr->obj);
-    lv_obj_t *button_2_label = lv_label_create(scr->button_2);
-    lv_label_set_text(button_2_label, "确 定");
-    lv_obj_align(button_2_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->button_2, 959, 295);
-    lv_obj_set_size(scr->button_2, 129, 83);
+    // Init scr->sure
+    scr->sure = lv_btn_create(scr->obj);
+    lv_obj_t *sure_label = lv_label_create(scr->sure);
+    lv_label_set_text(sure_label, "确 定");
+    lv_obj_align(sure_label, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_pos(scr->sure, 959, 295);
+    lv_obj_set_size(scr->sure, 129, 83);
 
-    // Set style of scr->button_2
-    lv_obj_set_style_bg_opa(scr->button_2, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->button_2, LVGL_IMAGE_PATH(stopbk1.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->button_2, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_width(scr->button_2, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_shadow_width(scr->button_2, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(scr->button_2, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->button_2, LVGL_IMAGE_PATH(stopbk2.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    // Set style of scr->sure
+    lv_obj_set_style_bg_opa(scr->sure, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->sure, LVGL_IMAGE_PATH(stopbk1.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->sure, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(scr->sure, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(scr->sure, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(scr->sure, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->sure, LVGL_IMAGE_PATH(stopbk2.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
     // Init scr->label_12
     scr->label_12 = lv_label_create(scr->obj);
