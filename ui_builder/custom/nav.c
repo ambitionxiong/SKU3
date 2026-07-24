@@ -128,6 +128,14 @@ lv_group_t *g_heatcontain_setting;
 lv_group_t *g_heatcontain_stop;
 lv_group_t *g_heatcontain_stop_back;
 lv_group_t *g_heatcontain_complete;
+lv_group_t *g_frozen_cook;
+lv_group_t *g_lasagna_menu;
+lv_group_t *g_lasagna_set;
+lv_group_t *g_lasagna_cooking;
+lv_group_t *g_lasagna_setting;
+lv_group_t *g_lasagna_stop;
+lv_group_t *g_lasagna_stop_back;
+lv_group_t *g_lasagna_complete;
 lv_group_t *g_cook4_menu;
 
 lv_group_t *g_cookie_menu;
@@ -292,6 +300,7 @@ static void on_windchange_click(lv_event_t *e);
 static void on_preheat_click(lv_event_t *e);
 static void on_air_click(lv_event_t *e);
 static void on_pizza_click(lv_event_t *e);
+static void on_frozen_click(lv_event_t *e);
 static void on_slowcook_click(lv_event_t *e);
 static void on_unfrozen_click(lv_event_t *e);
 static void on_rising_click(lv_event_t *e);
@@ -359,6 +368,7 @@ extern int unfrozen_setting_saved_temp, unfrozen_setting_saved_hour, unfrozen_se
 extern int rising_setting_saved_temp, rising_setting_saved_hour, rising_setting_saved_min;
 extern int corn_setting_saved_temp, corn_setting_saved_hour, corn_setting_saved_min;
 extern int heatcontain_setting_saved_temp, heatcontain_setting_saved_hour, heatcontain_setting_saved_min;
+extern int lasagna_setting_saved_hour, lasagna_setting_saved_min;
 
 
 
@@ -831,6 +841,8 @@ void page_pop(void)
                                     LV_EVENT_CLICKED, NULL);
                 lv_obj_add_event_cb(sp->heat_contain_button, on_heatcontain_click,
                                     LV_EVENT_CLICKED, NULL);
+                lv_obj_add_event_cb(sp->frozen_cook_button, on_frozen_click,
+                                    LV_EVENT_CLICKED, NULL);
 
                 if (child == PAGE_AIR_MENU && sp->air_button)
                     lv_group_focus_obj(sp->air_button);
@@ -846,6 +858,8 @@ void page_pop(void)
                     lv_group_focus_obj(sp->corn_button);
                 else if (child == PAGE_HEATCONTAIN_MENU && sp->heat_contain_button)
                     lv_group_focus_obj(sp->heat_contain_button);
+                else if (child == PAGE_FROZEN_COOK && sp->frozen_cook_button)
+                    lv_group_focus_obj(sp->frozen_cook_button);
             }
             current_group = g_special_menu;
         }
@@ -2009,6 +2023,47 @@ void page_pop(void)
     case PAGE_HEATCONTAIN_COMPLETE:
         goto pop_to_major_menu;
 
+    case PAGE_FROZEN_COOK:
+        frozen_rebuild(child);
+        break;
+
+    case PAGE_LASAGNA_MENU:
+        lasagna_rebuild_menu(child);
+        break;
+    case PAGE_LASAGNA_SET:
+        lasagna_rebuild_set(child);
+        break;
+    case PAGE_LASAGNA_COOKING:
+        if (child == PAGE_LASAGNA_COMPLETE)
+            goto pop_to_major_menu;
+        if (child == PAGE_LASAGNA_SETTING) {
+            set_hour = lasagna_setting_saved_hour;
+            set_min = lasagna_setting_saved_min;
+            lasagna_rebuild_cooking(child);
+            g_send.iface_status = IFACE_COOKING;
+            {
+                uint32_t e = lv_tick_get() - cook_start_time;
+                g_send.remaining_ms = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);
+            }
+        } else
+            lasagna_rebuild_cooking(0);
+        break;
+    case PAGE_LASAGNA_SETTING:
+        lasagna_rebuild_setting();
+        break;
+    case PAGE_LASAGNA_STOP:
+        if (child == PAGE_LASAGNA_SETTING) {
+            set_hour = lasagna_setting_saved_hour;
+            set_min = lasagna_setting_saved_min;
+        }
+        lasagna_rebuild_stop();
+        break;
+    case PAGE_LASAGNA_STOP_BACK:
+        lasagna_rebuild_stop_back();
+        break;
+    case PAGE_LASAGNA_COMPLETE:
+        goto pop_to_major_menu;
+
     case PAGE_PREHEAT_COOKING:
     case PAGE_PREHEAT_STOP:
     case PAGE_PREHEAT_COMPLETE:
@@ -2199,6 +2254,8 @@ static void jump_to_special_menu(void)
         lv_obj_add_event_cb(sp->corn_button, on_corn_click,
                             LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(sp->heat_contain_button, on_heatcontain_click,
+                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(sp->frozen_cook_button, on_frozen_click,
                             LV_EVENT_CLICKED, NULL);
     }
 
@@ -2768,6 +2825,10 @@ static void process_key(uint8_t key)
                 jump_to_heatcontain_stop();
             else if (cur == PAGE_HEATCONTAIN_STOP)
                 jump_to_heatcontain_stop_back();
+            else if (cur == PAGE_LASAGNA_COOKING)
+                jump_to_lasagna_stop();
+            else if (cur == PAGE_LASAGNA_STOP)
+                jump_to_lasagna_stop_back();
             else
                 page_pop();
         }
@@ -3122,6 +3183,24 @@ static void process_key(uint8_t key)
             } else {
                 lv_group_focus_prev(current_group);
                 printf("[heatcontain] setting focus prev\n");
+            }
+        } else if (current_group == g_lasagna_menu) {
+            lasagna_menu_t *menu = lasagna_menu_get(&ui_manager);
+            if (menu && focused == menu->next) {
+                lv_group_focus_obj(menu->hour);
+                printf("[lasagna] focus wrap to hour\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[lasagna] focus prev\n");
+            }
+        } else if (current_group == g_lasagna_setting) {
+            lasagna_setting_t *set = lasagna_setting_get(&ui_manager);
+            if (set && focused == set->button_200) {
+                lv_group_focus_obj(set->hour);
+                printf("[lasagna] setting focus wrap to hour\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[lasagna] setting focus prev\n");
             }
         } else {
             lv_group_focus_prev(current_group);
@@ -3486,6 +3565,13 @@ static void on_heatcontain_click(lv_event_t *e)
         jump_to_heatcontain_menu();
 }
 
+static void on_frozen_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (!screen_is_loading(act_scr))
+        jump_to_frozen_cook();
+}
+
 static void on_updown_next_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
@@ -3699,6 +3785,12 @@ void cooking_timer_cb(lv_timer_t *timer)
         if (cook) time_label = cook->timelabel;
     } else if (current_group == g_heatcontain_setting) {
         heatcontain_setting_t *set = heatcontain_setting_get(&ui_manager);
+        if (set) time_label = set->timelabel;
+    } else if (current_group == g_lasagna_cooking) {
+        lasagna_cooking_t *cook = lasagna_cooking_get(&ui_manager);
+        if (cook) time_label = cook->timelabel;
+    } else if (current_group == g_lasagna_setting) {
+        lasagna_setting_t *set = lasagna_setting_get(&ui_manager);
         if (set) time_label = set->timelabel;
     } else if (current_group == g_windchange_bbq_setting) {
         windchange_bbq_setting_t *set = windchange_bbq_setting_get(&ui_manager);
@@ -3915,6 +4007,16 @@ void cooking_timer_cb(lv_timer_t *timer)
             if (hc_depth > 1) depth = hc_depth;
             lv_obj_clean(lv_scr_act());
             jump_to_heatcontain_complete();
+            return;
+        } else if (current_group == g_lasagna_cooking || current_group == g_lasagna_setting) {
+            int ls_depth = depth;
+            while (ls_depth > 1 && page_stack[ls_depth - 1] != PAGE_LASAGNA_COOKING &&
+                   page_stack[ls_depth - 1] != PAGE_LASAGNA_SETTING) {
+                ls_depth--;
+            }
+            if (ls_depth > 1) depth = ls_depth;
+            lv_obj_clean(lv_scr_act());
+            jump_to_lasagna_complete();
             return;
         } else if (current_group == g_menu_cook_cooking || current_group == g_menu_cook_setting) {
             int m_depth = depth;

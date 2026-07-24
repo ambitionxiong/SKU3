@@ -157,6 +157,14 @@ typedef enum {
     PAGE_HEATCONTAIN_STOP,
     PAGE_HEATCONTAIN_STOP_BACK,
     PAGE_HEATCONTAIN_COMPLETE,
+    PAGE_FROZEN_COOK,
+    PAGE_LASAGNA_MENU,
+    PAGE_LASAGNA_SET,
+    PAGE_LASAGNA_COOKING,
+    PAGE_LASAGNA_SETTING,
+    PAGE_LASAGNA_STOP,
+    PAGE_LASAGNA_STOP_BACK,
+    PAGE_LASAGNA_COMPLETE,
 } page_id_t;
 
 extern page_id_t page_stack[];
@@ -628,6 +636,16 @@ extern lv_group_t *g_heatcontain_stop;
 extern lv_group_t *g_heatcontain_stop_back;
 extern lv_group_t *g_heatcontain_complete;
 
+extern lv_group_t *g_frozen_cook;
+
+extern lv_group_t *g_lasagna_menu;
+extern lv_group_t *g_lasagna_set;
+extern lv_group_t *g_lasagna_cooking;
+extern lv_group_t *g_lasagna_setting;
+extern lv_group_t *g_lasagna_stop;
+extern lv_group_t *g_lasagna_stop_back;
+extern lv_group_t *g_lasagna_complete;
+
 void jump_to_slowcook_menu(void);
 void jump_to_slowcook_set(void);
 void jump_to_slowcook_cooking(void);
@@ -707,5 +725,24 @@ void heatcontain_rebuild_stop(void);
 void heatcontain_rebuild_stop_back(void);
 void heatcontain_rebuild_complete(void);
 void heatcontain_resume_cooking(void);
+
+void jump_to_frozen_cook(void);
+void frozen_rebuild(page_id_t child);
+
+void jump_to_lasagna_menu(void);
+void jump_to_lasagna_set(void);
+void jump_to_lasagna_cooking(void);
+void jump_to_lasagna_setting(void);
+void jump_to_lasagna_stop(void);
+void jump_to_lasagna_stop_back(void);
+void jump_to_lasagna_complete(void);
+void lasagna_rebuild_menu(page_id_t child);
+void lasagna_rebuild_set(page_id_t child);
+void lasagna_rebuild_cooking(page_id_t child);
+void lasagna_rebuild_setting(void);
+void lasagna_rebuild_stop(void);
+void lasagna_rebuild_stop_back(void);
+void lasagna_rebuild_complete(void);
+void lasagna_resume_cooking(void);
 
 #endif

@@ -54,6 +54,7 @@
 #define MODE_RISING         37 // 发酵
 #define MODE_CORN           39 // 玉米
 #define MODE_HEATCONTAIN    40 // 保温
+#define MODE_LASAGNA        41 // 千层面
 #define MODE_AIR            13 // 空气炸
 #define MODE_PREHEAT        28 // 预热
 #define MODE_EXTRA_COLOR    38
