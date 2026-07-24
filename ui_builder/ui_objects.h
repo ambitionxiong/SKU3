@@ -65,6 +65,19 @@ typedef struct {
 
 typedef struct {
     lv_obj_t *obj;
+    lv_obj_t *label_4;
+    lv_obj_t *image_1;
+    lv_obj_t *bar_1;
+    lv_obj_t *image_2;
+    lv_obj_t *label_6;
+    lv_obj_t *container_1;
+    lv_obj_t *label_8;
+    lv_obj_t *label_7;
+    lv_obj_t *button_1;
+} waterclean_stop_back_t;
+
+typedef struct {
+    lv_obj_t *obj;
     lv_obj_t *image_9;
     lv_obj_t *label_12;
     lv_obj_t *bar_4;
@@ -3377,7 +3390,7 @@ typedef struct {
     lv_obj_t *image_4;
     lv_obj_t *label_3;
     lv_obj_t *status;
-    lv_obj_t *label_5;
+    lv_obj_t *label_2;
 } hotcleanmiddle_set_t;
 
 typedef struct {
@@ -3431,7 +3444,7 @@ typedef struct {
     lv_obj_t *image_15;
     lv_obj_t *label_16;
     lv_obj_t *status;
-    lv_obj_t *label_18;
+    lv_obj_t *label_3;
 } hotcleanhigh_set_t;
 
 typedef struct {
@@ -3479,6 +3492,48 @@ typedef struct {
     lv_obj_t *image_25;
 } hotcleanhigh_complete_t;
 
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *label_9;
+    lv_obj_t *image_3;
+    lv_obj_t *bar_2;
+    lv_obj_t *image_4;
+    lv_obj_t *label_11;
+    lv_obj_t *button_3;
+    lv_obj_t *container_2;
+    lv_obj_t *button_2;
+    lv_obj_t *label_12;
+    lv_obj_t *label_13;
+} hotcleanmiddle_stop_back_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *label_14;
+    lv_obj_t *image_5;
+    lv_obj_t *bar_3;
+    lv_obj_t *image_6;
+    lv_obj_t *label_16;
+    lv_obj_t *button_5;
+    lv_obj_t *container_3;
+    lv_obj_t *button_4;
+    lv_obj_t *label_17;
+    lv_obj_t *label_18;
+} hotcleanhigh_stop_back_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *label_19;
+    lv_obj_t *image_7;
+    lv_obj_t *bar_4;
+    lv_obj_t *image_8;
+    lv_obj_t *label_21;
+    lv_obj_t *button_7;
+    lv_obj_t *container_4;
+    lv_obj_t *button_6;
+    lv_obj_t *label_22;
+    lv_obj_t *label_23;
+} hotcleansave_stop_back_t;
+
 
 typedef struct {
     bool auto_del;
@@ -3487,6 +3542,7 @@ typedef struct {
     waterclean_set_t waterclean_set;
     waterclean_cooking_t waterclean_cooking;
     waterclean_stop_t waterclean_stop;
+    waterclean_stop_back_t waterclean_stop_back;
     waterclean_complete_t waterclean_complete;
     hotclean_menu_t hotclean_menu;
     hotcleansave_set_t hotcleansave_set;
@@ -3702,6 +3758,9 @@ typedef struct {
     hotcleanhigh_stop_t hotcleanhigh_stop;
     hotcleanhigh_cooling_t hotcleanhigh_cooling;
     hotcleanhigh_complete_t hotcleanhigh_complete;
+    hotcleanmiddle_stop_back_t hotcleanmiddle_stop_back;
+    hotcleanhigh_stop_back_t hotcleanhigh_stop_back;
+    hotcleansave_stop_back_t hotcleansave_stop_back;
 
 } ui_manager_t;
 
@@ -3734,6 +3793,11 @@ static inline waterclean_cooking_t *waterclean_cooking_get(ui_manager_t *ui)
 static inline waterclean_stop_t *waterclean_stop_get(ui_manager_t *ui)
 {
     return &ui->waterclean_stop;
+}
+
+static inline waterclean_stop_back_t *waterclean_stop_back_get(ui_manager_t *ui)
+{
+    return &ui->waterclean_stop_back;
 }
 
 static inline waterclean_complete_t *waterclean_complete_get(ui_manager_t *ui)
@@ -4811,12 +4875,28 @@ static inline hotcleanhigh_complete_t *hotcleanhigh_complete_get(ui_manager_t *u
     return &ui->hotcleanhigh_complete;
 }
 
+static inline hotcleanmiddle_stop_back_t *hotcleanmiddle_stop_back_get(ui_manager_t *ui)
+{
+    return &ui->hotcleanmiddle_stop_back;
+}
+
+static inline hotcleanhigh_stop_back_t *hotcleanhigh_stop_back_get(ui_manager_t *ui)
+{
+    return &ui->hotcleanhigh_stop_back;
+}
+
+static inline hotcleansave_stop_back_t *hotcleansave_stop_back_get(ui_manager_t *ui)
+{
+    return &ui->hotcleansave_stop_back;
+}
+
 
 void waitmenu_24_create(ui_manager_t *ui);
 void clean_menu_create(ui_manager_t *ui);
 void waterclean_set_create(ui_manager_t *ui);
 void waterclean_cooking_create(ui_manager_t *ui);
 void waterclean_stop_create(ui_manager_t *ui);
+void waterclean_stop_back_create(ui_manager_t *ui);
 void waterclean_complete_create(ui_manager_t *ui);
 void hotclean_menu_create(ui_manager_t *ui);
 void hotcleansave_set_create(ui_manager_t *ui);
@@ -5032,6 +5112,9 @@ void hotcleanhigh_cooking_create(ui_manager_t *ui);
 void hotcleanhigh_stop_create(ui_manager_t *ui);
 void hotcleanhigh_cooling_create(ui_manager_t *ui);
 void hotcleanhigh_complete_create(ui_manager_t *ui);
+void hotcleanmiddle_stop_back_create(ui_manager_t *ui);
+void hotcleanhigh_stop_back_create(ui_manager_t *ui);
+void hotcleansave_stop_back_create(ui_manager_t *ui);
 
 
 extern lv_font_t *fs_montserratmedium_16;

@@ -75,17 +75,17 @@ void hotcleanhigh_set_create(ui_manager_t *ui)
     lv_obj_set_style_text_font(scr->status, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->status, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->label_18
-    scr->label_18 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_18, "温馨提示：请在腔体底部注入250ml水");
-    lv_label_set_long_mode(scr->label_18, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_18, 120, 320);
-    lv_obj_set_size(scr->label_18, 509, 39);
+    // Init scr->label_3
+    scr->label_3 = lv_label_create(scr->obj);
+    lv_label_set_text(scr->label_3, "温馨提示：取出腔体内所有附件，并关闭机门");
+    lv_label_set_long_mode(scr->label_3, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->label_3, 120, 320);
+    lv_obj_set_size(scr->label_3, 600, 39);
 
-    // Set style of scr->label_18
-    lv_obj_set_style_text_font(scr->label_18, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->label_18, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(scr->label_18, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
+    // Set style of scr->label_3
+    lv_obj_set_style_text_font(scr->label_3, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->label_3, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->label_3, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
 
 }

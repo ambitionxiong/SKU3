@@ -66,26 +66,26 @@ void hotcleanmiddle_set_create(ui_manager_t *ui)
 
     // Init scr->status
     scr->status = lv_label_create(scr->obj);
-    lv_label_set_text(scr->status, "| 2小时 |");
+    lv_label_set_text(scr->status, "| 1小时40分钟 |");
     lv_label_set_long_mode(scr->status, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->status, 275, 231);
-    lv_obj_set_size(scr->status, 152, 39);
+    lv_obj_set_size(scr->status, 232, 39);
 
     // Set style of scr->status
     lv_obj_set_style_text_font(scr->status, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->status, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->label_5
-    scr->label_5 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_5, "温馨提示：请在腔体底部注入250ml水");
-    lv_label_set_long_mode(scr->label_5, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_5, 120, 320);
-    lv_obj_set_size(scr->label_5, 509, 39);
+    // Init scr->label_2
+    scr->label_2 = lv_label_create(scr->obj);
+    lv_label_set_text(scr->label_2, "温馨提示：取出腔体内所有附件，并关闭机门");
+    lv_label_set_long_mode(scr->label_2, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->label_2, 120, 320);
+    lv_obj_set_size(scr->label_2, 600, 39);
 
-    // Set style of scr->label_5
-    lv_obj_set_style_text_font(scr->label_5, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->label_5, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(scr->label_5, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
+    // Set style of scr->label_2
+    lv_obj_set_style_text_font(scr->label_2, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->label_2, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->label_2, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
 
 }

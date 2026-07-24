@@ -30,7 +30,7 @@ void hotcleanmiddle_cooking_create(ui_manager_t *ui)
 
     // Init scr->status
     scr->status = lv_label_create(scr->obj);
-    lv_label_set_text(scr->status, "| 热解自清洁 | 2小时 |");
+    lv_label_set_text(scr->status, "| 热解自清洁 | 1小时40分钟 |");
     lv_label_set_long_mode(scr->status, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->status, 274, 232);
     lv_obj_set_size(scr->status, 490, 39);
