@@ -173,7 +173,7 @@ void jump_to_custom_menu(void)
     lv_scr_load_anim(custom_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    g_send.cook_mode = MODE_CUSTOM;
+    g_send.cook_mode = MODE_FROZEN_BAKE;
     printf("[lasagna] jump: frozencook -> custom_menu\n");
 }
 

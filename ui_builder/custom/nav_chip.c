@@ -173,7 +173,7 @@ void jump_to_chip_menu(void)
     lv_scr_load_anim(chip_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    g_send.cook_mode = MODE_CHIP;
+    g_send.cook_mode = MODE_FROZEN_BAKE;
     printf("[lasagna] jump: frozencook -> chip_menu\n");
 }
 

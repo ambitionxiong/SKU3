@@ -47,21 +47,16 @@
 #define MODE_WINDCHANGE_BBQ 25 // 加强热风对流 Conventional Bake
 #define MODE_CENTRAL_BBQ    26 // 小面积烧烤 Half width Grill
 #define MODE_SAVE_BBQ       27 // 节能热风 Eco Forced Air
-#define MODE_COOK4          33 // 烘焙
-#define MODE_PIZZA_2        34 // 披萨2
-#define MODE_SLOWCOOK       35 // 慢煮
-#define MODE_UNFROZEN       36 // 解冻
-#define MODE_RISING         37 // 发酵
-#define MODE_CORN           39 // 玉米
-#define MODE_HEATCONTAIN    40 // 保温
-#define MODE_LASAGNA        41 // 千层面
-#define MODE_STRUDEL        42 // 果馅卷
-#define MODE_BREAD          43 // 面包
-#define MODE_PIZZA3         44 // 披萨3
-#define MODE_CHIP           45 // 薯条
-#define MODE_CUSTOM         46 // 自定义
+#define MODE_COOK4          33 // 多层烹调
+#define MODE_PIZZA_2         6 // 披萨
+#define MODE_FROZEN_BAKE    34 // 冷食速烹
+#define MODE_SLOWCOOK       35 // 慢速烹调
+#define MODE_UNFROZEN       40 // 烧烤解冻
+#define MODE_RISING         12 // 发酵
+#define MODE_CORN           36 // 脱水/干果
+#define MODE_HEATCONTAIN    11 // 保温
 #define MODE_AIR            13 // 空气炸
-#define MODE_PREHEAT        28 // 预热
+#define MODE_PREHEAT        28 // 快速预热
 #define MODE_EXTRA_COLOR    38
 
 // ===== 蜂鸣器声音 (BUF[14]) =====
