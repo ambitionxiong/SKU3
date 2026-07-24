@@ -86,7 +86,6 @@ void updown_bbq_preheat_complete_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_898, 180, 29);
 
     // Set style of scr->label_898
-    lv_obj_set_style_bg_opa(scr->label_898, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(scr->label_898, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_898, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->label_898, 2, LV_PART_MAIN | LV_STATE_DEFAULT);

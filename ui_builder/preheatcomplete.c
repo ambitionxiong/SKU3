@@ -86,7 +86,6 @@ void preheatcomplete_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_81, 180, 29);
 
     // Set style of scr->label_81
-    lv_obj_set_style_bg_opa(scr->label_81, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(scr->label_81, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_81, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -98,7 +97,6 @@ void preheatcomplete_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_82, 210, 29);
 
     // Set style of scr->label_82
-    lv_obj_set_style_bg_opa(scr->label_82, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(scr->label_82, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_82, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 

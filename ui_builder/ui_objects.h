@@ -29,6 +29,114 @@ typedef struct {
 
 typedef struct {
     lv_obj_t *obj;
+    lv_obj_t *label_1;
+    lv_obj_t *waterclean;
+    lv_obj_t *button_2;
+    lv_obj_t *image_1;
+} clean_menu_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *start;
+    lv_obj_t *image_4;
+} waterclean_set_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *label_6;
+    lv_obj_t *timelabel;
+    lv_obj_t *stop;
+    lv_obj_t *image_5;
+    lv_obj_t *bar_2;
+    lv_obj_t *image_6;
+    lv_obj_t *label_8;
+} waterclean_cooking_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *label_9;
+    lv_obj_t *timelabel;
+    lv_obj_t *start;
+    lv_obj_t *image_7;
+    lv_obj_t *bar_3;
+    lv_obj_t *image_8;
+    lv_obj_t *label_11;
+} waterclean_stop_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_9;
+    lv_obj_t *label_12;
+    lv_obj_t *bar_4;
+    lv_obj_t *image_10;
+    lv_obj_t *label_13;
+    lv_obj_t *image_12;
+} waterclean_complete_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *hotclean_middle;
+    lv_obj_t *hotcleansave;
+    lv_obj_t *hotclean_high;
+    lv_obj_t *label_1;
+} hotclean_menu_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *start;
+    lv_obj_t *image_9;
+    lv_obj_t *label_14;
+    lv_obj_t *status;
+    lv_obj_t *label_16;
+} hotcleansave_set_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *status;
+    lv_obj_t *timelabel;
+    lv_obj_t *stop;
+    lv_obj_t *image_2;
+    lv_obj_t *bar_1;
+    lv_obj_t *image_3;
+    lv_obj_t *label_8;
+    lv_obj_t *button_7;
+} hotcleansave_cooking_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *status;
+    lv_obj_t *timelabel;
+    lv_obj_t *start;
+    lv_obj_t *image_4;
+    lv_obj_t *bar_2;
+    lv_obj_t *image_5;
+    lv_obj_t *label_11;
+    lv_obj_t *button_8;
+} hotcleansave_stop_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_6;
+    lv_obj_t *status;
+    lv_obj_t *bar_3;
+    lv_obj_t *image_7;
+    lv_obj_t *label_13;
+    lv_obj_t *image_8;
+    lv_obj_t *button_9;
+} hotcleansave_cooling_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_1;
+    lv_obj_t *status;
+    lv_obj_t *bar_1;
+    lv_obj_t *image_2;
+    lv_obj_t *label_2;
+    lv_obj_t *image_3;
+} hotcleansave_complete_t;
+
+typedef struct {
+    lv_obj_t *obj;
     lv_obj_t *slowcook_button;
     lv_obj_t *special_label;
     lv_obj_t *time_label;
@@ -3263,10 +3371,129 @@ typedef struct {
     lv_obj_t *image_403;
 } custom_complete_t;
 
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *start;
+    lv_obj_t *image_4;
+    lv_obj_t *label_3;
+    lv_obj_t *status;
+    lv_obj_t *label_5;
+} hotcleanmiddle_set_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *status;
+    lv_obj_t *timelabel;
+    lv_obj_t *stop;
+    lv_obj_t *image_5;
+    lv_obj_t *bar_2;
+    lv_obj_t *image_6;
+    lv_obj_t *label_8;
+    lv_obj_t *button_3;
+} hotcleanmiddle_cooking_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *status;
+    lv_obj_t *timelabel;
+    lv_obj_t *start;
+    lv_obj_t *image_7;
+    lv_obj_t *bar_3;
+    lv_obj_t *image_8;
+    lv_obj_t *label_11;
+    lv_obj_t *button_5;
+} hotcleanmiddle_stop_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_9;
+    lv_obj_t *status;
+    lv_obj_t *bar_4;
+    lv_obj_t *image_10;
+    lv_obj_t *label_13;
+    lv_obj_t *image_11;
+    lv_obj_t *button_6;
+} hotcleanmiddle_cooling_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_12;
+    lv_obj_t *status;
+    lv_obj_t *bar_5;
+    lv_obj_t *image_13;
+    lv_obj_t *label_15;
+    lv_obj_t *image_14;
+} hotcleanmiddle_complete_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *start;
+    lv_obj_t *image_15;
+    lv_obj_t *label_16;
+    lv_obj_t *status;
+    lv_obj_t *label_18;
+} hotcleanhigh_set_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *status;
+    lv_obj_t *timelabel;
+    lv_obj_t *stop;
+    lv_obj_t *image_16;
+    lv_obj_t *bar_6;
+    lv_obj_t *image_17;
+    lv_obj_t *label_21;
+    lv_obj_t *button_9;
+} hotcleanhigh_cooking_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *status;
+    lv_obj_t *timelabel;
+    lv_obj_t *start;
+    lv_obj_t *image_18;
+    lv_obj_t *bar_7;
+    lv_obj_t *image_19;
+    lv_obj_t *label_24;
+    lv_obj_t *button_11;
+} hotcleanhigh_stop_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_20;
+    lv_obj_t *status;
+    lv_obj_t *bar_8;
+    lv_obj_t *image_21;
+    lv_obj_t *label_26;
+    lv_obj_t *image_22;
+    lv_obj_t *button_12;
+} hotcleanhigh_cooling_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_23;
+    lv_obj_t *status;
+    lv_obj_t *bar_9;
+    lv_obj_t *image_24;
+    lv_obj_t *label_28;
+    lv_obj_t *image_25;
+} hotcleanhigh_complete_t;
+
 
 typedef struct {
     bool auto_del;
     waitmenu_24_t waitmenu_24;
+    clean_menu_t clean_menu;
+    waterclean_set_t waterclean_set;
+    waterclean_cooking_t waterclean_cooking;
+    waterclean_stop_t waterclean_stop;
+    waterclean_complete_t waterclean_complete;
+    hotclean_menu_t hotclean_menu;
+    hotcleansave_set_t hotcleansave_set;
+    hotcleansave_cooking_t hotcleansave_cooking;
+    hotcleansave_stop_t hotcleansave_stop;
+    hotcleansave_cooling_t hotcleansave_cooling;
+    hotcleansave_complete_t hotcleansave_complete;
     special_menu_tz_t special_menu_tz;
     waitmenu_12_t waitmenu_12;
     cook_menu_tz_t cook_menu_tz;
@@ -3465,6 +3692,16 @@ typedef struct {
     custom_stop_t custom_stop;
     custom_stop_back_t custom_stop_back;
     custom_complete_t custom_complete;
+    hotcleanmiddle_set_t hotcleanmiddle_set;
+    hotcleanmiddle_cooking_t hotcleanmiddle_cooking;
+    hotcleanmiddle_stop_t hotcleanmiddle_stop;
+    hotcleanmiddle_cooling_t hotcleanmiddle_cooling;
+    hotcleanmiddle_complete_t hotcleanmiddle_complete;
+    hotcleanhigh_set_t hotcleanhigh_set;
+    hotcleanhigh_cooking_t hotcleanhigh_cooking;
+    hotcleanhigh_stop_t hotcleanhigh_stop;
+    hotcleanhigh_cooling_t hotcleanhigh_cooling;
+    hotcleanhigh_complete_t hotcleanhigh_complete;
 
 } ui_manager_t;
 
@@ -3477,6 +3714,61 @@ static inline void ui_manager_init(ui_manager_t *ui, bool auto_del)
 static inline waitmenu_24_t *waitmenu_24_get(ui_manager_t *ui)
 {
     return &ui->waitmenu_24;
+}
+
+static inline clean_menu_t *clean_menu_get(ui_manager_t *ui)
+{
+    return &ui->clean_menu;
+}
+
+static inline waterclean_set_t *waterclean_set_get(ui_manager_t *ui)
+{
+    return &ui->waterclean_set;
+}
+
+static inline waterclean_cooking_t *waterclean_cooking_get(ui_manager_t *ui)
+{
+    return &ui->waterclean_cooking;
+}
+
+static inline waterclean_stop_t *waterclean_stop_get(ui_manager_t *ui)
+{
+    return &ui->waterclean_stop;
+}
+
+static inline waterclean_complete_t *waterclean_complete_get(ui_manager_t *ui)
+{
+    return &ui->waterclean_complete;
+}
+
+static inline hotclean_menu_t *hotclean_menu_get(ui_manager_t *ui)
+{
+    return &ui->hotclean_menu;
+}
+
+static inline hotcleansave_set_t *hotcleansave_set_get(ui_manager_t *ui)
+{
+    return &ui->hotcleansave_set;
+}
+
+static inline hotcleansave_cooking_t *hotcleansave_cooking_get(ui_manager_t *ui)
+{
+    return &ui->hotcleansave_cooking;
+}
+
+static inline hotcleansave_stop_t *hotcleansave_stop_get(ui_manager_t *ui)
+{
+    return &ui->hotcleansave_stop;
+}
+
+static inline hotcleansave_cooling_t *hotcleansave_cooling_get(ui_manager_t *ui)
+{
+    return &ui->hotcleansave_cooling;
+}
+
+static inline hotcleansave_complete_t *hotcleansave_complete_get(ui_manager_t *ui)
+{
+    return &ui->hotcleansave_complete;
 }
 
 static inline special_menu_tz_t *special_menu_tz_get(ui_manager_t *ui)
@@ -4469,8 +4761,69 @@ static inline custom_complete_t *custom_complete_get(ui_manager_t *ui)
     return &ui->custom_complete;
 }
 
+static inline hotcleanmiddle_set_t *hotcleanmiddle_set_get(ui_manager_t *ui)
+{
+    return &ui->hotcleanmiddle_set;
+}
+
+static inline hotcleanmiddle_cooking_t *hotcleanmiddle_cooking_get(ui_manager_t *ui)
+{
+    return &ui->hotcleanmiddle_cooking;
+}
+
+static inline hotcleanmiddle_stop_t *hotcleanmiddle_stop_get(ui_manager_t *ui)
+{
+    return &ui->hotcleanmiddle_stop;
+}
+
+static inline hotcleanmiddle_cooling_t *hotcleanmiddle_cooling_get(ui_manager_t *ui)
+{
+    return &ui->hotcleanmiddle_cooling;
+}
+
+static inline hotcleanmiddle_complete_t *hotcleanmiddle_complete_get(ui_manager_t *ui)
+{
+    return &ui->hotcleanmiddle_complete;
+}
+
+static inline hotcleanhigh_set_t *hotcleanhigh_set_get(ui_manager_t *ui)
+{
+    return &ui->hotcleanhigh_set;
+}
+
+static inline hotcleanhigh_cooking_t *hotcleanhigh_cooking_get(ui_manager_t *ui)
+{
+    return &ui->hotcleanhigh_cooking;
+}
+
+static inline hotcleanhigh_stop_t *hotcleanhigh_stop_get(ui_manager_t *ui)
+{
+    return &ui->hotcleanhigh_stop;
+}
+
+static inline hotcleanhigh_cooling_t *hotcleanhigh_cooling_get(ui_manager_t *ui)
+{
+    return &ui->hotcleanhigh_cooling;
+}
+
+static inline hotcleanhigh_complete_t *hotcleanhigh_complete_get(ui_manager_t *ui)
+{
+    return &ui->hotcleanhigh_complete;
+}
+
 
 void waitmenu_24_create(ui_manager_t *ui);
+void clean_menu_create(ui_manager_t *ui);
+void waterclean_set_create(ui_manager_t *ui);
+void waterclean_cooking_create(ui_manager_t *ui);
+void waterclean_stop_create(ui_manager_t *ui);
+void waterclean_complete_create(ui_manager_t *ui);
+void hotclean_menu_create(ui_manager_t *ui);
+void hotcleansave_set_create(ui_manager_t *ui);
+void hotcleansave_cooking_create(ui_manager_t *ui);
+void hotcleansave_stop_create(ui_manager_t *ui);
+void hotcleansave_cooling_create(ui_manager_t *ui);
+void hotcleansave_complete_create(ui_manager_t *ui);
 void special_menu_tz_create(ui_manager_t *ui);
 void waitmenu_12_create(ui_manager_t *ui);
 void cook_menu_tz_create(ui_manager_t *ui);
@@ -4669,16 +5022,26 @@ void custom_setting_create(ui_manager_t *ui);
 void custom_stop_create(ui_manager_t *ui);
 void custom_stop_back_create(ui_manager_t *ui);
 void custom_complete_create(ui_manager_t *ui);
+void hotcleanmiddle_set_create(ui_manager_t *ui);
+void hotcleanmiddle_cooking_create(ui_manager_t *ui);
+void hotcleanmiddle_stop_create(ui_manager_t *ui);
+void hotcleanmiddle_cooling_create(ui_manager_t *ui);
+void hotcleanmiddle_complete_create(ui_manager_t *ui);
+void hotcleanhigh_set_create(ui_manager_t *ui);
+void hotcleanhigh_cooking_create(ui_manager_t *ui);
+void hotcleanhigh_stop_create(ui_manager_t *ui);
+void hotcleanhigh_cooling_create(ui_manager_t *ui);
+void hotcleanhigh_complete_create(ui_manager_t *ui);
 
 
 extern lv_font_t *fs_montserratmedium_16;
 extern lv_font_t *fs_taiwanpearl_regular_128;
 extern lv_font_t *fs_taiwanpearl_regular_48;
 extern lv_font_t *fs_taiwanpearl_regular_24;
-extern lv_font_t *fs_taiwanpearl_regular_30;
-extern lv_font_t *fs_taiwanpearl_regular_72;
 extern lv_font_t *fs_taiwanpearl_regular_36;
+extern lv_font_t *fs_taiwanpearl_regular_30;
 extern lv_font_t *fs_taiwanpearl_regular_60;
+extern lv_font_t *fs_taiwanpearl_regular_72;
 
 
 extern ui_manager_t ui_manager;
