@@ -136,6 +136,41 @@ lv_group_t *g_lasagna_setting;
 lv_group_t *g_lasagna_stop;
 lv_group_t *g_lasagna_stop_back;
 lv_group_t *g_lasagna_complete;
+lv_group_t *g_strudel_menu;
+lv_group_t *g_strudel_set;
+lv_group_t *g_strudel_cooking;
+lv_group_t *g_strudel_setting;
+lv_group_t *g_strudel_stop;
+lv_group_t *g_strudel_stop_back;
+lv_group_t *g_strudel_complete;
+lv_group_t *g_bread_menu;
+lv_group_t *g_bread_set;
+lv_group_t *g_bread_cooking;
+lv_group_t *g_bread_setting;
+lv_group_t *g_bread_stop;
+lv_group_t *g_bread_stop_back;
+lv_group_t *g_bread_complete;
+lv_group_t *g_pizza3_menu;
+lv_group_t *g_pizza3_set;
+lv_group_t *g_pizza3_cooking;
+lv_group_t *g_pizza3_setting;
+lv_group_t *g_pizza3_stop;
+lv_group_t *g_pizza3_stop_back;
+lv_group_t *g_pizza3_complete;
+lv_group_t *g_chip_menu;
+lv_group_t *g_chip_set;
+lv_group_t *g_chip_cooking;
+lv_group_t *g_chip_setting;
+lv_group_t *g_chip_stop;
+lv_group_t *g_chip_stop_back;
+lv_group_t *g_chip_complete;
+lv_group_t *g_custom_menu;
+lv_group_t *g_custom_set;
+lv_group_t *g_custom_cooking;
+lv_group_t *g_custom_setting;
+lv_group_t *g_custom_stop;
+lv_group_t *g_custom_stop_back;
+lv_group_t *g_custom_complete;
 lv_group_t *g_cook4_menu;
 
 lv_group_t *g_cookie_menu;
@@ -369,6 +404,11 @@ extern int rising_setting_saved_temp, rising_setting_saved_hour, rising_setting_
 extern int corn_setting_saved_temp, corn_setting_saved_hour, corn_setting_saved_min;
 extern int heatcontain_setting_saved_temp, heatcontain_setting_saved_hour, heatcontain_setting_saved_min;
 extern int lasagna_setting_saved_hour, lasagna_setting_saved_min;
+extern int strudel_setting_saved_hour, strudel_setting_saved_min;
+extern int bread_setting_saved_hour, bread_setting_saved_min;
+extern int pizza3_setting_saved_hour, pizza3_setting_saved_min;
+extern int chip_setting_saved_hour, chip_setting_saved_min;
+extern int custom_setting_saved_hour, custom_setting_saved_min;
 
 
 
@@ -2064,6 +2104,191 @@ void page_pop(void)
     case PAGE_LASAGNA_COMPLETE:
         goto pop_to_major_menu;
 
+    case PAGE_STRUDEL_MENU:
+        strudel_rebuild_menu(child);
+        break;
+    case PAGE_STRUDEL_SET:
+        strudel_rebuild_set(child);
+        break;
+    case PAGE_STRUDEL_COOKING:
+        if (child == PAGE_STRUDEL_COMPLETE)
+            goto pop_to_major_menu;
+        if (child == PAGE_STRUDEL_SETTING) {
+            set_hour = strudel_setting_saved_hour;
+            set_min = strudel_setting_saved_min;
+            strudel_rebuild_cooking(child);
+            g_send.iface_status = IFACE_COOKING;
+            {
+                uint32_t e = lv_tick_get() - cook_start_time;
+                g_send.remaining_ms = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);
+            }
+        } else
+            strudel_rebuild_cooking(0);
+        break;
+    case PAGE_STRUDEL_SETTING:
+        strudel_rebuild_setting();
+        break;
+    case PAGE_STRUDEL_STOP:
+        if (child == PAGE_STRUDEL_SETTING) {
+            set_hour = strudel_setting_saved_hour;
+            set_min = strudel_setting_saved_min;
+        }
+        strudel_rebuild_stop();
+        break;
+    case PAGE_STRUDEL_STOP_BACK:
+        strudel_rebuild_stop_back();
+        break;
+    case PAGE_STRUDEL_COMPLETE:
+        goto pop_to_major_menu;
+
+    case PAGE_BREAD_MENU:
+        bread_rebuild_menu(child);
+        break;
+    case PAGE_BREAD_SET:
+        bread_rebuild_set(child);
+        break;
+    case PAGE_BREAD_COOKING:
+        if (child == PAGE_BREAD_COMPLETE)
+            goto pop_to_major_menu;
+        if (child == PAGE_BREAD_SETTING) {
+            set_hour = bread_setting_saved_hour;
+            set_min = bread_setting_saved_min;
+            bread_rebuild_cooking(child);
+            g_send.iface_status = IFACE_COOKING;
+            {
+                uint32_t e = lv_tick_get() - cook_start_time;
+                g_send.remaining_ms = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);
+            }
+        } else
+            bread_rebuild_cooking(0);
+        break;
+    case PAGE_BREAD_SETTING:
+        bread_rebuild_setting();
+        break;
+    case PAGE_BREAD_STOP:
+        if (child == PAGE_BREAD_SETTING) {
+            set_hour = bread_setting_saved_hour;
+            set_min = bread_setting_saved_min;
+        }
+        bread_rebuild_stop();
+        break;
+    case PAGE_BREAD_STOP_BACK:
+        bread_rebuild_stop_back();
+        break;
+    case PAGE_BREAD_COMPLETE:
+        goto pop_to_major_menu;
+
+    case PAGE_PIZZA3_MENU:
+        pizza3_rebuild_menu(child);
+        break;
+    case PAGE_PIZZA3_SET:
+        pizza3_rebuild_set(child);
+        break;
+    case PAGE_PIZZA3_COOKING:
+        if (child == PAGE_PIZZA3_COMPLETE)
+            goto pop_to_major_menu;
+        if (child == PAGE_PIZZA3_SETTING) {
+            set_hour = pizza3_setting_saved_hour;
+            set_min = pizza3_setting_saved_min;
+            pizza3_rebuild_cooking(child);
+            g_send.iface_status = IFACE_COOKING;
+            {
+                uint32_t e = lv_tick_get() - cook_start_time;
+                g_send.remaining_ms = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);
+            }
+        } else
+            pizza3_rebuild_cooking(0);
+        break;
+    case PAGE_PIZZA3_SETTING:
+        pizza3_rebuild_setting();
+        break;
+    case PAGE_PIZZA3_STOP:
+        if (child == PAGE_PIZZA3_SETTING) {
+            set_hour = pizza3_setting_saved_hour;
+            set_min = pizza3_setting_saved_min;
+        }
+        pizza3_rebuild_stop();
+        break;
+    case PAGE_PIZZA3_STOP_BACK:
+        pizza3_rebuild_stop_back();
+        break;
+    case PAGE_PIZZA3_COMPLETE:
+        goto pop_to_major_menu;
+
+    case PAGE_CHIP_MENU:
+        chip_rebuild_menu(child);
+        break;
+    case PAGE_CHIP_SET:
+        chip_rebuild_set(child);
+        break;
+    case PAGE_CHIP_COOKING:
+        if (child == PAGE_CHIP_COMPLETE)
+            goto pop_to_major_menu;
+        if (child == PAGE_CHIP_SETTING) {
+            set_hour = chip_setting_saved_hour;
+            set_min = chip_setting_saved_min;
+            chip_rebuild_cooking(child);
+            g_send.iface_status = IFACE_COOKING;
+            {
+                uint32_t e = lv_tick_get() - cook_start_time;
+                g_send.remaining_ms = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);
+            }
+        } else
+            chip_rebuild_cooking(0);
+        break;
+    case PAGE_CHIP_SETTING:
+        chip_rebuild_setting();
+        break;
+    case PAGE_CHIP_STOP:
+        if (child == PAGE_CHIP_SETTING) {
+            set_hour = chip_setting_saved_hour;
+            set_min = chip_setting_saved_min;
+        }
+        chip_rebuild_stop();
+        break;
+    case PAGE_CHIP_STOP_BACK:
+        chip_rebuild_stop_back();
+        break;
+    case PAGE_CHIP_COMPLETE:
+        goto pop_to_major_menu;
+
+    case PAGE_CUSTOM_MENU:
+        custom_rebuild_menu(child);
+        break;
+    case PAGE_CUSTOM_SET:
+        custom_rebuild_set(child);
+        break;
+    case PAGE_CUSTOM_COOKING:
+        if (child == PAGE_CUSTOM_COMPLETE)
+            goto pop_to_major_menu;
+        if (child == PAGE_CUSTOM_SETTING) {
+            set_hour = custom_setting_saved_hour;
+            set_min = custom_setting_saved_min;
+            custom_rebuild_cooking(child);
+            g_send.iface_status = IFACE_COOKING;
+            {
+                uint32_t e = lv_tick_get() - cook_start_time;
+                g_send.remaining_ms = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);
+            }
+        } else
+            custom_rebuild_cooking(0);
+        break;
+    case PAGE_CUSTOM_SETTING:
+        custom_rebuild_setting();
+        break;
+    case PAGE_CUSTOM_STOP:
+        if (child == PAGE_CUSTOM_SETTING) {
+            set_hour = custom_setting_saved_hour;
+            set_min = custom_setting_saved_min;
+        }
+        custom_rebuild_stop();
+        break;
+    case PAGE_CUSTOM_STOP_BACK:
+        custom_rebuild_stop_back();
+        break;
+    case PAGE_CUSTOM_COMPLETE:
+        goto pop_to_major_menu;
+
     case PAGE_PREHEAT_COOKING:
     case PAGE_PREHEAT_STOP:
     case PAGE_PREHEAT_COMPLETE:
@@ -2829,6 +3054,26 @@ static void process_key(uint8_t key)
                 jump_to_lasagna_stop();
             else if (cur == PAGE_LASAGNA_STOP)
                 jump_to_lasagna_stop_back();
+            else if (cur == PAGE_STRUDEL_COOKING)
+                jump_to_strudel_stop();
+            else if (cur == PAGE_STRUDEL_STOP)
+                jump_to_strudel_stop_back();
+            else if (cur == PAGE_BREAD_COOKING)
+                jump_to_bread_stop();
+            else if (cur == PAGE_BREAD_STOP)
+                jump_to_bread_stop_back();
+            else if (cur == PAGE_PIZZA3_COOKING)
+                jump_to_pizza3_stop();
+            else if (cur == PAGE_PIZZA3_STOP)
+                jump_to_pizza3_stop_back();
+            else if (cur == PAGE_CHIP_COOKING)
+                jump_to_chip_stop();
+            else if (cur == PAGE_CHIP_STOP)
+                jump_to_chip_stop_back();
+            else if (cur == PAGE_CUSTOM_COOKING)
+                jump_to_custom_stop();
+            else if (cur == PAGE_CUSTOM_STOP)
+                jump_to_custom_stop_back();
             else
                 page_pop();
         }
@@ -3201,6 +3446,96 @@ static void process_key(uint8_t key)
             } else {
                 lv_group_focus_prev(current_group);
                 printf("[lasagna] setting focus prev\n");
+            }
+        } else if (current_group == g_strudel_menu) {
+            strudel_menu_t *menu = strudel_menu_get(&ui_manager);
+            if (menu && focused == menu->next) {
+                lv_group_focus_obj(menu->hour);
+                printf("[strudel] focus wrap to hour\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[strudel] focus prev\n");
+            }
+        } else if (current_group == g_strudel_setting) {
+            strudel_setting_t *set = strudel_setting_get(&ui_manager);
+            if (set && focused == set->sure) {
+                lv_group_focus_obj(set->hour);
+                printf("[strudel] setting focus wrap to hour\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[strudel] setting focus prev\n");
+            }
+        } else if (current_group == g_bread_menu) {
+            bread_menu_t *menu = bread_menu_get(&ui_manager);
+            if (menu && focused == menu->next) {
+                lv_group_focus_obj(menu->hour);
+                printf("[bread] focus wrap to hour\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[bread] focus prev\n");
+            }
+        } else if (current_group == g_bread_setting) {
+            bread_setting_t *set = bread_setting_get(&ui_manager);
+            if (set && focused == set->sure) {
+                lv_group_focus_obj(set->hour);
+                printf("[bread] setting focus wrap to hour\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[bread] setting focus prev\n");
+            }
+        } else if (current_group == g_pizza3_menu) {
+            pizza3_menu_t *menu = pizza3_menu_get(&ui_manager);
+            if (menu && focused == menu->next) {
+                lv_group_focus_obj(menu->hour);
+                printf("[pizza3] focus wrap to hour\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[pizza3] focus prev\n");
+            }
+        } else if (current_group == g_pizza3_setting) {
+            pizza3_setting_t *set = pizza3_setting_get(&ui_manager);
+            if (set && focused == set->sure) {
+                lv_group_focus_obj(set->hour);
+                printf("[pizza3] setting focus wrap to hour\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[pizza3] setting focus prev\n");
+            }
+        } else if (current_group == g_chip_menu) {
+            chip_menu_t *menu = chip_menu_get(&ui_manager);
+            if (menu && focused == menu->next) {
+                lv_group_focus_obj(menu->hour);
+                printf("[chip] focus wrap to hour\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[chip] focus prev\n");
+            }
+        } else if (current_group == g_chip_setting) {
+            chip_setting_t *set = chip_setting_get(&ui_manager);
+            if (set && focused == set->sure) {
+                lv_group_focus_obj(set->hour);
+                printf("[chip] setting focus wrap to hour\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[chip] setting focus prev\n");
+            }
+        } else if (current_group == g_custom_menu) {
+            custom_menu_t *menu = custom_menu_get(&ui_manager);
+            if (menu && focused == menu->next) {
+                lv_group_focus_obj(menu->hour);
+                printf("[custom] focus wrap to hour\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[custom] focus prev\n");
+            }
+        } else if (current_group == g_custom_setting) {
+            custom_setting_t *set = custom_setting_get(&ui_manager);
+            if (set && focused == set->sure) {
+                lv_group_focus_obj(set->hour);
+                printf("[custom] setting focus wrap to hour\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[custom] setting focus prev\n");
             }
         } else {
             lv_group_focus_prev(current_group);
@@ -3792,6 +4127,36 @@ void cooking_timer_cb(lv_timer_t *timer)
     } else if (current_group == g_lasagna_setting) {
         lasagna_setting_t *set = lasagna_setting_get(&ui_manager);
         if (set) time_label = set->timelabel;
+    } else if (current_group == g_strudel_cooking) {
+        strudel_cooking_t *cook = strudel_cooking_get(&ui_manager);
+        if (cook) time_label = cook->timelabel;
+    } else if (current_group == g_strudel_setting) {
+        strudel_setting_t *set = strudel_setting_get(&ui_manager);
+        if (set) time_label = set->timelabel;
+    } else if (current_group == g_bread_cooking) {
+        bread_cooking_t *cook = bread_cooking_get(&ui_manager);
+        if (cook) time_label = cook->timelabel;
+    } else if (current_group == g_bread_setting) {
+        bread_setting_t *set = bread_setting_get(&ui_manager);
+        if (set) time_label = set->timelabel;
+    } else if (current_group == g_pizza3_cooking) {
+        pizza3_cooking_t *cook = pizza3_cooking_get(&ui_manager);
+        if (cook) time_label = cook->timelabel;
+    } else if (current_group == g_pizza3_setting) {
+        pizza3_setting_t *set = pizza3_setting_get(&ui_manager);
+        if (set) time_label = set->timelabel;
+    } else if (current_group == g_chip_cooking) {
+        chip_cooking_t *cook = chip_cooking_get(&ui_manager);
+        if (cook) time_label = cook->timelabel;
+    } else if (current_group == g_chip_setting) {
+        chip_setting_t *set = chip_setting_get(&ui_manager);
+        if (set) time_label = set->timelabel;
+    } else if (current_group == g_custom_cooking) {
+        custom_cooking_t *cook = custom_cooking_get(&ui_manager);
+        if (cook) time_label = cook->timelabel;
+    } else if (current_group == g_custom_setting) {
+        custom_setting_t *set = custom_setting_get(&ui_manager);
+        if (set) time_label = set->timelabel;
     } else if (current_group == g_windchange_bbq_setting) {
         windchange_bbq_setting_t *set = windchange_bbq_setting_get(&ui_manager);
         if (set) time_label = set->timelabel;
@@ -4017,6 +4382,56 @@ void cooking_timer_cb(lv_timer_t *timer)
             if (ls_depth > 1) depth = ls_depth;
             lv_obj_clean(lv_scr_act());
             jump_to_lasagna_complete();
+            return;
+        } else if (current_group == g_strudel_cooking || current_group == g_strudel_setting) {
+            int st_depth = depth;
+            while (st_depth > 1 && page_stack[st_depth - 1] != PAGE_STRUDEL_COOKING &&
+                   page_stack[st_depth - 1] != PAGE_STRUDEL_SETTING) {
+                st_depth--;
+            }
+            if (st_depth > 1) depth = st_depth;
+            lv_obj_clean(lv_scr_act());
+            jump_to_strudel_complete();
+            return;
+        } else if (current_group == g_bread_cooking || current_group == g_bread_setting) {
+            int br_depth = depth;
+            while (br_depth > 1 && page_stack[br_depth - 1] != PAGE_BREAD_COOKING &&
+                   page_stack[br_depth - 1] != PAGE_BREAD_SETTING) {
+                br_depth--;
+            }
+            if (br_depth > 1) depth = br_depth;
+            lv_obj_clean(lv_scr_act());
+            jump_to_bread_complete();
+            return;
+        } else if (current_group == g_pizza3_cooking || current_group == g_pizza3_setting) {
+            int p3_depth = depth;
+            while (p3_depth > 1 && page_stack[p3_depth - 1] != PAGE_PIZZA3_COOKING &&
+                   page_stack[p3_depth - 1] != PAGE_PIZZA3_SETTING) {
+                p3_depth--;
+            }
+            if (p3_depth > 1) depth = p3_depth;
+            lv_obj_clean(lv_scr_act());
+            jump_to_pizza3_complete();
+            return;
+        } else if (current_group == g_chip_cooking || current_group == g_chip_setting) {
+            int ch_depth = depth;
+            while (ch_depth > 1 && page_stack[ch_depth - 1] != PAGE_CHIP_COOKING &&
+                   page_stack[ch_depth - 1] != PAGE_CHIP_SETTING) {
+                ch_depth--;
+            }
+            if (ch_depth > 1) depth = ch_depth;
+            lv_obj_clean(lv_scr_act());
+            jump_to_chip_complete();
+            return;
+        } else if (current_group == g_custom_cooking || current_group == g_custom_setting) {
+            int cu_depth = depth;
+            while (cu_depth > 1 && page_stack[cu_depth - 1] != PAGE_CUSTOM_COOKING &&
+                   page_stack[cu_depth - 1] != PAGE_CUSTOM_SETTING) {
+                cu_depth--;
+            }
+            if (cu_depth > 1) depth = cu_depth;
+            lv_obj_clean(lv_scr_act());
+            jump_to_custom_complete();
             return;
         } else if (current_group == g_menu_cook_cooking || current_group == g_menu_cook_setting) {
             int m_depth = depth;

@@ -165,6 +165,41 @@ typedef enum {
     PAGE_LASAGNA_STOP,
     PAGE_LASAGNA_STOP_BACK,
     PAGE_LASAGNA_COMPLETE,
+    PAGE_STRUDEL_MENU,
+    PAGE_STRUDEL_SET,
+    PAGE_STRUDEL_COOKING,
+    PAGE_STRUDEL_SETTING,
+    PAGE_STRUDEL_STOP,
+    PAGE_STRUDEL_STOP_BACK,
+    PAGE_STRUDEL_COMPLETE,
+    PAGE_BREAD_MENU,
+    PAGE_BREAD_SET,
+    PAGE_BREAD_COOKING,
+    PAGE_BREAD_SETTING,
+    PAGE_BREAD_STOP,
+    PAGE_BREAD_STOP_BACK,
+    PAGE_BREAD_COMPLETE,
+    PAGE_PIZZA3_MENU,
+    PAGE_PIZZA3_SET,
+    PAGE_PIZZA3_COOKING,
+    PAGE_PIZZA3_SETTING,
+    PAGE_PIZZA3_STOP,
+    PAGE_PIZZA3_STOP_BACK,
+    PAGE_PIZZA3_COMPLETE,
+    PAGE_CHIP_MENU,
+    PAGE_CHIP_SET,
+    PAGE_CHIP_COOKING,
+    PAGE_CHIP_SETTING,
+    PAGE_CHIP_STOP,
+    PAGE_CHIP_STOP_BACK,
+    PAGE_CHIP_COMPLETE,
+    PAGE_CUSTOM_MENU,
+    PAGE_CUSTOM_SET,
+    PAGE_CUSTOM_COOKING,
+    PAGE_CUSTOM_SETTING,
+    PAGE_CUSTOM_STOP,
+    PAGE_CUSTOM_STOP_BACK,
+    PAGE_CUSTOM_COMPLETE,
 } page_id_t;
 
 extern page_id_t page_stack[];
@@ -646,6 +681,46 @@ extern lv_group_t *g_lasagna_stop;
 extern lv_group_t *g_lasagna_stop_back;
 extern lv_group_t *g_lasagna_complete;
 
+extern lv_group_t *g_strudel_menu;
+extern lv_group_t *g_strudel_set;
+extern lv_group_t *g_strudel_cooking;
+extern lv_group_t *g_strudel_setting;
+extern lv_group_t *g_strudel_stop;
+extern lv_group_t *g_strudel_stop_back;
+extern lv_group_t *g_strudel_complete;
+
+extern lv_group_t *g_bread_menu;
+extern lv_group_t *g_bread_set;
+extern lv_group_t *g_bread_cooking;
+extern lv_group_t *g_bread_setting;
+extern lv_group_t *g_bread_stop;
+extern lv_group_t *g_bread_stop_back;
+extern lv_group_t *g_bread_complete;
+
+extern lv_group_t *g_pizza3_menu;
+extern lv_group_t *g_pizza3_set;
+extern lv_group_t *g_pizza3_cooking;
+extern lv_group_t *g_pizza3_setting;
+extern lv_group_t *g_pizza3_stop;
+extern lv_group_t *g_pizza3_stop_back;
+extern lv_group_t *g_pizza3_complete;
+
+extern lv_group_t *g_chip_menu;
+extern lv_group_t *g_chip_set;
+extern lv_group_t *g_chip_cooking;
+extern lv_group_t *g_chip_setting;
+extern lv_group_t *g_chip_stop;
+extern lv_group_t *g_chip_stop_back;
+extern lv_group_t *g_chip_complete;
+
+extern lv_group_t *g_custom_menu;
+extern lv_group_t *g_custom_set;
+extern lv_group_t *g_custom_cooking;
+extern lv_group_t *g_custom_setting;
+extern lv_group_t *g_custom_stop;
+extern lv_group_t *g_custom_stop_back;
+extern lv_group_t *g_custom_complete;
+
 void jump_to_slowcook_menu(void);
 void jump_to_slowcook_set(void);
 void jump_to_slowcook_cooking(void);
@@ -744,5 +819,85 @@ void lasagna_rebuild_stop(void);
 void lasagna_rebuild_stop_back(void);
 void lasagna_rebuild_complete(void);
 void lasagna_resume_cooking(void);
+
+void jump_to_strudel_menu(void);
+void jump_to_strudel_set(void);
+void jump_to_strudel_cooking(void);
+void jump_to_strudel_setting(void);
+void jump_to_strudel_stop(void);
+void jump_to_strudel_stop_back(void);
+void jump_to_strudel_complete(void);
+void strudel_rebuild_menu(page_id_t child);
+void strudel_rebuild_set(page_id_t child);
+void strudel_rebuild_cooking(page_id_t child);
+void strudel_rebuild_setting(void);
+void strudel_rebuild_stop(void);
+void strudel_rebuild_stop_back(void);
+void strudel_rebuild_complete(void);
+void strudel_resume_cooking(void);
+
+void jump_to_bread_menu(void);
+void jump_to_bread_set(void);
+void jump_to_bread_cooking(void);
+void jump_to_bread_setting(void);
+void jump_to_bread_stop(void);
+void jump_to_bread_stop_back(void);
+void jump_to_bread_complete(void);
+void bread_rebuild_menu(page_id_t child);
+void bread_rebuild_set(page_id_t child);
+void bread_rebuild_cooking(page_id_t child);
+void bread_rebuild_setting(void);
+void bread_rebuild_stop(void);
+void bread_rebuild_stop_back(void);
+void bread_rebuild_complete(void);
+void bread_resume_cooking(void);
+
+void jump_to_pizza3_menu(void);
+void jump_to_pizza3_set(void);
+void jump_to_pizza3_cooking(void);
+void jump_to_pizza3_setting(void);
+void jump_to_pizza3_stop(void);
+void jump_to_pizza3_stop_back(void);
+void jump_to_pizza3_complete(void);
+void pizza3_rebuild_menu(page_id_t child);
+void pizza3_rebuild_set(page_id_t child);
+void pizza3_rebuild_cooking(page_id_t child);
+void pizza3_rebuild_setting(void);
+void pizza3_rebuild_stop(void);
+void pizza3_rebuild_stop_back(void);
+void pizza3_rebuild_complete(void);
+void pizza3_resume_cooking(void);
+
+void jump_to_chip_menu(void);
+void jump_to_chip_set(void);
+void jump_to_chip_cooking(void);
+void jump_to_chip_setting(void);
+void jump_to_chip_stop(void);
+void jump_to_chip_stop_back(void);
+void jump_to_chip_complete(void);
+void chip_rebuild_menu(page_id_t child);
+void chip_rebuild_set(page_id_t child);
+void chip_rebuild_cooking(page_id_t child);
+void chip_rebuild_setting(void);
+void chip_rebuild_stop(void);
+void chip_rebuild_stop_back(void);
+void chip_rebuild_complete(void);
+void chip_resume_cooking(void);
+
+void jump_to_custom_menu(void);
+void jump_to_custom_set(void);
+void jump_to_custom_cooking(void);
+void jump_to_custom_setting(void);
+void jump_to_custom_stop(void);
+void jump_to_custom_stop_back(void);
+void jump_to_custom_complete(void);
+void custom_rebuild_menu(page_id_t child);
+void custom_rebuild_set(page_id_t child);
+void custom_rebuild_cooking(page_id_t child);
+void custom_rebuild_setting(void);
+void custom_rebuild_stop(void);
+void custom_rebuild_stop_back(void);
+void custom_rebuild_complete(void);
+void custom_resume_cooking(void);
 
 #endif

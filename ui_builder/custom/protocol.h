@@ -55,6 +55,11 @@
 #define MODE_CORN           39 // 玉米
 #define MODE_HEATCONTAIN    40 // 保温
 #define MODE_LASAGNA        41 // 千层面
+#define MODE_STRUDEL        42 // 果馅卷
+#define MODE_BREAD          43 // 面包
+#define MODE_PIZZA3         44 // 披萨3
+#define MODE_CHIP           45 // 薯条
+#define MODE_CUSTOM         46 // 自定义
 #define MODE_AIR            13 // 空气炸
 #define MODE_PREHEAT        28 // 预热
 #define MODE_EXTRA_COLOR    38
