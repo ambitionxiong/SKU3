@@ -49,6 +49,11 @@
 #define MODE_SAVE_BBQ       27 // 节能热风 Eco Forced Air
 #define MODE_COOK4          33 // 烘焙
 #define MODE_PIZZA_2        34 // 披萨2
+#define MODE_SLOWCOOK       35 // 慢煮
+#define MODE_UNFROZEN       36 // 解冻
+#define MODE_RISING         37 // 发酵
+#define MODE_CORN           39 // 玉米
+#define MODE_HEATCONTAIN    40 // 保温
 #define MODE_AIR            13 // 空气炸
 #define MODE_PREHEAT        28 // 预热
 #define MODE_EXTRA_COLOR    38

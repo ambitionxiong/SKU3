@@ -93,6 +93,41 @@ lv_group_t *g_pizza_2_setting;
 lv_group_t *g_pizza_2_stop;
 lv_group_t *g_pizza_2_stop_back;
 lv_group_t *g_pizza_2_complete;
+lv_group_t *g_slowcook_menu;
+lv_group_t *g_slowcook_set;
+lv_group_t *g_slowcook_cooking;
+lv_group_t *g_slowcook_setting;
+lv_group_t *g_slowcook_stop;
+lv_group_t *g_slowcook_stop_back;
+lv_group_t *g_slowcook_complete;
+lv_group_t *g_unfrozen_menu;
+lv_group_t *g_unfrozen_set;
+lv_group_t *g_unfrozen_cooking;
+lv_group_t *g_unfrozen_setting;
+lv_group_t *g_unfrozen_stop;
+lv_group_t *g_unfrozen_stop_back;
+lv_group_t *g_unfrozen_complete;
+lv_group_t *g_rising_menu;
+lv_group_t *g_rising_set;
+lv_group_t *g_rising_cooking;
+lv_group_t *g_rising_setting;
+lv_group_t *g_rising_stop;
+lv_group_t *g_rising_stop_back;
+lv_group_t *g_rising_complete;
+lv_group_t *g_corn_menu;
+lv_group_t *g_corn_set;
+lv_group_t *g_corn_cooking;
+lv_group_t *g_corn_setting;
+lv_group_t *g_corn_stop;
+lv_group_t *g_corn_stop_back;
+lv_group_t *g_corn_complete;
+lv_group_t *g_heatcontain_menu;
+lv_group_t *g_heatcontain_set;
+lv_group_t *g_heatcontain_cooking;
+lv_group_t *g_heatcontain_setting;
+lv_group_t *g_heatcontain_stop;
+lv_group_t *g_heatcontain_stop_back;
+lv_group_t *g_heatcontain_complete;
 lv_group_t *g_cook4_menu;
 
 lv_group_t *g_cookie_menu;
@@ -257,6 +292,11 @@ static void on_windchange_click(lv_event_t *e);
 static void on_preheat_click(lv_event_t *e);
 static void on_air_click(lv_event_t *e);
 static void on_pizza_click(lv_event_t *e);
+static void on_slowcook_click(lv_event_t *e);
+static void on_unfrozen_click(lv_event_t *e);
+static void on_rising_click(lv_event_t *e);
+static void on_corn_click(lv_event_t *e);
+static void on_heatcontain_click(lv_event_t *e);
 static void on_updown_next_click(lv_event_t *e);
 void on_edit_focus(lv_event_t *e);
 void validate_constraints(void);
@@ -314,6 +354,11 @@ extern int pizza_setting_saved_temp, pizza_setting_saved_hour, pizza_setting_sav
 extern int menu_setting_saved_temp, menu_setting_saved_hour, menu_setting_saved_min;
 extern int air_setting_saved_temp, air_setting_saved_hour, air_setting_saved_min;
 extern int pizza_2_setting_saved_temp, pizza_2_setting_saved_hour, pizza_2_setting_saved_min;
+extern int slowcook_setting_saved_temp, slowcook_setting_saved_hour, slowcook_setting_saved_min;
+extern int unfrozen_setting_saved_temp, unfrozen_setting_saved_hour, unfrozen_setting_saved_min;
+extern int rising_setting_saved_temp, rising_setting_saved_hour, rising_setting_saved_min;
+extern int corn_setting_saved_temp, corn_setting_saved_hour, corn_setting_saved_min;
+extern int heatcontain_setting_saved_temp, heatcontain_setting_saved_hour, heatcontain_setting_saved_min;
 
 
 
@@ -776,11 +821,31 @@ void page_pop(void)
                                     LV_EVENT_CLICKED, NULL);
                 lv_obj_add_event_cb(sp->piza_button, on_pizza_click,
                                     LV_EVENT_CLICKED, NULL);
+                lv_obj_add_event_cb(sp->slow_cook_button, on_slowcook_click,
+                                    LV_EVENT_CLICKED, NULL);
+                lv_obj_add_event_cb(sp->unfrozen_button, on_unfrozen_click,
+                                    LV_EVENT_CLICKED, NULL);
+                lv_obj_add_event_cb(sp->rising_button, on_rising_click,
+                                    LV_EVENT_CLICKED, NULL);
+                lv_obj_add_event_cb(sp->corn_button, on_corn_click,
+                                    LV_EVENT_CLICKED, NULL);
+                lv_obj_add_event_cb(sp->heat_contain_button, on_heatcontain_click,
+                                    LV_EVENT_CLICKED, NULL);
 
                 if (child == PAGE_AIR_MENU && sp->air_button)
                     lv_group_focus_obj(sp->air_button);
                 else if (child == PAGE_PIZZA_2_MENU && sp->piza_button)
                     lv_group_focus_obj(sp->piza_button);
+                else if (child == PAGE_SLOWCOOK_MENU && sp->slow_cook_button)
+                    lv_group_focus_obj(sp->slow_cook_button);
+                else if (child == PAGE_UNFROZEN_MENU && sp->unfrozen_button)
+                    lv_group_focus_obj(sp->unfrozen_button);
+                else if (child == PAGE_RISING_MENU && sp->rising_button)
+                    lv_group_focus_obj(sp->rising_button);
+                else if (child == PAGE_CORN_MENU && sp->corn_button)
+                    lv_group_focus_obj(sp->corn_button);
+                else if (child == PAGE_HEATCONTAIN_MENU && sp->heat_contain_button)
+                    lv_group_focus_obj(sp->heat_contain_button);
             }
             current_group = g_special_menu;
         }
@@ -1744,6 +1809,206 @@ void page_pop(void)
     case PAGE_PIZZA_2_COMPLETE:
         goto pop_to_major_menu;
 
+    case PAGE_SLOWCOOK_MENU:
+        slowcook_rebuild_menu(child);
+        break;
+    case PAGE_SLOWCOOK_SET:
+        slowcook_rebuild_set(child);
+        break;
+    case PAGE_SLOWCOOK_COOKING:
+        if (child == PAGE_SLOWCOOK_COMPLETE)
+            goto pop_to_major_menu;
+        if (child == PAGE_SLOWCOOK_SETTING) {
+            set_temp = slowcook_setting_saved_temp;
+            set_hour = slowcook_setting_saved_hour;
+            set_min = slowcook_setting_saved_min;
+            slowcook_rebuild_cooking(child);
+            g_send.iface_status = IFACE_COOKING;
+            g_send.set_temp = set_temp;
+            {
+                uint32_t e = lv_tick_get() - cook_start_time;
+                g_send.remaining_ms = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);
+            }
+        } else
+            slowcook_rebuild_cooking(0);
+        break;
+    case PAGE_SLOWCOOK_SETTING:
+        slowcook_rebuild_setting();
+        break;
+    case PAGE_SLOWCOOK_STOP:
+        if (child == PAGE_SLOWCOOK_SETTING) {
+            set_temp = slowcook_setting_saved_temp;
+            set_hour = slowcook_setting_saved_hour;
+            set_min = slowcook_setting_saved_min;
+        }
+        slowcook_rebuild_stop();
+        break;
+    case PAGE_SLOWCOOK_STOP_BACK:
+        slowcook_rebuild_stop_back();
+        break;
+    case PAGE_SLOWCOOK_COMPLETE:
+        goto pop_to_major_menu;
+
+    case PAGE_UNFROZEN_MENU:
+        unfrozen_rebuild_menu(child);
+        break;
+    case PAGE_UNFROZEN_SET:
+        unfrozen_rebuild_set(child);
+        break;
+    case PAGE_UNFROZEN_COOKING:
+        if (child == PAGE_UNFROZEN_COMPLETE)
+            goto pop_to_major_menu;
+        if (child == PAGE_UNFROZEN_SETTING) {
+            set_temp = unfrozen_setting_saved_temp;
+            set_hour = unfrozen_setting_saved_hour;
+            set_min = unfrozen_setting_saved_min;
+            unfrozen_rebuild_cooking(child);
+            g_send.iface_status = IFACE_COOKING;
+            g_send.set_temp = set_temp;
+            {
+                uint32_t e = lv_tick_get() - cook_start_time;
+                g_send.remaining_ms = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);
+            }
+        } else
+            unfrozen_rebuild_cooking(0);
+        break;
+    case PAGE_UNFROZEN_SETTING:
+        unfrozen_rebuild_setting();
+        break;
+    case PAGE_UNFROZEN_STOP:
+        if (child == PAGE_UNFROZEN_SETTING) {
+            set_temp = unfrozen_setting_saved_temp;
+            set_hour = unfrozen_setting_saved_hour;
+            set_min = unfrozen_setting_saved_min;
+        }
+        unfrozen_rebuild_stop();
+        break;
+    case PAGE_UNFROZEN_STOP_BACK:
+        unfrozen_rebuild_stop_back();
+        break;
+    case PAGE_UNFROZEN_COMPLETE:
+        goto pop_to_major_menu;
+
+    case PAGE_RISING_MENU:
+        rising_rebuild_menu(child);
+        break;
+    case PAGE_RISING_SET:
+        rising_rebuild_set(child);
+        break;
+    case PAGE_RISING_COOKING:
+        if (child == PAGE_RISING_COMPLETE)
+            goto pop_to_major_menu;
+        if (child == PAGE_RISING_SETTING) {
+            set_temp = rising_setting_saved_temp;
+            set_hour = rising_setting_saved_hour;
+            set_min = rising_setting_saved_min;
+            rising_rebuild_cooking(child);
+            g_send.iface_status = IFACE_COOKING;
+            g_send.set_temp = set_temp;
+            {
+                uint32_t e = lv_tick_get() - cook_start_time;
+                g_send.remaining_ms = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);
+            }
+        } else
+            rising_rebuild_cooking(0);
+        break;
+    case PAGE_RISING_SETTING:
+        rising_rebuild_setting();
+        break;
+    case PAGE_RISING_STOP:
+        if (child == PAGE_RISING_SETTING) {
+            set_temp = rising_setting_saved_temp;
+            set_hour = rising_setting_saved_hour;
+            set_min = rising_setting_saved_min;
+        }
+        rising_rebuild_stop();
+        break;
+    case PAGE_RISING_STOP_BACK:
+        rising_rebuild_stop_back();
+        break;
+    case PAGE_RISING_COMPLETE:
+        goto pop_to_major_menu;
+
+    case PAGE_CORN_MENU:
+        corn_rebuild_menu(child);
+        break;
+    case PAGE_CORN_SET:
+        corn_rebuild_set(child);
+        break;
+    case PAGE_CORN_COOKING:
+        if (child == PAGE_CORN_COMPLETE)
+            goto pop_to_major_menu;
+        if (child == PAGE_CORN_SETTING) {
+            set_temp = corn_setting_saved_temp;
+            set_hour = corn_setting_saved_hour;
+            set_min = corn_setting_saved_min;
+            corn_rebuild_cooking(child);
+            g_send.iface_status = IFACE_COOKING;
+            g_send.set_temp = set_temp;
+            {
+                uint32_t e = lv_tick_get() - cook_start_time;
+                g_send.remaining_ms = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);
+            }
+        } else
+            corn_rebuild_cooking(0);
+        break;
+    case PAGE_CORN_SETTING:
+        corn_rebuild_setting();
+        break;
+    case PAGE_CORN_STOP:
+        if (child == PAGE_CORN_SETTING) {
+            set_temp = corn_setting_saved_temp;
+            set_hour = corn_setting_saved_hour;
+            set_min = corn_setting_saved_min;
+        }
+        corn_rebuild_stop();
+        break;
+    case PAGE_CORN_STOP_BACK:
+        corn_rebuild_stop_back();
+        break;
+    case PAGE_CORN_COMPLETE:
+        goto pop_to_major_menu;
+
+    case PAGE_HEATCONTAIN_MENU:
+        heatcontain_rebuild_menu(child);
+        break;
+    case PAGE_HEATCONTAIN_SET:
+        heatcontain_rebuild_set(child);
+        break;
+    case PAGE_HEATCONTAIN_COOKING:
+        if (child == PAGE_HEATCONTAIN_COMPLETE)
+            goto pop_to_major_menu;
+        if (child == PAGE_HEATCONTAIN_SETTING) {
+            set_temp = heatcontain_setting_saved_temp;
+            set_hour = heatcontain_setting_saved_hour;
+            set_min = heatcontain_setting_saved_min;
+            heatcontain_rebuild_cooking(child);
+            g_send.iface_status = IFACE_COOKING;
+            g_send.set_temp = set_temp;
+            {
+                uint32_t e = lv_tick_get() - cook_start_time;
+                g_send.remaining_ms = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);
+            }
+        } else
+            heatcontain_rebuild_cooking(0);
+        break;
+    case PAGE_HEATCONTAIN_SETTING:
+        heatcontain_rebuild_setting();
+        break;
+    case PAGE_HEATCONTAIN_STOP:
+        if (child == PAGE_HEATCONTAIN_SETTING) {
+            set_temp = heatcontain_setting_saved_temp;
+            set_hour = heatcontain_setting_saved_hour;
+            set_min = heatcontain_setting_saved_min;
+        }
+        heatcontain_rebuild_stop();
+        break;
+    case PAGE_HEATCONTAIN_STOP_BACK:
+        heatcontain_rebuild_stop_back();
+        break;
+    case PAGE_HEATCONTAIN_COMPLETE:
+        goto pop_to_major_menu;
+
     case PAGE_PREHEAT_COOKING:
     case PAGE_PREHEAT_STOP:
     case PAGE_PREHEAT_COMPLETE:
@@ -1924,6 +2189,16 @@ static void jump_to_special_menu(void)
         lv_obj_add_event_cb(sp->air_button, on_air_click,
                             LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(sp->piza_button, on_pizza_click,
+                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(sp->slow_cook_button, on_slowcook_click,
+                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(sp->unfrozen_button, on_unfrozen_click,
+                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(sp->rising_button, on_rising_click,
+                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(sp->corn_button, on_corn_click,
+                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(sp->heat_contain_button, on_heatcontain_click,
                             LV_EVENT_CLICKED, NULL);
     }
 
@@ -2473,6 +2748,26 @@ static void process_key(uint8_t key)
                 jump_to_pizza_2_stop();
             else if (cur == PAGE_PIZZA_2_STOP)
                 jump_to_pizza_2_stop_back();
+            else if (cur == PAGE_SLOWCOOK_COOKING)
+                jump_to_slowcook_stop();
+            else if (cur == PAGE_SLOWCOOK_STOP)
+                jump_to_slowcook_stop_back();
+            else if (cur == PAGE_UNFROZEN_COOKING)
+                jump_to_unfrozen_stop();
+            else if (cur == PAGE_UNFROZEN_STOP)
+                jump_to_unfrozen_stop_back();
+            else if (cur == PAGE_RISING_COOKING)
+                jump_to_rising_stop();
+            else if (cur == PAGE_RISING_STOP)
+                jump_to_rising_stop_back();
+            else if (cur == PAGE_CORN_COOKING)
+                jump_to_corn_stop();
+            else if (cur == PAGE_CORN_STOP)
+                jump_to_corn_stop_back();
+            else if (cur == PAGE_HEATCONTAIN_COOKING)
+                jump_to_heatcontain_stop();
+            else if (cur == PAGE_HEATCONTAIN_STOP)
+                jump_to_heatcontain_stop_back();
             else
                 page_pop();
         }
@@ -2737,6 +3032,96 @@ static void process_key(uint8_t key)
             } else {
                 lv_group_focus_prev(current_group);
                 printf("[pizza_2] setting focus prev\n");
+            }
+        } else if (current_group == g_slowcook_menu) {
+            slowcook_menu_t *menu = slowcook_menu_get(&ui_manager);
+            if (menu && focused == menu->next) {
+                lv_group_focus_obj(menu->temp);
+                printf("[slowcook] focus wrap to temp\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[slowcook] focus prev\n");
+            }
+        } else if (current_group == g_slowcook_setting) {
+            slowcook_setting_t *set = slowcook_setting_get(&ui_manager);
+            if (set && focused == set->sure) {
+                lv_group_focus_obj(set->temp);
+                printf("[slowcook] setting focus wrap to temp\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[slowcook] setting focus prev\n");
+            }
+        } else if (current_group == g_unfrozen_menu) {
+            unfrozen_menu_t *menu = unfrozen_menu_get(&ui_manager);
+            if (menu && focused == menu->next) {
+                lv_group_focus_obj(menu->temp);
+                printf("[unfrozen] focus wrap to temp\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[unfrozen] focus prev\n");
+            }
+        } else if (current_group == g_unfrozen_setting) {
+            unfrozen_setting_t *set = unfrozen_setting_get(&ui_manager);
+            if (set && focused == set->sure) {
+                lv_group_focus_obj(set->temp);
+                printf("[unfrozen] setting focus wrap to temp\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[unfrozen] setting focus prev\n");
+            }
+        } else if (current_group == g_rising_menu) {
+            rising_menu_t *menu = rising_menu_get(&ui_manager);
+            if (menu && focused == menu->next) {
+                lv_group_focus_obj(menu->temp);
+                printf("[rising] focus wrap to temp\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[rising] focus prev\n");
+            }
+        } else if (current_group == g_rising_setting) {
+            rising_setting_t *set = rising_setting_get(&ui_manager);
+            if (set && focused == set->sure) {
+                lv_group_focus_obj(set->temp);
+                printf("[rising] setting focus wrap to temp\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[rising] setting focus prev\n");
+            }
+        } else if (current_group == g_corn_menu) {
+            corn_menu_t *menu = corn_menu_get(&ui_manager);
+            if (menu && focused == menu->next) {
+                lv_group_focus_obj(menu->temp);
+                printf("[corn] focus wrap to temp\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[corn] focus prev\n");
+            }
+        } else if (current_group == g_corn_setting) {
+            corn_setting_t *set = corn_setting_get(&ui_manager);
+            if (set && focused == set->sure) {
+                lv_group_focus_obj(set->temp);
+                printf("[corn] setting focus wrap to temp\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[corn] setting focus prev\n");
+            }
+        } else if (current_group == g_heatcontain_menu) {
+            heatcontain_menu_t *menu = heatcontain_menu_get(&ui_manager);
+            if (menu && focused == menu->next) {
+                lv_group_focus_obj(menu->temp);
+                printf("[heatcontain] focus wrap to temp\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[heatcontain] focus prev\n");
+            }
+        } else if (current_group == g_heatcontain_setting) {
+            heatcontain_setting_t *set = heatcontain_setting_get(&ui_manager);
+            if (set && focused == set->sure) {
+                lv_group_focus_obj(set->temp);
+                printf("[heatcontain] setting focus wrap to temp\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[heatcontain] setting focus prev\n");
             }
         } else {
             lv_group_focus_prev(current_group);
@@ -3066,6 +3451,41 @@ static void on_pizza_click(lv_event_t *e)
         jump_to_pizza_2_menu();
 }
 
+static void on_slowcook_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (!screen_is_loading(act_scr))
+        jump_to_slowcook_menu();
+}
+
+static void on_unfrozen_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (!screen_is_loading(act_scr))
+        jump_to_unfrozen_menu();
+}
+
+static void on_rising_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (!screen_is_loading(act_scr))
+        jump_to_rising_menu();
+}
+
+static void on_corn_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (!screen_is_loading(act_scr))
+        jump_to_corn_menu();
+}
+
+static void on_heatcontain_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (!screen_is_loading(act_scr))
+        jump_to_heatcontain_menu();
+}
+
 static void on_updown_next_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
@@ -3250,6 +3670,36 @@ void cooking_timer_cb(lv_timer_t *timer)
     } else if (current_group == g_pizza_2_setting) {
         pizza_2_setting_t *set = pizza_2_setting_get(&ui_manager);
         if (set) time_label = set->timelabel;
+    } else if (current_group == g_slowcook_cooking) {
+        slowcook_cooking_t *cook = slowcook_cooking_get(&ui_manager);
+        if (cook) time_label = cook->timelabel;
+    } else if (current_group == g_slowcook_setting) {
+        slowcook_setting_t *set = slowcook_setting_get(&ui_manager);
+        if (set) time_label = set->timelabel;
+    } else if (current_group == g_unfrozen_cooking) {
+        unfrozen_cooking_t *cook = unfrozen_cooking_get(&ui_manager);
+        if (cook) time_label = cook->timelabel;
+    } else if (current_group == g_unfrozen_setting) {
+        unfrozen_setting_t *set = unfrozen_setting_get(&ui_manager);
+        if (set) time_label = set->timelabel;
+    } else if (current_group == g_rising_cooking) {
+        rising_cooking_t *cook = rising_cooking_get(&ui_manager);
+        if (cook) time_label = cook->timelabel;
+    } else if (current_group == g_rising_setting) {
+        rising_setting_t *set = rising_setting_get(&ui_manager);
+        if (set) time_label = set->timelabel;
+    } else if (current_group == g_corn_cooking) {
+        corn_cooking_t *cook = corn_cooking_get(&ui_manager);
+        if (cook) time_label = cook->timelabel;
+    } else if (current_group == g_corn_setting) {
+        corn_setting_t *set = corn_setting_get(&ui_manager);
+        if (set) time_label = set->timelabel;
+    } else if (current_group == g_heatcontain_cooking) {
+        heatcontain_cooking_t *cook = heatcontain_cooking_get(&ui_manager);
+        if (cook) time_label = cook->timelabel;
+    } else if (current_group == g_heatcontain_setting) {
+        heatcontain_setting_t *set = heatcontain_setting_get(&ui_manager);
+        if (set) time_label = set->timelabel;
     } else if (current_group == g_windchange_bbq_setting) {
         windchange_bbq_setting_t *set = windchange_bbq_setting_get(&ui_manager);
         if (set) time_label = set->timelabel;
@@ -3415,6 +3865,56 @@ void cooking_timer_cb(lv_timer_t *timer)
             if (p2_depth > 1) depth = p2_depth;
             lv_obj_clean(lv_scr_act());
             jump_to_pizza_2_complete();
+            return;
+        } else if (current_group == g_slowcook_cooking || current_group == g_slowcook_setting) {
+            int sc_depth = depth;
+            while (sc_depth > 1 && page_stack[sc_depth - 1] != PAGE_SLOWCOOK_COOKING &&
+                   page_stack[sc_depth - 1] != PAGE_SLOWCOOK_SETTING) {
+                sc_depth--;
+            }
+            if (sc_depth > 1) depth = sc_depth;
+            lv_obj_clean(lv_scr_act());
+            jump_to_slowcook_complete();
+            return;
+        } else if (current_group == g_unfrozen_cooking || current_group == g_unfrozen_setting) {
+            int uf_depth = depth;
+            while (uf_depth > 1 && page_stack[uf_depth - 1] != PAGE_UNFROZEN_COOKING &&
+                   page_stack[uf_depth - 1] != PAGE_UNFROZEN_SETTING) {
+                uf_depth--;
+            }
+            if (uf_depth > 1) depth = uf_depth;
+            lv_obj_clean(lv_scr_act());
+            jump_to_unfrozen_complete();
+            return;
+        } else if (current_group == g_rising_cooking || current_group == g_rising_setting) {
+            int rs_depth = depth;
+            while (rs_depth > 1 && page_stack[rs_depth - 1] != PAGE_RISING_COOKING &&
+                   page_stack[rs_depth - 1] != PAGE_RISING_SETTING) {
+                rs_depth--;
+            }
+            if (rs_depth > 1) depth = rs_depth;
+            lv_obj_clean(lv_scr_act());
+            jump_to_rising_complete();
+            return;
+        } else if (current_group == g_corn_cooking || current_group == g_corn_setting) {
+            int cn_depth = depth;
+            while (cn_depth > 1 && page_stack[cn_depth - 1] != PAGE_CORN_COOKING &&
+                   page_stack[cn_depth - 1] != PAGE_CORN_SETTING) {
+                cn_depth--;
+            }
+            if (cn_depth > 1) depth = cn_depth;
+            lv_obj_clean(lv_scr_act());
+            jump_to_corn_complete();
+            return;
+        } else if (current_group == g_heatcontain_cooking || current_group == g_heatcontain_setting) {
+            int hc_depth = depth;
+            while (hc_depth > 1 && page_stack[hc_depth - 1] != PAGE_HEATCONTAIN_COOKING &&
+                   page_stack[hc_depth - 1] != PAGE_HEATCONTAIN_SETTING) {
+                hc_depth--;
+            }
+            if (hc_depth > 1) depth = hc_depth;
+            lv_obj_clean(lv_scr_act());
+            jump_to_heatcontain_complete();
             return;
         } else if (current_group == g_menu_cook_cooking || current_group == g_menu_cook_setting) {
             int m_depth = depth;

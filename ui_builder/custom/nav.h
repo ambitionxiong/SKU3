@@ -122,6 +122,41 @@ typedef enum {
     PAGE_PIZZA_2_STOP,
     PAGE_PIZZA_2_STOP_BACK,
     PAGE_PIZZA_2_COMPLETE,
+    PAGE_SLOWCOOK_MENU,
+    PAGE_SLOWCOOK_SET,
+    PAGE_SLOWCOOK_COOKING,
+    PAGE_SLOWCOOK_SETTING,
+    PAGE_SLOWCOOK_STOP,
+    PAGE_SLOWCOOK_STOP_BACK,
+    PAGE_SLOWCOOK_COMPLETE,
+    PAGE_UNFROZEN_MENU,
+    PAGE_UNFROZEN_SET,
+    PAGE_UNFROZEN_COOKING,
+    PAGE_UNFROZEN_SETTING,
+    PAGE_UNFROZEN_STOP,
+    PAGE_UNFROZEN_STOP_BACK,
+    PAGE_UNFROZEN_COMPLETE,
+    PAGE_RISING_MENU,
+    PAGE_RISING_SET,
+    PAGE_RISING_COOKING,
+    PAGE_RISING_SETTING,
+    PAGE_RISING_STOP,
+    PAGE_RISING_STOP_BACK,
+    PAGE_RISING_COMPLETE,
+    PAGE_CORN_MENU,
+    PAGE_CORN_SET,
+    PAGE_CORN_COOKING,
+    PAGE_CORN_SETTING,
+    PAGE_CORN_STOP,
+    PAGE_CORN_STOP_BACK,
+    PAGE_CORN_COMPLETE,
+    PAGE_HEATCONTAIN_MENU,
+    PAGE_HEATCONTAIN_SET,
+    PAGE_HEATCONTAIN_COOKING,
+    PAGE_HEATCONTAIN_SETTING,
+    PAGE_HEATCONTAIN_STOP,
+    PAGE_HEATCONTAIN_STOP_BACK,
+    PAGE_HEATCONTAIN_COMPLETE,
 } page_id_t;
 
 extern page_id_t page_stack[];
@@ -552,5 +587,125 @@ void pizza_2_rebuild_complete(void);
 void pizza_2_resume_cooking(void);
 
 void cook4menu_rebuild(page_id_t child);
+
+extern lv_group_t *g_slowcook_menu;
+extern lv_group_t *g_slowcook_set;
+extern lv_group_t *g_slowcook_cooking;
+extern lv_group_t *g_slowcook_setting;
+extern lv_group_t *g_slowcook_stop;
+extern lv_group_t *g_slowcook_stop_back;
+extern lv_group_t *g_slowcook_complete;
+
+extern lv_group_t *g_unfrozen_menu;
+extern lv_group_t *g_unfrozen_set;
+extern lv_group_t *g_unfrozen_cooking;
+extern lv_group_t *g_unfrozen_setting;
+extern lv_group_t *g_unfrozen_stop;
+extern lv_group_t *g_unfrozen_stop_back;
+extern lv_group_t *g_unfrozen_complete;
+
+extern lv_group_t *g_rising_menu;
+extern lv_group_t *g_rising_set;
+extern lv_group_t *g_rising_cooking;
+extern lv_group_t *g_rising_setting;
+extern lv_group_t *g_rising_stop;
+extern lv_group_t *g_rising_stop_back;
+extern lv_group_t *g_rising_complete;
+
+extern lv_group_t *g_corn_menu;
+extern lv_group_t *g_corn_set;
+extern lv_group_t *g_corn_cooking;
+extern lv_group_t *g_corn_setting;
+extern lv_group_t *g_corn_stop;
+extern lv_group_t *g_corn_stop_back;
+extern lv_group_t *g_corn_complete;
+
+extern lv_group_t *g_heatcontain_menu;
+extern lv_group_t *g_heatcontain_set;
+extern lv_group_t *g_heatcontain_cooking;
+extern lv_group_t *g_heatcontain_setting;
+extern lv_group_t *g_heatcontain_stop;
+extern lv_group_t *g_heatcontain_stop_back;
+extern lv_group_t *g_heatcontain_complete;
+
+void jump_to_slowcook_menu(void);
+void jump_to_slowcook_set(void);
+void jump_to_slowcook_cooking(void);
+void jump_to_slowcook_setting(void);
+void jump_to_slowcook_stop(void);
+void jump_to_slowcook_stop_back(void);
+void jump_to_slowcook_complete(void);
+void slowcook_rebuild_menu(page_id_t child);
+void slowcook_rebuild_set(page_id_t child);
+void slowcook_rebuild_cooking(page_id_t child);
+void slowcook_rebuild_setting(void);
+void slowcook_rebuild_stop(void);
+void slowcook_rebuild_stop_back(void);
+void slowcook_rebuild_complete(void);
+void slowcook_resume_cooking(void);
+
+void jump_to_unfrozen_menu(void);
+void jump_to_unfrozen_set(void);
+void jump_to_unfrozen_cooking(void);
+void jump_to_unfrozen_setting(void);
+void jump_to_unfrozen_stop(void);
+void jump_to_unfrozen_stop_back(void);
+void jump_to_unfrozen_complete(void);
+void unfrozen_rebuild_menu(page_id_t child);
+void unfrozen_rebuild_set(page_id_t child);
+void unfrozen_rebuild_cooking(page_id_t child);
+void unfrozen_rebuild_setting(void);
+void unfrozen_rebuild_stop(void);
+void unfrozen_rebuild_stop_back(void);
+void unfrozen_rebuild_complete(void);
+void unfrozen_resume_cooking(void);
+
+void jump_to_rising_menu(void);
+void jump_to_rising_set(void);
+void jump_to_rising_cooking(void);
+void jump_to_rising_setting(void);
+void jump_to_rising_stop(void);
+void jump_to_rising_stop_back(void);
+void jump_to_rising_complete(void);
+void rising_rebuild_menu(page_id_t child);
+void rising_rebuild_set(page_id_t child);
+void rising_rebuild_cooking(page_id_t child);
+void rising_rebuild_setting(void);
+void rising_rebuild_stop(void);
+void rising_rebuild_stop_back(void);
+void rising_rebuild_complete(void);
+void rising_resume_cooking(void);
+
+void jump_to_corn_menu(void);
+void jump_to_corn_set(void);
+void jump_to_corn_cooking(void);
+void jump_to_corn_setting(void);
+void jump_to_corn_stop(void);
+void jump_to_corn_stop_back(void);
+void jump_to_corn_complete(void);
+void corn_rebuild_menu(page_id_t child);
+void corn_rebuild_set(page_id_t child);
+void corn_rebuild_cooking(page_id_t child);
+void corn_rebuild_setting(void);
+void corn_rebuild_stop(void);
+void corn_rebuild_stop_back(void);
+void corn_rebuild_complete(void);
+void corn_resume_cooking(void);
+
+void jump_to_heatcontain_menu(void);
+void jump_to_heatcontain_set(void);
+void jump_to_heatcontain_cooking(void);
+void jump_to_heatcontain_setting(void);
+void jump_to_heatcontain_stop(void);
+void jump_to_heatcontain_stop_back(void);
+void jump_to_heatcontain_complete(void);
+void heatcontain_rebuild_menu(page_id_t child);
+void heatcontain_rebuild_set(page_id_t child);
+void heatcontain_rebuild_cooking(page_id_t child);
+void heatcontain_rebuild_setting(void);
+void heatcontain_rebuild_stop(void);
+void heatcontain_rebuild_stop_back(void);
+void heatcontain_rebuild_complete(void);
+void heatcontain_resume_cooking(void);
 
 #endif
