@@ -97,7 +97,7 @@ void hotcleanhigh_stop_create(ui_manager_t *ui)
 
     // Init scr->label_24
     scr->label_24 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_24, "清洁中...");
+    lv_label_set_text(scr->label_24, "暂停中...");
     lv_label_set_long_mode(scr->label_24, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->label_24, 273, 157);
     lv_obj_set_size(scr->label_24, 235, 60);

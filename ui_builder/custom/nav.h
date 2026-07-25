@@ -213,6 +213,18 @@ typedef enum {
     PAGE_HOTCLEANSAVE_STOP_BACK,
     PAGE_HOTCLEANSAVE_COOLING,
     PAGE_HOTCLEANSAVE_COMPLETE,
+    PAGE_HOTCLEANMIDDLE_SET,
+    PAGE_HOTCLEANMIDDLE_COOKING,
+    PAGE_HOTCLEANMIDDLE_STOP,
+    PAGE_HOTCLEANMIDDLE_STOP_BACK,
+    PAGE_HOTCLEANMIDDLE_COOLING,
+    PAGE_HOTCLEANMIDDLE_COMPLETE,
+    PAGE_HOTCLEANHIGH_SET,
+    PAGE_HOTCLEANHIGH_COOKING,
+    PAGE_HOTCLEANHIGH_STOP,
+    PAGE_HOTCLEANHIGH_STOP_BACK,
+    PAGE_HOTCLEANHIGH_COOLING,
+    PAGE_HOTCLEANHIGH_COMPLETE,
 } page_id_t;
 
 extern page_id_t page_stack[];
@@ -749,6 +761,20 @@ extern lv_group_t *g_hcs_stop_back;
 extern lv_group_t *g_hcs_cooling;
 extern lv_group_t *g_hcs_complete;
 
+extern lv_group_t *g_hcm_set;
+extern lv_group_t *g_hcm_cooking;
+extern lv_group_t *g_hcm_stop;
+extern lv_group_t *g_hcm_stop_back;
+extern lv_group_t *g_hcm_cooling;
+extern lv_group_t *g_hcm_complete;
+
+extern lv_group_t *g_hch_set;
+extern lv_group_t *g_hch_cooking;
+extern lv_group_t *g_hch_stop;
+extern lv_group_t *g_hch_stop_back;
+extern lv_group_t *g_hch_cooling;
+extern lv_group_t *g_hch_complete;
+
 void jump_to_slowcook_menu(void);
 void jump_to_slowcook_set(void);
 void jump_to_slowcook_cooking(void);
@@ -962,5 +988,33 @@ void hcs_rebuild_stop_back(void);
 void hcs_rebuild_cooling(void);
 void hcs_rebuild_complete(void);
 void hcs_resume_cooking(void);
+
+void jump_to_hcm_set(void);
+void jump_to_hcm_cooking(void);
+void jump_to_hcm_stop(void);
+void jump_to_hcm_stop_back(void);
+void jump_to_hcm_cooling(void);
+void jump_to_hcm_complete(void);
+void hcm_rebuild_set(page_id_t child);
+void hcm_rebuild_cooking(page_id_t child);
+void hcm_rebuild_stop(void);
+void hcm_rebuild_stop_back(void);
+void hcm_rebuild_cooling(void);
+void hcm_rebuild_complete(void);
+void hcm_resume_cooking(void);
+
+void jump_to_hch_set(void);
+void jump_to_hch_cooking(void);
+void jump_to_hch_stop(void);
+void jump_to_hch_stop_back(void);
+void jump_to_hch_cooling(void);
+void jump_to_hch_complete(void);
+void hch_rebuild_set(page_id_t child);
+void hch_rebuild_cooking(page_id_t child);
+void hch_rebuild_stop(void);
+void hch_rebuild_stop_back(void);
+void hch_rebuild_cooling(void);
+void hch_rebuild_complete(void);
+void hch_resume_cooking(void);
 
 #endif

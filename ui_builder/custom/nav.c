@@ -184,6 +184,18 @@ lv_group_t *g_hcs_stop;
 lv_group_t *g_hcs_stop_back;
 lv_group_t *g_hcs_cooling;
 lv_group_t *g_hcs_complete;
+lv_group_t *g_hcm_set;
+lv_group_t *g_hcm_cooking;
+lv_group_t *g_hcm_stop;
+lv_group_t *g_hcm_stop_back;
+lv_group_t *g_hcm_cooling;
+lv_group_t *g_hcm_complete;
+lv_group_t *g_hch_set;
+lv_group_t *g_hch_cooking;
+lv_group_t *g_hch_stop;
+lv_group_t *g_hch_stop_back;
+lv_group_t *g_hch_cooling;
+lv_group_t *g_hch_complete;
 lv_group_t *g_cook4_menu;
 
 lv_group_t *g_cookie_menu;
@@ -2326,9 +2338,59 @@ void page_pop(void)
         hcs_rebuild_stop_back();
         break;
     case PAGE_HOTCLEANSAVE_COOLING:
+        if (child == PAGE_HOTCLEANSAVE_COMPLETE)
+            goto pop_to_clean;
         hcs_rebuild_cooling();
         break;
     case PAGE_HOTCLEANSAVE_COMPLETE:
+        goto pop_to_clean;
+    case PAGE_HOTCLEANMIDDLE_SET:
+        hcm_rebuild_set(child);
+        break;
+    case PAGE_HOTCLEANMIDDLE_COOKING:
+        if (child == PAGE_HOTCLEANMIDDLE_COMPLETE)
+            goto pop_to_clean;
+        if (child == PAGE_HOTCLEANMIDDLE_COOLING) {
+            hcm_rebuild_cooking(child);
+        } else
+            hcm_rebuild_cooking(0);
+        break;
+    case PAGE_HOTCLEANMIDDLE_STOP:
+        hcm_rebuild_stop();
+        break;
+    case PAGE_HOTCLEANMIDDLE_STOP_BACK:
+        hcm_rebuild_stop_back();
+        break;
+    case PAGE_HOTCLEANMIDDLE_COOLING:
+        if (child == PAGE_HOTCLEANMIDDLE_COMPLETE)
+            goto pop_to_clean;
+        hcm_rebuild_cooling();
+        break;
+    case PAGE_HOTCLEANMIDDLE_COMPLETE:
+        goto pop_to_clean;
+    case PAGE_HOTCLEANHIGH_SET:
+        hch_rebuild_set(child);
+        break;
+    case PAGE_HOTCLEANHIGH_COOKING:
+        if (child == PAGE_HOTCLEANHIGH_COMPLETE)
+            goto pop_to_clean;
+        if (child == PAGE_HOTCLEANHIGH_COOLING) {
+            hch_rebuild_cooking(child);
+        } else
+            hch_rebuild_cooking(0);
+        break;
+    case PAGE_HOTCLEANHIGH_STOP:
+        hch_rebuild_stop();
+        break;
+    case PAGE_HOTCLEANHIGH_STOP_BACK:
+        hch_rebuild_stop_back();
+        break;
+    case PAGE_HOTCLEANHIGH_COOLING:
+        if (child == PAGE_HOTCLEANHIGH_COMPLETE)
+            goto pop_to_clean;
+        hch_rebuild_cooling();
+        break;
+    case PAGE_HOTCLEANHIGH_COMPLETE:
         goto pop_to_clean;
     case PAGE_WATER_CLEAN_SET:
         wc_rebuild_set(child);
@@ -2351,6 +2413,7 @@ void page_pop(void)
         if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
         set_hour = 0; set_min = 10;
         cook_elapsed_saved = 0; cook_bar_saved = 0;
+        depth = 2;
         clean_rebuild(0);
         break;
 
@@ -3156,8 +3219,18 @@ static void process_key(uint8_t key)
                 jump_to_hcs_stop_back();
             else if (cur == PAGE_HOTCLEANSAVE_COOLING)
                 g_send.buzzer_req = BUZZER_KEY_INVALID;
-            else if (cur == PAGE_HOTCLEANSAVE_COMPLETE)
-                clean_rebuild(0);
+            else if (cur == PAGE_HOTCLEANMIDDLE_COOKING)
+                jump_to_hcm_stop();
+            else if (cur == PAGE_HOTCLEANMIDDLE_STOP)
+                jump_to_hcm_stop_back();
+            else if (cur == PAGE_HOTCLEANMIDDLE_COOLING)
+                g_send.buzzer_req = BUZZER_KEY_INVALID;
+            else if (cur == PAGE_HOTCLEANHIGH_COOKING)
+                jump_to_hch_stop();
+            else if (cur == PAGE_HOTCLEANHIGH_STOP)
+                jump_to_hch_stop_back();
+            else if (cur == PAGE_HOTCLEANHIGH_COOLING)
+                g_send.buzzer_req = BUZZER_KEY_INVALID;
             else
                 page_pop();
         }
@@ -4120,6 +4193,30 @@ void cooking_timer_cb(lv_timer_t *timer)
         }
         return;
     }
+    if (current_group == g_hcm_cooling) {
+        hotcleanmiddle_cooling_t *cool = hotcleanmiddle_cooling_get(&ui_manager);
+        if (cool) {
+            uint16_t cavity = get_cavity_temp();
+            if (cavity <= 270 && cook_timer) {
+                lv_timer_del(cook_timer);
+                cook_timer = NULL;
+                jump_to_hcm_complete();
+            }
+        }
+        return;
+    }
+    if (current_group == g_hch_cooling) {
+        hotcleanhigh_cooling_t *cool = hotcleanhigh_cooling_get(&ui_manager);
+        if (cool) {
+            uint16_t cavity = get_cavity_temp();
+            if (cavity <= 270 && cook_timer) {
+                lv_timer_del(cook_timer);
+                cook_timer = NULL;
+                jump_to_hch_complete();
+            }
+        }
+        return;
+    }
     if (current_group == g_preheat_cooking) {
         preheatcooking_t *cook = preheatcooking_get(&ui_manager);
         if (cook) {
@@ -4279,6 +4376,18 @@ void cooking_timer_cb(lv_timer_t *timer)
         if (cook) time_label = cook->timelabel;
     } else if (current_group == g_hcs_stop) {
         hotcleansave_stop_t *stop = hotcleansave_stop_get(&ui_manager);
+        if (stop) time_label = stop->timelabel;
+    } else if (current_group == g_hcm_cooking) {
+        hotcleanmiddle_cooking_t *cook = hotcleanmiddle_cooking_get(&ui_manager);
+        if (cook) time_label = cook->timelabel;
+    } else if (current_group == g_hcm_stop) {
+        hotcleanmiddle_stop_t *stop = hotcleanmiddle_stop_get(&ui_manager);
+        if (stop) time_label = stop->timelabel;
+    } else if (current_group == g_hch_cooking) {
+        hotcleanhigh_cooking_t *cook = hotcleanhigh_cooking_get(&ui_manager);
+        if (cook) time_label = cook->timelabel;
+    } else if (current_group == g_hch_stop) {
+        hotcleanhigh_stop_t *stop = hotcleanhigh_stop_get(&ui_manager);
         if (stop) time_label = stop->timelabel;
     } else if (current_group == g_windchange_bbq_setting) {
         windchange_bbq_setting_t *set = windchange_bbq_setting_get(&ui_manager);
@@ -4573,6 +4682,24 @@ void cooking_timer_cb(lv_timer_t *timer)
             if (hcs_depth > 1) depth = hcs_depth;
             lv_obj_clean(lv_scr_act());
             jump_to_hcs_cooling();
+            return;
+        } else if (current_group == g_hcm_cooking) {
+            int hcm_depth = depth;
+            while (hcm_depth > 1 && page_stack[hcm_depth - 1] != PAGE_HOTCLEANMIDDLE_COOKING) {
+                hcm_depth--;
+            }
+            if (hcm_depth > 1) depth = hcm_depth;
+            lv_obj_clean(lv_scr_act());
+            jump_to_hcm_cooling();
+            return;
+        } else if (current_group == g_hch_cooking) {
+            int hch_depth = depth;
+            while (hch_depth > 1 && page_stack[hch_depth - 1] != PAGE_HOTCLEANHIGH_COOKING) {
+                hch_depth--;
+            }
+            if (hch_depth > 1) depth = hch_depth;
+            lv_obj_clean(lv_scr_act());
+            jump_to_hch_cooling();
             return;
         } else if (current_group == g_menu_cook_cooking || current_group == g_menu_cook_setting) {
             int m_depth = depth;

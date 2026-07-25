@@ -69,7 +69,7 @@ void waterclean_stop_back_create(ui_manager_t *ui)
 
     // Init scr->label_6
     scr->label_6 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_6, "清洁中...");
+    lv_label_set_text(scr->label_6, "暂停中...");
     lv_label_set_long_mode(scr->label_6, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->label_6, 273, 157);
     lv_obj_set_size(scr->label_6, 235, 60);

@@ -22,6 +22,20 @@ void on_hc_save_click(lv_event_t *e)
         jump_to_hcs_set();
 }
 
+void on_hc_middle_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (!screen_is_loading(act_scr))
+        jump_to_hcm_set();
+}
+
+void on_hc_high_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (!screen_is_loading(act_scr))
+        jump_to_hch_set();
+}
+
 void jump_to_hotclean_menu(void)
 {
     page_push(PAGE_HOTCLEAN_MENU);
@@ -34,8 +48,9 @@ void jump_to_hotclean_menu(void)
         if (g_hotclean_menu) lv_group_del(g_hotclean_menu);
         g_hotclean_menu = group_create_for_page(btns, 3);
 
-        lv_obj_add_event_cb(hm->hotcleansave, on_hc_save_click,
-                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(hm->hotcleansave, on_hc_save_click, LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(hm->hotclean_middle, on_hc_middle_click, LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(hm->hotclean_high, on_hc_high_click, LV_EVENT_CLICKED, NULL);
 
         if (hm->hotcleansave) lv_group_focus_obj(hm->hotcleansave);
     }
@@ -57,11 +72,16 @@ void hotclean_rebuild(page_id_t child)
         if (g_hotclean_menu) lv_group_del(g_hotclean_menu);
         g_hotclean_menu = group_create_for_page(btns, 3);
 
-        lv_obj_add_event_cb(hm->hotcleansave, on_hc_save_click,
-                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(hm->hotcleansave, on_hc_save_click, LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(hm->hotclean_middle, on_hc_middle_click, LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(hm->hotclean_high, on_hc_high_click, LV_EVENT_CLICKED, NULL);
 
         if (child == PAGE_HOTCLEANSAVE_SET && hm->hotcleansave)
             lv_group_focus_obj(hm->hotcleansave);
+        else if (child == PAGE_HOTCLEANMIDDLE_SET && hm->hotclean_middle)
+            lv_group_focus_obj(hm->hotclean_middle);
+        else if (child == PAGE_HOTCLEANHIGH_SET && hm->hotclean_high)
+            lv_group_focus_obj(hm->hotclean_high);
         else if (hm->hotcleansave)
             lv_group_focus_obj(hm->hotcleansave);
     }
@@ -84,10 +104,8 @@ void jump_to_clean_menu(void)
         if (g_clean_menu) lv_group_del(g_clean_menu);
         g_clean_menu = group_create_for_page(btns, 2);
 
-        lv_obj_add_event_cb(cm->waterclean, on_clean_water_click,
-                            LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(cm->button_2, on_clean_hot_click,
-                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(cm->waterclean, on_clean_water_click, LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(cm->button_2, on_clean_hot_click, LV_EVENT_CLICKED, NULL);
 
         if (cm->waterclean) lv_group_focus_obj(cm->waterclean);
     }
@@ -113,10 +131,8 @@ void clean_rebuild(page_id_t child)
         if (g_clean_menu) lv_group_del(g_clean_menu);
         g_clean_menu = group_create_for_page(btns, 2);
 
-        lv_obj_add_event_cb(cm->waterclean, on_clean_water_click,
-                            LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(cm->button_2, on_clean_hot_click,
-                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(cm->waterclean, on_clean_water_click, LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(cm->button_2, on_clean_hot_click, LV_EVENT_CLICKED, NULL);
 
         if (child == PAGE_WATER_CLEAN_SET && cm->waterclean)
             lv_group_focus_obj(cm->waterclean);
