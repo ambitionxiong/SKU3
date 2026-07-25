@@ -2757,6 +2757,10 @@ static void jump_to_updown_bbq_set(void)
 // updown_bbq_set → updown_bbq_cooking
 static void jump_to_updown_bbq_cooking(void)
 {
+    if (is_door_open()) {
+        g_send.buzzer_req = BUZZER_KEY_INVALID;
+        return;
+    }
     page_push(PAGE_UPDOWN_BBQ_COOKING);
     lv_obj_clean(lv_scr_act());
     updown_bbq_cooking_create(&ui_manager);
@@ -4925,6 +4929,10 @@ static void on_stop_back_littal_click(lv_event_t *e)
 // stop 恢复 cooking（不经过 page_pop，直接重建）
 static void stop_resume_cooking(void)
 {
+    if (is_door_open()) {
+        g_send.buzzer_req = BUZZER_KEY_INVALID;
+        return;
+    }
     depth--;  /* pop STOP 栈顶 */
     lv_obj_clean(lv_scr_act());
     updown_bbq_cooking_create(&ui_manager);
@@ -5109,6 +5117,10 @@ static void on_color_stop_start_click(lv_event_t *e)
 // color_stop 恢复 cooking（不经过 page_pop，直接重建）
 static void color_resume_cooking(void)
 {
+    if (is_door_open()) {
+        g_send.buzzer_req = BUZZER_KEY_INVALID;
+        return;
+    }
     depth--;  /* pop COLOR_STOP 栈顶 */
     lv_obj_clean(lv_scr_act());
     color_cookoing_create(&ui_manager);

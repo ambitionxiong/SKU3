@@ -494,7 +494,12 @@ void jump_to_windchange_bbq_stop_back(void)
 // stop 恢复 cooking
 void windchange_bbq_resume_cooking(void)
 {
-    depth--;
+    
+    if (is_door_open()) {
+        g_send.buzzer_req = BUZZER_KEY_INVALID;
+        return;
+    }
+depth--;
     lv_obj_clean(lv_scr_act());
     windchange_bbq_cooking_create(&ui_manager);
 

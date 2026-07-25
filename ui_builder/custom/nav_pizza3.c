@@ -419,7 +419,12 @@ void jump_to_pizza3_stop_back(void)
 
 void pizza3_resume_cooking(void)
 {
-    depth--;
+    
+    if (is_door_open()) {
+        g_send.buzzer_req = BUZZER_KEY_INVALID;
+        return;
+    }
+depth--;
     lv_obj_clean(lv_scr_act());
     pizza3_cooking_create(&ui_manager);
 

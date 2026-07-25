@@ -187,7 +187,12 @@ void jump_to_hch_stop(void)
 
 void hch_resume_cooking(void)
 {
-    depth--;
+    
+    if (is_door_open()) {
+        g_send.buzzer_req = BUZZER_KEY_INVALID;
+        return;
+    }
+depth--;
     lv_obj_clean(lv_scr_act());
     hotcleanhigh_cooking_create(&ui_manager);
 
