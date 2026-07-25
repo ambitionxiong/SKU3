@@ -206,6 +206,13 @@ typedef enum {
     PAGE_WATER_CLEAN_STOP,
     PAGE_WATER_CLEAN_STOP_BACK,
     PAGE_WATER_CLEAN_COMPLETE,
+    PAGE_HOTCLEAN_MENU,
+    PAGE_HOTCLEANSAVE_SET,
+    PAGE_HOTCLEANSAVE_COOKING,
+    PAGE_HOTCLEANSAVE_STOP,
+    PAGE_HOTCLEANSAVE_STOP_BACK,
+    PAGE_HOTCLEANSAVE_COOLING,
+    PAGE_HOTCLEANSAVE_COMPLETE,
 } page_id_t;
 
 extern page_id_t page_stack[];
@@ -734,6 +741,14 @@ extern lv_group_t *g_wc_stop;
 extern lv_group_t *g_wc_stop_back;
 extern lv_group_t *g_wc_complete;
 
+extern lv_group_t *g_hotclean_menu;
+extern lv_group_t *g_hcs_set;
+extern lv_group_t *g_hcs_cooking;
+extern lv_group_t *g_hcs_stop;
+extern lv_group_t *g_hcs_stop_back;
+extern lv_group_t *g_hcs_cooling;
+extern lv_group_t *g_hcs_complete;
+
 void jump_to_slowcook_menu(void);
 void jump_to_slowcook_set(void);
 void jump_to_slowcook_cooking(void);
@@ -929,5 +944,23 @@ void wc_rebuild_stop(void);
 void wc_rebuild_stop_back(void);
 void wc_rebuild_complete(void);
 void wc_resume_cooking(void);
+
+void on_hc_save_click(lv_event_t *e);
+void jump_to_hotclean_menu(void);
+void hotclean_rebuild(page_id_t child);
+
+void jump_to_hcs_set(void);
+void jump_to_hcs_cooking(void);
+void jump_to_hcs_stop(void);
+void jump_to_hcs_stop_back(void);
+void jump_to_hcs_cooling(void);
+void jump_to_hcs_complete(void);
+void hcs_rebuild_set(page_id_t child);
+void hcs_rebuild_cooking(page_id_t child);
+void hcs_rebuild_stop(void);
+void hcs_rebuild_stop_back(void);
+void hcs_rebuild_cooling(void);
+void hcs_rebuild_complete(void);
+void hcs_resume_cooking(void);
 
 #endif

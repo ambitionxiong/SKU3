@@ -12,7 +12,64 @@ void on_clean_hot_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
     if (!screen_is_loading(act_scr))
-        printf("[clean] hotclean not implemented yet\n");
+        jump_to_hotclean_menu();
+}
+
+void on_hc_save_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (!screen_is_loading(act_scr))
+        jump_to_hcs_set();
+}
+
+void jump_to_hotclean_menu(void)
+{
+    page_push(PAGE_HOTCLEAN_MENU);
+    lv_obj_clean(lv_scr_act());
+    hotclean_menu_create(&ui_manager);
+
+    hotclean_menu_t *hm = hotclean_menu_get(&ui_manager);
+    if (hm) {
+        lv_obj_t *btns[] = { hm->hotcleansave, hm->hotclean_middle, hm->hotclean_high };
+        if (g_hotclean_menu) lv_group_del(g_hotclean_menu);
+        g_hotclean_menu = group_create_for_page(btns, 3);
+
+        lv_obj_add_event_cb(hm->hotcleansave, on_hc_save_click,
+                            LV_EVENT_CLICKED, NULL);
+
+        if (hm->hotcleansave) lv_group_focus_obj(hm->hotcleansave);
+    }
+    current_group = g_hotclean_menu;
+
+    lv_scr_load_anim(hotclean_menu_get(&ui_manager)->obj,
+                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                     ui_manager.auto_del);
+    g_send.cook_mode = MODE_HOT_CLEAN;
+    printf("[clean] jump: clean_menu -> hotclean_menu\n");
+}
+
+void hotclean_rebuild(page_id_t child)
+{
+    hotclean_menu_create(&ui_manager);
+    hotclean_menu_t *hm = hotclean_menu_get(&ui_manager);
+    if (hm) {
+        lv_obj_t *btns[] = { hm->hotcleansave, hm->hotclean_middle, hm->hotclean_high };
+        if (g_hotclean_menu) lv_group_del(g_hotclean_menu);
+        g_hotclean_menu = group_create_for_page(btns, 3);
+
+        lv_obj_add_event_cb(hm->hotcleansave, on_hc_save_click,
+                            LV_EVENT_CLICKED, NULL);
+
+        if (child == PAGE_HOTCLEANSAVE_SET && hm->hotcleansave)
+            lv_group_focus_obj(hm->hotcleansave);
+        else if (hm->hotcleansave)
+            lv_group_focus_obj(hm->hotcleansave);
+    }
+    current_group = g_hotclean_menu;
+    lv_scr_load_anim(hotclean_menu_get(&ui_manager)->obj,
+                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                     ui_manager.auto_del);
+    printf("[clean] back to hotclean_menu\n");
 }
 
 void jump_to_clean_menu(void)

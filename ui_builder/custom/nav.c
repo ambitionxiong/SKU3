@@ -177,6 +177,13 @@ lv_group_t *g_wc_cooking;
 lv_group_t *g_wc_stop;
 lv_group_t *g_wc_stop_back;
 lv_group_t *g_wc_complete;
+lv_group_t *g_hotclean_menu;
+lv_group_t *g_hcs_set;
+lv_group_t *g_hcs_cooking;
+lv_group_t *g_hcs_stop;
+lv_group_t *g_hcs_stop_back;
+lv_group_t *g_hcs_cooling;
+lv_group_t *g_hcs_complete;
 lv_group_t *g_cook4_menu;
 
 lv_group_t *g_cookie_menu;
@@ -2298,6 +2305,31 @@ void page_pop(void)
     case PAGE_CLEAN_MENU:
         clean_rebuild(child);
         break;
+    case PAGE_HOTCLEAN_MENU:
+        hotclean_rebuild(child);
+        break;
+    case PAGE_HOTCLEANSAVE_SET:
+        hcs_rebuild_set(child);
+        break;
+    case PAGE_HOTCLEANSAVE_COOKING:
+        if (child == PAGE_HOTCLEANSAVE_COMPLETE)
+            goto pop_to_clean;
+        if (child == PAGE_HOTCLEANSAVE_COOLING) {
+            hcs_rebuild_cooking(child);
+        } else
+            hcs_rebuild_cooking(0);
+        break;
+    case PAGE_HOTCLEANSAVE_STOP:
+        hcs_rebuild_stop();
+        break;
+    case PAGE_HOTCLEANSAVE_STOP_BACK:
+        hcs_rebuild_stop_back();
+        break;
+    case PAGE_HOTCLEANSAVE_COOLING:
+        hcs_rebuild_cooling();
+        break;
+    case PAGE_HOTCLEANSAVE_COMPLETE:
+        goto pop_to_clean;
     case PAGE_WATER_CLEAN_SET:
         wc_rebuild_set(child);
         break;
@@ -3118,6 +3150,14 @@ static void process_key(uint8_t key)
                 jump_to_wc_stop();
             else if (cur == PAGE_WATER_CLEAN_STOP)
                 jump_to_wc_stop_back();
+            else if (cur == PAGE_HOTCLEANSAVE_COOKING)
+                jump_to_hcs_stop();
+            else if (cur == PAGE_HOTCLEANSAVE_STOP)
+                jump_to_hcs_stop_back();
+            else if (cur == PAGE_HOTCLEANSAVE_COOLING)
+                g_send.buzzer_req = BUZZER_KEY_INVALID;
+            else if (cur == PAGE_HOTCLEANSAVE_COMPLETE)
+                clean_rebuild(0);
             else
                 page_pop();
         }
@@ -3128,6 +3168,13 @@ static void process_key(uint8_t key)
         if (current_group == g_preheat_cooking) {
             g_sim_cavity_temp += 5;
             if (g_sim_cavity_temp > 300) g_sim_cavity_temp = 300;
+            g_send.buzzer_req = BUZZER_ENCODER;
+            uart_print();
+            break;
+        }
+        if (current_group == g_hcs_cooling) {
+            g_sim_cavity_temp += 5;
+            if (g_sim_cavity_temp > 400) g_sim_cavity_temp = 400;
             g_send.buzzer_req = BUZZER_ENCODER;
             uart_print();
             break;
@@ -3153,6 +3200,14 @@ static void process_key(uint8_t key)
         if (current_group == g_preheat_cooking) {
             g_sim_cavity_temp -= 5;
             if (g_sim_cavity_temp > 300) g_sim_cavity_temp = 300;
+            if (g_sim_cavity_temp < 0) g_sim_cavity_temp = 0;
+            g_send.buzzer_req = BUZZER_ENCODER;
+            uart_print();
+            break;
+        }
+        if (current_group == g_hcs_cooling) {
+            g_sim_cavity_temp -= 5;
+            if (g_sim_cavity_temp > 400) g_sim_cavity_temp = 400;
             if (g_sim_cavity_temp < 0) g_sim_cavity_temp = 0;
             g_send.buzzer_req = BUZZER_ENCODER;
             uart_print();
@@ -4053,6 +4108,18 @@ static void on_color_start_click(lv_event_t *e)
 
 void cooking_timer_cb(lv_timer_t *timer)
 {
+    if (current_group == g_hcs_cooling) {
+        hotcleansave_cooling_t *cool = hotcleansave_cooling_get(&ui_manager);
+        if (cool) {
+            uint16_t cavity = get_cavity_temp();
+            if (cavity <= 270 && cook_timer) {
+                lv_timer_del(cook_timer);
+                cook_timer = NULL;
+                jump_to_hcs_complete();
+            }
+        }
+        return;
+    }
     if (current_group == g_preheat_cooking) {
         preheatcooking_t *cook = preheatcooking_get(&ui_manager);
         if (cook) {
@@ -4206,6 +4273,12 @@ void cooking_timer_cb(lv_timer_t *timer)
         if (cook) time_label = cook->timelabel;
     } else if (current_group == g_wc_stop) {
         waterclean_stop_t *stop = waterclean_stop_get(&ui_manager);
+        if (stop) time_label = stop->timelabel;
+    } else if (current_group == g_hcs_cooking) {
+        hotcleansave_cooking_t *cook = hotcleansave_cooking_get(&ui_manager);
+        if (cook) time_label = cook->timelabel;
+    } else if (current_group == g_hcs_stop) {
+        hotcleansave_stop_t *stop = hotcleansave_stop_get(&ui_manager);
         if (stop) time_label = stop->timelabel;
     } else if (current_group == g_windchange_bbq_setting) {
         windchange_bbq_setting_t *set = windchange_bbq_setting_get(&ui_manager);
@@ -4491,6 +4564,15 @@ void cooking_timer_cb(lv_timer_t *timer)
             if (wc_depth > 1) depth = wc_depth;
             lv_obj_clean(lv_scr_act());
             jump_to_wc_complete();
+            return;
+        } else if (current_group == g_hcs_cooking) {
+            int hcs_depth = depth;
+            while (hcs_depth > 1 && page_stack[hcs_depth - 1] != PAGE_HOTCLEANSAVE_COOKING) {
+                hcs_depth--;
+            }
+            if (hcs_depth > 1) depth = hcs_depth;
+            lv_obj_clean(lv_scr_act());
+            jump_to_hcs_cooling();
             return;
         } else if (current_group == g_menu_cook_cooking || current_group == g_menu_cook_setting) {
             int m_depth = depth;

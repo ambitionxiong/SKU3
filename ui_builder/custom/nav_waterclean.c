@@ -250,6 +250,10 @@ void jump_to_wc_stop_back(void)
         lv_obj_add_event_cb(back->sure, on_wc_stop_back_sure_click,
                             LV_EVENT_CLICKED, NULL);
 
+        lv_bar_set_range(back->bar_1, 0, 100);
+        if (cook_bar_saved > 100) cook_bar_saved = 100;
+        lv_bar_set_value(back->bar_1, cook_bar_saved, LV_ANIM_OFF);
+
         if (back->sure) lv_group_focus_obj(back->sure);
     }
     current_group = g_wc_stop_back;
@@ -397,6 +401,10 @@ void wc_rebuild_stop_back(void)
 
         lv_obj_add_event_cb(back->sure, on_wc_stop_back_sure_click,
                             LV_EVENT_CLICKED, NULL);
+
+        lv_bar_set_range(back->bar_1, 0, 100);
+        if (cook_bar_saved > 100) cook_bar_saved = 100;
+        lv_bar_set_value(back->bar_1, cook_bar_saved, LV_ANIM_OFF);
 
         if (back->sure) lv_group_focus_obj(back->sure);
     }
