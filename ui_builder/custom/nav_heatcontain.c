@@ -284,6 +284,11 @@ void jump_to_heatcontain_set(void)
 // set → cooking
 void jump_to_heatcontain_cooking(void)
 {
+    if (is_door_open()) {
+        g_send.buzzer_req = BUZZER_KEY_INVALID;
+        return;
+    }
+
     page_push(PAGE_HEATCONTAIN_COOKING);
     lv_obj_clean(lv_scr_act());
     heatcontain_cooking_create(&ui_manager);

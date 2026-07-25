@@ -90,6 +90,11 @@ void jump_to_hcs_set(void)
 
 void jump_to_hcs_cooking(void)
 {
+    if (is_door_open()) {
+        g_send.buzzer_req = BUZZER_KEY_INVALID;
+        return;
+    }
+
     page_push(PAGE_HOTCLEANSAVE_COOKING);
     lv_obj_clean(lv_scr_act());
     hotcleansave_cooking_create(&ui_manager);

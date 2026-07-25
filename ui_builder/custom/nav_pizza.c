@@ -280,6 +280,11 @@ void jump_to_pizza_set(void)
 // set → cooking
 void jump_to_pizza_cooking(void)
 {
+    if (is_door_open()) {
+        g_send.buzzer_req = BUZZER_KEY_INVALID;
+        return;
+    }
+
     page_push(PAGE_PIZZA_COOKING);
     lv_obj_clean(lv_scr_act());
     pizza_cooking_create(&ui_manager);

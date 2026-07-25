@@ -284,6 +284,11 @@ void jump_to_pizza_2_set(void)
 // set → cooking
 void jump_to_pizza_2_cooking(void)
 {
+    if (is_door_open()) {
+        g_send.buzzer_req = BUZZER_KEY_INVALID;
+        return;
+    }
+
     page_push(PAGE_PIZZA_2_COOKING);
     lv_obj_clean(lv_scr_act());
     pizza_2_cooking_create(&ui_manager);

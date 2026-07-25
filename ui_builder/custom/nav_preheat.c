@@ -79,6 +79,11 @@ void jump_to_preheat_menu(void)
 
 void jump_to_preheat_cooking(void)
 {
+    if (is_door_open()) {
+        g_send.buzzer_req = BUZZER_KEY_INVALID;
+        return;
+    }
+
     page_push(PAGE_PREHEAT_COOKING);
     lv_obj_clean(lv_scr_act());
     preheatcooking_create(&ui_manager);

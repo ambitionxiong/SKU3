@@ -4179,8 +4179,49 @@ static void on_color_start_click(lv_event_t *e)
         jump_to_color_cookoing();
 }
 
+static void auto_pause_on_door(void)
+{
+    if (!is_door_open()) return;
+    page_id_t cur = page_stack[depth - 1];
+    if (cur == PAGE_UPDOWN_BBQ_COOKING) jump_to_updown_bbq_stop();
+    else if (cur == PAGE_TOP_BBQ_COOKING) jump_to_top_bbq_stop();
+    else if (cur == PAGE_BOTTOM_BBQ_COOKING) jump_to_bottom_bbq_stop();
+    else if (cur == PAGE_HOT_BBQ_COOKING) jump_to_hot_bbq_stop();
+    else if (cur == PAGE_HOTWIND_BBQ_COOKING) jump_to_hotwind_bbq_stop();
+    else if (cur == PAGE_SAVE_BBQ_COOKING) jump_to_save_bbq_stop();
+    else if (cur == PAGE_CENTRAL_BBQ_COOKING) jump_to_central_bbq_stop();
+    else if (cur == PAGE_WINDCHANGE_BBQ_COOKING) jump_to_windchange_bbq_stop();
+    else if (cur == PAGE_UPDOWN_BBQ_SETTING) jump_to_updown_bbq_stop();
+    else if (cur == PAGE_PREHEAT_COOKING) jump_to_preheat_stop();
+    else if (cur == PAGE_COOKIE_COOKING) jump_to_cookie_stop();
+    else if (cur == PAGE_WEST_COOKING) jump_to_west_stop();
+    else if (cur == PAGE_PIZZA_COOKING) jump_to_pizza_stop();
+    else if (cur == PAGE_MENU_COOK_COOKING) jump_to_menu_stop();
+    else if (cur == PAGE_AIR_COOKING) jump_to_air_stop();
+    else if (cur == PAGE_PIZZA_2_COOKING) jump_to_pizza_2_stop();
+    else if (cur == PAGE_SLOWCOOK_COOKING) jump_to_slowcook_stop();
+    else if (cur == PAGE_UNFROZEN_COOKING) jump_to_unfrozen_stop();
+    else if (cur == PAGE_RISING_COOKING) jump_to_rising_stop();
+    else if (cur == PAGE_CORN_COOKING) jump_to_corn_stop();
+    else if (cur == PAGE_HEATCONTAIN_COOKING) jump_to_heatcontain_stop();
+    else if (cur == PAGE_LASAGNA_COOKING) jump_to_lasagna_stop();
+    else if (cur == PAGE_STRUDEL_COOKING) jump_to_strudel_stop();
+    else if (cur == PAGE_BREAD_COOKING) jump_to_bread_stop();
+    else if (cur == PAGE_PIZZA3_COOKING) jump_to_pizza3_stop();
+    else if (cur == PAGE_CHIP_COOKING) jump_to_chip_stop();
+    else if (cur == PAGE_CUSTOM_COOKING) jump_to_custom_stop();
+    else if (cur == PAGE_WATER_CLEAN_COOKING) jump_to_wc_stop();
+    else if (cur == PAGE_HOTCLEANSAVE_COOKING) jump_to_hcs_stop();
+    else if (cur == PAGE_HOTCLEANMIDDLE_COOKING) jump_to_hcm_stop();
+    else if (cur == PAGE_HOTCLEANHIGH_COOKING) jump_to_hch_stop();
+}
+
 void cooking_timer_cb(lv_timer_t *timer)
 {
+    if (is_door_open()) {
+        auto_pause_on_door();
+        return;
+    }
     if (current_group == g_hcs_cooling) {
         hotcleansave_cooling_t *cool = hotcleansave_cooling_get(&ui_manager);
         if (cool) {

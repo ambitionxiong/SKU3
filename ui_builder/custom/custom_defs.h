@@ -124,4 +124,8 @@ typedef struct {
     const char *fmt;     // 显示格式："%d" 或 "%02d"
 } edit_field_t;
 
+static inline int is_door_open(void) {
+    return (uart_data_receive[Receive_data_Power_ALL_State] & (1 << 1)) != 0;
+}
+
 #endif // CUSTOM_DEFS_H

@@ -81,9 +81,11 @@ int main(int argc, char **argv)
 
 		/* 读键状态模拟编码器（边沿触发防连击） */
 		static uint8_t prev_key = 0;
+		static uint8_t prev_door = 0;
 		SDL_PumpEvents();
 		const Uint8 *keys = SDL_GetKeyboardState(NULL);
 		uint8_t sim_key = 0;
+		uint8_t cur_door = keys[SDL_SCANCODE_0];
 		if      (keys[SDL_SCANCODE_TAB])       sim_key = KEY_MENU;
 		else if (keys[SDL_SCANCODE_5])         sim_key = KEY_EXTRA_COLOR;
 		else if (keys[SDL_SCANCODE_ESCAPE])    sim_key = KEY_BACK;
@@ -94,6 +96,12 @@ int main(int argc, char **argv)
 		else if (keys[SDL_SCANCODE_SPACE])  sim_key = KEY_ENCODER_PRESS;
 		else if (keys[SDL_SCANCODE_1])      sim_key = KEY1;
 		else if (keys[SDL_SCANCODE_7])      sim_key = KEY_CLEAN;
+		if (cur_door && !prev_door) {
+			uart_data_receive[Receive_data_Power_ALL_State] ^= (1 << 1);
+			printf("[sim] door %s\n",
+				(uart_data_receive[Receive_data_Power_ALL_State] & (1 << 1)) ? "OPEN" : "CLOSED");
+		}
+		prev_door = cur_door;
 
 		if (sim_key != prev_key) {
 			nav_handle_key(sim_key);

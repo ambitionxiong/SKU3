@@ -280,6 +280,11 @@ void jump_to_menu_set(void)
 // set → cooking
 void jump_to_menu_cooking(void)
 {
+    if (is_door_open()) {
+        g_send.buzzer_req = BUZZER_KEY_INVALID;
+        return;
+    }
+
     page_push(PAGE_MENU_COOK_COOKING);
     lv_obj_clean(lv_scr_act());
     menu_cooking_create(&ui_manager);

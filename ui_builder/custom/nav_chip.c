@@ -228,6 +228,11 @@ void jump_to_chip_set(void)
 
 void jump_to_chip_cooking(void)
 {
+    if (is_door_open()) {
+        g_send.buzzer_req = BUZZER_KEY_INVALID;
+        return;
+    }
+
     page_push(PAGE_CHIP_COOKING);
     lv_obj_clean(lv_scr_act());
     chip_cooking_create(&ui_manager);

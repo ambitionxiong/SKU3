@@ -228,6 +228,11 @@ void jump_to_custom_set(void)
 
 void jump_to_custom_cooking(void)
 {
+    if (is_door_open()) {
+        g_send.buzzer_req = BUZZER_KEY_INVALID;
+        return;
+    }
+
     page_push(PAGE_CUSTOM_COOKING);
     lv_obj_clean(lv_scr_act());
     custom_cooking_create(&ui_manager);

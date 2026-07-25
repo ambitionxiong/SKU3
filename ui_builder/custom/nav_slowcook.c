@@ -284,6 +284,11 @@ void jump_to_slowcook_set(void)
 // set → cooking
 void jump_to_slowcook_cooking(void)
 {
+    if (is_door_open()) {
+        g_send.buzzer_req = BUZZER_KEY_INVALID;
+        return;
+    }
+
     page_push(PAGE_SLOWCOOK_COOKING);
     lv_obj_clean(lv_scr_act());
     slowcook_cooking_create(&ui_manager);
