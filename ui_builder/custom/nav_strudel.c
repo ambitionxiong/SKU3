@@ -209,7 +209,31 @@ void jump_to_strudel_set(void)
             lv_obj_clear_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
 
         apply_toggle_state(set->offdelay, set->ondelay, delay_on);
+    if (set_hour == 0) {
+        lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->label_695, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_set_pos(set->min, 312, 254);
+        lv_obj_set_pos(set->label_696, 365, 269);
+    } else {
+        lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(set->label_695, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_set_pos(set->min, 395, 254);
+        lv_obj_set_pos(set->label_696, 448, 269);
+    }
+
         apply_toggle_state(set->offcontain, set->oncontain, contain_on);
+    if (set_hour == 0) {
+        lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->label_695, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_set_pos(set->min, 312, 254);
+        lv_obj_set_pos(set->label_696, 365, 269);
+    } else {
+        lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(set->label_695, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_set_pos(set->min, 395, 254);
+        lv_obj_set_pos(set->label_696, 448, 269);
+    }
+
 
         lv_obj_add_event_cb(set->offdelay, strudel_delay_toggle, LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(set->ondelay, strudel_delay_toggle, LV_EVENT_CLICKED, NULL);
@@ -630,7 +654,27 @@ void strudel_rebuild_set(page_id_t child)
             lv_obj_clear_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
 
         apply_toggle_state(set->offdelay, set->ondelay, delay_on);
+    if (set_hour == 0) {
+        lv_obj_add_flag(set->label_695, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_set_pos(set->min, 312, 254);
+        lv_obj_set_pos(set->label_696, 365, 269);
+    } else {
+        lv_obj_clear_flag(set->label_695, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_set_pos(set->min, 395, 254);
+        lv_obj_set_pos(set->label_696, 448, 269);
+    }
+
         apply_toggle_state(set->offcontain, set->oncontain, contain_on);
+    if (set_hour == 0) {
+        lv_obj_add_flag(set->label_695, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_set_pos(set->min, 312, 254);
+        lv_obj_set_pos(set->label_696, 365, 269);
+    } else {
+        lv_obj_clear_flag(set->label_695, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_set_pos(set->min, 395, 254);
+        lv_obj_set_pos(set->label_696, 448, 269);
+    }
+
 
         lv_obj_add_event_cb(set->offdelay, strudel_delay_toggle, LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(set->ondelay, strudel_delay_toggle, LV_EVENT_CLICKED, NULL);

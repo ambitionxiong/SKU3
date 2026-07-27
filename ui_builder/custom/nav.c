@@ -1247,6 +1247,18 @@ void page_pop(void)
                 lv_label_set_text_fmt(set->hour_label, "%02d", set_hour);
                 lv_label_set_text_fmt(set->min_label, "%02d", set_min);
 
+                if (set_hour == 0) {
+                    lv_obj_add_flag(set->hour_label, LV_OBJ_FLAG_HIDDEN);
+                    lv_obj_add_flag(set->shi_label, LV_OBJ_FLAG_HIDDEN);
+                    lv_obj_set_pos(set->min_label, 312, 254);
+                    lv_obj_set_pos(set->fen_label, 365, 269);
+                } else {
+                    lv_obj_clear_flag(set->hour_label, LV_OBJ_FLAG_HIDDEN);
+                    lv_obj_clear_flag(set->shi_label, LV_OBJ_FLAG_HIDDEN);
+                    lv_obj_set_pos(set->min_label, 395, 254);
+                    lv_obj_set_pos(set->fen_label, 448, 269);
+                }
+
                 /* 恢复 toggle 状态（跟随变量） */
                 apply_toggle_state(set->preheat_button, set->preheat_on_button, preheat_on);
                 apply_toggle_state(set->delay_button, set->delay_on_button, delay_on);
@@ -2721,6 +2733,18 @@ static void jump_to_updown_bbq_set(void)
         /* 时间显示 */
         lv_label_set_text_fmt(set->hour_label, "%02d", set_hour);
         lv_label_set_text_fmt(set->min_label, "%02d", set_min);
+
+        if (set_hour == 0) {
+            lv_obj_add_flag(set->hour_label, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(set->shi_label, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_set_pos(set->min_label, 312, 254);
+            lv_obj_set_pos(set->fen_label, 365, 269);
+        } else {
+            lv_obj_clear_flag(set->hour_label, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(set->shi_label, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_set_pos(set->min_label, 395, 254);
+            lv_obj_set_pos(set->fen_label, 448, 269);
+        }
 
         /* 按钮状态重置（跟随变量） */
         apply_toggle_state(set->preheat_button, set->preheat_on_button, preheat_on);

@@ -258,8 +258,30 @@ void jump_to_pizza_set(void)
             lv_obj_clear_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
         lv_label_set_text_fmt(set->hour, "%02d", set_hour);
         lv_label_set_text_fmt(set->min, "%02d", set_min);
+    if (set_hour == 0) {
+        lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->label_209, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_set_pos(set->min, 312, 254);
+        lv_obj_set_pos(set->label_210, 365, 269);
+    } else {
+        lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(set->label_209, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_set_pos(set->min, 395, 254);
+        lv_obj_set_pos(set->label_210, 448, 269);
+    }
 
         apply_toggle_state(set->offdelay, set->ondelay, delay_on);
+    if (set_hour == 0) {
+        lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->label_209, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_set_pos(set->min, 312, 254);
+        lv_obj_set_pos(set->label_210, 365, 269);
+    } else {
+        lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(set->label_209, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_set_pos(set->min, 395, 254);
+        lv_obj_set_pos(set->label_210, 448, 269);
+    }
         apply_toggle_state(set->offcontain, set->oncontain, contain_on);
 
         lv_obj_add_event_cb(set->offdelay, pizza_delay_toggle, LV_EVENT_CLICKED, NULL);
@@ -712,8 +734,26 @@ void pizza_rebuild_set(page_id_t child)
             lv_obj_clear_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
         lv_label_set_text_fmt(set->hour, "%02d", set_hour);
         lv_label_set_text_fmt(set->min, "%02d", set_min);
+    if (set_hour == 0) {
+        lv_obj_add_flag(set->label_209, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_set_pos(set->min, 312, 254);
+        lv_obj_set_pos(set->label_210, 365, 269);
+    } else {
+        lv_obj_clear_flag(set->label_209, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_set_pos(set->min, 395, 254);
+        lv_obj_set_pos(set->label_210, 448, 269);
+    }
 
         apply_toggle_state(set->offdelay, set->ondelay, delay_on);
+    if (set_hour == 0) {
+        lv_obj_add_flag(set->label_209, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_set_pos(set->min, 312, 254);
+        lv_obj_set_pos(set->label_210, 365, 269);
+    } else {
+        lv_obj_clear_flag(set->label_209, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_set_pos(set->min, 395, 254);
+        lv_obj_set_pos(set->label_210, 448, 269);
+    }
         apply_toggle_state(set->offcontain, set->oncontain, contain_on);
 
         lv_obj_add_event_cb(set->offdelay, pizza_delay_toggle, LV_EVENT_CLICKED, NULL);
