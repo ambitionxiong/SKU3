@@ -384,6 +384,14 @@ extern int cook_total_ms;
 extern uint32_t cook_start_time;
 extern uint8_t cook_is_color;
 extern lv_timer_t *cook_timer;
+extern uint8_t g_on_stop_back;
+extern void (*g_stop_back_complete)(void);
+
+static inline int stop_back_progress(uint32_t elapsed, int total_ms)
+{
+    if (!total_ms) total_ms = 1;
+    return 3 + (int)((int64_t)elapsed * 97 / total_ms);
+}
 extern uint32_t cook_elapsed_saved;
 extern int cook_bar_saved;
 

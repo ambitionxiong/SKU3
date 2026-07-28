@@ -33,6 +33,7 @@ static void on_hch_stop_back_sure_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
     if (screen_is_loading(act_scr)) return;
+    g_on_stop_back = 0;
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
     set_hour = 0; set_min = 1;
     cook_elapsed_saved = 0; cook_bar_saved = 0;
@@ -247,6 +248,9 @@ depth--;
 
 void jump_to_hch_stop_back(void)
 {
+    
+    g_on_stop_back = 1;
+    g_stop_back_complete = jump_to_hch_complete;
     page_push(PAGE_HOTCLEANHIGH_STOP_BACK);
     lv_obj_clean(lv_scr_act());
     hotcleanhigh_stop_back_create(&ui_manager);
@@ -261,7 +265,9 @@ void jump_to_hch_stop_back(void)
                             LV_EVENT_CLICKED, NULL);
 
         lv_bar_set_range(back->bar_3, 0, 100);
-        if (cook_bar_saved > 100) cook_bar_saved = 100;
+        uint32_t _elapsed = lv_tick_get() - cook_start_time;
+        int _p = (int)((int64_t)_elapsed * 100 / (cook_total_ms ? cook_total_ms : 1));
+        if (_p > 100) _p = 100;
         lv_bar_set_value(back->bar_3, cook_bar_saved, LV_ANIM_OFF);
 
         if (back->sure) lv_group_focus_obj(back->sure);
@@ -444,7 +450,9 @@ void hch_rebuild_stop_back(void)
                             LV_EVENT_CLICKED, NULL);
 
         lv_bar_set_range(back->bar_3, 0, 100);
-        if (cook_bar_saved > 100) cook_bar_saved = 100;
+        uint32_t _elapsed = lv_tick_get() - cook_start_time;
+        int _p = (int)((int64_t)_elapsed * 100 / (cook_total_ms ? cook_total_ms : 1));
+        if (_p > 100) _p = 100;
         lv_bar_set_value(back->bar_3, cook_bar_saved, LV_ANIM_OFF);
 
         if (back->sure) lv_group_focus_obj(back->sure);

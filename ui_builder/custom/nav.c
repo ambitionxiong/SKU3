@@ -200,6 +200,9 @@ lv_group_t *g_cook4_menu;
 
 static int updown_menu_top_saved, updown_menu_low_saved;
 
+uint8_t g_on_stop_back = 0;
+void (*g_stop_back_complete)(void) = NULL;
+
 lv_group_t *g_cookie_menu;
 
 lv_group_t *g_cookie_set;
@@ -1101,6 +1104,7 @@ void page_pop(void)
                 g_send.remaining_ms = rem;
             }
         } else if (child == PAGE_UPDOWN_BBQ_STOP_BACK) {
+            g_on_stop_back = 0;
             updown_bbq_cooking_create(&ui_manager);
             {
                 updown_bbq_cooking_t *cook = updown_bbq_cooking_get(&ui_manager);
@@ -1124,9 +1128,10 @@ void page_pop(void)
                     int s = remaining_sec % 60;
                     lv_label_set_text_fmt(cook->time_label, "%02d:%02d:%02d", h, m, s);
                     lv_bar_set_range(cook->bar, 0, 100);
-                    int progress = (int)((int64_t)elapsed * 100 / cook_total_ms);
+                    int progress = stop_back_progress(elapsed, cook_total_ms);
                     if (progress > 100) progress = 100;
                     lv_bar_set_value(cook->bar, progress, LV_ANIM_OFF);
+                    printf("[debug] SB->COOK: elapsed=%u timer=%p prog=%d\n", elapsed, (void*)cook_timer, progress);
                     lv_anim_t a;
                     lv_anim_init(&a);
                     lv_anim_set_var(&a, cook->bar);
@@ -1197,6 +1202,8 @@ void page_pop(void)
         break;
 
     case PAGE_UPDOWN_BBQ_STOP_BACK:
+        g_on_stop_back = 1;
+        g_stop_back_complete = jump_to_updown_bbq_complete;
         updown_bbq_stop_back_create(&ui_manager);
         {
             updown_bbq_stop_back_t *back = updown_bbq_stop_back_get(&ui_manager);
@@ -1207,11 +1214,11 @@ void page_pop(void)
                 lv_obj_add_event_cb(back->sure_button, on_stop_back_sure_click,
                                     LV_EVENT_CLICKED, NULL);
 
-                /* 同步显示（从耗时计算进度） */
+                /* 同步 statu_label / bar_2（从耗时计算进度） */
                 set_status_label_min(back->statu_label, set_temp_up, set_temp_down, set_hour, set_min);
 
-                uint32_t elapsed = lv_tick_get() - cook_start_time;
-                int p = (int)((int64_t)elapsed * 100 / (cook_total_ms ? cook_total_ms : 1));
+                uint32_t elapsed = cook_timer ? (lv_tick_get() - cook_start_time) : cook_elapsed_saved;
+                int p = stop_back_progress(elapsed, cook_total_ms);
                 if (p > 100) p = 100;
                 lv_bar_set_range(back->bar_2, 0, 100);
                 lv_bar_set_value(back->bar_2, p, LV_ANIM_OFF);
@@ -1304,8 +1311,47 @@ void page_pop(void)
         break;
 
     case PAGE_UPDOWN_BBQ_COMPLETE:
+        goto pop_to_major_menu;
+
     case PAGE_EXTRA_COLOR:
     case PAGE_COLOR_COOKING:
+        if (child == PAGE_COLOR_STOP_BACK) {
+            g_on_stop_back = 0;
+            lv_obj_clean(lv_scr_act());
+            color_cookoing_create(&ui_manager);
+            color_cookoing_t *cc = color_cookoing_get(&ui_manager);
+            if (cc) {
+                lv_obj_t *btns[] = { cc->stop_button };
+                if (g_color_cookoing) lv_group_del(g_color_cookoing);
+                g_color_cookoing = group_create_for_page(btns, 1);
+                lv_obj_add_event_cb(cc->stop_button, on_color_stop_click,
+                                    LV_EVENT_CLICKED, NULL);
+                uint32_t elapsed = lv_tick_get() - cook_start_time;
+                int remaining_sec = (cook_total_ms - (int)elapsed) / 1000;
+                if (remaining_sec < 0) remaining_sec = 0;
+                int h = remaining_sec / 3600;
+                int m = (remaining_sec % 3600) / 60;
+                int s = remaining_sec % 60;
+                lv_label_set_text_fmt(cc->time_label, "%02d:%02d:%02d", h, m, s);
+                lv_bar_set_range(cc->bar, 0, 100);
+                    int progress = stop_back_progress(elapsed, cook_total_ms);
+                    if (progress > 100) progress = 100;
+                lv_bar_set_value(cc->bar, progress, LV_ANIM_OFF);
+                lv_anim_t a;
+                lv_anim_init(&a);
+                lv_anim_set_var(&a, cc->bar);
+                lv_anim_set_exec_cb(&a, anim_bar_set_value);
+                lv_anim_set_values(&a, progress, 100);
+                lv_anim_set_time(&a, cook_total_ms - (int)elapsed);
+                lv_anim_start(&a);
+            }
+            current_group = g_color_cookoing;
+            lv_scr_load_anim(color_cookoing_get(&ui_manager)->obj,
+                             LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
+            printf("[nav] back from stop_back -> color_cookoing\n");
+            break;
+        }
+        goto pop_to_major_menu;
     case PAGE_COLOR_COOKING_COMPLETE:
         goto pop_to_major_menu;
 
@@ -1439,9 +1485,11 @@ void page_pop(void)
                                     LV_EVENT_CLICKED, NULL);
 
                 lv_label_set_text(csb->label_17, "| 额外上色 | 5分钟");
+                uint32_t _elapsed = lv_tick_get() - cook_start_time;
+                int _p = (int)((int64_t)_elapsed * 100 / (cook_total_ms ? cook_total_ms : 1));
+                if (_p > 100) _p = 100;
                 lv_bar_set_range(csb->bar_4, 0, 100);
-                if (cook_bar_saved > 100) cook_bar_saved = 100;
-                lv_bar_set_value(csb->bar_4, cook_bar_saved, LV_ANIM_OFF);
+                lv_bar_set_value(csb->bar_4, _p, LV_ANIM_OFF);
             }
             current_group = g_color_stop_back;
         }
@@ -1462,7 +1510,10 @@ void page_pop(void)
     case PAGE_TOP_BBQ_COOKING:
         if (child == PAGE_TOP_BBQ_COMPLETE)
             goto pop_to_major_menu;
-        if (child == PAGE_TOP_BBQ_SETTING) {
+    if (child == PAGE_TOP_BBQ_STOP_BACK) {
+            g_on_stop_back = 0;
+            top_bbq_rebuild_cooking(PAGE_TOP_BBQ_SETTING);
+        } else if (child == PAGE_TOP_BBQ_SETTING) {
             set_temp = top_setting_saved_temp;
             set_hour = top_setting_saved_hour;
             set_min = top_setting_saved_min;
@@ -1508,7 +1559,10 @@ void page_pop(void)
     case PAGE_BOTTOM_BBQ_COOKING:
         if (child == PAGE_BOTTOM_BBQ_COMPLETE)
             goto pop_to_major_menu;
-        if (child == PAGE_BOTTOM_BBQ_SETTING) {
+    if (child == PAGE_BOTTOM_BBQ_STOP_BACK) {
+            g_on_stop_back = 0;
+            bottom_bbq_rebuild_cooking(PAGE_BOTTOM_BBQ_SETTING);
+        } else if (child == PAGE_BOTTOM_BBQ_SETTING) {
             set_temp = bottom_bbq_setting_saved_temp;
             set_hour = bottom_bbq_setting_saved_hour;
             set_min = bottom_bbq_setting_saved_min;
@@ -1555,7 +1609,10 @@ void page_pop(void)
     case PAGE_HOT_BBQ_COOKING:
         if (child == PAGE_HOT_BBQ_COMPLETE)
             goto pop_to_major_menu;
-        if (child == PAGE_HOT_BBQ_SETTING) {
+    if (child == PAGE_HOT_BBQ_STOP_BACK) {
+            g_on_stop_back = 0;
+            hot_bbq_rebuild_cooking(PAGE_HOT_BBQ_SETTING);
+        } else if (child == PAGE_HOT_BBQ_SETTING) {
             set_temp = hot_bbq_setting_saved_temp;
             set_hour = hot_bbq_setting_saved_hour;
             set_min = hot_bbq_setting_saved_min;
@@ -1600,7 +1657,10 @@ void page_pop(void)
     case PAGE_HOTWIND_BBQ_COOKING:
         if (child == PAGE_HOTWIND_BBQ_COMPLETE)
             goto pop_to_major_menu;
-        if (child == PAGE_HOTWIND_BBQ_SETTING) {
+    if (child == PAGE_HOTWIND_BBQ_STOP_BACK) {
+            g_on_stop_back = 0;
+            hotwind_bbq_rebuild_cooking(PAGE_HOTWIND_BBQ_SETTING);
+        } else if (child == PAGE_HOTWIND_BBQ_SETTING) {
             set_temp = hotwind_bbq_setting_saved_temp;
             set_hour = hotwind_bbq_setting_saved_hour;
             set_min = hotwind_bbq_setting_saved_min;
@@ -1641,7 +1701,10 @@ void page_pop(void)
     case PAGE_SAVE_BBQ_COOKING:
         if (child == PAGE_SAVE_BBQ_COMPLETE)
             goto pop_to_major_menu;
-        if (child == PAGE_SAVE_BBQ_SETTING) {
+    if (child == PAGE_SAVE_BBQ_STOP_BACK) {
+            g_on_stop_back = 0;
+            save_bbq_rebuild_cooking(PAGE_SAVE_BBQ_SETTING);
+        } else if (child == PAGE_SAVE_BBQ_SETTING) {
             set_temp = save_bbq_setting_saved_temp;
             set_hour = save_bbq_setting_saved_hour;
             set_min = save_bbq_setting_saved_min;
@@ -1682,7 +1745,10 @@ void page_pop(void)
     case PAGE_CENTRAL_BBQ_COOKING:
         if (child == PAGE_CENTRAL_BBQ_COMPLETE)
             goto pop_to_major_menu;
-        if (child == PAGE_CENTRAL_BBQ_SETTING) {
+    if (child == PAGE_CENTRAL_BBQ_STOP_BACK) {
+            g_on_stop_back = 0;
+            central_bbq_rebuild_cooking(PAGE_CENTRAL_BBQ_SETTING);
+        } else if (child == PAGE_CENTRAL_BBQ_SETTING) {
             set_temp = central_bbq_setting_saved_temp;
             set_hour = central_bbq_setting_saved_hour;
             set_min = central_bbq_setting_saved_min;
@@ -1723,7 +1789,10 @@ void page_pop(void)
     case PAGE_WINDCHANGE_BBQ_COOKING:
         if (child == PAGE_WINDCHANGE_BBQ_COMPLETE)
             goto pop_to_major_menu;
-        if (child == PAGE_WINDCHANGE_BBQ_SETTING) {
+    if (child == PAGE_WINDCHANGE_BBQ_STOP_BACK) {
+            g_on_stop_back = 0;
+            windchange_bbq_rebuild_cooking(PAGE_WINDCHANGE_BBQ_SETTING);
+        } else if (child == PAGE_WINDCHANGE_BBQ_SETTING) {
             set_temp = windchange_bbq_setting_saved_temp;
             set_hour = windchange_bbq_setting_saved_hour;
             set_min = windchange_bbq_setting_saved_min;
@@ -1767,7 +1836,10 @@ void page_pop(void)
     case PAGE_COOKIE_COOKING:
         if (child == PAGE_COOKIE_COMPLETE)
             goto pop_to_major_menu;
-        if (child == PAGE_COOKIE_SETTING) {
+    if (child == PAGE_COOKIE_STOP_BACK) {
+            g_on_stop_back = 0;
+            cookie_rebuild_cooking(PAGE_COOKIE_SETTING);
+        } else if (child == PAGE_COOKIE_SETTING) {
             set_temp = cookie_setting_saved_temp;
             set_hour = cookie_setting_saved_hour;
             set_min = cookie_setting_saved_min;
@@ -1807,7 +1879,10 @@ void page_pop(void)
     case PAGE_WEST_COOKING:
         if (child == PAGE_WEST_COMPLETE)
             goto pop_to_major_menu;
-        if (child == PAGE_WEST_SETTING) {
+    if (child == PAGE_WEST_STOP_BACK) {
+            g_on_stop_back = 0;
+            west_rebuild_cooking(PAGE_WEST_SETTING);
+        } else if (child == PAGE_WEST_SETTING) {
             set_temp = west_setting_saved_temp;
             set_hour = west_setting_saved_hour;
             set_min = west_setting_saved_min;
@@ -1847,7 +1922,10 @@ void page_pop(void)
     case PAGE_PIZZA_COOKING:
         if (child == PAGE_PIZZA_COMPLETE)
             goto pop_to_major_menu;
-        if (child == PAGE_PIZZA_SETTING) {
+    if (child == PAGE_PIZZA_STOP_BACK) {
+            g_on_stop_back = 0;
+            pizza_rebuild_cooking(PAGE_PIZZA_SETTING);
+        } else if (child == PAGE_PIZZA_SETTING) {
             set_temp = pizza_setting_saved_temp;
             set_hour = pizza_setting_saved_hour;
             set_min = pizza_setting_saved_min;
@@ -1887,7 +1965,10 @@ void page_pop(void)
     case PAGE_MENU_COOK_COOKING:
         if (child == PAGE_MENU_COOK_COMPLETE)
             goto pop_to_major_menu;
-        if (child == PAGE_MENU_COOK_SETTING) {
+    if (child == PAGE_MENU_COOK_STOP_BACK) {
+            g_on_stop_back = 0;
+            menu_rebuild_cooking(PAGE_MENU_COOK_SETTING);
+        } else if (child == PAGE_MENU_COOK_SETTING) {
             set_temp = menu_setting_saved_temp;
             set_hour = menu_setting_saved_hour;
             set_min = menu_setting_saved_min;
@@ -1927,7 +2008,10 @@ void page_pop(void)
     case PAGE_AIR_COOKING:
         if (child == PAGE_AIR_COMPLETE)
             goto pop_to_major_menu;
-        if (child == PAGE_AIR_SETTING) {
+    if (child == PAGE_AIR_STOP_BACK) {
+            g_on_stop_back = 0;
+            air_rebuild_cooking(PAGE_AIR_SETTING);
+        } else if (child == PAGE_AIR_SETTING) {
             set_temp = air_setting_saved_temp;
             set_hour = air_setting_saved_hour;
             set_min = air_setting_saved_min;
@@ -1967,7 +2051,10 @@ void page_pop(void)
     case PAGE_PIZZA_2_COOKING:
         if (child == PAGE_PIZZA_2_COMPLETE)
             goto pop_to_major_menu;
-        if (child == PAGE_PIZZA_2_SETTING) {
+    if (child == PAGE_PIZZA_2_STOP_BACK) {
+            g_on_stop_back = 0;
+            pizza_2_rebuild_cooking(PAGE_PIZZA_2_SETTING);
+        } else if (child == PAGE_PIZZA_2_SETTING) {
             set_temp = pizza_2_setting_saved_temp;
             set_hour = pizza_2_setting_saved_hour;
             set_min = pizza_2_setting_saved_min;
@@ -2007,7 +2094,10 @@ void page_pop(void)
     case PAGE_SLOWCOOK_COOKING:
         if (child == PAGE_SLOWCOOK_COMPLETE)
             goto pop_to_major_menu;
-        if (child == PAGE_SLOWCOOK_SETTING) {
+    if (child == PAGE_SLOWCOOK_STOP_BACK) {
+            g_on_stop_back = 0;
+            slowcook_rebuild_cooking(PAGE_SLOWCOOK_SETTING);
+        } else if (child == PAGE_SLOWCOOK_SETTING) {
             set_temp = slowcook_setting_saved_temp;
             set_hour = slowcook_setting_saved_hour;
             set_min = slowcook_setting_saved_min;
@@ -2047,7 +2137,10 @@ void page_pop(void)
     case PAGE_UNFROZEN_COOKING:
         if (child == PAGE_UNFROZEN_COMPLETE)
             goto pop_to_major_menu;
-        if (child == PAGE_UNFROZEN_SETTING) {
+    if (child == PAGE_UNFROZEN_STOP_BACK) {
+            g_on_stop_back = 0;
+            unfrozen_rebuild_cooking(PAGE_UNFROZEN_SETTING);
+        } else if (child == PAGE_UNFROZEN_SETTING) {
             set_temp = unfrozen_setting_saved_temp;
             set_hour = unfrozen_setting_saved_hour;
             set_min = unfrozen_setting_saved_min;
@@ -2087,7 +2180,10 @@ void page_pop(void)
     case PAGE_RISING_COOKING:
         if (child == PAGE_RISING_COMPLETE)
             goto pop_to_major_menu;
-        if (child == PAGE_RISING_SETTING) {
+    if (child == PAGE_RISING_STOP_BACK) {
+            g_on_stop_back = 0;
+            rising_rebuild_cooking(PAGE_RISING_SETTING);
+        } else if (child == PAGE_RISING_SETTING) {
             set_temp = rising_setting_saved_temp;
             set_hour = rising_setting_saved_hour;
             set_min = rising_setting_saved_min;
@@ -2127,7 +2223,10 @@ void page_pop(void)
     case PAGE_CORN_COOKING:
         if (child == PAGE_CORN_COMPLETE)
             goto pop_to_major_menu;
-        if (child == PAGE_CORN_SETTING) {
+    if (child == PAGE_CORN_STOP_BACK) {
+            g_on_stop_back = 0;
+            corn_rebuild_cooking(PAGE_CORN_SETTING);
+        } else if (child == PAGE_CORN_SETTING) {
             set_temp = corn_setting_saved_temp;
             set_hour = corn_setting_saved_hour;
             set_min = corn_setting_saved_min;
@@ -2167,7 +2266,10 @@ void page_pop(void)
     case PAGE_HEATCONTAIN_COOKING:
         if (child == PAGE_HEATCONTAIN_COMPLETE)
             goto pop_to_major_menu;
-        if (child == PAGE_HEATCONTAIN_SETTING) {
+    if (child == PAGE_HEATCONTAIN_STOP_BACK) {
+            g_on_stop_back = 0;
+            heatcontain_rebuild_cooking(PAGE_HEATCONTAIN_SETTING);
+        } else if (child == PAGE_HEATCONTAIN_SETTING) {
             set_temp = heatcontain_setting_saved_temp;
             set_hour = heatcontain_setting_saved_hour;
             set_min = heatcontain_setting_saved_min;
@@ -2211,7 +2313,10 @@ void page_pop(void)
     case PAGE_LASAGNA_COOKING:
         if (child == PAGE_LASAGNA_COMPLETE)
             goto pop_to_major_menu;
-        if (child == PAGE_LASAGNA_SETTING) {
+    if (child == PAGE_LASAGNA_STOP_BACK) {
+            g_on_stop_back = 0;
+            lasagna_rebuild_cooking(PAGE_LASAGNA_SETTING);
+        } else if (child == PAGE_LASAGNA_SETTING) {
             set_hour = lasagna_setting_saved_hour;
             set_min = lasagna_setting_saved_min;
             lasagna_rebuild_cooking(child);
@@ -2248,7 +2353,10 @@ void page_pop(void)
     case PAGE_STRUDEL_COOKING:
         if (child == PAGE_STRUDEL_COMPLETE)
             goto pop_to_major_menu;
-        if (child == PAGE_STRUDEL_SETTING) {
+    if (child == PAGE_STRUDEL_STOP_BACK) {
+            g_on_stop_back = 0;
+            strudel_rebuild_cooking(PAGE_STRUDEL_SETTING);
+        } else if (child == PAGE_STRUDEL_SETTING) {
             set_hour = strudel_setting_saved_hour;
             set_min = strudel_setting_saved_min;
             strudel_rebuild_cooking(child);
@@ -2285,7 +2393,10 @@ void page_pop(void)
     case PAGE_BREAD_COOKING:
         if (child == PAGE_BREAD_COMPLETE)
             goto pop_to_major_menu;
-        if (child == PAGE_BREAD_SETTING) {
+    if (child == PAGE_BREAD_STOP_BACK) {
+            g_on_stop_back = 0;
+            bread_rebuild_cooking(PAGE_BREAD_SETTING);
+        } else if (child == PAGE_BREAD_SETTING) {
             set_hour = bread_setting_saved_hour;
             set_min = bread_setting_saved_min;
             bread_rebuild_cooking(child);
@@ -2322,7 +2433,10 @@ void page_pop(void)
     case PAGE_PIZZA3_COOKING:
         if (child == PAGE_PIZZA3_COMPLETE)
             goto pop_to_major_menu;
-        if (child == PAGE_PIZZA3_SETTING) {
+    if (child == PAGE_PIZZA3_STOP_BACK) {
+            g_on_stop_back = 0;
+            pizza3_rebuild_cooking(PAGE_PIZZA3_SETTING);
+        } else if (child == PAGE_PIZZA3_SETTING) {
             set_hour = pizza3_setting_saved_hour;
             set_min = pizza3_setting_saved_min;
             pizza3_rebuild_cooking(child);
@@ -2359,7 +2473,10 @@ void page_pop(void)
     case PAGE_CHIP_COOKING:
         if (child == PAGE_CHIP_COMPLETE)
             goto pop_to_major_menu;
-        if (child == PAGE_CHIP_SETTING) {
+    if (child == PAGE_CHIP_STOP_BACK) {
+            g_on_stop_back = 0;
+            chip_rebuild_cooking(PAGE_CHIP_SETTING);
+        } else if (child == PAGE_CHIP_SETTING) {
             set_hour = chip_setting_saved_hour;
             set_min = chip_setting_saved_min;
             chip_rebuild_cooking(child);
@@ -2396,7 +2513,10 @@ void page_pop(void)
     case PAGE_CUSTOM_COOKING:
         if (child == PAGE_CUSTOM_COMPLETE)
             goto pop_to_major_menu;
-        if (child == PAGE_CUSTOM_SETTING) {
+    if (child == PAGE_CUSTOM_STOP_BACK) {
+            g_on_stop_back = 0;
+            custom_rebuild_cooking(PAGE_CUSTOM_SETTING);
+        } else if (child == PAGE_CUSTOM_SETTING) {
             set_hour = custom_setting_saved_hour;
             set_min = custom_setting_saved_min;
             custom_rebuild_cooking(child);
@@ -2438,6 +2558,9 @@ void page_pop(void)
             goto pop_to_clean;
         if (child == PAGE_HOTCLEANSAVE_COOLING) {
             hcs_rebuild_cooking(child);
+        } else if (child == PAGE_HOTCLEANSAVE_STOP_BACK) {
+            g_on_stop_back = 0;
+            hcs_rebuild_cooking(PAGE_HOTCLEANSAVE_STOP);
         } else
             hcs_rebuild_cooking(0);
         break;
@@ -2462,6 +2585,9 @@ void page_pop(void)
             goto pop_to_clean;
         if (child == PAGE_HOTCLEANMIDDLE_COOLING) {
             hcm_rebuild_cooking(child);
+        } else if (child == PAGE_HOTCLEANMIDDLE_STOP_BACK) {
+            g_on_stop_back = 0;
+            hcm_rebuild_cooking(PAGE_HOTCLEANMIDDLE_STOP);
         } else
             hcm_rebuild_cooking(0);
         break;
@@ -2486,6 +2612,9 @@ void page_pop(void)
             goto pop_to_clean;
         if (child == PAGE_HOTCLEANHIGH_COOLING) {
             hch_rebuild_cooking(child);
+        } else if (child == PAGE_HOTCLEANHIGH_STOP_BACK) {
+            g_on_stop_back = 0;
+            hch_rebuild_cooking(PAGE_HOTCLEANHIGH_STOP);
         } else
             hch_rebuild_cooking(0);
         break;
@@ -2508,7 +2637,11 @@ void page_pop(void)
     case PAGE_WATER_CLEAN_COOKING:
         if (child == PAGE_WATER_CLEAN_COMPLETE)
             goto pop_to_clean;
-        wc_rebuild_cooking(child);
+        if (child == PAGE_WATER_CLEAN_STOP_BACK) {
+            g_on_stop_back = 0;
+            wc_rebuild_cooking(PAGE_WATER_CLEAN_STOP);
+        } else
+            wc_rebuild_cooking(child);
         break;
     case PAGE_WATER_CLEAN_STOP:
         wc_rebuild_stop();
@@ -2953,6 +3086,10 @@ static void jump_to_updown_bbq_cooking(void)
 // updown_bbq_cooking → updown_bbq_complete
 static void jump_to_updown_bbq_complete(void)
 {
+    if (depth > 0 && page_stack[depth - 1] == PAGE_UPDOWN_BBQ_STOP_BACK)
+        depth--;
+    if (depth > 0 && page_stack[depth - 1] == PAGE_UPDOWN_BBQ_STOP)
+        depth--;
     page_push(PAGE_UPDOWN_BBQ_COMPLETE);
     lv_obj_clean(lv_scr_act());
     updown_bbq_complete_create(&ui_manager);
@@ -3246,35 +3383,35 @@ static void process_key(uint8_t key)
             } else if (cur == PAGE_UPDOWN_BBQ_STOP)
                 jump_to_updown_bbq_stop_back();
             else if (cur == PAGE_COLOR_COOKING)
-                jump_to_color_stop();
+                jump_to_color_stop_back();
             else if (cur == PAGE_COLOR_STOP)
                 jump_to_color_stop_back();
             else if (cur == PAGE_TOP_BBQ_COOKING)
-                jump_to_top_bbq_stop();
+                jump_to_top_bbq_stop_back();
             else if (cur == PAGE_TOP_BBQ_STOP)
                 jump_to_top_bbq_stop_back();
             else if (cur == PAGE_BOTTOM_BBQ_COOKING)
-                jump_to_bottom_bbq_stop();
+                jump_to_bottom_bbq_stop_back();
             else if (cur == PAGE_BOTTOM_BBQ_STOP)
                 jump_to_bottom_bbq_stop_back();
             else if (cur == PAGE_HOT_BBQ_COOKING)
-                jump_to_hot_bbq_stop();
+                jump_to_hot_bbq_stop_back();
             else if (cur == PAGE_HOT_BBQ_STOP)
                 jump_to_hot_bbq_stop_back();
             else if (cur == PAGE_HOTWIND_BBQ_COOKING)
-                jump_to_hotwind_bbq_stop();
+                jump_to_hotwind_bbq_stop_back();
             else if (cur == PAGE_HOTWIND_BBQ_STOP)
                 jump_to_hotwind_bbq_stop_back();
             else if (cur == PAGE_SAVE_BBQ_COOKING)
-                jump_to_save_bbq_stop();
+                jump_to_save_bbq_stop_back();
             else if (cur == PAGE_SAVE_BBQ_STOP)
                 jump_to_save_bbq_stop_back();
             else if (cur == PAGE_CENTRAL_BBQ_COOKING)
-                jump_to_central_bbq_stop();
+                jump_to_central_bbq_stop_back();
             else if (cur == PAGE_CENTRAL_BBQ_STOP)
                 jump_to_central_bbq_stop_back();
             else if (cur == PAGE_WINDCHANGE_BBQ_COOKING)
-                jump_to_windchange_bbq_stop();
+                jump_to_windchange_bbq_stop_back();
             else if (cur == PAGE_WINDCHANGE_BBQ_STOP)
                 jump_to_windchange_bbq_stop_back();
             else if (cur == PAGE_PREHEAT_COOKING)
@@ -3282,23 +3419,23 @@ static void process_key(uint8_t key)
             else if (cur == PAGE_PREHEAT_STOP)
                 jump_to_preheat_stop_back();
             else if (cur == PAGE_COOKIE_COOKING)
-                jump_to_cookie_stop();
+                jump_to_cookie_stop_back();
             else if (cur == PAGE_COOKIE_STOP)
                 jump_to_cookie_stop_back();
             else if (cur == PAGE_WEST_COOKING)
-                jump_to_west_stop();
+                jump_to_west_stop_back();
             else if (cur == PAGE_WEST_STOP)
                 jump_to_west_stop_back();
             else if (cur == PAGE_PIZZA_COOKING)
-                jump_to_pizza_stop();
+                jump_to_pizza_stop_back();
             else if (cur == PAGE_PIZZA_STOP)
                 jump_to_pizza_stop_back();
             else if (cur == PAGE_MENU_COOK_COOKING)
-                jump_to_menu_stop();
+                jump_to_menu_stop_back();
             else if (cur == PAGE_MENU_COOK_STOP)
                 jump_to_menu_stop_back();
             else if (cur == PAGE_AIR_COOKING)
-                jump_to_air_stop();
+                jump_to_air_stop_back();
             else if (cur == PAGE_AIR_STOP)
                 jump_to_air_stop_back();
             else if (cur == PAGE_PIZZA_2_COOKING)
@@ -3306,35 +3443,35 @@ static void process_key(uint8_t key)
             else if (cur == PAGE_PIZZA_2_STOP)
                 jump_to_pizza_2_stop_back();
             else if (cur == PAGE_SLOWCOOK_COOKING)
-                jump_to_slowcook_stop();
+                jump_to_slowcook_stop_back();
             else if (cur == PAGE_SLOWCOOK_STOP)
                 jump_to_slowcook_stop_back();
             else if (cur == PAGE_UNFROZEN_COOKING)
-                jump_to_unfrozen_stop();
+                jump_to_unfrozen_stop_back();
             else if (cur == PAGE_UNFROZEN_STOP)
                 jump_to_unfrozen_stop_back();
             else if (cur == PAGE_RISING_COOKING)
-                jump_to_rising_stop();
+                jump_to_rising_stop_back();
             else if (cur == PAGE_RISING_STOP)
                 jump_to_rising_stop_back();
             else if (cur == PAGE_CORN_COOKING)
-                jump_to_corn_stop();
+                jump_to_corn_stop_back();
             else if (cur == PAGE_CORN_STOP)
                 jump_to_corn_stop_back();
             else if (cur == PAGE_HEATCONTAIN_COOKING)
-                jump_to_heatcontain_stop();
+                jump_to_heatcontain_stop_back();
             else if (cur == PAGE_HEATCONTAIN_STOP)
                 jump_to_heatcontain_stop_back();
             else if (cur == PAGE_LASAGNA_COOKING)
-                jump_to_lasagna_stop();
+                jump_to_lasagna_stop_back();
             else if (cur == PAGE_LASAGNA_STOP)
                 jump_to_lasagna_stop_back();
             else if (cur == PAGE_STRUDEL_COOKING)
-                jump_to_strudel_stop();
+                jump_to_strudel_stop_back();
             else if (cur == PAGE_STRUDEL_STOP)
                 jump_to_strudel_stop_back();
             else if (cur == PAGE_BREAD_COOKING)
-                jump_to_bread_stop();
+                jump_to_bread_stop_back();
             else if (cur == PAGE_BREAD_STOP)
                 jump_to_bread_stop_back();
             else if (cur == PAGE_PIZZA3_COOKING)
@@ -3342,31 +3479,31 @@ static void process_key(uint8_t key)
             else if (cur == PAGE_PIZZA3_STOP)
                 jump_to_pizza3_stop_back();
             else if (cur == PAGE_CHIP_COOKING)
-                jump_to_chip_stop();
+                jump_to_chip_stop_back();
             else if (cur == PAGE_CHIP_STOP)
                 jump_to_chip_stop_back();
             else if (cur == PAGE_CUSTOM_COOKING)
-                jump_to_custom_stop();
+                jump_to_custom_stop_back();
             else if (cur == PAGE_CUSTOM_STOP)
                 jump_to_custom_stop_back();
             else if (cur == PAGE_WATER_CLEAN_COOKING)
-                jump_to_wc_stop();
+                jump_to_wc_stop_back();
             else if (cur == PAGE_WATER_CLEAN_STOP)
                 jump_to_wc_stop_back();
             else if (cur == PAGE_HOTCLEANSAVE_COOKING)
-                jump_to_hcs_stop();
+                jump_to_hcs_stop_back();
             else if (cur == PAGE_HOTCLEANSAVE_STOP)
                 jump_to_hcs_stop_back();
             else if (cur == PAGE_HOTCLEANSAVE_COOLING)
                 g_send.buzzer_req = BUZZER_KEY_INVALID;
             else if (cur == PAGE_HOTCLEANMIDDLE_COOKING)
-                jump_to_hcm_stop();
+                jump_to_hcm_stop_back();
             else if (cur == PAGE_HOTCLEANMIDDLE_STOP)
                 jump_to_hcm_stop_back();
             else if (cur == PAGE_HOTCLEANMIDDLE_COOLING)
                 g_send.buzzer_req = BUZZER_KEY_INVALID;
             else if (cur == PAGE_HOTCLEANHIGH_COOKING)
-                jump_to_hch_stop();
+                jump_to_hch_stop_back();
             else if (cur == PAGE_HOTCLEANHIGH_STOP)
                 jump_to_hch_stop_back();
             else if (cur == PAGE_HOTCLEANHIGH_COOLING)
@@ -4358,6 +4495,39 @@ static void auto_pause_on_door(void)
 
 void cooking_timer_cb(lv_timer_t *timer)
 {
+    if (g_on_stop_back) {
+        uint32_t elapsed = lv_tick_get() - cook_start_time;
+        if (current_group == g_updown_bbq_stop_back) {
+            updown_bbq_stop_back_t *back = updown_bbq_stop_back_get(&ui_manager);
+            if (back) {
+                int p = stop_back_progress(elapsed, cook_total_ms);
+                if (p > 100) p = 100;
+                lv_bar_set_value(back->bar_2, p, LV_ANIM_OFF);
+                lv_obj_invalidate(lv_scr_act());
+            }
+        }
+        if (current_group == g_top_bbq_stop_back) {
+            top_bbq_stop_back_t *back = top_bbq_stop_back_get(&ui_manager);
+            if (back) {
+                int p = stop_back_progress(elapsed, cook_total_ms);
+                if (p > 100) p = 100;
+                lv_bar_set_value(back->bar_8, p, LV_ANIM_OFF);
+                lv_obj_invalidate(lv_scr_act());
+            }
+        }
+        if (elapsed >= (uint32_t)cook_total_ms && cook_timer) {
+            lv_timer_del(cook_timer);
+            cook_timer = NULL;
+            g_send.buzzer_req = BUZZER_COOK_DONE;
+            g_on_stop_back = 0;
+            if (g_stop_back_complete) {
+                void (*fn)(void) = g_stop_back_complete;
+                g_stop_back_complete = NULL;
+                fn();
+            }
+        }
+        return;
+    }
     if (is_door_open()) {
         auto_pause_on_door();
         return;
@@ -4963,11 +5133,9 @@ static void jump_to_updown_bbq_stop(void)
     cook_elapsed_saved = lv_tick_get() - cook_start_time;
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
 
-    /* 保存 cooking bar 的实际值（动画从 3→100，与 time-based 有偏移） */
-    {
-        updown_bbq_cooking_t *cook = updown_bbq_cooking_get(&ui_manager);
-        cook_bar_saved = cook ? lv_bar_get_value(cook->bar) : 0;
-    }
+    /* 保存 cooking bar 的实际值（3→100，与 cooking 页动画一致） */
+    cook_bar_saved = 3 + (int)((int64_t)cook_elapsed_saved * 97 / (cook_total_ms ? cook_total_ms : 1));
+    if (cook_bar_saved > 100) cook_bar_saved = 100;
 
     page_push(PAGE_UPDOWN_BBQ_STOP);
     lv_obj_clean(lv_scr_act());
@@ -5013,6 +5181,15 @@ static void jump_to_updown_bbq_stop(void)
 // stop/cooking → stop_back（确认退出）
 static void jump_to_updown_bbq_stop_back(void)
 {
+    int cooking_bar_val = 0;
+    if (cook_timer) {
+        updown_bbq_cooking_t *cook = updown_bbq_cooking_get(&ui_manager);
+        if (cook) cooking_bar_val = lv_bar_get_value(cook->bar);
+    }
+
+    g_on_stop_back = 1;
+    g_stop_back_complete = jump_to_updown_bbq_complete;
+
     page_push(PAGE_UPDOWN_BBQ_STOP_BACK);
     lv_obj_clean(lv_scr_act());
     updown_bbq_stop_back_create(&ui_manager);
@@ -5028,11 +5205,15 @@ static void jump_to_updown_bbq_stop_back(void)
         /* 同步 statu_label / bar_2（从耗时计算进度） */
         set_status_label_min(back->statu_label, set_temp_up, set_temp_down, set_hour, set_min);
 
-        uint32_t elapsed = lv_tick_get() - cook_start_time;
-        int p = (int)((int64_t)elapsed * 100 / (cook_total_ms ? cook_total_ms : 1));
+        int p = cooking_bar_val;
+        if (p <= 0) {
+            uint32_t elapsed = cook_elapsed_saved;
+            p = stop_back_progress(elapsed, cook_total_ms);
+        }
         if (p > 100) p = 100;
         lv_bar_set_range(back->bar_2, 0, 100);
         lv_bar_set_value(back->bar_2, p, LV_ANIM_OFF);
+        printf("[debug] stop_back init: p=%d\n", p);
     }
     current_group = g_updown_bbq_stop_back;
 
@@ -5144,6 +5325,7 @@ static void on_stop_back_sure_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
     if (screen_is_loading(act_scr)) return;
+    g_on_stop_back = 0;
 
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
     set_temp = 180; set_temp_up = 180; set_temp_down = 180; set_hour = 0; set_min = 30;
@@ -5219,6 +5401,8 @@ static void jump_to_color_stop(void)
 // color_stop → color_stop_back（确认退出）
 static void jump_to_color_stop_back(void)
 {
+    g_on_stop_back = 1;
+    g_stop_back_complete = jump_to_color_complete;
     page_push(PAGE_COLOR_STOP_BACK);
     lv_obj_clean(lv_scr_act());
     color_stop_back_create(&ui_manager);
@@ -5232,16 +5416,18 @@ static void jump_to_color_stop_back(void)
                             LV_EVENT_CLICKED, NULL);
 
         lv_label_set_text(csb->label_17, "| 额外上色 | 5分钟");
+        uint32_t _elapsed = lv_tick_get() - cook_start_time;
+        int _p = (int)((int64_t)_elapsed * 100 / (cook_total_ms ? cook_total_ms : 1));
+        if (_p > 100) _p = 100;
         lv_bar_set_range(csb->bar_4, 0, 100);
-        if (cook_bar_saved > 100) cook_bar_saved = 100;
-        lv_bar_set_value(csb->bar_4, cook_bar_saved, LV_ANIM_OFF);
+        lv_bar_set_value(csb->bar_4, _p, LV_ANIM_OFF);
     }
     current_group = g_color_stop_back;
 
     lv_scr_load_anim(color_stop_back_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[nav] jump: color_stop -> color_stop_back\n");
+    printf("[nav] jump: stop/cooking -> color_stop_back\n");
 }
 
 // color_cookoing 暂停按钮点击
@@ -5320,7 +5506,7 @@ static void on_color_stop_back_sure_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
     if (screen_is_loading(act_scr)) return;
-
+    g_on_stop_back = 0;
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
     set_temp = 180; set_temp_up = 180; set_temp_down = 180; set_hour = 0; set_min = 30;
     cook_is_color = 0;
