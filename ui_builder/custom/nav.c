@@ -1616,16 +1616,15 @@ void page_pop(void)
             set_temp = hot_bbq_setting_saved_temp;
             set_hour = hot_bbq_setting_saved_hour;
             set_min = hot_bbq_setting_saved_min;
-        }
-        hot_bbq_rebuild_cooking(child);
-        if (child == PAGE_HOT_BBQ_SETTING) {
+            hot_bbq_rebuild_cooking(child);
             g_send.iface_status = IFACE_COOKING;
             g_send.set_temp = set_temp;
             {
                 uint32_t e = lv_tick_get() - cook_start_time;
                 g_send.remaining_ms = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);
             }
-        }
+        } else
+            hot_bbq_rebuild_cooking(0);
         break;
 
     case PAGE_HOT_BBQ_SETTING:
@@ -4512,6 +4511,15 @@ void cooking_timer_cb(lv_timer_t *timer)
                 int p = stop_back_progress(elapsed, cook_total_ms);
                 if (p > 100) p = 100;
                 lv_bar_set_value(back->bar_8, p, LV_ANIM_OFF);
+                lv_obj_invalidate(lv_scr_act());
+            }
+        }
+        if (current_group == g_hot_bbq_stop_back) {
+            hot_bbq_stop_back_t *back = hot_bbq_stop_back_get(&ui_manager);
+            if (back) {
+                int p = stop_back_progress(elapsed, cook_total_ms);
+                if (p > 100) p = 100;
+                lv_bar_set_value(back->bar_16, p, LV_ANIM_OFF);
                 lv_obj_invalidate(lv_scr_act());
             }
         }
