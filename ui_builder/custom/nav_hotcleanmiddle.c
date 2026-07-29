@@ -145,10 +145,8 @@ void jump_to_hcm_stop(void)
     cook_elapsed_saved = lv_tick_get() - cook_start_time;
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
 
-    {
-        hotcleanmiddle_cooking_t *cook = hotcleanmiddle_cooking_get(&ui_manager);
-        cook_bar_saved = cook ? lv_bar_get_value(cook->bar_2) : 0;
-    }
+    cook_bar_saved = 3 + (int)((int64_t)cook_elapsed_saved * 97 / (cook_total_ms ? cook_total_ms : 1));
+    if (cook_bar_saved > 100) cook_bar_saved = 100;
 
     page_push(PAGE_HOTCLEANMIDDLE_STOP);
     lv_obj_clean(lv_scr_act());
@@ -188,7 +186,7 @@ void jump_to_hcm_stop(void)
 
 void hcm_resume_cooking(void)
 {
-    
+    g_on_stop_back = 0;
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;
@@ -248,7 +246,6 @@ depth--;
 
 void jump_to_hcm_stop_back(void)
 {
-    
     g_on_stop_back = 1;
     g_stop_back_complete = jump_to_hcm_complete;
     page_push(PAGE_HOTCLEANMIDDLE_STOP_BACK);
@@ -264,11 +261,11 @@ void jump_to_hcm_stop_back(void)
         lv_obj_add_event_cb(back->sure, on_hcm_stop_back_sure_click,
                             LV_EVENT_CLICKED, NULL);
 
+        uint32_t elapsed = cook_timer ? (lv_tick_get() - cook_start_time) : cook_elapsed_saved;
+        int p = stop_back_progress(elapsed, cook_total_ms);
+        if (p > 100) p = 100;
         lv_bar_set_range(back->bar_2, 0, 100);
-        uint32_t _elapsed = lv_tick_get() - cook_start_time;
-        int _p = (int)((int64_t)_elapsed * 100 / (cook_total_ms ? cook_total_ms : 1));
-        if (_p > 100) _p = 100;
-        lv_bar_set_value(back->bar_2, cook_bar_saved, LV_ANIM_OFF);
+        lv_bar_set_value(back->bar_2, p, LV_ANIM_OFF);
 
         if (back->sure) lv_group_focus_obj(back->sure);
     }
@@ -277,7 +274,7 @@ void jump_to_hcm_stop_back(void)
     lv_scr_load_anim(hotcleanmiddle_stop_back_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[hcs] jump: stop -> stop_back\n");
+    printf("[hcs] jump: stop/cooking -> stop_back\n");
 }
 
 void jump_to_hcm_cooling(void)
@@ -313,6 +310,10 @@ void jump_to_hcm_cooling(void)
 
 void jump_to_hcm_complete(void)
 {
+    if (depth > 0 && page_stack[depth - 1] == PAGE_HOTCLEANMIDDLE_STOP_BACK)
+        depth--;
+    if (depth > 0 && page_stack[depth - 1] == PAGE_HOTCLEANMIDDLE_STOP)
+        depth--;
     page_push(PAGE_HOTCLEANMIDDLE_COMPLETE);
     lv_obj_clean(lv_scr_act());
     hotcleanmiddle_complete_create(&ui_manager);
@@ -371,7 +372,7 @@ void hcm_rebuild_cooking(page_id_t child)
             int s = remaining_sec % 60;
             lv_label_set_text_fmt(cook->timelabel, "%02d:%02d:%02d", h, m, s);
             lv_bar_set_range(cook->bar_2, 0, 100);
-            int progress = (int)((int64_t)elapsed * 100 / cook_total_ms);
+             int progress = stop_back_progress(elapsed, cook_total_ms);
             if (progress > 100) progress = 100;
             lv_bar_set_value(cook->bar_2, progress, LV_ANIM_OFF);
             lv_anim_t a;
@@ -406,6 +407,7 @@ void hcm_rebuild_cooking(page_id_t child)
 
 void hcm_rebuild_stop(void)
 {
+    g_on_stop_back = 0;
     hotcleanmiddle_stop_create(&ui_manager);
     hotcleanmiddle_stop_t *stop = hotcleanmiddle_stop_get(&ui_manager);
     if (stop) {
@@ -439,6 +441,8 @@ void hcm_rebuild_stop(void)
 
 void hcm_rebuild_stop_back(void)
 {
+    g_on_stop_back = 1;
+    g_stop_back_complete = jump_to_hcm_complete;
     hotcleanmiddle_stop_back_create(&ui_manager);
     hotcleanmiddle_stop_back_t *back = hotcleanmiddle_stop_back_get(&ui_manager);
     if (back) {
@@ -449,11 +453,11 @@ void hcm_rebuild_stop_back(void)
         lv_obj_add_event_cb(back->sure, on_hcm_stop_back_sure_click,
                             LV_EVENT_CLICKED, NULL);
 
+        uint32_t elapsed = cook_timer ? (lv_tick_get() - cook_start_time) : cook_elapsed_saved;
+        int p = stop_back_progress(elapsed, cook_total_ms);
+        if (p > 100) p = 100;
         lv_bar_set_range(back->bar_2, 0, 100);
-        uint32_t _elapsed = lv_tick_get() - cook_start_time;
-        int _p = (int)((int64_t)_elapsed * 100 / (cook_total_ms ? cook_total_ms : 1));
-        if (_p > 100) _p = 100;
-        lv_bar_set_value(back->bar_2, cook_bar_saved, LV_ANIM_OFF);
+        lv_bar_set_value(back->bar_2, p, LV_ANIM_OFF);
 
         if (back->sure) lv_group_focus_obj(back->sure);
     }

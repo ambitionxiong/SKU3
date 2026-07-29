@@ -370,10 +370,8 @@ void jump_to_bread_stop(void)
     cook_elapsed_saved = lv_tick_get() - cook_start_time;
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
 
-    {
-        bread_cooking_t *cook = bread_cooking_get(&ui_manager);
-        cook_bar_saved = cook ? lv_bar_get_value(cook->bar_56) : 0;
-    }
+    cook_bar_saved = 3 + (int)((int64_t)cook_elapsed_saved * 97 / (cook_total_ms ? cook_total_ms : 1));
+    if (cook_bar_saved > 100) cook_bar_saved = 100;
 
     page_push(PAGE_BREAD_STOP);
     lv_obj_clean(lv_scr_act());
@@ -415,7 +413,11 @@ void jump_to_bread_stop(void)
 
 void jump_to_bread_stop_back(void)
 {
-    
+    int cooking_bar_val = 0;
+    if (cook_timer) {
+        bread_cooking_t *cook = bread_cooking_get(&ui_manager);
+        if (cook) cooking_bar_val = lv_bar_get_value(cook->bar_56);
+    }
     g_on_stop_back = 1;
     g_stop_back_complete = jump_to_bread_complete;
     page_push(PAGE_BREAD_STOP_BACK);
@@ -433,23 +435,26 @@ void jump_to_bread_stop_back(void)
                             LV_EVENT_CLICKED, NULL);
 
         bread_set_status(back->status, set_hour, set_min);
+        int p = cooking_bar_val;
+        if (p <= 0) {
+            uint32_t elapsed = cook_timer ? (lv_tick_get() - cook_start_time) : cook_elapsed_saved;
+            p = stop_back_progress(elapsed, cook_total_ms);
+        }
+        if (p > 100) p = 100;
         lv_bar_set_range(back->bar_58, 0, 100);
-        uint32_t _elapsed = lv_tick_get() - cook_start_time;
-        int _p = (int)((int64_t)_elapsed * 100 / (cook_total_ms ? cook_total_ms : 1));
-        if (_p > 100) _p = 100;
-        lv_bar_set_value(back->bar_58, cook_bar_saved, LV_ANIM_OFF);
+        lv_bar_set_value(back->bar_58, p, LV_ANIM_OFF);
     }
     current_group = g_bread_stop_back;
 
     lv_scr_load_anim(bread_stop_back_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[lasagna] jump: stop -> stop_back\n");
+    printf("[lasagna] stop/cooking -> stop_back\n");
 }
 
 void bread_resume_cooking(void)
 {
-    
+    g_on_stop_back = 0;
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;
@@ -568,6 +573,10 @@ static void on_bread_setting_sure_click(lv_event_t *e)
 
 void jump_to_bread_complete(void)
 {
+    if (depth > 0 && page_stack[depth - 1] == PAGE_BREAD_STOP_BACK)
+        depth--;
+    if (depth > 0 && page_stack[depth - 1] == PAGE_BREAD_STOP)
+        depth--;
     page_push(PAGE_BREAD_COMPLETE);
     lv_obj_clean(lv_scr_act());
     bread_complete_create(&ui_manager);
@@ -725,7 +734,7 @@ void bread_rebuild_cooking(page_id_t child)
             int s = remaining_sec % 60;
             lv_label_set_text_fmt(cook->timelabel, "%02d:%02d:%02d", h, m, s);
             lv_bar_set_range(cook->bar_56, 0, 100);
-            int progress = (int)((int64_t)elapsed * 100 / cook_total_ms);
+            int progress = stop_back_progress(elapsed, cook_total_ms);
             if (progress > 100) progress = 100;
             lv_bar_set_value(cook->bar_56, progress, LV_ANIM_OFF);
             lv_anim_t a;
@@ -806,6 +815,7 @@ void bread_rebuild_setting(void)
 
 void bread_rebuild_stop(void)
 {
+    g_on_stop_back = 0;
     bread_stop_create(&ui_manager);
     bread_stop_t *stop = bread_stop_get(&ui_manager);
     if (stop) {
@@ -841,6 +851,8 @@ void bread_rebuild_stop(void)
 
 void bread_rebuild_stop_back(void)
 {
+    g_on_stop_back = 1;
+    g_stop_back_complete = jump_to_bread_complete;
     bread_stop_back_create(&ui_manager);
     bread_stop_back_t *back = bread_stop_back_get(&ui_manager);
     if (back) {
@@ -854,10 +866,11 @@ void bread_rebuild_stop_back(void)
 
         bread_set_status(back->status, set_hour, set_min);
         lv_bar_set_range(back->bar_58, 0, 100);
-        uint32_t _elapsed = lv_tick_get() - cook_start_time;
-        int _p = (int)((int64_t)_elapsed * 100 / (cook_total_ms ? cook_total_ms : 1));
-        if (_p > 100) _p = 100;
-        lv_bar_set_value(back->bar_58, cook_bar_saved, LV_ANIM_OFF);
+        uint32_t elapsed = cook_timer ? (lv_tick_get() - cook_start_time) : cook_elapsed_saved;
+        int p = stop_back_progress(elapsed, cook_total_ms);
+        if (p > 100) p = 100;
+        lv_bar_set_range(back->bar_58, 0, 100);
+        lv_bar_set_value(back->bar_58, p, LV_ANIM_OFF);
     }
     current_group = g_bread_stop_back;
     lv_scr_load_anim(bread_stop_back_get(&ui_manager)->obj,

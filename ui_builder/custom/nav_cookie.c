@@ -145,7 +145,7 @@ static void on_cookie_stop_back_sure_click(lv_event_t *e)
     if (screen_is_loading(act_scr)) return;
     g_on_stop_back = 0;
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
-    set_temp = 180; set_temp_up = 180; set_temp_down = 180; set_hour = 0; set_min = 30;
+    set_temp = 135; set_temp_up = 135; set_temp_down = 135; set_hour = 0; set_min = 30;
     cook_elapsed_saved = 0; cook_bar_saved = 0;
     depth = 2;
     lv_obj_clean(lv_scr_act());
@@ -170,6 +170,7 @@ static void on_cookie_stop_back_sure_click(lv_event_t *e)
 
 void jump_to_cookie_menu(void)
 {
+    set_temp = 135; set_hour = 0; set_min = 30;
     page_push(PAGE_COOKIE_MENU);
     lv_obj_clean(lv_scr_act());
     cookie_menu_create(&ui_manager);
@@ -185,7 +186,7 @@ void jump_to_cookie_menu(void)
 
         edit_clear();
         edit_register(menu->temp, menu->line2, menu->line3,
-                      &set_temp, 30, 300, 5, "%d");
+                      &set_temp, 130, 150, 5, "%d");
         edit_register(menu->hour, menu->hourline, NULL,
                       &set_hour, 0, 4, 1, "%02d");
         edit_register(menu->min, menu->minline, NULL,
@@ -374,7 +375,7 @@ void jump_to_cookie_setting(void)
 
         edit_clear();
         edit_register(set->temp, set->templine2, set->templine3,
-                      &set_temp, 30, 300, 5, "%d");
+                      &set_temp, 130, 150, 5, "%d");
         edit_register(set->hour, set->hourline, NULL,
                       &set_hour, 0, 4, 1, "%02d");
         edit_register(set->min, set->minline, NULL,
@@ -431,10 +432,8 @@ void jump_to_cookie_stop(void)
     cook_elapsed_saved = lv_tick_get() - cook_start_time;
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
 
-    {
-        cookie_cooking_t *cook = cookie_cooking_get(&ui_manager);
-        cook_bar_saved = cook ? lv_bar_get_value(cook->bar_4) : 0;
-    }
+    cook_bar_saved = 3 + (int)((int64_t)cook_elapsed_saved * 97 / (cook_total_ms ? cook_total_ms : 1));
+    if (cook_bar_saved > 100) cook_bar_saved = 100;
 
     page_push(PAGE_COOKIE_STOP);
     lv_obj_clean(lv_scr_act());
@@ -477,7 +476,9 @@ void jump_to_cookie_stop(void)
 // stop → stop_back
 void jump_to_cookie_stop_back(void)
 {
-    
+    int cooking_bar_val = 0;
+    if (cook_timer) { cookie_cooking_t *cook = cookie_cooking_get(&ui_manager); if (cook) cooking_bar_val = lv_bar_get_value(cook->bar_4); }
+
     g_on_stop_back = 1;
     g_stop_back_complete = jump_to_cookie_complete;
     page_push(PAGE_COOKIE_STOP_BACK);
@@ -495,24 +496,27 @@ void jump_to_cookie_stop_back(void)
                             LV_EVENT_CLICKED, NULL);
 
         cookie_set_status(back->status, set_temp, set_hour, set_min);
+        int p = cooking_bar_val;
+        if (p <= 0) {
+            uint32_t elapsed = cook_timer ? (lv_tick_get() - cook_start_time) : cook_elapsed_saved;
+            p = stop_back_progress(elapsed, cook_total_ms);
+        }
+        if (p > 100) p = 100;
         lv_bar_set_range(back->bar_6, 0, 100);
-        uint32_t _elapsed = lv_tick_get() - cook_start_time;
-        int _p = (int)((int64_t)_elapsed * 100 / (cook_total_ms ? cook_total_ms : 1));
-        if (_p > 100) _p = 100;
-        lv_bar_set_value(back->bar_6, cook_bar_saved, LV_ANIM_OFF);
+        lv_bar_set_value(back->bar_6, p, LV_ANIM_OFF);
     }
     current_group = g_cookie_stop_back;
 
     lv_scr_load_anim(cookie_stop_back_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[cookie] jump: stop -> stop_back\n");
+    printf("[cookie] jump: stop/cooking -> stop_back\n");
 }
 
 // stop 恢复 cooking
 void cookie_resume_cooking(void)
 {
-    
+    g_on_stop_back = 0;
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;
@@ -633,6 +637,10 @@ static void on_cookie_setting_sure_click(lv_event_t *e)
 // cooking → complete
 void jump_to_cookie_complete(void)
 {
+    if (depth > 0 && page_stack[depth - 1] == PAGE_COOKIE_STOP_BACK)
+        depth--;
+    if (depth > 0 && page_stack[depth - 1] == PAGE_COOKIE_STOP)
+        depth--;
     page_push(PAGE_COOKIE_COMPLETE);
     lv_obj_clean(lv_scr_act());
     cookie_complete_create(&ui_manager);
@@ -677,7 +685,7 @@ void cookie_rebuild_menu(page_id_t child)
 
         edit_clear();
         edit_register(menu->temp, menu->line2, menu->line3,
-                      &set_temp, 30, 300, 5, "%d");
+                      &set_temp, 130, 150, 5, "%d");
         edit_register(menu->hour, menu->hourline, NULL,
                       &set_hour, 0, 4, 1, "%02d");
         edit_register(menu->min, menu->minline, NULL,
@@ -805,7 +813,7 @@ void cookie_rebuild_cooking(page_id_t child)
             int s = remaining_sec % 60;
             lv_label_set_text_fmt(cook->timelabel, "%02d:%02d:%02d", h, m, s);
             lv_bar_set_range(cook->bar_4, 0, 100);
-            int progress = (int)((int64_t)elapsed * 100 / cook_total_ms);
+             int progress = stop_back_progress(elapsed, cook_total_ms);
             if (progress > 100) progress = 100;
             lv_bar_set_value(cook->bar_4, progress, LV_ANIM_OFF);
             lv_anim_t a;
@@ -849,7 +857,7 @@ void cookie_rebuild_setting(void)
 
         edit_clear();
         edit_register(set->temp, set->templine2, set->templine3,
-                      &set_temp, 30, 300, 5, "%d");
+                      &set_temp, 130, 150, 5, "%d");
         edit_register(set->hour, set->hourline, NULL,
                       &set_hour, 0, 4, 1, "%02d");
         edit_register(set->min, set->minline, NULL,
@@ -895,6 +903,7 @@ void cookie_rebuild_setting(void)
 
 void cookie_rebuild_stop(void)
 {
+    g_on_stop_back = 0;
     cookie_stop_create(&ui_manager);
     cookie_stop_t *stop = cookie_stop_get(&ui_manager);
     if (stop) {
@@ -930,6 +939,8 @@ void cookie_rebuild_stop(void)
 
 void cookie_rebuild_stop_back(void)
 {
+    g_on_stop_back = 1;
+    g_stop_back_complete = jump_to_cookie_complete;
     cookie_stop_back_create(&ui_manager);
     cookie_stop_back_t *back = cookie_stop_back_get(&ui_manager);
     if (back) {
@@ -942,11 +953,11 @@ void cookie_rebuild_stop_back(void)
                             LV_EVENT_CLICKED, NULL);
 
         cookie_set_status(back->status, set_temp, set_hour, set_min);
+        uint32_t elapsed = cook_timer ? (lv_tick_get() - cook_start_time) : cook_elapsed_saved;
+        int p = stop_back_progress(elapsed, cook_total_ms);
+        if (p > 100) p = 100;
         lv_bar_set_range(back->bar_6, 0, 100);
-        uint32_t _elapsed = lv_tick_get() - cook_start_time;
-        int _p = (int)((int64_t)_elapsed * 100 / (cook_total_ms ? cook_total_ms : 1));
-        if (_p > 100) _p = 100;
-        lv_bar_set_value(back->bar_6, cook_bar_saved, LV_ANIM_OFF);
+        lv_bar_set_value(back->bar_6, p, LV_ANIM_OFF);
     }
     current_group = g_cookie_stop_back;
     lv_scr_load_anim(cookie_stop_back_get(&ui_manager)->obj,

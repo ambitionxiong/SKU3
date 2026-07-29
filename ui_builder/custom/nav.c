@@ -1566,16 +1566,15 @@ void page_pop(void)
             set_temp = bottom_bbq_setting_saved_temp;
             set_hour = bottom_bbq_setting_saved_hour;
             set_min = bottom_bbq_setting_saved_min;
-        }
-        bottom_bbq_rebuild_cooking(child);
-        if (child == PAGE_BOTTOM_BBQ_SETTING) {
+            bottom_bbq_rebuild_cooking(child);
             g_send.iface_status = IFACE_COOKING;
             g_send.set_temp = set_temp;
             {
                 uint32_t e = lv_tick_get() - cook_start_time;
                 g_send.remaining_ms = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);
             }
-        }
+        } else
+            bottom_bbq_rebuild_cooking(0);
         break;
 
     case PAGE_BOTTOM_BBQ_SETTING:
@@ -1663,16 +1662,15 @@ void page_pop(void)
             set_temp = hotwind_bbq_setting_saved_temp;
             set_hour = hotwind_bbq_setting_saved_hour;
             set_min = hotwind_bbq_setting_saved_min;
-        }
-        hotwind_bbq_rebuild_cooking(child);
-        if (child == PAGE_HOTWIND_BBQ_SETTING) {
+            hotwind_bbq_rebuild_cooking(child);
             g_send.iface_status = IFACE_COOKING;
             g_send.set_temp = set_temp;
             {
                 uint32_t e = lv_tick_get() - cook_start_time;
                 g_send.remaining_ms = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);
             }
-        }
+        } else
+            hotwind_bbq_rebuild_cooking(0);
         break;
     case PAGE_HOTWIND_BBQ_SETTING:
         hotwind_bbq_rebuild_setting();
@@ -1707,16 +1705,15 @@ void page_pop(void)
             set_temp = save_bbq_setting_saved_temp;
             set_hour = save_bbq_setting_saved_hour;
             set_min = save_bbq_setting_saved_min;
-        }
-        save_bbq_rebuild_cooking(child);
-        if (child == PAGE_SAVE_BBQ_SETTING) {
+            save_bbq_rebuild_cooking(child);
             g_send.iface_status = IFACE_COOKING;
             g_send.set_temp = set_temp;
             {
                 uint32_t e = lv_tick_get() - cook_start_time;
                 g_send.remaining_ms = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);
             }
-        }
+        } else
+            save_bbq_rebuild_cooking(0);
         break;
     case PAGE_SAVE_BBQ_SETTING:
         save_bbq_rebuild_setting();
@@ -1751,16 +1748,15 @@ void page_pop(void)
             set_temp = central_bbq_setting_saved_temp;
             set_hour = central_bbq_setting_saved_hour;
             set_min = central_bbq_setting_saved_min;
-        }
-        central_bbq_rebuild_cooking(child);
-        if (child == PAGE_CENTRAL_BBQ_SETTING) {
+            central_bbq_rebuild_cooking(child);
             g_send.iface_status = IFACE_COOKING;
             g_send.set_temp = set_temp;
             {
                 uint32_t e = lv_tick_get() - cook_start_time;
                 g_send.remaining_ms = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);
             }
-        }
+        } else
+            central_bbq_rebuild_cooking(0);
         break;
     case PAGE_CENTRAL_BBQ_SETTING:
         central_bbq_rebuild_setting();
@@ -1795,16 +1791,15 @@ void page_pop(void)
             set_temp = windchange_bbq_setting_saved_temp;
             set_hour = windchange_bbq_setting_saved_hour;
             set_min = windchange_bbq_setting_saved_min;
-        }
-        windchange_bbq_rebuild_cooking(child);
-        if (child == PAGE_WINDCHANGE_BBQ_SETTING) {
+            windchange_bbq_rebuild_cooking(child);
             g_send.iface_status = IFACE_COOKING;
             g_send.set_temp = set_temp;
             {
                 uint32_t e = lv_tick_get() - cook_start_time;
                 g_send.remaining_ms = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);
             }
-        }
+        } else
+            windchange_bbq_rebuild_cooking(0);
         break;
     case PAGE_WINDCHANGE_BBQ_SETTING:
         windchange_bbq_rebuild_setting();
@@ -4522,6 +4517,110 @@ void cooking_timer_cb(lv_timer_t *timer)
                 lv_bar_set_value(back->bar_16, p, LV_ANIM_OFF);
                 lv_obj_invalidate(lv_scr_act());
             }
+        }
+        if (current_group == g_bottom_bbq_stop_back) {
+            bottom_bbq_stop_back_t *back = bottom_bbq_stop_back_get(&ui_manager);
+            if (back) { int p = stop_back_progress(elapsed, cook_total_ms); if (p > 100) p = 100; lv_bar_set_value(back->bar_12, p, LV_ANIM_OFF); lv_obj_invalidate(lv_scr_act()); }
+        }
+        if (current_group == g_hotwind_bbq_stop_back) {
+            hotwind_bbq_stop_back_t *back = hotwind_bbq_stop_back_get(&ui_manager);
+            if (back) { int p = stop_back_progress(elapsed, cook_total_ms); if (p > 100) p = 100; lv_bar_set_value(back->bar_20, p, LV_ANIM_OFF); lv_obj_invalidate(lv_scr_act()); }
+        }
+        if (current_group == g_save_bbq_stop_back) {
+            save_bbq_stop_back_t *back = save_bbq_stop_back_get(&ui_manager);
+            if (back) { int p = stop_back_progress(elapsed, cook_total_ms); if (p > 100) p = 100; lv_bar_set_value(back->bar_24, p, LV_ANIM_OFF); lv_obj_invalidate(lv_scr_act()); }
+        }
+        if (current_group == g_central_bbq_stop_back) {
+            central_bbq_stop_back_t *back = central_bbq_stop_back_get(&ui_manager);
+            if (back) { int p = stop_back_progress(elapsed, cook_total_ms); if (p > 100) p = 100; lv_bar_set_value(back->bar_28, p, LV_ANIM_OFF); lv_obj_invalidate(lv_scr_act()); }
+        }
+        if (current_group == g_windchange_bbq_stop_back) {
+            windchange_bbq_stop_back_t *back = windchange_bbq_stop_back_get(&ui_manager);
+            if (back) { int p = stop_back_progress(elapsed, cook_total_ms); if (p > 100) p = 100; lv_bar_set_value(back->bar_32, p, LV_ANIM_OFF); lv_obj_invalidate(lv_scr_act()); }
+        }
+        if (current_group == g_cookie_stop_back) {
+            cookie_stop_back_t *back = cookie_stop_back_get(&ui_manager);
+            if (back) { int p = stop_back_progress(elapsed, cook_total_ms); if (p > 100) p = 100; lv_bar_set_value(back->bar_6, p, LV_ANIM_OFF); lv_obj_invalidate(lv_scr_act()); }
+        }
+        if (current_group == g_west_stop_back) {
+            west_stop_back_t *back = west_stop_back_get(&ui_manager);
+            if (back) { int p = stop_back_progress(elapsed, cook_total_ms); if (p > 100) p = 100; lv_bar_set_value(back->bar_10, p, LV_ANIM_OFF); lv_obj_invalidate(lv_scr_act()); }
+        }
+        if (current_group == g_pizza_stop_back) {
+            pizza_stop_back_t *back = pizza_stop_back_get(&ui_manager);
+            if (back) { int p = stop_back_progress(elapsed, cook_total_ms); if (p > 100) p = 100; lv_bar_set_value(back->bar_14, p, LV_ANIM_OFF); lv_obj_invalidate(lv_scr_act()); }
+        }
+        if (current_group == g_menu_cook_stop_back) {
+            menu_stop_back_t *back = menu_stop_back_get(&ui_manager);
+            if (back) { int p = stop_back_progress(elapsed, cook_total_ms); if (p > 100) p = 100; lv_bar_set_value(back->bar_18, p, LV_ANIM_OFF); lv_obj_invalidate(lv_scr_act()); }
+        }
+        if (current_group == g_air_stop_back) {
+            air_stop_back_t *back = air_stop_back_get(&ui_manager);
+            if (back) { int p = stop_back_progress(elapsed, cook_total_ms); if (p > 100) p = 100; lv_bar_set_value(back->bar_22, p, LV_ANIM_OFF); lv_obj_invalidate(lv_scr_act()); }
+        }
+        if (current_group == g_pizza_2_stop_back) {
+            pizza_2_stop_back_t *back = pizza_2_stop_back_get(&ui_manager);
+            if (back) { int p = stop_back_progress(elapsed, cook_total_ms); if (p > 100) p = 100; lv_bar_set_value(back->bar_26, p, LV_ANIM_OFF); lv_obj_invalidate(lv_scr_act()); }
+        }
+        if (current_group == g_slowcook_stop_back) {
+            slowcook_stop_back_t *back = slowcook_stop_back_get(&ui_manager);
+            if (back) { int p = stop_back_progress(elapsed, cook_total_ms); if (p > 100) p = 100; lv_bar_set_value(back->bar_30, p, LV_ANIM_OFF); lv_obj_invalidate(lv_scr_act()); }
+        }
+        if (current_group == g_unfrozen_stop_back) {
+            unfrozen_stop_back_t *back = unfrozen_stop_back_get(&ui_manager);
+            if (back) { int p = stop_back_progress(elapsed, cook_total_ms); if (p > 100) p = 100; lv_bar_set_value(back->bar_34, p, LV_ANIM_OFF); lv_obj_invalidate(lv_scr_act()); }
+        }
+        if (current_group == g_rising_stop_back) {
+            rising_stop_back_t *back = rising_stop_back_get(&ui_manager);
+            if (back) { int p = stop_back_progress(elapsed, cook_total_ms); if (p > 100) p = 100; lv_bar_set_value(back->bar_38, p, LV_ANIM_OFF); lv_obj_invalidate(lv_scr_act()); }
+        }
+        if (current_group == g_corn_stop_back) {
+            corn_stop_back_t *back = corn_stop_back_get(&ui_manager);
+            if (back) { int p = stop_back_progress(elapsed, cook_total_ms); if (p > 100) p = 100; lv_bar_set_value(back->bar_42, p, LV_ANIM_OFF); lv_obj_invalidate(lv_scr_act()); }
+        }
+        if (current_group == g_heatcontain_stop_back) {
+            heatcontain_stop_back_t *back = heatcontain_stop_back_get(&ui_manager);
+            if (back) { int p = stop_back_progress(elapsed, cook_total_ms); if (p > 100) p = 100; lv_bar_set_value(back->bar_46, p, LV_ANIM_OFF); lv_obj_invalidate(lv_scr_act()); }
+        }
+        if (current_group == g_lasagna_stop_back) {
+            lasagna_stop_back_t *back = lasagna_stop_back_get(&ui_manager);
+            if (back) { int p = stop_back_progress(elapsed, cook_total_ms); if (p > 100) p = 100; lv_bar_set_value(back->bar_50, p, LV_ANIM_OFF); lv_obj_invalidate(lv_scr_act()); }
+        }
+        if (current_group == g_strudel_stop_back) {
+            strudel_stop_back_t *back = strudel_stop_back_get(&ui_manager);
+            if (back) { int p = stop_back_progress(elapsed, cook_total_ms); if (p > 100) p = 100; lv_bar_set_value(back->bar_54, p, LV_ANIM_OFF); lv_obj_invalidate(lv_scr_act()); }
+        }
+        if (current_group == g_bread_stop_back) {
+            bread_stop_back_t *back = bread_stop_back_get(&ui_manager);
+            if (back) { int p = stop_back_progress(elapsed, cook_total_ms); if (p > 100) p = 100; lv_bar_set_value(back->bar_58, p, LV_ANIM_OFF); lv_obj_invalidate(lv_scr_act()); }
+        }
+        if (current_group == g_pizza3_stop_back) {
+            pizza3_stop_back_t *back = pizza3_stop_back_get(&ui_manager);
+            if (back) { int p = stop_back_progress(elapsed, cook_total_ms); if (p > 100) p = 100; lv_bar_set_value(back->bar_62, p, LV_ANIM_OFF); lv_obj_invalidate(lv_scr_act()); }
+        }
+        if (current_group == g_chip_stop_back) {
+            chip_stop_back_t *back = chip_stop_back_get(&ui_manager);
+            if (back) { int p = stop_back_progress(elapsed, cook_total_ms); if (p > 100) p = 100; lv_bar_set_value(back->bar_66, p, LV_ANIM_OFF); lv_obj_invalidate(lv_scr_act()); }
+        }
+        if (current_group == g_custom_stop_back) {
+            custom_stop_back_t *back = custom_stop_back_get(&ui_manager);
+            if (back) { int p = stop_back_progress(elapsed, cook_total_ms); if (p > 100) p = 100; lv_bar_set_value(back->bar_70, p, LV_ANIM_OFF); lv_obj_invalidate(lv_scr_act()); }
+        }
+        if (current_group == g_wc_stop_back) {
+            waterclean_stop_back_t *back = waterclean_stop_back_get(&ui_manager);
+            if (back) { int p = stop_back_progress(elapsed, cook_total_ms); if (p > 100) p = 100; lv_bar_set_value(back->bar_1, p, LV_ANIM_OFF); lv_obj_invalidate(lv_scr_act()); }
+        }
+        if (current_group == g_hcs_stop_back) {
+            hotcleansave_stop_back_t *back = hotcleansave_stop_back_get(&ui_manager);
+            if (back) { int p = stop_back_progress(elapsed, cook_total_ms); if (p > 100) p = 100; lv_bar_set_value(back->bar_4, p, LV_ANIM_OFF); lv_obj_invalidate(lv_scr_act()); }
+        }
+        if (current_group == g_hcm_stop_back) {
+            hotcleanmiddle_stop_back_t *back = hotcleanmiddle_stop_back_get(&ui_manager);
+            if (back) { int p = stop_back_progress(elapsed, cook_total_ms); if (p > 100) p = 100; lv_bar_set_value(back->bar_2, p, LV_ANIM_OFF); lv_obj_invalidate(lv_scr_act()); }
+        }
+        if (current_group == g_hch_stop_back) {
+            hotcleanhigh_stop_back_t *back = hotcleanhigh_stop_back_get(&ui_manager);
+            if (back) { int p = stop_back_progress(elapsed, cook_total_ms); if (p > 100) p = 100; lv_bar_set_value(back->bar_3, p, LV_ANIM_OFF); lv_obj_invalidate(lv_scr_act()); }
         }
         if (elapsed >= (uint32_t)cook_total_ms && cook_timer) {
             lv_timer_del(cook_timer);
