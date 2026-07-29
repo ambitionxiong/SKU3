@@ -3538,7 +3538,7 @@ typedef struct {
     lv_obj_t *label_13;
     lv_obj_t *templine3;
     lv_obj_t *templine2;
-    lv_obj_t *label_14;
+    lv_obj_t *probetemp;
     lv_obj_t *label_15;
     lv_obj_t *probeline2;
 } updown_bbq_menu_probe_t;
@@ -3570,6 +3570,36 @@ typedef struct {
     lv_obj_t *probetemp;
     lv_obj_t *probeicon2;
 } updown_bbq_set_probe_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_5;
+    lv_obj_t *next;
+    lv_obj_t *label_12;
+    lv_obj_t *label_13;
+    lv_obj_t *label_14;
+    lv_obj_t *temp;
+    lv_obj_t *label_16;
+    lv_obj_t *line2;
+    lv_obj_t *line3;
+    lv_obj_t *dir3;
+    lv_obj_t *dir2;
+} updown_bbq_menu_top_probe_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_8;
+    lv_obj_t *next;
+    lv_obj_t *label_19;
+    lv_obj_t *label_20;
+    lv_obj_t *label_21;
+    lv_obj_t *temp;
+    lv_obj_t *label_23;
+    lv_obj_t *dir2;
+    lv_obj_t *dir3;
+    lv_obj_t *line3;
+    lv_obj_t *line2;
+} updown_bbq_menu_low_probe_t;
 
 typedef struct {
     lv_obj_t *obj;
@@ -3618,36 +3648,6 @@ typedef struct {
     lv_obj_t *label_76;
     lv_obj_t *label_77;
 } updown_bbq_complete_probe_t;
-
-typedef struct {
-    lv_obj_t *obj;
-    lv_obj_t *image_5;
-    lv_obj_t *next;
-    lv_obj_t *label_12;
-    lv_obj_t *label_13;
-    lv_obj_t *label_14;
-    lv_obj_t *temp;
-    lv_obj_t *label_16;
-    lv_obj_t *line2;
-    lv_obj_t *line3;
-    lv_obj_t *dir3;
-    lv_obj_t *dir2;
-} updown_bbq_menu_top_probe_t;
-
-typedef struct {
-    lv_obj_t *obj;
-    lv_obj_t *image_8;
-    lv_obj_t *next;
-    lv_obj_t *label_19;
-    lv_obj_t *label_20;
-    lv_obj_t *label_21;
-    lv_obj_t *temp;
-    lv_obj_t *label_23;
-    lv_obj_t *dir2;
-    lv_obj_t *dir3;
-    lv_obj_t *line3;
-    lv_obj_t *line2;
-} updown_bbq_menu_low_probe_t;
 
 
 typedef struct {
@@ -3879,12 +3879,12 @@ typedef struct {
     probetip_t probetip;
     updown_bbq_menu_probe_t updown_bbq_menu_probe;
     updown_bbq_set_probe_t updown_bbq_set_probe;
+    updown_bbq_menu_top_probe_t updown_bbq_menu_top_probe;
+    updown_bbq_menu_low_probe_t updown_bbq_menu_low_probe;
     updown_bbq_cooking_probe_t updown_bbq_cooking_probe;
     updown_bbq_stop_probe_t updown_bbq_stop_probe;
     updown_bbq_stop_back_probe_t updown_bbq_stop_back_probe;
     updown_bbq_complete_probe_t updown_bbq_complete_probe;
-    updown_bbq_menu_top_probe_t updown_bbq_menu_top_probe;
-    updown_bbq_menu_low_probe_t updown_bbq_menu_low_probe;
 
 } ui_manager_t;
 
@@ -5029,6 +5029,16 @@ static inline updown_bbq_set_probe_t *updown_bbq_set_probe_get(ui_manager_t *ui)
     return &ui->updown_bbq_set_probe;
 }
 
+static inline updown_bbq_menu_top_probe_t *updown_bbq_menu_top_probe_get(ui_manager_t *ui)
+{
+    return &ui->updown_bbq_menu_top_probe;
+}
+
+static inline updown_bbq_menu_low_probe_t *updown_bbq_menu_low_probe_get(ui_manager_t *ui)
+{
+    return &ui->updown_bbq_menu_low_probe;
+}
+
 static inline updown_bbq_cooking_probe_t *updown_bbq_cooking_probe_get(ui_manager_t *ui)
 {
     return &ui->updown_bbq_cooking_probe;
@@ -5047,16 +5057,6 @@ static inline updown_bbq_stop_back_probe_t *updown_bbq_stop_back_probe_get(ui_ma
 static inline updown_bbq_complete_probe_t *updown_bbq_complete_probe_get(ui_manager_t *ui)
 {
     return &ui->updown_bbq_complete_probe;
-}
-
-static inline updown_bbq_menu_top_probe_t *updown_bbq_menu_top_probe_get(ui_manager_t *ui)
-{
-    return &ui->updown_bbq_menu_top_probe;
-}
-
-static inline updown_bbq_menu_low_probe_t *updown_bbq_menu_low_probe_get(ui_manager_t *ui)
-{
-    return &ui->updown_bbq_menu_low_probe;
 }
 
 
@@ -5287,12 +5287,12 @@ void hotcleansave_stop_back_create(ui_manager_t *ui);
 void probetip_create(ui_manager_t *ui);
 void updown_bbq_menu_probe_create(ui_manager_t *ui);
 void updown_bbq_set_probe_create(ui_manager_t *ui);
+void updown_bbq_menu_top_probe_create(ui_manager_t *ui);
+void updown_bbq_menu_low_probe_create(ui_manager_t *ui);
 void updown_bbq_cooking_probe_create(ui_manager_t *ui);
 void updown_bbq_stop_probe_create(ui_manager_t *ui);
 void updown_bbq_stop_back_probe_create(ui_manager_t *ui);
 void updown_bbq_complete_probe_create(ui_manager_t *ui);
-void updown_bbq_menu_top_probe_create(ui_manager_t *ui);
-void updown_bbq_menu_low_probe_create(ui_manager_t *ui);
 
 
 extern lv_font_t *fs_montserratmedium_16;

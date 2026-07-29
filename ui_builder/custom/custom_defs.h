@@ -132,4 +132,9 @@ static inline int is_probe_inserted(void) {
     return (uart_data_receive[Receive_data_Power_ALL_State] & (1 << 2)) != 0;
 }
 
+static inline int get_probe_temp(void) {
+    return ((uint16_t)uart_data_receive[Receive_data_Probe_Temp_H] << 8)
+         | uart_data_receive[Receive_data_Probe_Temp_L];
+}
+
 #endif // CUSTOM_DEFS_H

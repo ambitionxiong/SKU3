@@ -10,6 +10,9 @@
 typedef enum {
     PAGE_WAITMENU_24,     // 等待界面（根页，开机首页）
     PAGE_PROBETIP,         // 探针提示页
+    PAGE_MAJOR_MENU_TZ,    // 探针下主菜单
+    PAGE_COOK_MENU_TZ,     // 探针下烹调菜单
+    PAGE_SPECIAL_MENU_TZ,  // 探针下特色菜单
     PAGE_MAJOR_MENU,
     PAGE_COOKMENU,
     PAGE_SPECIAL_MENU,
@@ -59,6 +62,14 @@ typedef enum {
     PAGE_UPDOWN_BBQ_SET,
     PAGE_UPDOWN_BBQ_COOKING,
     PAGE_UPDOWN_BBQ_COMPLETE,
+    PAGE_UPDOWN_BBQ_MENU_PROBE,
+    PAGE_UPDOWN_BBQ_MENU_TOP_PROBE,
+    PAGE_UPDOWN_BBQ_MENU_LOW_PROBE,
+    PAGE_UPDOWN_BBQ_SET_PROBE,
+    PAGE_UPDOWN_BBQ_COOKING_PROBE,
+    PAGE_UPDOWN_BBQ_STOP_PROBE,
+    PAGE_UPDOWN_BBQ_STOP_BACK_PROBE,
+    PAGE_UPDOWN_BBQ_COMPLETE_PROBE,
     PAGE_EXTRA_COLOR,
     PAGE_COLOR_COOKING,
     PAGE_COLOR_COOKING_COMPLETE,
@@ -234,10 +245,21 @@ extern int depth;
 extern lv_group_t *g_major_menu;
 extern lv_group_t *g_cookmenu;
 extern lv_group_t *g_probetip;
+extern lv_group_t *g_major_menu_tz;
+extern lv_group_t *g_cook_menu_tz;
+extern lv_group_t *g_special_menu_tz;
 extern lv_group_t *g_special_menu;
 extern lv_group_t *g_updown_bbq_menu;
 extern lv_group_t *g_updown_bbq_menu_top;
 extern lv_group_t *g_updown_bbq_menu_low;
+extern lv_group_t *g_updown_bbq_menu_probe;
+extern lv_group_t *g_updown_bbq_menu_top_probe;
+extern lv_group_t *g_updown_bbq_menu_low_probe;
+extern lv_group_t *g_updown_bbq_set_probe;
+extern lv_group_t *g_updown_bbq_cooking_probe;
+extern lv_group_t *g_updown_bbq_stop_probe;
+extern lv_group_t *g_updown_bbq_stop_back_probe;
+extern lv_group_t *g_updown_bbq_complete_probe;
 
 extern lv_group_t *g_preheat_menu;
 extern lv_group_t *g_preheat_cooking;
@@ -375,6 +397,8 @@ extern lv_group_t *g_windchange_bbq_complete;
 extern lv_group_t *current_group;
 
 extern int set_temp;
+extern int probe_target_temp;
+extern int cook_start_probe;
 extern int set_temp_up;
 extern int set_temp_down;
 extern int set_hour;
@@ -403,8 +427,33 @@ extern lv_group_t *g_color_cookoing;
 extern lv_group_t *g_color_stop;
 extern lv_group_t *g_color_stop_back;
 
+void jump_to_updown_bbq_menu(void);
+void jump_to_updown_bbq_menu_probe(void);
+void jump_to_updown_bbq_menu_top_probe(void);
+void jump_to_updown_bbq_menu_low_probe(void);
+void jump_to_updown_bbq_set_probe(void);
+void jump_to_updown_bbq_cooking_probe(void);
+void jump_to_updown_bbq_stop_probe(void);
+void jump_to_updown_bbq_stop_back_probe(void);
+void jump_to_updown_bbq_complete_probe(void);
+void updown_bbq_probe_resume_cooking(void);
+void updown_bbq_probe_rebuild_menu(page_id_t child);
+void updown_bbq_probe_rebuild_menu_top(page_id_t child);
+void updown_bbq_probe_rebuild_menu_low(page_id_t child);
+void updown_bbq_probe_rebuild_set(page_id_t child);
+void updown_bbq_probe_rebuild_cooking(page_id_t child);
+void updown_bbq_probe_rebuild_setting(void);
+void updown_bbq_probe_rebuild_stop(void);
+void updown_bbq_probe_rebuild_stop_back(void);
+void updown_bbq_probe_rebuild_complete(void);
 void jump_to_probetip(const char *text);
 void probetip_rebuild(page_id_t child);
+void jump_to_major_menu_tz(void);
+void jump_to_cook_menu_tz(void);
+void jump_to_special_menu_tz(void);
+void major_menu_tz_rebuild(page_id_t child);
+void cook_menu_tz_rebuild(page_id_t child);
+void special_menu_tz_rebuild(page_id_t child);
 uint16_t get_cavity_temp(void);
 void jump_to_cookmenu(void);
 void jump_to_preheat_menu(void);

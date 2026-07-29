@@ -9,6 +9,7 @@ int depth = 0;                     // 栈高度，depth=1 时只有根页
 int set_temp_up = 180;
 int set_temp_down = 180;
 int cook_bar_saved = 0;
+int probe_target_temp = 80;
 
 #ifdef LV_USE_AIC_SIMULATOR
 
@@ -36,6 +37,9 @@ static void uart_print(void)
 lv_group_t *g_major_menu;
 lv_group_t *g_cookmenu;
 lv_group_t *g_probetip;
+lv_group_t *g_major_menu_tz;
+lv_group_t *g_cook_menu_tz;
+lv_group_t *g_special_menu_tz;
 lv_group_t *g_special_menu;
 lv_group_t *g_updown_bbq_menu;
 lv_group_t *g_updown_bbq_set;
@@ -44,6 +48,14 @@ lv_group_t *g_updown_bbq_complete;
 
 lv_group_t *g_updown_bbq_menu_top;
 lv_group_t *g_updown_bbq_menu_low;
+lv_group_t *g_updown_bbq_menu_probe;
+lv_group_t *g_updown_bbq_menu_top_probe;
+lv_group_t *g_updown_bbq_menu_low_probe;
+lv_group_t *g_updown_bbq_set_probe;
+lv_group_t *g_updown_bbq_cooking_probe;
+lv_group_t *g_updown_bbq_stop_probe;
+lv_group_t *g_updown_bbq_stop_back_probe;
+lv_group_t *g_updown_bbq_complete_probe;
 lv_group_t *g_preheat_menu;
 
 lv_group_t *g_preheat_cooking;
@@ -526,6 +538,28 @@ static void adjust_value(edit_field_t *f, int delta)
                 lv_obj_clear_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
         }
     }
+    if (current_group == g_updown_bbq_menu_top_probe) {
+        updown_bbq_menu_top_probe_t *m = updown_bbq_menu_top_probe_get(&ui_manager);
+        if (m) {
+            lv_obj_add_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
+            if (new_val < 100)
+                lv_obj_clear_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
+            else
+                lv_obj_clear_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
+        }
+    }
+    if (current_group == g_updown_bbq_menu_low_probe) {
+        updown_bbq_menu_low_probe_t *m = updown_bbq_menu_low_probe_get(&ui_manager);
+        if (m) {
+            lv_obj_add_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
+            if (new_val < 100)
+                lv_obj_clear_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
+            else
+                lv_obj_clear_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
+        }
+    }
 
     validate_constraints();
 
@@ -597,6 +631,64 @@ static void adjust_value(edit_field_t *f, int delta)
             }
             {
                 updown_bbq_menu_low_t *m = updown_bbq_menu_low_get(&ui_manager);
+                if (m) {
+                    lv_obj_add_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
+                    lv_obj_add_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
+                    if (old_val < 100)
+                        lv_obj_clear_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
+                    else
+                        lv_obj_clear_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
+                }
+            }
+            lv_obj_invalidate(lv_scr_act());
+        }
+    }
+    if (current_group == g_updown_bbq_menu_top_probe) {
+        int diff = set_temp_up - set_temp_down;
+        if (diff < 0) diff = -diff;
+        if (diff > 20) {
+            g_send.buzzer_req = BUZZER_KEY_INVALID;
+            *f->value = old_val;
+            lv_label_set_text_fmt(f->label, f->fmt, old_val);
+            if (f->ind_short && f->ind_long) {
+                lv_obj_add_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
+                if (old_val < 100)
+                    lv_obj_clear_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
+                else
+                    lv_obj_clear_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
+            }
+            {
+                updown_bbq_menu_top_probe_t *m = updown_bbq_menu_top_probe_get(&ui_manager);
+                if (m) {
+                    lv_obj_add_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
+                    lv_obj_add_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
+                    if (old_val < 100)
+                        lv_obj_clear_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
+                    else
+                        lv_obj_clear_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
+                }
+            }
+            lv_obj_invalidate(lv_scr_act());
+        }
+    }
+    if (current_group == g_updown_bbq_menu_low_probe) {
+        int diff = set_temp_up - set_temp_down;
+        if (diff < 0) diff = -diff;
+        if (diff > 20) {
+            g_send.buzzer_req = BUZZER_KEY_INVALID;
+            *f->value = old_val;
+            lv_label_set_text_fmt(f->label, f->fmt, old_val);
+            if (f->ind_short && f->ind_long) {
+                lv_obj_add_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
+                if (old_val < 100)
+                    lv_obj_clear_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
+                else
+                    lv_obj_clear_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
+            }
+            {
+                updown_bbq_menu_low_probe_t *m = updown_bbq_menu_low_probe_get(&ui_manager);
                 if (m) {
                     lv_obj_add_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
                     lv_obj_add_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
@@ -1312,6 +1404,44 @@ void page_pop(void)
         break;
 
     case PAGE_UPDOWN_BBQ_COMPLETE:
+        goto pop_to_major_menu;
+
+    case PAGE_UPDOWN_BBQ_MENU_PROBE:
+        updown_bbq_probe_rebuild_menu(child);
+        break;
+
+    case PAGE_UPDOWN_BBQ_MENU_TOP_PROBE:
+        updown_bbq_probe_rebuild_menu_top(child);
+        break;
+
+    case PAGE_UPDOWN_BBQ_MENU_LOW_PROBE:
+        updown_bbq_probe_rebuild_menu_low(child);
+        break;
+
+    case PAGE_UPDOWN_BBQ_SET_PROBE:
+        updown_bbq_probe_rebuild_set(child);
+        break;
+
+    case PAGE_UPDOWN_BBQ_COOKING_PROBE:
+        if (child == PAGE_UPDOWN_BBQ_COMPLETE_PROBE)
+            goto pop_to_major_menu;
+        if (child == PAGE_UPDOWN_BBQ_STOP_BACK_PROBE) {
+            g_on_stop_back = 0;
+            updown_bbq_probe_rebuild_cooking(child);
+        } else {
+            updown_bbq_probe_rebuild_cooking(child);
+        }
+        break;
+
+    case PAGE_UPDOWN_BBQ_STOP_PROBE:
+        updown_bbq_probe_rebuild_stop();
+        break;
+
+    case PAGE_UPDOWN_BBQ_STOP_BACK_PROBE:
+        updown_bbq_probe_rebuild_stop_back();
+        break;
+
+    case PAGE_UPDOWN_BBQ_COMPLETE_PROBE:
         goto pop_to_major_menu;
 
     case PAGE_EXTRA_COLOR:
@@ -2674,16 +2804,34 @@ void page_pop(void)
         g_send.set_temp_lower = 0;
         g_send.remaining_ms = -1;
 
-        depth = 2;  /* 保留 WAITMENU_24 + MAJOR_MENU */
-        lv_obj_clean(lv_scr_act());
-        major_menu_create(&ui_manager);
-        groups_create();
-        bind_events();
-        current_group = g_major_menu;
-        lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
-                         LV_SCR_LOAD_ANIM_NONE, 0, 0,
-                         ui_manager.auto_del);
-        printf("[nav] pop to major_menu\n");
+        if (is_probe_inserted()) {
+            depth = 2;
+            page_stack[1] = PAGE_MAJOR_MENU_TZ;
+            major_menu_tz_rebuild(0);
+        } else {
+            depth = 2;
+            lv_obj_clean(lv_scr_act());
+            major_menu_create(&ui_manager);
+            groups_create();
+            bind_events();
+            current_group = g_major_menu;
+            lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
+                             LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                             ui_manager.auto_del);
+            printf("[nav] pop to major_menu\n");
+        }
+        break;
+
+    case PAGE_MAJOR_MENU_TZ:
+        major_menu_tz_rebuild(child);
+        break;
+
+    case PAGE_COOK_MENU_TZ:
+        cook_menu_tz_rebuild(child);
+        break;
+
+    case PAGE_SPECIAL_MENU_TZ:
+        special_menu_tz_rebuild(child);
         break;
 
     case PAGE_PROBETIP:
@@ -2864,7 +3012,7 @@ static void jump_to_special_menu(void)
 }
 
 // cookmenu → updown_bbq_menu
-static void jump_to_updown_bbq_menu(void)
+void jump_to_updown_bbq_menu(void)
 {
     page_push(PAGE_UPDOWN_BBQ_MENU);
     lv_obj_clean(lv_scr_act());
@@ -3131,15 +3279,19 @@ static void on_updown_downtemp_click(lv_event_t *e)
 static void on_updown_top_next_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
-    if (!screen_is_loading(act_scr))
+    if (!screen_is_loading(act_scr)) {
+        updown_menu_top_saved = set_temp_up;
         page_pop();
+    }
 }
 
 static void on_updown_low_next_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
-    if (!screen_is_loading(act_scr))
+    if (!screen_is_loading(act_scr)) {
+        updown_menu_low_saved = set_temp_down;
         page_pop();
+    }
 }
 
 static void jump_to_updown_bbq_menu_top(void)
@@ -3325,15 +3477,19 @@ static void process_key(uint8_t key)
     case KEY_MENU:          // 3: 从 waitmenu_24 进入主菜单
         g_send.buzzer_req = BUZZER_KEY_VALID;
         if (depth == 1 && page_stack[0] == PAGE_WAITMENU_24) {
-            page_push(PAGE_MAJOR_MENU);
-            lv_obj_clean(lv_scr_act());
-            major_menu_create(&ui_manager);
-            groups_create();
-            bind_events();
-            current_group = g_major_menu;
-            lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
-                             LV_SCR_LOAD_ANIM_NONE, 0, 0,
-                             ui_manager.auto_del);
+            if (is_probe_inserted()) {
+                jump_to_major_menu_tz();
+            } else {
+                page_push(PAGE_MAJOR_MENU);
+                lv_obj_clean(lv_scr_act());
+                major_menu_create(&ui_manager);
+                groups_create();
+                bind_events();
+                current_group = g_major_menu;
+                lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
+                                 LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                                 ui_manager.auto_del);
+            }
             g_send.iface_status = IFACE_SETTING;
             g_send.cook_mode = MODE_NONE;
             g_send.set_temp = 0;
@@ -3381,6 +3537,10 @@ static void process_key(uint8_t key)
                 jump_to_updown_bbq_stop_back();
             } else if (cur == PAGE_UPDOWN_BBQ_STOP)
                 jump_to_updown_bbq_stop_back();
+            else if (cur == PAGE_UPDOWN_BBQ_COOKING_PROBE) {
+                jump_to_updown_bbq_stop_back_probe();
+            } else if (cur == PAGE_UPDOWN_BBQ_STOP_PROBE)
+                jump_to_updown_bbq_stop_back_probe();
             else if (cur == PAGE_COLOR_COOKING)
                 jump_to_color_stop_back();
             else if (cur == PAGE_COLOR_STOP)
@@ -4464,6 +4624,7 @@ static void auto_pause_on_door(void)
     if (!is_door_open()) return;
     page_id_t cur = page_stack[depth - 1];
     if (cur == PAGE_UPDOWN_BBQ_COOKING) jump_to_updown_bbq_stop();
+    else if (cur == PAGE_UPDOWN_BBQ_COOKING_PROBE) jump_to_updown_bbq_stop_probe();
     else if (cur == PAGE_TOP_BBQ_COOKING) jump_to_top_bbq_stop();
     else if (cur == PAGE_BOTTOM_BBQ_COOKING) jump_to_bottom_bbq_stop();
     else if (cur == PAGE_HOT_BBQ_COOKING) jump_to_hot_bbq_stop();
@@ -4506,6 +4667,18 @@ void cooking_timer_cb(lv_timer_t *timer)
                 int p = stop_back_progress(elapsed, cook_total_ms);
                 if (p > 100) p = 100;
                 lv_bar_set_value(back->bar_2, p, LV_ANIM_OFF);
+                lv_obj_invalidate(lv_scr_act());
+            }
+        }
+        if (current_group == g_updown_bbq_stop_back_probe) {
+            updown_bbq_stop_back_probe_t *back = updown_bbq_stop_back_probe_get(&ui_manager);
+            if (back) {
+                int probe = get_probe_temp();
+                int range = probe_target_temp - cook_start_probe;
+                int p = range > 0 ? 3 + (int)((int64_t)(probe - cook_start_probe) * 97 / range) : 3;
+                if (p > 100) p = 100;
+                if (p < 3) p = 3;
+                lv_bar_set_value(back->bar_3, p, LV_ANIM_OFF);
                 lv_obj_invalidate(lv_scr_act());
             }
         }
@@ -4631,7 +4804,23 @@ void cooking_timer_cb(lv_timer_t *timer)
             hotcleanhigh_stop_back_t *back = hotcleanhigh_stop_back_get(&ui_manager);
             if (back) { int p = stop_back_progress(elapsed, cook_total_ms); if (p > 100) p = 100; lv_bar_set_value(back->bar_3, p, LV_ANIM_OFF); lv_obj_invalidate(lv_scr_act()); }
         }
-        if (elapsed >= (uint32_t)cook_total_ms && cook_timer) {
+        if (current_group == g_updown_bbq_stop_back_probe) {
+            int probe = get_probe_temp();
+        if (probe >= probe_target_temp && probe_target_temp >= 30 && probe > cook_start_probe && cook_timer) {
+                lv_timer_del(cook_timer);
+                cook_timer = NULL;
+                g_send.buzzer_req = BUZZER_COOK_DONE;
+                g_send.cook_flag = 0;
+                g_on_stop_back = 0;
+                if (g_stop_back_complete) {
+                    void (*fn)(void) = g_stop_back_complete;
+                    g_stop_back_complete = NULL;
+                    fn();
+                }
+            }
+        }
+        if (elapsed >= (uint32_t)cook_total_ms && cook_timer
+            && current_group != g_updown_bbq_stop_back_probe) {
             lv_timer_del(cook_timer);
             cook_timer = NULL;
             g_send.buzzer_req = BUZZER_COOK_DONE;
@@ -4691,6 +4880,28 @@ void cooking_timer_cb(lv_timer_t *timer)
             cook_timer = NULL;
             g_send.buzzer_req = BUZZER_COOK_DONE;
             jump_to_updown_bbq_complete();
+        }
+        return;
+    }
+    if (current_group == g_updown_bbq_cooking_probe) {
+        int probe = get_probe_temp();
+        updown_bbq_cooking_probe_t *cook = updown_bbq_cooking_probe_get(&ui_manager);
+        if (cook) {
+            int range = probe_target_temp - cook_start_probe;
+            int p = range > 0 ? 3 + (int)((int64_t)(probe - cook_start_probe) * 97 / range) : 3;
+            if (p > 100) p = 100;
+            if (p < 3) p = 3;
+            lv_bar_set_value(cook->bar_1, p, LV_ANIM_OFF);
+            int display = probe > probe_target_temp ? probe_target_temp : probe;
+            lv_label_set_text_fmt(cook->temp, "%d℃", display);
+            lv_obj_invalidate(lv_scr_act());
+        }
+            if (probe >= probe_target_temp && probe_target_temp >= 30 && probe > cook_start_probe && cook_timer) {
+            lv_timer_del(cook_timer);
+            cook_timer = NULL;
+            g_send.buzzer_req = BUZZER_COOK_DONE;
+            g_send.cook_flag = 0;
+            jump_to_updown_bbq_complete_probe();
         }
         return;
     }

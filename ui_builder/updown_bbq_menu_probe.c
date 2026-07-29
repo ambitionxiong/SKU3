@@ -147,18 +147,18 @@ void updown_bbq_menu_probe_create(ui_manager_t *ui)
     lv_obj_set_pos(scr->templine2, 289, 328);
     lv_obj_add_flag(scr->templine2, LV_OBJ_FLAG_HIDDEN);
 
-    // Init scr->label_14
-    scr->label_14 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_14, "80");
-    lv_label_set_long_mode(scr->label_14, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_14, 853, 249);
-    lv_obj_set_size(scr->label_14, 120, 72);
+    // Init scr->probetemp
+    scr->probetemp = lv_label_create(scr->obj);
+    lv_label_set_text(scr->probetemp, "80");
+    lv_label_set_long_mode(scr->probetemp, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->probetemp, 853, 249);
+    lv_obj_set_size(scr->probetemp, 120, 72);
 
-    // Set style of scr->label_14
-    lv_obj_set_style_text_font(scr->label_14, fs_taiwanpearl_regular_72, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->label_14, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(scr->label_14, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_color(scr->label_14, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    // Set style of scr->probetemp
+    lv_obj_set_style_text_font(scr->probetemp, fs_taiwanpearl_regular_72, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->probetemp, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->probetemp, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_color(scr->probetemp, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->label_15
     scr->label_15 = lv_label_create(scr->obj);

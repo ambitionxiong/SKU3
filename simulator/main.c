@@ -101,8 +101,9 @@ int main(int argc, char **argv)
 		else if (keys[SDL_SCANCODE_1])      sim_key = KEY1;
 		else if (keys[SDL_SCANCODE_7])      sim_key = KEY_CLEAN;
 		if (cur_8 && !prev_8) {
-			uart_data_receive[Receive_data_Probe_Temp_H] += 5;
-			printf("[sim] probe temp +=5 -> %d\n", uart_data_receive[Receive_data_Probe_Temp_H]);
+			uart_data_receive[Receive_data_Probe_Temp_L] += 5;
+			printf("[sim] probe temp +=5 -> %d\n",
+				((uint16_t)uart_data_receive[Receive_data_Probe_Temp_H] << 8) | uart_data_receive[Receive_data_Probe_Temp_L]);
 		}
 		if (cur_9 && !prev_9) {
 			uart_data_receive[Receive_data_Power_ALL_State] ^= (1 << 2);
@@ -110,9 +111,10 @@ int main(int argc, char **argv)
 				(uart_data_receive[Receive_data_Power_ALL_State] & (1 << 2)) ? "INSERTED" : "REMOVED");
 		}
 		if (cur_minus && !prev_minus) {
-			if (uart_data_receive[Receive_data_Probe_Temp_H] >= 5)
-				uart_data_receive[Receive_data_Probe_Temp_H] -= 5;
-			printf("[sim] probe temp -=5 -> %d\n", uart_data_receive[Receive_data_Probe_Temp_H]);
+			if (uart_data_receive[Receive_data_Probe_Temp_L] >= 5)
+				uart_data_receive[Receive_data_Probe_Temp_L] -= 5;
+			printf("[sim] probe temp -=5 -> %d\n",
+				((uint16_t)uart_data_receive[Receive_data_Probe_Temp_H] << 8) | uart_data_receive[Receive_data_Probe_Temp_L]);
 		}
 		prev_8 = cur_8; prev_9 = cur_9; prev_minus = cur_minus;
 		if (cur_door && !prev_door) {
