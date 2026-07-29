@@ -767,7 +767,12 @@ void validate_constraints(void)
 
     /* 根据 hour 动态调整 minute 的循环范围 */
     if (set_hour == 0) {
-        min_field->min = 0;    // 0-59 正常循环
+        min_field->min = 5;    // hour=0时，最少5分钟
+        min_field->max = 59;
+        if (set_min < 5) {
+            set_min = 5;
+            lv_label_set_text_fmt(min_field->label, min_field->fmt, set_min);
+        }
     } else if (set_hour == 4) {
         min_field->min = 0;    // hour=4 时 minute 不可调
         min_field->max = 0;
