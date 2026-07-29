@@ -4021,29 +4021,33 @@ void nav_key1_long_press(void)
     if (g_send.iface_status != IFACE_SLEEP) {
         g_send.buzzer_req = BUZZER_POWER_OFF;
         g_send.iface_status = IFACE_SLEEP;
-        lv_obj_clean(lv_scr_act());
-        lv_obj_t *scr = lv_obj_create(NULL);
-        lv_obj_set_style_bg_color(scr, lv_color_black(), 0);
-        lv_scr_load(scr);
-#ifndef LV_USE_AIC_SIMULATOR
-        backlight_set_level(0);
-#endif
-        printf("[KEY] KEY1 long press -> SLEEP\n");
-    } else {
         depth = 0;
         page_push(PAGE_WAITMENU_24);
         lv_obj_clean(lv_scr_act());
         waitmenu_24_create(&ui_manager);
         current_group = NULL;
-        lv_scr_load_anim(waitmenu_24_get(&ui_manager)->obj,
-                         LV_SCR_LOAD_ANIM_NONE, 0, 0,
-                         ui_manager.auto_del);
+        lv_scr_load(waitmenu_24_get(&ui_manager)->obj);
+#ifndef LV_USE_AIC_SIMULATOR
+        backlight_set_level(10);
+#endif
+        printf("[KEY] KEY1 long press -> SLEEP (dim waitmenu)\n");
+    } else {
+        depth = 0;
+        page_push(PAGE_WAITMENU_24);
+        page_push(PAGE_MAJOR_MENU);
+        lv_obj_clean(lv_scr_act());
+        major_menu_create(&ui_manager);
+        groups_create();
+        bind_events();
+        current_group = g_major_menu;
+        lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
+                         LV_SCR_LOAD_ANIM_NONE, 0, 0, 0);
         g_send.buzzer_req = BUZZER_POWER_ON;
-        g_send.iface_status = IFACE_STANDBY;
+        g_send.iface_status = IFACE_SETTING;
 #ifndef LV_USE_AIC_SIMULATOR
         backlight_set_level(100);
 #endif
-        printf("[KEY] KEY1 long press -> WAKE (waitmenu)\n");
+        printf("[KEY] KEY1 long press -> WAKE (major_menu)\n");
     }
 #ifdef LV_USE_AIC_SIMULATOR
     uart_print();
