@@ -9,6 +9,7 @@
 // === 页面 ID 枚举 ===
 typedef enum {
     PAGE_WAITMENU_24,     // 等待界面（根页，开机首页）
+    PAGE_PROBETIP,         // 探针提示页
     PAGE_MAJOR_MENU,
     PAGE_COOKMENU,
     PAGE_SPECIAL_MENU,
@@ -232,6 +233,7 @@ extern int depth;
 
 extern lv_group_t *g_major_menu;
 extern lv_group_t *g_cookmenu;
+extern lv_group_t *g_probetip;
 extern lv_group_t *g_special_menu;
 extern lv_group_t *g_updown_bbq_menu;
 extern lv_group_t *g_updown_bbq_menu_top;
@@ -401,6 +403,8 @@ extern lv_group_t *g_color_cookoing;
 extern lv_group_t *g_color_stop;
 extern lv_group_t *g_color_stop_back;
 
+void jump_to_probetip(const char *text);
+void probetip_rebuild(page_id_t child);
 uint16_t get_cavity_temp(void);
 void jump_to_cookmenu(void);
 void jump_to_preheat_menu(void);

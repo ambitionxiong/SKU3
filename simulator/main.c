@@ -82,10 +82,14 @@ int main(int argc, char **argv)
 		/* 读键状态模拟编码器（边沿触发防连击） */
 		static uint8_t prev_key = 0;
 		static uint8_t prev_door = 0;
+		static uint8_t prev_8 = 0, prev_9 = 0, prev_minus = 0;
 		SDL_PumpEvents();
 		const Uint8 *keys = SDL_GetKeyboardState(NULL);
 		uint8_t sim_key = 0;
 		uint8_t cur_door = keys[SDL_SCANCODE_0];
+		uint8_t cur_8 = keys[SDL_SCANCODE_8];
+		uint8_t cur_9 = keys[SDL_SCANCODE_9];
+		uint8_t cur_minus = keys[SDL_SCANCODE_MINUS];
 		if      (keys[SDL_SCANCODE_TAB])       sim_key = KEY_MENU;
 		else if (keys[SDL_SCANCODE_5])         sim_key = KEY_EXTRA_COLOR;
 		else if (keys[SDL_SCANCODE_ESCAPE])    sim_key = KEY_BACK;
@@ -96,6 +100,21 @@ int main(int argc, char **argv)
 		else if (keys[SDL_SCANCODE_SPACE])  sim_key = KEY_ENCODER_PRESS;
 		else if (keys[SDL_SCANCODE_1])      sim_key = KEY1;
 		else if (keys[SDL_SCANCODE_7])      sim_key = KEY_CLEAN;
+		if (cur_8 && !prev_8) {
+			uart_data_receive[Receive_data_Probe_Temp_H] += 5;
+			printf("[sim] probe temp +=5 -> %d\n", uart_data_receive[Receive_data_Probe_Temp_H]);
+		}
+		if (cur_9 && !prev_9) {
+			uart_data_receive[Receive_data_Power_ALL_State] ^= (1 << 2);
+			printf("[sim] probe %s\n",
+				(uart_data_receive[Receive_data_Power_ALL_State] & (1 << 2)) ? "INSERTED" : "REMOVED");
+		}
+		if (cur_minus && !prev_minus) {
+			if (uart_data_receive[Receive_data_Probe_Temp_H] >= 5)
+				uart_data_receive[Receive_data_Probe_Temp_H] -= 5;
+			printf("[sim] probe temp -=5 -> %d\n", uart_data_receive[Receive_data_Probe_Temp_H]);
+		}
+		prev_8 = cur_8; prev_9 = cur_9; prev_minus = cur_minus;
 		if (cur_door && !prev_door) {
 			uart_data_receive[Receive_data_Power_ALL_State] ^= (1 << 1);
 			printf("[sim] door %s\n",

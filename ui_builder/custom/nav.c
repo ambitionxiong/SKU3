@@ -35,6 +35,7 @@ static void uart_print(void)
 // === 各页面焦点组（NULL=未创建）===
 lv_group_t *g_major_menu;
 lv_group_t *g_cookmenu;
+lv_group_t *g_probetip;
 lv_group_t *g_special_menu;
 lv_group_t *g_updown_bbq_menu;
 lv_group_t *g_updown_bbq_set;
@@ -2685,7 +2686,11 @@ void page_pop(void)
         printf("[nav] pop to major_menu\n");
         break;
 
+    case PAGE_PROBETIP:
+        goto pop_to_waitmenu;
+
     case PAGE_WAITMENU_24:
+pop_to_waitmenu:
         waitmenu_24_create(&ui_manager);
         current_group = NULL;
         lv_scr_load_anim(waitmenu_24_get(&ui_manager)->obj,
@@ -5838,6 +5843,37 @@ static void on_setting_sure_click(lv_event_t *e)
 }
 
 // ==============================
+// 系统定时器（每500ms，常驻检测）
+// ==============================
+
+static void system_timer_cb(lv_timer_t *timer)
+{
+    static int probe_last = 0;
+    int probe_now = is_probe_inserted();
+
+    if (probe_now == probe_last)
+        return;
+
+    probe_last = probe_now;
+
+    if (depth > 0 && page_stack[depth - 1] == PAGE_PROBETIP)
+        return;
+
+    if (g_send.iface_status == IFACE_SLEEP) {
+        jump_to_probetip(probe_now ? "探针已插入" : "探针已拔出");
+        return;
+    }
+
+    depth = 0;
+    page_push(PAGE_WAITMENU_24);
+    lv_obj_clean(lv_scr_act());
+    waitmenu_24_create(&ui_manager);
+    current_group = NULL;
+    lv_scr_load(waitmenu_24_get(&ui_manager)->obj);
+    jump_to_probetip(probe_now ? "探针已插入" : "探针已拔出");
+}
+
+// ==============================
 // 初始化入口
 // ==============================
 
@@ -5867,5 +5903,6 @@ void nav_init(void)
                      ui_manager.auto_del);
 
     g_send.iface_status = IFACE_SETTING;
+    lv_timer_create(system_timer_cb, 500, NULL);
     printf("[nav] init done -> major_menu\n");
 }

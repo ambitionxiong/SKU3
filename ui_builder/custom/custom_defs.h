@@ -128,4 +128,8 @@ static inline int is_door_open(void) {
     return (uart_data_receive[Receive_data_Power_ALL_State] & (1 << 1)) != 0;
 }
 
+static inline int is_probe_inserted(void) {
+    return (uart_data_receive[Receive_data_Power_ALL_State] & (1 << 2)) != 0;
+}
+
 #endif // CUSTOM_DEFS_H
