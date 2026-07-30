@@ -5816,7 +5816,9 @@ static void jump_to_updown_bbq_stop_back(void)
         if (p > 100) p = 100;
         lv_bar_set_range(back->bar_2, 0, 100);
         lv_bar_set_value(back->bar_2, p, LV_ANIM_OFF);
-        printf("[debug] stop_back init: p=%d\n", p);
+
+        if (g_send.iface_status == IFACE_COOKING)
+            lv_label_set_text(back->label_8, "烹饪中...");
     }
     current_group = g_updown_bbq_stop_back;
 
@@ -6026,6 +6028,9 @@ static void jump_to_color_stop_back(void)
         if (_p > 100) _p = 100;
         lv_bar_set_range(csb->bar_4, 0, 100);
         lv_bar_set_value(csb->bar_4, _p, LV_ANIM_OFF);
+
+        if (g_send.iface_status == IFACE_COOKING)
+            lv_label_set_text(csb->label_19, "烹饪中...");
     }
     current_group = g_color_stop_back;
 

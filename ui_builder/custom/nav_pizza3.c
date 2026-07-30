@@ -443,6 +443,8 @@ void jump_to_pizza3_stop_back(void)
         if (p > 100) p = 100;
         lv_bar_set_range(back->bar_62, 0, 100);
         lv_bar_set_value(back->bar_62, p, LV_ANIM_OFF);
+        if (g_send.iface_status == IFACE_COOKING)
+            lv_label_set_text(back->label_800, "烹饪中...");
     }
     current_group = g_pizza3_stop_back;
 

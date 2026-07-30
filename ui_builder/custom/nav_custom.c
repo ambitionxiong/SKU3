@@ -443,6 +443,8 @@ void jump_to_custom_stop_back(void)
         if (p > 100) p = 100;
         lv_bar_set_range(back->bar_70, 0, 100);
         lv_bar_set_value(back->bar_70, p, LV_ANIM_OFF);
+        if (g_send.iface_status == IFACE_COOKING)
+            lv_label_set_text(back->label_882, "烹饪中...");
     }
     current_group = g_custom_stop_back;
 

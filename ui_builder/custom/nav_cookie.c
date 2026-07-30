@@ -504,6 +504,8 @@ void jump_to_cookie_stop_back(void)
         if (p > 100) p = 100;
         lv_bar_set_range(back->bar_6, 0, 100);
         lv_bar_set_value(back->bar_6, p, LV_ANIM_OFF);
+        if (g_send.iface_status == IFACE_COOKING)
+            lv_label_set_text(back->label_139, "烹饪中...");
     }
     current_group = g_cookie_stop_back;
 

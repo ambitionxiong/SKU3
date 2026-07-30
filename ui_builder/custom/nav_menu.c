@@ -495,6 +495,8 @@ void jump_to_menu_stop_back(void)
 
         menu_set_status(back->status, set_temp, set_hour, set_min);
         int p = cooking_bar_val; if (p <= 0) { uint32_t elapsed = cook_timer ? (lv_tick_get() - cook_start_time) : cook_elapsed_saved; p = stop_back_progress(elapsed, cook_total_ms); } if (p > 100) p = 100; lv_bar_set_range(back->bar_18, 0, 100); lv_bar_set_value(back->bar_18, p, LV_ANIM_OFF);
+        if (g_send.iface_status == IFACE_COOKING)
+            lv_label_set_text(back->label_284, "烹饪中...");
     }
     current_group = g_menu_cook_stop_back;
 

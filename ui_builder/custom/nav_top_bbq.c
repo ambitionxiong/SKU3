@@ -519,6 +519,8 @@ void jump_to_top_bbq_stop_back(void)
         if (p > 100) p = 100;
         lv_bar_set_range(back->bar_8, 0, 100);
         lv_bar_set_value(back->bar_8, p, LV_ANIM_OFF);
+        if (g_send.iface_status == IFACE_COOKING)
+            lv_label_set_text(back->label_104, "烹饪中...");
     }
     current_group = g_top_bbq_stop_back;
 

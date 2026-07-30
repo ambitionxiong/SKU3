@@ -525,6 +525,8 @@ void jump_to_hotwind_bbq_stop_back(void)
         if (p > 100) p = 100;
         lv_bar_set_range(back->bar_20, 0, 100);
         lv_bar_set_value(back->bar_20, p, LV_ANIM_OFF);
+        if (g_send.iface_status == IFACE_COOKING)
+            lv_label_set_text(back->label_238, "烹饪中...");
     }
     current_group = g_hotwind_bbq_stop_back;
 

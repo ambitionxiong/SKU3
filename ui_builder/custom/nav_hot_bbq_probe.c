@@ -310,6 +310,8 @@ void jump_to_hot_bbq_stop_back_probe(void)
 
         lv_bar_set_range(back->bar_3, 0, 100);
         lv_bar_set_value(back->bar_3, bar_val, LV_ANIM_OFF);
+        if (g_send.iface_status == IFACE_COOKING)
+            lv_label_set_text(back->label_39, "烹饪中...");
     }
     current_group = g_hot_bbq_stop_back_probe;
 
