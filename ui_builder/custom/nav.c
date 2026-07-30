@@ -10,6 +10,7 @@ int set_temp_up = 180;
 int set_temp_down = 180;
 int cook_bar_saved = 0;
 int probe_target_temp = 80;
+int g_complete_to_stop_back = 0;
 
 #ifdef LV_USE_AIC_SIMULATOR
 
@@ -795,12 +796,12 @@ void validate_constraints(void)
 
     /* 根据 hour 动态调整 minute 的循环范围 */
     if (set_hour == 0) {
-        min_field->min = 5;    // hour=0时，最少5分钟
+        min_field->min = 0;    // hour=0时，最少5分钟
         min_field->max = 59;
-        if (set_min < 5) {
-            set_min = 5;
-            lv_label_set_text_fmt(min_field->label, min_field->fmt, set_min);
-        }
+        //if (set_min < 5) {
+        //    set_min = 5;
+       //     lv_label_set_text_fmt(min_field->label, min_field->fmt, set_min);
+       // }
     } else if (set_hour == 4) {
         min_field->min = 0;    // hour=4 时 minute 不可调
         min_field->max = 0;
@@ -1439,6 +1440,30 @@ void page_pop(void)
         break;
 
     case PAGE_UPDOWN_BBQ_COMPLETE:
+        if (child == PAGE_UPDOWN_BBQ_SETTING) {
+            set_temp_up = updown_setting_saved_temp_up;
+            set_temp_down = updown_setting_saved_temp_down;
+            set_hour = updown_setting_saved_hour;
+            set_min = updown_setting_saved_min;
+        }
+        if (child == PAGE_UPDOWN_BBQ_SETTING || child == PAGE_UPDOWN_BBQ_STOP_BACK) {
+            updown_bbq_complete_create(&ui_manager);
+            updown_bbq_complete_t *done = updown_bbq_complete_get(&ui_manager);
+            if (done) {
+                lv_obj_t *btns[] = { done->little_button };
+                if (g_updown_bbq_complete) lv_group_del(g_updown_bbq_complete);
+                g_updown_bbq_complete = group_create_for_page(btns, 1);
+                lv_obj_add_event_cb(done->little_button, on_cook_setting_click,
+                                    LV_EVENT_CLICKED, NULL);
+                set_status_label_min(done->statu_label, set_temp_up, set_temp_down, set_hour, set_min);
+                lv_bar_set_value(done->bar_3, 100, LV_ANIM_OFF);
+                lv_group_focus_obj(done->little_button);
+            }
+            current_group = g_updown_bbq_complete;
+            lv_scr_load_anim(updown_bbq_complete_get(&ui_manager)->obj,
+                             LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
+            break;
+        }
         goto pop_to_major_menu;
 
     case PAGE_UPDOWN_BBQ_MENU_PROBE:
@@ -3358,6 +3383,8 @@ static void jump_to_updown_bbq_complete(void)
         g_updown_bbq_complete = group_create_for_page(btns, 1);
         lv_obj_add_event_cb(cook->little_button, on_cook_setting_click,
                             LV_EVENT_CLICKED, NULL);
+        set_status_label_min(cook->statu_label, set_temp_up, set_temp_down, set_hour, set_min);
+        lv_bar_set_value(cook->bar_3, 100, LV_ANIM_OFF);
     }
 
     current_group = g_updown_bbq_complete;
@@ -3678,7 +3705,10 @@ static void process_key(uint8_t key)
                 jump_to_updown_bbq_stop_back();
             } else if (cur == PAGE_UPDOWN_BBQ_STOP)
                 jump_to_updown_bbq_stop_back();
-            else if (cur == PAGE_UPDOWN_BBQ_COOKING_PROBE) {
+            else if (cur == PAGE_UPDOWN_BBQ_COMPLETE) {
+                g_complete_to_stop_back = 1;
+                jump_to_updown_bbq_stop_back();
+            } else if (cur == PAGE_UPDOWN_BBQ_COOKING_PROBE) {
                 jump_to_updown_bbq_stop_back_probe();
             } else if (cur == PAGE_UPDOWN_BBQ_STOP_PROBE)
                 jump_to_updown_bbq_stop_back_probe();
@@ -5816,6 +5846,12 @@ static void jump_to_updown_bbq_stop_back(void)
         if (p > 100) p = 100;
         lv_bar_set_range(back->bar_2, 0, 100);
         lv_bar_set_value(back->bar_2, p, LV_ANIM_OFF);
+
+        if (g_complete_to_stop_back) {
+            g_complete_to_stop_back = 0;
+            lv_label_set_text(back->label_8, "已完成");
+            lv_bar_set_value(back->bar_2, 100, LV_ANIM_OFF);
+        }
 
         if (g_send.iface_status == IFACE_COOKING)
             lv_label_set_text(back->label_8, "烹饪中...");
