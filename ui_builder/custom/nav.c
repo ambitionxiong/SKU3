@@ -535,51 +535,6 @@ static void adjust_value(edit_field_t *f, int delta)
     }
 
     /* dir 方向图标切换（上下烧烤菜单页） */
-    if (current_group == g_updown_bbq_menu_top) {
-        updown_bbq_menu_top_t *m = updown_bbq_menu_top_get(&ui_manager);
-        if (m) {
-            if (m->dir3) lv_obj_add_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
-            if (m->dir2) lv_obj_add_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
-            if (new_val < 100)
-                if (m->dir2) lv_obj_clear_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
-            else
-                if (m->dir3) lv_obj_clear_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
-        }
-    }
-    if (current_group == g_updown_bbq_menu_low) {
-        updown_bbq_menu_low_t *m = updown_bbq_menu_low_get(&ui_manager);
-        if (m) {
-            if (m->dir3) lv_obj_add_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
-            if (m->dir2) lv_obj_add_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
-            if (new_val < 100)
-                if (m->dir2) lv_obj_clear_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
-            else
-                if (m->dir3) lv_obj_clear_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
-        }
-    }
-    if (current_group == g_updown_bbq_menu_top_probe) {
-        updown_bbq_menu_top_probe_t *m = updown_bbq_menu_top_probe_get(&ui_manager);
-        if (m) {
-            if (m->dir3) lv_obj_add_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
-            if (m->dir2) lv_obj_add_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
-            if (new_val < 100)
-                if (m->dir2) lv_obj_clear_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
-            else
-                if (m->dir3) lv_obj_clear_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
-        }
-    }
-    if (current_group == g_updown_bbq_menu_low_probe) {
-        updown_bbq_menu_low_probe_t *m = updown_bbq_menu_low_probe_get(&ui_manager);
-        if (m) {
-            if (m->dir3) lv_obj_add_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
-            if (m->dir2) lv_obj_add_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
-            if (new_val < 100)
-                if (m->dir2) lv_obj_clear_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
-            else
-                if (m->dir3) lv_obj_clear_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
-        }
-    }
-
     validate_constraints();
 
     /* 设置页：上下温差 ≤ 20°C，超限则回弹 */
@@ -629,13 +584,23 @@ static void adjust_value(edit_field_t *f, int delta)
             {
                 updown_bbq_menu_top_t *m = updown_bbq_menu_top_get(&ui_manager);
                 if (m) {
-                    if (m->dir3) if (m->dir3) lv_obj_add_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
-                    if (m->dir2) if (m->dir2) lv_obj_add_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
+                    if (m->dir3) lv_obj_add_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
+                    if (m->dir2) lv_obj_add_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
                     if (new_v < 100)
                         if (m->dir2) lv_obj_clear_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
                     else
                         if (m->dir3) lv_obj_clear_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
                 }
+            }
+            lv_obj_invalidate(lv_scr_act());
+        }
+        {
+            updown_bbq_menu_top_t *m2 = updown_bbq_menu_top_get(&ui_manager);
+            if (m2) {
+                if (m2->dir3) lv_obj_add_flag(m2->dir3, LV_OBJ_FLAG_HIDDEN);
+                if (m2->dir2) lv_obj_add_flag(m2->dir2, LV_OBJ_FLAG_HIDDEN);
+                if (set_temp_up < 100) { if (m2->dir2) lv_obj_clear_flag(m2->dir2, LV_OBJ_FLAG_HIDDEN); }
+                else { if (m2->dir3) lv_obj_clear_flag(m2->dir3, LV_OBJ_FLAG_HIDDEN); }
             }
             lv_obj_invalidate(lv_scr_act());
         }
@@ -661,13 +626,23 @@ static void adjust_value(edit_field_t *f, int delta)
             {
                 updown_bbq_menu_low_t *m = updown_bbq_menu_low_get(&ui_manager);
                 if (m) {
-                    if (m->dir3) if (m->dir3) lv_obj_add_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
-                    if (m->dir2) if (m->dir2) lv_obj_add_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
+                    if (m->dir3) lv_obj_add_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
+                    if (m->dir2) lv_obj_add_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
                     if (new_v < 100)
                         if (m->dir2) lv_obj_clear_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
                     else
                         if (m->dir3) lv_obj_clear_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
                 }
+            }
+            lv_obj_invalidate(lv_scr_act());
+        }
+        {
+            updown_bbq_menu_low_t *m2 = updown_bbq_menu_low_get(&ui_manager);
+            if (m2) {
+                if (m2->dir3) lv_obj_add_flag(m2->dir3, LV_OBJ_FLAG_HIDDEN);
+                if (m2->dir2) lv_obj_add_flag(m2->dir2, LV_OBJ_FLAG_HIDDEN);
+                if (set_temp_down < 100) { if (m2->dir2) lv_obj_clear_flag(m2->dir2, LV_OBJ_FLAG_HIDDEN); }
+                else { if (m2->dir3) lv_obj_clear_flag(m2->dir3, LV_OBJ_FLAG_HIDDEN); }
             }
             lv_obj_invalidate(lv_scr_act());
         }
@@ -692,13 +667,23 @@ static void adjust_value(edit_field_t *f, int delta)
             {
                 updown_bbq_menu_top_probe_t *m = updown_bbq_menu_top_probe_get(&ui_manager);
                 if (m) {
-                    if (m->dir3) if (m->dir3) lv_obj_add_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
-                    if (m->dir2) if (m->dir2) lv_obj_add_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
+                    if (m->dir3) lv_obj_add_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
+                    if (m->dir2) lv_obj_add_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
                     if (new_v < 100)
                         if (m->dir2) lv_obj_clear_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
                     else
                         if (m->dir3) lv_obj_clear_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
                 }
+            }
+            lv_obj_invalidate(lv_scr_act());
+        }
+        {
+            updown_bbq_menu_top_probe_t *m2 = updown_bbq_menu_top_probe_get(&ui_manager);
+            if (m2) {
+                if (m2->dir3) lv_obj_add_flag(m2->dir3, LV_OBJ_FLAG_HIDDEN);
+                if (m2->dir2) lv_obj_add_flag(m2->dir2, LV_OBJ_FLAG_HIDDEN);
+                if (set_temp_up < 100) { if (m2->dir2) lv_obj_clear_flag(m2->dir2, LV_OBJ_FLAG_HIDDEN); }
+                else { if (m2->dir3) lv_obj_clear_flag(m2->dir3, LV_OBJ_FLAG_HIDDEN); }
             }
             lv_obj_invalidate(lv_scr_act());
         }
@@ -723,13 +708,23 @@ static void adjust_value(edit_field_t *f, int delta)
             {
                 updown_bbq_menu_low_probe_t *m = updown_bbq_menu_low_probe_get(&ui_manager);
                 if (m) {
-                    if (m->dir3) if (m->dir3) lv_obj_add_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
-                    if (m->dir2) if (m->dir2) lv_obj_add_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
+                    if (m->dir3) lv_obj_add_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
+                    if (m->dir2) lv_obj_add_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
                     if (new_v < 100)
                         if (m->dir2) lv_obj_clear_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
                     else
                         if (m->dir3) lv_obj_clear_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
                 }
+            }
+            lv_obj_invalidate(lv_scr_act());
+        }
+        {
+            updown_bbq_menu_low_probe_t *m2 = updown_bbq_menu_low_probe_get(&ui_manager);
+            if (m2) {
+                if (m2->dir3) lv_obj_add_flag(m2->dir3, LV_OBJ_FLAG_HIDDEN);
+                if (m2->dir2) lv_obj_add_flag(m2->dir2, LV_OBJ_FLAG_HIDDEN);
+                if (set_temp_down < 100) { if (m2->dir2) lv_obj_clear_flag(m2->dir2, LV_OBJ_FLAG_HIDDEN); }
+                else { if (m2->dir3) lv_obj_clear_flag(m2->dir3, LV_OBJ_FLAG_HIDDEN); }
             }
             lv_obj_invalidate(lv_scr_act());
         }
