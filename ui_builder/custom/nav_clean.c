@@ -76,11 +76,11 @@ void hotclean_rebuild(page_id_t child)
         lv_obj_add_event_cb(hm->hotclean_middle, on_hc_middle_click, LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(hm->hotclean_high, on_hc_high_click, LV_EVENT_CLICKED, NULL);
 
-        if (child == PAGE_HOTCLEANSAVE_SET && hm->hotcleansave)
+        if (child >= PAGE_HOTCLEANSAVE_SET && child <= PAGE_HOTCLEANSAVE_COMPLETE && hm->hotcleansave)
             lv_group_focus_obj(hm->hotcleansave);
-        else if (child == PAGE_HOTCLEANMIDDLE_SET && hm->hotclean_middle)
+        else if (child >= PAGE_HOTCLEANMIDDLE_SET && child <= PAGE_HOTCLEANMIDDLE_COMPLETE && hm->hotclean_middle)
             lv_group_focus_obj(hm->hotclean_middle);
-        else if (child == PAGE_HOTCLEANHIGH_SET && hm->hotclean_high)
+        else if (child >= PAGE_HOTCLEANHIGH_SET && child <= PAGE_HOTCLEANHIGH_COMPLETE && hm->hotclean_high)
             lv_group_focus_obj(hm->hotclean_high);
         else if (hm->hotcleansave)
             lv_group_focus_obj(hm->hotcleansave);
@@ -134,8 +134,11 @@ void clean_rebuild(page_id_t child)
         lv_obj_add_event_cb(cm->waterclean, on_clean_water_click, LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(cm->button_2, on_clean_hot_click, LV_EVENT_CLICKED, NULL);
 
-        if (child == PAGE_WATER_CLEAN_SET && cm->waterclean)
+        if (child >= PAGE_WATER_CLEAN_SET && child <= PAGE_WATER_CLEAN_COMPLETE && cm->waterclean)
             lv_group_focus_obj(cm->waterclean);
+        else if (((child >= PAGE_HOTCLEANSAVE_SET && child <= PAGE_HOTCLEANHIGH_COMPLETE) ||
+                  child == PAGE_HOTCLEAN_MENU) && cm->button_2)
+            lv_group_focus_obj(cm->button_2);
         else if (cm->waterclean)
             lv_group_focus_obj(cm->waterclean);
     }

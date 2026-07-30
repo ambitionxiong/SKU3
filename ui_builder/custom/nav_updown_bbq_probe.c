@@ -386,8 +386,10 @@ void jump_to_updown_bbq_cooking_probe(void)
     }
 
     updown_bbq_set_probe_t *set = updown_bbq_set_probe_get(&ui_manager);
-    if (set)
-        probe_target_temp = atoi(lv_label_get_text(set->probetemp));
+    if (set) {
+        const char *txt = lv_label_get_text(set->probetemp);
+        probe_target_temp = txt ? atoi(txt) : 80;
+    }
 
     page_push(PAGE_UPDOWN_BBQ_COOKING_PROBE);
     lv_obj_clean(lv_scr_act());

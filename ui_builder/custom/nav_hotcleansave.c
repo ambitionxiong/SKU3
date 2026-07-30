@@ -35,7 +35,7 @@ static void on_hcs_stop_back_sure_click(lv_event_t *e)
     if (screen_is_loading(act_scr)) return;
     g_on_stop_back = 0;
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
-    set_hour = 0; set_min = 1;
+    set_hour = 1; set_min = 15;
     cook_elapsed_saved = 0; cook_bar_saved = 0;
     depth = 2;
     lv_obj_clean(lv_scr_act());
@@ -63,7 +63,7 @@ static void on_hcs_stop_back_sure_click(lv_event_t *e)
 
 void jump_to_hcs_set(void)
 {
-    set_hour = 0; set_min = 1;
+    set_hour = 1; set_min = 15;
     page_push(PAGE_HOTCLEANSAVE_SET);
     lv_obj_clean(lv_scr_act());
     hotcleansave_set_create(&ui_manager);
@@ -109,10 +109,10 @@ void jump_to_hcs_cooking(void)
         lv_obj_add_event_cb(cook->stop, on_hcs_cooking_stop_click,
                             LV_EVENT_CLICKED, NULL);
 
-        lv_label_set_text_fmt(cook->timelabel, "%02d:%02d:%02d", 0, 1, 0);
+        lv_label_set_text_fmt(cook->timelabel, "%02d:%02d:%02d", set_hour, set_min, 0);
     }
 
-    cook_total_ms = 60 * 1000;
+    cook_total_ms = 75 * 60 * 1000;
     if (cook) {
         lv_bar_set_range(cook->bar_1, 0, 100);
         lv_bar_set_value(cook->bar_1, 3, LV_ANIM_OFF);
@@ -383,7 +383,7 @@ void hcs_rebuild_cooking(page_id_t child)
             lv_anim_set_time(&a, cook_total_ms - (int)elapsed);
             lv_anim_start(&a);
         } else {
-            lv_label_set_text_fmt(cook->timelabel, "%02d:%02d:%02d", 0, 1, 0);
+            lv_label_set_text_fmt(cook->timelabel, "%02d:%02d:%02d", set_hour, set_min, 0);
             lv_bar_set_range(cook->bar_1, 0, 100);
             lv_bar_set_value(cook->bar_1, 3, LV_ANIM_OFF);
             lv_anim_t a;

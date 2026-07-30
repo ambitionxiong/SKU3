@@ -197,8 +197,10 @@ void jump_to_slowcook_cooking_probe(void)
     }
 
     slowcook_set_probe_t *set = slowcook_set_probe_get(&ui_manager);
-    if (set)
-        probe_target_temp = atoi(lv_label_get_text(set->probetemp));
+    if (set) {
+        const char *txt = lv_label_get_text(set->probetemp);
+        probe_target_temp = txt ? atoi(txt) : 80;
+    }
 
     page_push(PAGE_SLOWCOOK_COOKING_PROBE);
     lv_obj_clean(lv_scr_act());
