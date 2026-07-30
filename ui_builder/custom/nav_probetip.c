@@ -1,6 +1,17 @@
 #include "protocol.h"
 #include "nav.h"
 
+static lv_timer_t *probetip_dismiss_timer = NULL;
+
+static void auto_dismiss_probetip(lv_timer_t *timer)
+{
+    lv_timer_del(timer);
+    probetip_dismiss_timer = NULL;
+    if (depth > 0 && page_stack[depth - 1] == PAGE_PROBETIP)
+        page_pop();
+    g_send.iface_status = IFACE_SLEEP;
+}
+
 void jump_to_probetip(const char *text)
 {
     page_push(PAGE_PROBETIP);
@@ -18,6 +29,10 @@ void jump_to_probetip(const char *text)
     current_group = g_probetip;
     lv_scr_load_anim(probetip_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0, 0);
+    if (g_send.iface_status == IFACE_SLEEP) {
+        if (!probetip_dismiss_timer)
+            probetip_dismiss_timer = lv_timer_create(auto_dismiss_probetip, 2000, NULL);
+    }
     printf("[probetip] jump: -> probetip (%s)\n", text);
 }
 

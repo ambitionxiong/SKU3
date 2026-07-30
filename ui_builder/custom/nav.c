@@ -3584,37 +3584,57 @@ static uint32_t active_key_time = 0;
 
 static void process_key(uint8_t key)
 {
+    if (g_send.iface_status == IFACE_SLEEP) return;
     uart_data_receive[Receive_data_Touch_Key] = 0;
 
     switch (key) {
     case KEY1:              // 1: 开关机键，短按无操作
         break;
-    case KEY_MENU:          // 3: 从 waitmenu_24 进入主菜单
-        g_send.buzzer_req = BUZZER_KEY_VALID;
-        if (depth == 1 && page_stack[0] == PAGE_WAITMENU_24) {
-            if (is_probe_inserted()) {
-                jump_to_major_menu_tz();
-            } else {
-                page_push(PAGE_MAJOR_MENU);
-                lv_obj_clean(lv_scr_act());
-                major_menu_create(&ui_manager);
-                groups_create();
-                bind_events();
-                current_group = g_major_menu;
-                lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
-                                 LV_SCR_LOAD_ANIM_NONE, 0, 0,
-                                 ui_manager.auto_del);
-            }
-            g_send.iface_status = IFACE_SETTING;
-            g_send.cook_mode = MODE_NONE;
-            g_send.set_temp = 0;
-            g_send.set_temp_lower = 0;
-            g_send.remaining_ms = -1;
-            printf("[nav] jump: waitmenu_24 -> major_menu\n");
+    case KEY_MENU:          // 3: 进入主菜单
+        if (g_send.iface_status == IFACE_COOKING) {
+            g_send.buzzer_req = BUZZER_KEY_INVALID;
+            break;
         }
+        {
+            page_id_t cur = page_stack[depth - 1];
+            if (cur == PAGE_MAJOR_MENU || cur == PAGE_MAJOR_MENU_TZ) {
+                g_send.buzzer_req = BUZZER_KEY_INVALID;
+                break;
+            }
+        }
+        g_send.buzzer_req = BUZZER_KEY_VALID;
+        depth = 0;
+        page_push(PAGE_WAITMENU_24);
+        if (is_probe_inserted()) {
+            jump_to_major_menu_tz();
+        } else {
+            page_push(PAGE_MAJOR_MENU);
+            lv_obj_clean(lv_scr_act());
+            major_menu_create(&ui_manager);
+            groups_create();
+            bind_events();
+            current_group = g_major_menu;
+            lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
+                             LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                             ui_manager.auto_del);
+        }
+        g_send.iface_status = IFACE_SETTING;
+        g_send.cook_mode = MODE_NONE;
+        g_send.set_temp = 0;
+        g_send.set_temp_lower = 0;
+        g_send.remaining_ms = -1;
         uart_print();
         break;
     case KEY_EXTRA_COLOR:   // 5: 进入额外上色
+        if (g_send.iface_status != IFACE_COMPLETE ||
+            (g_send.cook_mode != MODE_UPDOWN_BBQ &&
+             g_send.cook_mode != MODE_HOT_BBQ &&
+             g_send.cook_mode != MODE_HOTWIND_BBQ &&
+             g_send.cook_mode != MODE_PIZZA_2 &&
+             g_send.cook_mode != MODE_COOK4)) {
+            g_send.buzzer_req = BUZZER_KEY_INVALID;
+            break;
+        }
         g_send.buzzer_req = BUZZER_KEY_VALID;
         page_push(PAGE_EXTRA_COLOR);
         lv_obj_clean(lv_scr_act());
@@ -3636,11 +3656,22 @@ static void process_key(uint8_t key)
         printf("[nav] jump: -> extra_color\n");
         uart_print();
         break;
-    case KEY_CLEAN:         // 7: 从 waitmenu_24 进入清洁菜单
-        g_send.buzzer_req = BUZZER_KEY_VALID;
-        if (depth == 1 && page_stack[0] == PAGE_WAITMENU_24) {
-            jump_to_clean_menu();
+    case KEY_CLEAN:         // 7: 进入清洁菜单
+        if (g_send.iface_status == IFACE_COOKING) {
+            g_send.buzzer_req = BUZZER_KEY_INVALID;
+            break;
         }
+        {
+            page_id_t cur = page_stack[depth - 1];
+            if (cur == PAGE_CLEAN_MENU) {
+                g_send.buzzer_req = BUZZER_KEY_INVALID;
+                break;
+            }
+        }
+        g_send.buzzer_req = BUZZER_KEY_VALID;
+        depth = 0;
+        page_push(PAGE_WAITMENU_24);
+        jump_to_clean_menu();
         uart_print();
         break;
     case KEY_BACK:          // 21: 返回
