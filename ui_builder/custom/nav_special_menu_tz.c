@@ -8,7 +8,7 @@ static void on_special_menu_tz_slowcook_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
     if (!screen_is_loading(act_scr))
-        jump_to_slowcook_menu(); /* TODO: 改为 probe 版本 */
+        jump_to_slowcook_menu_probe();
 }
 
 void jump_to_special_menu_tz(void)

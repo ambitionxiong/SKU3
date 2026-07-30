@@ -56,6 +56,24 @@ lv_group_t *g_updown_bbq_cooking_probe;
 lv_group_t *g_updown_bbq_stop_probe;
 lv_group_t *g_updown_bbq_stop_back_probe;
 lv_group_t *g_updown_bbq_complete_probe;
+lv_group_t *g_hot_bbq_menu_probe;
+lv_group_t *g_hot_bbq_set_probe;
+lv_group_t *g_hot_bbq_cooking_probe;
+lv_group_t *g_hot_bbq_stop_probe;
+lv_group_t *g_hot_bbq_stop_back_probe;
+lv_group_t *g_hot_bbq_complete_probe;
+lv_group_t *g_bottom_bbq_menu_probe;
+lv_group_t *g_bottom_bbq_set_probe;
+lv_group_t *g_bottom_bbq_cooking_probe;
+lv_group_t *g_bottom_bbq_stop_probe;
+lv_group_t *g_bottom_bbq_stop_back_probe;
+lv_group_t *g_bottom_bbq_complete_probe;
+lv_group_t *g_slowcook_menu_probe;
+lv_group_t *g_slowcook_set_probe;
+lv_group_t *g_slowcook_cooking_probe;
+lv_group_t *g_slowcook_stop_probe;
+lv_group_t *g_slowcook_stop_back_probe;
+lv_group_t *g_slowcook_complete_probe;
 lv_group_t *g_preheat_menu;
 
 lv_group_t *g_preheat_cooking;
@@ -1447,6 +1465,81 @@ void page_pop(void)
         break;
 
     case PAGE_UPDOWN_BBQ_COMPLETE_PROBE:
+        goto pop_to_major_menu;
+
+    case PAGE_HOT_BBQ_MENU_PROBE:
+        hot_bbq_probe_rebuild_menu(child);
+        break;
+    case PAGE_HOT_BBQ_SET_PROBE:
+        hot_bbq_probe_rebuild_set(child);
+        break;
+    case PAGE_HOT_BBQ_COOKING_PROBE:
+        if (child == PAGE_HOT_BBQ_COMPLETE_PROBE)
+            goto pop_to_major_menu;
+        if (child == PAGE_HOT_BBQ_STOP_BACK_PROBE) {
+            g_on_stop_back = 0;
+            hot_bbq_probe_rebuild_cooking(child);
+        } else {
+            hot_bbq_probe_rebuild_cooking(child);
+        }
+        break;
+    case PAGE_HOT_BBQ_STOP_PROBE:
+        hot_bbq_probe_rebuild_stop();
+        break;
+    case PAGE_HOT_BBQ_STOP_BACK_PROBE:
+        hot_bbq_probe_rebuild_stop_back();
+        break;
+    case PAGE_HOT_BBQ_COMPLETE_PROBE:
+        goto pop_to_major_menu;
+
+    case PAGE_BOTTOM_BBQ_MENU_PROBE:
+        bottom_bbq_probe_rebuild_menu(child);
+        break;
+    case PAGE_BOTTOM_BBQ_SET_PROBE:
+        bottom_bbq_probe_rebuild_set(child);
+        break;
+    case PAGE_BOTTOM_BBQ_COOKING_PROBE:
+        if (child == PAGE_BOTTOM_BBQ_COMPLETE_PROBE)
+            goto pop_to_major_menu;
+        if (child == PAGE_BOTTOM_BBQ_STOP_BACK_PROBE) {
+            g_on_stop_back = 0;
+            bottom_bbq_probe_rebuild_cooking(child);
+        } else {
+            bottom_bbq_probe_rebuild_cooking(child);
+        }
+        break;
+    case PAGE_BOTTOM_BBQ_STOP_PROBE:
+        bottom_bbq_probe_rebuild_stop();
+        break;
+    case PAGE_BOTTOM_BBQ_STOP_BACK_PROBE:
+        bottom_bbq_probe_rebuild_stop_back();
+        break;
+    case PAGE_BOTTOM_BBQ_COMPLETE_PROBE:
+        goto pop_to_major_menu;
+
+    case PAGE_SLOWCOOK_MENU_PROBE:
+        slowcook_probe_rebuild_menu(child);
+        break;
+    case PAGE_SLOWCOOK_SET_PROBE:
+        slowcook_probe_rebuild_set(child);
+        break;
+    case PAGE_SLOWCOOK_COOKING_PROBE:
+        if (child == PAGE_SLOWCOOK_COMPLETE_PROBE)
+            goto pop_to_major_menu;
+        if (child == PAGE_SLOWCOOK_STOP_BACK_PROBE) {
+            g_on_stop_back = 0;
+            slowcook_probe_rebuild_cooking(child);
+        } else {
+            slowcook_probe_rebuild_cooking(child);
+        }
+        break;
+    case PAGE_SLOWCOOK_STOP_PROBE:
+        slowcook_probe_rebuild_stop();
+        break;
+    case PAGE_SLOWCOOK_STOP_BACK_PROBE:
+        slowcook_probe_rebuild_stop_back();
+        break;
+    case PAGE_SLOWCOOK_COMPLETE_PROBE:
         goto pop_to_major_menu;
 
     case PAGE_EXTRA_COLOR:
@@ -3546,6 +3639,18 @@ static void process_key(uint8_t key)
                 jump_to_updown_bbq_stop_back_probe();
             } else if (cur == PAGE_UPDOWN_BBQ_STOP_PROBE)
                 jump_to_updown_bbq_stop_back_probe();
+            else if (cur == PAGE_HOT_BBQ_COOKING_PROBE) {
+                jump_to_hot_bbq_stop_back_probe();
+            } else if (cur == PAGE_HOT_BBQ_STOP_PROBE)
+                jump_to_hot_bbq_stop_back_probe();
+            else if (cur == PAGE_BOTTOM_BBQ_COOKING_PROBE) {
+                jump_to_bottom_bbq_stop_back_probe();
+            } else if (cur == PAGE_BOTTOM_BBQ_STOP_PROBE)
+                jump_to_bottom_bbq_stop_back_probe();
+            else if (cur == PAGE_SLOWCOOK_COOKING_PROBE) {
+                jump_to_slowcook_stop_back_probe();
+            } else if (cur == PAGE_SLOWCOOK_STOP_PROBE)
+                jump_to_slowcook_stop_back_probe();
             else if (cur == PAGE_COLOR_COOKING)
                 jump_to_color_stop_back();
             else if (cur == PAGE_COLOR_STOP)
@@ -4630,6 +4735,9 @@ static void auto_pause_on_door(void)
     page_id_t cur = page_stack[depth - 1];
     if (cur == PAGE_UPDOWN_BBQ_COOKING) jump_to_updown_bbq_stop();
     else if (cur == PAGE_UPDOWN_BBQ_COOKING_PROBE) jump_to_updown_bbq_stop_probe();
+    else if (cur == PAGE_HOT_BBQ_COOKING_PROBE) jump_to_hot_bbq_stop_probe();
+    else if (cur == PAGE_BOTTOM_BBQ_COOKING_PROBE) jump_to_bottom_bbq_stop_probe();
+    else if (cur == PAGE_SLOWCOOK_COOKING_PROBE) jump_to_slowcook_stop_probe();
     else if (cur == PAGE_TOP_BBQ_COOKING) jump_to_top_bbq_stop();
     else if (cur == PAGE_BOTTOM_BBQ_COOKING) jump_to_bottom_bbq_stop();
     else if (cur == PAGE_HOT_BBQ_COOKING) jump_to_hot_bbq_stop();
@@ -4684,6 +4792,39 @@ void cooking_timer_cb(lv_timer_t *timer)
                 if (p > 100) p = 100;
                 if (p < 3) p = 3;
                 lv_bar_set_value(back->bar_3, p, LV_ANIM_OFF);
+                lv_obj_invalidate(lv_scr_act());
+            }
+        }
+        if (current_group == g_hot_bbq_stop_back_probe) {
+            hot_bbq_stop_back_probe_t *back = hot_bbq_stop_back_probe_get(&ui_manager);
+            if (back) {
+                int probe = get_probe_temp();
+                int range = probe_target_temp - cook_start_probe;
+                int p = range > 0 ? 3 + (int)((int64_t)(probe - cook_start_probe) * 97 / range) : 3;
+                if (p > 100) p = 100; if (p < 3) p = 3;
+                lv_bar_set_value(back->bar_3, p, LV_ANIM_OFF);
+                lv_obj_invalidate(lv_scr_act());
+            }
+        }
+        if (current_group == g_bottom_bbq_stop_back_probe) {
+            bottom_bbq_stop_back_probe_t *back = bottom_bbq_stop_back_probe_get(&ui_manager);
+            if (back) {
+                int probe = get_probe_temp();
+                int range = probe_target_temp - cook_start_probe;
+                int p = range > 0 ? 3 + (int)((int64_t)(probe - cook_start_probe) * 97 / range) : 3;
+                if (p > 100) p = 100; if (p < 3) p = 3;
+                lv_bar_set_value(back->bar_7, p, LV_ANIM_OFF);
+                lv_obj_invalidate(lv_scr_act());
+            }
+        }
+        if (current_group == g_slowcook_stop_back_probe) {
+            slowcook_stop_back_probe_t *back = slowcook_stop_back_probe_get(&ui_manager);
+            if (back) {
+                int probe = get_probe_temp();
+                int range = probe_target_temp - cook_start_probe;
+                int p = range > 0 ? 3 + (int)((int64_t)(probe - cook_start_probe) * 97 / range) : 3;
+                if (p > 100) p = 100; if (p < 3) p = 3;
+                lv_bar_set_value(back->bar_11, p, LV_ANIM_OFF);
                 lv_obj_invalidate(lv_scr_act());
             }
         }
@@ -4824,6 +4965,33 @@ void cooking_timer_cb(lv_timer_t *timer)
                 }
             }
         }
+        if (current_group == g_hot_bbq_stop_back_probe) {
+            int probe = get_probe_temp();
+        if (probe >= probe_target_temp && probe_target_temp >= 30 && probe > cook_start_probe && cook_timer) {
+                lv_timer_del(cook_timer); cook_timer = NULL;
+                g_send.buzzer_req = BUZZER_COOK_DONE; g_send.cook_flag = 0;
+                g_on_stop_back = 0;
+                if (g_stop_back_complete) { void (*fn)(void) = g_stop_back_complete; g_stop_back_complete = NULL; fn(); }
+            }
+        }
+        if (current_group == g_bottom_bbq_stop_back_probe) {
+            int probe = get_probe_temp();
+        if (probe >= probe_target_temp && probe_target_temp >= 30 && probe > cook_start_probe && cook_timer) {
+                lv_timer_del(cook_timer); cook_timer = NULL;
+                g_send.buzzer_req = BUZZER_COOK_DONE; g_send.cook_flag = 0;
+                g_on_stop_back = 0;
+                if (g_stop_back_complete) { void (*fn)(void) = g_stop_back_complete; g_stop_back_complete = NULL; fn(); }
+            }
+        }
+        if (current_group == g_slowcook_stop_back_probe) {
+            int probe = get_probe_temp();
+        if (probe >= probe_target_temp && probe_target_temp >= 30 && probe > cook_start_probe && cook_timer) {
+                lv_timer_del(cook_timer); cook_timer = NULL;
+                g_send.buzzer_req = BUZZER_COOK_DONE; g_send.cook_flag = 0;
+                g_on_stop_back = 0;
+                if (g_stop_back_complete) { void (*fn)(void) = g_stop_back_complete; g_stop_back_complete = NULL; fn(); }
+            }
+        }
         if (elapsed >= (uint32_t)cook_total_ms && cook_timer
             && current_group != g_updown_bbq_stop_back_probe) {
             lv_timer_del(cook_timer);
@@ -4907,6 +5075,63 @@ void cooking_timer_cb(lv_timer_t *timer)
             g_send.buzzer_req = BUZZER_COOK_DONE;
             g_send.cook_flag = 0;
             jump_to_updown_bbq_complete_probe();
+        }
+        return;
+    }
+    if (current_group == g_hot_bbq_cooking_probe) {
+        int probe = get_probe_temp();
+        hot_bbq_cooking_probe_t *cook = hot_bbq_cooking_probe_get(&ui_manager);
+        if (cook) {
+            int range = probe_target_temp - cook_start_probe;
+            int p = range > 0 ? 3 + (int)((int64_t)(probe - cook_start_probe) * 97 / range) : 3;
+            if (p > 100) p = 100; if (p < 3) p = 3;
+            lv_bar_set_value(cook->bar_1, p, LV_ANIM_OFF);
+            int display = probe > probe_target_temp ? probe_target_temp : probe;
+            lv_label_set_text_fmt(cook->temp, "%d℃", display);
+            lv_obj_invalidate(lv_scr_act());
+        }
+        if (probe >= probe_target_temp && probe_target_temp >= 30 && probe > cook_start_probe && cook_timer) {
+            lv_timer_del(cook_timer); cook_timer = NULL;
+            g_send.buzzer_req = BUZZER_COOK_DONE; g_send.cook_flag = 0;
+            jump_to_hot_bbq_complete_probe();
+        }
+        return;
+    }
+    if (current_group == g_bottom_bbq_cooking_probe) {
+        int probe = get_probe_temp();
+        bottom_bbq_cooking_probe_t *cook = bottom_bbq_cooking_probe_get(&ui_manager);
+        if (cook) {
+            int range = probe_target_temp - cook_start_probe;
+            int p = range > 0 ? 3 + (int)((int64_t)(probe - cook_start_probe) * 97 / range) : 3;
+            if (p > 100) p = 100; if (p < 3) p = 3;
+            lv_bar_set_value(cook->bar_5, p, LV_ANIM_OFF);
+            int display = probe > probe_target_temp ? probe_target_temp : probe;
+            lv_label_set_text_fmt(cook->temp, "%d℃", display);
+            lv_obj_invalidate(lv_scr_act());
+        }
+        if (probe >= probe_target_temp && probe_target_temp >= 30 && probe > cook_start_probe && cook_timer) {
+            lv_timer_del(cook_timer); cook_timer = NULL;
+            g_send.buzzer_req = BUZZER_COOK_DONE; g_send.cook_flag = 0;
+            jump_to_bottom_bbq_complete_probe();
+        }
+        return;
+    }
+    if (current_group == g_slowcook_cooking_probe) {
+        int probe = get_probe_temp();
+        slowcook_cooking_probe_t *cook = slowcook_cooking_probe_get(&ui_manager);
+        if (cook) {
+            int range = probe_target_temp - cook_start_probe;
+            int p = range > 0 ? 3 + (int)((int64_t)(probe - cook_start_probe) * 97 / range) : 3;
+            if (p > 100) p = 100; if (p < 3) p = 3;
+            lv_bar_set_value(cook->bar_9, p, LV_ANIM_OFF);
+            int display = probe > probe_target_temp ? probe_target_temp : probe;
+            lv_label_set_text_fmt(cook->temp, "%d℃", display);
+            lv_obj_invalidate(lv_scr_act());
+        }
+        if (probe >= probe_target_temp && probe_target_temp >= 30 && probe > cook_start_probe && cook_timer) {
+            lv_timer_del(cook_timer); cook_timer = NULL;
+            g_send.buzzer_req = BUZZER_COOK_DONE; g_send.cook_flag = 0;
+            jump_to_slowcook_complete_probe();
         }
         return;
     }

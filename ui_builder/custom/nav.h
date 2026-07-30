@@ -70,6 +70,24 @@ typedef enum {
     PAGE_UPDOWN_BBQ_STOP_PROBE,
     PAGE_UPDOWN_BBQ_STOP_BACK_PROBE,
     PAGE_UPDOWN_BBQ_COMPLETE_PROBE,
+    PAGE_HOT_BBQ_MENU_PROBE,
+    PAGE_HOT_BBQ_SET_PROBE,
+    PAGE_HOT_BBQ_COOKING_PROBE,
+    PAGE_HOT_BBQ_STOP_PROBE,
+    PAGE_HOT_BBQ_STOP_BACK_PROBE,
+    PAGE_HOT_BBQ_COMPLETE_PROBE,
+    PAGE_BOTTOM_BBQ_MENU_PROBE,
+    PAGE_BOTTOM_BBQ_SET_PROBE,
+    PAGE_BOTTOM_BBQ_COOKING_PROBE,
+    PAGE_BOTTOM_BBQ_STOP_PROBE,
+    PAGE_BOTTOM_BBQ_STOP_BACK_PROBE,
+    PAGE_BOTTOM_BBQ_COMPLETE_PROBE,
+    PAGE_SLOWCOOK_MENU_PROBE,
+    PAGE_SLOWCOOK_SET_PROBE,
+    PAGE_SLOWCOOK_COOKING_PROBE,
+    PAGE_SLOWCOOK_STOP_PROBE,
+    PAGE_SLOWCOOK_STOP_BACK_PROBE,
+    PAGE_SLOWCOOK_COMPLETE_PROBE,
     PAGE_EXTRA_COLOR,
     PAGE_COLOR_COOKING,
     PAGE_COLOR_COOKING_COMPLETE,
@@ -260,6 +278,24 @@ extern lv_group_t *g_updown_bbq_cooking_probe;
 extern lv_group_t *g_updown_bbq_stop_probe;
 extern lv_group_t *g_updown_bbq_stop_back_probe;
 extern lv_group_t *g_updown_bbq_complete_probe;
+extern lv_group_t *g_hot_bbq_menu_probe;
+extern lv_group_t *g_hot_bbq_set_probe;
+extern lv_group_t *g_hot_bbq_cooking_probe;
+extern lv_group_t *g_hot_bbq_stop_probe;
+extern lv_group_t *g_hot_bbq_stop_back_probe;
+extern lv_group_t *g_hot_bbq_complete_probe;
+extern lv_group_t *g_bottom_bbq_menu_probe;
+extern lv_group_t *g_bottom_bbq_set_probe;
+extern lv_group_t *g_bottom_bbq_cooking_probe;
+extern lv_group_t *g_bottom_bbq_stop_probe;
+extern lv_group_t *g_bottom_bbq_stop_back_probe;
+extern lv_group_t *g_bottom_bbq_complete_probe;
+extern lv_group_t *g_slowcook_menu_probe;
+extern lv_group_t *g_slowcook_set_probe;
+extern lv_group_t *g_slowcook_cooking_probe;
+extern lv_group_t *g_slowcook_stop_probe;
+extern lv_group_t *g_slowcook_stop_back_probe;
+extern lv_group_t *g_slowcook_complete_probe;
 
 extern lv_group_t *g_preheat_menu;
 extern lv_group_t *g_preheat_cooking;
@@ -446,6 +482,49 @@ void updown_bbq_probe_rebuild_setting(void);
 void updown_bbq_probe_rebuild_stop(void);
 void updown_bbq_probe_rebuild_stop_back(void);
 void updown_bbq_probe_rebuild_complete(void);
+
+void jump_to_hot_bbq_menu_probe(void);
+void jump_to_hot_bbq_set_probe(void);
+void jump_to_hot_bbq_cooking_probe(void);
+void jump_to_hot_bbq_stop_probe(void);
+void jump_to_hot_bbq_stop_back_probe(void);
+void jump_to_hot_bbq_complete_probe(void);
+void hot_bbq_probe_resume_cooking(void);
+void hot_bbq_probe_rebuild_menu(page_id_t child);
+void hot_bbq_probe_rebuild_set(page_id_t child);
+void hot_bbq_probe_rebuild_cooking(page_id_t child);
+void hot_bbq_probe_rebuild_stop(void);
+void hot_bbq_probe_rebuild_stop_back(void);
+void hot_bbq_probe_rebuild_complete(void);
+
+void jump_to_bottom_bbq_menu_probe(void);
+void jump_to_bottom_bbq_set_probe(void);
+void jump_to_bottom_bbq_cooking_probe(void);
+void jump_to_bottom_bbq_stop_probe(void);
+void jump_to_bottom_bbq_stop_back_probe(void);
+void jump_to_bottom_bbq_complete_probe(void);
+void bottom_bbq_probe_resume_cooking(void);
+void bottom_bbq_probe_rebuild_menu(page_id_t child);
+void bottom_bbq_probe_rebuild_set(page_id_t child);
+void bottom_bbq_probe_rebuild_cooking(page_id_t child);
+void bottom_bbq_probe_rebuild_stop(void);
+void bottom_bbq_probe_rebuild_stop_back(void);
+void bottom_bbq_probe_rebuild_complete(void);
+
+void jump_to_slowcook_menu_probe(void);
+void jump_to_slowcook_set_probe(void);
+void jump_to_slowcook_cooking_probe(void);
+void jump_to_slowcook_stop_probe(void);
+void jump_to_slowcook_stop_back_probe(void);
+void jump_to_slowcook_complete_probe(void);
+void slowcook_probe_resume_cooking(void);
+void slowcook_probe_rebuild_menu(page_id_t child);
+void slowcook_probe_rebuild_set(page_id_t child);
+void slowcook_probe_rebuild_cooking(page_id_t child);
+void slowcook_probe_rebuild_stop(void);
+void slowcook_probe_rebuild_stop_back(void);
+void slowcook_probe_rebuild_complete(void);
+
 void jump_to_probetip(const char *text);
 void probetip_rebuild(page_id_t child);
 void jump_to_major_menu_tz(void);

@@ -17,14 +17,14 @@ static void on_cook_menu_tz_hot_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
     if (!screen_is_loading(act_scr))
-        jump_to_hot_bbq_menu(); /* TODO: 改为 probe 版本 */
+        jump_to_hot_bbq_menu_probe();
 }
 
 static void on_cook_menu_tz_bottom_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
     if (!screen_is_loading(act_scr))
-        jump_to_bottom_bbq_menu(); /* TODO: 改为 probe 版本 */
+        jump_to_bottom_bbq_menu_probe();
 }
 
 void jump_to_cook_menu_tz(void)

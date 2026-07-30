@@ -3649,6 +3649,255 @@ typedef struct {
     lv_obj_t *label_77;
 } updown_bbq_complete_probe_t;
 
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *next;
+    lv_obj_t *image_1;
+    lv_obj_t *image_2;
+    lv_obj_t *label_1;
+    lv_obj_t *temp;
+    lv_obj_t *label_3;
+    lv_obj_t *label_4;
+    lv_obj_t *label_5;
+    lv_obj_t *label_6;
+    lv_obj_t *templine3;
+    lv_obj_t *templine2;
+    lv_obj_t *probetemp;
+    lv_obj_t *label_8;
+    lv_obj_t *probetempline;
+} hot_bbq_menu_probe_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *label_9;
+    lv_obj_t *label_10;
+    lv_obj_t *label_11;
+    lv_obj_t *label_12;
+    lv_obj_t *image_6;
+    lv_obj_t *label_13;
+    lv_obj_t *sure;
+    lv_obj_t *label_20;
+    lv_obj_t *probetemp;
+    lv_obj_t *label_28;
+    lv_obj_t *temp;
+    lv_obj_t *icon2;
+    lv_obj_t *icon3;
+} hot_bbq_set_probe_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *status;
+    lv_obj_t *temp;
+    lv_obj_t *stop;
+    lv_obj_t *image_7;
+    lv_obj_t *bar_1;
+    lv_obj_t *image_8;
+    lv_obj_t *label_34;
+    lv_obj_t *image_9;
+} hot_bbq_cooking_probe_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *status;
+    lv_obj_t *temp;
+    lv_obj_t *start;
+    lv_obj_t *image_10;
+    lv_obj_t *bar_2;
+    lv_obj_t *image_11;
+    lv_obj_t *label_37;
+    lv_obj_t *image_12;
+} hot_bbq_stop_probe_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *status;
+    lv_obj_t *image_13;
+    lv_obj_t *bar_3;
+    lv_obj_t *image_14;
+    lv_obj_t *label_39;
+    lv_obj_t *container_1;
+    lv_obj_t *label_40;
+    lv_obj_t *label_41;
+    lv_obj_t *sure;
+} hot_bbq_stop_back_probe_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_15;
+    lv_obj_t *status;
+    lv_obj_t *bar_4;
+    lv_obj_t *image_16;
+    lv_obj_t *label_43;
+    lv_obj_t *label_44;
+    lv_obj_t *label_45;
+} hot_bbq_complete_probe_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *next;
+    lv_obj_t *image_17;
+    lv_obj_t *image_18;
+    lv_obj_t *label_46;
+    lv_obj_t *temp;
+    lv_obj_t *label_48;
+    lv_obj_t *label_49;
+    lv_obj_t *label_50;
+    lv_obj_t *label_51;
+    lv_obj_t *templine3;
+    lv_obj_t *templine2;
+    lv_obj_t *probetemp;
+    lv_obj_t *label_53;
+    lv_obj_t *probetempline;
+} bottom_bbq_menu_probe_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *label_54;
+    lv_obj_t *label_55;
+    lv_obj_t *label_56;
+    lv_obj_t *label_57;
+    lv_obj_t *image_22;
+    lv_obj_t *label_58;
+    lv_obj_t *sure;
+    lv_obj_t *label_59;
+    lv_obj_t *probetemp;
+    lv_obj_t *label_61;
+    lv_obj_t *temp;
+    lv_obj_t *icon2;
+    lv_obj_t *icon3;
+} bottom_bbq_set_probe_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *status;
+    lv_obj_t *temp;
+    lv_obj_t *stop;
+    lv_obj_t *image_23;
+    lv_obj_t *bar_5;
+    lv_obj_t *image_24;
+    lv_obj_t *label_67;
+    lv_obj_t *image_25;
+} bottom_bbq_cooking_probe_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *label_68;
+    lv_obj_t *temp;
+    lv_obj_t *start;
+    lv_obj_t *image_26;
+    lv_obj_t *bar_6;
+    lv_obj_t *image_27;
+    lv_obj_t *label_70;
+    lv_obj_t *image_28;
+} bottom_bbq_stop_probe_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *status;
+    lv_obj_t *image_29;
+    lv_obj_t *bar_7;
+    lv_obj_t *image_30;
+    lv_obj_t *label_72;
+    lv_obj_t *container_2;
+    lv_obj_t *label_73;
+    lv_obj_t *label_74;
+    lv_obj_t *sure;
+} bottom_bbq_stop_back_probe_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_31;
+    lv_obj_t *status;
+    lv_obj_t *bar_8;
+    lv_obj_t *image_32;
+    lv_obj_t *label_76;
+    lv_obj_t *label_77;
+    lv_obj_t *label_78;
+} bottom_bbq_complete_probe_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *next;
+    lv_obj_t *image_33;
+    lv_obj_t *image_34;
+    lv_obj_t *label_79;
+    lv_obj_t *temp;
+    lv_obj_t *label_81;
+    lv_obj_t *label_82;
+    lv_obj_t *label_83;
+    lv_obj_t *label_84;
+    lv_obj_t *templine3;
+    lv_obj_t *templine2;
+    lv_obj_t *probetemp;
+    lv_obj_t *label_86;
+    lv_obj_t *probetempline;
+} slowcook_menu_probe_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *label_87;
+    lv_obj_t *label_88;
+    lv_obj_t *label_89;
+    lv_obj_t *label_90;
+    lv_obj_t *image_38;
+    lv_obj_t *label_91;
+    lv_obj_t *sure;
+    lv_obj_t *label_92;
+    lv_obj_t *probetemp;
+    lv_obj_t *label_94;
+    lv_obj_t *temp;
+    lv_obj_t *icon2;
+    lv_obj_t *icon3;
+} slowcook_set_probe_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *status;
+    lv_obj_t *temp;
+    lv_obj_t *stop;
+    lv_obj_t *image_39;
+    lv_obj_t *bar_9;
+    lv_obj_t *image_40;
+    lv_obj_t *label_100;
+    lv_obj_t *image_41;
+} slowcook_cooking_probe_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *label_101;
+    lv_obj_t *temp;
+    lv_obj_t *start;
+    lv_obj_t *image_42;
+    lv_obj_t *bar_10;
+    lv_obj_t *image_43;
+    lv_obj_t *label_103;
+    lv_obj_t *image_44;
+} slowcook_stop_probe_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *status;
+    lv_obj_t *image_45;
+    lv_obj_t *bar_11;
+    lv_obj_t *image_46;
+    lv_obj_t *label_105;
+    lv_obj_t *container_3;
+    lv_obj_t *label_106;
+    lv_obj_t *label_107;
+    lv_obj_t *sure;
+} slowcook_stop_back_probe_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_47;
+    lv_obj_t *status;
+    lv_obj_t *bar_12;
+    lv_obj_t *image_48;
+    lv_obj_t *label_109;
+    lv_obj_t *label_110;
+    lv_obj_t *label_111;
+} slowcook_complete_probe_t;
+
 
 typedef struct {
     bool auto_del;
@@ -3885,6 +4134,24 @@ typedef struct {
     updown_bbq_stop_probe_t updown_bbq_stop_probe;
     updown_bbq_stop_back_probe_t updown_bbq_stop_back_probe;
     updown_bbq_complete_probe_t updown_bbq_complete_probe;
+    hot_bbq_menu_probe_t hot_bbq_menu_probe;
+    hot_bbq_set_probe_t hot_bbq_set_probe;
+    hot_bbq_cooking_probe_t hot_bbq_cooking_probe;
+    hot_bbq_stop_probe_t hot_bbq_stop_probe;
+    hot_bbq_stop_back_probe_t hot_bbq_stop_back_probe;
+    hot_bbq_complete_probe_t hot_bbq_complete_probe;
+    bottom_bbq_menu_probe_t bottom_bbq_menu_probe;
+    bottom_bbq_set_probe_t bottom_bbq_set_probe;
+    bottom_bbq_cooking_probe_t bottom_bbq_cooking_probe;
+    bottom_bbq_stop_probe_t bottom_bbq_stop_probe;
+    bottom_bbq_stop_back_probe_t bottom_bbq_stop_back_probe;
+    bottom_bbq_complete_probe_t bottom_bbq_complete_probe;
+    slowcook_menu_probe_t slowcook_menu_probe;
+    slowcook_set_probe_t slowcook_set_probe;
+    slowcook_cooking_probe_t slowcook_cooking_probe;
+    slowcook_stop_probe_t slowcook_stop_probe;
+    slowcook_stop_back_probe_t slowcook_stop_back_probe;
+    slowcook_complete_probe_t slowcook_complete_probe;
 
 } ui_manager_t;
 
@@ -5059,6 +5326,96 @@ static inline updown_bbq_complete_probe_t *updown_bbq_complete_probe_get(ui_mana
     return &ui->updown_bbq_complete_probe;
 }
 
+static inline hot_bbq_menu_probe_t *hot_bbq_menu_probe_get(ui_manager_t *ui)
+{
+    return &ui->hot_bbq_menu_probe;
+}
+
+static inline hot_bbq_set_probe_t *hot_bbq_set_probe_get(ui_manager_t *ui)
+{
+    return &ui->hot_bbq_set_probe;
+}
+
+static inline hot_bbq_cooking_probe_t *hot_bbq_cooking_probe_get(ui_manager_t *ui)
+{
+    return &ui->hot_bbq_cooking_probe;
+}
+
+static inline hot_bbq_stop_probe_t *hot_bbq_stop_probe_get(ui_manager_t *ui)
+{
+    return &ui->hot_bbq_stop_probe;
+}
+
+static inline hot_bbq_stop_back_probe_t *hot_bbq_stop_back_probe_get(ui_manager_t *ui)
+{
+    return &ui->hot_bbq_stop_back_probe;
+}
+
+static inline hot_bbq_complete_probe_t *hot_bbq_complete_probe_get(ui_manager_t *ui)
+{
+    return &ui->hot_bbq_complete_probe;
+}
+
+static inline bottom_bbq_menu_probe_t *bottom_bbq_menu_probe_get(ui_manager_t *ui)
+{
+    return &ui->bottom_bbq_menu_probe;
+}
+
+static inline bottom_bbq_set_probe_t *bottom_bbq_set_probe_get(ui_manager_t *ui)
+{
+    return &ui->bottom_bbq_set_probe;
+}
+
+static inline bottom_bbq_cooking_probe_t *bottom_bbq_cooking_probe_get(ui_manager_t *ui)
+{
+    return &ui->bottom_bbq_cooking_probe;
+}
+
+static inline bottom_bbq_stop_probe_t *bottom_bbq_stop_probe_get(ui_manager_t *ui)
+{
+    return &ui->bottom_bbq_stop_probe;
+}
+
+static inline bottom_bbq_stop_back_probe_t *bottom_bbq_stop_back_probe_get(ui_manager_t *ui)
+{
+    return &ui->bottom_bbq_stop_back_probe;
+}
+
+static inline bottom_bbq_complete_probe_t *bottom_bbq_complete_probe_get(ui_manager_t *ui)
+{
+    return &ui->bottom_bbq_complete_probe;
+}
+
+static inline slowcook_menu_probe_t *slowcook_menu_probe_get(ui_manager_t *ui)
+{
+    return &ui->slowcook_menu_probe;
+}
+
+static inline slowcook_set_probe_t *slowcook_set_probe_get(ui_manager_t *ui)
+{
+    return &ui->slowcook_set_probe;
+}
+
+static inline slowcook_cooking_probe_t *slowcook_cooking_probe_get(ui_manager_t *ui)
+{
+    return &ui->slowcook_cooking_probe;
+}
+
+static inline slowcook_stop_probe_t *slowcook_stop_probe_get(ui_manager_t *ui)
+{
+    return &ui->slowcook_stop_probe;
+}
+
+static inline slowcook_stop_back_probe_t *slowcook_stop_back_probe_get(ui_manager_t *ui)
+{
+    return &ui->slowcook_stop_back_probe;
+}
+
+static inline slowcook_complete_probe_t *slowcook_complete_probe_get(ui_manager_t *ui)
+{
+    return &ui->slowcook_complete_probe;
+}
+
 
 void waitmenu_24_create(ui_manager_t *ui);
 void clean_menu_create(ui_manager_t *ui);
@@ -5293,6 +5650,24 @@ void updown_bbq_cooking_probe_create(ui_manager_t *ui);
 void updown_bbq_stop_probe_create(ui_manager_t *ui);
 void updown_bbq_stop_back_probe_create(ui_manager_t *ui);
 void updown_bbq_complete_probe_create(ui_manager_t *ui);
+void hot_bbq_menu_probe_create(ui_manager_t *ui);
+void hot_bbq_set_probe_create(ui_manager_t *ui);
+void hot_bbq_cooking_probe_create(ui_manager_t *ui);
+void hot_bbq_stop_probe_create(ui_manager_t *ui);
+void hot_bbq_stop_back_probe_create(ui_manager_t *ui);
+void hot_bbq_complete_probe_create(ui_manager_t *ui);
+void bottom_bbq_menu_probe_create(ui_manager_t *ui);
+void bottom_bbq_set_probe_create(ui_manager_t *ui);
+void bottom_bbq_cooking_probe_create(ui_manager_t *ui);
+void bottom_bbq_stop_probe_create(ui_manager_t *ui);
+void bottom_bbq_stop_back_probe_create(ui_manager_t *ui);
+void bottom_bbq_complete_probe_create(ui_manager_t *ui);
+void slowcook_menu_probe_create(ui_manager_t *ui);
+void slowcook_set_probe_create(ui_manager_t *ui);
+void slowcook_cooking_probe_create(ui_manager_t *ui);
+void slowcook_stop_probe_create(ui_manager_t *ui);
+void slowcook_stop_back_probe_create(ui_manager_t *ui);
+void slowcook_complete_probe_create(ui_manager_t *ui);
 
 
 extern lv_font_t *fs_montserratmedium_16;
