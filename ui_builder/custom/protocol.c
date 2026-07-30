@@ -30,7 +30,7 @@ void uart_send_fill(void)
     uart_data_send[SEND_FRAME2]       = 0x33;
     uart_data_send[SEND_IFACE_STATUS] = g_send.iface_status;
     uart_data_send[SEND_COOK_MODE]    = g_send.cook_mode;
-    uart_data_send[SEND_COOK_FLAG]    = 0;
+    uart_data_send[SEND_COOK_FLAG]    = g_send.cook_flag;
     uart_data_send[SEND_MICRO_POWER]  = 0;
 
     uart_data_send[SEND_TEMP_H]       = (uint8_t)(g_send.set_temp >> 8);

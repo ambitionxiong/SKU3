@@ -364,8 +364,8 @@ void jump_to_bottom_bbq_cooking(void)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         g_send.iface_status = IFACE_COOKING;
-    g_send.set_temp = set_temp;
-    g_send.set_temp_lower = 0;
+    g_send.set_temp = 0;
+    g_send.set_temp_lower = set_temp;
     g_send.remaining_ms = cook_total_ms;
     printf("[bottom_bbq] jump: set -> bottom_bbq_cooking\n");
 }
@@ -649,7 +649,8 @@ static void on_bottom_bbq_setting_sure_click(lv_event_t *e)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         g_send.iface_status = IFACE_COOKING;
-    g_send.set_temp = set_temp;
+    g_send.set_temp = 0;
+    g_send.set_temp_lower = set_temp;
     g_send.remaining_ms = cook_total_ms;
     printf("[bottom_bbq] setting sure -> cooking\n");
 }

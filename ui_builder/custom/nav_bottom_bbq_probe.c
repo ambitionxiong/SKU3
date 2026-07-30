@@ -240,8 +240,8 @@ void jump_to_bottom_bbq_cooking_probe(void)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_COOKING;
-    g_send.set_temp = set_temp;
-    g_send.set_temp_lower = 0;
+    g_send.set_temp = 0;
+    g_send.set_temp_lower = set_temp;
     g_send.remaining_ms = cook_total_ms;
     printf("[bottom_bbq_probe] jump: set_probe -> cooking_probe\n");
 }
@@ -387,8 +387,8 @@ void bottom_bbq_probe_resume_cooking(void)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_COOKING;
-    g_send.set_temp = set_temp;
-    g_send.set_temp_lower = 0;
+    g_send.set_temp = 0;
+    g_send.set_temp_lower = set_temp;
     g_send.remaining_ms = g_send.remaining_ms;
     printf("[bottom_bbq_probe] resume: stop_probe -> cooking_probe\n");
 }

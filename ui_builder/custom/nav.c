@@ -20,10 +20,11 @@ static void uart_print(void)
     for (int i = 0; i < 24; i++) printf(" %02X", uart_data_send[i]);
     static const char *st[] = {"stdby","set","cook","pause","done","sleep"};
     static const char *md[] = {"none","","","updown","top","bottom","","","hot","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","color"};
-    printf("\n[UART] decoded: st=%s(%d) mode=%s(%d) t=%d t_lo=%d time=%02d:%02d:%02d buz=%d\n",
-           st[g_send.iface_status<=5?g_send.iface_status:0], g_send.iface_status,
-           md[g_send.cook_mode<=38?g_send.cook_mode:0], g_send.cook_mode,
-           g_send.set_temp, g_send.set_temp_lower,
+     printf("\n[UART] decoded: st=%s(%d) mode=%s(%d) flag=%d t=%d t_lo=%d time=%02d:%02d:%02d buz=%d\n",
+            st[g_send.iface_status<=5?g_send.iface_status:0], g_send.iface_status,
+            md[g_send.cook_mode<=38?g_send.cook_mode:0], g_send.cook_mode,
+            g_send.cook_flag,
+            g_send.set_temp, g_send.set_temp_lower,
            uart_data_send[SEND_TIME_HOUR],
            uart_data_send[SEND_TIME_MIN],
            uart_data_send[SEND_TIME_SEC],
@@ -587,13 +588,19 @@ static void adjust_value(edit_field_t *f, int delta)
         if (diff < 0) diff = -diff;
         updown_bbq_setting_t *set = updown_bbq_setting_get(&ui_manager);
         if (diff > 20) {
-            g_send.buzzer_req = BUZZER_KEY_INVALID;
-            *f->value = old_val;
-            lv_label_set_text_fmt(f->label, f->fmt, old_val);
+            int new_v;
+            if (f->value == &set_temp_up)
+                new_v = set_temp_up > set_temp_down ? set_temp_down - 20 : set_temp_down + 20;
+            else
+                new_v = set_temp_down > set_temp_up ? set_temp_up - 20 : set_temp_up + 20;
+            if (new_v > 300) new_v = 300;
+            if (new_v < 30) new_v = 30;
+            *f->value = new_v;
+            lv_label_set_text_fmt(f->label, f->fmt, new_v);
             if (f->ind_short && f->ind_long) {
                 lv_obj_add_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
                 lv_obj_add_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
-                if (old_val < 100)
+                if (new_v < 100)
                     lv_obj_clear_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
                 else
                     lv_obj_clear_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
@@ -601,18 +608,20 @@ static void adjust_value(edit_field_t *f, int delta)
         }
         update_setting_dir_icon(set);
     }
-    /* 上层温度页：上下温差 ≤ 20°C，超限则回弹 */
+    /* 上层温度页：上下温差 ≤ 20°C，超限则循环 */
     if (current_group == g_updown_bbq_menu_top) {
         int diff = set_temp_up - set_temp_down;
         if (diff < 0) diff = -diff;
         if (diff > 20) {
-            g_send.buzzer_req = BUZZER_KEY_INVALID;
-            *f->value = old_val;
-            lv_label_set_text_fmt(f->label, f->fmt, old_val);
+            int new_v = set_temp_up > set_temp_down ? set_temp_down - 20 : set_temp_down + 20;
+            if (new_v > 300) new_v = 300;
+            if (new_v < 30) new_v = 30;
+            *f->value = new_v;
+            lv_label_set_text_fmt(f->label, f->fmt, new_v);
             if (f->ind_short && f->ind_long) {
                 lv_obj_add_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
                 lv_obj_add_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
-                if (old_val < 100)
+                if (new_v < 100)
                     lv_obj_clear_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
                 else
                     lv_obj_clear_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
@@ -622,7 +631,7 @@ static void adjust_value(edit_field_t *f, int delta)
                 if (m) {
                     lv_obj_add_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
                     lv_obj_add_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
-                    if (old_val < 100)
+                    if (new_v < 100)
                         lv_obj_clear_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
                     else
                         lv_obj_clear_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
@@ -631,18 +640,20 @@ static void adjust_value(edit_field_t *f, int delta)
             lv_obj_invalidate(lv_scr_act());
         }
     }
-    /* 下层温度页：上下温差 ≤ 20°C，超限则回弹 */
+    /* 下层温度页：上下温差 ≤ 20°C，超限则循环 */
     if (current_group == g_updown_bbq_menu_low) {
         int diff = set_temp_up - set_temp_down;
         if (diff < 0) diff = -diff;
         if (diff > 20) {
-            g_send.buzzer_req = BUZZER_KEY_INVALID;
-            *f->value = old_val;
-            lv_label_set_text_fmt(f->label, f->fmt, old_val);
+            int new_v = set_temp_down > set_temp_up ? set_temp_up - 20 : set_temp_up + 20;
+            if (new_v > 300) new_v = 300;
+            if (new_v < 30) new_v = 30;
+            *f->value = new_v;
+            lv_label_set_text_fmt(f->label, f->fmt, new_v);
             if (f->ind_short && f->ind_long) {
                 lv_obj_add_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
                 lv_obj_add_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
-                if (old_val < 100)
+                if (new_v < 100)
                     lv_obj_clear_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
                 else
                     lv_obj_clear_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
@@ -652,7 +663,7 @@ static void adjust_value(edit_field_t *f, int delta)
                 if (m) {
                     lv_obj_add_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
                     lv_obj_add_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
-                    if (old_val < 100)
+                    if (new_v < 100)
                         lv_obj_clear_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
                     else
                         lv_obj_clear_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
@@ -665,13 +676,15 @@ static void adjust_value(edit_field_t *f, int delta)
         int diff = set_temp_up - set_temp_down;
         if (diff < 0) diff = -diff;
         if (diff > 20) {
-            g_send.buzzer_req = BUZZER_KEY_INVALID;
-            *f->value = old_val;
-            lv_label_set_text_fmt(f->label, f->fmt, old_val);
+            int new_v = set_temp_up > set_temp_down ? set_temp_down - 20 : set_temp_down + 20;
+            if (new_v > 300) new_v = 300;
+            if (new_v < 30) new_v = 30;
+            *f->value = new_v;
+            lv_label_set_text_fmt(f->label, f->fmt, new_v);
             if (f->ind_short && f->ind_long) {
                 lv_obj_add_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
                 lv_obj_add_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
-                if (old_val < 100)
+                if (new_v < 100)
                     lv_obj_clear_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
                 else
                     lv_obj_clear_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
@@ -681,7 +694,7 @@ static void adjust_value(edit_field_t *f, int delta)
                 if (m) {
                     lv_obj_add_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
                     lv_obj_add_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
-                    if (old_val < 100)
+                    if (new_v < 100)
                         lv_obj_clear_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
                     else
                         lv_obj_clear_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
@@ -694,13 +707,15 @@ static void adjust_value(edit_field_t *f, int delta)
         int diff = set_temp_up - set_temp_down;
         if (diff < 0) diff = -diff;
         if (diff > 20) {
-            g_send.buzzer_req = BUZZER_KEY_INVALID;
-            *f->value = old_val;
-            lv_label_set_text_fmt(f->label, f->fmt, old_val);
+            int new_v = set_temp_down > set_temp_up ? set_temp_up - 20 : set_temp_up + 20;
+            if (new_v > 300) new_v = 300;
+            if (new_v < 30) new_v = 30;
+            *f->value = new_v;
+            lv_label_set_text_fmt(f->label, f->fmt, new_v);
             if (f->ind_short && f->ind_long) {
                 lv_obj_add_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
                 lv_obj_add_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
-                if (old_val < 100)
+                if (new_v < 100)
                     lv_obj_clear_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
                 else
                     lv_obj_clear_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
@@ -710,7 +725,7 @@ static void adjust_value(edit_field_t *f, int delta)
                 if (m) {
                     lv_obj_add_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
                     lv_obj_add_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
-                    if (old_val < 100)
+                    if (new_v < 100)
                         lv_obj_clear_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
                     else
                         lv_obj_clear_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
