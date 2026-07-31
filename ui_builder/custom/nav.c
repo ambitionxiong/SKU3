@@ -5841,6 +5841,7 @@ void cooking_timer_cb(lv_timer_t *timer)
             if (cavity <= 270 && cook_timer) {
                 lv_timer_del(cook_timer);
                 cook_timer = NULL;
+                g_send.buzzer_req = BUZZER_COOK_DONE;
                 jump_to_hcs_complete();
             }
         }
@@ -5853,6 +5854,7 @@ void cooking_timer_cb(lv_timer_t *timer)
             if (cavity <= 270 && cook_timer) {
                 lv_timer_del(cook_timer);
                 cook_timer = NULL;
+                g_send.buzzer_req = BUZZER_COOK_DONE;
                 jump_to_hcm_complete();
             }
         }
@@ -5865,6 +5867,7 @@ void cooking_timer_cb(lv_timer_t *timer)
             if (cavity <= 270 && cook_timer) {
                 lv_timer_del(cook_timer);
                 cook_timer = NULL;
+                g_send.buzzer_req = BUZZER_COOK_DONE;
                 jump_to_hch_complete();
             }
         }

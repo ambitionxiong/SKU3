@@ -503,9 +503,9 @@ void jump_to_slowcook_stop_back(void)
 
     slowcook_stop_back_t *back = slowcook_stop_back_get(&ui_manager);
     if (back) {
-        lv_obj_t *btns[] = { back->sure, back->little };
+        lv_obj_t *btns[] = { back->sure };
         if (g_slowcook_stop_back) lv_group_del(g_slowcook_stop_back);
-        g_slowcook_stop_back = group_create_for_page(btns, 2);
+        g_slowcook_stop_back = group_create_for_page(btns, 1);
         lv_obj_add_event_cb(back->sure, on_slowcook_stop_back_sure_click,
                             LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(back->little, on_slowcook_stop_back_littal_click,
@@ -991,9 +991,9 @@ void slowcook_rebuild_stop_back(void)
     slowcook_stop_back_create(&ui_manager);
     slowcook_stop_back_t *back = slowcook_stop_back_get(&ui_manager);
     if (back) {
-        lv_obj_t *btns[] = { back->sure, back->little };
+        lv_obj_t *btns[] = { back->sure };
         if (g_slowcook_stop_back) lv_group_del(g_slowcook_stop_back);
-        g_slowcook_stop_back = group_create_for_page(btns, 2);
+        g_slowcook_stop_back = group_create_for_page(btns, 1);
         lv_obj_add_event_cb(back->sure, on_slowcook_stop_back_sure_click,
                             LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(back->little, on_slowcook_stop_back_littal_click,

@@ -508,9 +508,9 @@ void jump_to_hot_bbq_stop_back(void)
 
     hot_bbq_stop_back_t *back = hot_bbq_stop_back_get(&ui_manager);
     if (back) {
-        lv_obj_t *btns[] = { back->sure, back->button_57 };
+        lv_obj_t *btns[] = { back->sure };
         if (g_hot_bbq_stop_back) lv_group_del(g_hot_bbq_stop_back);
-        g_hot_bbq_stop_back = group_create_for_page(btns, 2);
+        g_hot_bbq_stop_back = group_create_for_page(btns, 1);
         lv_obj_add_event_cb(back->sure, on_hot_bbq_stop_back_sure_click,
                             LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(back->button_57, on_hot_bbq_stop_back_littal_click,
@@ -992,9 +992,9 @@ void hot_bbq_rebuild_stop_back(void)
     hot_bbq_stop_back_create(&ui_manager);
     hot_bbq_stop_back_t *back = hot_bbq_stop_back_get(&ui_manager);
     if (back) {
-        lv_obj_t *btns[] = { back->sure, back->button_57 };
+        lv_obj_t *btns[] = { back->sure };
         if (g_hot_bbq_stop_back) lv_group_del(g_hot_bbq_stop_back);
-        g_hot_bbq_stop_back = group_create_for_page(btns, 2);
+        g_hot_bbq_stop_back = group_create_for_page(btns, 1);
         lv_obj_add_event_cb(back->sure, on_hot_bbq_stop_back_sure_click,
                             LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(back->button_57, on_hot_bbq_stop_back_littal_click,

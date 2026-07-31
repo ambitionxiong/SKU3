@@ -487,9 +487,9 @@ void jump_to_west_stop_back(void)
 
     west_stop_back_t *back = west_stop_back_get(&ui_manager);
     if (back) {
-        lv_obj_t *btns[] = { back->sure, back->little };
+        lv_obj_t *btns[] = { back->sure };
         if (g_west_stop_back) lv_group_del(g_west_stop_back);
-        g_west_stop_back = group_create_for_page(btns, 2);
+        g_west_stop_back = group_create_for_page(btns, 1);
         lv_obj_add_event_cb(back->sure, on_west_stop_back_sure_click,
                             LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(back->little, on_west_stop_back_littal_click,
@@ -953,9 +953,9 @@ void west_rebuild_stop_back(void)
     west_stop_back_create(&ui_manager);
     west_stop_back_t *back = west_stop_back_get(&ui_manager);
     if (back) {
-        lv_obj_t *btns[] = { back->sure, back->little };
+        lv_obj_t *btns[] = { back->sure };
         if (g_west_stop_back) lv_group_del(g_west_stop_back);
-        g_west_stop_back = group_create_for_page(btns, 2);
+        g_west_stop_back = group_create_for_page(btns, 1);
         lv_obj_add_event_cb(back->sure, on_west_stop_back_sure_click,
                             LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(back->little, on_west_stop_back_littal_click,

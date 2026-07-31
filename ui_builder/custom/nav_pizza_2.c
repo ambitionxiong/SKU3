@@ -503,9 +503,9 @@ void jump_to_pizza_2_stop_back(void)
 
     pizza_2_stop_back_t *back = pizza_2_stop_back_get(&ui_manager);
     if (back) {
-        lv_obj_t *btns[] = { back->sure, back->little };
+        lv_obj_t *btns[] = { back->sure };
         if (g_pizza_2_stop_back) lv_group_del(g_pizza_2_stop_back);
-        g_pizza_2_stop_back = group_create_for_page(btns, 2);
+        g_pizza_2_stop_back = group_create_for_page(btns, 1);
         lv_obj_add_event_cb(back->sure, on_pizza_2_stop_back_sure_click,
                             LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(back->little, on_pizza_2_stop_back_littal_click,
@@ -991,9 +991,9 @@ void pizza_2_rebuild_stop_back(void)
     pizza_2_stop_back_create(&ui_manager);
     pizza_2_stop_back_t *back = pizza_2_stop_back_get(&ui_manager);
     if (back) {
-        lv_obj_t *btns[] = { back->sure, back->little };
+        lv_obj_t *btns[] = { back->sure };
         if (g_pizza_2_stop_back) lv_group_del(g_pizza_2_stop_back);
-        g_pizza_2_stop_back = group_create_for_page(btns, 2);
+        g_pizza_2_stop_back = group_create_for_page(btns, 1);
         lv_obj_add_event_cb(back->sure, on_pizza_2_stop_back_sure_click,
                             LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(back->little, on_pizza_2_stop_back_littal_click,
