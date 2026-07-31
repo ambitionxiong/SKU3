@@ -4301,6 +4301,10 @@ static void process_key(uint8_t key)
         uart_print();
         break;
     case KEY_CLEAN:         // 7: 进入清洁菜单
+        if (is_probe_inserted()) {
+            jump_to_probetip("该功能不支持探针，请拔出探针！");
+            break;
+        }
         if (g_send.iface_status == IFACE_COOKING) {
             g_send.buzzer_req = BUZZER_KEY_INVALID;
             break;
@@ -5123,14 +5127,18 @@ void nav_key1_long_press(void)
     } else {
         depth = 0;
         page_push(PAGE_WAITMENU_24);
-        page_push(PAGE_MAJOR_MENU);
-        lv_obj_clean(lv_scr_act());
-        major_menu_create(&ui_manager);
-        groups_create();
-        bind_events();
-        current_group = g_major_menu;
-        lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
-                         LV_SCR_LOAD_ANIM_NONE, 0, 0, 0);
+        if (is_probe_inserted()) {
+            jump_to_major_menu_tz();
+        } else {
+            page_push(PAGE_MAJOR_MENU);
+            lv_obj_clean(lv_scr_act());
+            major_menu_create(&ui_manager);
+            groups_create();
+            bind_events();
+            current_group = g_major_menu;
+            lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
+                             LV_SCR_LOAD_ANIM_NONE, 0, 0, 0);
+        }
         g_send.buzzer_req = BUZZER_POWER_ON;
         g_send.iface_status = IFACE_SETTING;
 #ifndef LV_USE_AIC_SIMULATOR
@@ -7133,13 +7141,37 @@ static void system_timer_cb(lv_timer_t *timer)
     probe_last_time = now;
     probe_last = probe_now;
 
-    if (depth > 0 && page_stack[depth - 1] == PAGE_PROBETIP)
+    if (depth > 0 && page_stack[depth - 1] == PAGE_PROBETIP) {
+        probetip_t *tip = probetip_get(&ui_manager);
+        if (tip) {
+            lv_obj_t *label = lv_obj_get_child(tip->button_1, 0);
+            if (label) lv_label_set_text(label, probe_now ? "探针已插入" : "探针已拔出");
+        }
         return;
+    }
 
     if (g_send.iface_status == IFACE_SLEEP) {
         jump_to_probetip(probe_now ? "探针已插入" : "探针已拔出");
         return;
     }
+
+    if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
+    set_temp = 180; set_temp_up = 180; set_temp_down = 180;
+    set_hour = 0; set_min = 30;
+    cook_elapsed_saved = 0; cook_bar_saved = 0;
+    cook_total_ms = 0; cook_is_color = 0;
+    preheat_on = 0; delay_on = 0; contain_on = 0;
+    g_on_stop_back = 0;
+    g_complete_to_stop_back = 0;
+    g_cooling_to_stop_back = 0;
+    g_stop_back_complete = NULL;
+    probe_target_temp = 80;
+    g_send.iface_status = IFACE_STANDBY;
+    g_send.cook_mode = MODE_NONE;
+    g_send.cook_flag = 0;
+    g_send.set_temp = 0;
+    g_send.set_temp_lower = 0;
+    g_send.remaining_ms = -1;
 
     depth = 0;
     page_push(PAGE_WAITMENU_24);
