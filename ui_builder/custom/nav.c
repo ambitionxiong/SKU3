@@ -1644,6 +1644,11 @@ void page_pop(void)
     case PAGE_COLOR_COOKING:
         if (child == PAGE_COLOR_STOP_BACK) {
             g_on_stop_back = 0;
+            cook_is_color = 1;
+            if (!cook_timer) {
+                cook_start_time = lv_tick_get() - cook_elapsed_saved;
+                cook_timer = lv_timer_create(cooking_timer_cb, 1000, NULL);
+            }
             lv_obj_clean(lv_scr_act());
             color_cookoing_create(&ui_manager);
             color_cookoing_t *cc = color_cookoing_get(&ui_manager);
@@ -1680,6 +1685,19 @@ void page_pop(void)
         }
         goto pop_to_major_menu;
     case PAGE_COLOR_COOKING_COMPLETE:
+        if (child == PAGE_COLOR_STOP_BACK) {
+            colorcooking_complete_create(&ui_manager);
+            colorcooking_complete_t *cc = colorcooking_complete_get(&ui_manager);
+            if (cc) {
+                lv_label_set_text(cc->status_label, "| 额外上色 | 5分钟");
+                lv_bar_set_range(cc->bar, 0, 100);
+                lv_bar_set_value(cc->bar, 100, LV_ANIM_OFF);
+            }
+            current_group = NULL;
+            lv_scr_load_anim(colorcooking_complete_get(&ui_manager)->obj,
+                             LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
+            break;
+        }
         goto pop_to_major_menu;
 
     case PAGE_UPDOWN_BBQ_MENU_TOP:
@@ -1769,6 +1787,7 @@ void page_pop(void)
         break;
 
     case PAGE_COLOR_STOP:
+        g_on_stop_back = 0;
         color_stop_create(&ui_manager);
         {
             color_stop_t *cs = color_stop_get(&ui_manager);
@@ -1812,11 +1831,17 @@ void page_pop(void)
                                     LV_EVENT_CLICKED, NULL);
 
                 lv_label_set_text(csb->label_17, "| 额外上色 | 5分钟");
-                uint32_t _elapsed = lv_tick_get() - cook_start_time;
-                int _p = (int)((int64_t)_elapsed * 100 / (cook_total_ms ? cook_total_ms : 1));
+                uint32_t _elapsed = cook_timer ? (lv_tick_get() - cook_start_time) : cook_elapsed_saved;
+                int _p = stop_back_progress(_elapsed, cook_total_ms);
                 if (_p > 100) _p = 100;
                 lv_bar_set_range(csb->bar_4, 0, 100);
                 lv_bar_set_value(csb->bar_4, _p, LV_ANIM_OFF);
+
+                if (g_complete_to_stop_back) {
+                    g_complete_to_stop_back = 0;
+                    lv_label_set_text(csb->label_19, "已完成");
+                    lv_bar_set_value(csb->bar_4, 100, LV_ANIM_OFF);
+                }
             }
             current_group = g_color_stop_back;
         }
@@ -4167,6 +4192,7 @@ static void jump_to_color_cookoing(void)
 
     /* 初始化显示 */
     if (cc) {
+        lv_label_set_text(cc->status_label, "| 额外上色 | 5分钟");
         lv_label_set_text_fmt(cc->time_label, "%02d:%02d:%02d", 0, 5, 0);
         lv_bar_set_range(cc->bar, 0, 100);
         lv_bar_set_value(cc->bar, 3, LV_ANIM_OFF);
@@ -4190,6 +4216,13 @@ static void jump_to_color_cookoing(void)
     if (cook_timer) lv_timer_del(cook_timer);
     cook_timer = lv_timer_create(cooking_timer_cb, 1000, NULL);
 
+    g_send.iface_status = IFACE_COOKING;
+    g_send.cook_mode = MODE_EXTRA_COLOR;
+    g_send.set_temp = set_temp;
+    g_send.set_temp_lower = set_temp_down;
+    g_send.remaining_ms = cook_total_ms;
+    g_send.cook_flag = 0;
+
     current_group = g_color_cookoing;
 
     lv_scr_load_anim(color_cookoing_get(&ui_manager)->obj,
@@ -4202,16 +4235,29 @@ static void jump_to_color_cookoing(void)
 // color_cookoing → colorcooking_complete
 static void jump_to_color_complete(void)
 {
+    if (depth > 0 && page_stack[depth - 1] == PAGE_COLOR_STOP_BACK)
+        depth--;
+    if (depth > 0 && page_stack[depth - 1] == PAGE_COLOR_STOP)
+        depth--;
     page_push(PAGE_COLOR_COOKING_COMPLETE);
     lv_obj_clean(lv_scr_act());
     colorcooking_complete_create(&ui_manager);
 
+    {
+        colorcooking_complete_t *cc = colorcooking_complete_get(&ui_manager);
+        if (cc) {
+            lv_label_set_text(cc->status_label, "| 额外上色 | 5分钟");
+            lv_bar_set_range(cc->bar, 0, 100);
+            lv_bar_set_value(cc->bar, 100, LV_ANIM_OFF);
+        }
+    }
     current_group = NULL;
 
     lv_scr_load_anim(colorcooking_complete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-
+    g_send.iface_status = IFACE_COMPLETE;
+    g_send.remaining_ms = 0;
     printf("[nav] jump: color_cookoing -> colorcooking_complete\n");
 }
 
@@ -4272,8 +4318,8 @@ static void process_key(uint8_t key)
     case KEY_EXTRA_COLOR:   // 5: 进入额外上色
         if (g_send.iface_status != IFACE_COMPLETE ||
             (g_send.cook_mode != MODE_UPDOWN_BBQ &&
-             g_send.cook_mode != MODE_HOT_BBQ &&
              g_send.cook_mode != MODE_HOTWIND_BBQ &&
+             g_send.cook_mode != MODE_WINDCHANGE_BBQ &&
              g_send.cook_mode != MODE_PIZZA_2 &&
              g_send.cook_mode != MODE_COOK4)) {
             g_send.buzzer_req = BUZZER_KEY_INVALID;
@@ -4411,6 +4457,10 @@ static void process_key(uint8_t key)
                 jump_to_color_stop_back();
             else if (cur == PAGE_COLOR_STOP)
                 jump_to_color_stop_back();
+            else if (cur == PAGE_COLOR_COOKING_COMPLETE) {
+                g_complete_to_stop_back = 1;
+                jump_to_color_stop_back();
+            }
             else if (cur == PAGE_TOP_BBQ_COOKING)
                 jump_to_top_bbq_stop_back();
             else if (cur == PAGE_TOP_BBQ_STOP)
@@ -5592,6 +5642,7 @@ static void auto_pause_on_door(void)
     else if (cur == PAGE_HOTCLEANSAVE_COOKING) jump_to_hcs_stop();
     else if (cur == PAGE_HOTCLEANMIDDLE_COOKING) jump_to_hcm_stop();
     else if (cur == PAGE_HOTCLEANHIGH_COOKING) jump_to_hch_stop();
+    else if (cur == PAGE_COLOR_COOKING) jump_to_color_stop();
 }
 
 void cooking_timer_cb(lv_timer_t *timer)
@@ -5773,6 +5824,10 @@ void cooking_timer_cb(lv_timer_t *timer)
         if (current_group == g_hch_stop_back) {
             hotcleanhigh_stop_back_t *back = hotcleanhigh_stop_back_get(&ui_manager);
             if (back) { int p = stop_back_progress(elapsed, cook_total_ms); if (p > 100) p = 100; lv_bar_set_value(back->bar_3, p, LV_ANIM_OFF); lv_obj_invalidate(lv_scr_act()); }
+        }
+        if (current_group == g_color_stop_back) {
+            color_stop_back_t *csb = color_stop_back_get(&ui_manager);
+            if (csb) { int p = stop_back_progress(elapsed, cook_total_ms); if (p > 100) p = 100; lv_bar_set_value(csb->bar_4, p, LV_ANIM_OFF); lv_obj_invalidate(lv_scr_act()); }
         }
         if (current_group == g_updown_bbq_stop_back_probe) {
             int probe = get_probe_temp();
@@ -5996,7 +6051,7 @@ void cooking_timer_cb(lv_timer_t *timer)
     } else if (current_group == g_top_bbq_setting) {
         top_bbq_setting_t *set = top_bbq_setting_get(&ui_manager);
         if (set) time_label = set->time_label;
-    } else if (cook_is_color) {
+    } else if (cook_is_color || current_group == g_color_cookoing) {
         color_cookoing_t *cc = color_cookoing_get(&ui_manager);
         if (cc) time_label = cc->time_label;
     } else if (current_group == g_top_bbq_cooking) {
@@ -6750,6 +6805,7 @@ static void on_stop_back_sure_click(lv_event_t *e)
 // color_cookoing → color_stop（暂停）
 static void jump_to_color_stop(void)
 {
+    g_on_stop_back = 0;
     cook_elapsed_saved = lv_tick_get() - cook_start_time;
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
 
@@ -6789,6 +6845,8 @@ static void jump_to_color_stop(void)
     lv_scr_load_anim(color_stop_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
+    g_send.iface_status = IFACE_PAUSE;
+    g_send.remaining_ms = (cook_total_ms > (int)cook_elapsed_saved) ? cook_total_ms - (int)cook_elapsed_saved : 0;
     printf("[nav] jump: color_cookoing -> color_stop (pause)\n");
 }
 
@@ -6810,14 +6868,20 @@ static void jump_to_color_stop_back(void)
                             LV_EVENT_CLICKED, NULL);
 
         lv_label_set_text(csb->label_17, "| 额外上色 | 5分钟");
-        uint32_t _elapsed = lv_tick_get() - cook_start_time;
-        int _p = (int)((int64_t)_elapsed * 100 / (cook_total_ms ? cook_total_ms : 1));
+        uint32_t _elapsed = cook_timer ? (lv_tick_get() - cook_start_time) : cook_elapsed_saved;
+        int _p = stop_back_progress(_elapsed, cook_total_ms);
         if (_p > 100) _p = 100;
         lv_bar_set_range(csb->bar_4, 0, 100);
         lv_bar_set_value(csb->bar_4, _p, LV_ANIM_OFF);
 
         if (g_send.iface_status == IFACE_COOKING)
             lv_label_set_text(csb->label_19, "烹饪中...");
+
+        if (g_complete_to_stop_back) {
+            g_complete_to_stop_back = 0;
+            lv_label_set_text(csb->label_19, "已完成");
+            lv_bar_set_value(csb->bar_4, 100, LV_ANIM_OFF);
+        }
     }
     current_group = g_color_stop_back;
 
@@ -6850,6 +6914,7 @@ static void color_resume_cooking(void)
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;
     }
+    g_on_stop_back = 0;
     depth--;  /* pop COLOR_STOP 栈顶 */
     lv_obj_clean(lv_scr_act());
     color_cookoing_create(&ui_manager);
@@ -6886,6 +6951,7 @@ static void color_resume_cooking(void)
     }
 
     /* 恢复定时器 */
+    cook_is_color = 1;
     cook_start_time = lv_tick_get() - cook_elapsed_saved;
     if (cook_timer) lv_timer_del(cook_timer);
     cook_timer = lv_timer_create(cooking_timer_cb, 1000, NULL);
@@ -6895,6 +6961,8 @@ static void color_resume_cooking(void)
     lv_scr_load_anim(color_cookoing_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
+    g_send.iface_status = IFACE_COOKING;
+    g_send.remaining_ms = (cook_total_ms > (int)cook_elapsed_saved) ? cook_total_ms - (int)cook_elapsed_saved : 0;
     printf("[nav] resume: color_stop -> color_cookoing\n");
 }
 
@@ -6918,6 +6986,11 @@ static void on_color_stop_back_sure_click(lv_event_t *e)
     lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
+    g_send.iface_status = IFACE_SETTING;
+    g_send.cook_mode = MODE_NONE;
+    g_send.set_temp = 0;
+    g_send.set_temp_lower = 0;
+    g_send.remaining_ms = -1;
     printf("[nav] color_stop_back sure -> major_menu\n");
 }
 
