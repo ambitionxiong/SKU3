@@ -1502,6 +1502,21 @@ void page_pop(void)
         break;
 
     case PAGE_UPDOWN_BBQ_COMPLETE_PROBE:
+        if (child == PAGE_UPDOWN_BBQ_STOP_BACK_PROBE) {
+            updown_bbq_complete_probe_create(&ui_manager);
+            updown_bbq_complete_probe_t *done = updown_bbq_complete_probe_get(&ui_manager);
+            if (done) {
+                lv_obj_t *btns[] = { done->image_31 };
+                if (g_updown_bbq_complete_probe) lv_group_del(g_updown_bbq_complete_probe);
+                g_updown_bbq_complete_probe = group_create_for_page(btns, 1);
+                updown_bbq_probe_complete_rebind(done->image_31);
+                lv_group_focus_obj(done->image_31);
+            }
+            current_group = g_updown_bbq_complete_probe;
+            lv_scr_load_anim(updown_bbq_complete_probe_get(&ui_manager)->obj,
+                             LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
+            break;
+        }
         goto pop_to_major_menu;
 
     case PAGE_HOT_BBQ_MENU_PROBE:
@@ -1527,6 +1542,21 @@ void page_pop(void)
         hot_bbq_probe_rebuild_stop_back();
         break;
     case PAGE_HOT_BBQ_COMPLETE_PROBE:
+        if (child == PAGE_HOT_BBQ_STOP_BACK_PROBE) {
+            hot_bbq_complete_probe_create(&ui_manager);
+            hot_bbq_complete_probe_t *done = hot_bbq_complete_probe_get(&ui_manager);
+            if (done) {
+                lv_obj_t *btns[] = { done->image_15 };
+                if (g_hot_bbq_complete_probe) lv_group_del(g_hot_bbq_complete_probe);
+                g_hot_bbq_complete_probe = group_create_for_page(btns, 1);
+                hot_bbq_probe_complete_rebind(done->image_15);
+                lv_group_focus_obj(done->image_15);
+            }
+            current_group = g_hot_bbq_complete_probe;
+            lv_scr_load_anim(hot_bbq_complete_probe_get(&ui_manager)->obj,
+                             LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
+            break;
+        }
         goto pop_to_major_menu;
 
     case PAGE_BOTTOM_BBQ_MENU_PROBE:
@@ -1552,6 +1582,21 @@ void page_pop(void)
         bottom_bbq_probe_rebuild_stop_back();
         break;
     case PAGE_BOTTOM_BBQ_COMPLETE_PROBE:
+        if (child == PAGE_BOTTOM_BBQ_STOP_BACK_PROBE) {
+            bottom_bbq_complete_probe_create(&ui_manager);
+            bottom_bbq_complete_probe_t *done = bottom_bbq_complete_probe_get(&ui_manager);
+            if (done) {
+                lv_obj_t *btns[] = { done->image_32 };
+                if (g_bottom_bbq_complete_probe) lv_group_del(g_bottom_bbq_complete_probe);
+                g_bottom_bbq_complete_probe = group_create_for_page(btns, 1);
+                bottom_bbq_probe_complete_rebind(done->image_32);
+                lv_group_focus_obj(done->image_32);
+            }
+            current_group = g_bottom_bbq_complete_probe;
+            lv_scr_load_anim(bottom_bbq_complete_probe_get(&ui_manager)->obj,
+                             LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
+            break;
+        }
         goto pop_to_major_menu;
 
     case PAGE_SLOWCOOK_MENU_PROBE:
@@ -1577,6 +1622,21 @@ void page_pop(void)
         slowcook_probe_rebuild_stop_back();
         break;
     case PAGE_SLOWCOOK_COMPLETE_PROBE:
+        if (child == PAGE_SLOWCOOK_STOP_BACK_PROBE) {
+            slowcook_complete_probe_create(&ui_manager);
+            slowcook_complete_probe_t *done = slowcook_complete_probe_get(&ui_manager);
+            if (done) {
+                lv_obj_t *btns[] = { done->image_48 };
+                if (g_slowcook_complete_probe) lv_group_del(g_slowcook_complete_probe);
+                g_slowcook_complete_probe = group_create_for_page(btns, 1);
+                slowcook_probe_complete_rebind(done->image_48);
+                lv_group_focus_obj(done->image_48);
+            }
+            current_group = g_slowcook_complete_probe;
+            lv_scr_load_anim(slowcook_complete_probe_get(&ui_manager)->obj,
+                             LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
+            break;
+        }
         goto pop_to_major_menu;
 
     case PAGE_EXTRA_COLOR:
@@ -2998,6 +3058,23 @@ void page_pop(void)
         lasagna_rebuild_stop_back();
         break;
     case PAGE_LASAGNA_COMPLETE:
+        if (child == PAGE_LASAGNA_SETTING || child == PAGE_LASAGNA_STOP_BACK) {
+            lasagna_complete_create(&ui_manager);
+            lasagna_complete_t *done = lasagna_complete_get(&ui_manager);
+            if (done) {
+                lv_obj_t *btns[] = { done->little };
+                if (g_lasagna_complete) lv_group_del(g_lasagna_complete);
+                g_lasagna_complete = group_create_for_page(btns, 1);
+                lasagna_complete_rebind(done->little);
+                lv_group_focus_obj(done->little);
+                lv_label_set_text_fmt(done->status, "| 千层面 | %02d分钟", set_min);
+                lv_bar_set_value(done->bar_51, 100, LV_ANIM_OFF);
+            }
+            current_group = g_lasagna_complete;
+            lv_scr_load_anim(lasagna_complete_get(&ui_manager)->obj,
+                             LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
+            break;
+        }
         goto pop_to_major_menu;
 
     case PAGE_STRUDEL_MENU:
@@ -3038,6 +3115,23 @@ void page_pop(void)
         strudel_rebuild_stop_back();
         break;
     case PAGE_STRUDEL_COMPLETE:
+        if (child == PAGE_STRUDEL_SETTING || child == PAGE_STRUDEL_STOP_BACK) {
+            strudel_complete_create(&ui_manager);
+            strudel_complete_t *done = strudel_complete_get(&ui_manager);
+            if (done) {
+                lv_obj_t *btns[] = { done->little };
+                if (g_strudel_complete) lv_group_del(g_strudel_complete);
+                g_strudel_complete = group_create_for_page(btns, 1);
+                strudel_complete_rebind(done->little);
+                lv_group_focus_obj(done->little);
+                lv_label_set_text_fmt(done->status, "| 果馅卷 | %02d分钟", set_min);
+                lv_bar_set_value(done->bar_55, 100, LV_ANIM_OFF);
+            }
+            current_group = g_strudel_complete;
+            lv_scr_load_anim(strudel_complete_get(&ui_manager)->obj,
+                             LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
+            break;
+        }
         goto pop_to_major_menu;
 
     case PAGE_BREAD_MENU:
@@ -3078,6 +3172,23 @@ void page_pop(void)
         bread_rebuild_stop_back();
         break;
     case PAGE_BREAD_COMPLETE:
+        if (child == PAGE_BREAD_SETTING || child == PAGE_BREAD_STOP_BACK) {
+            bread_complete_create(&ui_manager);
+            bread_complete_t *done = bread_complete_get(&ui_manager);
+            if (done) {
+                lv_obj_t *btns[] = { done->little };
+                if (g_bread_complete) lv_group_del(g_bread_complete);
+                g_bread_complete = group_create_for_page(btns, 1);
+                bread_complete_rebind(done->little);
+                lv_group_focus_obj(done->little);
+                lv_label_set_text_fmt(done->status, "| 面包 | %02d分钟", set_min);
+                lv_bar_set_value(done->bar_59, 100, LV_ANIM_OFF);
+            }
+            current_group = g_bread_complete;
+            lv_scr_load_anim(bread_complete_get(&ui_manager)->obj,
+                             LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
+            break;
+        }
         goto pop_to_major_menu;
 
     case PAGE_PIZZA3_MENU:
@@ -3118,6 +3229,23 @@ void page_pop(void)
         pizza3_rebuild_stop_back();
         break;
     case PAGE_PIZZA3_COMPLETE:
+        if (child == PAGE_PIZZA3_SETTING || child == PAGE_PIZZA3_STOP_BACK) {
+            pizza3_complete_create(&ui_manager);
+            pizza3_complete_t *done = pizza3_complete_get(&ui_manager);
+            if (done) {
+                lv_obj_t *btns[] = { done->little };
+                if (g_pizza3_complete) lv_group_del(g_pizza3_complete);
+                g_pizza3_complete = group_create_for_page(btns, 1);
+                pizza3_complete_rebind(done->little);
+                lv_group_focus_obj(done->little);
+                lv_label_set_text_fmt(done->status, "| 披萨 | %02d分钟", set_min);
+                lv_bar_set_value(done->bar_63, 100, LV_ANIM_OFF);
+            }
+            current_group = g_pizza3_complete;
+            lv_scr_load_anim(pizza3_complete_get(&ui_manager)->obj,
+                             LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
+            break;
+        }
         goto pop_to_major_menu;
 
     case PAGE_CHIP_MENU:
@@ -3158,6 +3286,23 @@ void page_pop(void)
         chip_rebuild_stop_back();
         break;
     case PAGE_CHIP_COMPLETE:
+        if (child == PAGE_CHIP_SETTING || child == PAGE_CHIP_STOP_BACK) {
+            chip_complete_create(&ui_manager);
+            chip_complete_t *done = chip_complete_get(&ui_manager);
+            if (done) {
+                lv_obj_t *btns[] = { done->little };
+                if (g_chip_complete) lv_group_del(g_chip_complete);
+                g_chip_complete = group_create_for_page(btns, 1);
+                chip_complete_rebind(done->little);
+                lv_group_focus_obj(done->little);
+                lv_label_set_text_fmt(done->status, "| 薯条 | %02d分钟", set_min);
+                lv_bar_set_value(done->bar_67, 100, LV_ANIM_OFF);
+            }
+            current_group = g_chip_complete;
+            lv_scr_load_anim(chip_complete_get(&ui_manager)->obj,
+                             LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
+            break;
+        }
         goto pop_to_major_menu;
 
     case PAGE_CUSTOM_MENU:
@@ -3198,6 +3343,23 @@ void page_pop(void)
         custom_rebuild_stop_back();
         break;
     case PAGE_CUSTOM_COMPLETE:
+        if (child == PAGE_CUSTOM_SETTING || child == PAGE_CUSTOM_STOP_BACK) {
+            custom_complete_create(&ui_manager);
+            custom_complete_t *done = custom_complete_get(&ui_manager);
+            if (done) {
+                lv_obj_t *btns[] = { done->little };
+                if (g_custom_complete) lv_group_del(g_custom_complete);
+                g_custom_complete = group_create_for_page(btns, 1);
+                custom_complete_rebind(done->little);
+                lv_group_focus_obj(done->little);
+                lv_label_set_text_fmt(done->status, "| 自定义 | %02d分钟", set_min);
+                lv_bar_set_value(done->bar_71, 100, LV_ANIM_OFF);
+            }
+            current_group = g_custom_complete;
+            lv_scr_load_anim(custom_complete_get(&ui_manager)->obj,
+                             LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
+            break;
+        }
         goto pop_to_major_menu;
 
     case PAGE_CLEAN_MENU:
@@ -4304,6 +4466,54 @@ static void process_key(uint8_t key)
                 jump_to_hch_stop_back();
             else if (cur == PAGE_HOTCLEANHIGH_COOLING)
                 g_send.buzzer_req = BUZZER_KEY_INVALID;
+            // B-2 clean complete
+            else if (cur == PAGE_WATER_CLEAN_COMPLETE) {
+                g_complete_to_stop_back = 1;
+                jump_to_wc_stop_back();
+            } else if (cur == PAGE_HOTCLEANSAVE_COMPLETE) {
+                g_complete_to_stop_back = 1;
+                jump_to_hcs_stop_back();
+            } else if (cur == PAGE_HOTCLEANMIDDLE_COMPLETE) {
+                g_complete_to_stop_back = 1;
+                jump_to_hcm_stop_back();
+            } else if (cur == PAGE_HOTCLEANHIGH_COMPLETE) {
+                g_complete_to_stop_back = 1;
+                jump_to_hch_stop_back();
+            }
+            // B-1 frozen bake complete
+            else if (cur == PAGE_LASAGNA_COMPLETE) {
+                g_complete_to_stop_back = 1;
+                jump_to_lasagna_stop_back();
+            } else if (cur == PAGE_STRUDEL_COMPLETE) {
+                g_complete_to_stop_back = 1;
+                jump_to_strudel_stop_back();
+            } else if (cur == PAGE_BREAD_COMPLETE) {
+                g_complete_to_stop_back = 1;
+                jump_to_bread_stop_back();
+            } else if (cur == PAGE_PIZZA3_COMPLETE) {
+                g_complete_to_stop_back = 1;
+                jump_to_pizza3_stop_back();
+            } else if (cur == PAGE_CHIP_COMPLETE) {
+                g_complete_to_stop_back = 1;
+                jump_to_chip_stop_back();
+            } else if (cur == PAGE_CUSTOM_COMPLETE) {
+                g_complete_to_stop_back = 1;
+                jump_to_custom_stop_back();
+            }
+            // B-3 probe complete
+            else if (cur == PAGE_UPDOWN_BBQ_COMPLETE_PROBE) {
+                g_complete_to_stop_back = 1;
+                jump_to_updown_bbq_stop_back_probe();
+            } else if (cur == PAGE_BOTTOM_BBQ_COMPLETE_PROBE) {
+                g_complete_to_stop_back = 1;
+                jump_to_bottom_bbq_stop_back_probe();
+            } else if (cur == PAGE_HOT_BBQ_COMPLETE_PROBE) {
+                g_complete_to_stop_back = 1;
+                jump_to_hot_bbq_stop_back_probe();
+            } else if (cur == PAGE_SLOWCOOK_COMPLETE_PROBE) {
+                g_complete_to_stop_back = 1;
+                jump_to_slowcook_stop_back_probe();
+            }
             else
                 page_pop();
         }

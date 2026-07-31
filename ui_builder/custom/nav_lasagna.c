@@ -446,6 +446,12 @@ void jump_to_lasagna_stop_back(void)
         lv_bar_set_value(back->bar_50, p, LV_ANIM_OFF);
         if (g_send.iface_status == IFACE_COOKING)
             lv_label_set_text(back->label_677, "烹饪中...");
+
+        if (g_complete_to_stop_back) {
+            g_complete_to_stop_back = 0;
+            lv_label_set_text(back->label_677, "已完成");
+            lv_bar_set_value(back->bar_50, 100, LV_ANIM_OFF);
+        }
     }
     current_group = g_lasagna_stop_back;
 
@@ -881,6 +887,12 @@ void lasagna_rebuild_stop_back(void)
         if (p > 100) p = 100;
         lv_bar_set_range(back->bar_50, 0, 100);
         lv_bar_set_value(back->bar_50, p, LV_ANIM_OFF);
+
+        if (g_complete_to_stop_back) {
+            g_complete_to_stop_back = 0;
+            lv_label_set_text(back->label_677, "已完成");
+            lv_bar_set_value(back->bar_50, 100, LV_ANIM_OFF);
+        }
     }
     current_group = g_lasagna_stop_back;
     lv_scr_load_anim(lasagna_stop_back_get(&ui_manager)->obj,
@@ -897,4 +909,9 @@ void lasagna_rebuild_complete(void)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[lasagna] back to lasagna_complete\n");
+}
+
+void lasagna_complete_rebind(lv_obj_t *btn)
+{
+    lv_obj_add_event_cb(btn, on_lasagna_cooking_setting_click, LV_EVENT_CLICKED, NULL);
 }

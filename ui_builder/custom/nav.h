@@ -1014,6 +1014,18 @@ void heatcontain_rebuild_complete(void);
 void heatcontain_complete_rebind(lv_obj_t *btn);
 void heatcontain_resume_cooking(void);
 
+void lasagna_complete_rebind(lv_obj_t *btn);
+void strudel_complete_rebind(lv_obj_t *btn);
+void bread_complete_rebind(lv_obj_t *btn);
+void pizza3_complete_rebind(lv_obj_t *btn);
+void chip_complete_rebind(lv_obj_t *btn);
+void custom_complete_rebind(lv_obj_t *btn);
+
+void updown_bbq_probe_complete_rebind(lv_obj_t *btn);
+void bottom_bbq_probe_complete_rebind(lv_obj_t *btn);
+void hot_bbq_probe_complete_rebind(lv_obj_t *btn);
+void slowcook_probe_complete_rebind(lv_obj_t *btn);
+
 void jump_to_frozen_cook(void);
 void frozen_rebuild(page_id_t child);
 

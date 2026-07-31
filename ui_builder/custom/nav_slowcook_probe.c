@@ -307,6 +307,12 @@ void jump_to_slowcook_stop_back_probe(void)
         lv_bar_set_value(back->bar_11, bar_val, LV_ANIM_OFF);
         if (g_send.iface_status == IFACE_COOKING)
             lv_label_set_text(back->label_105, "烹饪中...");
+
+        if (g_complete_to_stop_back) {
+            g_complete_to_stop_back = 0;
+            lv_label_set_text(back->label_105, "已完成");
+            lv_bar_set_value(back->bar_11, 100, LV_ANIM_OFF);
+        }
     }
     current_group = g_slowcook_stop_back_probe;
 
@@ -544,10 +550,14 @@ void slowcook_probe_rebuild_stop_back(void)
         lv_obj_add_event_cb(back->sure, on_slowcook_probe_stop_back_sure_click,
                             LV_EVENT_CLICKED, NULL);
 
-        lv_label_set_text_fmt(back->status, "| 慢煮 | %d℃ | %d℃", set_temp, probe_target_temp);
-
         lv_bar_set_range(back->bar_11, 0, 100);
         lv_bar_set_value(back->bar_11, bar_val, LV_ANIM_OFF);
+
+        if (g_complete_to_stop_back) {
+            g_complete_to_stop_back = 0;
+            lv_label_set_text(back->label_105, "已完成");
+            lv_bar_set_value(back->bar_11, 100, LV_ANIM_OFF);
+        }
     }
     current_group = g_slowcook_stop_back_probe;
     lv_scr_load_anim(slowcook_stop_back_probe_get(&ui_manager)->obj,
@@ -574,4 +584,9 @@ void slowcook_probe_rebuild_complete(void)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[slowcook_probe] back to slowcook_complete_probe\n");
+}
+
+void slowcook_probe_complete_rebind(lv_obj_t *btn)
+{
+    lv_obj_add_event_cb(btn, on_slowcook_probe_complete_click, LV_EVENT_CLICKED, NULL);
 }

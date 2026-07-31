@@ -669,6 +669,8 @@ void jump_to_air_complete(void)
             g_air_complete = group_create_for_page(btns, 1);
             lv_obj_add_event_cb(cook->little, on_air_cooking_setting_click,
                                 LV_EVENT_CLICKED, NULL);
+            lv_label_set_text_fmt(cook->status, "| 空气炸 | %d℃ | %02d分钟", set_temp, set_min);
+            lv_bar_set_value(cook->bar_23, 100, LV_ANIM_OFF);
         }
     }
     current_group = g_air_complete;

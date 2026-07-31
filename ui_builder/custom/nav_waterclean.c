@@ -267,7 +267,13 @@ void jump_to_wc_stop_back(void)
         lv_bar_set_range(back->bar_1, 0, 100);
         lv_bar_set_value(back->bar_1, p, LV_ANIM_OFF);
         if (g_send.iface_status == IFACE_COOKING)
-            lv_label_set_text(back->label_6, "烹饪中...");
+            lv_label_set_text(back->label_6, "清洁中...");
+
+        if (g_complete_to_stop_back) {
+            g_complete_to_stop_back = 0;
+            lv_label_set_text(back->label_6, "已完成");
+            lv_bar_set_value(back->bar_1, 100, LV_ANIM_OFF);
+        }
 
         if (back->sure) lv_group_focus_obj(back->sure);
     }
@@ -429,6 +435,12 @@ void wc_rebuild_stop_back(void)
         if (p > 100) p = 100;
         lv_bar_set_range(back->bar_1, 0, 100);
         lv_bar_set_value(back->bar_1, p, LV_ANIM_OFF);
+
+        if (g_complete_to_stop_back) {
+            g_complete_to_stop_back = 0;
+            lv_label_set_text(back->label_6, "已完成");
+            lv_bar_set_value(back->bar_1, 100, LV_ANIM_OFF);
+        }
 
         if (back->sure) lv_group_focus_obj(back->sure);
     }

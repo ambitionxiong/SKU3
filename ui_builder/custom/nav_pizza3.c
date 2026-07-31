@@ -445,6 +445,12 @@ void jump_to_pizza3_stop_back(void)
         lv_bar_set_value(back->bar_62, p, LV_ANIM_OFF);
         if (g_send.iface_status == IFACE_COOKING)
             lv_label_set_text(back->label_800, "烹饪中...");
+
+        if (g_complete_to_stop_back) {
+            g_complete_to_stop_back = 0;
+            lv_label_set_text(back->label_800, "已完成");
+            lv_bar_set_value(back->bar_62, 100, LV_ANIM_OFF);
+        }
     }
     current_group = g_pizza3_stop_back;
 
@@ -866,6 +872,12 @@ void pizza3_rebuild_stop_back(void)
         lv_obj_add_event_cb(back->little, on_pizza3_stop_back_littal_click,
                             LV_EVENT_CLICKED, NULL);
 
+        if (g_complete_to_stop_back) {
+            g_complete_to_stop_back = 0;
+            lv_label_set_text(back->label_800, "已完成");
+            lv_bar_set_value(back->bar_62, 100, LV_ANIM_OFF);
+        }
+
         pizza3_set_status(back->status, set_hour, set_min);
         lv_bar_set_range(back->bar_62, 0, 100);
         uint32_t elapsed = cook_timer ? (lv_tick_get() - cook_start_time) : cook_elapsed_saved;
@@ -889,4 +901,9 @@ void pizza3_rebuild_complete(void)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[lasagna] back to pizza3_complete\n");
+}
+
+void pizza3_complete_rebind(lv_obj_t *btn)
+{
+    lv_obj_add_event_cb(btn, on_pizza3_cooking_setting_click, LV_EVENT_CLICKED, NULL);
 }
