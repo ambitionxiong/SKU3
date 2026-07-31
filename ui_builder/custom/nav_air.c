@@ -512,7 +512,12 @@ void jump_to_air_stop_back(void)
                             LV_EVENT_CLICKED, NULL);
 
         air_set_status(back->status, set_temp, set_hour, set_min);
-        int p = cooking_bar_val; if (p <= 0) { uint32_t elapsed = cook_timer ? (lv_tick_get() - cook_start_time) : cook_elapsed_saved; p = stop_back_progress(elapsed, cook_total_ms); } if (p > 100) p = 100; lv_bar_set_range(back->bar_22, 0, 100); lv_bar_set_value(back->bar_22, p, LV_ANIM_OFF);
+        int p = cooking_bar_val; if (p <= 0) { uint32_t elapsed = cook_timer ? (lv_tick_get() - cook_start_time) : cook_elapsed_saved; p = stop_back_progress(elapsed, cook_total_ms); } if (p > 100) p = 100; lv_bar_set_range(back->bar_22, 0, 100);         lv_bar_set_value(back->bar_22, p, LV_ANIM_OFF);
+        if (g_complete_to_stop_back) {
+            g_complete_to_stop_back = 0;
+            lv_label_set_text(back->label_333, "已完成");
+            lv_bar_set_value(back->bar_22, 100, LV_ANIM_OFF);
+        }
         if (g_send.iface_status == IFACE_COOKING)
             lv_label_set_text(back->label_333, "烹饪中...");
     }
@@ -986,7 +991,12 @@ void air_rebuild_stop_back(void)
         int p = stop_back_progress(elapsed, cook_total_ms);
         if (p > 100) p = 100;
         lv_bar_set_range(back->bar_22, 0, 100);
-        lv_bar_set_value(back->bar_22, p, LV_ANIM_OFF);
+                lv_bar_set_value(back->bar_22, p, LV_ANIM_OFF);
+        if (g_complete_to_stop_back) {
+            g_complete_to_stop_back = 0;
+            lv_label_set_text(back->label_333, "已完成");
+            lv_bar_set_value(back->bar_22, 100, LV_ANIM_OFF);
+        }
     }
     current_group = g_air_stop_back;
     lv_scr_load_anim(air_stop_back_get(&ui_manager)->obj,
@@ -1003,4 +1013,8 @@ void air_rebuild_complete(void)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[air] back to air_complete\n");
+}
+void air_complete_rebind(lv_obj_t *btn)
+{
+    lv_obj_add_event_cb(btn, on_air_cooking_setting_click, LV_EVENT_CLICKED, NULL);
 }

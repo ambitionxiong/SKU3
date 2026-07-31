@@ -524,7 +524,12 @@ void jump_to_pizza_2_stop_back(void)
         }
         if (p > 100) p = 100;
         lv_bar_set_range(back->bar_26, 0, 100);
-        lv_bar_set_value(back->bar_26, p, LV_ANIM_OFF);
+                lv_bar_set_value(back->bar_26, p, LV_ANIM_OFF);
+        if (g_complete_to_stop_back) {
+            g_complete_to_stop_back = 0;
+            lv_label_set_text(back->label_382, "已完成");
+            lv_bar_set_value(back->bar_26, 100, LV_ANIM_OFF);
+        }
         if (g_send.iface_status == IFACE_COOKING)
             lv_label_set_text(back->label_382, "烹饪中...");
     }
@@ -1005,7 +1010,12 @@ void pizza_2_rebuild_stop_back(void)
         }
         if (p > 100) p = 100;
         lv_bar_set_range(back->bar_26, 0, 100);
-        lv_bar_set_value(back->bar_26, p, LV_ANIM_OFF);
+                lv_bar_set_value(back->bar_26, p, LV_ANIM_OFF);
+        if (g_complete_to_stop_back) {
+            g_complete_to_stop_back = 0;
+            lv_label_set_text(back->label_382, "已完成");
+            lv_bar_set_value(back->bar_26, 100, LV_ANIM_OFF);
+        }
     }
     current_group = g_pizza_2_stop_back;
     lv_scr_load_anim(pizza_2_stop_back_get(&ui_manager)->obj,
@@ -1022,4 +1032,8 @@ void pizza_2_rebuild_complete(void)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[pizza_2] back to pizza_2_complete\n");
+}
+void pizza_2_complete_rebind(lv_obj_t *btn)
+{
+    lv_obj_add_event_cb(btn, on_pizza_2_cooking_setting_click, LV_EVENT_CLICKED, NULL);
 }

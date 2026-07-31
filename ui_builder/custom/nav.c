@@ -1824,7 +1824,9 @@ void page_pop(void)
                 lv_obj_t *btns[] = { done->button_27 };
                 if (g_top_bbq_complete) lv_group_del(g_top_bbq_complete);
                 g_top_bbq_complete = group_create_for_page(btns, 1);
-                lv_label_set_text_fmt(done->label_107, "| 顶部烧烤 | %d℃ | %d分钟", set_temp, set_min);
+                top_bbq_complete_rebind(done->button_27);
+                lv_group_focus_obj(done->button_27);
+                lv_label_set_text_fmt(done->label_107, "| 顶部烧烤 | %d℃ | %02d分钟", set_temp, set_min);
                 lv_bar_set_value(done->bar_9, 100, LV_ANIM_OFF);
             }
             current_group = g_top_bbq_complete;
@@ -1893,7 +1895,9 @@ void page_pop(void)
                 lv_obj_t *btns[] = { done->button_43 };
                 if (g_bottom_bbq_complete) lv_group_del(g_bottom_bbq_complete);
                 g_bottom_bbq_complete = group_create_for_page(btns, 1);
-                lv_label_set_text_fmt(done->status, "| 底部烧烤 | %d℃ | %d分钟", set_temp, set_min);
+                bottom_bbq_complete_rebind(done->button_43);
+                lv_group_focus_obj(done->button_43);
+                lv_label_set_text_fmt(done->status, "| 底部烧烤 | %d℃ | %02d分钟", set_temp, set_min);
                 lv_bar_set_value(done->bar_13, 100, LV_ANIM_OFF);
             }
             current_group = g_bottom_bbq_complete;
@@ -1962,7 +1966,9 @@ void page_pop(void)
                 lv_obj_t *btns[] = { done->button_59 };
                 if (g_hot_bbq_complete) lv_group_del(g_hot_bbq_complete);
                 g_hot_bbq_complete = group_create_for_page(btns, 1);
-                lv_label_set_text_fmt(done->status, "| 热风烧烤 | %d℃ | %d分钟", set_temp, set_min);
+                hot_bbq_complete_rebind(done->button_59);
+                lv_group_focus_obj(done->button_59);
+                lv_label_set_text_fmt(done->status, "| 热风烧烤 | %d℃ | %02d分钟", set_temp, set_min);
                 lv_bar_set_value(done->bar_17, 100, LV_ANIM_OFF);
             }
             current_group = g_hot_bbq_complete;
@@ -2025,7 +2031,9 @@ void page_pop(void)
                 lv_obj_t *btns[] = { done->button_74 };
                 if (g_hotwind_bbq_complete) lv_group_del(g_hotwind_bbq_complete);
                 g_hotwind_bbq_complete = group_create_for_page(btns, 1);
-                lv_label_set_text_fmt(done->status, "| 热风对流 | %d℃ | %d分钟", set_temp, set_min);
+                hotwind_bbq_complete_rebind(done->button_74);
+                lv_group_focus_obj(done->button_74);
+                lv_label_set_text_fmt(done->status, "| 热风对流 | %d℃ | %02d分钟", set_temp, set_min);
                 lv_bar_set_value(done->bar_21, 100, LV_ANIM_OFF);
             }
             current_group = g_hotwind_bbq_complete;
@@ -2088,7 +2096,9 @@ void page_pop(void)
                 lv_obj_t *btns[] = { done->button_89 };
                 if (g_save_bbq_complete) lv_group_del(g_save_bbq_complete);
                 g_save_bbq_complete = group_create_for_page(btns, 1);
-                lv_label_set_text_fmt(done->status, "| 节能热风 | %d℃ | %d分钟", set_temp, set_min);
+                save_bbq_complete_rebind(done->button_89);
+                lv_group_focus_obj(done->button_89);
+                lv_label_set_text_fmt(done->status, "| 节能热风 | %d℃ | %02d分钟", set_temp, set_min);
                 lv_bar_set_value(done->bar_25, 100, LV_ANIM_OFF);
             }
             current_group = g_save_bbq_complete;
@@ -2151,7 +2161,9 @@ void page_pop(void)
                 lv_obj_t *btns[] = { done->button_104 };
                 if (g_central_bbq_complete) lv_group_del(g_central_bbq_complete);
                 g_central_bbq_complete = group_create_for_page(btns, 1);
-                lv_label_set_text_fmt(done->status, "| 集中烧烤 | %d℃ | %d分钟", set_temp, set_min);
+                central_bbq_complete_rebind(done->button_104);
+                lv_group_focus_obj(done->button_104);
+                lv_label_set_text_fmt(done->status, "| 集中烧烤 | %d℃ | %02d分钟", set_temp, set_min);
                 lv_bar_set_value(done->bar_29, 100, LV_ANIM_OFF);
             }
             current_group = g_central_bbq_complete;
@@ -2214,7 +2226,9 @@ void page_pop(void)
                 lv_obj_t *btns[] = { done->button_119 };
                 if (g_windchange_bbq_complete) lv_group_del(g_windchange_bbq_complete);
                 g_windchange_bbq_complete = group_create_for_page(btns, 1);
-                lv_label_set_text_fmt(done->status, "| 加强热风 | %d℃ | %d分钟", set_temp, set_min);
+                windchange_bbq_complete_rebind(done->button_119);
+                lv_group_focus_obj(done->button_119);
+                lv_label_set_text_fmt(done->status, "| 加强热风 | %d℃ | %02d分钟", set_temp, set_min);
                 lv_bar_set_value(done->bar_33, 100, LV_ANIM_OFF);
             }
             current_group = g_windchange_bbq_complete;
@@ -2280,7 +2294,9 @@ void page_pop(void)
                 lv_obj_t *btns[] = { done->little };
                 if (g_cookie_complete) lv_group_del(g_cookie_complete);
                 g_cookie_complete = group_create_for_page(btns, 1);
-                lv_label_set_text_fmt(done->status, "| 曲奇 | %d℃ | %d分钟", set_temp, set_min);
+                cookie_complete_rebind(done->little);
+                lv_group_focus_obj(done->little);
+                lv_label_set_text_fmt(done->status, "| 曲奇 | %d℃ | %02d分钟", set_temp, set_min);
                 lv_bar_set_value(done->bar_7, 100, LV_ANIM_OFF);
             }
             current_group = g_cookie_complete;
@@ -2343,7 +2359,9 @@ void page_pop(void)
                 lv_obj_t *btns[] = { done->little };
                 if (g_west_complete) lv_group_del(g_west_complete);
                 g_west_complete = group_create_for_page(btns, 1);
-                lv_label_set_text_fmt(done->status, "| 西式 | %d℃ | %d分钟", set_temp, set_min);
+                west_complete_rebind(done->little);
+                lv_group_focus_obj(done->little);
+                lv_label_set_text_fmt(done->status, "| 西式 | %d℃ | %02d分钟", set_temp, set_min);
                 lv_bar_set_value(done->bar_11, 100, LV_ANIM_OFF);
             }
             current_group = g_west_complete;
@@ -2406,7 +2424,9 @@ void page_pop(void)
                 lv_obj_t *btns[] = { done->little };
                 if (g_pizza_complete) lv_group_del(g_pizza_complete);
                 g_pizza_complete = group_create_for_page(btns, 1);
-                lv_label_set_text_fmt(done->status, "| 批萨 | %d℃ | %d分钟", set_temp, set_min);
+                pizza_complete_rebind(done->little);
+                lv_group_focus_obj(done->little);
+                lv_label_set_text_fmt(done->status, "| 披萨 | %d℃ | %02d分钟", set_temp, set_min);
                 lv_bar_set_value(done->bar_15, 100, LV_ANIM_OFF);
             }
             current_group = g_pizza_complete;
@@ -2469,7 +2489,9 @@ void page_pop(void)
                 lv_obj_t *btns[] = { done->little };
                 if (g_menu_cook_complete) lv_group_del(g_menu_cook_complete);
                 g_menu_cook_complete = group_create_for_page(btns, 1);
-                lv_label_set_text_fmt(done->status, "| 食谱 | %d℃ | %d分钟", set_temp, set_min);
+                menu_complete_rebind(done->little);
+                lv_group_focus_obj(done->little);
+                lv_label_set_text_fmt(done->status, "| 菜单 | %d℃ | %02d分钟", set_temp, set_min);
                 lv_bar_set_value(done->bar_19, 100, LV_ANIM_OFF);
             }
             current_group = g_menu_cook_complete;
@@ -2532,7 +2554,9 @@ void page_pop(void)
                 lv_obj_t *btns[] = { done->little };
                 if (g_air_complete) lv_group_del(g_air_complete);
                 g_air_complete = group_create_for_page(btns, 1);
-                lv_label_set_text_fmt(done->status, "| 空气炸 | %d℃ | %d分钟", set_temp, set_min);
+                air_complete_rebind(done->little);
+                lv_group_focus_obj(done->little);
+                lv_label_set_text_fmt(done->status, "| 空气炸 | %d℃ | %02d分钟", set_temp, set_min);
                 lv_bar_set_value(done->bar_23, 100, LV_ANIM_OFF);
             }
             current_group = g_air_complete;
@@ -2595,7 +2619,9 @@ void page_pop(void)
                 lv_obj_t *btns[] = { done->little };
                 if (g_pizza_2_complete) lv_group_del(g_pizza_2_complete);
                 g_pizza_2_complete = group_create_for_page(btns, 1);
-                lv_label_set_text_fmt(done->status, "| 披萨 | %d℃ | %d分钟", set_temp, set_min);
+                pizza_2_complete_rebind(done->little);
+                lv_group_focus_obj(done->little);
+                lv_label_set_text_fmt(done->status, "| 披萨 | %d℃ | %02d分钟", set_temp, set_min);
                 lv_bar_set_value(done->bar_27, 100, LV_ANIM_OFF);
             }
             current_group = g_pizza_2_complete;
@@ -2658,7 +2684,9 @@ void page_pop(void)
                 lv_obj_t *btns[] = { done->little };
                 if (g_slowcook_complete) lv_group_del(g_slowcook_complete);
                 g_slowcook_complete = group_create_for_page(btns, 1);
-                lv_label_set_text_fmt(done->status, "| 慢煮 | %d℃ | %d分钟", set_temp, set_min);
+                slowcook_complete_rebind(done->little);
+                lv_group_focus_obj(done->little);
+                lv_label_set_text_fmt(done->status, "| 慢煮 | %d℃ | %02d分钟", set_temp, set_min);
                 lv_bar_set_value(done->bar_31, 100, LV_ANIM_OFF);
             }
             current_group = g_slowcook_complete;
@@ -2721,7 +2749,9 @@ void page_pop(void)
                 lv_obj_t *btns[] = { done->little };
                 if (g_unfrozen_complete) lv_group_del(g_unfrozen_complete);
                 g_unfrozen_complete = group_create_for_page(btns, 1);
-                lv_label_set_text_fmt(done->status, "| 解冻 | %d℃ | %d分钟", set_temp, set_min);
+                unfrozen_complete_rebind(done->little);
+                lv_group_focus_obj(done->little);
+                lv_label_set_text_fmt(done->status, "| 解冻 | %d℃ | %02d分钟", set_temp, set_min);
                 lv_bar_set_value(done->bar_35, 100, LV_ANIM_OFF);
             }
             current_group = g_unfrozen_complete;
@@ -2784,7 +2814,9 @@ void page_pop(void)
                 lv_obj_t *btns[] = { done->little };
                 if (g_rising_complete) lv_group_del(g_rising_complete);
                 g_rising_complete = group_create_for_page(btns, 1);
-                lv_label_set_text_fmt(done->status, "| 发酵 | %d℃ | %d分钟", set_temp, set_min);
+                rising_complete_rebind(done->little);
+                lv_group_focus_obj(done->little);
+                lv_label_set_text_fmt(done->status, "| 发酵 | %d℃ | %02d分钟", set_temp, set_min);
                 lv_bar_set_value(done->bar_39, 100, LV_ANIM_OFF);
             }
             current_group = g_rising_complete;
@@ -2847,7 +2879,9 @@ void page_pop(void)
                 lv_obj_t *btns[] = { done->little };
                 if (g_corn_complete) lv_group_del(g_corn_complete);
                 g_corn_complete = group_create_for_page(btns, 1);
-                lv_label_set_text_fmt(done->status, "| 干果 | %d℃ | %d分钟", set_temp, set_min);
+                corn_complete_rebind(done->little);
+                lv_group_focus_obj(done->little);
+                lv_label_set_text_fmt(done->status, "| 干果 | %d℃ | %02d分钟", set_temp, set_min);
                 lv_bar_set_value(done->bar_43, 100, LV_ANIM_OFF);
             }
             current_group = g_corn_complete;
@@ -2910,7 +2944,9 @@ void page_pop(void)
                 lv_obj_t *btns[] = { done->little };
                 if (g_heatcontain_complete) lv_group_del(g_heatcontain_complete);
                 g_heatcontain_complete = group_create_for_page(btns, 1);
-                lv_label_set_text_fmt(done->status, "| 保温 | %d℃ | %d分钟", set_temp, set_min);
+                heatcontain_complete_rebind(done->little);
+                lv_group_focus_obj(done->little);
+                lv_label_set_text_fmt(done->status, "| 保温 | %d℃ | %02d分钟", set_temp, set_min);
                 lv_bar_set_value(done->bar_48, 100, LV_ANIM_OFF);
             }
             current_group = g_heatcontain_complete;
@@ -3509,6 +3545,7 @@ static void jump_to_special_menu(void)
 // cookmenu → updown_bbq_menu
 void jump_to_updown_bbq_menu(void)
 {
+    set_temp = 180; set_hour = 0; set_min = 30;
     page_push(PAGE_UPDOWN_BBQ_MENU);
     lv_obj_clean(lv_scr_act());
     updown_bbq_menu_create(&ui_manager);
@@ -4074,6 +4111,9 @@ static void process_key(uint8_t key)
             } else if (cur == PAGE_BOTTOM_BBQ_COMPLETE) {
                 g_complete_to_stop_back = 1;
                 jump_to_bottom_bbq_stop_back();
+            } else if (cur == PAGE_HOT_BBQ_COMPLETE) {
+                g_complete_to_stop_back = 1;
+                jump_to_hot_bbq_stop_back();
             } else if (cur == PAGE_HOT_BBQ_COMPLETE) {
                 g_complete_to_stop_back = 1;
                 jump_to_hot_bbq_stop_back();

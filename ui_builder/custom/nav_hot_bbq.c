@@ -169,6 +169,7 @@ static void on_hot_bbq_stop_back_sure_click(lv_event_t *e)
 
 void jump_to_hot_bbq_menu(void)
 {
+    set_temp = 180; set_hour = 0; set_min = 30;
     page_push(PAGE_HOT_BBQ_MENU);
     lv_obj_clean(lv_scr_act());
     hot_bbq_menu_create(&ui_manager);
@@ -525,6 +526,11 @@ void jump_to_hot_bbq_stop_back(void)
         if (p > 100) p = 100;
         lv_bar_set_range(back->bar_16, 0, 100);
         lv_bar_set_value(back->bar_16, p, LV_ANIM_OFF);
+        if (g_complete_to_stop_back) {
+            g_complete_to_stop_back = 0;
+            lv_label_set_text(back->label_200, "已完成");
+            lv_bar_set_value(back->bar_16, 100, LV_ANIM_OFF);
+        }
         if (g_send.iface_status == IFACE_COOKING)
             lv_label_set_text(back->label_200, "烹饪中...");
     }
@@ -676,6 +682,8 @@ void jump_to_hot_bbq_complete(void)
             g_hot_bbq_complete = group_create_for_page(btns, 1);
             lv_obj_add_event_cb(cook->button_59, on_hot_bbq_cooking_setting_click,
                                 LV_EVENT_CLICKED, NULL);
+            lv_label_set_text_fmt(cook->status, "| 热风烧烤 | %d℃ | %02d分钟", set_temp, set_min);
+            lv_bar_set_value(cook->bar_17, 100, LV_ANIM_OFF);
         }
     }
     current_group = g_hot_bbq_complete;
@@ -1015,4 +1023,9 @@ void hot_bbq_rebuild_complete(void)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[hot_bbq] back to hot_bbq_complete\n");
+}
+
+void hot_bbq_complete_rebind(lv_obj_t *btn)
+{
+    lv_obj_add_event_cb(btn, on_hot_bbq_cooking_setting_click, LV_EVENT_CLICKED, NULL);
 }

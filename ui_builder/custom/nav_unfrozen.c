@@ -524,7 +524,12 @@ void jump_to_unfrozen_stop_back(void)
         }
         if (p > 100) p = 100;
         lv_bar_set_range(back->bar_34, 0, 100);
-        lv_bar_set_value(back->bar_34, p, LV_ANIM_OFF);
+                lv_bar_set_value(back->bar_34, p, LV_ANIM_OFF);
+        if (g_complete_to_stop_back) {
+            g_complete_to_stop_back = 0;
+            lv_label_set_text(back->label_480, "已完成");
+            lv_bar_set_value(back->bar_34, 100, LV_ANIM_OFF);
+        }
         if (g_send.iface_status == IFACE_COOKING)
             lv_label_set_text(back->label_480, "烹饪中...");
     }
@@ -676,6 +681,8 @@ void jump_to_unfrozen_complete(void)
             g_unfrozen_complete = group_create_for_page(btns, 1);
             lv_obj_add_event_cb(cook->little, on_unfrozen_cooking_setting_click,
                                 LV_EVENT_CLICKED, NULL);
+            lv_label_set_text_fmt(cook->status, "| 解冻 | %d℃ | %02d分钟", set_temp, set_min);
+            lv_bar_set_value(cook->bar_35, 100, LV_ANIM_OFF);
         }
     }
     current_group = g_unfrozen_complete;
@@ -1005,7 +1012,12 @@ void unfrozen_rebuild_stop_back(void)
         }
         if (p > 100) p = 100;
         lv_bar_set_range(back->bar_34, 0, 100);
-        lv_bar_set_value(back->bar_34, p, LV_ANIM_OFF);
+                lv_bar_set_value(back->bar_34, p, LV_ANIM_OFF);
+        if (g_complete_to_stop_back) {
+            g_complete_to_stop_back = 0;
+            lv_label_set_text(back->label_480, "已完成");
+            lv_bar_set_value(back->bar_34, 100, LV_ANIM_OFF);
+        }
     }
     current_group = g_unfrozen_stop_back;
     lv_scr_load_anim(unfrozen_stop_back_get(&ui_manager)->obj,
@@ -1022,4 +1034,8 @@ void unfrozen_rebuild_complete(void)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[pizza_2] back to unfrozen_complete\n");
+}
+void unfrozen_complete_rebind(lv_obj_t *btn)
+{
+    lv_obj_add_event_cb(btn, on_unfrozen_cooking_setting_click, LV_EVENT_CLICKED, NULL);
 }

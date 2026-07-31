@@ -497,6 +497,7 @@ void hot_bbq_probe_rebuild_cooking(page_id_t child);
 void hot_bbq_probe_rebuild_stop(void);
 void hot_bbq_probe_rebuild_stop_back(void);
 void hot_bbq_probe_rebuild_complete(void);
+void hot_bbq_complete_rebind(lv_obj_t *btn);
 
 void jump_to_bottom_bbq_menu_probe(void);
 void jump_to_bottom_bbq_set_probe(void);
@@ -602,6 +603,7 @@ void hotwind_bbq_rebuild_set(page_id_t child);
 void hotwind_bbq_rebuild_cooking(page_id_t child);
 void hotwind_bbq_rebuild_setting(void);
 void hotwind_bbq_rebuild_stop(void);
+void hotwind_bbq_complete_rebind(lv_obj_t *btn);
 void hotwind_bbq_rebuild_stop_back(void);
 void hotwind_bbq_rebuild_complete(void);
 
@@ -617,6 +619,7 @@ void save_bbq_rebuild_set(page_id_t child);
 void save_bbq_rebuild_cooking(page_id_t child);
 void save_bbq_rebuild_setting(void);
 void save_bbq_rebuild_stop(void);
+void save_bbq_complete_rebind(lv_obj_t *btn);
 void save_bbq_rebuild_stop_back(void);
 void save_bbq_rebuild_complete(void);
 
@@ -632,6 +635,7 @@ void central_bbq_rebuild_set(page_id_t child);
 void central_bbq_rebuild_cooking(page_id_t child);
 void central_bbq_rebuild_setting(void);
 void central_bbq_rebuild_stop(void);
+void central_bbq_complete_rebind(lv_obj_t *btn);
 void central_bbq_rebuild_stop_back(void);
 void central_bbq_rebuild_complete(void);
 
@@ -647,6 +651,7 @@ void windchange_bbq_rebuild_set(page_id_t child);
 void windchange_bbq_rebuild_cooking(page_id_t child);
 void windchange_bbq_rebuild_setting(void);
 void windchange_bbq_rebuild_stop(void);
+void windchange_bbq_complete_rebind(lv_obj_t *btn);
 void windchange_bbq_rebuild_stop_back(void);
 void windchange_bbq_rebuild_complete(void);
 
@@ -672,12 +677,14 @@ void top_bbq_rebuild_setting(void);
 void top_bbq_rebuild_stop(void);
 void top_bbq_rebuild_stop_back(void);
 void top_bbq_rebuild_complete(void);
+void top_bbq_complete_rebind(lv_obj_t *btn);
 
 void jump_to_bottom_bbq_menu(void);
 void jump_to_bottom_bbq_set(void);
 void jump_to_bottom_bbq_stop(void);
 void jump_to_bottom_bbq_stop_back(void);
 void jump_to_bottom_bbq_setting(void);
+void bottom_bbq_complete_rebind(lv_obj_t *btn);
 void bottom_bbq_resume_cooking(void);
 void jump_to_bottom_bbq_complete(void);
 
@@ -703,6 +710,7 @@ void cookie_rebuild_setting(void);
 void cookie_rebuild_stop(void);
 void cookie_rebuild_stop_back(void);
 void cookie_rebuild_complete(void);
+void cookie_complete_rebind(lv_obj_t *btn);
 void cookie_resume_cooking(void);
 
 void jump_to_west_menu(void);
@@ -719,6 +727,7 @@ void west_rebuild_setting(void);
 void west_rebuild_stop(void);
 void west_rebuild_stop_back(void);
 void west_rebuild_complete(void);
+void west_complete_rebind(lv_obj_t *btn);
 void west_resume_cooking(void);
 
 void jump_to_pizza_menu(void);
@@ -735,6 +744,7 @@ void pizza_rebuild_setting(void);
 void pizza_rebuild_stop(void);
 void pizza_rebuild_stop_back(void);
 void pizza_rebuild_complete(void);
+void pizza_complete_rebind(lv_obj_t *btn);
 void pizza_resume_cooking(void);
 
 void jump_to_menu_menu(void);
@@ -751,6 +761,7 @@ void menu_rebuild_setting(void);
 void menu_rebuild_stop(void);
 void menu_rebuild_stop_back(void);
 void menu_rebuild_complete(void);
+void menu_complete_rebind(lv_obj_t *btn);
 void menu_resume_cooking(void);
 
 void jump_to_air_menu(void);
@@ -767,6 +778,7 @@ void air_rebuild_setting(void);
 void air_rebuild_stop(void);
 void air_rebuild_stop_back(void);
 void air_rebuild_complete(void);
+void air_complete_rebind(lv_obj_t *btn);
 void air_resume_cooking(void);
 void air_back_to_stop(void);
 void air_back_to_stop_back(void);
@@ -793,6 +805,7 @@ void pizza_2_rebuild_setting(void);
 void pizza_2_rebuild_stop(void);
 void pizza_2_rebuild_stop_back(void);
 void pizza_2_rebuild_complete(void);
+void pizza_2_complete_rebind(lv_obj_t *btn);
 void pizza_2_resume_cooking(void);
 
 void cook4menu_rebuild(page_id_t child);
@@ -930,6 +943,7 @@ void slowcook_rebuild_setting(void);
 void slowcook_rebuild_stop(void);
 void slowcook_rebuild_stop_back(void);
 void slowcook_rebuild_complete(void);
+void slowcook_complete_rebind(lv_obj_t *btn);
 void slowcook_resume_cooking(void);
 
 void jump_to_unfrozen_menu(void);
@@ -946,6 +960,7 @@ void unfrozen_rebuild_setting(void);
 void unfrozen_rebuild_stop(void);
 void unfrozen_rebuild_stop_back(void);
 void unfrozen_rebuild_complete(void);
+void unfrozen_complete_rebind(lv_obj_t *btn);
 void unfrozen_resume_cooking(void);
 
 void jump_to_rising_menu(void);
@@ -962,6 +977,7 @@ void rising_rebuild_setting(void);
 void rising_rebuild_stop(void);
 void rising_rebuild_stop_back(void);
 void rising_rebuild_complete(void);
+void rising_complete_rebind(lv_obj_t *btn);
 void rising_resume_cooking(void);
 
 void jump_to_corn_menu(void);
@@ -978,6 +994,7 @@ void corn_rebuild_setting(void);
 void corn_rebuild_stop(void);
 void corn_rebuild_stop_back(void);
 void corn_rebuild_complete(void);
+void corn_complete_rebind(lv_obj_t *btn);
 void corn_resume_cooking(void);
 
 void jump_to_heatcontain_menu(void);
@@ -994,6 +1011,7 @@ void heatcontain_rebuild_setting(void);
 void heatcontain_rebuild_stop(void);
 void heatcontain_rebuild_stop_back(void);
 void heatcontain_rebuild_complete(void);
+void heatcontain_complete_rebind(lv_obj_t *btn);
 void heatcontain_resume_cooking(void);
 
 void jump_to_frozen_cook(void);

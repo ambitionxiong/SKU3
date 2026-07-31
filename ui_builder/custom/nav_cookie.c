@@ -26,9 +26,9 @@ void jump_to_cookie_complete(void);
 static void cookie_set_status(lv_obj_t *label, int temp, int hour, int min)
 {
     if (hour == 0)
-        lv_label_set_text_fmt(label, "| 顶部烧烤 | %d℃ | %02d分钟", temp, min);
+        lv_label_set_text_fmt(label, "| 曲奇 | %d℃ | %02d分钟", temp, min);
     else
-        lv_label_set_text_fmt(label, "| 顶部烧烤 | %d℃ | %d小时%02d分钟", temp, hour, min);
+        lv_label_set_text_fmt(label, "| 曲奇 | %d℃ | %d小时%02d分钟", temp, hour, min);
 }
 
 static void cookie_preheat_toggle(lv_event_t *e)
@@ -503,7 +503,12 @@ void jump_to_cookie_stop_back(void)
         }
         if (p > 100) p = 100;
         lv_bar_set_range(back->bar_6, 0, 100);
-        lv_bar_set_value(back->bar_6, p, LV_ANIM_OFF);
+                lv_bar_set_value(back->bar_6, p, LV_ANIM_OFF);
+        if (g_complete_to_stop_back) {
+            g_complete_to_stop_back = 0;
+            lv_label_set_text(back->label_139, "已完成");
+            lv_bar_set_value(back->bar_6, 100, LV_ANIM_OFF);
+        }
         if (g_send.iface_status == IFACE_COOKING)
             lv_label_set_text(back->label_139, "烹饪中...");
     }
@@ -655,6 +660,8 @@ void jump_to_cookie_complete(void)
             g_cookie_complete = group_create_for_page(btns, 1);
             lv_obj_add_event_cb(cook->little, on_cookie_cooking_setting_click,
                                 LV_EVENT_CLICKED, NULL);
+            lv_label_set_text_fmt(cook->status, "| 曲奇 | %d℃ | %02d分钟", set_temp, set_min);
+            lv_bar_set_value(cook->bar_7, 100, LV_ANIM_OFF);
         }
     }
     current_group = g_cookie_complete;
@@ -959,7 +966,12 @@ void cookie_rebuild_stop_back(void)
         int p = stop_back_progress(elapsed, cook_total_ms);
         if (p > 100) p = 100;
         lv_bar_set_range(back->bar_6, 0, 100);
-        lv_bar_set_value(back->bar_6, p, LV_ANIM_OFF);
+                lv_bar_set_value(back->bar_6, p, LV_ANIM_OFF);
+        if (g_complete_to_stop_back) {
+            g_complete_to_stop_back = 0;
+            lv_label_set_text(back->label_139, "已完成");
+            lv_bar_set_value(back->bar_6, 100, LV_ANIM_OFF);
+        }
     }
     current_group = g_cookie_stop_back;
     lv_scr_load_anim(cookie_stop_back_get(&ui_manager)->obj,
@@ -976,4 +988,8 @@ void cookie_rebuild_complete(void)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[cookie] back to cookie_complete\n");
+}
+void cookie_complete_rebind(lv_obj_t *btn)
+{
+    lv_obj_add_event_cb(btn, on_cookie_cooking_setting_click, LV_EVENT_CLICKED, NULL);
 }

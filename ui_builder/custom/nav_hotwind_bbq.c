@@ -26,9 +26,9 @@ void jump_to_hotwind_bbq_complete(void);
 static void hotwind_bbq_set_status(lv_obj_t *label, int temp, int hour, int min)
 {
     if (hour == 0)
-        lv_label_set_text_fmt(label, "| 顶部烧烤 | %d℃ | %02d分钟", temp, min);
+        lv_label_set_text_fmt(label, "| 热风 | %d℃ | %02d分钟", temp, min);
     else
-        lv_label_set_text_fmt(label, "| 顶部烧烤 | %d℃ | %d小时%02d分钟", temp, hour, min);
+        lv_label_set_text_fmt(label, "| 热风 | %d℃ | %d小时%02d分钟", temp, hour, min);
 }
 
 static void hotwind_bbq_preheat_toggle(lv_event_t *e)
@@ -170,6 +170,7 @@ static void on_hotwind_bbq_stop_back_sure_click(lv_event_t *e)
 
 void jump_to_hotwind_bbq_menu(void)
 {
+    set_temp = 180; set_hour = 0; set_min = 30;
     page_push(PAGE_HOTWIND_BBQ_MENU);
     lv_obj_clean(lv_scr_act());
     hotwind_bbq_menu_create(&ui_manager);
@@ -524,7 +525,12 @@ void jump_to_hotwind_bbq_stop_back(void)
         }
         if (p > 100) p = 100;
         lv_bar_set_range(back->bar_20, 0, 100);
-        lv_bar_set_value(back->bar_20, p, LV_ANIM_OFF);
+                lv_bar_set_value(back->bar_20, p, LV_ANIM_OFF);
+        if (g_complete_to_stop_back) {
+            g_complete_to_stop_back = 0;
+            lv_label_set_text(back->label_238, "已完成");
+            lv_bar_set_value(back->bar_20, 100, LV_ANIM_OFF);
+        }
         if (g_send.iface_status == IFACE_COOKING)
             lv_label_set_text(back->label_238, "烹饪中...");
     }
@@ -1006,7 +1012,12 @@ void hotwind_bbq_rebuild_stop_back(void)
         }
         if (p > 100) p = 100;
         lv_bar_set_range(back->bar_20, 0, 100);
-        lv_bar_set_value(back->bar_20, p, LV_ANIM_OFF);
+                lv_bar_set_value(back->bar_20, p, LV_ANIM_OFF);
+        if (g_complete_to_stop_back) {
+            g_complete_to_stop_back = 0;
+            lv_label_set_text(back->label_238, "已完成");
+            lv_bar_set_value(back->bar_20, 100, LV_ANIM_OFF);
+        }
     }
     current_group = g_hotwind_bbq_stop_back;
     lv_scr_load_anim(hotwind_bbq_stop_back_get(&ui_manager)->obj,
@@ -1023,4 +1034,8 @@ void hotwind_bbq_rebuild_complete(void)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[hotwind_bbq] back to hotwind_bbq_complete\n");
+}
+void hotwind_bbq_complete_rebind(lv_obj_t *btn)
+{
+    lv_obj_add_event_cb(btn, on_hotwind_bbq_cooking_setting_click, LV_EVENT_CLICKED, NULL);
 }

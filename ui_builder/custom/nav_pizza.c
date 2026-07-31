@@ -26,9 +26,9 @@ void jump_to_pizza_complete(void);
 static void pizza_set_status(lv_obj_t *label, int temp, int hour, int min)
 {
     if (hour == 0)
-        lv_label_set_text_fmt(label, "| 顶部烧烤 | %d℃ | %02d分钟", temp, min);
+        lv_label_set_text_fmt(label, "| 披萨 | %d℃ | %02d分钟", temp, min);
     else
-        lv_label_set_text_fmt(label, "| 顶部烧烤 | %d℃ | %d小时%02d分钟", temp, hour, min);
+        lv_label_set_text_fmt(label, "| 披萨 | %d℃ | %d小时%02d分钟", temp, hour, min);
 }
 
 static void pizza_preheat_toggle(lv_event_t *e)
@@ -494,7 +494,12 @@ void jump_to_pizza_stop_back(void)
                             LV_EVENT_CLICKED, NULL);
 
         pizza_set_status(back->status, set_temp, set_hour, set_min);
-        int p = cooking_bar_val; if (p <= 0) { uint32_t elapsed = cook_timer ? (lv_tick_get() - cook_start_time) : cook_elapsed_saved; p = stop_back_progress(elapsed, cook_total_ms); } if (p > 100) p = 100; lv_bar_set_range(back->bar_14, 0, 100); lv_bar_set_value(back->bar_14, p, LV_ANIM_OFF);
+        int p = cooking_bar_val; if (p <= 0) { uint32_t elapsed = cook_timer ? (lv_tick_get() - cook_start_time) : cook_elapsed_saved; p = stop_back_progress(elapsed, cook_total_ms); } if (p > 100) p = 100; lv_bar_set_range(back->bar_14, 0, 100);         lv_bar_set_value(back->bar_14, p, LV_ANIM_OFF);
+        if (g_complete_to_stop_back) {
+            g_complete_to_stop_back = 0;
+            lv_label_set_text(back->label_236, "已完成");
+            lv_bar_set_value(back->bar_14, 100, LV_ANIM_OFF);
+        }
         if (g_send.iface_status == IFACE_COOKING)
             lv_label_set_text(back->label_236, "烹饪中...");
     }
@@ -646,6 +651,8 @@ void jump_to_pizza_complete(void)
             g_pizza_complete = group_create_for_page(btns, 1);
             lv_obj_add_event_cb(cook->little, on_pizza_cooking_setting_click,
                                 LV_EVENT_CLICKED, NULL);
+            lv_label_set_text_fmt(cook->status, "| 披萨 | %d℃ | %02d分钟", set_temp, set_min);
+            lv_bar_set_value(cook->bar_15, 100, LV_ANIM_OFF);
         }
     }
     current_group = g_pizza_complete;
@@ -951,7 +958,12 @@ void pizza_rebuild_stop_back(void)
         int p = stop_back_progress(elapsed, cook_total_ms);
         if (p > 100) p = 100;
         lv_bar_set_range(back->bar_14, 0, 100);
-        lv_bar_set_value(back->bar_14, p, LV_ANIM_OFF);
+                lv_bar_set_value(back->bar_14, p, LV_ANIM_OFF);
+        if (g_complete_to_stop_back) {
+            g_complete_to_stop_back = 0;
+            lv_label_set_text(back->label_236, "已完成");
+            lv_bar_set_value(back->bar_14, 100, LV_ANIM_OFF);
+        }
     }
     current_group = g_pizza_stop_back;
     lv_scr_load_anim(pizza_stop_back_get(&ui_manager)->obj,
@@ -968,4 +980,8 @@ void pizza_rebuild_complete(void)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[pizza] back to pizza_complete\n");
+}
+void pizza_complete_rebind(lv_obj_t *btn)
+{
+    lv_obj_add_event_cb(btn, on_pizza_cooking_setting_click, LV_EVENT_CLICKED, NULL);
 }
