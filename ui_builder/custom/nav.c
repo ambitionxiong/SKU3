@@ -3412,6 +3412,17 @@ void page_pop(void)
         hcs_rebuild_cooling();
         break;
     case PAGE_HOTCLEANSAVE_COMPLETE:
+        if (child == PAGE_HOTCLEANSAVE_STOP_BACK) {
+            hotcleansave_complete_create(&ui_manager);
+            hotcleansave_complete_t *done = hotcleansave_complete_get(&ui_manager);
+            if (done) {
+                lv_bar_set_value(done->bar_1, 100, LV_ANIM_OFF);
+            }
+            current_group = g_hcs_complete;
+            lv_scr_load_anim(hotcleansave_complete_get(&ui_manager)->obj,
+                             LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
+            break;
+        }
         goto pop_to_clean;
     case PAGE_HOTCLEANMIDDLE_SET:
         hcm_rebuild_set(child);
@@ -3439,6 +3450,17 @@ void page_pop(void)
         hcm_rebuild_cooling();
         break;
     case PAGE_HOTCLEANMIDDLE_COMPLETE:
+        if (child == PAGE_HOTCLEANMIDDLE_STOP_BACK) {
+            hotcleanmiddle_complete_create(&ui_manager);
+            hotcleanmiddle_complete_t *done = hotcleanmiddle_complete_get(&ui_manager);
+            if (done) {
+                lv_bar_set_value(done->bar_5, 100, LV_ANIM_OFF);
+            }
+            current_group = g_hcm_complete;
+            lv_scr_load_anim(hotcleanmiddle_complete_get(&ui_manager)->obj,
+                             LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
+            break;
+        }
         goto pop_to_clean;
     case PAGE_HOTCLEANHIGH_SET:
         hch_rebuild_set(child);
@@ -3466,6 +3488,17 @@ void page_pop(void)
         hch_rebuild_cooling();
         break;
     case PAGE_HOTCLEANHIGH_COMPLETE:
+        if (child == PAGE_HOTCLEANHIGH_STOP_BACK) {
+            hotcleanhigh_complete_create(&ui_manager);
+            hotcleanhigh_complete_t *done = hotcleanhigh_complete_get(&ui_manager);
+            if (done) {
+                lv_bar_set_value(done->bar_9, 100, LV_ANIM_OFF);
+            }
+            current_group = g_hch_complete;
+            lv_scr_load_anim(hotcleanhigh_complete_get(&ui_manager)->obj,
+                             LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
+            break;
+        }
         goto pop_to_clean;
     case PAGE_WATER_CLEAN_SET:
         wc_rebuild_set(child);
@@ -3486,6 +3519,17 @@ void page_pop(void)
         wc_rebuild_stop_back();
         break;
     case PAGE_WATER_CLEAN_COMPLETE:
+        if (child == PAGE_WATER_CLEAN_STOP_BACK) {
+            waterclean_complete_create(&ui_manager);
+            waterclean_complete_t *done = waterclean_complete_get(&ui_manager);
+            if (done) {
+                lv_bar_set_value(done->bar_4, 100, LV_ANIM_OFF);
+            }
+            current_group = g_wc_complete;
+            lv_scr_load_anim(waterclean_complete_get(&ui_manager)->obj,
+                             LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
+            break;
+        }
         goto pop_to_clean;
 
     pop_to_clean:
