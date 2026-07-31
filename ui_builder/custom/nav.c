@@ -11,6 +11,7 @@ int set_temp_down = 180;
 int cook_bar_saved = 0;
 int probe_target_temp = 80;
 int g_complete_to_stop_back = 0;
+int g_cooling_to_stop_back = 0;
 
 #ifdef LV_USE_AIC_SIMULATOR
 
@@ -4514,20 +4515,29 @@ static void process_key(uint8_t key)
                 jump_to_hcs_stop_back();
             else if (cur == PAGE_HOTCLEANSAVE_STOP)
                 jump_to_hcs_stop_back();
-            else if (cur == PAGE_HOTCLEANSAVE_COOLING)
-                g_send.buzzer_req = BUZZER_KEY_INVALID;
+            else if (cur == PAGE_HOTCLEANSAVE_COOLING) {
+                g_cooling_to_stop_back = 1;
+                jump_to_hcs_stop_back();
+                g_on_stop_back = 0;
+            }
             else if (cur == PAGE_HOTCLEANMIDDLE_COOKING)
                 jump_to_hcm_stop_back();
             else if (cur == PAGE_HOTCLEANMIDDLE_STOP)
                 jump_to_hcm_stop_back();
-            else if (cur == PAGE_HOTCLEANMIDDLE_COOLING)
-                g_send.buzzer_req = BUZZER_KEY_INVALID;
+            else if (cur == PAGE_HOTCLEANMIDDLE_COOLING) {
+                g_cooling_to_stop_back = 1;
+                jump_to_hcm_stop_back();
+                g_on_stop_back = 0;
+            }
             else if (cur == PAGE_HOTCLEANHIGH_COOKING)
                 jump_to_hch_stop_back();
             else if (cur == PAGE_HOTCLEANHIGH_STOP)
                 jump_to_hch_stop_back();
-            else if (cur == PAGE_HOTCLEANHIGH_COOLING)
-                g_send.buzzer_req = BUZZER_KEY_INVALID;
+            else if (cur == PAGE_HOTCLEANHIGH_COOLING) {
+                g_cooling_to_stop_back = 1;
+                jump_to_hch_stop_back();
+                g_on_stop_back = 0;
+            }
             // B-2 clean complete
             else if (cur == PAGE_WATER_CLEAN_COMPLETE) {
                 g_complete_to_stop_back = 1;

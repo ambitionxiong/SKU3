@@ -273,6 +273,12 @@ void jump_to_hch_stop_back(void)
             g_complete_to_stop_back = 0;
             lv_label_set_text(back->label_16, "已完成");
             lv_bar_set_value(back->bar_3, 100, LV_ANIM_OFF);
+            lv_obj_add_flag(back->button_5, LV_OBJ_FLAG_HIDDEN);
+        }
+
+        if (g_cooling_to_stop_back) {
+            g_cooling_to_stop_back = 0;
+            lv_label_set_text(back->label_16, "冷却中...");
         }
 
         if (back->sure) lv_group_focus_obj(back->sure);
@@ -471,6 +477,12 @@ void hch_rebuild_stop_back(void)
             g_complete_to_stop_back = 0;
             lv_label_set_text(back->label_16, "已完成");
             lv_bar_set_value(back->bar_3, 100, LV_ANIM_OFF);
+            lv_obj_add_flag(back->button_5, LV_OBJ_FLAG_HIDDEN);
+        }
+
+        if (g_cooling_to_stop_back) {
+            g_cooling_to_stop_back = 0;
+            lv_label_set_text(back->label_16, "冷却中...");
         }
 
         if (back->sure) lv_group_focus_obj(back->sure);
@@ -485,6 +497,11 @@ void hch_rebuild_stop_back(void)
 void hch_rebuild_cooling(void)
 {
     hotcleanhigh_cooling_create(&ui_manager);
+    hotcleanhigh_cooling_t *cool = hotcleanhigh_cooling_get(&ui_manager);
+    if (cool) {
+        lv_bar_set_range(cool->bar_8, 0, 100);
+        lv_bar_set_value(cool->bar_8, 100, LV_ANIM_OFF);
+    }
     current_group = g_hch_cooling;
     lv_scr_load_anim(hotcleanhigh_cooling_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
