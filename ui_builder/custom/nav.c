@@ -3067,7 +3067,10 @@ void page_pop(void)
                 g_lasagna_complete = group_create_for_page(btns, 1);
                 lasagna_complete_rebind(done->little);
                 lv_group_focus_obj(done->little);
-                lv_label_set_text_fmt(done->status, "| 千层面 | %02d分钟", set_min);
+                if (set_hour == 0)
+                    lv_label_set_text_fmt(done->status, "| 千层面 | %d℃ | %02d分钟", set_temp, set_min);
+                else
+                    lv_label_set_text_fmt(done->status, "| 千层面 | %d℃ | %d小时%02d分钟", set_temp, set_hour, set_min);
                 lv_bar_set_value(done->bar_51, 100, LV_ANIM_OFF);
             }
             current_group = g_lasagna_complete;
@@ -3124,7 +3127,10 @@ void page_pop(void)
                 g_strudel_complete = group_create_for_page(btns, 1);
                 strudel_complete_rebind(done->little);
                 lv_group_focus_obj(done->little);
-                lv_label_set_text_fmt(done->status, "| 果馅卷 | %02d分钟", set_min);
+                if (set_hour == 0)
+                    lv_label_set_text_fmt(done->status, "| 果馅卷 | %d℃ | %02d分钟", set_temp, set_min);
+                else
+                    lv_label_set_text_fmt(done->status, "| 果馅卷 | %d℃ | %d小时%02d分钟", set_temp, set_hour, set_min);
                 lv_bar_set_value(done->bar_55, 100, LV_ANIM_OFF);
             }
             current_group = g_strudel_complete;
@@ -3181,7 +3187,10 @@ void page_pop(void)
                 g_bread_complete = group_create_for_page(btns, 1);
                 bread_complete_rebind(done->little);
                 lv_group_focus_obj(done->little);
-                lv_label_set_text_fmt(done->status, "| 面包 | %02d分钟", set_min);
+                if (set_hour == 0)
+                    lv_label_set_text_fmt(done->status, "| 面包 | %d℃ | %02d分钟", set_temp, set_min);
+                else
+                    lv_label_set_text_fmt(done->status, "| 面包 | %d℃ | %d小时%02d分钟", set_temp, set_hour, set_min);
                 lv_bar_set_value(done->bar_59, 100, LV_ANIM_OFF);
             }
             current_group = g_bread_complete;
@@ -3238,7 +3247,10 @@ void page_pop(void)
                 g_pizza3_complete = group_create_for_page(btns, 1);
                 pizza3_complete_rebind(done->little);
                 lv_group_focus_obj(done->little);
-                lv_label_set_text_fmt(done->status, "| 披萨 | %02d分钟", set_min);
+                if (set_hour == 0)
+                    lv_label_set_text_fmt(done->status, "| 披萨 | %d℃ | %02d分钟", set_temp, set_min);
+                else
+                    lv_label_set_text_fmt(done->status, "| 披萨 | %d℃ | %d小时%02d分钟", set_temp, set_hour, set_min);
                 lv_bar_set_value(done->bar_63, 100, LV_ANIM_OFF);
             }
             current_group = g_pizza3_complete;
@@ -3295,7 +3307,10 @@ void page_pop(void)
                 g_chip_complete = group_create_for_page(btns, 1);
                 chip_complete_rebind(done->little);
                 lv_group_focus_obj(done->little);
-                lv_label_set_text_fmt(done->status, "| 薯条 | %02d分钟", set_min);
+                if (set_hour == 0)
+                    lv_label_set_text_fmt(done->status, "| 薯条 | %d℃ | %02d分钟", set_temp, set_min);
+                else
+                    lv_label_set_text_fmt(done->status, "| 薯条 | %d℃ | %d小时%02d分钟", set_temp, set_hour, set_min);
                 lv_bar_set_value(done->bar_67, 100, LV_ANIM_OFF);
             }
             current_group = g_chip_complete;
@@ -3352,7 +3367,10 @@ void page_pop(void)
                 g_custom_complete = group_create_for_page(btns, 1);
                 custom_complete_rebind(done->little);
                 lv_group_focus_obj(done->little);
-                lv_label_set_text_fmt(done->status, "| 自定义 | %02d分钟", set_min);
+                if (set_hour == 0)
+                    lv_label_set_text_fmt(done->status, "| 自定义 | %d℃ | %02d分钟", set_temp, set_min);
+                else
+                    lv_label_set_text_fmt(done->status, "| 自定义 | %d℃ | %d小时%02d分钟", set_temp, set_hour, set_min);
                 lv_bar_set_value(done->bar_71, 100, LV_ANIM_OFF);
             }
             current_group = g_custom_complete;

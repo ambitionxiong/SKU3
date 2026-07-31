@@ -12,18 +12,18 @@ static void on_pizza3_stop_start_click(lv_event_t *e);
 static void on_pizza3_stop_back_littal_click(lv_event_t *e);
 static void on_pizza3_stop_back_sure_click(lv_event_t *e);
 static void on_pizza3_edit_focus(lv_event_t *e);
-static void pizza3_set_status(lv_obj_t *label, int hour, int min);
+static void pizza3_set_status(lv_obj_t *label, int temp, int hour, int min);
 static void pizza3_delay_toggle(lv_event_t *e);
 static void pizza3_contain_toggle(lv_event_t *e);
 void jump_to_pizza3_cooking(void);
 void jump_to_pizza3_complete(void);
 
-static void pizza3_set_status(lv_obj_t *label, int hour, int min)
+static void pizza3_set_status(lv_obj_t *label, int temp, int hour, int min)
 {
     if (hour == 0)
-        lv_label_set_text_fmt(label, "| 披萨 | %02d分钟", min);
+        lv_label_set_text_fmt(label, "| 披萨 | %d℃ | %02d分钟", temp, min);
     else
-        lv_label_set_text_fmt(label, "| 披萨 | %d小时%02d分钟", hour, min);
+        lv_label_set_text_fmt(label, "| 披萨 | %d℃ | %d小时%02d分钟", temp, hour, min);
 }
 
 static void pizza3_delay_toggle(lv_event_t *e)
@@ -273,7 +273,7 @@ void jump_to_pizza3_cooking(void)
         lv_obj_add_event_cb(cook->little, on_pizza3_cooking_setting_click,
                             LV_EVENT_CLICKED, NULL);
 
-        pizza3_set_status(cook->status, set_hour, set_min);
+        pizza3_set_status(cook->status, set_temp, set_hour, set_min);
         lv_label_set_text_fmt(cook->timelabel, "%02d:%02d:%02d", set_hour, set_min, 0);
     }
 
@@ -395,7 +395,7 @@ void jump_to_pizza3_stop(void)
         int m = (remaining_sec % 3600) / 60;
         int s = remaining_sec % 60;
         lv_label_set_text_fmt(stop->timelabel, "%02d:%02d:%02d", h, m, s);
-        pizza3_set_status(stop->status, set_hour, set_min);
+        pizza3_set_status(stop->status, set_temp, set_hour, set_min);
 
         lv_bar_set_range(stop->bar_61, 0, 100);
         if (cook_bar_saved > 100) cook_bar_saved = 100;
@@ -434,7 +434,7 @@ void jump_to_pizza3_stop_back(void)
         lv_obj_add_event_cb(back->little, on_pizza3_stop_back_littal_click,
                             LV_EVENT_CLICKED, NULL);
 
-        pizza3_set_status(back->status, set_hour, set_min);
+        pizza3_set_status(back->status, set_temp, set_hour, set_min);
         int p = cooking_bar_val;
         if (p <= 0) {
             uint32_t elapsed = cook_timer ? (lv_tick_get() - cook_start_time) : cook_elapsed_saved;
@@ -481,7 +481,7 @@ depth--;
         lv_obj_add_event_cb(cook->little, on_pizza3_cooking_setting_click,
                             LV_EVENT_CLICKED, NULL);
 
-        pizza3_set_status(cook->status, set_hour, set_min);
+        pizza3_set_status(cook->status, set_temp, set_hour, set_min);
 
         int elapsed_sec = (cook_elapsed_saved + 500) / 1000;
         int total_sec = cook_total_ms / 1000;
@@ -548,7 +548,7 @@ static void on_pizza3_setting_sure_click(lv_event_t *e)
         lv_obj_add_event_cb(cook->little, on_pizza3_cooking_setting_click,
                             LV_EVENT_CLICKED, NULL);
 
-        pizza3_set_status(cook->status, set_hour, set_min);
+        pizza3_set_status(cook->status, set_temp, set_hour, set_min);
         lv_label_set_text_fmt(cook->timelabel, "%02d:%02d:%02d", set_hour, set_min, 0);
 
         lv_bar_set_range(cook->bar_60, 0, 100);
@@ -597,6 +597,8 @@ void jump_to_pizza3_complete(void)
             g_pizza3_complete = group_create_for_page(btns, 1);
             lv_obj_add_event_cb(cook->little, on_pizza3_cooking_setting_click,
                                 LV_EVENT_CLICKED, NULL);
+            pizza3_set_status(cook->status, set_temp, set_hour, set_min);
+            lv_bar_set_value(cook->bar_63, 100, LV_ANIM_OFF);
         }
     }
     current_group = g_pizza3_complete;
@@ -729,7 +731,7 @@ void pizza3_rebuild_cooking(page_id_t child)
         lv_obj_add_event_cb(cook->little, on_pizza3_cooking_setting_click,
                             LV_EVENT_CLICKED, NULL);
 
-        pizza3_set_status(cook->status, set_hour, set_min);
+        pizza3_set_status(cook->status, set_temp, set_hour, set_min);
 
         if (child == PAGE_PIZZA3_SETTING) {
             uint32_t elapsed = lv_tick_get() - cook_start_time;
@@ -843,7 +845,7 @@ void pizza3_rebuild_stop(void)
         int m = (remaining_sec % 3600) / 60;
         int s = remaining_sec % 60;
         lv_label_set_text_fmt(stop->timelabel, "%02d:%02d:%02d", h, m, s);
-        pizza3_set_status(stop->status, set_hour, set_min);
+        pizza3_set_status(stop->status, set_temp, set_hour, set_min);
 
         lv_bar_set_range(stop->bar_61, 0, 100);
         if (cook_bar_saved > 100) cook_bar_saved = 100;
@@ -878,7 +880,7 @@ void pizza3_rebuild_stop_back(void)
             lv_bar_set_value(back->bar_62, 100, LV_ANIM_OFF);
         }
 
-        pizza3_set_status(back->status, set_hour, set_min);
+        pizza3_set_status(back->status, set_temp, set_hour, set_min);
         lv_bar_set_range(back->bar_62, 0, 100);
         uint32_t elapsed = cook_timer ? (lv_tick_get() - cook_start_time) : cook_elapsed_saved;
         int p = stop_back_progress(elapsed, cook_total_ms);

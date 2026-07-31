@@ -112,7 +112,7 @@ void jump_to_hcs_cooking(void)
         lv_label_set_text_fmt(cook->timelabel, "%02d:%02d:%02d", set_hour, set_min, 0);
     }
 
-    cook_total_ms = 75 * 60 * 1000;
+    cook_total_ms = 0 * 60 * 1000;
     if (cook) {
         lv_bar_set_range(cook->bar_1, 0, 100);
         lv_bar_set_value(cook->bar_1, 3, LV_ANIM_OFF);
