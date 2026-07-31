@@ -4590,7 +4590,9 @@ static void process_key(uint8_t key)
             uart_print();
             break;
         }
-        if (current_group == g_hcs_cooling) {
+        if (page_stack[depth-1] == PAGE_HOTCLEANSAVE_COOLING ||
+            page_stack[depth-1] == PAGE_HOTCLEANMIDDLE_COOLING ||
+            page_stack[depth-1] == PAGE_HOTCLEANHIGH_COOLING) {
             g_sim_cavity_temp += 5;
             if (g_sim_cavity_temp > 400) g_sim_cavity_temp = 400;
             g_send.buzzer_req = BUZZER_ENCODER;
@@ -4623,7 +4625,9 @@ static void process_key(uint8_t key)
             uart_print();
             break;
         }
-        if (current_group == g_hcs_cooling) {
+        if (page_stack[depth-1] == PAGE_HOTCLEANSAVE_COOLING ||
+            page_stack[depth-1] == PAGE_HOTCLEANMIDDLE_COOLING ||
+            page_stack[depth-1] == PAGE_HOTCLEANHIGH_COOLING) {
             g_sim_cavity_temp -= 5;
             if (g_sim_cavity_temp > 400) g_sim_cavity_temp = 400;
             if (g_sim_cavity_temp < 0) g_sim_cavity_temp = 0;
@@ -5812,7 +5816,7 @@ void cooking_timer_cb(lv_timer_t *timer)
         auto_pause_on_door();
         return;
     }
-    if (current_group == g_hcs_cooling) {
+    if (page_stack[depth-1] == PAGE_HOTCLEANSAVE_COOLING) {
         hotcleansave_cooling_t *cool = hotcleansave_cooling_get(&ui_manager);
         if (cool) {
             uint16_t cavity = get_cavity_temp();
@@ -5824,7 +5828,7 @@ void cooking_timer_cb(lv_timer_t *timer)
         }
         return;
     }
-    if (current_group == g_hcm_cooling) {
+    if (page_stack[depth-1] == PAGE_HOTCLEANMIDDLE_COOLING) {
         hotcleanmiddle_cooling_t *cool = hotcleanmiddle_cooling_get(&ui_manager);
         if (cool) {
             uint16_t cavity = get_cavity_temp();
@@ -5836,7 +5840,7 @@ void cooking_timer_cb(lv_timer_t *timer)
         }
         return;
     }
-    if (current_group == g_hch_cooling) {
+    if (page_stack[depth-1] == PAGE_HOTCLEANHIGH_COOLING) {
         hotcleanhigh_cooling_t *cool = hotcleanhigh_cooling_get(&ui_manager);
         if (cool) {
             uint16_t cavity = get_cavity_temp();
