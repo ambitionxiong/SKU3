@@ -36,8 +36,9 @@ void jump_to_probetip(const char *text)
         lv_group_focus_obj(tip->button_1);
     }
     current_group = g_probetip;
-    lv_scr_load_anim(probetip_get(&ui_manager)->obj,
-                     LV_SCR_LOAD_ANIM_NONE, 0, 0, 0);
+    if (probetip_get(&ui_manager)->obj)
+        lv_scr_load_anim(probetip_get(&ui_manager)->obj,
+                         LV_SCR_LOAD_ANIM_NONE, 0, 0, 0);
     if (g_send.iface_status == IFACE_SLEEP) {
         probetip_cancel_auto_dismiss();
         probetip_dismiss_timer = lv_timer_create(auto_dismiss_probetip, 2000, NULL);
@@ -56,7 +57,8 @@ void probetip_rebuild(page_id_t child)
         lv_group_focus_obj(tip->button_1);
     }
     current_group = g_probetip;
-    lv_scr_load_anim(probetip_get(&ui_manager)->obj,
-                     LV_SCR_LOAD_ANIM_NONE, 0, 0, 0);
+    if (probetip_get(&ui_manager)->obj)
+        lv_scr_load_anim(probetip_get(&ui_manager)->obj,
+                         LV_SCR_LOAD_ANIM_NONE, 0, 0, 0);
     printf("[probetip] back to probetip\n");
 }

@@ -553,7 +553,7 @@ depth--;
         lv_anim_set_var(&a, cook->bar_16);
         lv_anim_set_exec_cb(&a, anim_bar_set_value);
         lv_anim_set_values(&a, cook_bar_saved, 100);
-        lv_anim_set_time(&a, cook_total_ms - (int)cook_elapsed_saved);
+        lv_anim_set_time(&a, ((int)(cook_total_ms - (int)cook_elapsed_saved) < 0) ? 0 : (cook_total_ms - (int)cook_elapsed_saved));
         lv_anim_start(&a);
     }
 
@@ -821,7 +821,7 @@ void menu_rebuild_cooking(page_id_t child)
             lv_anim_set_var(&a, cook->bar_16);
             lv_anim_set_exec_cb(&a, anim_bar_set_value);
             lv_anim_set_values(&a, progress, 100);
-            lv_anim_set_time(&a, cook_total_ms - (int)elapsed);
+            lv_anim_set_time(&a, ((int)(cook_total_ms - (int)elapsed) < 0) ? 0 : (cook_total_ms - (int)elapsed));
             lv_anim_start(&a);
         } else {
             lv_label_set_text_fmt(cook->timelabel, "%02d:%02d:%02d", set_hour, set_min, 0);

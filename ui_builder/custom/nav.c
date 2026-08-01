@@ -21,10 +21,10 @@ static void uart_print(void)
     printf("[UART]");
     for (int i = 0; i < 24; i++) printf(" %02X", uart_data_send[i]);
     static const char *st[] = {"stdby","set","cook","pause","done","sleep"};
-    static const char *md[] = {"none","","","updown","top","bottom","","","hot","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","color"};
+    static const char *md[] = {"none","","hotwind","updown","top","bottom","pizza2","","hot","","","heatcontain","rising","air","","","","","","","waterclean","","","","","windchange","central","save","preheat","","","","","cook4","frozen","slowcook","corn","","color","","unfrozen","hotclean"};
      printf("\n[UART] decoded: st=%s(%d) mode=%s(%d) flag=%d t=%d t_lo=%d time=%02d:%02d:%02d buz=%d\n",
             st[g_send.iface_status<=5?g_send.iface_status:0], g_send.iface_status,
-            md[g_send.cook_mode<=38?g_send.cook_mode:0], g_send.cook_mode,
+            md[g_send.cook_mode<=41?g_send.cook_mode:0], g_send.cook_mode,
             g_send.cook_flag,
             g_send.set_temp, g_send.set_temp_lower,
            uart_data_send[SEND_TIME_HOUR],
@@ -1217,7 +1217,7 @@ void page_pop(void)
                     int s = remaining_sec % 60;
                     lv_label_set_text_fmt(cook->time_label, "%02d:%02d:%02d", h, m, s);
                     lv_bar_set_range(cook->bar, 0, 100);
-                    int progress = (int)((int64_t)elapsed * 100 / cook_total_ms);
+                    int progress = (int)((int64_t)elapsed * 100 / (cook_total_ms ? cook_total_ms : 1));
                     if (progress > 100) progress = 100;
                     lv_bar_set_value(cook->bar, progress, LV_ANIM_OFF);
                     lv_anim_t a;
@@ -1225,7 +1225,7 @@ void page_pop(void)
                     lv_anim_set_var(&a, cook->bar);
                     lv_anim_set_exec_cb(&a, anim_bar_set_value);
                     lv_anim_set_values(&a, progress, 100);
-                    lv_anim_set_time(&a, cook_total_ms - (int)elapsed);
+                    lv_anim_set_time(&a, ((int)(cook_total_ms - (int)elapsed) < 0) ? 0 : (cook_total_ms - (int)elapsed));
                     lv_anim_start(&a);
                 }
                 current_group = g_updown_bbq_cooking;
@@ -1275,7 +1275,7 @@ void page_pop(void)
                     lv_anim_set_var(&a, cook->bar);
                     lv_anim_set_exec_cb(&a, anim_bar_set_value);
                     lv_anim_set_values(&a, progress, 100);
-                    lv_anim_set_time(&a, cook_total_ms - (int)elapsed);
+                    lv_anim_set_time(&a, ((int)(cook_total_ms - (int)elapsed) < 0) ? 0 : (cook_total_ms - (int)elapsed));
                     lv_anim_start(&a);
                 }
                 current_group = g_updown_bbq_cooking;
@@ -1691,7 +1691,7 @@ void page_pop(void)
                 lv_anim_set_var(&a, cc->bar);
                 lv_anim_set_exec_cb(&a, anim_bar_set_value);
                 lv_anim_set_values(&a, progress, 100);
-                lv_anim_set_time(&a, cook_total_ms - (int)elapsed);
+                lv_anim_set_time(&a, ((int)(cook_total_ms - (int)elapsed) < 0) ? 0 : (cook_total_ms - (int)elapsed));
                 lv_anim_start(&a);
             }
             current_group = g_color_cookoing;
@@ -3747,14 +3747,19 @@ void jump_to_cookmenu(void)
     if (cook && cook->hot_bbq_button)
         lv_obj_add_event_cb(cook->hot_bbq_button, on_hot_bbq_click,
                             LV_EVENT_CLICKED, NULL);
+    if (cook && cook->hot_wind_button)
         lv_obj_add_event_cb(cook->hot_wind_button, on_hotwind_click,
                             LV_EVENT_CLICKED, NULL);
+    if (cook && cook->save_button)
         lv_obj_add_event_cb(cook->save_button, on_save_click,
                             LV_EVENT_CLICKED, NULL);
+    if (cook && cook->central_button)
         lv_obj_add_event_cb(cook->central_button, on_central_click,
                             LV_EVENT_CLICKED, NULL);
+    if (cook && cook->windchange_buttonn)
         lv_obj_add_event_cb(cook->windchange_buttonn, on_windchange_click,
                             LV_EVENT_CLICKED, NULL);
+    if (cook && cook->preheater_button)
         lv_obj_add_event_cb(cook->preheater_button, on_preheat_click,
                             LV_EVENT_CLICKED, NULL);
 
@@ -4311,6 +4316,11 @@ static void process_key(uint8_t key)
             }
         }
         g_send.buzzer_req = BUZZER_KEY_VALID;
+        if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
+        g_on_stop_back = 0;
+        g_complete_to_stop_back = 0;
+        g_cooling_to_stop_back = 0;
+        g_stop_back_complete = NULL;
         depth = 0;
         page_push(PAGE_WAITMENU_24);
         if (is_probe_inserted()) {
@@ -4365,12 +4375,13 @@ static void process_key(uint8_t key)
         uart_print();
         break;
     case KEY_CLEAN:         // 7: 进入清洁菜单
-        if (is_probe_inserted()) {
-            jump_to_probetip("该功能不支持探针，请拔出探针！");
-            break;
-        }
         if (g_send.iface_status == IFACE_COOKING) {
             g_send.buzzer_req = BUZZER_KEY_INVALID;
+            break;
+        }
+        if (is_probe_inserted()) {
+            if (depth > 0 && page_stack[depth - 1] != PAGE_PROBETIP)
+                jump_to_probetip("该功能不支持探针，请拔出探针！");
             break;
         }
         {
@@ -5226,6 +5237,10 @@ static void process_key(uint8_t key)
 void nav_key1_long_press(void)
 {
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
+    g_on_stop_back = 0;
+    g_complete_to_stop_back = 0;
+    g_cooling_to_stop_back = 0;
+    g_stop_back_complete = NULL;
     cook_elapsed_saved = 0; cook_bar_saved = 0;
     set_temp = 180; set_temp_up = 180; set_temp_down = 180; set_hour = 0; set_min = 30;
     g_send.cook_mode = MODE_NONE;
@@ -5678,6 +5693,7 @@ static void on_color_start_click(lv_event_t *e)
 static void auto_pause_on_door(void)
 {
     if (!is_door_open()) return;
+    if (depth < 1) return;
     page_id_t cur = page_stack[depth - 1];
     if (cur == PAGE_UPDOWN_BBQ_COOKING) jump_to_updown_bbq_stop();
     else if (cur == PAGE_UPDOWN_BBQ_COOKING_PROBE) jump_to_updown_bbq_stop_probe();
@@ -5964,7 +5980,7 @@ void cooking_timer_cb(lv_timer_t *timer)
         auto_pause_on_door();
         return;
     }
-    if (page_stack[depth-1] == PAGE_HOTCLEANSAVE_COOLING) {
+    if (depth > 0 && page_stack[depth-1] == PAGE_HOTCLEANSAVE_COOLING) {
         hotcleansave_cooling_t *cool = hotcleansave_cooling_get(&ui_manager);
         if (cool) {
             uint16_t cavity = get_cavity_temp();
@@ -5977,7 +5993,7 @@ void cooking_timer_cb(lv_timer_t *timer)
         }
         return;
     }
-    if (page_stack[depth-1] == PAGE_HOTCLEANMIDDLE_COOLING) {
+    if (depth > 0 && page_stack[depth-1] == PAGE_HOTCLEANMIDDLE_COOLING) {
         hotcleanmiddle_cooling_t *cool = hotcleanmiddle_cooling_get(&ui_manager);
         if (cool) {
             uint16_t cavity = get_cavity_temp();
@@ -5990,7 +6006,7 @@ void cooking_timer_cb(lv_timer_t *timer)
         }
         return;
     }
-    if (page_stack[depth-1] == PAGE_HOTCLEANHIGH_COOLING) {
+    if (depth > 0 && page_stack[depth-1] == PAGE_HOTCLEANHIGH_COOLING) {
         hotcleanhigh_cooling_t *cool = hotcleanhigh_cooling_get(&ui_manager);
         if (cool) {
             uint16_t cavity = get_cavity_temp();
@@ -6821,7 +6837,7 @@ static void stop_resume_cooking(void)
         lv_anim_set_var(&a, cook->bar);
         lv_anim_set_exec_cb(&a, anim_bar_set_value);
         lv_anim_set_values(&a, cook_bar_saved, 100);
-        lv_anim_set_time(&a, cook_total_ms - (int)cook_elapsed_saved);
+        lv_anim_set_time(&a, ((int)(cook_total_ms - (int)cook_elapsed_saved) < 0) ? 0 : (cook_total_ms - (int)cook_elapsed_saved));
         lv_anim_start(&a);
     }
 
@@ -7021,7 +7037,7 @@ static void color_resume_cooking(void)
         lv_anim_set_var(&a, cc->bar);
         lv_anim_set_exec_cb(&a, anim_bar_set_value);
         lv_anim_set_values(&a, cook_bar_saved, 100);
-        lv_anim_set_time(&a, cook_total_ms - (int)cook_elapsed_saved);
+        lv_anim_set_time(&a, ((int)(cook_total_ms - (int)cook_elapsed_saved) < 0) ? 0 : (cook_total_ms - (int)cook_elapsed_saved));
         lv_anim_start(&a);
     }
 
