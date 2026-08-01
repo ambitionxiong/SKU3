@@ -187,7 +187,7 @@ void jump_to_corn_menu(void)
         edit_register(menu->temp, menu->templine2, menu->templine3,
                       &set_temp, 30, 130, 5, "%d");
         edit_register(menu->hour, menu->hourline, NULL,
-                      &set_hour, 0, 4, 1, "%02d");
+                      &set_hour, 0, 24, 1, "%02d");
         edit_register(menu->min, menu->minline, NULL,
                       &set_min, 0, 59, 1, "%02d");
 
@@ -389,7 +389,7 @@ void jump_to_corn_setting(void)
         edit_register(set->temp, set->templine2, set->templine3,
                       &set_temp, 30, 130, 5, "%d");
         edit_register(set->hour, set->hourline, NULL,
-                      &set_hour, 0, 4, 1, "%02d");
+                      &set_hour, 0, 24, 1, "%02d");
         edit_register(set->min, set->minline, NULL,
                       &set_min, 0, 59, 1, "%02d");
 
@@ -715,7 +715,7 @@ void corn_rebuild_menu(page_id_t child)
         edit_register(menu->temp, menu->templine2, menu->templine3,
                       &set_temp, 30, 130, 5, "%d");
         edit_register(menu->hour, menu->hourline, NULL,
-                      &set_hour, 0, 4, 1, "%02d");
+                      &set_hour, 0, 24, 1, "%02d");
         edit_register(menu->min, menu->minline, NULL,
                       &set_min, 0, 59, 1, "%02d");
 
@@ -900,7 +900,7 @@ void corn_rebuild_setting(void)
         edit_register(set->temp, set->templine2, set->templine3,
                       &set_temp, 30, 130, 5, "%d");
         edit_register(set->hour, set->hourline, NULL,
-                      &set_hour, 0, 4, 1, "%02d");
+                      &set_hour, 0, 24, 1, "%02d");
         edit_register(set->min, set->minline, NULL,
                       &set_min, 0, 59, 1, "%02d");
 

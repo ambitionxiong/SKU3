@@ -48,6 +48,9 @@ void special_menu_tz_rebuild(page_id_t child)
         if (tz->slowcook_button)
             lv_obj_add_event_cb(tz->slowcook_button, on_special_menu_tz_slowcook_click,
                                 LV_EVENT_CLICKED, NULL);
+
+        if (tz->slowcook_button)
+            lv_group_focus_obj(tz->slowcook_button);
     }
     current_group = g_special_menu_tz;
     lv_scr_load_anim(special_menu_tz_get(&ui_manager)->obj,

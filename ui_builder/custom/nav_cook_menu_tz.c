@@ -81,7 +81,13 @@ void cook_menu_tz_rebuild(page_id_t child)
             lv_obj_add_event_cb(tz->bottom_button, on_cook_menu_tz_bottom_click,
                                 LV_EVENT_CLICKED, NULL);
 
-        if (tz->updown_button)
+        if (child == PAGE_UPDOWN_BBQ_MENU_PROBE && tz->updown_button)
+            lv_group_focus_obj(tz->updown_button);
+        else if (child == PAGE_HOT_BBQ_MENU_PROBE && tz->hot_bbq_button)
+            lv_group_focus_obj(tz->hot_bbq_button);
+        else if (child == PAGE_BOTTOM_BBQ_MENU_PROBE && tz->bottom_button)
+            lv_group_focus_obj(tz->bottom_button);
+        else if (tz->updown_button)
             lv_group_focus_obj(tz->updown_button);
     }
     current_group = g_cook_menu_tz;
