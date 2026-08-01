@@ -281,7 +281,7 @@ void jump_to_hot_bbq_stop_probe(void)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_PAUSE;
-    g_send.remaining_ms = g_send.remaining_ms;
+    g_send.remaining_ms = (cook_total_ms > (int)cook_elapsed_saved) ? cook_total_ms - (int)cook_elapsed_saved : 0;
     printf("[hot_bbq_probe] jump: cooking_probe -> stop_probe\n");
 }
 
@@ -345,6 +345,8 @@ void jump_to_hot_bbq_complete_probe(void)
             g_hot_bbq_complete_probe = group_create_for_page(btns, 1);
             lv_obj_add_event_cb(complete->image_15, on_hot_bbq_probe_complete_click,
                                 LV_EVENT_CLICKED, NULL);
+            lv_label_set_text_fmt(complete->status, "| 热风烧烤 | %d℃ | %d℃", set_temp, probe_target_temp);
+            lv_bar_set_value(complete->bar_4, 100, LV_ANIM_OFF);
         }
     }
     current_group = g_hot_bbq_complete_probe;
@@ -397,7 +399,7 @@ void hot_bbq_probe_resume_cooking(void)
     g_send.iface_status = IFACE_COOKING;
     g_send.set_temp = set_temp;
     g_send.set_temp_lower = 0;
-    g_send.remaining_ms = g_send.remaining_ms;
+    g_send.remaining_ms = (cook_total_ms > (int)cook_elapsed_saved) ? cook_total_ms - (int)cook_elapsed_saved : 0;
     printf("[hot_bbq_probe] resume: stop_probe -> cooking_probe\n");
 }
 
@@ -569,6 +571,9 @@ void hot_bbq_probe_rebuild_stop_back(void)
 
         lv_bar_set_range(back->bar_3, 0, 100);
         lv_bar_set_value(back->bar_3, bar_val, LV_ANIM_OFF);
+
+        if (g_send.iface_status == IFACE_COOKING)
+            lv_label_set_text(back->label_39, "烹饪中...");
 
         if (g_complete_to_stop_back) {
             g_complete_to_stop_back = 0;

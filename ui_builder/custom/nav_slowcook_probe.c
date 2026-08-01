@@ -277,6 +277,7 @@ void jump_to_slowcook_stop_probe(void)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_PAUSE;
+    g_send.remaining_ms = (cook_total_ms > (int)cook_elapsed_saved) ? cook_total_ms - (int)cook_elapsed_saved : 0;
     printf("[slowcook_probe] jump: cooking_probe -> stop_probe\n");
 }
 
@@ -340,6 +341,8 @@ void jump_to_slowcook_complete_probe(void)
             g_slowcook_complete_probe = group_create_for_page(btns, 1);
             lv_obj_add_event_cb(complete->image_48, on_slowcook_probe_complete_click,
                                 LV_EVENT_CLICKED, NULL);
+            lv_label_set_text_fmt(complete->status, "| 慢煮 | %d℃ | %d℃", set_temp, probe_target_temp);
+            lv_bar_set_value(complete->bar_12, 100, LV_ANIM_OFF);
         }
     }
     current_group = g_slowcook_complete_probe;
@@ -392,6 +395,7 @@ void slowcook_probe_resume_cooking(void)
     g_send.iface_status = IFACE_COOKING;
     g_send.set_temp = set_temp;
     g_send.set_temp_lower = 0;
+    g_send.remaining_ms = (cook_total_ms > (int)cook_elapsed_saved) ? cook_total_ms - (int)cook_elapsed_saved : 0;
     printf("[slowcook_probe] resume: stop_probe -> cooking_probe\n");
 }
 
@@ -552,6 +556,9 @@ void slowcook_probe_rebuild_stop_back(void)
 
         lv_bar_set_range(back->bar_11, 0, 100);
         lv_bar_set_value(back->bar_11, bar_val, LV_ANIM_OFF);
+
+        if (g_send.iface_status == IFACE_COOKING)
+            lv_label_set_text(back->label_105, "烹饪中...");
 
         if (g_complete_to_stop_back) {
             g_complete_to_stop_back = 0;

@@ -468,7 +468,7 @@ void jump_to_updown_bbq_stop_probe(void)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_PAUSE;
-    g_send.remaining_ms = g_send.remaining_ms;
+    g_send.remaining_ms = (cook_total_ms > (int)cook_elapsed_saved) ? cook_total_ms - (int)cook_elapsed_saved : 0;
     printf("[updown_bbq_probe] jump: cooking_probe -> stop_probe\n");
 }
 
@@ -533,6 +533,9 @@ void jump_to_updown_bbq_complete_probe(void)
             g_updown_bbq_complete_probe = group_create_for_page(btns, 1);
             lv_obj_add_event_cb(complete->image_31, on_updown_probe_complete_click,
                                 LV_EVENT_CLICKED, NULL);
+            int min_back = set_temp_up < set_temp_down ? set_temp_up : set_temp_down;
+            lv_label_set_text_fmt(complete->label_74, "| 上下烧烤 | %d℃ | %d℃", min_back, probe_target_temp);
+            lv_bar_set_value(complete->bar_4, 100, LV_ANIM_OFF);
         }
     }
     current_group = g_updown_bbq_complete_probe;
@@ -586,7 +589,7 @@ void updown_bbq_probe_resume_cooking(void)
     g_send.iface_status = IFACE_COOKING;
     g_send.set_temp = set_temp_up;
     g_send.set_temp_lower = set_temp_down;
-    g_send.remaining_ms = g_send.remaining_ms;
+    g_send.remaining_ms = (cook_total_ms > (int)cook_elapsed_saved) ? cook_total_ms - (int)cook_elapsed_saved : 0;
     printf("[updown_bbq_probe] resume: stop_probe -> cooking_probe\n");
 }
 
@@ -844,11 +847,67 @@ void updown_bbq_probe_rebuild_cooking(page_id_t child)
 
 void updown_bbq_probe_rebuild_setting(void)
 {
+    updown_bbq_set_probe_create(&ui_manager);
+    updown_bbq_set_probe_t *set = updown_bbq_set_probe_get(&ui_manager);
+    if (set) {
+        lv_obj_t *btns[] = {
+            set->uptemp, set->downtemp,
+            set->sure,
+        };
+        if (g_updown_bbq_set_probe) lv_group_del(g_updown_bbq_set_probe);
+        g_updown_bbq_set_probe = group_create_for_page(btns, 3);
+        clear_focus_states(btns, 3);
+        lv_group_focus_obj(set->sure);
+
+        lv_obj_add_flag(set->up2num, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->up2dir, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->up2icon, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->down2num, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->down2dir, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->down2icon, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->up3tempnum, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->up3dir, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->up3icon, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->down3num, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->down3dir, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->down3icon, LV_OBJ_FLAG_HIDDEN);
+
+        if (set_temp_up < 100) {
+            lv_label_set_text_fmt(set->up2num, "%d", set_temp_up);
+            lv_obj_clear_flag(set->up2num, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(set->up2dir, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(set->up2icon, LV_OBJ_FLAG_HIDDEN);
+        } else {
+            lv_label_set_text_fmt(set->up3tempnum, "%d", set_temp_up);
+            lv_obj_clear_flag(set->up3tempnum, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(set->up3dir, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(set->up3icon, LV_OBJ_FLAG_HIDDEN);
+        }
+        if (set_temp_down < 100) {
+            lv_label_set_text_fmt(set->down2num, "%d", set_temp_down);
+            lv_obj_clear_flag(set->down2num, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(set->down2dir, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(set->down2icon, LV_OBJ_FLAG_HIDDEN);
+        } else {
+            lv_label_set_text_fmt(set->down3num, "%d", set_temp_down);
+            lv_obj_clear_flag(set->down3num, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(set->down3dir, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(set->down3icon, LV_OBJ_FLAG_HIDDEN);
+        }
+        lv_label_set_text_fmt(set->probetemp, "%d", probe_target_temp);
+
+        lv_obj_add_event_cb(set->uptemp, on_updown_probe_uptemp_click,
+                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->downtemp, on_updown_probe_downtemp_click,
+                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->sure, on_updown_probe_set_sure_click,
+                            LV_EVENT_CLICKED, NULL);
+    }
     current_group = g_updown_bbq_set_probe;
     lv_scr_load_anim(updown_bbq_set_probe_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[updown_bbq_probe] back to updown_bbq_set_probe (setting stub)\n");
+    printf("[updown_bbq_probe] back to updown_bbq_set_probe\n");
 }
 
 void updown_bbq_probe_rebuild_stop(void)
@@ -901,6 +960,9 @@ void updown_bbq_probe_rebuild_stop_back(void)
 
         lv_bar_set_range(back->bar_3, 0, 100);
         lv_bar_set_value(back->bar_3, bar_val, LV_ANIM_OFF);
+
+        if (g_send.iface_status == IFACE_COOKING)
+            lv_label_set_text(back->label_71, "烹饪中...");
 
         if (g_complete_to_stop_back) {
             g_complete_to_stop_back = 0;
