@@ -70,14 +70,6 @@ void air_complete_create(ui_manager_t *ui)
     lv_obj_set_style_text_font(scr->label_337, fs_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_337, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->image_154
-    scr->image_154 = lv_img_create(scr->obj);
-    lv_img_set_src(scr->image_154, LVGL_IMAGE_PATH(hotcare.png));
-    lv_img_set_pivot(scr->image_154, 50, 50);
-    lv_img_set_angle(scr->image_154, 0);
-    lv_obj_set_style_img_opa(scr->image_154, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->image_154, 845, 160);
-
     // Init scr->little
     scr->little = lv_btn_create(scr->obj);
     lv_obj_t *little_label = lv_label_create(scr->little);
@@ -102,6 +94,14 @@ void air_complete_create(ui_manager_t *ui)
     lv_img_set_angle(scr->image_155, 0);
     lv_obj_set_style_img_opa(scr->image_155, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_pos(scr->image_155, 115, 161);
+
+    // Init scr->image_6
+    scr->image_6 = lv_img_create(scr->obj);
+    lv_img_set_src(scr->image_6, LVGL_IMAGE_PATH(tips.png));
+    lv_img_set_pivot(scr->image_6, 50, 50);
+    lv_img_set_angle(scr->image_6, 0);
+    lv_obj_set_style_img_opa(scr->image_6, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(scr->image_6, 902, 160);
 
 
 }

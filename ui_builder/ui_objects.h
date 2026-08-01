@@ -604,9 +604,9 @@ typedef struct {
     lv_obj_t *label_107;
     lv_obj_t *bar_9;
     lv_obj_t *label_108;
-    lv_obj_t *image_54;
     lv_obj_t *button_27;
     lv_obj_t *image_55;
+    lv_obj_t *image_1;
 } top_bbq_complete_t;
 
 typedef struct {
@@ -724,9 +724,9 @@ typedef struct {
     lv_obj_t *status;
     lv_obj_t *bar_13;
     lv_obj_t *label_156;
-    lv_obj_t *image_75;
     lv_obj_t *button_43;
     lv_obj_t *image_76;
+    lv_obj_t *image_2;
 } bottom_bbq_complete_t;
 
 typedef struct {
@@ -844,9 +844,9 @@ typedef struct {
     lv_obj_t *status;
     lv_obj_t *bar_17;
     lv_obj_t *label_204;
-    lv_obj_t *image_96;
     lv_obj_t *button_59;
     lv_obj_t *image_97;
+    lv_obj_t *image_3;
 } hot_bbq_complete_t;
 
 typedef struct {
@@ -1084,9 +1084,9 @@ typedef struct {
     lv_obj_t *status;
     lv_obj_t *bar_25;
     lv_obj_t *label_280;
-    lv_obj_t *image_128;
     lv_obj_t *button_89;
     lv_obj_t *image_129;
+    lv_obj_t *image_4;
 } save_bbq_complete_t;
 
 typedef struct {
@@ -1204,9 +1204,9 @@ typedef struct {
     lv_obj_t *status;
     lv_obj_t *bar_29;
     lv_obj_t *label_318;
-    lv_obj_t *image_144;
     lv_obj_t *button_104;
     lv_obj_t *image_145;
+    lv_obj_t *image_5;
 } central_bbq_complete_t;
 
 typedef struct {
@@ -2003,9 +2003,9 @@ typedef struct {
     lv_obj_t *status;
     lv_obj_t *bar_23;
     lv_obj_t *label_337;
-    lv_obj_t *image_154;
     lv_obj_t *little;
     lv_obj_t *image_155;
+    lv_obj_t *image_6;
 } air_complete_t;
 
 typedef struct {
@@ -2243,9 +2243,9 @@ typedef struct {
     lv_obj_t *status;
     lv_obj_t *bar_31;
     lv_obj_t *label_435;
-    lv_obj_t *image_196;
     lv_obj_t *little;
     lv_obj_t *image_197;
+    lv_obj_t *image_7;
 } slowcook_complete_t;
 
 typedef struct {
@@ -2363,9 +2363,9 @@ typedef struct {
     lv_obj_t *status;
     lv_obj_t *bar_35;
     lv_obj_t *label_484;
-    lv_obj_t *image_217;
     lv_obj_t *little;
     lv_obj_t *image_218;
+    lv_obj_t *image_8;
 } unfrozen_complete_t;
 
 typedef struct {
@@ -2483,9 +2483,9 @@ typedef struct {
     lv_obj_t *status;
     lv_obj_t *bar_39;
     lv_obj_t *label_533;
-    lv_obj_t *image_238;
     lv_obj_t *little;
     lv_obj_t *image_239;
+    lv_obj_t *image_9;
 } rising_complete_t;
 
 typedef struct {
@@ -2603,9 +2603,9 @@ typedef struct {
     lv_obj_t *status;
     lv_obj_t *bar_43;
     lv_obj_t *label_582;
-    lv_obj_t *image_259;
     lv_obj_t *little;
     lv_obj_t *image_260;
+    lv_obj_t *image_10;
 } corn_complete_t;
 
 typedef struct {
@@ -2723,9 +2723,9 @@ typedef struct {
     lv_obj_t *status;
     lv_obj_t *bar_48;
     lv_obj_t *label_672;
-    lv_obj_t *image_315;
     lv_obj_t *little;
     lv_obj_t *image_316;
+    lv_obj_t *image_11;
 } heatcontain_complete_t;
 
 typedef struct {
@@ -2840,9 +2840,9 @@ typedef struct {
     lv_obj_t *status;
     lv_obj_t *bar_51;
     lv_obj_t *label_681;
-    lv_obj_t *image_322;
     lv_obj_t *little;
     lv_obj_t *image_323;
+    lv_obj_t *image_12;
 } lasagna_complete_t;
 
 typedef struct {
@@ -2945,9 +2945,9 @@ typedef struct {
     lv_obj_t *status;
     lv_obj_t *bar_55;
     lv_obj_t *label_722;
-    lv_obj_t *image_338;
     lv_obj_t *little;
     lv_obj_t *image_339;
+    lv_obj_t *image_13;
 } strudel_complete_t;
 
 typedef struct {
@@ -3050,9 +3050,9 @@ typedef struct {
     lv_obj_t *status;
     lv_obj_t *bar_59;
     lv_obj_t *label_763;
-    lv_obj_t *image_354;
     lv_obj_t *little;
     lv_obj_t *image_355;
+    lv_obj_t *image_14;
 } bread_complete_t;
 
 typedef struct {
@@ -3155,9 +3155,9 @@ typedef struct {
     lv_obj_t *status;
     lv_obj_t *bar_63;
     lv_obj_t *label_804;
-    lv_obj_t *image_370;
     lv_obj_t *little;
     lv_obj_t *image_371;
+    lv_obj_t *image_15;
 } pizza3_complete_t;
 
 typedef struct {
@@ -3260,9 +3260,9 @@ typedef struct {
     lv_obj_t *status;
     lv_obj_t *bar_67;
     lv_obj_t *label_845;
-    lv_obj_t *image_386;
     lv_obj_t *little;
     lv_obj_t *image_387;
+    lv_obj_t *image_16;
 } chip_complete_t;
 
 typedef struct {
@@ -3365,9 +3365,9 @@ typedef struct {
     lv_obj_t *status;
     lv_obj_t *bar_71;
     lv_obj_t *label_886;
-    lv_obj_t *image_402;
     lv_obj_t *little;
     lv_obj_t *image_403;
+    lv_obj_t *image_17;
 } custom_complete_t;
 
 typedef struct {

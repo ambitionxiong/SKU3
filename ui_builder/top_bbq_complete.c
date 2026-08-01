@@ -70,14 +70,6 @@ void top_bbq_complete_create(ui_manager_t *ui)
     lv_obj_set_style_text_font(scr->label_108, fs_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_108, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->image_54
-    scr->image_54 = lv_img_create(scr->obj);
-    lv_img_set_src(scr->image_54, LVGL_IMAGE_PATH(hotcare.png));
-    lv_img_set_pivot(scr->image_54, 50, 50);
-    lv_img_set_angle(scr->image_54, 0);
-    lv_obj_set_style_img_opa(scr->image_54, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->image_54, 845, 160);
-
     // Init scr->button_27
     scr->button_27 = lv_btn_create(scr->obj);
     lv_obj_t *button_27_label = lv_label_create(scr->button_27);
@@ -102,6 +94,14 @@ void top_bbq_complete_create(ui_manager_t *ui)
     lv_img_set_angle(scr->image_55, 0);
     lv_obj_set_style_img_opa(scr->image_55, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_pos(scr->image_55, 115, 161);
+
+    // Init scr->image_1
+    scr->image_1 = lv_img_create(scr->obj);
+    lv_img_set_src(scr->image_1, LVGL_IMAGE_PATH(tips.png));
+    lv_img_set_pivot(scr->image_1, 50, 50);
+    lv_img_set_angle(scr->image_1, 0);
+    lv_obj_set_style_img_opa(scr->image_1, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(scr->image_1, 902, 160);
 
 
 }

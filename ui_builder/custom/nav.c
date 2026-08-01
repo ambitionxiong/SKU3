@@ -4779,6 +4779,7 @@ static void process_key(uint8_t key)
         }
         lv_obj_t *focused = lv_group_get_focused(current_group);
         edit_field_t *ef = find_edit_field(focused);
+        g_send.buzzer_req = BUZZER_ENCODER;
         if (ef) {
             if (ef->min == ef->max) {
                 g_send.buzzer_req = BUZZER_KEY_INVALID;
