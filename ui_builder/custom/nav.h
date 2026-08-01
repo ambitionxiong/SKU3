@@ -437,6 +437,7 @@ extern int probe_target_temp;
 extern int cook_start_probe;
 extern int g_complete_to_stop_back;
 extern int g_cooling_to_stop_back;
+extern int g_extra_color_to_stop_back;
 extern int set_temp_up;
 extern int set_temp_down;
 extern int set_hour;

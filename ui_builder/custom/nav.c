@@ -12,6 +12,7 @@ int cook_bar_saved = 0;
 int probe_target_temp = 80;
 int g_complete_to_stop_back = 0;
 int g_cooling_to_stop_back = 0;
+int g_extra_color_to_stop_back = 0;
 
 #ifdef LV_USE_AIC_SIMULATOR
 
@@ -1658,6 +1659,25 @@ void page_pop(void)
         goto pop_to_major_menu;
 
     case PAGE_EXTRA_COLOR:
+        if (child == PAGE_COLOR_STOP_BACK) {
+            g_on_stop_back = 0;
+            extra_color_create(&ui_manager);
+            extra_color_t *ec = extra_color_get(&ui_manager);
+            if (ec) {
+                lv_obj_t *btns[] = { ec->start_button };
+                if (g_extra_color) lv_group_del(g_extra_color);
+                g_extra_color = group_create_for_page(btns, 1);
+                lv_obj_add_event_cb(ec->start_button, on_color_start_click,
+                                    LV_EVENT_CLICKED, NULL);
+                if (ec->start_button) lv_group_focus_obj(ec->start_button);
+            }
+            current_group = g_extra_color;
+            lv_scr_load_anim(extra_color_get(&ui_manager)->obj,
+                             LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
+            break;
+        }
+        goto pop_to_major_menu;
+
     case PAGE_COLOR_COOKING:
         if (child == PAGE_COLOR_STOP_BACK) {
             g_on_stop_back = 0;
@@ -4200,6 +4220,11 @@ static void jump_to_updown_bbq_menu_low(void)
 // extra_color → color_cookoing（固定 5 分钟倒计时）
 static void jump_to_color_cookoing(void)
 {
+    g_on_stop_back = 0;
+    if (is_door_open()) {
+        g_send.buzzer_req = BUZZER_KEY_INVALID;
+        return;
+    }
     page_push(PAGE_COLOR_COOKING);
     lv_obj_clean(lv_scr_act());
     color_cookoing_create(&ui_manager);
@@ -4380,6 +4405,7 @@ static void process_key(uint8_t key)
             break;
         }
         if (is_probe_inserted()) {
+            g_send.buzzer_req = BUZZER_KEY_INVALID;
             if (depth > 0 && page_stack[depth - 1] != PAGE_PROBETIP)
                 jump_to_probetip("该功能不支持探针，请拔出探针！");
             break;
@@ -4398,6 +4424,11 @@ static void process_key(uint8_t key)
         uart_print();
         break;
     case KEY_BACK:          // 21: 返回
+        if (depth <= 1) {
+            g_send.buzzer_req = BUZZER_KEY_INVALID;
+            uart_print();
+            break;
+        }
         g_send.buzzer_req = BUZZER_KEY_VALID;
         {
             page_id_t cur = page_stack[depth - 1];
@@ -4486,6 +4517,10 @@ static void process_key(uint8_t key)
                 jump_to_color_stop_back();
             else if (cur == PAGE_COLOR_STOP)
                 jump_to_color_stop_back();
+            else if (cur == PAGE_EXTRA_COLOR) {
+                g_extra_color_to_stop_back = 1;
+                jump_to_color_stop_back();
+            }
             else if (cur == PAGE_COLOR_COOKING_COMPLETE) {
                 g_complete_to_stop_back = 1;
                 jump_to_color_stop_back();
@@ -4693,13 +4728,21 @@ static void process_key(uint8_t key)
             break;
         }
 #endif
-        if (!current_group) break;
+        if (!current_group) {
+            g_send.buzzer_req = BUZZER_KEY_INVALID;
+            uart_print();
+            break;
+        }
         lv_obj_t *focused = lv_group_get_focused(current_group);
         edit_field_t *ef = find_edit_field(focused);
         if (ef) {
-            g_send.buzzer_req = BUZZER_ENCODER;
-            adjust_value(ef, +1);
-            printf("[nav] adjust +: %d\n", *ef->value);
+            if (ef->min == ef->max) {
+                g_send.buzzer_req = BUZZER_KEY_INVALID;
+            } else {
+                g_send.buzzer_req = BUZZER_ENCODER;
+                adjust_value(ef, +1);
+                printf("[nav] adjust +: %d\n", *ef->value);
+            }
         } else {
             g_send.buzzer_req = BUZZER_ENCODER;
             lv_group_focus_next(current_group);
@@ -4729,14 +4772,21 @@ static void process_key(uint8_t key)
             break;
         }
 #endif
-        if (!current_group) break;
-        g_send.buzzer_req = BUZZER_ENCODER;
+        if (!current_group) {
+            g_send.buzzer_req = BUZZER_KEY_INVALID;
+            uart_print();
+            break;
+        }
         lv_obj_t *focused = lv_group_get_focused(current_group);
         edit_field_t *ef = find_edit_field(focused);
         if (ef) {
-            g_send.buzzer_req = BUZZER_ENCODER;
-            adjust_value(ef, -1);
-            printf("[nav] adjust -: %d\n", *ef->value);
+            if (ef->min == ef->max) {
+                g_send.buzzer_req = BUZZER_KEY_INVALID;
+            } else {
+                g_send.buzzer_req = BUZZER_ENCODER;
+                adjust_value(ef, -1);
+                printf("[nav] adjust -: %d\n", *ef->value);
+            }
         } else if (current_group == g_updown_bbq_menu) {
             updown_bbq_menu_t *bbq = updown_bbq_menu_get(&ui_manager);
             if (bbq && focused == bbq->next_button) {
@@ -5213,17 +5263,22 @@ static void process_key(uint8_t key)
         break;
     }
     case KEY_ENCODER_PRESS: { // 51: 确认 / 跳到下一焦点
-        g_send.buzzer_req = BUZZER_KEY_VALID;
-        if (!current_group) break;
+        if (!current_group) {
+            g_send.buzzer_req = BUZZER_KEY_INVALID;
+            break;
+        }
         lv_obj_t *focused = lv_group_get_focused(current_group);
         edit_field_t *ef = find_edit_field(focused);
         if (ef) {
+            g_send.buzzer_req = BUZZER_KEY_VALID;
             lv_group_focus_next(current_group);
             printf("[nav] press -> next focus\n");
-        } else {
-            if (focused)
-                lv_obj_send_event(focused, LV_EVENT_CLICKED, NULL);
+        } else if (focused) {
+            g_send.buzzer_req = BUZZER_KEY_VALID;
+            lv_obj_send_event(focused, LV_EVENT_CLICKED, NULL);
             printf("[nav] press -> click\n");
+        } else {
+            g_send.buzzer_req = BUZZER_KEY_INVALID;
         }
         uart_print();
         break;
@@ -6972,6 +7027,13 @@ static void jump_to_color_stop_back(void)
             g_complete_to_stop_back = 0;
             lv_label_set_text(csb->label_19, "已完成");
             lv_bar_set_value(csb->bar_4, 100, LV_ANIM_OFF);
+        }
+
+        if (g_extra_color_to_stop_back) {
+            g_extra_color_to_stop_back = 0;
+            lv_label_set_text(csb->label_17, "| 5分钟 |");
+            lv_label_set_text(csb->label_19, "额外上色");
+            lv_bar_set_value(csb->bar_4, 0, LV_ANIM_OFF);
         }
     }
     current_group = g_color_stop_back;
