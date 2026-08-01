@@ -4725,6 +4725,60 @@ static void process_key(uint8_t key)
                 lv_group_focus_prev(current_group);
                 printf("[nav] focus prev\n");
             }
+        } else if (current_group == g_updown_bbq_menu_probe) {
+            updown_bbq_menu_probe_t *menu = updown_bbq_menu_probe_get(&ui_manager);
+            if (menu && focused == menu->next) {
+                lv_group_focus_obj(menu->temp);
+                printf("[updown_bbq_probe] focus wrap to temp\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[updown_bbq_probe] focus prev\n");
+            }
+        } else if (current_group == g_updown_bbq_menu_top_probe) {
+            updown_bbq_menu_top_probe_t *menu = updown_bbq_menu_top_probe_get(&ui_manager);
+            if (menu && focused == menu->next) {
+                lv_group_focus_obj(menu->temp);
+                printf("[updown_bbq_probe] focus wrap to temp\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[updown_bbq_probe] focus prev\n");
+            }
+        } else if (current_group == g_updown_bbq_menu_low_probe) {
+            updown_bbq_menu_low_probe_t *menu = updown_bbq_menu_low_probe_get(&ui_manager);
+            if (menu && focused == menu->next) {
+                lv_group_focus_obj(menu->temp);
+                printf("[updown_bbq_probe] focus wrap to temp\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[updown_bbq_probe] focus prev\n");
+            }
+        } else if (current_group == g_hot_bbq_menu_probe) {
+            hot_bbq_menu_probe_t *menu = hot_bbq_menu_probe_get(&ui_manager);
+            if (menu && focused == menu->next) {
+                lv_group_focus_obj(menu->temp);
+                printf("[hot_bbq_probe] focus wrap to temp\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[hot_bbq_probe] focus prev\n");
+            }
+        } else if (current_group == g_bottom_bbq_menu_probe) {
+            bottom_bbq_menu_probe_t *menu = bottom_bbq_menu_probe_get(&ui_manager);
+            if (menu && focused == menu->next) {
+                lv_group_focus_obj(menu->temp);
+                printf("[bottom_bbq_probe] focus wrap to temp\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[bottom_bbq_probe] focus prev\n");
+            }
+        } else if (current_group == g_slowcook_menu_probe) {
+            slowcook_menu_probe_t *menu = slowcook_menu_probe_get(&ui_manager);
+            if (menu && focused == menu->next) {
+                lv_group_focus_obj(menu->temp);
+                printf("[slowcook_probe] focus wrap to temp\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[slowcook_probe] focus prev\n");
+            }
         } else if (current_group == g_updown_bbq_setting) {
             updown_bbq_setting_t *set = updown_bbq_setting_get(&ui_manager);
             if (set && focused == set->sure_button) {
