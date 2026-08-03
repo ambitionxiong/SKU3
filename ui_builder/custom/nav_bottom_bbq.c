@@ -11,7 +11,6 @@ static void on_bottom_bbq_cooking_stop_click(lv_event_t *e);
 static void on_bottom_bbq_cooking_setting_click(lv_event_t *e);
 static void on_bottom_bbq_setting_sure_click(lv_event_t *e);
 static void on_bottom_bbq_stop_start_click(lv_event_t *e);
-static void on_bottom_bbq_stop_back_littal_click(lv_event_t *e);
 static void on_bottom_bbq_stop_back_sure_click(lv_event_t *e);
 static void on_bottom_bbq_edit_focus(lv_event_t *e);
 void update_bottom_bbq_dir_icon(bottom_bbq_setting_t *set);
@@ -132,11 +131,6 @@ static void on_bottom_bbq_stop_start_click(lv_event_t *e)
         bottom_bbq_resume_cooking();
 }
 
-
-static void on_bottom_bbq_stop_back_littal_click(lv_event_t *e)
-{
-    page_pop();
-}
 
 static void on_bottom_bbq_stop_back_sure_click(lv_event_t *e)
 {
@@ -316,6 +310,7 @@ void jump_to_bottom_bbq_set(void)
 // set → cooking
 void jump_to_bottom_bbq_cooking(void)
 {
+    edit_clear();
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;
@@ -447,6 +442,7 @@ void jump_to_bottom_bbq_setting(void)
 // cooking → stop（暂停）
 void jump_to_bottom_bbq_stop(void)
 {
+    edit_clear();
     cook_elapsed_saved = lv_tick_get() - cook_start_time;
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
 
@@ -494,6 +490,7 @@ void jump_to_bottom_bbq_stop(void)
 // stop → stop_back
 void jump_to_bottom_bbq_stop_back(void)
 {
+    edit_clear();
     int cooking_bar_val = 0;
     if (cook_timer) {
         bottom_bbq_cooking_t *cook = bottom_bbq_cooking_get(&ui_manager);
@@ -512,8 +509,6 @@ void jump_to_bottom_bbq_stop_back(void)
         if (g_bottom_bbq_stop_back) lv_group_del(g_bottom_bbq_stop_back);
         g_bottom_bbq_stop_back = group_create_for_page(btns, 1);
         lv_obj_add_event_cb(back->sure, on_bottom_bbq_stop_back_sure_click,
-                            LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(back->little, on_bottom_bbq_stop_back_littal_click,
                             LV_EVENT_CLICKED, NULL);
 
         bottom_bbq_set_status(back->status, set_temp, set_hour, set_min);
@@ -544,12 +539,13 @@ void jump_to_bottom_bbq_stop_back(void)
 // stop 恢复 cooking
 void bottom_bbq_resume_cooking(void)
 {
+    edit_clear();
     g_on_stop_back = 0;
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;
     }
-depth--;
+    if (depth > 1) depth--;
     lv_obj_clean(lv_scr_act());
     bottom_bbq_cooking_create(&ui_manager);
 
@@ -613,7 +609,7 @@ static void on_bottom_bbq_setting_sure_click(lv_event_t *e)
 
     cook_total_ms = (set_hour * 3600 + set_min * 60) * 1000;
 
-    depth--;
+    if (depth > 1) depth--;
     if (depth > 0 && page_stack[depth - 1] == PAGE_BOTTOM_BBQ_STOP)
         depth--;
     if (depth > 0 && page_stack[depth - 1] == PAGE_BOTTOM_BBQ_COMPLETE)
@@ -666,6 +662,7 @@ static void on_bottom_bbq_setting_sure_click(lv_event_t *e)
 // cooking → complete
 void jump_to_bottom_bbq_complete(void)
 {
+    edit_clear();
     if (depth > 0 && page_stack[depth - 1] == PAGE_BOTTOM_BBQ_STOP_BACK)
         depth--;
     if (depth > 0 && page_stack[depth - 1] == PAGE_BOTTOM_BBQ_STOP)
@@ -682,7 +679,10 @@ void jump_to_bottom_bbq_complete(void)
             g_bottom_bbq_complete = group_create_for_page(btns, 1);
             lv_obj_add_event_cb(cook->button_43, on_bottom_bbq_cooking_setting_click,
                                 LV_EVENT_CLICKED, NULL);
-            lv_label_set_text_fmt(cook->status, "| 底部烧烤 | %d℃ | %02d分钟", set_temp, set_min);
+            if (set_hour == 0)
+                lv_label_set_text_fmt(cook->status, "| 底部烧烤 | %d℃ | %02d分钟", set_temp, set_min);
+            else
+                lv_label_set_text_fmt(cook->status, "| 底部烧烤 | %d℃ | %d小时%02d分钟", set_temp, set_hour, set_min);
             lv_bar_set_value(cook->bar_13, 100, LV_ANIM_OFF);
         }
     }
@@ -833,6 +833,7 @@ void bottom_bbq_rebuild_set(page_id_t child)
 
 void bottom_bbq_rebuild_cooking(page_id_t child)
 {
+    edit_clear();
     bottom_bbq_cooking_create(&ui_manager);
     bottom_bbq_cooking_t *cook = bottom_bbq_cooking_get(&ui_manager);
     if (cook) {
@@ -953,6 +954,7 @@ void bottom_bbq_rebuild_setting(void)
 
 void bottom_bbq_rebuild_stop(void)
 {
+    edit_clear();
     g_on_stop_back = 0;
     bottom_bbq_stop_create(&ui_manager);
     bottom_bbq_stop_t *stop = bottom_bbq_stop_get(&ui_manager);
@@ -989,6 +991,7 @@ void bottom_bbq_rebuild_stop(void)
 
 void bottom_bbq_rebuild_stop_back(void)
 {
+    edit_clear();
     g_on_stop_back = 1;
     g_stop_back_complete = jump_to_bottom_bbq_complete;
     bottom_bbq_stop_back_create(&ui_manager);
@@ -998,8 +1001,6 @@ void bottom_bbq_rebuild_stop_back(void)
         if (g_bottom_bbq_stop_back) lv_group_del(g_bottom_bbq_stop_back);
         g_bottom_bbq_stop_back = group_create_for_page(btns, 1);
         lv_obj_add_event_cb(back->sure, on_bottom_bbq_stop_back_sure_click,
-                            LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(back->little, on_bottom_bbq_stop_back_littal_click,
                             LV_EVENT_CLICKED, NULL);
 
         bottom_bbq_set_status(back->status, set_temp, set_hour, set_min);
@@ -1030,6 +1031,7 @@ void bottom_bbq_rebuild_stop_back(void)
 
 void bottom_bbq_rebuild_complete(void)
 {
+    edit_clear();
     bottom_bbq_complete_create(&ui_manager);
     current_group = g_bottom_bbq_complete;
     lv_scr_load_anim(bottom_bbq_complete_get(&ui_manager)->obj,

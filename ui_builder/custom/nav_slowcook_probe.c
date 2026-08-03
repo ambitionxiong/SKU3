@@ -190,6 +190,7 @@ void jump_to_slowcook_set_probe(void)
 
 void jump_to_slowcook_cooking_probe(void)
 {
+    edit_clear();
     g_on_stop_back = 0;
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
@@ -244,6 +245,7 @@ void jump_to_slowcook_cooking_probe(void)
 
 void jump_to_slowcook_stop_probe(void)
 {
+    edit_clear();
     cook_elapsed_saved = lv_tick_get() - cook_start_time;
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
 
@@ -283,6 +285,7 @@ void jump_to_slowcook_stop_probe(void)
 
 void jump_to_slowcook_stop_back_probe(void)
 {
+    edit_clear();
     int probe_temp = get_probe_temp();
     int bar_val = probe_progress(probe_temp);
     if (bar_val > 100) bar_val = 100;
@@ -325,6 +328,7 @@ void jump_to_slowcook_stop_back_probe(void)
 
 void jump_to_slowcook_complete_probe(void)
 {
+    edit_clear();
     if (depth > 0 && page_stack[depth - 1] == PAGE_SLOWCOOK_STOP_BACK_PROBE)
         depth--;
     if (depth > 0 && page_stack[depth - 1] == PAGE_SLOWCOOK_STOP_PROBE)
@@ -358,12 +362,13 @@ void jump_to_slowcook_complete_probe(void)
 
 void slowcook_probe_resume_cooking(void)
 {
+    edit_clear();
     g_on_stop_back = 0;
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;
     }
-    depth--;
+    if (depth > 1) depth--;
     lv_obj_clean(lv_scr_act());
     slowcook_cooking_probe_create(&ui_manager);
 
@@ -485,6 +490,7 @@ void slowcook_probe_rebuild_set(page_id_t child)
 
 void slowcook_probe_rebuild_cooking(page_id_t child)
 {
+    edit_clear();
     g_on_stop_back = 0;
     slowcook_cooking_probe_create(&ui_manager);
     slowcook_cooking_probe_t *cook = slowcook_cooking_probe_get(&ui_manager);
@@ -512,6 +518,7 @@ void slowcook_probe_rebuild_cooking(page_id_t child)
 
 void slowcook_probe_rebuild_stop(void)
 {
+    edit_clear();
     g_on_stop_back = 0;
     slowcook_stop_probe_create(&ui_manager);
     slowcook_stop_probe_t *stop = slowcook_stop_probe_get(&ui_manager);
@@ -539,6 +546,7 @@ void slowcook_probe_rebuild_stop(void)
 
 void slowcook_probe_rebuild_stop_back(void)
 {
+    edit_clear();
     int probe_temp = get_probe_temp();
     int bar_val = probe_progress(probe_temp);
     if (bar_val > 100) bar_val = 100;
@@ -575,6 +583,7 @@ void slowcook_probe_rebuild_stop_back(void)
 
 void slowcook_probe_rebuild_complete(void)
 {
+    edit_clear();
     slowcook_complete_probe_create(&ui_manager);
     {
         slowcook_complete_probe_t *complete = slowcook_complete_probe_get(&ui_manager);

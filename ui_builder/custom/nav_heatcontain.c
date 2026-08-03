@@ -11,7 +11,6 @@ static void on_heatcontain_cooking_stop_click(lv_event_t *e);
 static void on_heatcontain_cooking_setting_click(lv_event_t *e);
 static void on_heatcontain_setting_sure_click(lv_event_t *e);
 static void on_heatcontain_stop_start_click(lv_event_t *e);
-static void on_heatcontain_stop_back_littal_click(lv_event_t *e);
 static void on_heatcontain_stop_back_sure_click(lv_event_t *e);
 static void on_heatcontain_edit_focus(lv_event_t *e);
 void update_heatcontain_dir_icon(heatcontain_setting_t *set);
@@ -132,11 +131,6 @@ static void on_heatcontain_stop_start_click(lv_event_t *e)
         heatcontain_resume_cooking();
 }
 
-
-static void on_heatcontain_stop_back_littal_click(lv_event_t *e)
-{
-    page_pop();
-}
 
 static void on_heatcontain_stop_back_sure_click(lv_event_t *e)
 {
@@ -316,6 +310,7 @@ void jump_to_heatcontain_set(void)
 // set → cooking
 void jump_to_heatcontain_cooking(void)
 {
+    edit_clear();
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;
@@ -447,6 +442,7 @@ void jump_to_heatcontain_setting(void)
 // cooking → stop（暂停）
 void jump_to_heatcontain_stop(void)
 {
+    edit_clear();
     cook_elapsed_saved = lv_tick_get() - cook_start_time;
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
 
@@ -494,6 +490,7 @@ void jump_to_heatcontain_stop(void)
 // stop → stop_back
 void jump_to_heatcontain_stop_back(void)
 {
+    edit_clear();
     int cooking_bar_val = 0;
     if (cook_timer) {
         heatcontain_cooking_t *cook = heatcontain_cooking_get(&ui_manager);
@@ -512,8 +509,6 @@ void jump_to_heatcontain_stop_back(void)
         if (g_heatcontain_stop_back) lv_group_del(g_heatcontain_stop_back);
         g_heatcontain_stop_back = group_create_for_page(btns, 1);
         lv_obj_add_event_cb(back->sure, on_heatcontain_stop_back_sure_click,
-                            LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(back->little, on_heatcontain_stop_back_littal_click,
                             LV_EVENT_CLICKED, NULL);
 
         heatcontain_set_status(back->status, set_temp, set_hour, set_min);
@@ -544,12 +539,13 @@ void jump_to_heatcontain_stop_back(void)
 // stop 恢复 cooking
 void heatcontain_resume_cooking(void)
 {
+    edit_clear();
     g_on_stop_back = 0;
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;
     }
-depth--;
+    if (depth > 1) depth--;
     lv_obj_clean(lv_scr_act());
     heatcontain_cooking_create(&ui_manager);
 
@@ -613,7 +609,7 @@ static void on_heatcontain_setting_sure_click(lv_event_t *e)
 
     cook_total_ms = (set_hour * 3600 + set_min * 60) * 1000;
 
-    depth--;
+    if (depth > 1) depth--;
     if (depth > 0 && page_stack[depth - 1] == PAGE_HEATCONTAIN_STOP)
         depth--;
     if (depth > 0 && page_stack[depth - 1] == PAGE_HEATCONTAIN_COMPLETE)
@@ -665,6 +661,7 @@ static void on_heatcontain_setting_sure_click(lv_event_t *e)
 // cooking → complete
 void jump_to_heatcontain_complete(void)
 {
+    edit_clear();
     if (depth > 0 && page_stack[depth - 1] == PAGE_HEATCONTAIN_STOP_BACK)
         depth--;
     if (depth > 0 && page_stack[depth - 1] == PAGE_HEATCONTAIN_STOP)
@@ -681,7 +678,10 @@ void jump_to_heatcontain_complete(void)
             g_heatcontain_complete = group_create_for_page(btns, 1);
             lv_obj_add_event_cb(cook->little, on_heatcontain_cooking_setting_click,
                                 LV_EVENT_CLICKED, NULL);
-            lv_label_set_text_fmt(cook->status, "| 保温 | %d℃ | %02d分钟", set_temp, set_min);
+            if (set_hour == 0)
+                lv_label_set_text_fmt(cook->status, "| 保温 | %d℃ | %02d分钟", set_temp, set_min);
+            else
+                lv_label_set_text_fmt(cook->status, "| 保温 | %d℃ | %d小时%02d分钟", set_temp, set_hour, set_min);
             lv_bar_set_value(cook->bar_48, 100, LV_ANIM_OFF);
         }
     }
@@ -830,6 +830,7 @@ void heatcontain_rebuild_set(page_id_t child)
 
 void heatcontain_rebuild_cooking(page_id_t child)
 {
+    edit_clear();
     heatcontain_cooking_create(&ui_manager);
     heatcontain_cooking_t *cook = heatcontain_cooking_get(&ui_manager);
     if (cook) {
@@ -950,6 +951,7 @@ void heatcontain_rebuild_setting(void)
 
 void heatcontain_rebuild_stop(void)
 {
+    edit_clear();
     g_on_stop_back = 0;
     heatcontain_stop_create(&ui_manager);
     heatcontain_stop_t *stop = heatcontain_stop_get(&ui_manager);
@@ -986,6 +988,7 @@ void heatcontain_rebuild_stop(void)
 
 void heatcontain_rebuild_stop_back(void)
 {
+    edit_clear();
     int cooking_bar_val = 0;
     if (cook_timer) {
         heatcontain_cooking_t *cook = heatcontain_cooking_get(&ui_manager);
@@ -1000,8 +1003,6 @@ void heatcontain_rebuild_stop_back(void)
         if (g_heatcontain_stop_back) lv_group_del(g_heatcontain_stop_back);
         g_heatcontain_stop_back = group_create_for_page(btns, 1);
         lv_obj_add_event_cb(back->sure, on_heatcontain_stop_back_sure_click,
-                            LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(back->little, on_heatcontain_stop_back_littal_click,
                             LV_EVENT_CLICKED, NULL);
 
         heatcontain_set_status(back->status, set_temp, set_hour, set_min);
@@ -1028,6 +1029,7 @@ void heatcontain_rebuild_stop_back(void)
 
 void heatcontain_rebuild_complete(void)
 {
+    edit_clear();
     heatcontain_complete_create(&ui_manager);
     current_group = g_heatcontain_complete;
     lv_scr_load_anim(heatcontain_complete_get(&ui_manager)->obj,

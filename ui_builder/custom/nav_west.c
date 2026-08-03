@@ -12,7 +12,6 @@ static void on_west_cooking_stop_click(lv_event_t *e);
 static void on_west_cooking_setting_click(lv_event_t *e);
 static void on_west_setting_sure_click(lv_event_t *e);
 static void on_west_stop_start_click(lv_event_t *e);
-static void on_west_stop_back_littal_click(lv_event_t *e);
 static void on_west_stop_back_sure_click(lv_event_t *e);
 static void on_west_edit_focus(lv_event_t *e);
 void update_west_dir_icon(west_setting_t *set);
@@ -53,13 +52,13 @@ static void west_delay_toggle(lv_event_t *e)
     if (!set) return;
     delay_on = !delay_on;
     if (delay_on) {
-        lv_obj_add_flag(set->offcontain, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_clear_flag(set->oncontain, LV_OBJ_FLAG_HIDDEN);
-        lv_group_focus_obj(set->oncontain);
+        lv_obj_add_flag(set->offdelay, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(set->ondelay, LV_OBJ_FLAG_HIDDEN);
+        lv_group_focus_obj(set->ondelay);
     } else {
-        lv_obj_add_flag(set->oncontain, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_clear_flag(set->offcontain, LV_OBJ_FLAG_HIDDEN);
-        lv_group_focus_obj(set->offcontain);
+        lv_obj_add_flag(set->ondelay, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(set->offdelay, LV_OBJ_FLAG_HIDDEN);
+        lv_group_focus_obj(set->offdelay);
     }
 }
 
@@ -133,11 +132,6 @@ static void on_west_stop_start_click(lv_event_t *e)
         west_resume_cooking();
 }
 
-
-static void on_west_stop_back_littal_click(lv_event_t *e)
-{
-    page_pop();
-}
 
 static void on_west_stop_back_sure_click(lv_event_t *e)
 {
@@ -304,6 +298,7 @@ void jump_to_west_set(void)
 // set → cooking
 void jump_to_west_cooking(void)
 {
+    edit_clear();
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;
@@ -429,6 +424,7 @@ void jump_to_west_setting(void)
 // cooking → stop（暂停）
 void jump_to_west_stop(void)
 {
+    edit_clear();
     cook_elapsed_saved = lv_tick_get() - cook_start_time;
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
 
@@ -476,6 +472,7 @@ void jump_to_west_stop(void)
 // stop → stop_back
 void jump_to_west_stop_back(void)
 {
+    edit_clear();
     int cooking_bar_val = 0;
     if (cook_timer) { west_cooking_t *cook = west_cooking_get(&ui_manager); if (cook) cooking_bar_val = lv_bar_get_value(cook->bar_8); }
 
@@ -491,8 +488,6 @@ void jump_to_west_stop_back(void)
         if (g_west_stop_back) lv_group_del(g_west_stop_back);
         g_west_stop_back = group_create_for_page(btns, 1);
         lv_obj_add_event_cb(back->sure, on_west_stop_back_sure_click,
-                            LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(back->little, on_west_stop_back_littal_click,
                             LV_EVENT_CLICKED, NULL);
 
         west_set_status(back->status, set_temp, set_hour, set_min);
@@ -523,12 +518,13 @@ void jump_to_west_stop_back(void)
 // stop 恢复 cooking
 void west_resume_cooking(void)
 {
+    edit_clear();
     g_on_stop_back = 0;
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;
     }
-depth--;
+    if (depth > 1) depth--;
     lv_obj_clean(lv_scr_act());
     west_cooking_create(&ui_manager);
 
@@ -592,7 +588,7 @@ static void on_west_setting_sure_click(lv_event_t *e)
 
     cook_total_ms = (set_hour * 3600 + set_min * 60) * 1000;
 
-    depth--;
+    if (depth > 1) depth--;
     if (depth > 0 && page_stack[depth - 1] == PAGE_WEST_STOP)
         depth--;
     if (depth > 0 && page_stack[depth - 1] == PAGE_WEST_COMPLETE)
@@ -644,6 +640,7 @@ static void on_west_setting_sure_click(lv_event_t *e)
 // cooking → complete
 void jump_to_west_complete(void)
 {
+    edit_clear();
     if (depth > 0 && page_stack[depth - 1] == PAGE_WEST_STOP_BACK)
         depth--;
     if (depth > 0 && page_stack[depth - 1] == PAGE_WEST_STOP)
@@ -660,7 +657,10 @@ void jump_to_west_complete(void)
             g_west_complete = group_create_for_page(btns, 1);
             lv_obj_add_event_cb(cook->little, on_west_cooking_setting_click,
                                 LV_EVENT_CLICKED, NULL);
-            lv_label_set_text_fmt(cook->status, "| 西式 | %d℃ | %02d分钟", set_temp, set_min);
+            if (set_hour == 0)
+                lv_label_set_text_fmt(cook->status, "| 西式 | %d℃ | %02d分钟", set_temp, set_min);
+            else
+                lv_label_set_text_fmt(cook->status, "| 西式 | %d℃ | %d小时%02d分钟", set_temp, set_hour, set_min);
             lv_bar_set_value(cook->bar_11, 100, LV_ANIM_OFF);
         }
     }
@@ -798,6 +798,7 @@ void west_rebuild_set(page_id_t child)
 
 void west_rebuild_cooking(page_id_t child)
 {
+    edit_clear();
     west_cooking_create(&ui_manager);
     west_cooking_t *cook = west_cooking_get(&ui_manager);
     if (cook) {
@@ -912,6 +913,7 @@ void west_rebuild_setting(void)
 
 void west_rebuild_stop(void)
 {
+    edit_clear();
     g_on_stop_back = 0;
     west_stop_create(&ui_manager);
     west_stop_t *stop = west_stop_get(&ui_manager);
@@ -948,6 +950,7 @@ void west_rebuild_stop(void)
 
 void west_rebuild_stop_back(void)
 {
+    edit_clear();
     g_on_stop_back = 1;
     g_stop_back_complete = jump_to_west_complete;
     west_stop_back_create(&ui_manager);
@@ -957,8 +960,6 @@ void west_rebuild_stop_back(void)
         if (g_west_stop_back) lv_group_del(g_west_stop_back);
         g_west_stop_back = group_create_for_page(btns, 1);
         lv_obj_add_event_cb(back->sure, on_west_stop_back_sure_click,
-                            LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(back->little, on_west_stop_back_littal_click,
                             LV_EVENT_CLICKED, NULL);
 
         west_set_status(back->status, set_temp, set_hour, set_min);
@@ -982,6 +983,7 @@ void west_rebuild_stop_back(void)
 
 void west_rebuild_complete(void)
 {
+    edit_clear();
     west_complete_create(&ui_manager);
     current_group = g_west_complete;
     lv_scr_load_anim(west_complete_get(&ui_manager)->obj,

@@ -91,6 +91,7 @@ void jump_to_wc_set(void)
 
 void jump_to_wc_cooking(void)
 {
+    edit_clear();
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;
@@ -142,6 +143,7 @@ void jump_to_wc_cooking(void)
 
 void jump_to_wc_stop(void)
 {
+    edit_clear();
     cook_elapsed_saved = lv_tick_get() - cook_start_time;
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
 
@@ -186,12 +188,13 @@ void jump_to_wc_stop(void)
 
 void wc_resume_cooking(void)
 {
+    edit_clear();
     g_on_stop_back = 0;
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;
     }
-depth--;
+    if (depth > 1) depth--;
     lv_obj_clean(lv_scr_act());
     waterclean_cooking_create(&ui_manager);
 
@@ -246,6 +249,7 @@ depth--;
 
 void jump_to_wc_stop_back(void)
 {
+    edit_clear();
     g_on_stop_back = 1;
     g_stop_back_complete = jump_to_wc_complete;
     page_push(PAGE_WATER_CLEAN_STOP_BACK);
@@ -287,6 +291,7 @@ void jump_to_wc_stop_back(void)
 
 void jump_to_wc_complete(void)
 {
+    edit_clear();
     if (depth > 0 && page_stack[depth - 1] == PAGE_WATER_CLEAN_STOP_BACK)
         depth--;
     if (depth > 0 && page_stack[depth - 1] == PAGE_WATER_CLEAN_STOP)
@@ -328,6 +333,7 @@ void wc_rebuild_set(page_id_t child)
 
 void wc_rebuild_cooking(page_id_t child)
 {
+    edit_clear();
     waterclean_cooking_create(&ui_manager);
     waterclean_cooking_t *cook = waterclean_cooking_get(&ui_manager);
     if (cook) {
@@ -384,6 +390,7 @@ void wc_rebuild_cooking(page_id_t child)
 
 void wc_rebuild_stop(void)
 {
+    edit_clear();
     g_on_stop_back = 0;
     waterclean_stop_create(&ui_manager);
     waterclean_stop_t *stop = waterclean_stop_get(&ui_manager);
@@ -418,6 +425,7 @@ void wc_rebuild_stop(void)
 
 void wc_rebuild_stop_back(void)
 {
+    edit_clear();
     g_on_stop_back = 1;
     g_stop_back_complete = jump_to_wc_complete;
     waterclean_stop_back_create(&ui_manager);
@@ -453,6 +461,7 @@ void wc_rebuild_stop_back(void)
 
 void wc_rebuild_complete(void)
 {
+    edit_clear();
     waterclean_complete_create(&ui_manager);
     current_group = g_wc_complete;
     lv_scr_load_anim(waterclean_complete_get(&ui_manager)->obj,

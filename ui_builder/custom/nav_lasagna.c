@@ -9,7 +9,6 @@ static void on_lasagna_cooking_stop_click(lv_event_t *e);
 static void on_lasagna_cooking_setting_click(lv_event_t *e);
 static void on_lasagna_setting_sure_click(lv_event_t *e);
 static void on_lasagna_stop_start_click(lv_event_t *e);
-static void on_lasagna_stop_back_littal_click(lv_event_t *e);
 static void on_lasagna_stop_back_sure_click(lv_event_t *e);
 static void on_lasagna_edit_focus(lv_event_t *e);
 static void lasagna_set_status(lv_obj_t *label, int temp, int hour, int min);
@@ -96,11 +95,6 @@ static void on_lasagna_stop_start_click(lv_event_t *e)
     lv_obj_t *act_scr = lv_scr_act();
     if (!screen_is_loading(act_scr))
         lasagna_resume_cooking();
-}
-
-static void on_lasagna_stop_back_littal_click(lv_event_t *e)
-{
-    page_pop();
 }
 
 static void on_lasagna_stop_back_sure_click(lv_event_t *e)
@@ -253,6 +247,7 @@ void jump_to_lasagna_set(void)
 
 void jump_to_lasagna_cooking(void)
 {
+    edit_clear();
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;
@@ -367,6 +362,7 @@ void jump_to_lasagna_setting(void)
 
 void jump_to_lasagna_stop(void)
 {
+    edit_clear();
     cook_elapsed_saved = lv_tick_get() - cook_start_time;
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
 
@@ -413,6 +409,7 @@ void jump_to_lasagna_stop(void)
 
 void jump_to_lasagna_stop_back(void)
 {
+    edit_clear();
     int cooking_bar_val = 0;
     if (cook_timer) {
         lasagna_cooking_t *cook = lasagna_cooking_get(&ui_manager);
@@ -431,8 +428,6 @@ void jump_to_lasagna_stop_back(void)
         if (g_lasagna_stop_back) lv_group_del(g_lasagna_stop_back);
         g_lasagna_stop_back = group_create_for_page(btns, 1);
         lv_obj_add_event_cb(back->sure, on_lasagna_stop_back_sure_click,
-                            LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(back->little, on_lasagna_stop_back_littal_click,
                             LV_EVENT_CLICKED, NULL);
 
         lasagna_set_status(back->status, set_temp, set_hour, set_min);
@@ -463,12 +458,13 @@ void jump_to_lasagna_stop_back(void)
 
 void lasagna_resume_cooking(void)
 {
+    edit_clear();
     g_on_stop_back = 0;
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;
     }
-depth--;
+    if (depth > 1) depth--;
     lv_obj_clean(lv_scr_act());
     lasagna_cooking_create(&ui_manager);
 
@@ -531,7 +527,7 @@ static void on_lasagna_setting_sure_click(lv_event_t *e)
 
     cook_total_ms = (set_hour * 3600 + set_min * 60) * 1000;
 
-    depth--;
+    if (depth > 1) depth--;
     if (depth > 0 && page_stack[depth - 1] == PAGE_LASAGNA_STOP)
         depth--;
     if (depth > 0 && page_stack[depth - 1] == PAGE_LASAGNA_COMPLETE)
@@ -582,6 +578,7 @@ static void on_lasagna_setting_sure_click(lv_event_t *e)
 
 void jump_to_lasagna_complete(void)
 {
+    edit_clear();
     if (depth > 0 && page_stack[depth - 1] == PAGE_LASAGNA_STOP_BACK)
         depth--;
     if (depth > 0 && page_stack[depth - 1] == PAGE_LASAGNA_STOP)
@@ -721,6 +718,7 @@ void lasagna_rebuild_set(page_id_t child)
 
 void lasagna_rebuild_cooking(page_id_t child)
 {
+    edit_clear();
     lasagna_cooking_create(&ui_manager);
     lasagna_cooking_t *cook = lasagna_cooking_get(&ui_manager);
     if (cook) {
@@ -826,6 +824,7 @@ void lasagna_rebuild_setting(void)
 
 void lasagna_rebuild_stop(void)
 {
+    edit_clear();
     g_on_stop_back = 0;
     lasagna_stop_create(&ui_manager);
     lasagna_stop_t *stop = lasagna_stop_get(&ui_manager);
@@ -862,6 +861,7 @@ void lasagna_rebuild_stop(void)
 
 void lasagna_rebuild_stop_back(void)
 {
+    edit_clear();
     int cooking_bar_val = 0;
     if (cook_timer) {
         lasagna_cooking_t *cook = lasagna_cooking_get(&ui_manager);
@@ -876,8 +876,6 @@ void lasagna_rebuild_stop_back(void)
         if (g_lasagna_stop_back) lv_group_del(g_lasagna_stop_back);
         g_lasagna_stop_back = group_create_for_page(btns, 1);
         lv_obj_add_event_cb(back->sure, on_lasagna_stop_back_sure_click,
-                            LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(back->little, on_lasagna_stop_back_littal_click,
                             LV_EVENT_CLICKED, NULL);
 
         lasagna_set_status(back->status, set_temp, set_hour, set_min);
@@ -905,6 +903,7 @@ void lasagna_rebuild_stop_back(void)
 
 void lasagna_rebuild_complete(void)
 {
+    edit_clear();
     lasagna_complete_create(&ui_manager);
     current_group = g_lasagna_complete;
     lv_scr_load_anim(lasagna_complete_get(&ui_manager)->obj,

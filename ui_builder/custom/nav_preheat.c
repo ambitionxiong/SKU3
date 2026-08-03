@@ -79,6 +79,7 @@ void jump_to_preheat_menu(void)
 
 void jump_to_preheat_cooking(void)
 {
+    edit_clear();
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;
@@ -119,6 +120,7 @@ void jump_to_preheat_cooking(void)
 
 void jump_to_preheat_stop(void)
 {
+    edit_clear();
     page_push(PAGE_PREHEAT_STOP);
     lv_obj_clean(lv_scr_act());
     preheatstop_create(&ui_manager);
@@ -149,12 +151,13 @@ void jump_to_preheat_stop(void)
 
 void preheat_resume_cooking(void)
 {
+    edit_clear();
     
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;
     }
-depth--;
+    if (depth > 1) depth--;
     lv_obj_clean(lv_scr_act());
     preheatcooking_create(&ui_manager);
 
@@ -184,6 +187,7 @@ depth--;
 
 void jump_to_preheat_complete(void)
 {
+    edit_clear();
     page_push(PAGE_PREHEAT_COMPLETE);
     lv_obj_clean(lv_scr_act());
     preheatcomplete_create(&ui_manager);
@@ -210,6 +214,7 @@ void jump_to_preheat_complete(void)
 
 void jump_to_preheat_stop_back(void)
 {
+    edit_clear();
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
     set_temp = 180; set_temp_up = 180; set_temp_down = 180; set_hour = 0; set_min = 30;
     cook_elapsed_saved = 0; cook_bar_saved = 0;

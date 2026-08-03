@@ -91,6 +91,7 @@ void jump_to_hch_set(void)
 
 void jump_to_hch_cooking(void)
 {
+    edit_clear();
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;
@@ -142,6 +143,7 @@ void jump_to_hch_cooking(void)
 
 void jump_to_hch_stop(void)
 {
+    edit_clear();
     cook_elapsed_saved = lv_tick_get() - cook_start_time;
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
 
@@ -186,12 +188,13 @@ void jump_to_hch_stop(void)
 
 void hch_resume_cooking(void)
 {
+    edit_clear();
     g_on_stop_back = 0;
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;
     }
-depth--;
+    if (depth > 1) depth--;
     lv_obj_clean(lv_scr_act());
     hotcleanhigh_cooking_create(&ui_manager);
 
@@ -246,6 +249,7 @@ depth--;
 
 void jump_to_hch_stop_back(void)
 {
+    edit_clear();
     g_on_stop_back = 1;
     g_stop_back_complete = jump_to_hch_complete;
     page_push(PAGE_HOTCLEANHIGH_STOP_BACK);
@@ -293,6 +297,7 @@ void jump_to_hch_stop_back(void)
 
 void jump_to_hch_cooling(void)
 {
+    edit_clear();
     page_push(PAGE_HOTCLEANHIGH_COOLING);
     lv_obj_clean(lv_scr_act());
     hotcleanhigh_cooling_create(&ui_manager);
@@ -324,6 +329,7 @@ void jump_to_hch_cooling(void)
 
 void jump_to_hch_complete(void)
 {
+    edit_clear();
     if (depth > 0 && page_stack[depth - 1] == PAGE_HOTCLEANHIGH_STOP_BACK)
         depth--;
     if (depth > 0 && page_stack[depth - 1] == PAGE_HOTCLEANHIGH_STOP)
@@ -365,6 +371,7 @@ void hch_rebuild_set(page_id_t child)
 
 void hch_rebuild_cooking(page_id_t child)
 {
+    edit_clear();
     hotcleanhigh_cooking_create(&ui_manager);
     hotcleanhigh_cooking_t *cook = hotcleanhigh_cooking_get(&ui_manager);
     if (cook) {
@@ -421,6 +428,7 @@ void hch_rebuild_cooking(page_id_t child)
 
 void hch_rebuild_stop(void)
 {
+    edit_clear();
     g_on_stop_back = 0;
     hotcleanhigh_stop_create(&ui_manager);
     hotcleanhigh_stop_t *stop = hotcleanhigh_stop_get(&ui_manager);
@@ -455,6 +463,7 @@ void hch_rebuild_stop(void)
 
 void hch_rebuild_stop_back(void)
 {
+    edit_clear();
     g_on_stop_back = 1;
     g_stop_back_complete = jump_to_hch_complete;
     hotcleanhigh_stop_back_create(&ui_manager);
@@ -496,6 +505,7 @@ void hch_rebuild_stop_back(void)
 
 void hch_rebuild_cooling(void)
 {
+    edit_clear();
     hotcleanhigh_cooling_create(&ui_manager);
     hotcleanhigh_cooling_t *cool = hotcleanhigh_cooling_get(&ui_manager);
     if (cool) {
@@ -511,6 +521,7 @@ void hch_rebuild_cooling(void)
 
 void hch_rebuild_complete(void)
 {
+    edit_clear();
     hotcleanhigh_complete_create(&ui_manager);
     current_group = g_hch_complete;
     lv_scr_load_anim(hotcleanhigh_complete_get(&ui_manager)->obj,

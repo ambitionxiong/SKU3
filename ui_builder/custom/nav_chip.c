@@ -9,7 +9,6 @@ static void on_chip_cooking_stop_click(lv_event_t *e);
 static void on_chip_cooking_setting_click(lv_event_t *e);
 static void on_chip_setting_sure_click(lv_event_t *e);
 static void on_chip_stop_start_click(lv_event_t *e);
-static void on_chip_stop_back_littal_click(lv_event_t *e);
 static void on_chip_stop_back_sure_click(lv_event_t *e);
 static void on_chip_edit_focus(lv_event_t *e);
 static void chip_set_status(lv_obj_t *label, int temp, int hour, int min);
@@ -96,11 +95,6 @@ static void on_chip_stop_start_click(lv_event_t *e)
     lv_obj_t *act_scr = lv_scr_act();
     if (!screen_is_loading(act_scr))
         chip_resume_cooking();
-}
-
-static void on_chip_stop_back_littal_click(lv_event_t *e)
-{
-    page_pop();
 }
 
 static void on_chip_stop_back_sure_click(lv_event_t *e)
@@ -253,6 +247,7 @@ void jump_to_chip_set(void)
 
 void jump_to_chip_cooking(void)
 {
+    edit_clear();
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;
@@ -367,6 +362,7 @@ void jump_to_chip_setting(void)
 
 void jump_to_chip_stop(void)
 {
+    edit_clear();
     cook_elapsed_saved = lv_tick_get() - cook_start_time;
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
 
@@ -413,6 +409,7 @@ void jump_to_chip_stop(void)
 
 void jump_to_chip_stop_back(void)
 {
+    edit_clear();
     int cooking_bar_val = 0;
     if (cook_timer) {
         chip_cooking_t *cook = chip_cooking_get(&ui_manager);
@@ -430,8 +427,6 @@ void jump_to_chip_stop_back(void)
         if (g_chip_stop_back) lv_group_del(g_chip_stop_back);
         g_chip_stop_back = group_create_for_page(btns, 1);
         lv_obj_add_event_cb(back->sure, on_chip_stop_back_sure_click,
-                            LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(back->little, on_chip_stop_back_littal_click,
                             LV_EVENT_CLICKED, NULL);
 
         chip_set_status(back->status, set_temp, set_hour, set_min);
@@ -462,12 +457,13 @@ void jump_to_chip_stop_back(void)
 
 void chip_resume_cooking(void)
 {
+    edit_clear();
     g_on_stop_back = 0;
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;
     }
-depth--;
+    if (depth > 1) depth--;
     lv_obj_clean(lv_scr_act());
     chip_cooking_create(&ui_manager);
 
@@ -530,7 +526,7 @@ static void on_chip_setting_sure_click(lv_event_t *e)
 
     cook_total_ms = (set_hour * 3600 + set_min * 60) * 1000;
 
-    depth--;
+    if (depth > 1) depth--;
     if (depth > 0 && page_stack[depth - 1] == PAGE_CHIP_STOP)
         depth--;
     if (depth > 0 && page_stack[depth - 1] == PAGE_CHIP_COMPLETE)
@@ -581,6 +577,7 @@ static void on_chip_setting_sure_click(lv_event_t *e)
 
 void jump_to_chip_complete(void)
 {
+    edit_clear();
     if (depth > 0 && page_stack[depth - 1] == PAGE_CHIP_STOP_BACK)
         depth--;
     if (depth > 0 && page_stack[depth - 1] == PAGE_CHIP_STOP)
@@ -720,6 +717,7 @@ void chip_rebuild_set(page_id_t child)
 
 void chip_rebuild_cooking(page_id_t child)
 {
+    edit_clear();
     chip_cooking_create(&ui_manager);
     chip_cooking_t *cook = chip_cooking_get(&ui_manager);
     if (cook) {
@@ -825,6 +823,7 @@ void chip_rebuild_setting(void)
 
 void chip_rebuild_stop(void)
 {
+    edit_clear();
     g_on_stop_back = 0;
     chip_stop_create(&ui_manager);
     chip_stop_t *stop = chip_stop_get(&ui_manager);
@@ -861,6 +860,7 @@ void chip_rebuild_stop(void)
 
 void chip_rebuild_stop_back(void)
 {
+    edit_clear();
     g_on_stop_back = 1;
     g_stop_back_complete = jump_to_chip_complete;
     chip_stop_back_create(&ui_manager);
@@ -870,8 +870,6 @@ void chip_rebuild_stop_back(void)
         if (g_chip_stop_back) lv_group_del(g_chip_stop_back);
         g_chip_stop_back = group_create_for_page(btns, 1);
         lv_obj_add_event_cb(back->sure, on_chip_stop_back_sure_click,
-                            LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(back->little, on_chip_stop_back_littal_click,
                             LV_EVENT_CLICKED, NULL);
 
         if (g_complete_to_stop_back) {
@@ -897,6 +895,7 @@ void chip_rebuild_stop_back(void)
 
 void chip_rebuild_complete(void)
 {
+    edit_clear();
     chip_complete_create(&ui_manager);
     current_group = g_chip_complete;
     lv_scr_load_anim(chip_complete_get(&ui_manager)->obj,

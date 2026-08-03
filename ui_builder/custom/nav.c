@@ -1297,6 +1297,8 @@ void page_pop(void)
         break;
 
     case PAGE_UPDOWN_BBQ_STOP:
+        g_on_stop_back = 0;
+        g_stop_back_complete = NULL;
         if (child == PAGE_UPDOWN_BBQ_SETTING) {
             set_temp_up = updown_setting_saved_temp_up;
             set_temp_down = updown_setting_saved_temp_down;
@@ -1361,6 +1363,15 @@ void page_pop(void)
                 if (p > 100) p = 100;
                 lv_bar_set_range(back->bar_2, 0, 100);
                 lv_bar_set_value(back->bar_2, p, LV_ANIM_OFF);
+
+                if (g_send.iface_status == IFACE_COOKING)
+                    lv_label_set_text(back->label_8, "烹饪中...");
+
+                if (g_complete_to_stop_back) {
+                    g_complete_to_stop_back = 0;
+                    lv_label_set_text(back->label_8, "已完成");
+                    lv_bar_set_value(back->bar_2, 100, LV_ANIM_OFF);
+                }
             }
             current_group = g_updown_bbq_stop_back;
         }
@@ -4333,7 +4344,7 @@ static void process_key(uint8_t key)
             g_send.buzzer_req = BUZZER_KEY_INVALID;
             break;
         }
-        {
+        if (depth > 0) {
             page_id_t cur = page_stack[depth - 1];
             if (cur == PAGE_MAJOR_MENU || cur == PAGE_MAJOR_MENU_TZ) {
                 g_send.buzzer_req = BUZZER_KEY_INVALID;
@@ -4345,6 +4356,8 @@ static void process_key(uint8_t key)
         g_on_stop_back = 0;
         g_complete_to_stop_back = 0;
         g_cooling_to_stop_back = 0;
+        g_extra_color_to_stop_back = 0;
+        cook_is_color = 0;
         g_stop_back_complete = NULL;
         depth = 0;
         page_push(PAGE_WAITMENU_24);
@@ -4410,7 +4423,7 @@ static void process_key(uint8_t key)
                 jump_to_probetip("该功能不支持探针，请拔出探针！");
             break;
         }
-        {
+        if (depth > 0) {
             page_id_t cur = page_stack[depth - 1];
             if (cur == PAGE_CLEAN_MENU) {
                 g_send.buzzer_req = BUZZER_KEY_INVALID;
@@ -4446,9 +4459,6 @@ static void process_key(uint8_t key)
             } else if (cur == PAGE_BOTTOM_BBQ_COMPLETE) {
                 g_complete_to_stop_back = 1;
                 jump_to_bottom_bbq_stop_back();
-            } else if (cur == PAGE_HOT_BBQ_COMPLETE) {
-                g_complete_to_stop_back = 1;
-                jump_to_hot_bbq_stop_back();
             } else if (cur == PAGE_HOT_BBQ_COMPLETE) {
                 g_complete_to_stop_back = 1;
                 jump_to_hot_bbq_stop_back();
@@ -4578,7 +4588,7 @@ static void process_key(uint8_t key)
             else if (cur == PAGE_AIR_STOP)
                 jump_to_air_stop_back();
             else if (cur == PAGE_PIZZA_2_COOKING)
-                jump_to_pizza_2_stop();
+                jump_to_pizza_2_stop_back();
             else if (cur == PAGE_PIZZA_2_STOP)
                 jump_to_pizza_2_stop_back();
             else if (cur == PAGE_SLOWCOOK_COOKING)
@@ -4614,7 +4624,7 @@ static void process_key(uint8_t key)
             else if (cur == PAGE_BREAD_STOP)
                 jump_to_bread_stop_back();
             else if (cur == PAGE_PIZZA3_COOKING)
-                jump_to_pizza3_stop();
+                jump_to_pizza3_stop_back();
             else if (cur == PAGE_PIZZA3_STOP)
                 jump_to_pizza3_stop_back();
             else if (cur == PAGE_CHIP_COOKING)
@@ -4718,9 +4728,9 @@ static void process_key(uint8_t key)
             uart_print();
             break;
         }
-        if (page_stack[depth-1] == PAGE_HOTCLEANSAVE_COOLING ||
+        if (depth > 0 && (page_stack[depth-1] == PAGE_HOTCLEANSAVE_COOLING ||
             page_stack[depth-1] == PAGE_HOTCLEANMIDDLE_COOLING ||
-            page_stack[depth-1] == PAGE_HOTCLEANHIGH_COOLING) {
+            page_stack[depth-1] == PAGE_HOTCLEANHIGH_COOLING)) {
             g_sim_cavity_temp += 5;
             if (g_sim_cavity_temp > 400) g_sim_cavity_temp = 400;
             g_send.buzzer_req = BUZZER_ENCODER;
@@ -4761,9 +4771,9 @@ static void process_key(uint8_t key)
             uart_print();
             break;
         }
-        if (page_stack[depth-1] == PAGE_HOTCLEANSAVE_COOLING ||
+        if (depth > 0 && (page_stack[depth-1] == PAGE_HOTCLEANSAVE_COOLING ||
             page_stack[depth-1] == PAGE_HOTCLEANMIDDLE_COOLING ||
-            page_stack[depth-1] == PAGE_HOTCLEANHIGH_COOLING) {
+            page_stack[depth-1] == PAGE_HOTCLEANHIGH_COOLING)) {
             g_sim_cavity_temp -= 5;
             if (g_sim_cavity_temp > 400) g_sim_cavity_temp = 400;
             if (g_sim_cavity_temp < 0) g_sim_cavity_temp = 0;
@@ -4995,6 +5005,15 @@ static void process_key(uint8_t key)
                 lv_group_focus_prev(current_group);
                 printf("[cookie] focus prev\n");
             }
+        } else if (current_group == g_cookie_setting) {
+            cookie_setting_t *set = cookie_setting_get(&ui_manager);
+            if (set && focused == set->sure) {
+                lv_group_focus_obj(set->temp);
+                printf("[cookie] setting focus wrap to temp\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[cookie] setting focus prev\n");
+            }
         } else if (current_group == g_west_menu) {
             west_menu_t *menu = west_menu_get(&ui_manager);
             if (menu && focused == menu->next) {
@@ -5003,6 +5022,15 @@ static void process_key(uint8_t key)
             } else {
                 lv_group_focus_prev(current_group);
                 printf("[west] focus prev\n");
+            }
+        } else if (current_group == g_west_setting) {
+            west_setting_t *set = west_setting_get(&ui_manager);
+            if (set && focused == set->sure) {
+                lv_group_focus_obj(set->temp);
+                printf("[west] setting focus wrap to temp\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[west] setting focus prev\n");
             }
         } else if (current_group == g_pizza_menu) {
             pizza_menu_t *menu = pizza_menu_get(&ui_manager);
@@ -5013,6 +5041,15 @@ static void process_key(uint8_t key)
                 lv_group_focus_prev(current_group);
                 printf("[pizza] focus prev\n");
             }
+        } else if (current_group == g_pizza_setting) {
+            pizza_setting_t *set = pizza_setting_get(&ui_manager);
+            if (set && focused == set->sure) {
+                lv_group_focus_obj(set->temp);
+                printf("[pizza] setting focus wrap to temp\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[pizza] setting focus prev\n");
+            }
         } else if (current_group == g_menu_cook_menu) {
             menu_menu_t *menu = menu_menu_get(&ui_manager);
             if (menu && focused == menu->next) {
@@ -5021,6 +5058,15 @@ static void process_key(uint8_t key)
             } else {
                 lv_group_focus_prev(current_group);
                 printf("[menu] focus prev\n");
+            }
+        } else if (current_group == g_menu_cook_setting) {
+            menu_setting_t *set = menu_setting_get(&ui_manager);
+            if (set && focused == set->sure) {
+                lv_group_focus_obj(set->temp);
+                printf("[menu] setting focus wrap to temp\n");
+            } else {
+                lv_group_focus_prev(current_group);
+                printf("[menu] setting focus prev\n");
             }
         } else if (current_group == g_air_menu) {
             air_menu_t *menu = air_menu_get(&ui_manager);
@@ -5296,6 +5342,8 @@ void nav_key1_long_press(void)
     g_on_stop_back = 0;
     g_complete_to_stop_back = 0;
     g_cooling_to_stop_back = 0;
+    g_extra_color_to_stop_back = 0;
+    cook_is_color = 0;
     g_stop_back_complete = NULL;
     cook_elapsed_saved = 0; cook_bar_saved = 0;
     set_temp = 180; set_temp_up = 180; set_temp_down = 180; set_hour = 0; set_min = 30;
@@ -6024,6 +6072,7 @@ void cooking_timer_cb(lv_timer_t *timer)
             cook_timer = NULL;
             g_send.buzzer_req = BUZZER_COOK_DONE;
             g_on_stop_back = 0;
+            cook_is_color = 0;
             if (g_stop_back_complete) {
                 void (*fn)(void) = g_stop_back_complete;
                 g_stop_back_complete = NULL;
@@ -6036,7 +6085,8 @@ void cooking_timer_cb(lv_timer_t *timer)
         auto_pause_on_door();
         return;
     }
-    if (depth > 0 && page_stack[depth-1] == PAGE_HOTCLEANSAVE_COOLING) {
+    if (depth > 0 && (page_stack[depth-1] == PAGE_HOTCLEANSAVE_COOLING ||
+                      (page_stack[depth-1] == PAGE_HOTCLEANSAVE_STOP_BACK && !g_on_stop_back))) {
         hotcleansave_cooling_t *cool = hotcleansave_cooling_get(&ui_manager);
         if (cool) {
             uint16_t cavity = get_cavity_temp();
@@ -6049,7 +6099,8 @@ void cooking_timer_cb(lv_timer_t *timer)
         }
         return;
     }
-    if (depth > 0 && page_stack[depth-1] == PAGE_HOTCLEANMIDDLE_COOLING) {
+    if (depth > 0 && (page_stack[depth-1] == PAGE_HOTCLEANMIDDLE_COOLING ||
+                      (page_stack[depth-1] == PAGE_HOTCLEANMIDDLE_STOP_BACK && !g_on_stop_back))) {
         hotcleanmiddle_cooling_t *cool = hotcleanmiddle_cooling_get(&ui_manager);
         if (cool) {
             uint16_t cavity = get_cavity_temp();
@@ -6062,7 +6113,8 @@ void cooking_timer_cb(lv_timer_t *timer)
         }
         return;
     }
-    if (depth > 0 && page_stack[depth-1] == PAGE_HOTCLEANHIGH_COOLING) {
+    if (depth > 0 && (page_stack[depth-1] == PAGE_HOTCLEANHIGH_COOLING ||
+                      (page_stack[depth-1] == PAGE_HOTCLEANHIGH_STOP_BACK && !g_on_stop_back))) {
         hotcleanhigh_cooling_t *cool = hotcleanhigh_cooling_get(&ui_manager);
         if (cool) {
             uint16_t cavity = get_cavity_temp();
@@ -7301,7 +7353,7 @@ static void on_setting_sure_click(lv_event_t *e)
     set_temp = set_temp_up;
     cook_total_ms = (set_hour * 3600 + set_min * 60) * 1000;
 
-    depth--;
+    if (depth > 1) depth--;
     if (depth > 0 && page_stack[depth - 1] == PAGE_UPDOWN_BBQ_STOP)
         depth--;
     if (depth > 0 && page_stack[depth - 1] == PAGE_UPDOWN_BBQ_COMPLETE)
@@ -7394,6 +7446,7 @@ static void system_timer_cb(lv_timer_t *timer)
     g_on_stop_back = 0;
     g_complete_to_stop_back = 0;
     g_cooling_to_stop_back = 0;
+    g_extra_color_to_stop_back = 0;
     g_stop_back_complete = NULL;
     probe_target_temp = 80;
     g_send.iface_status = IFACE_STANDBY;

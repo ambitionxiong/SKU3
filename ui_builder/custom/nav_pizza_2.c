@@ -11,7 +11,6 @@ static void on_pizza_2_cooking_stop_click(lv_event_t *e);
 static void on_pizza_2_cooking_setting_click(lv_event_t *e);
 static void on_pizza_2_setting_sure_click(lv_event_t *e);
 static void on_pizza_2_stop_start_click(lv_event_t *e);
-static void on_pizza_2_stop_back_littal_click(lv_event_t *e);
 static void on_pizza_2_stop_back_sure_click(lv_event_t *e);
 static void on_pizza_2_edit_focus(lv_event_t *e);
 void update_pizza_2_dir_icon(pizza_2_setting_t *set);
@@ -132,11 +131,6 @@ static void on_pizza_2_stop_start_click(lv_event_t *e)
         pizza_2_resume_cooking();
 }
 
-
-static void on_pizza_2_stop_back_littal_click(lv_event_t *e)
-{
-    page_pop();
-}
 
 static void on_pizza_2_stop_back_sure_click(lv_event_t *e)
 {
@@ -316,6 +310,7 @@ void jump_to_pizza_2_set(void)
 // set → cooking
 void jump_to_pizza_2_cooking(void)
 {
+    edit_clear();
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;
@@ -447,6 +442,7 @@ void jump_to_pizza_2_setting(void)
 // cooking → stop（暂停）
 void jump_to_pizza_2_stop(void)
 {
+    edit_clear();
     cook_elapsed_saved = lv_tick_get() - cook_start_time;
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
 
@@ -494,6 +490,7 @@ void jump_to_pizza_2_stop(void)
 // stop → stop_back
 void jump_to_pizza_2_stop_back(void)
 {
+    edit_clear();
     
     g_on_stop_back = 1;
     g_stop_back_complete = jump_to_pizza_2_complete;
@@ -507,8 +504,6 @@ void jump_to_pizza_2_stop_back(void)
         if (g_pizza_2_stop_back) lv_group_del(g_pizza_2_stop_back);
         g_pizza_2_stop_back = group_create_for_page(btns, 1);
         lv_obj_add_event_cb(back->sure, on_pizza_2_stop_back_sure_click,
-                            LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(back->little, on_pizza_2_stop_back_littal_click,
                             LV_EVENT_CLICKED, NULL);
 
         pizza_2_set_status(back->status, set_temp, set_hour, set_min);
@@ -544,12 +539,13 @@ void jump_to_pizza_2_stop_back(void)
 // stop 恢复 cooking
 void pizza_2_resume_cooking(void)
 {
+    edit_clear();
     g_on_stop_back = 0;
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;
     }
-depth--;
+    if (depth > 1) depth--;
     lv_obj_clean(lv_scr_act());
     pizza_2_cooking_create(&ui_manager);
 
@@ -613,7 +609,7 @@ static void on_pizza_2_setting_sure_click(lv_event_t *e)
 
     cook_total_ms = (set_hour * 3600 + set_min * 60) * 1000;
 
-    depth--;
+    if (depth > 1) depth--;
     if (depth > 0 && page_stack[depth - 1] == PAGE_PIZZA_2_STOP)
         depth--;
     if (depth > 0 && page_stack[depth - 1] == PAGE_PIZZA_2_COMPLETE)
@@ -665,6 +661,7 @@ static void on_pizza_2_setting_sure_click(lv_event_t *e)
 // cooking → complete
 void jump_to_pizza_2_complete(void)
 {
+    edit_clear();
     if (depth > 0 && page_stack[depth - 1] == PAGE_PIZZA_2_STOP_BACK)
         depth--;
     if (depth > 0 && page_stack[depth - 1] == PAGE_PIZZA_2_STOP)
@@ -681,7 +678,10 @@ void jump_to_pizza_2_complete(void)
             g_pizza_2_complete = group_create_for_page(btns, 1);
             lv_obj_add_event_cb(cook->little, on_pizza_2_cooking_setting_click,
                                 LV_EVENT_CLICKED, NULL);
-            lv_label_set_text_fmt(cook->status, "| 披萨 | %d℃ | %02d分钟", set_temp, set_min);
+            if (set_hour == 0)
+                lv_label_set_text_fmt(cook->status, "| 披萨 | %d℃ | %02d分钟", set_temp, set_min);
+            else
+                lv_label_set_text_fmt(cook->status, "| 披萨 | %d℃ | %d小时%02d分钟", set_temp, set_hour, set_min);
             lv_bar_set_value(cook->bar_27, 100, LV_ANIM_OFF);
         }
     }
@@ -830,6 +830,7 @@ void pizza_2_rebuild_set(page_id_t child)
 
 void pizza_2_rebuild_cooking(page_id_t child)
 {
+    edit_clear();
     pizza_2_cooking_create(&ui_manager);
     pizza_2_cooking_t *cook = pizza_2_cooking_get(&ui_manager);
     if (cook) {
@@ -950,6 +951,7 @@ void pizza_2_rebuild_setting(void)
 
 void pizza_2_rebuild_stop(void)
 {
+    edit_clear();
     g_on_stop_back = 0;
     pizza_2_stop_create(&ui_manager);
     pizza_2_stop_t *stop = pizza_2_stop_get(&ui_manager);
@@ -986,6 +988,7 @@ void pizza_2_rebuild_stop(void)
 
 void pizza_2_rebuild_stop_back(void)
 {
+    edit_clear();
     g_on_stop_back = 1;
     g_stop_back_complete = jump_to_pizza_2_complete;
     pizza_2_stop_back_create(&ui_manager);
@@ -995,8 +998,6 @@ void pizza_2_rebuild_stop_back(void)
         if (g_pizza_2_stop_back) lv_group_del(g_pizza_2_stop_back);
         g_pizza_2_stop_back = group_create_for_page(btns, 1);
         lv_obj_add_event_cb(back->sure, on_pizza_2_stop_back_sure_click,
-                            LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(back->little, on_pizza_2_stop_back_littal_click,
                             LV_EVENT_CLICKED, NULL);
 
         pizza_2_set_status(back->status, set_temp, set_hour, set_min);
@@ -1028,6 +1029,7 @@ void pizza_2_rebuild_stop_back(void)
 
 void pizza_2_rebuild_complete(void)
 {
+    edit_clear();
     pizza_2_complete_create(&ui_manager);
     current_group = g_pizza_2_complete;
     lv_scr_load_anim(pizza_2_complete_get(&ui_manager)->obj,

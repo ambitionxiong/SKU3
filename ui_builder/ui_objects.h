@@ -1344,38 +1344,53 @@ typedef struct {
 
 typedef struct {
     lv_obj_t *obj;
-    lv_obj_t *label_71;
+    lv_obj_t *status;
     lv_obj_t *temp;
     lv_obj_t *stop;
     lv_obj_t *image_39;
     lv_obj_t *bar_1;
-    lv_obj_t *label_73;
-    lv_obj_t *image_40;
-    lv_obj_t *label_74;
+    lv_obj_t *name;
+    lv_obj_t *icon;
+    lv_obj_t *bartemp;
 } preheatcooking_t;
 
 typedef struct {
     lv_obj_t *obj;
-    lv_obj_t *label_75;
+    lv_obj_t *status;
     lv_obj_t *temp;
     lv_obj_t *start;
     lv_obj_t *image_41;
     lv_obj_t *bar_2;
-    lv_obj_t *label_77;
-    lv_obj_t *image_42;
-    lv_obj_t *label_78;
+    lv_obj_t *name;
+    lv_obj_t *icon;
+    lv_obj_t *bartemp;
 } preheatstop_t;
 
 typedef struct {
     lv_obj_t *obj;
-    lv_obj_t *image_43;
-    lv_obj_t *label_79;
-    lv_obj_t *bar_3;
-    lv_obj_t *label_80;
-    lv_obj_t *image_44;
-    lv_obj_t *label_81;
-    lv_obj_t *label_82;
+    lv_obj_t *status;
+    lv_obj_t *image_3;
+    lv_obj_t *bar_1;
+    lv_obj_t *name;
+    lv_obj_t *icon;
+    lv_obj_t *bartemp;
+    lv_obj_t *container_1;
+    lv_obj_t *tip2;
+    lv_obj_t *tip1;
     lv_obj_t *sure;
+} preheat_stop_back_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_43;
+    lv_obj_t *status;
+    lv_obj_t *bar_3;
+    lv_obj_t *name;
+    lv_obj_t *icon;
+    lv_obj_t *tip1;
+    lv_obj_t *tip2;
+    lv_obj_t *sure;
+    lv_obj_t *bartemp;
 } preheatcomplete_t;
 
 typedef struct {
@@ -3989,6 +4004,7 @@ typedef struct {
     preheatmenu_t preheatmenu;
     preheatcooking_t preheatcooking;
     preheatstop_t preheatstop;
+    preheat_stop_back_t preheat_stop_back;
     preheatcomplete_t preheatcomplete;
     cook4menu_t cook4menu;
     cookie_menu_t cookie_menu;
@@ -4599,6 +4615,11 @@ static inline preheatcooking_t *preheatcooking_get(ui_manager_t *ui)
 static inline preheatstop_t *preheatstop_get(ui_manager_t *ui)
 {
     return &ui->preheatstop;
+}
+
+static inline preheat_stop_back_t *preheat_stop_back_get(ui_manager_t *ui)
+{
+    return &ui->preheat_stop_back;
 }
 
 static inline preheatcomplete_t *preheatcomplete_get(ui_manager_t *ui)
@@ -5505,6 +5526,7 @@ void windchange_bbq_complete_create(ui_manager_t *ui);
 void preheatmenu_create(ui_manager_t *ui);
 void preheatcooking_create(ui_manager_t *ui);
 void preheatstop_create(ui_manager_t *ui);
+void preheat_stop_back_create(ui_manager_t *ui);
 void preheatcomplete_create(ui_manager_t *ui);
 void cook4menu_create(ui_manager_t *ui);
 void cookie_menu_create(ui_manager_t *ui);

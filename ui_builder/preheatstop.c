@@ -28,16 +28,16 @@ void preheatstop_create(ui_manager_t *ui)
     lv_obj_set_style_bg_opa(scr->obj, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->obj, LVGL_IMAGE_PATH(bg.jpg), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->label_75
-    scr->label_75 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_75, "| 预热 |");
-    lv_label_set_long_mode(scr->label_75, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_75, 274, 232);
-    lv_obj_set_size(scr->label_75, 490, 39);
+    // Init scr->status
+    scr->status = lv_label_create(scr->obj);
+    lv_label_set_text(scr->status, "| 预热 |");
+    lv_label_set_long_mode(scr->status, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->status, 274, 232);
+    lv_obj_set_size(scr->status, 490, 39);
 
-    // Set style of scr->label_75
-    lv_obj_set_style_text_font(scr->label_75, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->label_75, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    // Set style of scr->status
+    lv_obj_set_style_text_font(scr->status, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->status, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->temp
     scr->temp = lv_label_create(scr->obj);
@@ -78,7 +78,7 @@ void preheatstop_create(ui_manager_t *ui)
     // Init scr->bar_2
     scr->bar_2 = lv_bar_create(scr->obj);
     lv_obj_set_style_anim_time(scr->bar_2, 0, 0);
-    lv_bar_set_value(scr->bar_2, 2, LV_ANIM_OFF);
+    lv_bar_set_value(scr->bar_2, 13, LV_ANIM_OFF);
     lv_obj_set_pos(scr->bar_2, 122, 326);
     lv_obj_set_size(scr->bar_2, 637, 20);
 
@@ -87,35 +87,36 @@ void preheatstop_create(ui_manager_t *ui)
     lv_obj_set_style_bg_opa(scr->bar_2, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(scr->bar_2, lv_color_hex(0xffffff), LV_PART_INDICATOR | LV_STATE_DEFAULT);
 
-    // Init scr->label_77
-    scr->label_77 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_77, "预热中...");
-    lv_label_set_long_mode(scr->label_77, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_77, 273, 157);
-    lv_obj_set_size(scr->label_77, 235, 60);
+    // Init scr->name
+    scr->name = lv_label_create(scr->obj);
+    lv_label_set_text(scr->name, "暂停中...");
+    lv_label_set_long_mode(scr->name, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->name, 273, 157);
+    lv_obj_set_size(scr->name, 235, 60);
 
-    // Set style of scr->label_77
-    lv_obj_set_style_text_font(scr->label_77, fs_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->label_77, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    // Set style of scr->name
+    lv_obj_set_style_text_font(scr->name, fs_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->name, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->image_42
-    scr->image_42 = lv_img_create(scr->obj);
-    lv_img_set_src(scr->image_42, LVGL_IMAGE_PATH(preheaticon.png));
-    lv_img_set_pivot(scr->image_42, 50, 50);
-    lv_img_set_angle(scr->image_42, 0);
-    lv_obj_set_style_img_opa(scr->image_42, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->image_42, 115, 161);
+    // Init scr->icon
+    scr->icon = lv_img_create(scr->obj);
+    lv_img_set_src(scr->icon, LVGL_IMAGE_PATH(preheaticon.png));
+    lv_img_set_pivot(scr->icon, 50, 50);
+    lv_img_set_angle(scr->icon, 0);
+    lv_obj_set_style_img_opa(scr->icon, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(scr->icon, 115, 161);
 
-    // Init scr->label_78
-    scr->label_78 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_78, "预热");
-    lv_label_set_long_mode(scr->label_78, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_78, 24, 24);
-    lv_obj_set_size(scr->label_78, 144, 32);
+    // Init scr->bartemp
+    scr->bartemp = lv_label_create(scr->obj);
+    lv_label_set_text(scr->bartemp, "110℃");
+    lv_label_set_long_mode(scr->bartemp, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->bartemp, 125, 323);
+    lv_obj_set_size(scr->bartemp, 66, 24);
 
-    // Set style of scr->label_78
-    lv_obj_set_style_text_font(scr->label_78, fs_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->label_78, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    // Set style of scr->bartemp
+    lv_obj_set_style_text_font(scr->bartemp, fs_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->bartemp, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->bartemp, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
 
 
 }
