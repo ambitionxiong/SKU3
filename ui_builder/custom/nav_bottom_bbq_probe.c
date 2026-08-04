@@ -75,6 +75,7 @@ static void on_bottom_bbq_probe_stop_back_sure_click(lv_event_t *e)
     g_send.set_temp_lower = 0;
     g_send.remaining_ms = -1;
     g_send.cook_flag = 0;
+    g_send.probe_temp = 0;
     printf("[bottom_bbq_probe] stop_back sure -> major_menu\n");
 }
 
@@ -243,7 +244,8 @@ void jump_to_bottom_bbq_cooking_probe(void)
     g_send.iface_status = IFACE_COOKING;
     g_send.set_temp = 0;
     g_send.set_temp_lower = set_temp;
-    g_send.remaining_ms = cook_total_ms;
+    g_send.remaining_ms = 0;
+    g_send.probe_temp = probe_target_temp;
     printf("[bottom_bbq_probe] jump: set_probe -> cooking_probe\n");
 }
 
@@ -283,7 +285,7 @@ void jump_to_bottom_bbq_stop_probe(void)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_PAUSE;
-    g_send.remaining_ms = (cook_total_ms > (int)cook_elapsed_saved) ? cook_total_ms - (int)cook_elapsed_saved : 0;
+    g_send.remaining_ms = 0;
     printf("[bottom_bbq_probe] jump: cooking_probe -> stop_probe\n");
 }
 
@@ -404,7 +406,7 @@ void bottom_bbq_probe_resume_cooking(void)
     g_send.iface_status = IFACE_COOKING;
     g_send.set_temp = 0;
     g_send.set_temp_lower = set_temp;
-    g_send.remaining_ms = (cook_total_ms > (int)cook_elapsed_saved) ? cook_total_ms - (int)cook_elapsed_saved : 0;
+    g_send.remaining_ms = 0;
     printf("[bottom_bbq_probe] resume: stop_probe -> cooking_probe\n");
 }
 

@@ -64,7 +64,7 @@ void preheat_stop_back_create(ui_manager_t *ui)
     lv_label_set_text(scr->name, "暂停中...");
     lv_label_set_long_mode(scr->name, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->name, 273, 157);
-    lv_obj_set_size(scr->name, 235, 60);
+    lv_obj_set_size(scr->name, 255, 60);
 
     // Set style of scr->name
     lv_obj_set_style_text_font(scr->name, fs_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);

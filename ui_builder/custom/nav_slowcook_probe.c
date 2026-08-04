@@ -75,6 +75,7 @@ static void on_slowcook_probe_stop_back_sure_click(lv_event_t *e)
     g_send.set_temp_lower = 0;
     g_send.remaining_ms = -1;
     g_send.cook_flag = 0;
+    g_send.probe_temp = 0;
     printf("[slowcook_probe] stop_back sure -> major_menu\n");
 }
 
@@ -239,7 +240,8 @@ void jump_to_slowcook_cooking_probe(void)
     g_send.iface_status = IFACE_COOKING;
     g_send.set_temp = set_temp;
     g_send.set_temp_lower = 0;
-    g_send.remaining_ms = cook_total_ms;
+    g_send.remaining_ms = 0;
+    g_send.probe_temp = probe_target_temp;
     printf("[slowcook_probe] jump: set_probe -> cooking_probe\n");
 }
 
@@ -279,7 +281,7 @@ void jump_to_slowcook_stop_probe(void)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_PAUSE;
-    g_send.remaining_ms = (cook_total_ms > (int)cook_elapsed_saved) ? cook_total_ms - (int)cook_elapsed_saved : 0;
+    g_send.remaining_ms = 0;
     printf("[slowcook_probe] jump: cooking_probe -> stop_probe\n");
 }
 
@@ -400,7 +402,7 @@ void slowcook_probe_resume_cooking(void)
     g_send.iface_status = IFACE_COOKING;
     g_send.set_temp = set_temp;
     g_send.set_temp_lower = 0;
-    g_send.remaining_ms = (cook_total_ms > (int)cook_elapsed_saved) ? cook_total_ms - (int)cook_elapsed_saved : 0;
+    g_send.remaining_ms = 0;
     printf("[slowcook_probe] resume: stop_probe -> cooking_probe\n");
 }
 

@@ -1,6 +1,43 @@
 #include "nav.h"
 #include "protocol.h"
 
+// 预热进度：以进入 cooking 时的起始腔温为 13 基准，线性映射到目标温度 100
+static int preheat_progress(void)
+{
+    uint16_t cavity = get_cavity_temp();
+    int range = set_temp - preheat_start_cavity;
+    if (range <= 0) return 100;
+    int p = 13 + (int)((int64_t)87 * (cavity - preheat_start_cavity) / range);
+    if (p < 13) p = 13;
+    if (p > 100) p = 100;
+    return p;
+}
+
+// 同步 bar 值 + bartemp 位置/文字（保持 bartemp 与指示器右边缘 80px 间距，文字 cap 到设置值）
+static void preheat_update_bar(lv_obj_t *bar, lv_obj_t *bartemp)
+{
+    int p = preheat_progress();
+    lv_bar_set_range(bar, 0, 100);
+    lv_bar_set_value(bar, p, LV_ANIM_OFF);
+    if (bartemp) {
+        uint16_t cavity = get_cavity_temp();
+        int disp = cavity > set_temp ? set_temp : cavity;
+        lv_label_set_text_fmt(bartemp, "%d℃", disp);
+        int bx = 122 + (637 * p) / 100 - 80;
+        lv_obj_set_pos(bartemp, bx, 323);
+    }
+}
+
+// 按来源模式设置预热页的 icon 和 status（模式自己的 icon + 模式名，无温度）
+static void preheat_apply_mode_ui(lv_obj_t *icon, lv_obj_t *status)
+{
+    if (g_send.cook_mode == MODE_UPDOWN_BBQ) {
+        if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(updown_img.png));
+        if (status) lv_label_set_text(status, "| 上下烧烤 |");
+    }
+    // 其他模式后续扩展；preheat_menu 入口（MODE_PREHEAT）保持默认
+}
+
 static void on_preheat_menu_next_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
@@ -22,10 +59,57 @@ static void on_preheat_stop_start_click(lv_event_t *e)
         preheat_resume_cooking();
 }
 
+static void on_preheat_stop_back_sure_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (screen_is_loading(act_scr)) return;
+    g_on_stop_back = 0;
+    preheat_wait_door = 0;
+    if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
+    set_temp = 180; set_temp_up = 180; set_temp_down = 180; set_hour = 0; set_min = 30;
+    cook_elapsed_saved = 0; cook_bar_saved = 0;
+    g_send.iface_status = IFACE_SETTING;
+    g_send.cook_mode = MODE_NONE;
+    g_send.cook_flag = 0;
+    g_send.set_temp = 0;
+    g_send.set_temp_lower = 0;
+    g_send.remaining_ms = -1;
+    depth = 2;
+    lv_obj_clean(lv_scr_act());
+    major_menu_create(&ui_manager);
+    groups_create();
+    bind_events();
+    current_group = g_major_menu;
+    lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
+                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                     ui_manager.auto_del);
+    printf("[nav_preheat] stop_back sure -> major_menu\n");
+}
+
 static void on_preheat_complete_sure_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
     if (screen_is_loading(act_scr)) return;
+    if (g_send.cook_mode == MODE_UPDOWN_BBQ) {
+        // 一阶段（等食材）：sure 不可用
+        if (preheat_wait_door) {
+            g_send.buzzer_req = BUZZER_KEY_INVALID;
+            return;
+        }
+        // 二阶段：清理 preheat 栈 → 进入该模式正常 cooking
+        if (depth > 0 && page_stack[depth - 1] == PAGE_PREHEAT_COMPLETE)
+            depth--;
+        if (depth > 0 && page_stack[depth - 1] == PAGE_PREHEAT_COOKING)
+            depth--;
+        g_on_stop_back = 0;
+        jump_to_updown_bbq_cooking();
+        return;
+    }
+    preheat_complete_exit();
+}
+
+void preheat_complete_exit(void)
+{
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
     set_temp = 180;
     depth = 2;
@@ -49,7 +133,7 @@ void jump_to_preheat_menu(void)
 
         edit_clear();
         edit_register(menu->temp, menu->line2, menu->line3,
-                      &set_temp, 30, 300, 5, "%d");
+                      &set_temp, 120, 250, 5, "%d");
 
         lv_obj_add_event_cb(menu->temp, on_edit_focus, LV_EVENT_FOCUSED, NULL);
         lv_obj_add_event_cb(menu->next, on_edit_focus, LV_EVENT_FOCUSED, NULL);
@@ -92,6 +176,7 @@ void jump_to_preheat_cooking(void)
 #ifdef LV_USE_AIC_SIMULATOR
     g_sim_cavity_temp = 25;
 #endif
+    preheat_start_cavity = get_cavity_temp();
 
     preheatcooking_t *cook = preheatcooking_get(&ui_manager);
     if (cook) {
@@ -102,12 +187,16 @@ void jump_to_preheat_cooking(void)
                             LV_EVENT_CLICKED, NULL);
 
         lv_label_set_text_fmt(cook->temp, "%d℃", set_temp);
-        lv_bar_set_range(cook->bar_1, 0, 100);
-        lv_bar_set_value(cook->bar_1, 0, LV_ANIM_OFF);
+        preheat_apply_mode_ui(cook->icon, cook->status);
+        preheat_update_bar(cook->bar_1, cook->bartemp);
     }
     current_group = g_preheat_cooking;
 
     g_send.iface_status = IFACE_COOKING;
+    g_send.set_temp = set_temp;
+    g_send.set_temp_lower = 0;
+    g_send.remaining_ms = 0;
+    g_send.cook_flag = 1;
 
     if (cook_timer) lv_timer_del(cook_timer);
     cook_timer = lv_timer_create(cooking_timer_cb, 1000, NULL);
@@ -121,6 +210,7 @@ void jump_to_preheat_cooking(void)
 void jump_to_preheat_stop(void)
 {
     edit_clear();
+    if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
     page_push(PAGE_PREHEAT_STOP);
     lv_obj_clean(lv_scr_act());
     preheatstop_create(&ui_manager);
@@ -134,14 +224,12 @@ void jump_to_preheat_stop(void)
                             LV_EVENT_CLICKED, NULL);
 
         lv_label_set_text_fmt(stop->temp, "%d℃", set_temp);
-        lv_bar_set_range(stop->bar_2, 0, 100);
-        uint16_t cavity = get_cavity_temp();
-        int p = (cavity * 100) / (set_temp ? set_temp : 1);
-        if (p > 100) p = 100;
-        lv_bar_set_value(stop->bar_2, p, LV_ANIM_OFF);
+        preheat_apply_mode_ui(stop->icon, stop->status);
+        preheat_update_bar(stop->bar_2, stop->bartemp);
     }
     current_group = g_preheat_stop;
     g_send.iface_status = IFACE_PAUSE;
+    g_send.remaining_ms = 0;
 
     lv_scr_load_anim(preheatstop_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
@@ -152,7 +240,8 @@ void jump_to_preheat_stop(void)
 void preheat_resume_cooking(void)
 {
     edit_clear();
-    
+    g_on_stop_back = 0;
+
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;
@@ -170,14 +259,15 @@ void preheat_resume_cooking(void)
                             LV_EVENT_CLICKED, NULL);
 
         lv_label_set_text_fmt(cook->temp, "%d℃", set_temp);
-        lv_bar_set_range(cook->bar_1, 0, 100);
-        uint16_t cavity = get_cavity_temp();
-        int p = (cavity * 100) / (set_temp ? set_temp : 1);
-        if (p > 100) p = 100;
-        lv_bar_set_value(cook->bar_1, p, LV_ANIM_OFF);
+        preheat_apply_mode_ui(cook->icon, cook->status);
+        preheat_update_bar(cook->bar_1, cook->bartemp);
     }
     current_group = g_preheat_cooking;
     g_send.iface_status = IFACE_COOKING;
+    g_send.remaining_ms = 0;
+
+    if (cook_timer) lv_timer_del(cook_timer);
+    cook_timer = lv_timer_create(cooking_timer_cb, 1000, NULL);
 
     lv_scr_load_anim(preheatcooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
@@ -185,12 +275,117 @@ void preheat_resume_cooking(void)
     printf("[nav_preheat] resume: stop -> cooking\n");
 }
 
+void jump_to_preheat_stop_back(void)
+{
+    g_on_stop_back = 1;
+    g_stop_back_complete = jump_to_preheat_complete;
+    page_push(PAGE_PREHEAT_STOP_BACK);
+    lv_obj_clean(lv_scr_act());
+    preheat_stop_back_create(&ui_manager);
+
+    preheat_stop_back_t *back = preheat_stop_back_get(&ui_manager);
+    if (back) {
+        lv_obj_t *btns[] = { back->sure };
+        if (g_preheat_stop_back) lv_group_del(g_preheat_stop_back);
+        g_preheat_stop_back = group_create_for_page(btns, 1);
+        lv_obj_add_event_cb(back->sure, on_preheat_stop_back_sure_click,
+                            LV_EVENT_CLICKED, NULL);
+
+        preheat_update_bar(back->bar_1, back->bartemp);
+        preheat_apply_mode_ui(back->icon, back->status);
+
+        if (g_send.iface_status == IFACE_COOKING)
+            lv_label_set_text(back->name, "预热中...");
+
+        if (g_complete_to_stop_back) {
+            g_complete_to_stop_back = 0;
+            lv_label_set_text(back->name, "预热完成");
+            lv_bar_set_value(back->bar_1, 100, LV_ANIM_OFF);
+            if (back->bartemp) lv_obj_set_pos(back->bartemp, 679, 323);
+        }
+    }
+    current_group = g_preheat_stop_back;
+
+    lv_scr_load_anim(preheat_stop_back_get(&ui_manager)->obj,
+                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                     ui_manager.auto_del);
+    printf("[nav_preheat] cooking/stop/complete -> stop_back\n");
+}
+
+void preheat_rebuild_stop_back(void)
+{
+    g_on_stop_back = 1;
+    g_stop_back_complete = jump_to_preheat_complete;
+    preheat_stop_back_create(&ui_manager);
+    preheat_stop_back_t *back = preheat_stop_back_get(&ui_manager);
+    if (back) {
+        lv_obj_t *btns[] = { back->sure };
+        if (g_preheat_stop_back) lv_group_del(g_preheat_stop_back);
+        g_preheat_stop_back = group_create_for_page(btns, 1);
+        lv_obj_add_event_cb(back->sure, on_preheat_stop_back_sure_click,
+                            LV_EVENT_CLICKED, NULL);
+
+        preheat_update_bar(back->bar_1, back->bartemp);
+        preheat_apply_mode_ui(back->icon, back->status);
+
+        if (g_send.iface_status == IFACE_COOKING)
+            lv_label_set_text(back->name, "预热中...");
+
+        if (g_complete_to_stop_back) {
+            g_complete_to_stop_back = 0;
+            lv_label_set_text(back->name, "预热完成");
+            lv_bar_set_value(back->bar_1, 100, LV_ANIM_OFF);
+            if (back->bartemp) lv_obj_set_pos(back->bartemp, 679, 323);
+        }
+    }
+    current_group = g_preheat_stop_back;
+    lv_scr_load_anim(preheat_stop_back_get(&ui_manager)->obj,
+                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                     ui_manager.auto_del);
+    printf("[nav_preheat] back to stop_back\n");
+}
+
+// 预热完成页 UI：set 场景分两阶段（等食材 → 门关后确认）
+static void preheat_complete_update_ui(preheatcomplete_t *cook)
+{
+    if (g_send.cook_mode == MODE_UPDOWN_BBQ) {
+        lv_obj_add_flag(cook->tip2, LV_OBJ_FLAG_HIDDEN);
+        if (preheat_wait_door) {
+            lv_obj_add_flag(cook->sure, LV_OBJ_FLAG_HIDDEN);
+            lv_label_set_text(cook->tip1, "请放入食材！");
+        } else {
+            lv_obj_clear_flag(cook->sure, LV_OBJ_FLAG_HIDDEN);
+            lv_label_set_text(cook->tip1, "已放入食材！");
+        }
+    }
+}
+
 void jump_to_preheat_complete(void)
 {
+    // 门关重建场景：已在 complete 页，只更新 UI（不重复 push）
+    if (depth > 0 && page_stack[depth - 1] == PAGE_PREHEAT_COMPLETE) {
+        preheatcomplete_t *cook = preheatcomplete_get(&ui_manager);
+        if (cook) preheat_complete_update_ui(cook);
+        return;
+    }
     edit_clear();
-    page_push(PAGE_PREHEAT_COMPLETE);
+    int from_stop_back = 0;
+    if (depth > 0 && page_stack[depth - 1] == PAGE_PREHEAT_STOP_BACK) {
+        depth--;
+        if (depth > 0 && page_stack[depth - 1] == PAGE_PREHEAT_COMPLETE)
+            from_stop_back = 1;
+    }
+    if (!from_stop_back) {
+        if (depth > 0 && page_stack[depth - 1] == PAGE_PREHEAT_STOP)
+            depth--;
+        page_push(PAGE_PREHEAT_COMPLETE);
+    }
     lv_obj_clean(lv_scr_act());
     preheatcomplete_create(&ui_manager);
+
+    // set 场景：首次进入等待放食材阶段（回跳场景 wait_door 已被门检测清零 → 二阶段）
+    if (g_send.cook_mode == MODE_UPDOWN_BBQ && !from_stop_back)
+        preheat_wait_door = 1;
 
     {
         preheatcomplete_t *cook = preheatcomplete_get(&ui_manager);
@@ -200,11 +395,19 @@ void jump_to_preheat_complete(void)
             g_preheat_complete = group_create_for_page(btns, 1);
             lv_obj_add_event_cb(cook->sure, on_preheat_complete_sure_click,
                                 LV_EVENT_CLICKED, NULL);
+            lv_bar_set_value(cook->bar_3, 100, LV_ANIM_OFF);
+            preheat_apply_mode_ui(cook->icon, cook->status);
+            if (cook->bartemp) {
+                lv_label_set_text_fmt(cook->bartemp, "%d℃", set_temp);
+                lv_obj_set_pos(cook->bartemp, 679, 323);
+            }
+            preheat_complete_update_ui(cook);
         }
     }
     current_group = g_preheat_complete;
     g_send.iface_status = IFACE_COMPLETE;
     g_send.remaining_ms = 0;
+    g_send.cook_flag = 0;
 
     lv_scr_load_anim(preheatcomplete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
@@ -212,25 +415,119 @@ void jump_to_preheat_complete(void)
     printf("[nav_preheat] cooking -> preheat_complete\n");
 }
 
-void jump_to_preheat_stop_back(void)
+// ==============================
+// Rebuild 函数（供 page_pop 调用）
+// ==============================
+
+void preheat_rebuild_menu(page_id_t child)
 {
-    edit_clear();
-    if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
-    set_temp = 180; set_temp_up = 180; set_temp_down = 180; set_hour = 0; set_min = 30;
-    cook_elapsed_saved = 0; cook_bar_saved = 0;
-    g_send.iface_status = IFACE_SETTING;
-    g_send.cook_mode = MODE_NONE;
-    g_send.set_temp = 0;
-    g_send.set_temp_lower = 0;
-    g_send.remaining_ms = -1;
-    depth = 2;
-    lv_obj_clean(lv_scr_act());
-    major_menu_create(&ui_manager);
-    groups_create();
-    bind_events();
-    current_group = g_major_menu;
-    lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
+    preheatmenu_create(&ui_manager);
+    preheatmenu_t *menu = preheatmenu_get(&ui_manager);
+    if (menu) {
+        lv_obj_t *btns[] = { menu->temp, menu->next };
+        if (g_preheat_menu) lv_group_del(g_preheat_menu);
+        g_preheat_menu = group_create_for_page(btns, 2);
+
+        edit_clear();
+        edit_register(menu->temp, menu->line2, menu->line3,
+                      &set_temp, 120, 250, 5, "%d");
+
+        lv_obj_add_event_cb(menu->temp, on_edit_focus, LV_EVENT_FOCUSED, NULL);
+        lv_obj_add_event_cb(menu->next, on_edit_focus, LV_EVENT_FOCUSED, NULL);
+
+        lv_label_set_text_fmt(menu->temp, "%d", set_temp);
+
+        lv_obj_add_flag(menu->line2, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(menu->line3, LV_OBJ_FLAG_HIDDEN);
+        if (set_temp < 100)
+            lv_obj_clear_flag(menu->line2, LV_OBJ_FLAG_HIDDEN);
+        else
+            lv_obj_clear_flag(menu->line3, LV_OBJ_FLAG_HIDDEN);
+
+        if (menu->next)
+            lv_group_focus_obj(menu->next);
+    }
+    current_group = g_preheat_menu;
+    if (menu && menu->next)
+        lv_obj_add_event_cb(menu->next, on_preheat_menu_next_click,
+                            LV_EVENT_CLICKED, NULL);
+    lv_scr_load_anim(preheatmenu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[nav_preheat] stop_back -> major_menu\n");
+    printf("[nav_preheat] back to preheat_menu\n");
+}
+
+void preheat_rebuild_cooking(void)
+{
+    edit_clear();
+    preheatcooking_create(&ui_manager);
+    preheatcooking_t *cook = preheatcooking_get(&ui_manager);
+    if (cook) {
+        lv_obj_t *btns[] = { cook->stop };
+        if (g_preheat_cooking) lv_group_del(g_preheat_cooking);
+        g_preheat_cooking = group_create_for_page(btns, 1);
+        lv_obj_add_event_cb(cook->stop, on_preheat_cooking_stop_click,
+                            LV_EVENT_CLICKED, NULL);
+
+        lv_label_set_text_fmt(cook->temp, "%d℃", set_temp);
+        preheat_apply_mode_ui(cook->icon, cook->status);
+        preheat_update_bar(cook->bar_1, cook->bartemp);
+    }
+    current_group = g_preheat_cooking;
+    lv_scr_load_anim(preheatcooking_get(&ui_manager)->obj,
+                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                     ui_manager.auto_del);
+    printf("[nav_preheat] back to preheat_cooking\n");
+}
+
+void preheat_rebuild_stop(void)
+{
+    edit_clear();
+    g_on_stop_back = 0;
+    preheatstop_create(&ui_manager);
+    preheatstop_t *stop = preheatstop_get(&ui_manager);
+    if (stop) {
+        lv_obj_t *btns[] = { stop->start };
+        if (g_preheat_stop) lv_group_del(g_preheat_stop);
+        g_preheat_stop = group_create_for_page(btns, 1);
+        lv_obj_add_event_cb(stop->start, on_preheat_stop_start_click,
+                            LV_EVENT_CLICKED, NULL);
+
+        lv_label_set_text_fmt(stop->temp, "%d℃", set_temp);
+        preheat_apply_mode_ui(stop->icon, stop->status);
+        preheat_update_bar(stop->bar_2, stop->bartemp);
+    }
+    current_group = g_preheat_stop;
+    lv_scr_load_anim(preheatstop_get(&ui_manager)->obj,
+                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                     ui_manager.auto_del);
+    printf("[nav_preheat] back to preheat_stop\n");
+}
+
+void preheat_rebuild_complete(void)
+{
+    edit_clear();
+    preheatcomplete_create(&ui_manager);
+    {
+        preheatcomplete_t *cook = preheatcomplete_get(&ui_manager);
+        if (cook) {
+            lv_obj_t *btns[] = { cook->sure };
+            if (g_preheat_complete) lv_group_del(g_preheat_complete);
+            g_preheat_complete = group_create_for_page(btns, 1);
+            lv_obj_add_event_cb(cook->sure, on_preheat_complete_sure_click,
+                                LV_EVENT_CLICKED, NULL);
+            lv_bar_set_value(cook->bar_3, 100, LV_ANIM_OFF);
+            preheat_apply_mode_ui(cook->icon, cook->status);
+            if (cook->bartemp) {
+                lv_label_set_text_fmt(cook->bartemp, "%d℃", set_temp);
+                lv_obj_set_pos(cook->bartemp, 679, 323);
+            }
+            preheat_complete_update_ui(cook);
+        }
+    }
+    current_group = g_preheat_complete;
+    lv_scr_load_anim(preheatcomplete_get(&ui_manager)->obj,
+                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                     ui_manager.auto_del);
+    printf("[nav_preheat] back to preheat_complete\n");
 }

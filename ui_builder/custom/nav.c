@@ -10,6 +10,8 @@ int set_temp_up = 180;
 int set_temp_down = 180;
 int cook_bar_saved = 0;
 int probe_target_temp = 80;
+int preheat_start_cavity = 0;
+int preheat_wait_door = 0;
 int g_complete_to_stop_back = 0;
 int g_cooling_to_stop_back = 0;
 int g_extra_color_to_stop_back = 0;
@@ -83,6 +85,8 @@ lv_group_t *g_preheat_menu;
 lv_group_t *g_preheat_cooking;
 
 lv_group_t *g_preheat_stop;
+
+lv_group_t *g_preheat_stop_back;
 
 lv_group_t *g_preheat_complete;
 lv_group_t *g_cook4_menu;
@@ -3614,9 +3618,31 @@ void page_pop(void)
         clean_rebuild(0);
         break;
 
+    case PAGE_PREHEAT_MENU:
+        preheat_rebuild_menu(child);
+        break;
     case PAGE_PREHEAT_COOKING:
+        if (child == PAGE_PREHEAT_STOP_BACK) {
+            g_on_stop_back = 0;
+            if (!cook_timer) {
+                cook_start_time = lv_tick_get() - cook_elapsed_saved;
+                cook_timer = lv_timer_create(cooking_timer_cb, 1000, NULL);
+            }
+            preheat_rebuild_cooking();
+            break;
+        }
+        goto pop_to_major_menu;
     case PAGE_PREHEAT_STOP:
+        preheat_rebuild_stop();
+        break;
+    case PAGE_PREHEAT_STOP_BACK:
+        preheat_rebuild_stop_back();
+        break;
     case PAGE_PREHEAT_COMPLETE:
+        if (child == PAGE_PREHEAT_STOP_BACK) {
+            preheat_rebuild_complete();
+            break;
+        }
         goto pop_to_major_menu;
 
     pop_to_major_menu:
@@ -3994,7 +4020,7 @@ static void jump_to_updown_bbq_set(void)
 }
 
 // updown_bbq_set → updown_bbq_cooking
-static void jump_to_updown_bbq_cooking(void)
+void jump_to_updown_bbq_cooking(void)
 {
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
@@ -4564,9 +4590,17 @@ static void process_key(uint8_t key)
             else if (cur == PAGE_WINDCHANGE_BBQ_STOP)
                 jump_to_windchange_bbq_stop_back();
             else if (cur == PAGE_PREHEAT_COOKING)
-                jump_to_preheat_stop();
+                jump_to_preheat_stop_back();
             else if (cur == PAGE_PREHEAT_STOP)
                 jump_to_preheat_stop_back();
+            else if (cur == PAGE_PREHEAT_COMPLETE) {
+                if (g_send.cook_mode == MODE_UPDOWN_BBQ) {
+                    g_complete_to_stop_back = 1;
+                    jump_to_preheat_stop_back();
+                } else {
+                    preheat_complete_exit();
+                }
+            }
             else if (cur == PAGE_COOKIE_COOKING)
                 jump_to_cookie_stop_back();
             else if (cur == PAGE_COOKIE_STOP)
@@ -5783,8 +5817,12 @@ void anim_bar_set_value(void *obj, int32_t v)
 static void on_sure_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
-    if (!screen_is_loading(act_scr))
-        jump_to_updown_bbq_cooking();
+    if (!screen_is_loading(act_scr)) {
+        if (preheat_on)
+            jump_to_preheat_cooking();
+        else
+            jump_to_updown_bbq_cooking();
+    }
 }
 
 static void on_color_start_click(lv_event_t *e)
@@ -6067,7 +6105,8 @@ void cooking_timer_cb(lv_timer_t *timer)
             && current_group != g_updown_bbq_stop_back_probe
             && current_group != g_hot_bbq_stop_back_probe
             && current_group != g_bottom_bbq_stop_back_probe
-            && current_group != g_slowcook_stop_back_probe) {
+            && current_group != g_slowcook_stop_back_probe
+            && current_group != g_preheat_stop_back) {
             lv_timer_del(cook_timer);
             cook_timer = NULL;
             g_send.buzzer_req = BUZZER_COOK_DONE;
@@ -6220,24 +6259,47 @@ void cooking_timer_cb(lv_timer_t *timer)
         preheatcooking_t *cook = preheatcooking_get(&ui_manager);
         if (cook) {
             uint16_t cavity = get_cavity_temp();
-            int p = (cavity * 100) / (set_temp ? set_temp : 1);
+            int range = set_temp - preheat_start_cavity;
+            int p = range <= 0 ? 100 : 13 + (int)((int64_t)87 * (cavity - preheat_start_cavity) / range);
+            if (p < 13) p = 13;
             if (p > 100) p = 100;
             lv_bar_set_value(cook->bar_1, p, LV_ANIM_OFF);
+            if (cook->bartemp) {
+                int disp = cavity > set_temp ? set_temp : cavity;
+                lv_label_set_text_fmt(cook->bartemp, "%d℃", disp);
+                int bx = 122 + (637 * p) / 100 - 80;
+                lv_obj_set_pos(cook->bartemp, bx, 323);
+            }
             if (p >= 100 && cook_timer) {
                 lv_timer_del(cook_timer);
                 cook_timer = NULL;
+                g_send.buzzer_req = BUZZER_COOK_DONE;
                 jump_to_preheat_complete();
             }
         }
         return;
     }
-    if (current_group == g_preheat_stop) {
-        preheatstop_t *stop = preheatstop_get(&ui_manager);
-        if (stop) {
+    if (current_group == g_preheat_stop_back) {
+        preheat_stop_back_t *back = preheat_stop_back_get(&ui_manager);
+        if (back) {
             uint16_t cavity = get_cavity_temp();
-            int p = (cavity * 100) / (set_temp ? set_temp : 1);
+            int range = set_temp - preheat_start_cavity;
+            int p = range <= 0 ? 100 : 13 + (int)((int64_t)87 * (cavity - preheat_start_cavity) / range);
+            if (p < 13) p = 13;
             if (p > 100) p = 100;
-            lv_bar_set_value(stop->bar_2, p, LV_ANIM_OFF);
+            lv_bar_set_value(back->bar_1, p, LV_ANIM_OFF);
+            if (back->bartemp) {
+                int disp = cavity > set_temp ? set_temp : cavity;
+                lv_label_set_text_fmt(back->bartemp, "%d℃", disp);
+                int bx = 122 + (637 * p) / 100 - 80;
+                lv_obj_set_pos(back->bartemp, bx, 323);
+            }
+            if (p >= 100 && cook_timer) {
+                lv_timer_del(cook_timer);
+                cook_timer = NULL;
+                g_send.buzzer_req = BUZZER_COOK_DONE;
+                jump_to_preheat_complete();
+            }
         }
         return;
     }
@@ -7411,6 +7473,19 @@ static void system_timer_cb(lv_timer_t *timer)
     static int probe_last = 0;
     static uint32_t probe_last_time = 0;
     int probe_now = is_probe_inserted();
+
+    // 门状态边沿检测（预热完成等待放食材阶段：门开又关 → 重建 complete 显示 sure）
+    static int door_last = -1;
+    int door_now = is_door_open();
+    if (door_now != door_last) {
+        door_last = door_now;
+        if (preheat_wait_door && !door_now) {
+            preheat_wait_door = 0;
+            if (depth > 0 && (page_stack[depth - 1] == PAGE_PREHEAT_COMPLETE ||
+                              page_stack[depth - 1] == PAGE_PREHEAT_STOP_BACK))
+                jump_to_preheat_complete();
+        }
+    }
 
     if (probe_now == probe_last)
         return;

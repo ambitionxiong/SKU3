@@ -22,6 +22,7 @@ typedef enum {
     PAGE_PREHEAT_MENU,
     PAGE_PREHEAT_COOKING,
     PAGE_PREHEAT_STOP,
+    PAGE_PREHEAT_STOP_BACK,
     PAGE_PREHEAT_COMPLETE,
     PAGE_COOK4_MENU,
     PAGE_COOKIE_MENU,
@@ -300,6 +301,7 @@ extern lv_group_t *g_slowcook_complete_probe;
 extern lv_group_t *g_preheat_menu;
 extern lv_group_t *g_preheat_cooking;
 extern lv_group_t *g_preheat_stop;
+extern lv_group_t *g_preheat_stop_back;
 extern lv_group_t *g_preheat_complete;
 extern lv_group_t *g_cook4_menu;
 
@@ -472,6 +474,7 @@ void jump_to_updown_bbq_menu_top_probe(void);
 void jump_to_updown_bbq_menu_low_probe(void);
 void jump_to_updown_bbq_set_probe(void);
 void jump_to_updown_bbq_cooking_probe(void);
+void jump_to_updown_bbq_cooking(void);
 void jump_to_updown_bbq_stop_probe(void);
 void jump_to_updown_bbq_stop_back_probe(void);
 void jump_to_updown_bbq_complete_probe(void);
@@ -544,7 +547,15 @@ void jump_to_preheat_menu(void);
 void jump_to_preheat_cooking(void);
 void jump_to_preheat_stop(void);
 void jump_to_preheat_stop_back(void);
+void preheat_rebuild_menu(page_id_t child);
+void preheat_rebuild_cooking(void);
+void preheat_rebuild_stop(void);
+void preheat_rebuild_stop_back(void);
+void preheat_rebuild_complete(void);
 void preheat_resume_cooking(void);
+void preheat_complete_exit(void);
+extern int preheat_start_cavity;
+extern int preheat_wait_door;
 void jump_to_preheat_complete(void);
 void jump_to_cook4_menu(void);
 #ifdef LV_USE_AIC_SIMULATOR
