@@ -49,6 +49,7 @@ lv_group_t *g_special_menu_tz;
 lv_group_t *g_special_menu;
 lv_group_t *g_updown_bbq_menu;
 lv_group_t *g_updown_bbq_set;
+lv_group_t *g_delayset;
 lv_group_t *g_updown_bbq_cooking;
 lv_group_t *g_updown_bbq_complete;
 
@@ -414,6 +415,10 @@ void validate_constraints(void);
 static void on_preheat_toggle(lv_event_t *e);
 static void on_delay_toggle(lv_event_t *e);
 static void on_contain_toggle(lv_event_t *e);
+static void on_delayset_focus(lv_event_t *e);
+static void on_delayset_start_click(lv_event_t *e);
+static void delayset_refresh_display(delayset_t *ds);
+static void updown_set_apply_delay_label(updown_bbq_set_t *set);
 static void on_sure_click(lv_event_t *e);
 void cooking_timer_cb(lv_timer_t *timer);
 static void jump_to_updown_bbq_complete(void);
@@ -1703,6 +1708,7 @@ void page_pop(void)
 
     case PAGE_UPDOWN_BBQ_MENU_TOP:
     case PAGE_UPDOWN_BBQ_MENU_LOW:
+    case PAGE_DELAYSET:
     case PAGE_UPDOWN_BBQ_SET:
     rebuild_updown_bbq_set:
         if (child == PAGE_UPDOWN_BBQ_MENU_TOP)
@@ -1753,6 +1759,7 @@ void page_pop(void)
                 apply_toggle_state(set->preheat_button, set->preheat_on_button, preheat_on);
                 apply_toggle_state(set->delay_button, set->delay_on_button, delay_on);
                 apply_toggle_state(set->contain_button, set->contain_on_button, contain_on);
+                updown_set_apply_delay_label(set);
 
                 /* 绑定 toggle 事件 */
                 lv_obj_add_event_cb(set->preheat_button, on_preheat_toggle, LV_EVENT_CLICKED, NULL);
@@ -1778,6 +1785,12 @@ void page_pop(void)
                     lv_group_focus_obj(set->uptemp_button);
                 else if (child == PAGE_UPDOWN_BBQ_MENU_LOW && set->downtemp_button)
                     lv_group_focus_obj(set->downtemp_button);
+                else if (child == PAGE_DELAYSET) {
+                    if (delay_on && set->delay_on_button)
+                        lv_group_focus_obj(set->delay_on_button);
+                    else if (set->delay_button)
+                        lv_group_focus_obj(set->delay_button);
+                }
             }
             current_group = g_updown_bbq_set;
         }
@@ -3940,6 +3953,7 @@ static void jump_to_updown_bbq_set(void)
         apply_toggle_state(set->preheat_button, set->preheat_on_button, preheat_on);
         apply_toggle_state(set->delay_button, set->delay_on_button, delay_on);
         apply_toggle_state(set->contain_button, set->contain_on_button, contain_on);
+        updown_set_apply_delay_label(set);
 
         /* 绑定 toggle 事件 */
         lv_obj_add_event_cb(set->preheat_button, on_preheat_toggle, LV_EVENT_CLICKED, NULL);
@@ -4726,6 +4740,26 @@ static void process_key(uint8_t key)
             uart_print();
             break;
         }
+        if (current_group == g_delayset) {
+            lv_obj_t *df = lv_group_get_focused(current_group);
+            delayset_t *ds = delayset_get(&ui_manager);
+            if (ds && df == ds->hour) {
+                if (delay_hour < 47) delay_hour++;
+                else { g_send.buzzer_req = BUZZER_KEY_INVALID; uart_print(); break; }
+            } else if (ds && df == ds->min) {
+                if (delay_min < 59) delay_min++;
+                else { g_send.buzzer_req = BUZZER_KEY_INVALID; uart_print(); break; }
+            } else {
+                g_send.buzzer_req = BUZZER_ENCODER;
+                lv_group_focus_next(current_group);
+                uart_print();
+                break;
+            }
+            g_send.buzzer_req = BUZZER_ENCODER;
+            delayset_refresh_display(ds);
+            uart_print();
+            break;
+        }
         lv_obj_t *focused = lv_group_get_focused(current_group);
         edit_field_t *ef = find_edit_field(focused);
         if (ef) {
@@ -4767,6 +4801,26 @@ static void process_key(uint8_t key)
 #endif
         if (!current_group) {
             g_send.buzzer_req = BUZZER_KEY_INVALID;
+            uart_print();
+            break;
+        }
+        if (current_group == g_delayset) {
+            lv_obj_t *df = lv_group_get_focused(current_group);
+            delayset_t *ds = delayset_get(&ui_manager);
+            if (ds && df == ds->hour) {
+                if (delay_hour > 0) delay_hour--;
+                else { g_send.buzzer_req = BUZZER_KEY_INVALID; uart_print(); break; }
+            } else if (ds && df == ds->min) {
+                if (delay_min > 0) delay_min--;
+                else { g_send.buzzer_req = BUZZER_KEY_INVALID; uart_print(); break; }
+            } else {
+                g_send.buzzer_req = BUZZER_ENCODER;
+                lv_group_focus_prev(current_group);
+                uart_print();
+                break;
+            }
+            g_send.buzzer_req = BUZZER_ENCODER;
+            delayset_refresh_display(ds);
             uart_print();
             break;
         }
@@ -5279,6 +5333,19 @@ static void process_key(uint8_t key)
             g_send.buzzer_req = BUZZER_KEY_INVALID;
             break;
         }
+        if (current_group == g_delayset) {
+            lv_obj_t *df = lv_group_get_focused(current_group);
+            delayset_t *ds = delayset_get(&ui_manager);
+            if (ds && df == ds->start) {
+                g_send.buzzer_req = BUZZER_KEY_VALID;
+                lv_obj_send_event(ds->start, LV_EVENT_CLICKED, NULL);
+            } else {
+                g_send.buzzer_req = BUZZER_KEY_VALID;
+                lv_group_focus_next(current_group);
+            }
+            uart_print();
+            break;
+        }
         lv_obj_t *focused = lv_group_get_focused(current_group);
         edit_field_t *ef = find_edit_field(focused);
         if (ef) {
@@ -5708,20 +5775,109 @@ static void on_preheat_toggle(lv_event_t *e)
     }
 }
 
+int delay_hour = 19;
+int delay_min = 0;
+
+// 刷新 delayset 页的时间显示（hour 显示 0-23，超 23:59 切换明天）
+static void delayset_refresh_display(delayset_t *ds)
+{
+    if (!ds) return;
+    lv_label_set_text_fmt(ds->hour, "%02d", delay_hour % 24);
+    lv_label_set_text_fmt(ds->min, "%02d", delay_min);
+    lv_label_set_text(ds->day, delay_hour >= 24 ? "明天" : "今天");
+}
+
+// delayset 焦点切换：显示对应字段的下划线
+static void on_delayset_focus(lv_event_t *e)
+{
+    lv_obj_t *obj = lv_event_get_target(e);
+    delayset_t *ds = delayset_get(&ui_manager);
+    if (!ds) return;
+    lv_obj_add_flag(ds->image_9, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ds->image_10, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ds->startline, LV_OBJ_FLAG_HIDDEN);
+    if (obj == ds->hour)
+        lv_obj_clear_flag(ds->image_9, LV_OBJ_FLAG_HIDDEN);
+    else if (obj == ds->min)
+        lv_obj_clear_flag(ds->image_10, LV_OBJ_FLAG_HIDDEN);
+    else if (obj == ds->start)
+        lv_obj_clear_flag(ds->startline, LV_OBJ_FLAG_HIDDEN);
+}
+
+// delayset 点开始：启用延时并返回 set 页
+static void on_delayset_start_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (screen_is_loading(act_scr)) return;
+    delay_on = 1;
+    page_pop();
+}
+
+// 设置 updown set 页 ondelay 按钮文字（"今天19:00开始"，taiwan 字体滚动显示）
+static void updown_set_apply_delay_label(updown_bbq_set_t *set)
+{
+    if (!set) return;
+    lv_obj_t *lbl = lv_obj_get_child(set->delay_on_button, 0);
+    if (lbl) {
+        lv_obj_set_style_text_font(lbl, fs_taiwanpearl_regular_24,
+                                   LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_label_set_long_mode(lbl, LV_LABEL_LONG_SCROLL);
+        lv_label_set_text_fmt(lbl, "%s%02d:%02d开始",
+                              delay_hour >= 24 ? "明天" : "今天",
+                              delay_hour % 24, delay_min);
+        lv_obj_set_width(lbl, 110);
+    }
+}
+
+// 延时开关：关态点击进入 delayset 设置时间；开态点击直接关闭
 static void on_delay_toggle(lv_event_t *e)
 {
     updown_bbq_set_t *set = updown_bbq_set_get(&ui_manager);
     if (!set) return;
-    delay_on = !delay_on;
-    if (delay_on) {
-        lv_obj_add_flag(set->delay_button, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_clear_flag(set->delay_on_button, LV_OBJ_FLAG_HIDDEN);
-        lv_group_focus_obj(set->delay_on_button);
-    } else {
-        lv_obj_add_flag(set->delay_on_button, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_clear_flag(set->delay_button, LV_OBJ_FLAG_HIDDEN);
-        lv_group_focus_obj(set->delay_button);
+    lv_obj_t *tgt = lv_event_get_target(e);
+    if (tgt == set->delay_button) {
+        jump_to_delayset();
+        return;
     }
+    /* delay_on_button：直接关闭 */
+    delay_on = 0;
+    lv_obj_add_flag(set->delay_on_button, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(set->delay_button, LV_OBJ_FLAG_HIDDEN);
+    lv_group_focus_obj(set->delay_button);
+}
+
+void jump_to_delayset(void)
+{
+    edit_clear();
+    page_push(PAGE_DELAYSET);
+    lv_obj_clean(lv_scr_act());
+    delayset_create(&ui_manager);
+
+    delayset_t *ds = delayset_get(&ui_manager);
+    if (ds) {
+        lv_obj_t *btns[] = { ds->hour, ds->min, ds->start };
+        if (g_delayset) lv_group_del(g_delayset);
+        g_delayset = group_create_for_page(btns, 3);
+        clear_focus_states(btns, 3);
+
+        lv_obj_add_flag(ds->start, LV_OBJ_FLAG_CLICKABLE);
+        lv_obj_add_event_cb(ds->start, on_delayset_start_click,
+                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(ds->hour, on_delayset_focus, LV_EVENT_FOCUSED, NULL);
+        lv_obj_add_event_cb(ds->min, on_delayset_focus, LV_EVENT_FOCUSED, NULL);
+        lv_obj_add_event_cb(ds->start, on_delayset_focus, LV_EVENT_FOCUSED, NULL);
+
+        lv_group_focus_obj(ds->hour);
+
+        lv_label_set_text(ds->name, "上下烧烤");
+        delayset_refresh_display(ds);
+    }
+    current_group = g_delayset;
+
+    lv_scr_load_anim(delayset_get(&ui_manager)->obj,
+                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                     ui_manager.auto_del);
+    printf("[nav] jump: updown_bbq_set -> delayset\n");
 }
 
 static void on_contain_toggle(lv_event_t *e)

@@ -402,12 +402,12 @@ void updown_bbq_set_create(ui_manager_t *ui)
 
     // Set style of scr->delay_on_button
     lv_obj_set_style_bg_opa(scr->delay_on_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->delay_on_button, LVGL_IMAGE_PATH(on1.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->delay_on_button, LVGL_IMAGE_PATH(switchbg30.png), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(scr->delay_on_button, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->delay_on_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->delay_on_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->delay_on_button, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->delay_on_button, LVGL_IMAGE_PATH(on2.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->delay_on_button, LVGL_IMAGE_PATH(switchbg80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
     // Init scr->contain_on_button
     scr->contain_on_button = lv_btn_create(scr->obj);

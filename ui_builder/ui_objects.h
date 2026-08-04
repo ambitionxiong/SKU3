@@ -3886,6 +3886,31 @@ typedef struct {
     lv_obj_t *label_111;
 } slowcook_complete_probe_t;
 
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_6;
+    lv_obj_t *day;
+    lv_obj_t *start;
+    lv_obj_t *hour;
+    lv_obj_t *min;
+    lv_obj_t *label_10;
+    lv_obj_t *startline;
+    lv_obj_t *image_9;
+    lv_obj_t *image_10;
+    lv_obj_t *name;
+} delayset_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *status;
+    lv_obj_t *icon;
+    lv_obj_t *label_14;
+    lv_obj_t *cancel;
+    lv_obj_t *tip1;
+    lv_obj_t *tip2;
+    lv_obj_t *tip3;
+} delaycooking_t;
+
 
 typedef struct {
     bool auto_del;
@@ -4139,6 +4164,8 @@ typedef struct {
     slowcook_stop_probe_t slowcook_stop_probe;
     slowcook_stop_back_probe_t slowcook_stop_back_probe;
     slowcook_complete_probe_t slowcook_complete_probe;
+    delayset_t delayset;
+    delaycooking_t delaycooking;
 
 } ui_manager_t;
 
@@ -5398,6 +5425,16 @@ static inline slowcook_complete_probe_t *slowcook_complete_probe_get(ui_manager_
     return &ui->slowcook_complete_probe;
 }
 
+static inline delayset_t *delayset_get(ui_manager_t *ui)
+{
+    return &ui->delayset;
+}
+
+static inline delaycooking_t *delaycooking_get(ui_manager_t *ui)
+{
+    return &ui->delaycooking;
+}
+
 
 void waitmenu_24_create(ui_manager_t *ui);
 void clean_menu_create(ui_manager_t *ui);
@@ -5649,6 +5686,8 @@ void slowcook_cooking_probe_create(ui_manager_t *ui);
 void slowcook_stop_probe_create(ui_manager_t *ui);
 void slowcook_stop_back_probe_create(ui_manager_t *ui);
 void slowcook_complete_probe_create(ui_manager_t *ui);
+void delayset_create(ui_manager_t *ui);
+void delaycooking_create(ui_manager_t *ui);
 
 
 extern lv_font_t *fs_montserratmedium_16;
