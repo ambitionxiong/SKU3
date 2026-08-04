@@ -64,8 +64,6 @@ typedef enum {
     PAGE_UPDOWN_BBQ_COOKING,
     PAGE_UPDOWN_BBQ_COMPLETE,
     PAGE_UPDOWN_BBQ_MENU_PROBE,
-    PAGE_UPDOWN_BBQ_MENU_TOP_PROBE,
-    PAGE_UPDOWN_BBQ_MENU_LOW_PROBE,
     PAGE_UPDOWN_BBQ_SET_PROBE,
     PAGE_UPDOWN_BBQ_COOKING_PROBE,
     PAGE_UPDOWN_BBQ_STOP_PROBE,
@@ -272,8 +270,6 @@ extern lv_group_t *g_updown_bbq_menu;
 extern lv_group_t *g_updown_bbq_menu_top;
 extern lv_group_t *g_updown_bbq_menu_low;
 extern lv_group_t *g_updown_bbq_menu_probe;
-extern lv_group_t *g_updown_bbq_menu_top_probe;
-extern lv_group_t *g_updown_bbq_menu_low_probe;
 extern lv_group_t *g_updown_bbq_set_probe;
 extern lv_group_t *g_updown_bbq_cooking_probe;
 extern lv_group_t *g_updown_bbq_stop_probe;
@@ -470,8 +466,6 @@ extern lv_group_t *g_color_stop_back;
 
 void jump_to_updown_bbq_menu(void);
 void jump_to_updown_bbq_menu_probe(void);
-void jump_to_updown_bbq_menu_top_probe(void);
-void jump_to_updown_bbq_menu_low_probe(void);
 void jump_to_updown_bbq_set_probe(void);
 void jump_to_updown_bbq_cooking_probe(void);
 void jump_to_updown_bbq_cooking(void);
@@ -480,8 +474,6 @@ void jump_to_updown_bbq_stop_back_probe(void);
 void jump_to_updown_bbq_complete_probe(void);
 void updown_bbq_probe_resume_cooking(void);
 void updown_bbq_probe_rebuild_menu(page_id_t child);
-void updown_bbq_probe_rebuild_menu_top(page_id_t child);
-void updown_bbq_probe_rebuild_menu_low(page_id_t child);
 void updown_bbq_probe_rebuild_set(page_id_t child);
 void updown_bbq_probe_rebuild_cooking(page_id_t child);
 void updown_bbq_probe_rebuild_setting(void);
@@ -544,6 +536,9 @@ void special_menu_tz_rebuild(page_id_t child);
 uint16_t get_cavity_temp(void);
 void jump_to_cookmenu(void);
 void jump_to_preheat_menu(void);
+void jump_to_top_bbq_cooking(void);
+void jump_to_bottom_bbq_cooking(void);
+void jump_to_hot_bbq_cooking(void);
 void jump_to_preheat_cooking(void);
 void jump_to_preheat_stop(void);
 void jump_to_preheat_stop_back(void);
@@ -588,6 +583,13 @@ void update_cookie_dir_icon(cookie_setting_t *set);
 void update_west_dir_icon(west_setting_t *set);
 void update_pizza_dir_icon(pizza_setting_t *set);
 void update_menu_dir_icon(menu_setting_t *set);
+void update_air_dir_icon(air_setting_t *set);
+void update_pizza_2_dir_icon(pizza_2_setting_t *set);
+void update_slowcook_dir_icon(slowcook_setting_t *set);
+void update_unfrozen_dir_icon(unfrozen_setting_t *set);
+void update_rising_dir_icon(rising_setting_t *set);
+void update_corn_dir_icon(corn_setting_t *set);
+void update_heatcontain_dir_icon(heatcontain_setting_t *set);
 
 void jump_to_hot_bbq_menu(void);
 void jump_to_hot_bbq_set(void);

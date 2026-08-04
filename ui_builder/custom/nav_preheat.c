@@ -31,11 +31,73 @@ static void preheat_update_bar(lv_obj_t *bar, lv_obj_t *bartemp)
 // 按来源模式设置预热页的 icon 和 status（模式自己的 icon + 模式名，无温度）
 static void preheat_apply_mode_ui(lv_obj_t *icon, lv_obj_t *status)
 {
-    if (g_send.cook_mode == MODE_UPDOWN_BBQ) {
+    const char *txt = NULL;
+    switch (g_send.cook_mode) {
+    case MODE_UPDOWN_BBQ:
         if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(updown_img.png));
-        if (status) lv_label_set_text(status, "| 上下烧烤 |");
+        txt = "| 上下烧烤 |";
+        break;
+    case MODE_TOP_BBQ:
+        if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(upbbq.png));
+        txt = "| 顶部烧烤 |";
+        break;
+    case MODE_BOTTOM_BBQ:
+        if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(dwbbqicon.png));
+        txt = "| 底部烧烤 |";
+        break;
+    case MODE_HOT_BBQ:
+        if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(hotbbqicon.png));
+        txt = "| 热风烧烤 |";
+        break;
+    case MODE_HOTWIND_BBQ:
+        if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(hotwindicon.png));
+        txt = "| 热风 |";
+        break;
+    case MODE_SAVE_BBQ:
+        if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(savewindicon.png));
+        txt = "| 节能热风 |";
+        break;
+    case MODE_CENTRAL_BBQ:
+        if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(centralbbqicon.png));
+        txt = "| 集中烧烤 |";
+        break;
+    case MODE_WINDCHANGE_BBQ:
+        if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(windchange.png));
+        txt = "| 热风对流 |";
+        break;
+    case MODE_AIR:
+        if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(airicon.png));
+        txt = "| 空气炸 |";
+        break;
+    case MODE_PIZZA_2:
+        if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(pizza2icon.png));
+        txt = "| 披萨 |";
+        break;
+    case MODE_SLOWCOOK:
+        if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(slowcookicon.png));
+        txt = "| 慢煮 |";
+        break;
+    case MODE_UNFROZEN:
+        if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(unfrozenicon.png));
+        txt = "| 解冻 |";
+        break;
+    case MODE_RISING:
+        if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(risingicon.png));
+        txt = "| 发酵 |";
+        break;
+    case MODE_CORN:
+        if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(cornicon.png));
+        txt = "| 干果 |";
+        break;
+    case MODE_HEATCONTAIN:
+        if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(heatcontainicon.png));
+        txt = "| 保温 |";
+        break;
+    default:
+        // 预热菜单入口（MODE_PREHEAT）保持默认
+        return;
     }
-    // 其他模式后续扩展；preheat_menu 入口（MODE_PREHEAT）保持默认
+    if (status) lv_label_set_text(status, txt);
 }
 
 static void on_preheat_menu_next_click(lv_event_t *e)
@@ -90,7 +152,7 @@ static void on_preheat_complete_sure_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
     if (screen_is_loading(act_scr)) return;
-    if (g_send.cook_mode == MODE_UPDOWN_BBQ) {
+    if (g_send.cook_mode != MODE_PREHEAT) {
         // 一阶段（等食材）：sure 不可用
         if (preheat_wait_door) {
             g_send.buzzer_req = BUZZER_KEY_INVALID;
@@ -102,7 +164,24 @@ static void on_preheat_complete_sure_click(lv_event_t *e)
         if (depth > 0 && page_stack[depth - 1] == PAGE_PREHEAT_COOKING)
             depth--;
         g_on_stop_back = 0;
-        jump_to_updown_bbq_cooking();
+        switch (g_send.cook_mode) {
+        case MODE_UPDOWN_BBQ:     jump_to_updown_bbq_cooking(); break;
+        case MODE_TOP_BBQ:        jump_to_top_bbq_cooking(); break;
+        case MODE_BOTTOM_BBQ:     jump_to_bottom_bbq_cooking(); break;
+        case MODE_HOT_BBQ:        jump_to_hot_bbq_cooking(); break;
+        case MODE_HOTWIND_BBQ:    jump_to_hotwind_bbq_cooking(); break;
+        case MODE_SAVE_BBQ:       jump_to_save_bbq_cooking(); break;
+        case MODE_CENTRAL_BBQ:    jump_to_central_bbq_cooking(); break;
+        case MODE_WINDCHANGE_BBQ: jump_to_windchange_bbq_cooking(); break;
+        case MODE_AIR:            jump_to_air_cooking(); break;
+        case MODE_PIZZA_2:        jump_to_pizza_2_cooking(); break;
+        case MODE_SLOWCOOK:       jump_to_slowcook_cooking(); break;
+        case MODE_UNFROZEN:       jump_to_unfrozen_cooking(); break;
+        case MODE_RISING:         jump_to_rising_cooking(); break;
+        case MODE_CORN:           jump_to_corn_cooking(); break;
+        case MODE_HEATCONTAIN:    jump_to_heatcontain_cooking(); break;
+        default:                  preheat_complete_exit(); break;
+        }
         return;
     }
     preheat_complete_exit();
@@ -194,9 +273,9 @@ void jump_to_preheat_cooking(void)
 
     g_send.iface_status = IFACE_COOKING;
     g_send.set_temp = set_temp;
-    g_send.set_temp_lower = 0;
+    g_send.set_temp_lower = (g_send.cook_mode == MODE_UPDOWN_BBQ) ? set_temp : 0;
     g_send.remaining_ms = 0;
-    g_send.cook_flag = 1;
+    g_send.cook_flag = (g_send.cook_mode == MODE_PREHEAT) ? 1 : 0;
 
     if (cook_timer) lv_timer_del(cook_timer);
     cook_timer = lv_timer_create(cooking_timer_cb, 1000, NULL);
@@ -348,7 +427,7 @@ void preheat_rebuild_stop_back(void)
 // 预热完成页 UI：set 场景分两阶段（等食材 → 门关后确认）
 static void preheat_complete_update_ui(preheatcomplete_t *cook)
 {
-    if (g_send.cook_mode == MODE_UPDOWN_BBQ) {
+    if (g_send.cook_mode != MODE_PREHEAT) {
         lv_obj_add_flag(cook->tip2, LV_OBJ_FLAG_HIDDEN);
         if (preheat_wait_door) {
             lv_obj_add_flag(cook->sure, LV_OBJ_FLAG_HIDDEN);
@@ -384,7 +463,7 @@ void jump_to_preheat_complete(void)
     preheatcomplete_create(&ui_manager);
 
     // set 场景：首次进入等待放食材阶段（回跳场景 wait_door 已被门检测清零 → 二阶段）
-    if (g_send.cook_mode == MODE_UPDOWN_BBQ && !from_stop_back)
+    if (g_send.cook_mode != MODE_PREHEAT && !from_stop_back)
         preheat_wait_door = 1;
 
     {

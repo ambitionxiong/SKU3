@@ -3567,54 +3567,18 @@ typedef struct {
     lv_obj_t *image_11;
     lv_obj_t *label_27;
     lv_obj_t *sure;
-    lv_obj_t *downtemp;
-    lv_obj_t *uptemp;
-    lv_obj_t *down3dir;
-    lv_obj_t *down3num;
-    lv_obj_t *down3icon;
-    lv_obj_t *up2dir;
-    lv_obj_t *up2num;
-    lv_obj_t *up2icon;
     lv_obj_t *label_38;
-    lv_obj_t *up3icon;
-    lv_obj_t *down2icon;
-    lv_obj_t *down2num;
-    lv_obj_t *down2dir;
-    lv_obj_t *up3dir;
-    lv_obj_t *up3tempnum;
     lv_obj_t *probetemp;
     lv_obj_t *probeicon2;
+    lv_obj_t *label_1;
+    lv_obj_t *label_2;
+    lv_obj_t *offdelay;
+    lv_obj_t *ondelay;
+    lv_obj_t *image_2;
+    lv_obj_t *temp;
+    lv_obj_t *icon2;
+    lv_obj_t *icon3;
 } updown_bbq_set_probe_t;
-
-typedef struct {
-    lv_obj_t *obj;
-    lv_obj_t *image_5;
-    lv_obj_t *next;
-    lv_obj_t *label_12;
-    lv_obj_t *label_13;
-    lv_obj_t *label_14;
-    lv_obj_t *temp;
-    lv_obj_t *label_16;
-    lv_obj_t *line2;
-    lv_obj_t *line3;
-    lv_obj_t *dir3;
-    lv_obj_t *dir2;
-} updown_bbq_menu_top_probe_t;
-
-typedef struct {
-    lv_obj_t *obj;
-    lv_obj_t *image_8;
-    lv_obj_t *next;
-    lv_obj_t *label_19;
-    lv_obj_t *label_20;
-    lv_obj_t *label_21;
-    lv_obj_t *temp;
-    lv_obj_t *label_23;
-    lv_obj_t *dir2;
-    lv_obj_t *dir3;
-    lv_obj_t *line3;
-    lv_obj_t *line2;
-} updown_bbq_menu_low_probe_t;
 
 typedef struct {
     lv_obj_t *obj;
@@ -3697,6 +3661,9 @@ typedef struct {
     lv_obj_t *temp;
     lv_obj_t *icon2;
     lv_obj_t *icon3;
+    lv_obj_t *offdelay;
+    lv_obj_t *ondelay;
+    lv_obj_t *image_3;
 } hot_bbq_set_probe_t;
 
 typedef struct {
@@ -3780,6 +3747,9 @@ typedef struct {
     lv_obj_t *temp;
     lv_obj_t *icon2;
     lv_obj_t *icon3;
+    lv_obj_t *image_4;
+    lv_obj_t *offdelay;
+    lv_obj_t *ondelay;
 } bottom_bbq_set_probe_t;
 
 typedef struct {
@@ -3863,6 +3833,9 @@ typedef struct {
     lv_obj_t *temp;
     lv_obj_t *icon2;
     lv_obj_t *icon3;
+    lv_obj_t *image_5;
+    lv_obj_t *offdelay;
+    lv_obj_t *ondelay;
 } slowcook_set_probe_t;
 
 typedef struct {
@@ -4144,8 +4117,6 @@ typedef struct {
     probetip_t probetip;
     updown_bbq_menu_probe_t updown_bbq_menu_probe;
     updown_bbq_set_probe_t updown_bbq_set_probe;
-    updown_bbq_menu_top_probe_t updown_bbq_menu_top_probe;
-    updown_bbq_menu_low_probe_t updown_bbq_menu_low_probe;
     updown_bbq_cooking_probe_t updown_bbq_cooking_probe;
     updown_bbq_stop_probe_t updown_bbq_stop_probe;
     updown_bbq_stop_back_probe_t updown_bbq_stop_back_probe;
@@ -5317,16 +5288,6 @@ static inline updown_bbq_set_probe_t *updown_bbq_set_probe_get(ui_manager_t *ui)
     return &ui->updown_bbq_set_probe;
 }
 
-static inline updown_bbq_menu_top_probe_t *updown_bbq_menu_top_probe_get(ui_manager_t *ui)
-{
-    return &ui->updown_bbq_menu_top_probe;
-}
-
-static inline updown_bbq_menu_low_probe_t *updown_bbq_menu_low_probe_get(ui_manager_t *ui)
-{
-    return &ui->updown_bbq_menu_low_probe;
-}
-
 static inline updown_bbq_cooking_probe_t *updown_bbq_cooking_probe_get(ui_manager_t *ui)
 {
     return &ui->updown_bbq_cooking_probe;
@@ -5666,8 +5627,6 @@ void hotcleansave_stop_back_create(ui_manager_t *ui);
 void probetip_create(ui_manager_t *ui);
 void updown_bbq_menu_probe_create(ui_manager_t *ui);
 void updown_bbq_set_probe_create(ui_manager_t *ui);
-void updown_bbq_menu_top_probe_create(ui_manager_t *ui);
-void updown_bbq_menu_low_probe_create(ui_manager_t *ui);
 void updown_bbq_cooking_probe_create(ui_manager_t *ui);
 void updown_bbq_stop_probe_create(ui_manager_t *ui);
 void updown_bbq_stop_back_probe_create(ui_manager_t *ui);

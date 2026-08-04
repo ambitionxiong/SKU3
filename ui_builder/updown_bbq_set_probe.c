@@ -111,112 +111,6 @@ void updown_bbq_set_probe_create(ui_manager_t *ui)
     lv_obj_set_style_bg_opa(scr->sure, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
     lv_obj_set_style_bg_img_src(scr->sure, LVGL_IMAGE_PATH(nextstep_bk.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
-    // Init scr->downtemp
-    scr->downtemp = lv_btn_create(scr->obj);
-    lv_obj_t *downtemp_label = lv_label_create(scr->downtemp);
-    lv_label_set_text(downtemp_label, "");
-    lv_obj_align(downtemp_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->downtemp, 476, 140);
-    lv_obj_set_size(scr->downtemp, 170, 61);
-
-    // Set style of scr->downtemp
-    lv_obj_set_style_bg_opa(scr->downtemp, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->downtemp, LVGL_IMAGE_PATH(tembk.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->downtemp, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_width(scr->downtemp, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_shadow_width(scr->downtemp, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(scr->downtemp, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->downtemp, LVGL_IMAGE_PATH(uptempbk.png), LV_PART_MAIN | LV_STATE_FOCUSED);
-
-    // Init scr->uptemp
-    scr->uptemp = lv_btn_create(scr->obj);
-    lv_obj_t *uptemp_label = lv_label_create(scr->uptemp);
-    lv_label_set_text(uptemp_label, "");
-    lv_obj_align(uptemp_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->uptemp, 308, 140);
-    lv_obj_set_size(scr->uptemp, 170, 61);
-
-    // Set style of scr->uptemp
-    lv_obj_set_style_bg_opa(scr->uptemp, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->uptemp, LVGL_IMAGE_PATH(tembk.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->uptemp, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_width(scr->uptemp, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_shadow_width(scr->uptemp, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(scr->uptemp, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->uptemp, LVGL_IMAGE_PATH(uptempbk.png), LV_PART_MAIN | LV_STATE_FOCUSED);
-
-    // Init scr->down3dir
-    scr->down3dir = lv_label_create(scr->obj);
-    lv_label_set_text(scr->down3dir, "↓");
-    lv_label_set_long_mode(scr->down3dir, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->down3dir, 493, 159);
-    lv_obj_set_size(scr->down3dir, 26, 32);
-
-    // Set style of scr->down3dir
-    lv_obj_set_style_text_font(scr->down3dir, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->down3dir, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(scr->down3dir, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    // Init scr->down3num
-    scr->down3num = lv_label_create(scr->obj);
-    lv_label_set_text(scr->down3num, "100");
-    lv_label_set_long_mode(scr->down3num, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->down3num, 510, 143);
-    lv_obj_set_size(scr->down3num, 87, 53);
-
-    // Set style of scr->down3num
-    lv_obj_set_style_text_font(scr->down3num, fs_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->down3num, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(scr->down3num, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    // Init scr->down3icon
-    scr->down3icon = lv_label_create(scr->obj);
-    lv_label_set_text(scr->down3icon, "℃");
-    lv_label_set_long_mode(scr->down3icon, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->down3icon, 600, 159);
-    lv_obj_set_size(scr->down3icon, 26, 28);
-
-    // Set style of scr->down3icon
-    lv_obj_set_style_text_font(scr->down3icon, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->down3icon, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(scr->down3icon, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    // Init scr->up2dir
-    scr->up2dir = lv_label_create(scr->obj);
-    lv_label_set_text(scr->up2dir, "↑");
-    lv_label_set_long_mode(scr->up2dir, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->up2dir, 342, 159);
-    lv_obj_set_size(scr->up2dir, 26, 32);
-
-    // Set style of scr->up2dir
-    lv_obj_set_style_text_font(scr->up2dir, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->up2dir, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(scr->up2dir, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    // Init scr->up2num
-    scr->up2num = lv_label_create(scr->obj);
-    lv_label_set_text(scr->up2num, "80");
-    lv_label_set_long_mode(scr->up2num, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->up2num, 365, 143);
-    lv_obj_set_size(scr->up2num, 59, 53);
-
-    // Set style of scr->up2num
-    lv_obj_set_style_text_font(scr->up2num, fs_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->up2num, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(scr->up2num, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    // Init scr->up2icon
-    scr->up2icon = lv_label_create(scr->obj);
-    lv_label_set_text(scr->up2icon, "℃");
-    lv_label_set_long_mode(scr->up2icon, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->up2icon, 422, 159);
-    lv_obj_set_size(scr->up2icon, 26, 28);
-
-    // Set style of scr->up2icon
-    lv_obj_set_style_text_font(scr->up2icon, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->up2icon, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(scr->up2icon, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
-
     // Init scr->label_38
     scr->label_38 = lv_label_create(scr->obj);
     lv_label_set_text(scr->label_38, "确 定");
@@ -227,78 +121,6 @@ void updown_bbq_set_probe_create(ui_manager_t *ui)
     // Set style of scr->label_38
     lv_obj_set_style_text_font(scr->label_38, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_38, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    // Init scr->up3icon
-    scr->up3icon = lv_label_create(scr->obj);
-    lv_label_set_text(scr->up3icon, "℃");
-    lv_label_set_long_mode(scr->up3icon, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->up3icon, 432, 159);
-    lv_obj_set_size(scr->up3icon, 26, 28);
-
-    // Set style of scr->up3icon
-    lv_obj_set_style_text_font(scr->up3icon, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->up3icon, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(scr->up3icon, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    // Init scr->down2icon
-    scr->down2icon = lv_label_create(scr->obj);
-    lv_label_set_text(scr->down2icon, "℃");
-    lv_label_set_long_mode(scr->down2icon, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->down2icon, 590, 159);
-    lv_obj_set_size(scr->down2icon, 26, 28);
-
-    // Set style of scr->down2icon
-    lv_obj_set_style_text_font(scr->down2icon, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->down2icon, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(scr->down2icon, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    // Init scr->down2num
-    scr->down2num = lv_label_create(scr->obj);
-    lv_label_set_text(scr->down2num, "80");
-    lv_label_set_long_mode(scr->down2num, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->down2num, 504, 143);
-    lv_obj_set_size(scr->down2num, 83, 53);
-
-    // Set style of scr->down2num
-    lv_obj_set_style_text_font(scr->down2num, fs_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->down2num, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(scr->down2num, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    // Init scr->down2dir
-    scr->down2dir = lv_label_create(scr->obj);
-    lv_label_set_text(scr->down2dir, "↓");
-    lv_label_set_long_mode(scr->down2dir, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->down2dir, 510, 159);
-    lv_obj_set_size(scr->down2dir, 26, 32);
-
-    // Set style of scr->down2dir
-    lv_obj_set_style_text_font(scr->down2dir, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->down2dir, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(scr->down2dir, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    // Init scr->up3dir
-    scr->up3dir = lv_label_create(scr->obj);
-    lv_label_set_text(scr->up3dir, "↑");
-    lv_label_set_long_mode(scr->up3dir, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->up3dir, 325, 159);
-    lv_obj_set_size(scr->up3dir, 26, 32);
-
-    // Set style of scr->up3dir
-    lv_obj_set_style_text_font(scr->up3dir, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->up3dir, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(scr->up3dir, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    // Init scr->up3tempnum
-    scr->up3tempnum = lv_label_create(scr->obj);
-    lv_label_set_text(scr->up3tempnum, "100");
-    lv_label_set_long_mode(scr->up3tempnum, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->up3tempnum, 342, 143);
-    lv_obj_set_size(scr->up3tempnum, 87, 53);
-
-    // Set style of scr->up3tempnum
-    lv_obj_set_style_text_font(scr->up3tempnum, fs_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->up3tempnum, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(scr->up3tempnum, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->probetemp
     scr->probetemp = lv_label_create(scr->obj);
@@ -323,6 +145,107 @@ void updown_bbq_set_probe_create(ui_manager_t *ui)
     lv_obj_set_style_text_font(scr->probeicon2, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->probeicon2, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->probeicon2, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // Init scr->label_1
+    scr->label_1 = lv_label_create(scr->obj);
+    lv_label_set_text(scr->label_1, "迟");
+    lv_label_set_long_mode(scr->label_1, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->label_1, 930, 154);
+    lv_obj_set_size(scr->label_1, 26, 32);
+
+    // Set style of scr->label_1
+    lv_obj_set_style_text_font(scr->label_1, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->label_1, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // Init scr->label_2
+    scr->label_2 = lv_label_create(scr->obj);
+    lv_label_set_text(scr->label_2, "延");
+    lv_label_set_long_mode(scr->label_2, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->label_2, 840, 154);
+    lv_obj_set_size(scr->label_2, 26, 32);
+
+    // Set style of scr->label_2
+    lv_obj_set_style_text_font(scr->label_2, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->label_2, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // Init scr->offdelay
+    scr->offdelay = lv_btn_create(scr->obj);
+    lv_obj_t *offdelay_label = lv_label_create(scr->offdelay);
+    lv_label_set_text(offdelay_label, "");
+    lv_obj_align(offdelay_label, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_pos(scr->offdelay, 983, 144);
+    lv_obj_set_size(scr->offdelay, 135, 53);
+
+    // Set style of scr->offdelay
+    lv_obj_set_style_bg_opa(scr->offdelay, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->offdelay, LVGL_IMAGE_PATH(off.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->offdelay, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(scr->offdelay, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(scr->offdelay, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(scr->offdelay, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->offdelay, LVGL_IMAGE_PATH(focusoff.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+
+    // Init scr->ondelay
+    scr->ondelay = lv_btn_create(scr->obj);
+    lv_obj_t *ondelay_label = lv_label_create(scr->ondelay);
+    lv_label_set_text(ondelay_label, "");
+    lv_obj_align(ondelay_label, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_pos(scr->ondelay, 983, 144);
+    lv_obj_set_size(scr->ondelay, 135, 53);
+    lv_obj_add_flag(scr->ondelay, LV_OBJ_FLAG_HIDDEN);
+
+    // Set style of scr->ondelay
+    lv_obj_set_style_bg_opa(scr->ondelay, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->ondelay, LVGL_IMAGE_PATH(on1.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->ondelay, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(scr->ondelay, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(scr->ondelay, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(scr->ondelay, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->ondelay, LVGL_IMAGE_PATH(on2.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+
+    // Init scr->image_2
+    scr->image_2 = lv_img_create(scr->obj);
+    lv_img_set_src(scr->image_2, LVGL_IMAGE_PATH(delaytext.png));
+    lv_img_set_pivot(scr->image_2, 50, 50);
+    lv_img_set_angle(scr->image_2, 0);
+    lv_obj_set_style_img_opa(scr->image_2, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(scr->image_2, 839, 154);
+
+    // Init scr->temp
+    scr->temp = lv_label_create(scr->obj);
+    lv_label_set_text(scr->temp, "200");
+    lv_label_set_long_mode(scr->temp, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->temp, 315, 141);
+    lv_obj_set_size(scr->temp, 83, 53);
+
+    // Set style of scr->temp
+    lv_obj_set_style_text_font(scr->temp, fs_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->temp, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->temp, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // Init scr->icon2
+    scr->icon2 = lv_label_create(scr->obj);
+    lv_label_set_text(scr->icon2, "℃");
+    lv_label_set_long_mode(scr->icon2, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->icon2, 369, 157);
+    lv_obj_set_size(scr->icon2, 32, 30);
+
+    // Set style of scr->icon2
+    lv_obj_set_style_text_font(scr->icon2, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->icon2, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->icon2, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // Init scr->icon3
+    scr->icon3 = lv_label_create(scr->obj);
+    lv_label_set_text(scr->icon3, "℃");
+    lv_label_set_long_mode(scr->icon3, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->icon3, 396, 157);
+    lv_obj_set_size(scr->icon3, 32, 30);
+
+    // Set style of scr->icon3
+    lv_obj_set_style_text_font(scr->icon3, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->icon3, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->icon3, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
 
 
 }

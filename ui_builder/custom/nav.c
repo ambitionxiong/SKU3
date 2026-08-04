@@ -55,8 +55,6 @@ lv_group_t *g_updown_bbq_complete;
 lv_group_t *g_updown_bbq_menu_top;
 lv_group_t *g_updown_bbq_menu_low;
 lv_group_t *g_updown_bbq_menu_probe;
-lv_group_t *g_updown_bbq_menu_top_probe;
-lv_group_t *g_updown_bbq_menu_low_probe;
 lv_group_t *g_updown_bbq_set_probe;
 lv_group_t *g_updown_bbq_cooking_probe;
 lv_group_t *g_updown_bbq_stop_probe;
@@ -654,89 +652,6 @@ static void adjust_value(edit_field_t *f, int delta)
             lv_obj_invalidate(lv_scr_act());
         }
     }
-    if (current_group == g_updown_bbq_menu_top_probe) {
-        int diff = set_temp_up - set_temp_down;
-        if (diff < 0) diff = -diff;
-        if (diff > 20) {
-            int new_v = set_temp_up > set_temp_down ? set_temp_down - 20 : set_temp_down + 20;
-            if (new_v > 300) new_v = 300;
-            if (new_v < 30) new_v = 30;
-            *f->value = new_v;
-            lv_label_set_text_fmt(f->label, f->fmt, new_v);
-            if (f->ind_short && f->ind_long) {
-                lv_obj_add_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
-                lv_obj_add_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
-                if (new_v < 100)
-                    lv_obj_clear_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
-                else
-                    lv_obj_clear_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
-            }
-            {
-                updown_bbq_menu_top_probe_t *m = updown_bbq_menu_top_probe_get(&ui_manager);
-                if (m) {
-                    if (m->dir3) lv_obj_add_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
-                    if (m->dir2) lv_obj_add_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
-                    if (new_v < 100)
-                        if (m->dir2) lv_obj_clear_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
-                    else
-                        if (m->dir3) lv_obj_clear_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
-                }
-            }
-            lv_obj_invalidate(lv_scr_act());
-        }
-        {
-            updown_bbq_menu_top_probe_t *m2 = updown_bbq_menu_top_probe_get(&ui_manager);
-            if (m2) {
-                if (m2->dir3) lv_obj_add_flag(m2->dir3, LV_OBJ_FLAG_HIDDEN);
-                if (m2->dir2) lv_obj_add_flag(m2->dir2, LV_OBJ_FLAG_HIDDEN);
-                if (set_temp_up < 100) { if (m2->dir2) lv_obj_clear_flag(m2->dir2, LV_OBJ_FLAG_HIDDEN); }
-                else { if (m2->dir3) lv_obj_clear_flag(m2->dir3, LV_OBJ_FLAG_HIDDEN); }
-            }
-            lv_obj_invalidate(lv_scr_act());
-        }
-    }
-    if (current_group == g_updown_bbq_menu_low_probe) {
-        int diff = set_temp_up - set_temp_down;
-        if (diff < 0) diff = -diff;
-        if (diff > 20) {
-            int new_v = set_temp_down > set_temp_up ? set_temp_up - 20 : set_temp_up + 20;
-            if (new_v > 300) new_v = 300;
-            if (new_v < 30) new_v = 30;
-            *f->value = new_v;
-            lv_label_set_text_fmt(f->label, f->fmt, new_v);
-            if (f->ind_short && f->ind_long) {
-                lv_obj_add_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
-                lv_obj_add_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
-                if (new_v < 100)
-                    lv_obj_clear_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
-                else
-                    lv_obj_clear_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
-            }
-            {
-                updown_bbq_menu_low_probe_t *m = updown_bbq_menu_low_probe_get(&ui_manager);
-                if (m) {
-                    if (m->dir3) lv_obj_add_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
-                    if (m->dir2) lv_obj_add_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
-                    if (new_v < 100)
-                        if (m->dir2) lv_obj_clear_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
-                    else
-                        if (m->dir3) lv_obj_clear_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
-                }
-            }
-            lv_obj_invalidate(lv_scr_act());
-        }
-        {
-            updown_bbq_menu_low_probe_t *m2 = updown_bbq_menu_low_probe_get(&ui_manager);
-            if (m2) {
-                if (m2->dir3) lv_obj_add_flag(m2->dir3, LV_OBJ_FLAG_HIDDEN);
-                if (m2->dir2) lv_obj_add_flag(m2->dir2, LV_OBJ_FLAG_HIDDEN);
-                if (set_temp_down < 100) { if (m2->dir2) lv_obj_clear_flag(m2->dir2, LV_OBJ_FLAG_HIDDEN); }
-                else { if (m2->dir3) lv_obj_clear_flag(m2->dir3, LV_OBJ_FLAG_HIDDEN); }
-            }
-            lv_obj_invalidate(lv_scr_act());
-        }
-    }
-
     /* 顶部烧烤设置页 dir/icon 即时更新 */
     if (current_group == g_top_bbq_setting) {
         top_bbq_setting_t *set = top_bbq_setting_get(&ui_manager);
@@ -785,6 +700,48 @@ static void adjust_value(edit_field_t *f, int delta)
     if (current_group == g_menu_cook_setting) {
         menu_setting_t *set = menu_setting_get(&ui_manager);
         update_menu_dir_icon(set);
+    }
+
+    /* 空气炸设置页 dir/icon 即时更新 */
+    if (current_group == g_air_setting) {
+        air_setting_t *set = air_setting_get(&ui_manager);
+        update_air_dir_icon(set);
+    }
+
+    /* 披萨设置页 dir/icon 即时更新 */
+    if (current_group == g_pizza_2_setting) {
+        pizza_2_setting_t *set = pizza_2_setting_get(&ui_manager);
+        update_pizza_2_dir_icon(set);
+    }
+
+    /* 慢煮设置页 dir/icon 即时更新 */
+    if (current_group == g_slowcook_setting) {
+        slowcook_setting_t *set = slowcook_setting_get(&ui_manager);
+        update_slowcook_dir_icon(set);
+    }
+
+    /* 解冻设置页 dir/icon 即时更新 */
+    if (current_group == g_unfrozen_setting) {
+        unfrozen_setting_t *set = unfrozen_setting_get(&ui_manager);
+        update_unfrozen_dir_icon(set);
+    }
+
+    /* 发酵设置页 dir/icon 即时更新 */
+    if (current_group == g_rising_setting) {
+        rising_setting_t *set = rising_setting_get(&ui_manager);
+        update_rising_dir_icon(set);
+    }
+
+    /* 干果设置页 dir/icon 即时更新 */
+    if (current_group == g_corn_setting) {
+        corn_setting_t *set = corn_setting_get(&ui_manager);
+        update_corn_dir_icon(set);
+    }
+
+    /* 保温设置页 dir/icon 即时更新 */
+    if (current_group == g_heatcontain_setting) {
+        heatcontain_setting_t *set = heatcontain_setting_get(&ui_manager);
+        update_heatcontain_dir_icon(set);
     }
 }
 
@@ -1493,14 +1450,6 @@ void page_pop(void)
 
     case PAGE_UPDOWN_BBQ_MENU_PROBE:
         updown_bbq_probe_rebuild_menu(child);
-        break;
-
-    case PAGE_UPDOWN_BBQ_MENU_TOP_PROBE:
-        updown_bbq_probe_rebuild_menu_top(child);
-        break;
-
-    case PAGE_UPDOWN_BBQ_MENU_LOW_PROBE:
-        updown_bbq_probe_rebuild_menu_low(child);
         break;
 
     case PAGE_UPDOWN_BBQ_SET_PROBE:
@@ -4594,7 +4543,7 @@ static void process_key(uint8_t key)
             else if (cur == PAGE_PREHEAT_STOP)
                 jump_to_preheat_stop_back();
             else if (cur == PAGE_PREHEAT_COMPLETE) {
-                if (g_send.cook_mode == MODE_UPDOWN_BBQ) {
+                if (g_send.cook_mode != MODE_PREHEAT) {
                     g_complete_to_stop_back = 1;
                     jump_to_preheat_stop_back();
                 } else {
@@ -4843,24 +4792,6 @@ static void process_key(uint8_t key)
             }
         } else if (current_group == g_updown_bbq_menu_probe) {
             updown_bbq_menu_probe_t *menu = updown_bbq_menu_probe_get(&ui_manager);
-            if (menu && focused == menu->next) {
-                lv_group_focus_obj(menu->temp);
-                printf("[updown_bbq_probe] focus wrap to temp\n");
-            } else {
-                lv_group_focus_prev(current_group);
-                printf("[updown_bbq_probe] focus prev\n");
-            }
-        } else if (current_group == g_updown_bbq_menu_top_probe) {
-            updown_bbq_menu_top_probe_t *menu = updown_bbq_menu_top_probe_get(&ui_manager);
-            if (menu && focused == menu->next) {
-                lv_group_focus_obj(menu->temp);
-                printf("[updown_bbq_probe] focus wrap to temp\n");
-            } else {
-                lv_group_focus_prev(current_group);
-                printf("[updown_bbq_probe] focus prev\n");
-            }
-        } else if (current_group == g_updown_bbq_menu_low_probe) {
-            updown_bbq_menu_low_probe_t *menu = updown_bbq_menu_low_probe_get(&ui_manager);
             if (menu && focused == menu->next) {
                 lv_group_focus_obj(menu->temp);
                 printf("[updown_bbq_probe] focus wrap to temp\n");

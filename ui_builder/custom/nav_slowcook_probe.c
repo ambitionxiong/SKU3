@@ -17,6 +17,7 @@ static void on_slowcook_probe_stop_start_click(lv_event_t *e);
 static void on_slowcook_probe_stop_back_sure_click(lv_event_t *e);
 static void on_slowcook_probe_edit_focus(lv_event_t *e);
 static void on_slowcook_probe_complete_click(lv_event_t *e);
+static void on_slowcook_probe_delay_toggle(lv_event_t *e);
 
 static void on_slowcook_probe_next_click(lv_event_t *e)
 {
@@ -82,6 +83,15 @@ static void on_slowcook_probe_stop_back_sure_click(lv_event_t *e)
 static void on_slowcook_probe_edit_focus(lv_event_t *e)
 {
     on_edit_focus(e);
+}
+
+static void on_slowcook_probe_delay_toggle(lv_event_t *e)
+{
+    slowcook_set_probe_t *set = slowcook_set_probe_get(&ui_manager);
+    if (!set) return;
+    delay_on = !delay_on;
+    apply_toggle_state(set->offdelay, set->ondelay, delay_on);
+    lv_group_focus_obj(delay_on ? set->ondelay : set->offdelay);
 }
 
 static void on_slowcook_probe_complete_click(lv_event_t *e)
@@ -157,15 +167,17 @@ void jump_to_slowcook_menu_probe(void)
 void jump_to_slowcook_set_probe(void)
 {
     edit_clear();
+    delay_on = 0;
     page_push(PAGE_SLOWCOOK_SET_PROBE);
     lv_obj_clean(lv_scr_act());
     slowcook_set_probe_create(&ui_manager);
 
     slowcook_set_probe_t *set = slowcook_set_probe_get(&ui_manager);
     if (set) {
-        lv_obj_t *btns[] = { set->sure };
+        lv_obj_t *btns[] = { set->sure, set->offdelay, set->ondelay };
         if (g_slowcook_set_probe) lv_group_del(g_slowcook_set_probe);
-        g_slowcook_set_probe = group_create_for_page(btns, 1);
+        g_slowcook_set_probe = group_create_for_page(btns, 3);
+        clear_focus_states(btns, 3);
 
         lv_label_set_text_fmt(set->temp, "%d", set_temp);
         lv_obj_add_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
@@ -176,7 +188,13 @@ void jump_to_slowcook_set_probe(void)
             lv_obj_clear_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
         lv_label_set_text_fmt(set->probetemp, "%d", probe_target_temp);
 
+        apply_toggle_state(set->offdelay, set->ondelay, delay_on);
+
         lv_obj_add_event_cb(set->sure, on_slowcook_probe_set_sure_click,
+                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->offdelay, on_slowcook_probe_delay_toggle,
+                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->ondelay, on_slowcook_probe_delay_toggle,
                             LV_EVENT_CLICKED, NULL);
 
         lv_group_focus_obj(set->sure);
@@ -465,9 +483,10 @@ void slowcook_probe_rebuild_set(page_id_t child)
     slowcook_set_probe_create(&ui_manager);
     slowcook_set_probe_t *set = slowcook_set_probe_get(&ui_manager);
     if (set) {
-        lv_obj_t *btns[] = { set->sure };
+        lv_obj_t *btns[] = { set->sure, set->offdelay, set->ondelay };
         if (g_slowcook_set_probe) lv_group_del(g_slowcook_set_probe);
-        g_slowcook_set_probe = group_create_for_page(btns, 1);
+        g_slowcook_set_probe = group_create_for_page(btns, 3);
+        clear_focus_states(btns, 3);
 
         lv_label_set_text_fmt(set->temp, "%d", set_temp);
         lv_obj_add_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
@@ -478,7 +497,13 @@ void slowcook_probe_rebuild_set(page_id_t child)
             lv_obj_clear_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
         lv_label_set_text_fmt(set->probetemp, "%d", probe_target_temp);
 
+        apply_toggle_state(set->offdelay, set->ondelay, delay_on);
+
         lv_obj_add_event_cb(set->sure, on_slowcook_probe_set_sure_click,
+                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->offdelay, on_slowcook_probe_delay_toggle,
+                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->ondelay, on_slowcook_probe_delay_toggle,
                             LV_EVENT_CLICKED, NULL);
 
         lv_group_focus_obj(set->sure);

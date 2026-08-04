@@ -17,6 +17,7 @@ static void on_bottom_bbq_probe_stop_start_click(lv_event_t *e);
 static void on_bottom_bbq_probe_stop_back_sure_click(lv_event_t *e);
 static void on_bottom_bbq_probe_edit_focus(lv_event_t *e);
 static void on_bottom_bbq_probe_complete_click(lv_event_t *e);
+static void on_bottom_bbq_probe_delay_toggle(lv_event_t *e);
 
 static void on_bottom_bbq_probe_menu_next_click(lv_event_t *e)
 {
@@ -82,6 +83,15 @@ static void on_bottom_bbq_probe_stop_back_sure_click(lv_event_t *e)
 static void on_bottom_bbq_probe_edit_focus(lv_event_t *e)
 {
     on_edit_focus(e);
+}
+
+static void on_bottom_bbq_probe_delay_toggle(lv_event_t *e)
+{
+    bottom_bbq_set_probe_t *set = bottom_bbq_set_probe_get(&ui_manager);
+    if (!set) return;
+    delay_on = !delay_on;
+    apply_toggle_state(set->offdelay, set->ondelay, delay_on);
+    lv_group_focus_obj(delay_on ? set->ondelay : set->offdelay);
 }
 
 static void on_bottom_bbq_probe_complete_click(lv_event_t *e)
@@ -156,6 +166,7 @@ void jump_to_bottom_bbq_menu_probe(void)
 void jump_to_bottom_bbq_set_probe(void)
 {
     edit_clear();
+    delay_on = 0;
     page_push(PAGE_BOTTOM_BBQ_SET_PROBE);
     lv_obj_clean(lv_scr_act());
     bottom_bbq_set_probe_create(&ui_manager);
@@ -166,10 +177,11 @@ void jump_to_bottom_bbq_set_probe(void)
             set->temp,
             set->probetemp,
             set->sure,
+            set->offdelay, set->ondelay,
         };
         if (g_bottom_bbq_set_probe) lv_group_del(g_bottom_bbq_set_probe);
-        g_bottom_bbq_set_probe = group_create_for_page(btns, 3);
-        clear_focus_states(btns, 3);
+        g_bottom_bbq_set_probe = group_create_for_page(btns, 5);
+        clear_focus_states(btns, 5);
         lv_group_focus_obj(set->sure);
 
         lv_label_set_text_fmt(set->temp, "%d", set_temp);
@@ -181,6 +193,8 @@ void jump_to_bottom_bbq_set_probe(void)
             lv_obj_clear_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
         lv_label_set_text_fmt(set->probetemp, "%d", probe_target_temp);
 
+        apply_toggle_state(set->offdelay, set->ondelay, delay_on);
+
         lv_obj_add_event_cb(set->temp, on_bottom_bbq_probe_edit_focus,
                             LV_EVENT_FOCUSED, NULL);
         lv_obj_add_event_cb(set->probetemp, on_bottom_bbq_probe_edit_focus,
@@ -189,6 +203,10 @@ void jump_to_bottom_bbq_set_probe(void)
                             LV_EVENT_FOCUSED, NULL);
 
         lv_obj_add_event_cb(set->sure, on_bottom_bbq_probe_set_sure_click,
+                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->offdelay, on_bottom_bbq_probe_delay_toggle,
+                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->ondelay, on_bottom_bbq_probe_delay_toggle,
                             LV_EVENT_CLICKED, NULL);
     }
     current_group = g_bottom_bbq_set_probe;
@@ -242,8 +260,8 @@ void jump_to_bottom_bbq_cooking_probe(void)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_COOKING;
-    g_send.set_temp = 0;
-    g_send.set_temp_lower = set_temp;
+    g_send.set_temp = set_temp;
+    g_send.set_temp_lower = 0;
     g_send.remaining_ms = 0;
     g_send.probe_temp = probe_target_temp;
     printf("[bottom_bbq_probe] jump: set_probe -> cooking_probe\n");
@@ -404,8 +422,8 @@ void bottom_bbq_probe_resume_cooking(void)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_COOKING;
-    g_send.set_temp = 0;
-    g_send.set_temp_lower = set_temp;
+    g_send.set_temp = set_temp;
+    g_send.set_temp_lower = 0;
     g_send.remaining_ms = 0;
     printf("[bottom_bbq_probe] resume: stop_probe -> cooking_probe\n");
 }
@@ -473,10 +491,11 @@ void bottom_bbq_probe_rebuild_set(page_id_t child)
             set->temp,
             set->probetemp,
             set->sure,
+            set->offdelay, set->ondelay,
         };
         if (g_bottom_bbq_set_probe) lv_group_del(g_bottom_bbq_set_probe);
-        g_bottom_bbq_set_probe = group_create_for_page(btns, 3);
-        clear_focus_states(btns, 3);
+        g_bottom_bbq_set_probe = group_create_for_page(btns, 5);
+        clear_focus_states(btns, 5);
         lv_group_focus_obj(set->sure);
 
         lv_label_set_text_fmt(set->temp, "%d", set_temp);
@@ -488,6 +507,8 @@ void bottom_bbq_probe_rebuild_set(page_id_t child)
             lv_obj_clear_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
         lv_label_set_text_fmt(set->probetemp, "%d", probe_target_temp);
 
+        apply_toggle_state(set->offdelay, set->ondelay, delay_on);
+
         lv_obj_add_event_cb(set->temp, on_bottom_bbq_probe_edit_focus,
                             LV_EVENT_FOCUSED, NULL);
         lv_obj_add_event_cb(set->probetemp, on_bottom_bbq_probe_edit_focus,
@@ -496,6 +517,10 @@ void bottom_bbq_probe_rebuild_set(page_id_t child)
                             LV_EVENT_FOCUSED, NULL);
 
         lv_obj_add_event_cb(set->sure, on_bottom_bbq_probe_set_sure_click,
+                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->offdelay, on_bottom_bbq_probe_delay_toggle,
+                            LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->ondelay, on_bottom_bbq_probe_delay_toggle,
                             LV_EVENT_CLICKED, NULL);
     }
     current_group = g_bottom_bbq_set_probe;

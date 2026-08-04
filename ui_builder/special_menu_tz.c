@@ -33,17 +33,17 @@ void special_menu_tz_create(ui_manager_t *ui)
     lv_obj_t *slowcook_button_label = lv_label_create(scr->slowcook_button);
     lv_label_set_text(slowcook_button_label, "");
     lv_obj_align(slowcook_button_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->slowcook_button, 16, 68);
-    lv_obj_set_size(scr->slowcook_button, 1248, 400);
+    lv_obj_set_pos(scr->slowcook_button, 18, 68);
+    lv_obj_set_size(scr->slowcook_button, 624, 400);
 
     // Set style of scr->slowcook_button
     lv_obj_set_style_bg_opa(scr->slowcook_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->slowcook_button, LVGL_IMAGE_PATH(teshutzbk30.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->slowcook_button, LVGL_IMAGE_PATH(div2bk30.png), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(scr->slowcook_button, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->slowcook_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->slowcook_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->slowcook_button, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->slowcook_button, LVGL_IMAGE_PATH(teshutzbk.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->slowcook_button, LVGL_IMAGE_PATH(div2bk80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
     // Init scr->special_label
     scr->special_label = lv_label_create(scr->obj);
@@ -74,13 +74,13 @@ void special_menu_tz_create(ui_manager_t *ui)
     lv_img_set_pivot(scr->major_img, 50, 50);
     lv_img_set_angle(scr->major_img, 0);
     lv_obj_set_style_img_opa(scr->major_img, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->major_img, 586, 188);
+    lv_obj_set_pos(scr->major_img, 278, 188);
 
     // Init scr->slowcook_label
     scr->slowcook_label = lv_label_create(scr->obj);
     lv_label_set_text(scr->slowcook_label, "慢煮");
     lv_label_set_long_mode(scr->slowcook_label, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->slowcook_label, 574, 289);
+    lv_obj_set_pos(scr->slowcook_label, 265, 291);
     lv_obj_set_size(scr->slowcook_label, 131, 32);
 
     // Set style of scr->slowcook_label

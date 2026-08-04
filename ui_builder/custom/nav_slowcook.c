@@ -106,8 +106,12 @@ static void on_slowcook_menu_next_click(lv_event_t *e)
 static void on_slowcook_set_sure_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
-    if (!screen_is_loading(act_scr))
-        jump_to_slowcook_cooking();
+    if (!screen_is_loading(act_scr)) {
+        if (preheat_on)
+            jump_to_preheat_cooking();
+        else
+            jump_to_slowcook_cooking();
+    }
 }
 
 static void on_slowcook_cooking_stop_click(lv_event_t *e)

@@ -182,6 +182,49 @@ void slowcook_set_probe_create(ui_manager_t *ui)
     lv_obj_set_style_text_color(scr->icon3, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->icon3, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
 
+    // Init scr->image_5
+    scr->image_5 = lv_img_create(scr->obj);
+    lv_img_set_src(scr->image_5, LVGL_IMAGE_PATH(delaytext.png));
+    lv_img_set_pivot(scr->image_5, 50, 50);
+    lv_img_set_angle(scr->image_5, 0);
+    lv_obj_set_style_img_opa(scr->image_5, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(scr->image_5, 839, 154);
+
+    // Init scr->offdelay
+    scr->offdelay = lv_btn_create(scr->obj);
+    lv_obj_t *offdelay_label = lv_label_create(scr->offdelay);
+    lv_label_set_text(offdelay_label, "");
+    lv_obj_align(offdelay_label, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_pos(scr->offdelay, 983, 144);
+    lv_obj_set_size(scr->offdelay, 135, 53);
+
+    // Set style of scr->offdelay
+    lv_obj_set_style_bg_opa(scr->offdelay, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->offdelay, LVGL_IMAGE_PATH(off.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->offdelay, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(scr->offdelay, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(scr->offdelay, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(scr->offdelay, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->offdelay, LVGL_IMAGE_PATH(focusoff.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+
+    // Init scr->ondelay
+    scr->ondelay = lv_btn_create(scr->obj);
+    lv_obj_t *ondelay_label = lv_label_create(scr->ondelay);
+    lv_label_set_text(ondelay_label, "");
+    lv_obj_align(ondelay_label, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_pos(scr->ondelay, 983, 144);
+    lv_obj_set_size(scr->ondelay, 135, 53);
+    lv_obj_add_flag(scr->ondelay, LV_OBJ_FLAG_HIDDEN);
+
+    // Set style of scr->ondelay
+    lv_obj_set_style_bg_opa(scr->ondelay, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->ondelay, LVGL_IMAGE_PATH(on1.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->ondelay, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(scr->ondelay, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(scr->ondelay, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(scr->ondelay, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->ondelay, LVGL_IMAGE_PATH(on2.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+
 
 }
 
