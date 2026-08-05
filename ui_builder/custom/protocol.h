@@ -36,6 +36,7 @@
 #define IFACE_PAUSE      3
 #define IFACE_COMPLETE   4
 #define IFACE_SLEEP      5
+#define IFACE_DELAY_RESERVE 6   // 延时预约
 
 // ===== 烹调模式 (BUF[4]) =====
 #define MODE_NONE           0

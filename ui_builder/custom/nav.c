@@ -50,6 +50,8 @@ lv_group_t *g_special_menu;
 lv_group_t *g_updown_bbq_menu;
 lv_group_t *g_updown_bbq_set;
 lv_group_t *g_delayset;
+lv_group_t *g_delaycooking;
+uint8_t g_delay_cancel_to_stop_back;
 lv_group_t *g_updown_bbq_cooking;
 lv_group_t *g_updown_bbq_complete;
 
@@ -419,6 +421,8 @@ static void on_delayset_focus(lv_event_t *e);
 static void on_delayset_start_click(lv_event_t *e);
 static void delayset_refresh_display(delayset_t *ds);
 static void updown_set_apply_delay_label(updown_bbq_set_t *set);
+static void on_delaycooking_cancel_click(lv_event_t *e);
+static void rebuild_delaycooking(void);
 static void on_sure_click(lv_event_t *e);
 void cooking_timer_cb(lv_timer_t *timer);
 static void jump_to_updown_bbq_complete(void);
@@ -1708,6 +1712,9 @@ void page_pop(void)
 
     case PAGE_UPDOWN_BBQ_MENU_TOP:
     case PAGE_UPDOWN_BBQ_MENU_LOW:
+    case PAGE_DELAYCOOKING:
+        rebuild_delaycooking();
+        break;
     case PAGE_DELAYSET:
     case PAGE_UPDOWN_BBQ_SET:
     rebuild_updown_bbq_set:
@@ -4554,6 +4561,10 @@ static void process_key(uint8_t key)
                 jump_to_windchange_bbq_stop_back();
             else if (cur == PAGE_PREHEAT_COOKING)
                 jump_to_preheat_stop_back();
+            else if (cur == PAGE_DELAYCOOKING) {
+                g_delay_cancel_to_stop_back = 1;
+                jump_to_updown_bbq_stop_back();
+            }
             else if (cur == PAGE_PREHEAT_STOP)
                 jump_to_preheat_stop_back();
             else if (cur == PAGE_PREHEAT_COMPLETE) {
@@ -5880,6 +5891,59 @@ void jump_to_delayset(void)
     printf("[nav] jump: updown_bbq_set -> delayset\n");
 }
 
+// delaycooking 取消：取消延时 → 跳 stop_back 确认（预约中态）
+static void on_delaycooking_cancel_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (screen_is_loading(act_scr)) return;
+    g_delay_cancel_to_stop_back = 1;
+    jump_to_updown_bbq_stop_back();
+}
+
+// 重建 delaycooking 预约页（stop_back 返回场景复用，不重复压栈）
+static void rebuild_delaycooking(void)
+{
+    lv_obj_clean(lv_scr_act());
+    delaycooking_create(&ui_manager);
+
+    delaycooking_t *dc = delaycooking_get(&ui_manager);
+    if (dc) {
+        lv_obj_t *btns[] = { dc->cancel };
+        if (g_delaycooking) lv_group_del(g_delaycooking);
+        g_delaycooking = group_create_for_page(btns, 1);
+        clear_focus_states(btns, 1);
+        lv_group_focus_obj(dc->cancel);
+
+        lv_obj_add_event_cb(dc->cancel, on_delaycooking_cancel_click,
+                            LV_EVENT_CLICKED, NULL);
+
+        set_status_label_min(dc->status, set_temp_up, set_temp_down, set_hour, set_min);
+        lv_img_set_src(dc->icon, LVGL_IMAGE_PATH(updown_img.png));
+        lv_label_set_text(dc->label_14, "预约中...");
+        lv_label_set_text_fmt(dc->tip2, "%s%02d:%02d",
+                              delay_hour >= 24 ? "明天" : "今天",
+                              delay_hour % 24, delay_min);
+    }
+    current_group = g_delaycooking;
+
+    g_send.iface_status = IFACE_DELAY_RESERVE;
+    g_send.remaining_ms = 0;
+    g_send.cook_flag = 0;
+
+    lv_scr_load_anim(delaycooking_get(&ui_manager)->obj,
+                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                     ui_manager.auto_del);
+    printf("[nav] back to delaycooking\n");
+}
+
+void jump_to_delaycooking(void)
+{
+    edit_clear();
+    page_push(PAGE_DELAYCOOKING);
+    rebuild_delaycooking();
+    printf("[nav] jump: updown_bbq_set -> delaycooking\n");
+}
+
 static void on_contain_toggle(lv_event_t *e)
 {
     updown_bbq_set_t *set = updown_bbq_set_get(&ui_manager);
@@ -5905,7 +5969,9 @@ static void on_sure_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
     if (!screen_is_loading(act_scr)) {
-        if (preheat_on)
+        if (delay_on)
+            jump_to_delaycooking();
+        else if (preheat_on)
             jump_to_preheat_cooking();
         else
             jump_to_updown_bbq_cooking();
@@ -7005,6 +7071,14 @@ static void jump_to_updown_bbq_stop_back(void)
             g_complete_to_stop_back = 0;
             lv_label_set_text(back->label_8, "已完成");
             lv_bar_set_value(back->bar_2, 100, LV_ANIM_OFF);
+        }
+
+        if (g_delay_cancel_to_stop_back) {
+            g_delay_cancel_to_stop_back = 0;
+            lv_label_set_text(back->label_8, "预约中...");
+            lv_obj_add_flag(back->bar_2, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(back->image_6, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(back->littal_button, LV_OBJ_FLAG_HIDDEN);
         }
 
         if (g_send.iface_status == IFACE_COOKING)

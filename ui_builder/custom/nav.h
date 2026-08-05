@@ -255,6 +255,7 @@ typedef enum {
     PAGE_HOTCLEANHIGH_COOLING,
     PAGE_HOTCLEANHIGH_COMPLETE,
     PAGE_DELAYSET,
+    PAGE_DELAYCOOKING,
 } page_id_t;
 
 extern page_id_t page_stack[];
@@ -366,6 +367,8 @@ extern lv_group_t *g_air_stop_back;
 extern lv_group_t *g_air_complete;
 extern lv_group_t *g_updown_bbq_set;
 extern lv_group_t *g_delayset;
+extern lv_group_t *g_delaycooking;
+extern uint8_t g_delay_cancel_to_stop_back;
 extern lv_group_t *g_updown_bbq_cooking;
 extern lv_group_t *g_updown_bbq_complete;
 extern lv_group_t *g_updown_bbq_stop;
@@ -470,6 +473,7 @@ extern lv_group_t *g_color_stop_back;
 
 void jump_to_updown_bbq_menu(void);
 void jump_to_delayset(void);
+void jump_to_delaycooking(void);
 void jump_to_updown_bbq_menu_probe(void);
 void jump_to_updown_bbq_set_probe(void);
 void jump_to_updown_bbq_cooking_probe(void);
