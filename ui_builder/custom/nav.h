@@ -1,10 +1,21 @@
 #ifndef NAV_H
 #define NAV_H
 
+#include <stdint.h>
 #include "ui_objects.h"
 #include "aic_ui.h"
 #include "ui_util.h"
 #include "custom_defs.h"
+
+// === 实时时钟接口（实现位于 custom.c：模拟器=PC 时间，SDK=sd8568 RTC）===
+typedef struct {
+    int year, month, day;
+    int hour, min, sec;
+} rtc_time_t;
+int rtc_get_time(rtc_time_t *t);              // 0=成功
+int64_t rtc_now_ms(void);                     // 自 2000-01-01 00:00 起的绝对毫秒（统一计时戳）
+int rtc_days_from_epoch(int year, int month, int day);  // 自 2000-01-01 起的天数
+extern int64_t g_delay_target;                // 延时预约目标绝对毫秒
 
 // === 页面 ID 枚举 ===
 typedef enum {
@@ -369,6 +380,7 @@ extern lv_group_t *g_updown_bbq_set;
 extern lv_group_t *g_delayset;
 extern lv_group_t *g_delaycooking;
 extern uint8_t g_delay_cancel_to_stop_back;
+extern uint8_t g_keepwarm_active;
 extern lv_group_t *g_updown_bbq_cooking;
 extern lv_group_t *g_updown_bbq_complete;
 extern lv_group_t *g_updown_bbq_stop;

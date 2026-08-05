@@ -52,6 +52,9 @@ lv_group_t *g_updown_bbq_set;
 lv_group_t *g_delayset;
 lv_group_t *g_delaycooking;
 uint8_t g_delay_cancel_to_stop_back;
+uint8_t g_keepwarm_active;
+static int g_keepwarm_sec;
+int64_t g_delay_target = 0;
 lv_group_t *g_updown_bbq_cooking;
 lv_group_t *g_updown_bbq_complete;
 
@@ -423,6 +426,7 @@ static void delayset_refresh_display(delayset_t *ds);
 static void updown_set_apply_delay_label(updown_bbq_set_t *set);
 static void on_delaycooking_cancel_click(lv_event_t *e);
 static void rebuild_delaycooking(void);
+static void delayset_roll_to_tomorrow(void);
 static void on_sure_click(lv_event_t *e);
 void cooking_timer_cb(lv_timer_t *timer);
 static void jump_to_updown_bbq_complete(void);
@@ -777,7 +781,7 @@ void validate_constraints(void)
 
     /* 根据 hour 动态调整 minute 的循环范围 */
     if (set_hour == 0) {
-        min_field->min = 5;    // hour=0时，最少5分钟
+        min_field->min = 1;    // hour=0时，最少1分钟（调试用）
         min_field->max = 59;
     } else if (set_hour == max_h) {
         min_field->min = 0;    // 最大小时时 minute 不可调
@@ -788,8 +792,8 @@ void validate_constraints(void)
     }
 
     /* 纠正 minute 值（如果当前值超出新范围） */
-    if (set_hour == 0 && set_min < 5) {
-        set_min = 5;
+    if (set_hour == 0 && set_min < 1) {
+        set_min = 1;
         lv_label_set_text_fmt(min_field->label, min_field->fmt, set_min);
     } else if (set_hour == max_h && set_min != 0) {
         set_min = 0;
@@ -1448,11 +1452,17 @@ void page_pop(void)
                                     LV_EVENT_CLICKED, NULL);
                 set_status_label_min(done->statu_label, set_temp_up, set_temp_down, set_hour, set_min);
                 lv_bar_set_value(done->bar_3, 100, LV_ANIM_OFF);
+                /* 保温场景（stop_back 返回）：恢复"保温中..."显示，计时继续 */
+                if (g_keepwarm_active)
+                    lv_label_set_text(done->complete_label, "保温中...");
                 lv_group_focus_obj(done->little_button);
             }
             current_group = g_updown_bbq_complete;
             lv_scr_load_anim(updown_bbq_complete_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
+            printf("[keepwarm] page_pop complete rebuild: child=%d active=%d sec=%d iface=%d contain=%d timer=%p\n",
+                   child, g_keepwarm_active, g_keepwarm_sec, g_send.iface_status,
+                   contain_on, (void *)cook_timer);
             break;
         }
         goto pop_to_major_menu;
@@ -3996,6 +4006,9 @@ void jump_to_updown_bbq_cooking(void)
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;
     }
+    g_on_stop_back = 0;
+    g_keepwarm_active = 0;
+    g_stop_back_complete = NULL;
     page_push(PAGE_UPDOWN_BBQ_COOKING);
     lv_obj_clean(lv_scr_act());
     updown_bbq_cooking_create(&ui_manager);
@@ -4092,6 +4105,18 @@ static void jump_to_updown_bbq_complete(void)
 
     g_send.iface_status = IFACE_COMPLETE;
     g_send.remaining_ms = 0;
+
+    /* 自动保温：保温开关开启时 complete 页停留 1 分钟无操作 → 保温（15 分钟） */
+    if (contain_on) {
+        g_keepwarm_active = 0;
+        g_keepwarm_sec = 0;
+        if (cook_timer) lv_timer_del(cook_timer);
+        cook_timer = lv_timer_create(cooking_timer_cb, 1000, NULL);
+        printf("[keepwarm] complete enter (contain on): active=%d sec=%d timer=%p\n",
+               g_keepwarm_active, g_keepwarm_sec, (void *)cook_timer);
+    } else {
+        printf("[keepwarm] complete enter (contain off): no timer\n");
+    }
     printf("[nav] jump: updown_bbq_cooking -> updown_bbq_complete\n");
 }
 
@@ -4353,6 +4378,7 @@ static void process_key(uint8_t key)
         g_complete_to_stop_back = 0;
         g_cooling_to_stop_back = 0;
         g_extra_color_to_stop_back = 0;
+        g_keepwarm_active = 0;
         cook_is_color = 0;
         g_stop_back_complete = NULL;
         depth = 0;
@@ -4757,9 +4783,11 @@ static void process_key(uint8_t key)
             if (ds && df == ds->hour) {
                 if (delay_hour < 47) delay_hour++;
                 else { g_send.buzzer_req = BUZZER_KEY_INVALID; uart_print(); break; }
+                delayset_roll_to_tomorrow();
             } else if (ds && df == ds->min) {
                 if (delay_min < 59) delay_min++;
                 else { g_send.buzzer_req = BUZZER_KEY_INVALID; uart_print(); break; }
+                delayset_roll_to_tomorrow();
             } else {
                 g_send.buzzer_req = BUZZER_ENCODER;
                 lv_group_focus_next(current_group);
@@ -4821,9 +4849,11 @@ static void process_key(uint8_t key)
             if (ds && df == ds->hour) {
                 if (delay_hour > 0) delay_hour--;
                 else { g_send.buzzer_req = BUZZER_KEY_INVALID; uart_print(); break; }
+                delayset_roll_to_tomorrow();
             } else if (ds && df == ds->min) {
                 if (delay_min > 0) delay_min--;
                 else { g_send.buzzer_req = BUZZER_KEY_INVALID; uart_print(); break; }
+                delayset_roll_to_tomorrow();
             } else {
                 g_send.buzzer_req = BUZZER_ENCODER;
                 lv_group_focus_prev(current_group);
@@ -5386,6 +5416,7 @@ void nav_key1_long_press(void)
     g_complete_to_stop_back = 0;
     g_cooling_to_stop_back = 0;
     g_extra_color_to_stop_back = 0;
+    g_keepwarm_active = 0;
     cook_is_color = 0;
     g_stop_back_complete = NULL;
     cook_elapsed_saved = 0; cook_bar_saved = 0;
@@ -5776,6 +5807,9 @@ static void on_preheat_toggle(lv_event_t *e)
     if (!set) return;
     preheat_on = !preheat_on;
     if (preheat_on) {
+        /* 互斥：开预热关延时 */
+        delay_on = 0;
+        apply_toggle_state(set->delay_button, set->delay_on_button, delay_on);
         lv_obj_add_flag(set->preheat_button, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->preheat_on_button, LV_OBJ_FLAG_HIDDEN);
         lv_group_focus_obj(set->preheat_on_button);
@@ -5796,6 +5830,25 @@ static void delayset_refresh_display(delayset_t *ds)
     lv_label_set_text_fmt(ds->hour, "%02d", delay_hour % 24);
     lv_label_set_text_fmt(ds->min, "%02d", delay_min);
     lv_label_set_text(ds->day, delay_hour >= 24 ? "明天" : "今天");
+}
+
+// 24 小时滚动窗口归一化：
+// 今天模式目标已过当前实时 → 切到明天（+24）
+// 明天模式目标超过明天当前时刻 → 回绕到今天的当前时刻（窗口起点）
+static void delayset_roll_to_tomorrow(void)
+{
+    rtc_time_t now;
+    if (rtc_get_time(&now) != 0) return;
+    int now_min = now.hour * 60 + now.min;
+    if (delay_hour < 24) {
+        if (delay_hour * 60 + delay_min < now_min)
+            delay_hour += 24;
+    } else {
+        if ((delay_hour - 24) * 60 + delay_min >= now_min) {
+            delay_hour = now.hour;
+            delay_min = now.min;
+        }
+    }
 }
 
 // delayset 焦点切换：显示对应字段的下划线
@@ -5821,6 +5874,8 @@ static void on_delayset_start_click(lv_event_t *e)
     lv_obj_t *act_scr = lv_scr_act();
     if (screen_is_loading(act_scr)) return;
     delay_on = 1;
+    /* 互斥：开延时关预热（回 set 页重建时显示关） */
+    preheat_on = 0;
     page_pop();
 }
 
@@ -5860,6 +5915,13 @@ static void on_delay_toggle(lv_event_t *e)
 void jump_to_delayset(void)
 {
     edit_clear();
+    /* 进入时默认当前时间+5 分钟（当前 23:59 → 明天 00:04） */
+    rtc_time_t now;
+    if (rtc_get_time(&now) == 0) {
+        delay_hour = now.hour;
+        delay_min = now.min + 5;
+        if (delay_min > 59) { delay_min -= 60; delay_hour++; }
+    }
     page_push(PAGE_DELAYSET);
     lv_obj_clean(lv_scr_act());
     delayset_create(&ui_manager);
@@ -5903,6 +5965,8 @@ static void on_delaycooking_cancel_click(lv_event_t *e)
 // 重建 delaycooking 预约页（stop_back 返回场景复用，不重复压栈）
 static void rebuild_delaycooking(void)
 {
+    g_on_stop_back = 0;
+    g_stop_back_complete = NULL;
     lv_obj_clean(lv_scr_act());
     delaycooking_create(&ui_manager);
 
@@ -5925,6 +5989,20 @@ static void rebuild_delaycooking(void)
                               delay_hour % 24, delay_min);
     }
     current_group = g_delaycooking;
+
+    /* 计算预约目标绝对时间（今天/明天 HH:MM）并启动到点检查定时器 */
+    {
+        rtc_time_t now;
+        if (rtc_get_time(&now) == 0) {
+            int64_t base = (int64_t)rtc_days_from_epoch(now.year, now.month, now.day) * 86400000LL;
+            g_delay_target = base
+                           + (delay_hour >= 24 ? 86400000LL : 0)
+                           + (int64_t)(delay_hour % 24) * 3600000LL
+                           + (int64_t)delay_min * 60000LL;
+        }
+    }
+    if (cook_timer) lv_timer_del(cook_timer);
+    cook_timer = lv_timer_create(cooking_timer_cb, 1000, NULL);
 
     g_send.iface_status = IFACE_DELAY_RESERVE;
     g_send.remaining_ms = 0;
@@ -6030,7 +6108,49 @@ static void auto_pause_on_door(void)
 
 void cooking_timer_cb(lv_timer_t *timer)
 {
+    /* complete 结束态：timer 仅服务保温计数，其他页面不驱动任何完成检测 */
+    if (g_send.iface_status == IFACE_COMPLETE) {
+        if (current_group == g_updown_bbq_complete && contain_on) {
+            /* 自动保温：停留 1 分钟无操作 → 保温中（15 分钟）→ 结束回已完成 */
+            g_keepwarm_sec++;
+            if (!g_keepwarm_active) {
+                if (g_keepwarm_sec >= 60) {
+                    g_keepwarm_active = 1;
+                    g_keepwarm_sec = 0;
+                    updown_bbq_complete_t *cook = updown_bbq_complete_get(&ui_manager);
+                    if (cook) lv_label_set_text(cook->complete_label, "保温中...");
+                    printf("[keepwarm] START: sec=%d active=%d buf17=%d timer=%p\n",
+                           g_keepwarm_sec, g_keepwarm_active,
+                           g_keepwarm_active ? 0x01 : 0x00, (void *)cook_timer);
+                }
+            } else {
+                if (g_keepwarm_sec >= 60) {
+                    g_keepwarm_active = 0;
+                    updown_bbq_complete_t *cook = updown_bbq_complete_get(&ui_manager);
+                    if (cook) lv_label_set_text(cook->complete_label, "已完成");
+                    if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
+                    printf("[keepwarm] END: sec=%d active=%d buf17=%d timer=%p\n",
+                           g_keepwarm_sec, g_keepwarm_active,
+                           g_keepwarm_active ? 0x01 : 0x00, (void *)cook_timer);
+                }
+            }
+        }
+        return;
+    }
     if (g_on_stop_back) {
+        if (g_send.iface_status == IFACE_DELAY_RESERVE && current_group == g_updown_bbq_stop_back) {
+            /* 预约取消确认页（预约中态）：到点自动开始烹饪，不走时长完成检测 */
+            if (rtc_now_ms() >= g_delay_target) {
+                if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
+                delay_on = 0;
+                jump_to_updown_bbq_cooking();
+                if (current_group == g_updown_bbq_stop_back) {
+                    /* 门开被拦截：继续检查 */
+                    cook_timer = lv_timer_create(cooking_timer_cb, 1000, NULL);
+                }
+            }
+            return;
+        }
         uint32_t elapsed = lv_tick_get() - cook_start_time;
         if (current_group == g_updown_bbq_stop_back) {
             updown_bbq_stop_back_t *back = updown_bbq_stop_back_get(&ui_manager);
@@ -6255,6 +6375,7 @@ void cooking_timer_cb(lv_timer_t *timer)
             }
         }
         if (elapsed >= (uint32_t)cook_total_ms && cook_timer
+            && g_send.iface_status != IFACE_DELAY_RESERVE
             && current_group != g_updown_bbq_stop_back_probe
             && current_group != g_hot_bbq_stop_back_probe
             && current_group != g_bottom_bbq_stop_back_probe
@@ -6405,6 +6526,18 @@ void cooking_timer_cb(lv_timer_t *timer)
             lv_timer_del(cook_timer); cook_timer = NULL;
             g_send.buzzer_req = BUZZER_COOK_DONE; g_send.cook_flag = 0;
             jump_to_slowcook_complete_probe();
+        }
+        return;
+    }
+    if (current_group == g_delaycooking) {
+        if (rtc_now_ms() >= g_delay_target) {
+            delay_on = 0;
+            if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
+            jump_to_updown_bbq_cooking();
+            if (current_group == g_delaycooking) {
+                /* 门开被拦截：重建定时器继续检查 */
+                cook_timer = lv_timer_create(cooking_timer_cb, 1000, NULL);
+            }
         }
         return;
     }
@@ -7035,9 +7168,9 @@ static void jump_to_updown_bbq_stop(void)
 static void jump_to_updown_bbq_stop_back(void)
 {
     int cooking_bar_val = 0;
-    if (cook_timer) {
+    if (cook_timer && depth > 0 && page_stack[depth - 1] == PAGE_UPDOWN_BBQ_COOKING) {
         updown_bbq_cooking_t *cook = updown_bbq_cooking_get(&ui_manager);
-        if (cook) cooking_bar_val = lv_bar_get_value(cook->bar);
+        if (cook && cook->bar) cooking_bar_val = lv_bar_get_value(cook->bar);
     }
 
     g_on_stop_back = 1;
@@ -7068,8 +7201,13 @@ static void jump_to_updown_bbq_stop_back(void)
         lv_bar_set_value(back->bar_2, p, LV_ANIM_OFF);
 
         if (g_complete_to_stop_back) {
+            printf("[keepwarm] stop_back enter (from complete): keepwarm=%d iface=%d\n",
+                   g_keepwarm_active, g_send.iface_status);
             g_complete_to_stop_back = 0;
-            lv_label_set_text(back->label_8, "已完成");
+            if (g_keepwarm_active)
+                lv_label_set_text(back->label_8, "保温中...");
+            else
+                lv_label_set_text(back->label_8, "已完成");
             lv_bar_set_value(back->bar_2, 100, LV_ANIM_OFF);
         }
 
@@ -7079,10 +7217,15 @@ static void jump_to_updown_bbq_stop_back(void)
             lv_obj_add_flag(back->bar_2, LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(back->image_6, LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(back->littal_button, LV_OBJ_FLAG_HIDDEN);
+            printf("[keepwarm] stop_back enter (delay cancel): iface=%d active=%d\n",
+                   g_send.iface_status, g_keepwarm_active);
         }
 
         if (g_send.iface_status == IFACE_COOKING)
             lv_label_set_text(back->label_8, "烹饪中...");
+        printf("[keepwarm] stop_back enter: keepwarm=%d iface=%d label=%s\n",
+               g_keepwarm_active, g_send.iface_status,
+               lv_label_get_text(back->label_8) ? lv_label_get_text(back->label_8) : "?");
     }
     current_group = g_updown_bbq_stop_back;
 
@@ -7197,6 +7340,7 @@ static void on_stop_back_sure_click(lv_event_t *e)
     lv_obj_t *act_scr = lv_scr_act();
     if (screen_is_loading(act_scr)) return;
     g_on_stop_back = 0;
+    g_keepwarm_active = 0;
 
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
     set_temp = 180; set_temp_up = 180; set_temp_down = 180; set_hour = 0; set_min = 30;
@@ -7515,7 +7659,11 @@ static void jump_to_updown_bbq_setting(void)
     lv_scr_load_anim(updown_bbq_setting_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    g_send.iface_status = (cook_timer != NULL) ? IFACE_COOKING : IFACE_SETTING;
+    /* complete 结束态（保温场景从 complete 进入设置页）保持 4，避免完成检测误触发 */
+    if (g_send.iface_status != IFACE_COMPLETE)
+        g_send.iface_status = (cook_timer != NULL) ? IFACE_COOKING : IFACE_SETTING;
+    printf("[keepwarm] setting enter: iface=%d complete_keep=%d timer=%p\n",
+           g_send.iface_status, (g_send.iface_status == IFACE_COMPLETE), (void *)cook_timer);
     printf("[nav] jump: cooking -> updown_bbq_setting\n");
 }
 

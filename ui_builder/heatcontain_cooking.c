@@ -89,7 +89,7 @@ void heatcontain_cooking_create(ui_manager_t *ui)
 
     // Init scr->label_612
     scr->label_612 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_612, "烹饪中...");
+    lv_label_set_text(scr->label_612, "保温中...");
     lv_label_set_long_mode(scr->label_612, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->label_612, 273, 157);
     lv_obj_set_size(scr->label_612, 235, 60);

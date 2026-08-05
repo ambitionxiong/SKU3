@@ -530,7 +530,7 @@ void jump_to_heatcontain_stop_back(void)
             lv_bar_set_value(back->bar_46, 100, LV_ANIM_OFF);
         }
         if (g_send.iface_status == IFACE_COOKING)
-            lv_label_set_text(back->label_627, "烹饪中...");
+            lv_label_set_text(back->label_627, "保温中...");
     }
     current_group = g_heatcontain_stop_back;
 

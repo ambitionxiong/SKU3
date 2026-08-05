@@ -47,7 +47,7 @@ void uart_send_fill(void)
 
     uart_data_send[SEND_SETTINGS1]    = 0;
     uart_data_send[SEND_LAMP_STATE]   = 0;
-    uart_data_send[SEND_SETTINGS2]    = 0;
+    uart_data_send[SEND_SETTINGS2]    = g_keepwarm_active ? 0x01 : 0x00;   // BIT0: Automatic keep warm
 
     uart_data_send[SEND_TEMP_LOWER_H] = (uint8_t)(g_send.set_temp_lower >> 8);
     uart_data_send[SEND_TEMP_LOWER_L] = (uint8_t)(g_send.set_temp_lower & 0xFF);

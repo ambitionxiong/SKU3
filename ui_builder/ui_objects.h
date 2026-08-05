@@ -3911,6 +3911,19 @@ typedef struct {
     lv_obj_t *tip3;
 } delaycooking_t;
 
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *button_1;
+    lv_obj_t *button_2;
+    lv_obj_t *button_3;
+    lv_obj_t *image_1;
+    lv_obj_t *label_1;
+    lv_obj_t *label_2;
+    lv_obj_t *label_3;
+    lv_obj_t *label_4;
+    lv_obj_t *label_5;
+} somecook_t;
+
 
 typedef struct {
     bool auto_del;
@@ -4166,6 +4179,7 @@ typedef struct {
     slowcook_complete_probe_t slowcook_complete_probe;
     delayset_t delayset;
     delaycooking_t delaycooking;
+    somecook_t somecook;
 
 } ui_manager_t;
 
@@ -5435,6 +5449,11 @@ static inline delaycooking_t *delaycooking_get(ui_manager_t *ui)
     return &ui->delaycooking;
 }
 
+static inline somecook_t *somecook_get(ui_manager_t *ui)
+{
+    return &ui->somecook;
+}
+
 
 void waitmenu_24_create(ui_manager_t *ui);
 void clean_menu_create(ui_manager_t *ui);
@@ -5688,6 +5707,7 @@ void slowcook_stop_back_probe_create(ui_manager_t *ui);
 void slowcook_complete_probe_create(ui_manager_t *ui);
 void delayset_create(ui_manager_t *ui);
 void delaycooking_create(ui_manager_t *ui);
+void somecook_create(ui_manager_t *ui);
 
 
 extern lv_font_t *fs_montserratmedium_16;

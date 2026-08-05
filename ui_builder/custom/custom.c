@@ -9,6 +9,13 @@
 #include "nav.h"
 #include "protocol.h"
 
+#include <time.h>
+#ifdef _WIN32
+#include <sys/timeb.h>
+#else
+#include <time.h>
+#endif
+
 uint8_t uart_data_receive[18];
 uint8_t uart_data_send[24];
 
@@ -25,6 +32,60 @@ uint32_t cook_start_time = 0;
 uint8_t cook_is_color = 0;
 uint32_t cook_elapsed_saved = 0;
 lv_timer_t *cook_timer = NULL;
+
+// ==== 实时时钟接口（模拟器：PC 本地时间，毫秒级）====
+
+int rtc_get_time(rtc_time_t *t)
+{
+    if (!t) return -1;
+    time_t now = time(NULL);
+    struct tm *lt = localtime(&now);
+    if (!lt) return -1;
+    t->year  = lt->tm_year + 1900;
+    t->month = lt->tm_mon + 1;
+    t->day   = lt->tm_mday;
+    t->hour  = lt->tm_hour;
+    t->min   = lt->tm_min;
+    t->sec   = lt->tm_sec;
+    return 0;
+}
+
+// 自 2000-01-01 起的天数（儒略日算法）
+int rtc_days_from_epoch(int year, int month, int day)
+{
+    int a = (14 - month) / 12;
+    int yy = year + 4800 - a;
+    int m = month + 12 * a - 3;
+    int jdn = day + (153 * m + 2) / 5 + 365 * yy + yy / 4 - yy / 100 + yy / 400 - 32045;
+    return jdn - 2451545;   /* 2000-01-01 的儒略日 */
+}
+
+int64_t rtc_now_ms(void)
+{
+#ifdef _WIN32
+    struct _timeb tb;
+    _ftime64_s(&tb);
+    struct tm *lt = localtime(&tb.time);
+    if (!lt) return 0;
+    int64_t days = rtc_days_from_epoch(lt->tm_year + 1900, lt->tm_mon + 1, lt->tm_mday);
+    return days * 86400000LL
+         + lt->tm_hour * 3600000LL
+         + lt->tm_min * 60000LL
+         + lt->tm_sec * 1000LL
+         + tb.millitm;
+#else
+    struct timespec ts;
+    clock_gettime(CLOCK_REALTIME, &ts);
+    struct tm *lt = localtime(&ts.tv_sec);
+    if (!lt) return 0;
+    int64_t days = rtc_days_from_epoch(lt->tm_year + 1900, lt->tm_mon + 1, lt->tm_mday);
+    return days * 86400000LL
+         + lt->tm_hour * 3600000LL
+         + lt->tm_min * 60000LL
+         + lt->tm_sec * 1000LL
+         + ts.tv_nsec / 1000000;
+#endif
+}
 
 void custom_init()
 {
