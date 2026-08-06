@@ -4845,9 +4845,19 @@ static void process_key(uint8_t key)
             uart_print();
             break;
         }
+        if (current_group == g_preheat_stop_back) {
+            g_sim_cavity_temp += 5;
+            if (g_sim_cavity_temp > 300) g_sim_cavity_temp = 300;
+            g_send.buzzer_req = BUZZER_ENCODER;
+            uart_print();
+            break;
+        }
         if (depth > 0 && (page_stack[depth-1] == PAGE_HOTCLEANSAVE_COOLING ||
             page_stack[depth-1] == PAGE_HOTCLEANMIDDLE_COOLING ||
-            page_stack[depth-1] == PAGE_HOTCLEANHIGH_COOLING)) {
+            page_stack[depth-1] == PAGE_HOTCLEANHIGH_COOLING ||
+            page_stack[depth-1] == PAGE_HOTCLEANSAVE_STOP_BACK ||
+            page_stack[depth-1] == PAGE_HOTCLEANMIDDLE_STOP_BACK ||
+            page_stack[depth-1] == PAGE_HOTCLEANHIGH_STOP_BACK)) {
             g_sim_cavity_temp += 5;
             if (g_sim_cavity_temp > 400) g_sim_cavity_temp = 400;
             g_send.buzzer_req = BUZZER_ENCODER;
@@ -4910,9 +4920,20 @@ static void process_key(uint8_t key)
             uart_print();
             break;
         }
+        if (current_group == g_preheat_stop_back) {
+            g_sim_cavity_temp -= 5;
+            if (g_sim_cavity_temp > 300) g_sim_cavity_temp = 300;
+            if (g_sim_cavity_temp < 0) g_sim_cavity_temp = 0;
+            g_send.buzzer_req = BUZZER_ENCODER;
+            uart_print();
+            break;
+        }
         if (depth > 0 && (page_stack[depth-1] == PAGE_HOTCLEANSAVE_COOLING ||
             page_stack[depth-1] == PAGE_HOTCLEANMIDDLE_COOLING ||
-            page_stack[depth-1] == PAGE_HOTCLEANHIGH_COOLING)) {
+            page_stack[depth-1] == PAGE_HOTCLEANHIGH_COOLING ||
+            page_stack[depth-1] == PAGE_HOTCLEANSAVE_STOP_BACK ||
+            page_stack[depth-1] == PAGE_HOTCLEANMIDDLE_STOP_BACK ||
+            page_stack[depth-1] == PAGE_HOTCLEANHIGH_STOP_BACK)) {
             g_sim_cavity_temp -= 5;
             if (g_sim_cavity_temp > 400) g_sim_cavity_temp = 400;
             if (g_sim_cavity_temp < 0) g_sim_cavity_temp = 0;
@@ -6666,6 +6687,25 @@ void cooking_timer_cb(lv_timer_t *timer)
             }
             return;
         }
+        if (current_group == g_hcs_stop_back ||
+            current_group == g_hcm_stop_back ||
+            current_group == g_hch_stop_back) {
+            /* 高温清洁冷却：仅冷却阶段（cooking 已完成）腔温降到 270 自动完成 */
+            uint32_t e = cook_timer ? (lv_tick_get() - cook_start_time) : (uint32_t)cook_elapsed_saved;
+            if (e >= (uint32_t)cook_total_ms && get_cavity_temp() <= 270 && cook_timer) {
+                lv_timer_del(cook_timer);
+                cook_timer = NULL;
+                g_send.buzzer_req = BUZZER_COOK_DONE;
+                g_on_stop_back = 0;
+                if (g_stop_back_complete) {
+                    void (*fn)(void) = g_stop_back_complete;
+                    g_stop_back_complete = NULL;
+                    fn();
+                }
+                return;
+            }
+            /* 未完成：fall through 到下方 elapsed 进度更新（hcs/hcm/hch bar）*/
+        }
         uint32_t elapsed = lv_tick_get() - cook_start_time;
         if (current_group == g_updown_bbq_stop_back) {
             updown_bbq_stop_back_t *back = updown_bbq_stop_back_get(&ui_manager);
@@ -6895,7 +6935,10 @@ void cooking_timer_cb(lv_timer_t *timer)
             && current_group != g_hot_bbq_stop_back_probe
             && current_group != g_bottom_bbq_stop_back_probe
             && current_group != g_slowcook_stop_back_probe
-            && current_group != g_preheat_stop_back) {
+            && current_group != g_preheat_stop_back
+            && current_group != g_hcs_stop_back
+            && current_group != g_hcm_stop_back
+            && current_group != g_hch_stop_back) {
             lv_timer_del(cook_timer);
             cook_timer = NULL;
             g_send.buzzer_req = BUZZER_COOK_DONE;

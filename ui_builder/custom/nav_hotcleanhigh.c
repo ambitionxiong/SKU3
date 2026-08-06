@@ -138,6 +138,7 @@ void jump_to_hch_cooking(void)
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_COOKING;
     g_send.remaining_ms = cook_total_ms;
+    g_send.set_temp = 400;
     printf("[hcs] jump: set -> hch_cooking\n");
 }
 
@@ -243,6 +244,7 @@ void hch_resume_cooking(void)
         if (rem < 0) rem = 0;
         g_send.iface_status = IFACE_COOKING;
         g_send.remaining_ms = rem;
+        g_send.set_temp = 400;
     }
     printf("[hcs] resume: stop -> cooking\n");
 }
@@ -324,6 +326,7 @@ void jump_to_hch_cooling(void)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_COOKING;
+    g_send.set_temp = 0;
     printf("[hcs] jump: cooking -> cooling\n");
 }
 
