@@ -422,10 +422,10 @@ void jump_to_pizza_2_setting(void)
         int h = remaining_sec / 3600;
         int m = (remaining_sec % 3600) / 60;
         int s = remaining_sec % 60;
-        set_hour = h; set_min = m;
+        if (g_send.iface_status == IFACE_COMPLETE) { h = m = s = 0; }
         lv_label_set_text_fmt(set->timelabel, "%02d:%02d:%02d", h, m, s);
-        lv_label_set_text_fmt(set->hour, "%02d", h);
-        lv_label_set_text_fmt(set->min, "%02d", m);
+        lv_label_set_text_fmt(set->hour, "%02d", set_hour);
+        lv_label_set_text_fmt(set->min, "%02d", set_min);
         lv_label_set_text_fmt(set->temp, "%d", set_temp);
         lv_obj_add_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->icon2, LV_OBJ_FLAG_HIDDEN);
@@ -964,10 +964,10 @@ void pizza_2_rebuild_setting(void)
         int h = remaining_sec / 3600;
         int m = (remaining_sec % 3600) / 60;
         int s = remaining_sec % 60;
-        set_hour = h; set_min = m;
+        if (g_send.iface_status == IFACE_COMPLETE) { h = m = s = 0; }
         lv_label_set_text_fmt(set->timelabel, "%02d:%02d:%02d", h, m, s);
-        lv_label_set_text_fmt(set->hour, "%02d", h);
-        lv_label_set_text_fmt(set->min, "%02d", m);
+        lv_label_set_text_fmt(set->hour, "%02d", set_hour);
+        lv_label_set_text_fmt(set->min, "%02d", set_min);
         lv_label_set_text_fmt(set->temp, "%d", set_temp);
         lv_obj_add_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->icon2, LV_OBJ_FLAG_HIDDEN);

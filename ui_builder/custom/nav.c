@@ -1447,11 +1447,10 @@ void page_pop(void)
                 int h = remaining_sec / 3600;
                 int m = (remaining_sec % 3600) / 60;
                 int s = remaining_sec % 60;
-                set_hour = h;
-                set_min = m;
+                if (g_send.iface_status == IFACE_COMPLETE) { h = m = s = 0; }
                 lv_label_set_text_fmt(set->time_label, "%02d:%02d:%02d", h, m, s);
-                lv_label_set_text_fmt(set->hour_label, "%02d", h);
-                lv_label_set_text_fmt(set->min_label, "%02d", m);
+                lv_label_set_text_fmt(set->hour_label, "%02d", set_hour);
+                lv_label_set_text_fmt(set->min_label, "%02d", set_min);
                 lv_label_set_text_fmt(set->tempup_label, "%d", set_temp_up);
                 lv_label_set_text_fmt(set->tempdown_label, "%d", set_temp_down);
 
@@ -8232,11 +8231,10 @@ static void jump_to_updown_bbq_setting(void)
         int h = remaining_sec / 3600;
         int m = (remaining_sec % 3600) / 60;
         int s = remaining_sec % 60;
-        set_hour = h;
-        set_min = m;
+        if (g_send.iface_status == IFACE_COMPLETE) { h = m = s = 0; }
         lv_label_set_text_fmt(set->time_label, "%02d:%02d:%02d", h, m, s);
-        lv_label_set_text_fmt(set->hour_label, "%02d", h);
-        lv_label_set_text_fmt(set->min_label, "%02d", m);
+        lv_label_set_text_fmt(set->hour_label, "%02d", set_hour);
+        lv_label_set_text_fmt(set->min_label, "%02d", set_min);
         lv_label_set_text_fmt(set->tempup_label, "%d", set_temp_up);
         lv_label_set_text_fmt(set->tempdown_label, "%d", set_temp_down);
 
