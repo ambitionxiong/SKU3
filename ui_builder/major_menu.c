@@ -99,18 +99,6 @@ void major_menu_create(ui_manager_t *ui)
     lv_obj_set_style_text_color(scr->menu_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->menu_label, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->time_label
-    scr->time_label = lv_label_create(scr->obj);
-    lv_label_set_text(scr->time_label, "12:00");
-    lv_label_set_long_mode(scr->time_label, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->time_label, 1196, 24);
-    lv_obj_set_size(scr->time_label, 60, 22);
-
-    // Set style of scr->time_label
-    lv_obj_set_style_text_font(scr->time_label, fs_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->time_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(scr->time_label, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
-
     // Init scr->cook_label
     scr->cook_label = lv_label_create(scr->obj);
     lv_label_set_text(scr->cook_label, "烹饪功能");

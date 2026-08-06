@@ -190,7 +190,7 @@ void jump_to_bottom_bbq_menu(void)
 
         edit_clear();
         edit_register(menu->temp, menu->templine2, menu->templine3,
-                      &set_temp, 30, 300, 5, "%d");
+                      &set_temp, 30, 250, 5, "%d");
         edit_register(menu->hour, menu->hourline, NULL,
                       &set_hour, 0, 4, 1, "%02d");
         edit_register(menu->min, menu->minline, NULL,
@@ -396,7 +396,7 @@ void jump_to_bottom_bbq_setting(void)
 
         edit_clear();
         edit_register(set->temp, set->templine2, set->templine3,
-                      &set_temp, 30, 300, 5, "%d");
+                      &set_temp, 30, 250, 5, "%d");
         edit_register(set->hour, set->hourline, NULL,
                       &set_hour, 0, 4, 1, "%02d");
         edit_register(set->min, set->minline, NULL,
@@ -750,7 +750,7 @@ void bottom_bbq_rebuild_menu(page_id_t child)
 
         edit_clear();
         edit_register(menu->temp, menu->templine2, menu->templine3,
-                      &set_temp, 30, 300, 5, "%d");
+                      &set_temp, 30, 250, 5, "%d");
         edit_register(menu->hour, menu->hourline, NULL,
                       &set_hour, 0, 4, 1, "%02d");
         edit_register(menu->min, menu->minline, NULL,
@@ -946,7 +946,7 @@ void bottom_bbq_rebuild_setting(void)
 
         edit_clear();
         edit_register(set->temp, set->templine2, set->templine3,
-                      &set_temp, 30, 300, 5, "%d");
+                      &set_temp, 30, 250, 5, "%d");
         edit_register(set->hour, set->hourline, NULL,
                       &set_hour, 0, 4, 1, "%02d");
         edit_register(set->min, set->minline, NULL,

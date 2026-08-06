@@ -65,35 +65,6 @@ void waitmenu_12_create(ui_manager_t *ui)
     lv_obj_set_style_text_color(scr->year_month_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->year_month_label, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->coolfan_label
-    scr->coolfan_label = lv_label_create(scr->obj);
-    lv_label_set_text(scr->coolfan_label, "冷却风扇已开");
-    lv_label_set_long_mode(scr->coolfan_label, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->coolfan_label, 565, 378);
-    lv_obj_set_size(scr->coolfan_label, 150, 28);
-    lv_obj_add_flag(scr->coolfan_label, LV_OBJ_FLAG_HIDDEN);
-
-    // Set style of scr->coolfan_label
-    lv_obj_set_style_text_font(scr->coolfan_label, fs_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->coolfan_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(scr->coolfan_label, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    // Init scr->light_button
-    scr->light_button = lv_btn_create(scr->obj);
-    lv_obj_t *light_button_label = lv_label_create(scr->light_button);
-    lv_label_set_text(light_button_label, "");
-    lv_obj_align(light_button_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->light_button, 22, 19);
-    lv_obj_set_size(scr->light_button, 46, 43);
-    lv_obj_add_flag(scr->light_button, LV_OBJ_FLAG_HIDDEN);
-
-    // Set style of scr->light_button
-    lv_obj_set_style_bg_opa(scr->light_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->light_button, LVGL_IMAGE_PATH(light.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->light_button, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_width(scr->light_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_shadow_width(scr->light_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-
     // Init scr->halfday_label
     scr->halfday_label = lv_label_create(scr->obj);
     lv_label_set_text(scr->halfday_label, "下午");

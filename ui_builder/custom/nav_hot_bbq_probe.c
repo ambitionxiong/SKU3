@@ -136,7 +136,7 @@ void jump_to_hot_bbq_menu_probe(void)
 
         edit_clear();
         edit_register(menu->temp, menu->templine2, menu->templine3,
-                      &set_temp, 30, 300, 5, "%d");
+                      &set_temp, 30, 250, 5, "%d");
         edit_register(menu->probetemp, menu->probetempline, NULL,
                       &probe_target_temp, 30, 99, 1, "%d");
 
@@ -468,7 +468,7 @@ void hot_bbq_probe_rebuild_menu(page_id_t child)
 
         edit_clear();
         edit_register(menu->temp, menu->templine2, menu->templine3,
-                      &set_temp, 30, 300, 5, "%d");
+                      &set_temp, 30, 250, 5, "%d");
         edit_register(menu->probetemp, menu->probetempline, NULL,
                       &probe_target_temp, 30, 99, 1, "%d");
 

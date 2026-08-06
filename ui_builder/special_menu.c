@@ -306,18 +306,6 @@ void special_menu_create(ui_manager_t *ui)
     lv_obj_set_style_img_opa(scr->major_img, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_pos(scr->major_img, 94, 110);
 
-    // Init scr->time_label
-    scr->time_label = lv_label_create(scr->obj);
-    lv_label_set_text(scr->time_label, "12:00");
-    lv_label_set_long_mode(scr->time_label, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->time_label, 1179, 24);
-    lv_obj_set_size(scr->time_label, 77, 32);
-
-    // Set style of scr->time_label
-    lv_obj_set_style_text_font(scr->time_label, fs_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->time_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(scr->time_label, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
-
 
 }
 

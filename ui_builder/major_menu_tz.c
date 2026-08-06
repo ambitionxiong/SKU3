@@ -67,7 +67,7 @@ void major_menu_tz_create(ui_manager_t *ui)
     lv_label_set_text(scr->menu_label, "菜单");
     lv_label_set_long_mode(scr->menu_label, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->menu_label, 24, 24);
-    lv_obj_set_size(scr->menu_label, 100, 32);
+    lv_obj_set_size(scr->menu_label, 48, 32);
 
     // Set style of scr->menu_label
     lv_obj_set_style_text_font(scr->menu_label, fs_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -79,7 +79,7 @@ void major_menu_tz_create(ui_manager_t *ui)
     lv_img_set_pivot(scr->tz_img, 50, 50);
     lv_img_set_angle(scr->tz_img, 0);
     lv_obj_set_style_img_opa(scr->tz_img, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->tz_img, 95, 24);
+    lv_obj_set_pos(scr->tz_img, 96, 24);
 
     // Init scr->major_img
     scr->major_img = lv_img_create(scr->obj);
@@ -88,18 +88,6 @@ void major_menu_tz_create(ui_manager_t *ui)
     lv_img_set_angle(scr->major_img, 0);
     lv_obj_set_style_img_opa(scr->major_img, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_pos(scr->major_img, 300, 185);
-
-    // Init scr->time_label
-    scr->time_label = lv_label_create(scr->obj);
-    lv_label_set_text(scr->time_label, "12:00");
-    lv_label_set_long_mode(scr->time_label, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->time_label, 1156, 24);
-    lv_obj_set_size(scr->time_label, 100, 32);
-
-    // Set style of scr->time_label
-    lv_obj_set_style_text_font(scr->time_label, fs_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->time_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(scr->time_label, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->cook_label
     scr->cook_label = lv_label_create(scr->obj);

@@ -940,6 +940,51 @@ void page_pop(void)
     page_id_t prev = page_stack[depth - 1];
     printf("[nav] page pop: depth=%d, back to id=%d (from id=%d)\n", depth, prev, child);
 
+    /* 从 stop_back 确认页退出时清除暂停确认状态（防止残留导致 cooking 定时器走错分支） */
+    if (g_on_stop_back) {
+        switch (child) {
+        case PAGE_UPDOWN_BBQ_STOP_BACK:
+        case PAGE_TOP_BBQ_STOP_BACK:
+        case PAGE_BOTTOM_BBQ_STOP_BACK:
+        case PAGE_HOT_BBQ_STOP_BACK:
+        case PAGE_HOTWIND_BBQ_STOP_BACK:
+        case PAGE_SAVE_BBQ_STOP_BACK:
+        case PAGE_CENTRAL_BBQ_STOP_BACK:
+        case PAGE_WINDCHANGE_BBQ_STOP_BACK:
+        case PAGE_AIR_STOP_BACK:
+        case PAGE_PIZZA_2_STOP_BACK:
+        case PAGE_SLOWCOOK_STOP_BACK:
+        case PAGE_UNFROZEN_STOP_BACK:
+        case PAGE_RISING_STOP_BACK:
+        case PAGE_CORN_STOP_BACK:
+        case PAGE_HEATCONTAIN_STOP_BACK:
+        case PAGE_UPDOWN_BBQ_STOP_BACK_PROBE:
+        case PAGE_HOT_BBQ_STOP_BACK_PROBE:
+        case PAGE_BOTTOM_BBQ_STOP_BACK_PROBE:
+        case PAGE_SLOWCOOK_STOP_BACK_PROBE:
+        case PAGE_COOKIE_STOP_BACK:
+        case PAGE_WEST_STOP_BACK:
+        case PAGE_PIZZA_STOP_BACK:
+        case PAGE_MENU_COOK_STOP_BACK:
+        case PAGE_LASAGNA_STOP_BACK:
+        case PAGE_STRUDEL_STOP_BACK:
+        case PAGE_BREAD_STOP_BACK:
+        case PAGE_PIZZA3_STOP_BACK:
+        case PAGE_CHIP_STOP_BACK:
+        case PAGE_CUSTOM_STOP_BACK:
+        case PAGE_PREHEAT_STOP_BACK:
+        case PAGE_WATER_CLEAN_STOP_BACK:
+        case PAGE_HOTCLEANSAVE_STOP_BACK:
+        case PAGE_HOTCLEANMIDDLE_STOP_BACK:
+        case PAGE_HOTCLEANHIGH_STOP_BACK:
+        case PAGE_COLOR_STOP_BACK:
+            g_on_stop_back = 0;
+            break;
+        default:
+            break;
+        }
+    }
+
     /* ⑤ 清当前屏 */
     lv_obj_clean(lv_scr_act());
 
@@ -4535,6 +4580,8 @@ static void process_key(uint8_t key)
         g_keepwarm_active = 0;
         g_keepwarm_sec = 0;
         delay_on = 0;
+        contain_on = 0;
+        preheat_on = 0;
         g_stop_back_complete = NULL;
         depth = 0;
         page_push(PAGE_WAITMENU_24);
@@ -6690,18 +6737,16 @@ void cooking_timer_cb(lv_timer_t *timer)
         if (current_group == g_hcs_stop_back ||
             current_group == g_hcm_stop_back ||
             current_group == g_hch_stop_back) {
-            /* 高温清洁冷却：仅冷却阶段（cooking 已完成）腔温降到 270 自动完成 */
+            /* hotclean stop_back（cooking 进入）：计时完成后进入冷却阶段 */
             uint32_t e = cook_timer ? (lv_tick_get() - cook_start_time) : (uint32_t)cook_elapsed_saved;
-            if (e >= (uint32_t)cook_total_ms && get_cavity_temp() <= 270 && cook_timer) {
+            if (e >= (uint32_t)cook_total_ms && cook_timer) {
                 lv_timer_del(cook_timer);
                 cook_timer = NULL;
-                g_send.buzzer_req = BUZZER_COOK_DONE;
                 g_on_stop_back = 0;
-                if (g_stop_back_complete) {
-                    void (*fn)(void) = g_stop_back_complete;
-                    g_stop_back_complete = NULL;
-                    fn();
-                }
+                g_stop_back_complete = NULL;
+                if (current_group == g_hcs_stop_back) jump_to_hcs_cooling();
+                else if (current_group == g_hcm_stop_back) jump_to_hcm_cooling();
+                else jump_to_hch_cooling();
                 return;
             }
             /* 未完成：fall through 到下方 elapsed 进度更新（hcs/hcm/hch bar）*/
@@ -7153,6 +7198,9 @@ void cooking_timer_cb(lv_timer_t *timer)
     if (current_group == g_updown_bbq_setting) {
         updown_bbq_setting_t *set = updown_bbq_setting_get(&ui_manager);
         if (set) time_label = set->time_label;
+    } else if (current_group == g_updown_bbq_cooking) {
+        updown_bbq_cooking_t *cook = updown_bbq_cooking_get(&ui_manager);
+        if (cook) time_label = cook->time_label;
     } else if (current_group == g_top_bbq_setting) {
         top_bbq_setting_t *set = top_bbq_setting_get(&ui_manager);
         if (set) time_label = set->time_label;

@@ -300,18 +300,6 @@ void cookmenu_create(ui_manager_t *ui)
     lv_obj_set_style_text_font(scr->hot_bbq_labal, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->hot_bbq_labal, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->time_labal
-    scr->time_labal = lv_label_create(scr->obj);
-    lv_label_set_text(scr->time_labal, "12:00");
-    lv_label_set_long_mode(scr->time_labal, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->time_labal, 1179, 24);
-    lv_obj_set_size(scr->time_labal, 77, 32);
-
-    // Set style of scr->time_labal
-    lv_obj_set_style_text_font(scr->time_labal, fs_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->time_labal, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(scr->time_labal, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
-
 
 }
 

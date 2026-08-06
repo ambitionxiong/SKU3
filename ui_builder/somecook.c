@@ -26,66 +26,66 @@ void somecook_create(ui_manager_t *ui)
     // Set style of scr->obj
     lv_obj_set_style_bg_color(scr->obj, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->obj, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->obj, LVGL_IMAGE_PATH(bg.jpg), LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    // Init scr->button_1
-    scr->button_1 = lv_btn_create(scr->obj);
-    lv_obj_t *button_1_label = lv_label_create(scr->button_1);
-    lv_label_set_text(button_1_label, "");
-    lv_obj_align(button_1_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->button_1, 421, 60);
-    lv_obj_set_size(scr->button_1, 439, 417);
-
-    // Set style of scr->button_1
-    lv_obj_set_style_bg_opa(scr->button_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->button_1, LVGL_IMAGE_PATH(div3bk30.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->button_1, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_width(scr->button_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_shadow_width(scr->button_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(scr->button_1, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->button_1, LVGL_IMAGE_PATH(div3bk80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
-
-    // Init scr->button_2
-    scr->button_2 = lv_btn_create(scr->obj);
-    lv_obj_t *button_2_label = lv_label_create(scr->button_2);
-    lv_label_set_text(button_2_label, "");
-    lv_obj_align(button_2_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->button_2, 7, 60);
-    lv_obj_set_size(scr->button_2, 439, 417);
-
-    // Set style of scr->button_2
-    lv_obj_set_style_bg_opa(scr->button_2, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->button_2, LVGL_IMAGE_PATH(div3bk30.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->button_2, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_width(scr->button_2, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_shadow_width(scr->button_2, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(scr->button_2, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->button_2, LVGL_IMAGE_PATH(div3bk80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->obj, LVGL_IMAGE_PATH(stepsetbg.png), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->button_3
     scr->button_3 = lv_btn_create(scr->obj);
     lv_obj_t *button_3_label = lv_label_create(scr->button_3);
     lv_label_set_text(button_3_label, "");
     lv_obj_align(button_3_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->button_3, 835, 60);
-    lv_obj_set_size(scr->button_3, 439, 417);
+    lv_obj_set_pos(scr->button_3, 845, 110);
+    lv_obj_set_size(scr->button_3, 418, 355);
 
     // Set style of scr->button_3
     lv_obj_set_style_bg_opa(scr->button_3, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->button_3, LVGL_IMAGE_PATH(div3bk30.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->button_3, LVGL_IMAGE_PATH(stepbg30.png), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(scr->button_3, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->button_3, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->button_3, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->button_3, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->button_3, LVGL_IMAGE_PATH(div3bk80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->button_3, LVGL_IMAGE_PATH(stepbg80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+
+    // Init scr->button_1
+    scr->button_1 = lv_btn_create(scr->obj);
+    lv_obj_t *button_1_label = lv_label_create(scr->button_1);
+    lv_label_set_text(button_1_label, "");
+    lv_obj_align(button_1_label, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_pos(scr->button_1, 431, 110);
+    lv_obj_set_size(scr->button_1, 418, 355);
+
+    // Set style of scr->button_1
+    lv_obj_set_style_bg_opa(scr->button_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->button_1, LVGL_IMAGE_PATH(stepbg30.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->button_1, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(scr->button_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(scr->button_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(scr->button_1, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->button_1, LVGL_IMAGE_PATH(stepbg80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+
+    // Init scr->button_2
+    scr->button_2 = lv_btn_create(scr->obj);
+    lv_obj_t *button_2_label = lv_label_create(scr->button_2);
+    lv_label_set_text(button_2_label, "");
+    lv_obj_align(button_2_label, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_pos(scr->button_2, 17, 110);
+    lv_obj_set_size(scr->button_2, 418, 355);
+
+    // Set style of scr->button_2
+    lv_obj_set_style_bg_opa(scr->button_2, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->button_2, LVGL_IMAGE_PATH(stepbg30.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->button_2, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(scr->button_2, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(scr->button_2, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(scr->button_2, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->button_2, LVGL_IMAGE_PATH(stepbg80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
     // Init scr->image_1
     scr->image_1 = lv_img_create(scr->obj);
-    lv_img_set_src(scr->image_1, LVGL_IMAGE_PATH(menuimg.png));
+    lv_img_set_src(scr->image_1, LVGL_IMAGE_PATH(steptext.png));
     lv_img_set_pivot(scr->image_1, 50, 50);
     lv_img_set_angle(scr->image_1, 0);
     lv_obj_set_style_img_opa(scr->image_1, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->image_1, 196, 187);
+    lv_obj_set_pos(scr->image_1, 184, 138);
 
     // Init scr->label_1
     scr->label_1 = lv_label_create(scr->obj);
@@ -111,41 +111,29 @@ void somecook_create(ui_manager_t *ui)
     lv_obj_set_style_text_color(scr->label_2, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->label_2, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->label_3
-    scr->label_3 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_3, "烹饪功能");
-    lv_label_set_long_mode(scr->label_3, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_3, 153, 291);
-    lv_obj_set_size(scr->label_3, 147, 28);
+    // Init scr->plus1
+    scr->plus1 = lv_img_create(scr->obj);
+    lv_img_set_src(scr->plus1, LVGL_IMAGE_PATH(plus.png));
+    lv_img_set_pivot(scr->plus1, 50, 50);
+    lv_img_set_angle(scr->plus1, 0);
+    lv_obj_set_style_img_opa(scr->plus1, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(scr->plus1, 201, 262);
 
-    // Set style of scr->label_3
-    lv_obj_set_style_text_font(scr->label_3, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->label_3, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(scr->label_3, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
+    // Init scr->plus2
+    scr->plus2 = lv_img_create(scr->obj);
+    lv_img_set_src(scr->plus2, LVGL_IMAGE_PATH(plus.png));
+    lv_img_set_pivot(scr->plus2, 50, 50);
+    lv_img_set_angle(scr->plus2, 0);
+    lv_obj_set_style_img_opa(scr->plus2, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(scr->plus2, 615, 262);
 
-    // Init scr->label_4
-    scr->label_4 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_4, "COOK 4");
-    lv_label_set_long_mode(scr->label_4, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_4, 567, 291);
-    lv_obj_set_size(scr->label_4, 147, 28);
-
-    // Set style of scr->label_4
-    lv_obj_set_style_text_font(scr->label_4, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->label_4, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(scr->label_4, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    // Init scr->label_5
-    scr->label_5 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_5, "特殊功能");
-    lv_label_set_long_mode(scr->label_5, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_5, 981, 291);
-    lv_obj_set_size(scr->label_5, 147, 30);
-
-    // Set style of scr->label_5
-    lv_obj_set_style_text_font(scr->label_5, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->label_5, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(scr->label_5, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
+    // Init scr->plus3
+    scr->plus3 = lv_img_create(scr->obj);
+    lv_img_set_src(scr->plus3, LVGL_IMAGE_PATH(plus.png));
+    lv_img_set_pivot(scr->plus3, 50, 50);
+    lv_img_set_angle(scr->plus3, 0);
+    lv_obj_set_style_img_opa(scr->plus3, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(scr->plus3, 1029, 262);
 
 
 }

@@ -21,10 +21,6 @@ typedef struct {
     lv_obj_t *time_label;
     lv_obj_t *week_label;
     lv_obj_t *year_month_label;
-    lv_obj_t *coolfan_label;
-    lv_obj_t *light_button;
-    lv_obj_t *show_bg_button;
-    lv_obj_t *show_label;
 } waitmenu_24_t;
 
 typedef struct {
@@ -152,7 +148,6 @@ typedef struct {
     lv_obj_t *obj;
     lv_obj_t *slowcook_button;
     lv_obj_t *special_label;
-    lv_obj_t *time_label;
     lv_obj_t *major_img;
     lv_obj_t *slowcook_label;
 } special_menu_tz_t;
@@ -162,8 +157,6 @@ typedef struct {
     lv_obj_t *time_label;
     lv_obj_t *week_label;
     lv_obj_t *year_month_label;
-    lv_obj_t *coolfan_label;
-    lv_obj_t *light_button;
     lv_obj_t *halfday_label;
 } waitmenu_12_t;
 
@@ -174,7 +167,6 @@ typedef struct {
     lv_obj_t *bottom_button;
     lv_obj_t *major_img;
     lv_obj_t *cook_label;
-    lv_obj_t *time_label;
     lv_obj_t *updown_label;
     lv_obj_t *hot_label;
     lv_obj_t *bottom_label;
@@ -187,7 +179,6 @@ typedef struct {
     lv_obj_t *menu_label;
     lv_obj_t *tz_img;
     lv_obj_t *major_img;
-    lv_obj_t *time_label;
     lv_obj_t *cook_label;
     lv_obj_t *special_label;
 } major_menu_tz_t;
@@ -199,7 +190,6 @@ typedef struct {
     lv_obj_t *special_button;
     lv_obj_t *major_img;
     lv_obj_t *menu_label;
-    lv_obj_t *time_label;
     lv_obj_t *cook_label;
     lv_obj_t *cook4_label;
     lv_obj_t *special_label;
@@ -227,7 +217,6 @@ typedef struct {
     lv_obj_t *preheater_labal;
     lv_obj_t *pengren_labal;
     lv_obj_t *hot_bbq_labal;
-    lv_obj_t *time_labal;
 } cookmenu_t;
 
 typedef struct {
@@ -1900,7 +1889,6 @@ typedef struct {
     lv_obj_t *special_label;
     lv_obj_t *piza_label;
     lv_obj_t *major_img;
-    lv_obj_t *time_label;
 } special_menu_t;
 
 typedef struct {
@@ -3913,16 +3901,24 @@ typedef struct {
 
 typedef struct {
     lv_obj_t *obj;
+    lv_obj_t *button_3;
     lv_obj_t *button_1;
     lv_obj_t *button_2;
-    lv_obj_t *button_3;
     lv_obj_t *image_1;
     lv_obj_t *label_1;
     lv_obj_t *label_2;
-    lv_obj_t *label_3;
-    lv_obj_t *label_4;
-    lv_obj_t *label_5;
+    lv_obj_t *plus1;
+    lv_obj_t *plus2;
+    lv_obj_t *plus3;
 } somecook_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *currenttime;
+    lv_obj_t *demo;
+    lv_obj_t *timer;
+    lv_obj_t *light;
+} topflagpage_t;
 
 
 typedef struct {
@@ -4180,6 +4176,7 @@ typedef struct {
     delayset_t delayset;
     delaycooking_t delaycooking;
     somecook_t somecook;
+    topflagpage_t topflagpage;
 
 } ui_manager_t;
 
@@ -5454,6 +5451,11 @@ static inline somecook_t *somecook_get(ui_manager_t *ui)
     return &ui->somecook;
 }
 
+static inline topflagpage_t *topflagpage_get(ui_manager_t *ui)
+{
+    return &ui->topflagpage;
+}
+
 
 void waitmenu_24_create(ui_manager_t *ui);
 void clean_menu_create(ui_manager_t *ui);
@@ -5708,6 +5710,7 @@ void slowcook_complete_probe_create(ui_manager_t *ui);
 void delayset_create(ui_manager_t *ui);
 void delaycooking_create(ui_manager_t *ui);
 void somecook_create(ui_manager_t *ui);
+void topflagpage_create(ui_manager_t *ui);
 
 
 extern lv_font_t *fs_montserratmedium_16;

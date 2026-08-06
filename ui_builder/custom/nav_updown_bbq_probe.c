@@ -143,7 +143,7 @@ void jump_to_updown_bbq_menu_probe(void)
 
         edit_clear();
         edit_register(menu->temp, menu->templine2, menu->templine3,
-                      &set_temp, 30, 300, 5, "%d");
+                      &set_temp, 30, 250, 5, "%d");
         edit_register(menu->probetemp, menu->probeline2, NULL,
                       &probe_target_temp, 30, 99, 1, "%d");
 
@@ -471,7 +471,7 @@ void updown_bbq_probe_rebuild_menu(page_id_t child)
 
         edit_clear();
         edit_register(menu->temp, menu->templine2, menu->templine3,
-                      &set_temp, 30, 300, 5, "%d");
+                      &set_temp, 30, 250, 5, "%d");
         edit_register(menu->probetemp, menu->probeline2, NULL,
                       &probe_target_temp, 30, 99, 1, "%d");
 
