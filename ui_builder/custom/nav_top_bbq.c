@@ -34,6 +34,10 @@ static void top_bbq_preheat_toggle(lv_event_t *e)
     if (!set) return;
     preheat_on = !preheat_on;
     if (preheat_on) {
+        /* 互斥：开预热关延时 */
+        delay_on = 0;
+        apply_toggle_state(set->offdelay, set->ondelay_button, delay_on);
+        mode_set_apply_delay_label(set->ondelay_button);
         lv_obj_add_flag(set->offpreheat, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->onpreheat_button, LV_OBJ_FLAG_HIDDEN);
         lv_group_focus_obj(set->onpreheat_button);
@@ -48,16 +52,16 @@ static void top_bbq_delay_toggle(lv_event_t *e)
 {
     top_bbq_set_t *set = top_bbq_set_get(&ui_manager);
     if (!set) return;
-    delay_on = !delay_on;
-    if (delay_on) {
-        lv_obj_add_flag(set->offdelay, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_clear_flag(set->ondelay_button, LV_OBJ_FLAG_HIDDEN);
-        lv_group_focus_obj(set->ondelay_button);
-    } else {
-        lv_obj_add_flag(set->ondelay_button, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_clear_flag(set->offdelay, LV_OBJ_FLAG_HIDDEN);
-        lv_group_focus_obj(set->offdelay);
+    lv_obj_t *tgt = lv_event_get_target(e);
+    if (tgt == set->offdelay) {
+        jump_to_delayset();
+        return;
     }
+    /* ondelay：直接关闭 */
+    delay_on = 0;
+    lv_obj_add_flag(set->ondelay_button, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(set->offdelay, LV_OBJ_FLAG_HIDDEN);
+    lv_group_focus_obj(set->offdelay);
 }
 
 static void top_bbq_contain_toggle(lv_event_t *e)
@@ -106,7 +110,9 @@ static void on_top_bbq_set_sure_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
     if (!screen_is_loading(act_scr)) {
-        if (preheat_on)
+        if (delay_on)
+            jump_to_delaycooking();
+        else if (preheat_on)
             jump_to_preheat_cooking();
         else
             jump_to_top_bbq_cooking();
@@ -140,6 +146,7 @@ static void on_top_bbq_stop_back_sure_click(lv_event_t *e)
     lv_obj_t *act_scr = lv_scr_act();
     if (screen_is_loading(act_scr)) return;
     g_on_stop_back = 0;
+    g_keepwarm_active = 0;
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
     set_temp = 180; set_temp_up = 180; set_temp_down = 180; set_hour = 0; set_min = 30;
     cook_elapsed_saved = 0; cook_bar_saved = 0;
@@ -282,6 +289,7 @@ void jump_to_top_bbq_set(void)
         lv_obj_set_pos(set->label_59, 448, 269);
     }
         apply_toggle_state(set->offdelay, set->ondelay_button, delay_on);
+        mode_set_apply_delay_label(set->ondelay_button);
     if (set_hour == 0) {
         lv_obj_add_flag(set->label_58, LV_OBJ_FLAG_HIDDEN);
         lv_obj_set_pos(set->min, 312, 254);
@@ -318,6 +326,8 @@ void jump_to_top_bbq_cooking(void)
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;
     }
+
+    g_keepwarm_active = 0;
 
     page_push(PAGE_TOP_BBQ_COOKING);
     lv_obj_clean(lv_scr_act());
@@ -435,6 +445,7 @@ void jump_to_top_bbq_setting(void)
     lv_scr_load_anim(top_bbq_setting_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
+        if (g_send.iface_status != IFACE_COMPLETE)
         g_send.iface_status = (cook_timer != NULL) ? IFACE_COOKING : IFACE_SETTING;
     printf("[top_bbq] jump: cooking -> top_bbq_setting\n");
 }
@@ -492,9 +503,9 @@ void jump_to_top_bbq_stop_back(void)
 {
     edit_clear();
     int cooking_bar_val = 0;
-    if (cook_timer) {
+    if (cook_timer && depth > 0 && page_stack[depth - 1] == PAGE_TOP_BBQ_COOKING) {
         top_bbq_cooking_t *cook = top_bbq_cooking_get(&ui_manager);
-        if (cook) cooking_bar_val = lv_bar_get_value(cook->bar_6);
+        if (cook && cook->bar_6) cooking_bar_val = lv_bar_get_value(cook->bar_6);
     }
 
     g_on_stop_back = 1;
@@ -523,9 +534,20 @@ void jump_to_top_bbq_stop_back(void)
         lv_bar_set_value(back->bar_8, p, LV_ANIM_OFF);
         if (g_complete_to_stop_back) {
             g_complete_to_stop_back = 0;
-            lv_label_set_text(back->label_104, "已完成");
+            if (g_keepwarm_active)
+                lv_label_set_text(back->label_104, "保温中...");
+            else
+                lv_label_set_text(back->label_104, "已完成");
             lv_bar_set_value(back->bar_8, 100, LV_ANIM_OFF);
         }
+        if (g_delay_cancel_to_stop_back) {
+            g_delay_cancel_to_stop_back = 0;
+            lv_label_set_text(back->label_104, "预约中...");
+            lv_obj_add_flag(back->bar_8, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(back->image_49, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(back->little, LV_OBJ_FLAG_HIDDEN);
+        }
+
         if (g_send.iface_status == IFACE_COOKING)
             lv_label_set_text(back->label_104, "烹饪中...");
     }
@@ -694,6 +716,14 @@ void jump_to_top_bbq_complete(void)
     g_send.iface_status = IFACE_COMPLETE;
     g_send.remaining_ms = 0;
     printf("[top_bbq] jump: cooking -> complete\n");
+    /* 自动保温：保温开关开启时 complete 页停留 1 分钟无操作 → 保温（15 分钟） */
+    if (contain_on) {
+        g_keepwarm_active = 0;
+        g_keepwarm_sec = 0;
+        if (cook_timer) lv_timer_del(cook_timer);
+        cook_timer = lv_timer_create(cooking_timer_cb, 1000, NULL);
+    }
+
 }
 
 // ==============================
@@ -780,10 +810,12 @@ void top_bbq_rebuild_set(page_id_t child)
         lv_label_set_text_fmt(set->min, "%02d", set_min);
     if (set_hour == 0) {
         lv_obj_add_flag(set->label_58, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_set_pos(set->min, 312, 254);
         lv_obj_set_pos(set->label_59, 365, 269);
     } else {
         lv_obj_clear_flag(set->label_58, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_set_pos(set->min, 395, 254);
         lv_obj_set_pos(set->label_59, 448, 269);
     }
@@ -791,20 +823,25 @@ void top_bbq_rebuild_set(page_id_t child)
         apply_toggle_state(set->offpreheat, set->onpreheat_button, preheat_on);
     if (set_hour == 0) {
         lv_obj_add_flag(set->label_58, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_set_pos(set->min, 312, 254);
         lv_obj_set_pos(set->label_59, 365, 269);
     } else {
         lv_obj_clear_flag(set->label_58, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_set_pos(set->min, 395, 254);
         lv_obj_set_pos(set->label_59, 448, 269);
     }
         apply_toggle_state(set->offdelay, set->ondelay_button, delay_on);
+        mode_set_apply_delay_label(set->ondelay_button);
     if (set_hour == 0) {
         lv_obj_add_flag(set->label_58, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_set_pos(set->min, 312, 254);
         lv_obj_set_pos(set->label_59, 365, 269);
     } else {
         lv_obj_clear_flag(set->label_58, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_set_pos(set->min, 395, 254);
         lv_obj_set_pos(set->label_59, 448, 269);
     }
@@ -822,6 +859,9 @@ void top_bbq_rebuild_set(page_id_t child)
         if (child == PAGE_TOP_BBQ_COOKING && set->sure_button)
             lv_group_focus_obj(set->sure_button);
     }
+        if (child == PAGE_DELAYSET && set->offdelay)
+            lv_group_focus_obj(delay_on ? set->ondelay_button : set->offdelay);
+
     current_group = g_top_bbq_set;
     lv_scr_load_anim(top_bbq_set_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
@@ -1005,7 +1045,10 @@ void top_bbq_rebuild_stop_back(void)
 
         if (g_complete_to_stop_back) {
             g_complete_to_stop_back = 0;
-            lv_label_set_text(back->label_104, "已完成");
+            if (g_keepwarm_active)
+                lv_label_set_text(back->label_104, "保温中...");
+            else
+                lv_label_set_text(back->label_104, "已完成");
             lv_bar_set_value(back->bar_8, 100, LV_ANIM_OFF);
         }
     }

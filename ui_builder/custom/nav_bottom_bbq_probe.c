@@ -29,8 +29,12 @@ static void on_bottom_bbq_probe_menu_next_click(lv_event_t *e)
 static void on_bottom_bbq_probe_set_sure_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
-    if (!screen_is_loading(act_scr))
-        jump_to_bottom_bbq_cooking_probe();
+    if (!screen_is_loading(act_scr)) {
+        if (delay_on)
+            jump_to_delaycooking();
+        else
+            jump_to_bottom_bbq_cooking_probe();
+    }
 }
 
 static void on_bottom_bbq_probe_cooking_stop_click(lv_event_t *e)
@@ -52,6 +56,7 @@ static void on_bottom_bbq_probe_stop_back_sure_click(lv_event_t *e)
     lv_obj_t *act_scr = lv_scr_act();
     if (screen_is_loading(act_scr)) return;
     g_on_stop_back = 0;
+    g_keepwarm_active = 0;
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
     probe_target_temp = 80; set_temp = 180; set_hour = 0; set_min = 30;
     cook_elapsed_saved = 0; cook_bar_saved = 0;
@@ -89,9 +94,16 @@ static void on_bottom_bbq_probe_delay_toggle(lv_event_t *e)
 {
     bottom_bbq_set_probe_t *set = bottom_bbq_set_probe_get(&ui_manager);
     if (!set) return;
-    delay_on = !delay_on;
-    apply_toggle_state(set->offdelay, set->ondelay, delay_on);
-    lv_group_focus_obj(delay_on ? set->ondelay : set->offdelay);
+    lv_obj_t *tgt = lv_event_get_target(e);
+    if (tgt == set->offdelay) {
+        jump_to_delayset();
+        return;
+    }
+    /* ondelay：直接关闭 */
+    delay_on = 0;
+    lv_obj_add_flag(set->ondelay, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(set->offdelay, LV_OBJ_FLAG_HIDDEN);
+    lv_group_focus_obj(set->offdelay);
 }
 
 static void on_bottom_bbq_probe_complete_click(lv_event_t *e)
@@ -194,6 +206,7 @@ void jump_to_bottom_bbq_set_probe(void)
         lv_label_set_text_fmt(set->probetemp, "%d", probe_target_temp);
 
         apply_toggle_state(set->offdelay, set->ondelay, delay_on);
+        mode_set_apply_delay_label(set->ondelay);
 
         lv_obj_add_event_cb(set->temp, on_bottom_bbq_probe_edit_focus,
                             LV_EVENT_FOCUSED, NULL);
@@ -221,6 +234,7 @@ void jump_to_bottom_bbq_cooking_probe(void)
 {
     edit_clear();
     g_on_stop_back = 0;
+    g_keepwarm_active = 0;
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;
@@ -341,6 +355,13 @@ void jump_to_bottom_bbq_stop_back_probe(void)
             lv_label_set_text(back->label_72, "已完成");
             lv_bar_set_value(back->bar_7, 100, LV_ANIM_OFF);
         }
+        if (g_delay_cancel_to_stop_back) {
+            g_delay_cancel_to_stop_back = 0;
+            lv_label_set_text(back->label_72, "预约中...");
+            lv_obj_add_flag(back->bar_7, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(back->image_29, LV_OBJ_FLAG_HIDDEN);
+        }
+
     }
     current_group = g_bottom_bbq_stop_back_probe;
 
@@ -508,6 +529,7 @@ void bottom_bbq_probe_rebuild_set(page_id_t child)
         lv_label_set_text_fmt(set->probetemp, "%d", probe_target_temp);
 
         apply_toggle_state(set->offdelay, set->ondelay, delay_on);
+        mode_set_apply_delay_label(set->ondelay);
 
         lv_obj_add_event_cb(set->temp, on_bottom_bbq_probe_edit_focus,
                             LV_EVENT_FOCUSED, NULL);
@@ -522,6 +544,8 @@ void bottom_bbq_probe_rebuild_set(page_id_t child)
                             LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(set->ondelay, on_bottom_bbq_probe_delay_toggle,
                             LV_EVENT_CLICKED, NULL);
+        if (child == PAGE_DELAYSET && set->offdelay)
+            lv_group_focus_obj(delay_on ? set->ondelay : set->offdelay);
     }
     current_group = g_bottom_bbq_set_probe;
     lv_scr_load_anim(bottom_bbq_set_probe_get(&ui_manager)->obj,

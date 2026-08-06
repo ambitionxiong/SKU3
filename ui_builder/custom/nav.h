@@ -381,6 +381,8 @@ extern lv_group_t *g_delayset;
 extern lv_group_t *g_delaycooking;
 extern uint8_t g_delay_cancel_to_stop_back;
 extern uint8_t g_keepwarm_active;
+extern int g_keepwarm_sec;
+extern page_id_t g_delay_source_page;
 extern lv_group_t *g_updown_bbq_cooking;
 extern lv_group_t *g_updown_bbq_complete;
 extern lv_group_t *g_updown_bbq_stop;
@@ -486,6 +488,9 @@ extern lv_group_t *g_color_stop_back;
 void jump_to_updown_bbq_menu(void);
 void jump_to_delayset(void);
 void jump_to_delaycooking(void);
+const char *mode_display_name(void);          // 按 g_send.cook_mode 返回模式名
+void mode_apply_icon(lv_obj_t *icon);         // 按 g_send.cook_mode 设置模式图标
+void mode_set_apply_delay_label(lv_obj_t *ondelay_btn);  // 14 模式 set 页 ondelay 按钮文字
 void jump_to_updown_bbq_menu_probe(void);
 void jump_to_updown_bbq_set_probe(void);
 void jump_to_updown_bbq_cooking_probe(void);

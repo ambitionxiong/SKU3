@@ -29,16 +29,16 @@ static void lasagna_delay_toggle(lv_event_t *e)
 {
     lasagna_set_t *set = lasagna_set_get(&ui_manager);
     if (!set) return;
-    delay_on = !delay_on;
-    if (delay_on) {
-        lv_obj_add_flag(set->offdelay, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_clear_flag(set->ondelay, LV_OBJ_FLAG_HIDDEN);
-        lv_group_focus_obj(set->ondelay);
-    } else {
-        lv_obj_add_flag(set->ondelay, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_clear_flag(set->offdelay, LV_OBJ_FLAG_HIDDEN);
-        lv_group_focus_obj(set->offdelay);
+    lv_obj_t *tgt = lv_event_get_target(e);
+    if (tgt == set->offdelay) {
+        jump_to_delayset();
+        return;
     }
+    /* ondelay：直接关闭 */
+    delay_on = 0;
+    lv_obj_add_flag(set->ondelay, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(set->offdelay, LV_OBJ_FLAG_HIDDEN);
+    lv_group_focus_obj(set->offdelay);
 }
 
 static void lasagna_contain_toggle(lv_event_t *e)
@@ -72,8 +72,12 @@ static void on_lasagna_menu_next_click(lv_event_t *e)
 static void on_lasagna_set_sure_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
-    if (!screen_is_loading(act_scr))
-        jump_to_lasagna_cooking();
+    if (!screen_is_loading(act_scr)) {
+        if (delay_on)
+            jump_to_delaycooking();
+        else
+            jump_to_lasagna_cooking();
+    }
 }
 
 static void on_lasagna_cooking_stop_click(lv_event_t *e)
@@ -102,6 +106,7 @@ static void on_lasagna_stop_back_sure_click(lv_event_t *e)
     lv_obj_t *act_scr = lv_scr_act();
     if (screen_is_loading(act_scr)) return;
     g_on_stop_back = 0;
+    g_keepwarm_active = 0;
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
     set_temp = 230; set_hour = 0; set_min = 30;
     cook_elapsed_saved = 0; cook_bar_saved = 0;
@@ -175,10 +180,10 @@ void jump_to_lasagna_menu(void)
 void jump_to_lasagna_set(void)
 {
     page_push(PAGE_LASAGNA_SET);
+
+    preheat_on = 0; delay_on = 0; contain_on = 0;
     lv_obj_clean(lv_scr_act());
     lasagna_set_create(&ui_manager);
-
-    delay_on = 0; contain_on = 0;
 
     lasagna_set_t *set = lasagna_set_get(&ui_manager);
     if (set) {
@@ -204,6 +209,7 @@ void jump_to_lasagna_set(void)
             lv_obj_clear_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
 
         apply_toggle_state(set->offdelay, set->ondelay, delay_on);
+        mode_set_apply_delay_label(set->ondelay);
     if (set_hour == 0) {
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->label_648, LV_OBJ_FLAG_HIDDEN);
@@ -252,6 +258,8 @@ void jump_to_lasagna_cooking(void)
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;
     }
+
+    g_keepwarm_active = 0;
 
     page_push(PAGE_LASAGNA_COOKING);
     lv_obj_clean(lv_scr_act());
@@ -356,7 +364,8 @@ void jump_to_lasagna_setting(void)
     lv_scr_load_anim(lasagna_setting_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    g_send.iface_status = (cook_timer != NULL) ? IFACE_COOKING : IFACE_SETTING;
+    if (g_send.iface_status != IFACE_COMPLETE)
+        g_send.iface_status = (cook_timer != NULL) ? IFACE_COOKING : IFACE_SETTING;
     printf("[lasagna] jump: cooking -> lasagna_setting\n");
 }
 
@@ -411,9 +420,9 @@ void jump_to_lasagna_stop_back(void)
 {
     edit_clear();
     int cooking_bar_val = 0;
-    if (cook_timer) {
+    if (cook_timer && depth > 0 && page_stack[depth - 1] == PAGE_LASAGNA_COOKING) {
         lasagna_cooking_t *cook = lasagna_cooking_get(&ui_manager);
-        if (cook) cooking_bar_val = lv_bar_get_value(cook->bar_47);
+        if (cook && cook->bar_47) cooking_bar_val = lv_bar_get_value(cook->bar_47);
     }
 
     g_on_stop_back = 1;
@@ -444,9 +453,20 @@ void jump_to_lasagna_stop_back(void)
 
         if (g_complete_to_stop_back) {
             g_complete_to_stop_back = 0;
-            lv_label_set_text(back->label_677, "已完成");
+            if (g_keepwarm_active)
+                lv_label_set_text(back->label_677, "保温中...");
+            else
+                lv_label_set_text(back->label_677, "已完成");
             lv_bar_set_value(back->bar_50, 100, LV_ANIM_OFF);
         }
+        if (g_delay_cancel_to_stop_back) {
+            g_delay_cancel_to_stop_back = 0;
+            lv_label_set_text(back->label_677, "预约中...");
+            lv_obj_add_flag(back->bar_50, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(back->image_320, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(back->little, LV_OBJ_FLAG_HIDDEN);
+        }
+
     }
     current_group = g_lasagna_stop_back;
 
@@ -607,6 +627,14 @@ void jump_to_lasagna_complete(void)
         g_send.iface_status = IFACE_COMPLETE;
     g_send.remaining_ms = 0;
     printf("[lasagna] jump: cooking -> complete\n");
+    /* 自动保温：保温开关开启时 complete 页停留 1 分钟无操作 → 保温（15 分钟） */
+    if (contain_on) {
+        g_keepwarm_active = 0;
+        g_keepwarm_sec = 0;
+        if (cook_timer) lv_timer_del(cook_timer);
+        cook_timer = lv_timer_create(cooking_timer_cb, 1000, NULL);
+    }
+
 }
 
 void lasagna_rebuild_menu(page_id_t child)
@@ -677,12 +705,15 @@ void lasagna_rebuild_set(page_id_t child)
             lv_obj_clear_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
 
         apply_toggle_state(set->offdelay, set->ondelay, delay_on);
+        mode_set_apply_delay_label(set->ondelay);
     if (set_hour == 0) {
         lv_obj_add_flag(set->label_648, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_set_pos(set->min, 312, 254);
         lv_obj_set_pos(set->label_649, 365, 269);
     } else {
         lv_obj_clear_flag(set->label_648, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_set_pos(set->min, 395, 254);
         lv_obj_set_pos(set->label_649, 448, 269);
     }
@@ -690,10 +721,12 @@ void lasagna_rebuild_set(page_id_t child)
         apply_toggle_state(set->offcontain, set->oncontain, contain_on);
     if (set_hour == 0) {
         lv_obj_add_flag(set->label_648, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_set_pos(set->min, 312, 254);
         lv_obj_set_pos(set->label_649, 365, 269);
     } else {
         lv_obj_clear_flag(set->label_648, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_set_pos(set->min, 395, 254);
         lv_obj_set_pos(set->label_649, 448, 269);
     }
@@ -709,6 +742,9 @@ void lasagna_rebuild_set(page_id_t child)
         if (child == PAGE_LASAGNA_COOKING && set->sure)
             lv_group_focus_obj(set->sure);
     }
+        if (child == PAGE_DELAYSET && set->offdelay)
+            lv_group_focus_obj(delay_on ? set->ondelay : set->offdelay);
+
     current_group = g_lasagna_set;
     lv_scr_load_anim(lasagna_set_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
@@ -863,9 +899,9 @@ void lasagna_rebuild_stop_back(void)
 {
     edit_clear();
     int cooking_bar_val = 0;
-    if (cook_timer) {
+    if (cook_timer && depth > 0 && page_stack[depth - 1] == PAGE_LASAGNA_COOKING) {
         lasagna_cooking_t *cook = lasagna_cooking_get(&ui_manager);
-        if (cook) cooking_bar_val = lv_bar_get_value(cook->bar_47);
+        if (cook && cook->bar_47) cooking_bar_val = lv_bar_get_value(cook->bar_47);
     }
     g_on_stop_back = 1;
     g_stop_back_complete = jump_to_lasagna_complete;
@@ -890,7 +926,10 @@ void lasagna_rebuild_stop_back(void)
 
         if (g_complete_to_stop_back) {
             g_complete_to_stop_back = 0;
-            lv_label_set_text(back->label_677, "已完成");
+            if (g_keepwarm_active)
+                lv_label_set_text(back->label_677, "保温中...");
+            else
+                lv_label_set_text(back->label_677, "已完成");
             lv_bar_set_value(back->bar_50, 100, LV_ANIM_OFF);
         }
     }
