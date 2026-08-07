@@ -19,13 +19,18 @@ void topflagpage_create(ui_manager_t *ui)
         return;
     }
 
-    // Init scr->obj
-    scr->obj = lv_obj_create(NULL);
+    // Init scr->obj (hand-modified: created on lv_layer_top instead of a screen,
+    // so it stays on top of all pages; remove theme card style to avoid border/padding.
+    // NOTE: remove_style_all must run BEFORE set_size, because size is a style in LVGL9)
+    scr->obj = lv_obj_create(lv_layer_top());
+    lv_obj_remove_style_all(scr->obj);
+    lv_obj_set_size(scr->obj, LV_HOR_RES, LV_VER_RES);
+    lv_obj_remove_flag(scr->obj, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_scrollbar_mode(scr->obj, LV_SCROLLBAR_MODE_OFF);
 
     // Set style of scr->obj
     lv_obj_set_style_bg_color(scr->obj, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(scr->obj, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(scr->obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->currenttime
     scr->currenttime = lv_label_create(scr->obj);
@@ -35,7 +40,6 @@ void topflagpage_create(ui_manager_t *ui)
     lv_obj_set_size(scr->currenttime, 60, 22);
 
     // Set style of scr->currenttime
-    lv_obj_set_style_bg_color(scr->currenttime, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(scr->currenttime, fs_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->currenttime, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->currenttime, 3, LV_PART_MAIN | LV_STATE_DEFAULT);

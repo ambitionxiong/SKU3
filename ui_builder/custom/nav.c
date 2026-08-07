@@ -432,6 +432,7 @@ static void delay_start_cook(void);
 static void delay_cancel_to_stop_back(void);
 static void on_sure_click(lv_event_t *e);
 void cooking_timer_cb(lv_timer_t *timer);
+static void topflag_update_visibility(void);
 static void jump_to_updown_bbq_complete(void);
 static void jump_to_color_cookoing(void);
 static void jump_to_color_complete(void);
@@ -914,6 +915,7 @@ void page_push(page_id_t id)
     } else {
         printf("[nav] ERROR: page_stack overflow! depth=%d id=%d\n", depth, id);
     }
+    topflag_update_visibility();
 }
 
 // 收到 KEY21 时调用，回到上一页
@@ -939,6 +941,9 @@ void page_pop(void)
     page_id_t child = page_stack[depth];
     page_id_t prev = page_stack[depth - 1];
     printf("[nav] page pop: depth=%d, back to id=%d (from id=%d)\n", depth, prev, child);
+
+    /* 页面栈变化后立即刷新 topflag 显隐（等值栈顶已是目标页） */
+    topflag_update_visibility();
 
     /* 从 stop_back 确认页退出时清除暂停确认状态（防止残留导致 cooking 定时器走错分支） */
     if (g_on_stop_back) {
@@ -8484,5 +8489,29 @@ void nav_init(void)
 
     g_send.iface_status = IFACE_SETTING;
     lv_timer_create(system_timer_cb, 500, NULL);
+
+    /* topflag 顶层状态页：生成代码已改挂 lv_layer_top，所有页面之上（wait 页面除外） */
+    topflagpage_create(&ui_manager);
+    {
+        topflagpage_t *tf = topflagpage_get(&ui_manager);
+        if (tf) {
+            /* 暂时只显示 currenttime */
+            if (tf->demo)   lv_obj_add_flag(tf->demo, LV_OBJ_FLAG_HIDDEN);
+            if (tf->timer)  lv_obj_add_flag(tf->timer, LV_OBJ_FLAG_HIDDEN);
+            if (tf->light)  lv_obj_add_flag(tf->light, LV_OBJ_FLAG_HIDDEN);
+        }
+    }
+    topflag_update_visibility();
     printf("[nav] init done -> major_menu\n");
+}
+
+// topflag 顶层状态页显隐：除 wait 页面外都显示。
+// 由 page_push / page_pop 驱动（事件驱动，无轮询延迟）
+static void topflag_update_visibility(void)
+{
+    topflagpage_t *tf = topflagpage_get(&ui_manager);
+    if (!tf || !tf->obj) return;
+    int is_wait = (depth > 0 && page_stack[depth - 1] == PAGE_WAITMENU_24);
+    if (is_wait) lv_obj_add_flag(tf->obj, LV_OBJ_FLAG_HIDDEN);
+    else lv_obj_clear_flag(tf->obj, LV_OBJ_FLAG_HIDDEN);
 }

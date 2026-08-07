@@ -3,7 +3,7 @@ set BASE=D:\My_STM32_Project\UIBUILDWER\first_ui_project\ui_builder
 set TARGET=D:\My_STM32_Project\UIBUILDWER\first_ui_project_code\ui_builder
 
 echo Syncing generated files to simulator project...
-robocopy "%BASE%" "%TARGET%" /E /XD custom build /NJH /NJS /NP
+robocopy "%BASE%" "%TARGET%" /E /XD custom build /XF topflagpage.c /NJH /NJS /NP
 
 echo.
 echo Done. Remember to:
