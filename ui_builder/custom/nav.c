@@ -15,6 +15,7 @@ int preheat_wait_door = 0;
 int g_complete_to_stop_back = 0;
 int g_cooling_to_stop_back = 0;
 int g_extra_color_to_stop_back = 0;
+int g_color_from_probe = 0;   // 进入额外上色时是否为探针模式（color 返回时跳探针主菜单）
 
 #ifdef LV_USE_AIC_SIMULATOR
 
@@ -427,12 +428,14 @@ static void delayset_refresh_display(delayset_t *ds);
 static void updown_set_apply_delay_label(updown_bbq_set_t *set);
 static void on_delaycooking_cancel_click(lv_event_t *e);
 static void rebuild_delaycooking(void);
-static void delayset_roll_to_tomorrow(void);
 static void delay_start_cook(void);
 static void delay_cancel_to_stop_back(void);
 static void on_sure_click(lv_event_t *e);
 void cooking_timer_cb(lv_timer_t *timer);
 static void topflag_update_visibility(void);
+static void topflag_clock_cb(lv_timer_t *timer);
+static void waitmenu_apply_clock(void);
+static void color_exit_to_home(void);
 static void jump_to_updown_bbq_complete(void);
 static void jump_to_color_cookoing(void);
 static void jump_to_color_complete(void);
@@ -1711,7 +1714,8 @@ void page_pop(void)
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
-        goto pop_to_major_menu;
+        color_exit_to_home();
+        break;
 
     case PAGE_COLOR_COOKING:
         if (child == PAGE_COLOR_STOP_BACK) {
@@ -1755,7 +1759,8 @@ void page_pop(void)
             printf("[nav] back from stop_back -> color_cookoing\n");
             break;
         }
-        goto pop_to_major_menu;
+        color_exit_to_home();
+        break;
     case PAGE_COLOR_COOKING_COMPLETE:
         if (child == PAGE_COLOR_STOP_BACK) {
             colorcooking_complete_create(&ui_manager);
@@ -1770,7 +1775,8 @@ void page_pop(void)
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
-        goto pop_to_major_menu;
+        color_exit_to_home();
+        break;
 
     case PAGE_UPDOWN_BBQ_MENU_TOP:
     case PAGE_UPDOWN_BBQ_MENU_LOW:
@@ -3797,12 +3803,13 @@ void page_pop(void)
         goto pop_to_waitmenu;
 
     case PAGE_WAITMENU_24:
-pop_to_waitmenu:
+    pop_to_waitmenu:
         waitmenu_24_create(&ui_manager);
         current_group = NULL;
         lv_scr_load_anim(waitmenu_24_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
                          ui_manager.auto_del);
+        waitmenu_apply_clock();   /* 立即刷新为真实时间，不等 500ms 定时器 */
         g_send.iface_status = IFACE_STANDBY;
         printf("[nav] back to waitmenu_24\n");
         break;
@@ -4422,7 +4429,7 @@ static void jump_to_color_cookoing(void)
 
     g_send.iface_status = IFACE_COOKING;
     g_send.cook_mode = MODE_EXTRA_COLOR;
-    g_send.set_temp = set_temp;
+    g_send.set_temp = set_temp;   /* 跟随原烹饪模式温度 */
     g_send.set_temp_lower = set_temp_down;
     g_send.remaining_ms = cook_total_ms;
     g_send.cook_flag = 0;
@@ -4439,6 +4446,8 @@ static void jump_to_color_cookoing(void)
 // color_cookoing → colorcooking_complete
 static void jump_to_color_complete(void)
 {
+    if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }   /* 防御:防残留 */
+    cook_is_color = 0;
     if (depth > 0 && page_stack[depth - 1] == PAGE_COLOR_STOP_BACK)
         depth--;
     if (depth > 0 && page_stack[depth - 1] == PAGE_COLOR_STOP)
@@ -4476,6 +4485,71 @@ static uint32_t active_key_time = 0;
 
 #define ENC_REPEAT_MS   50    // 编码器长按时重复间隔
 
+// color（额外上色）流程退出回主页：
+// 探针模式进入 → 探针主菜单；否则普通主菜单。完整清理定时器/标志/栈。
+static void color_exit_to_home(void)
+{
+    if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
+    g_on_stop_back = 0;
+    g_extra_color_to_stop_back = 0;
+    g_complete_to_stop_back = 0;
+    g_cooling_to_stop_back = 0;
+    g_keepwarm_active = 0;
+    g_keepwarm_sec = 0;
+    cook_is_color = 0;
+    g_stop_back_complete = NULL;
+    set_temp = 180; set_temp_up = 180; set_temp_down = 180; set_hour = 0; set_min = 30;
+    cook_elapsed_saved = 0; cook_bar_saved = 0;
+    g_send.iface_status = IFACE_SETTING;
+    g_send.cook_mode = MODE_NONE;
+    g_send.cook_flag = 0;
+    g_send.set_temp = 0;
+    g_send.set_temp_lower = 0;
+    g_send.remaining_ms = -1;
+    if (g_color_from_probe) {
+        depth = 2;
+        page_stack[1] = PAGE_MAJOR_MENU_TZ;
+        major_menu_tz_rebuild(0);
+        printf("[color] exit -> major_menu_tz (probe)\n");
+    } else {
+        depth = 2;
+        page_stack[1] = PAGE_MAJOR_MENU;
+        lv_obj_clean(lv_scr_act());
+        major_menu_create(&ui_manager);
+        groups_create();
+        bind_events();
+        current_group = g_major_menu;
+        lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
+                         LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                         ui_manager.auto_del);
+        printf("[color] exit -> major_menu\n");
+    }
+}
+
+// MENU/CLEAN 键白名单：仅在菜单/待机/探针提示类页面有效，
+// 设置温度时间页、运行状态页、完成页等一律无效音
+static int menu_clean_key_allowed(void)
+{
+    if (depth <= 0) return 0;
+    switch (page_stack[depth - 1]) {
+    case PAGE_WAITMENU_24:
+    case PAGE_PROBETIP:
+    case PAGE_MAJOR_MENU:
+    case PAGE_MAJOR_MENU_TZ:
+    case PAGE_COOKMENU:
+    case PAGE_COOK_MENU_TZ:
+    case PAGE_SPECIAL_MENU:
+    case PAGE_SPECIAL_MENU_TZ:
+    case PAGE_COOK4_MENU:
+    case PAGE_FROZEN_COOK:
+    case PAGE_CLEAN_MENU:
+    case PAGE_HOTCLEAN_MENU:
+        return 1;
+    default:
+        return 0;
+    }
+}
+
 static void process_key(uint8_t key)
 {
     if (g_send.iface_status == IFACE_SLEEP) return;
@@ -4485,7 +4559,7 @@ static void process_key(uint8_t key)
     case KEY1:              // 1: 开关机键，短按无操作
         break;
     case KEY_MENU:          // 3: 进入主菜单
-        if (g_send.iface_status == IFACE_COOKING) {
+        if (!menu_clean_key_allowed() || g_send.iface_status == IFACE_COOKING) {
             g_send.buzzer_req = BUZZER_KEY_INVALID;
             break;
         }
@@ -4538,6 +4612,7 @@ static void process_key(uint8_t key)
             break;
         }
         g_send.buzzer_req = BUZZER_KEY_VALID;
+        g_color_from_probe = is_probe_inserted();   /* 记录进入时的探针状态 */
         page_push(PAGE_EXTRA_COLOR);
         lv_obj_clean(lv_scr_act());
         extra_color_create(&ui_manager);
@@ -4559,7 +4634,7 @@ static void process_key(uint8_t key)
         uart_print();
         break;
     case KEY_CLEAN:         // 7: 进入清洁菜单
-        if (g_send.iface_status == IFACE_COOKING) {
+        if (!menu_clean_key_allowed() || g_send.iface_status == IFACE_COOKING) {
             g_send.buzzer_req = BUZZER_KEY_INVALID;
             break;
         }
@@ -4925,13 +5000,11 @@ static void process_key(uint8_t key)
             lv_obj_t *df = lv_group_get_focused(current_group);
             delayset_t *ds = delayset_get(&ui_manager);
             if (ds && df == ds->hour) {
-                if (delay_hour < 47) delay_hour++;
-                else { g_send.buzzer_req = BUZZER_KEY_INVALID; uart_print(); break; }
-                delayset_roll_to_tomorrow();
+                delay_hour++;
+                if (delay_hour > 23) delay_hour = 0;
             } else if (ds && df == ds->min) {
                 delay_min++;
                 if (delay_min > 59) delay_min = 0;
-                delayset_roll_to_tomorrow();
             } else {
                 g_send.buzzer_req = BUZZER_ENCODER;
                 lv_group_focus_next(current_group);
@@ -5002,13 +5075,11 @@ static void process_key(uint8_t key)
             lv_obj_t *df = lv_group_get_focused(current_group);
             delayset_t *ds = delayset_get(&ui_manager);
             if (ds && df == ds->hour) {
-                if (delay_hour > 0) delay_hour--;
-                else { g_send.buzzer_req = BUZZER_KEY_INVALID; uart_print(); break; }
-                delayset_roll_to_tomorrow();
+                delay_hour--;
+                if (delay_hour < 0) delay_hour = 23;
             } else if (ds && df == ds->min) {
                 delay_min--;
                 if (delay_min < 0) delay_min = 59;
-                delayset_roll_to_tomorrow();
             } else {
                 g_send.buzzer_req = BUZZER_ENCODER;
                 lv_group_focus_prev(current_group);
@@ -5590,6 +5661,7 @@ void nav_key1_long_press(void)
         waitmenu_24_create(&ui_manager);
         current_group = NULL;
         lv_scr_load(waitmenu_24_get(&ui_manager)->obj);
+        waitmenu_apply_clock();   /* 立即刷新为真实时间 */
 #ifndef LV_USE_AIC_SIMULATOR
         backlight_set_level(10);
 #endif
@@ -5978,36 +6050,27 @@ static void on_preheat_toggle(lv_event_t *e)
 int delay_hour = 19;
 int delay_min = 0;
 
+// 进入 delayset 的时刻（今天/明天切换基准，不随实时时间变化）
+static int delayset_enter_hour = -1;
+static int delayset_enter_min = 0;
+
 // 刷新 delayset 页的时间显示（hour 显示 0-23，超 23:59 切换明天）
+// 今天/明天标签：调节期按"进入时刻"双向比较（已过→明天），确定后 delay_hour>=24 恒明天。
+// 刷新 delayset 页的时间显示（hour 显示 0-23，min 0-59）
+// 今天/明天标签：与进入时刻纯比较（小时+分钟分开判断），小于 → 明天，否则 → 今天
 static void delayset_refresh_display(delayset_t *ds)
 {
     if (!ds) return;
-    lv_label_set_text_fmt(ds->hour, "%02d", delay_hour % 24);
+    lv_label_set_text_fmt(ds->hour, "%02d", delay_hour);
     lv_label_set_text_fmt(ds->min, "%02d", delay_min);
-    lv_label_set_text(ds->day, delay_hour >= 24 ? "明天" : "今天");
-}
-
-// 24 小时滚动窗口归一化：
-// 今天模式目标已过当前实时 → 切到明天（+24）
-// 明天模式目标超过明天当前时刻 → 回绕到今天的当前时刻（窗口起点）
-static void delayset_roll_to_tomorrow(void)
-{
-    rtc_time_t now;
-    if (rtc_get_time(&now) != 0) return;
-    int now_min = now.hour * 60 + now.min;
-    if (delay_hour < 24) {
-        if (delay_hour * 60 + delay_min < now_min)
-            delay_hour += 24;
-    } else {
-        if ((delay_hour - 24) * 60 + delay_min >= now_min) {
-            delay_hour = now.hour;
-            delay_min = now.min + 1;
-            if (delay_min > 59) {
-                delay_min = 0;
-                delay_hour++;
-            }
-        }
-    }
+    const char *day;
+    if (delayset_enter_hour >= 0 &&
+        (delay_hour < delayset_enter_hour ||
+         (delay_hour == delayset_enter_hour && delay_min < delayset_enter_min)))
+        day = "明天";   /* 小时或分钟小于时间戳 → 明天 */
+    else
+        day = "今天";   /* 大于或相等 → 今天 */
+    lv_label_set_text(ds->day, day);
 }
 
 // delayset 焦点切换：显示对应字段的下划线
@@ -6027,11 +6090,18 @@ static void on_delayset_focus(lv_event_t *e)
         lv_obj_clear_flag(ds->startline, LV_OBJ_FLAG_HIDDEN);
 }
 
-// delayset 点开始：启用延时并返回 set 页
+// delayset 点开始：与实时时间比较校正（已过 → 明天），启用延时并返回 set 页
 static void on_delayset_start_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
     if (screen_is_loading(act_scr)) return;
+    rtc_time_t now;
+    if (rtc_get_time(&now) == 0) {
+        if (delay_hour < 24 &&
+            (delay_hour < now.hour ||
+             (delay_hour == now.hour && delay_min < now.min)))
+            delay_hour += 24;                       /* 实时已过 → 明天 */
+    }
     delay_on = 1;
     /* 互斥：开延时关预热（回 set 页重建时显示关） */
     preheat_on = 0;
@@ -6046,7 +6116,7 @@ static void updown_set_apply_delay_label(updown_bbq_set_t *set)
     if (lbl) {
         lv_obj_set_style_text_font(lbl, fs_taiwanpearl_regular_24,
                                    LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_label_set_long_mode(lbl, LV_LABEL_LONG_SCROLL);
+        lv_label_set_long_mode(lbl, LV_LABEL_LONG_SCROLL_CIRCULAR);
         lv_label_set_text_fmt(lbl, "%s%02d:%02d开始",
                               delay_hour >= 24 ? "明天" : "今天",
                               delay_hour % 24, delay_min);
@@ -6110,12 +6180,15 @@ void jump_to_delayset(void)
     if (depth > 0)
         g_delay_source_page = page_stack[depth - 1];
     apply_delay_cook_mode(g_delay_source_page);
-    /* 进入时默认当前时间+5 分钟（当前 23:59 → 明天 00:04） */
+    /* 记录进入时刻（今天/明天切换基准）+ 默认当前时间+5 分钟（当前 23:59 → 明天 00:04） */
     rtc_time_t now;
     if (rtc_get_time(&now) == 0) {
+        delayset_enter_hour = now.hour;
+        delayset_enter_min = now.min;
         delay_hour = now.hour;
         delay_min = now.min + 5;
         if (delay_min > 59) { delay_min -= 60; delay_hour++; }
+        if (delay_hour > 23) delay_hour = 0;   /* 23:59+5min → 00:04,内部回 0,标签自动"明天" */
     }
     page_push(PAGE_DELAYSET);
     lv_obj_clean(lv_scr_act());
@@ -6254,7 +6327,7 @@ void mode_set_apply_delay_label(lv_obj_t *ondelay_btn)
     if (lbl) {
         lv_obj_set_style_text_font(lbl, fs_taiwanpearl_regular_24,
                                    LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_label_set_long_mode(lbl, LV_LABEL_LONG_SCROLL);
+        lv_label_set_long_mode(lbl, LV_LABEL_LONG_SCROLL_CIRCULAR);
         lv_label_set_text_fmt(lbl, "%s%02d:%02d开始",
                               delay_hour >= 24 ? "明天" : "今天",
                               delay_hour % 24, delay_min);
@@ -7208,7 +7281,7 @@ void cooking_timer_cb(lv_timer_t *timer)
     } else if (current_group == g_top_bbq_setting) {
         top_bbq_setting_t *set = top_bbq_setting_get(&ui_manager);
         if (set) time_label = set->time_label;
-    } else if (cook_is_color || current_group == g_color_cookoing) {
+    } else if (current_group == g_color_cookoing) {
         color_cookoing_t *cc = color_cookoing_get(&ui_manager);
         if (cc) time_label = cc->time_label;
     } else if (current_group == g_top_bbq_cooking) {
@@ -7669,8 +7742,7 @@ void cooking_timer_cb(lv_timer_t *timer)
             jump_to_menu_complete();
             return;
         }
-        if (cook_is_color) {
-            cook_is_color = 0;
+        if (current_group == g_color_cookoing) {
             jump_to_color_complete();
         } else {
             jump_to_updown_bbq_complete();
@@ -8154,27 +8226,8 @@ static void on_color_stop_back_sure_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
     if (screen_is_loading(act_scr)) return;
-    g_on_stop_back = 0;
-    if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
-    set_temp = 180; set_temp_up = 180; set_temp_down = 180; set_hour = 0; set_min = 30;
-    cook_is_color = 0;
-    cook_elapsed_saved = 0; cook_bar_saved = 0;
-
-    depth = 2;
-    lv_obj_clean(lv_scr_act());
-    major_menu_create(&ui_manager);
-    groups_create();
-    bind_events();
-    current_group = g_major_menu;
-    lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
-                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
-                     ui_manager.auto_del);
-    g_send.iface_status = IFACE_SETTING;
-    g_send.cook_mode = MODE_NONE;
-    g_send.set_temp = 0;
-    g_send.set_temp_lower = 0;
-    g_send.remaining_ms = -1;
-    printf("[nav] color_stop_back sure -> major_menu\n");
+    color_exit_to_home();
+    printf("[nav] color_stop_back sure -> home\n");
 }
 
 // ==============================
@@ -8455,6 +8508,7 @@ static void system_timer_cb(lv_timer_t *timer)
     waitmenu_24_create(&ui_manager);
     current_group = NULL;
     lv_scr_load(waitmenu_24_get(&ui_manager)->obj);
+    waitmenu_apply_clock();   /* 立即刷新为真实时间 */
     jump_to_probetip(probe_now ? "探针已插入" : "探针已拔出");
 }
 
@@ -8502,6 +8556,7 @@ void nav_init(void)
         }
     }
     topflag_update_visibility();
+    lv_timer_create(topflag_clock_cb, 500, NULL);
     printf("[nav] init done -> major_menu\n");
 }
 
@@ -8514,4 +8569,64 @@ static void topflag_update_visibility(void)
     int is_wait = (depth > 0 && page_stack[depth - 1] == PAGE_WAITMENU_24);
     if (is_wait) lv_obj_add_flag(tf->obj, LV_OBJ_FLAG_HIDDEN);
     else lv_obj_clear_flag(tf->obj, LV_OBJ_FLAG_HIDDEN);
+}
+
+// 待机页 waitmenu_24 时间/星期/年月日 实时刷新：
+// 页面重建（obj 指针变化）时清缓存强制刷新为真实时间；平时按数值变化更新。
+// 仅在待机页为当前屏幕（obj == lv_scr_act）时访问，无悬空指针风险。
+static void waitmenu_apply_clock(void)
+{
+    rtc_time_t t;
+    if (rtc_get_time(&t) != 0) return;
+    waitmenu_24_t *wait = waitmenu_24_get(&ui_manager);
+    if (!wait || !wait->obj || wait->obj != lv_scr_act()) return;
+    static lv_obj_t *lw_obj = NULL;
+    static uint8_t lw_hour = 0xFF, lw_min = 0xFF;
+    static uint8_t lw_year = 0, lw_month = 0, lw_day = 0;
+    static int lw_wday = -1;
+    if (wait->obj != lw_obj) {
+        lw_obj = wait->obj;
+        lw_hour = 0xFF; lw_min = 0xFF;
+        lw_year = 0; lw_month = 0; lw_day = 0; lw_wday = -1;
+    }
+    if (t.hour != lw_hour || t.min != lw_min) {
+        lw_hour = t.hour; lw_min = t.min;
+        char buf[6];
+        snprintf(buf, sizeof(buf), "%02d:%02d", t.hour, t.min);
+        if (wait->time_label) lv_label_set_text(wait->time_label, buf);
+    }
+    /* week_label = 星期 + 年月日 合并文本（生成默认："星期日, 2025年12月15日"） */
+    if (t.wday != lw_wday || t.year != lw_year || t.month != lw_month || t.day != lw_day) {
+        lw_wday = t.wday;
+        lw_year = t.year; lw_month = t.month; lw_day = t.day;
+        static const char *week_cn[] = {"星期日", "星期一", "星期二",
+                                        "星期三", "星期四", "星期五", "星期六"};
+        char buf[32];
+        snprintf(buf, sizeof(buf), "%s, %d年%d月%d日",
+                 (t.wday >= 0 && t.wday <= 6) ? week_cn[t.wday] : "",
+                 t.year, t.month, t.day);
+        if (wait->week_label) lv_label_set_text(wait->week_label, buf);
+    }
+}
+
+// topflag 时间走动：每 500ms 刷新 currenttime 为 "HH:MM"（分钟变化才更新）；
+// 同时刷新待机页 waitmenu_24 的 时间/星期/年月日
+static void topflag_clock_cb(lv_timer_t *timer)
+{
+    topflagpage_t *tf = topflagpage_get(&ui_manager);
+    if (!tf || !tf->currenttime) return;
+    rtc_time_t t;
+    if (rtc_get_time(&t) != 0) return;
+
+    /* topflag 右上角时间 */
+    static uint8_t last_hour = 0xFF, last_min = 0xFF;
+    if (t.hour != last_hour || t.min != last_min) {
+        last_hour = t.hour; last_min = t.min;
+        char buf[6];
+        snprintf(buf, sizeof(buf), "%02d:%02d", t.hour, t.min);
+        lv_label_set_text(tf->currenttime, buf);
+    }
+
+    /* 待机页三标签（独立缓存，分钟/跨天/星期变化才更新） */
+    waitmenu_apply_clock();
 }

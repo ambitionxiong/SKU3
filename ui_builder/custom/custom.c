@@ -47,6 +47,7 @@ int rtc_get_time(rtc_time_t *t)
     t->hour  = lt->tm_hour;
     t->min   = lt->tm_min;
     t->sec   = lt->tm_sec;
+    t->wday  = lt->tm_wday;
     return 0;
 }
 

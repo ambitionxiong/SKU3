@@ -11,6 +11,7 @@
 typedef struct {
     int year, month, day;
     int hour, min, sec;
+    int wday;                    // 星期 0=周日 ~ 6=周六
 } rtc_time_t;
 int rtc_get_time(rtc_time_t *t);              // 0=成功
 int64_t rtc_now_ms(void);                     // 自 2000-01-01 00:00 起的绝对毫秒（统一计时戳）

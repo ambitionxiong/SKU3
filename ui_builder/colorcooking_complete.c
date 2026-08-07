@@ -78,13 +78,13 @@ void colorcooking_complete_create(ui_manager_t *ui)
     lv_obj_set_style_img_opa(scr->color_img, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_pos(scr->color_img, 95, 163);
 
-    // Init scr->careful_label
-    scr->careful_label = lv_img_create(scr->obj);
-    lv_img_set_src(scr->careful_label, LVGL_IMAGE_PATH(highlevel.png));
-    lv_img_set_pivot(scr->careful_label, 50, 50);
-    lv_img_set_angle(scr->careful_label, 0);
-    lv_obj_set_style_img_opa(scr->careful_label, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->careful_label, 902, 160);
+    // Init scr->image_3
+    scr->image_3 = lv_img_create(scr->obj);
+    lv_img_set_src(scr->image_3, LVGL_IMAGE_PATH(hotcare.png));
+    lv_img_set_pivot(scr->image_3, 50, 50);
+    lv_img_set_angle(scr->image_3, 0);
+    lv_obj_set_style_img_opa(scr->image_3, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(scr->image_3, 845, 160);
 
 
 }

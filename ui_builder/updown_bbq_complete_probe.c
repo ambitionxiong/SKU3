@@ -78,29 +78,13 @@ void updown_bbq_complete_probe_create(ui_manager_t *ui)
     lv_obj_set_style_text_font(scr->label_75, fs_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_75, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->label_76
-    scr->label_76 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_76, "高温防烫");
-    lv_label_set_long_mode(scr->label_76, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_76, 896, 161);
-    lv_obj_set_size(scr->label_76, 252, 36);
-
-    // Set style of scr->label_76
-    lv_obj_set_style_text_font(scr->label_76, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->label_76, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(scr->label_76, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    // Init scr->label_77
-    scr->label_77 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_77, "请缓慢打开门体！");
-    lv_label_set_long_mode(scr->label_77, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_77, 896, 197);
-    lv_obj_set_size(scr->label_77, 252, 36);
-
-    // Set style of scr->label_77
-    lv_obj_set_style_text_font(scr->label_77, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->label_77, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(scr->label_77, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
+    // Init scr->image_2
+    scr->image_2 = lv_img_create(scr->obj);
+    lv_img_set_src(scr->image_2, LVGL_IMAGE_PATH(hotcare.png));
+    lv_img_set_pivot(scr->image_2, 50, 50);
+    lv_img_set_angle(scr->image_2, 0);
+    lv_obj_set_style_img_opa(scr->image_2, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(scr->image_2, 845, 160);
 
 
 }

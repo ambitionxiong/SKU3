@@ -20,7 +20,6 @@ typedef struct {
     lv_obj_t *obj;
     lv_obj_t *time_label;
     lv_obj_t *week_label;
-    lv_obj_t *year_month_label;
 } waitmenu_24_t;
 
 typedef struct {
@@ -475,7 +474,7 @@ typedef struct {
     lv_obj_t *bar;
     lv_obj_t *complete_label;
     lv_obj_t *color_img;
-    lv_obj_t *careful_label;
+    lv_obj_t *image_3;
 } colorcooking_complete_t;
 
 typedef struct {
@@ -3612,8 +3611,7 @@ typedef struct {
     lv_obj_t *bar_4;
     lv_obj_t *image_31;
     lv_obj_t *label_75;
-    lv_obj_t *label_76;
-    lv_obj_t *label_77;
+    lv_obj_t *image_2;
 } updown_bbq_complete_probe_t;
 
 typedef struct {

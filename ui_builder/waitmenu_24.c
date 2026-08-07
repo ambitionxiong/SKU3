@@ -43,27 +43,16 @@ void waitmenu_24_create(ui_manager_t *ui)
 
     // Init scr->week_label
     scr->week_label = lv_label_create(scr->obj);
-    lv_label_set_text(scr->week_label, "星期日,");
+    lv_label_set_text(scr->week_label, "星期日, 2025年12月15日");
     lv_label_set_long_mode(scr->week_label, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->week_label, 376, 260);
-    lv_obj_set_size(scr->week_label, 170, 51);
+    lv_obj_set_pos(scr->week_label, 373, 259);
+    lv_obj_set_size(scr->week_label, 539, 51);
 
     // Set style of scr->week_label
     lv_obj_set_style_text_font(scr->week_label, fs_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->week_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->week_label, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    // Init scr->year_month_label
-    scr->year_month_label = lv_label_create(scr->obj);
-    lv_label_set_text(scr->year_month_label, "2025年12月15日");
-    lv_label_set_long_mode(scr->year_month_label, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->year_month_label, 541, 259);
-    lv_obj_set_size(scr->year_month_label, 367, 51);
-
-    // Set style of scr->year_month_label
-    lv_obj_set_style_text_font(scr->year_month_label, fs_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->year_month_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(scr->year_month_label, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_letter_space(scr->week_label, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
 
 }
