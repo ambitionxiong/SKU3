@@ -39,7 +39,7 @@ void probetip_create(ui_manager_t *ui)
     // Set style of scr->button_1
     lv_obj_set_style_bg_opa(scr->button_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->button_1, LVGL_IMAGE_PATH(div1button.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->button_1, fs_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->button_1, &c_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->button_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->button_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 

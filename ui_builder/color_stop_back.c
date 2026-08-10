@@ -36,7 +36,7 @@ void color_stop_back_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_17, 490, 39);
 
     // Set style of scr->label_17
-    lv_obj_set_style_text_font(scr->label_17, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_17, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_17, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->image_14
@@ -75,7 +75,7 @@ void color_stop_back_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_19, 255, 60);
 
     // Set style of scr->label_19
-    lv_obj_set_style_text_font(scr->label_19, fs_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_19, &c_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_19, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->container_2
@@ -102,7 +102,7 @@ void color_stop_back_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_20, 252, 36);
 
     // Set style of scr->label_20
-    lv_obj_set_style_text_font(scr->label_20, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_20, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_20, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->label_20, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -114,7 +114,7 @@ void color_stop_back_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_21, 252, 36);
 
     // Set style of scr->label_21
-    lv_obj_set_style_text_font(scr->label_21, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_21, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_21, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->label_21, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -129,7 +129,7 @@ void color_stop_back_create(ui_manager_t *ui)
     // Set style of scr->button_7
     lv_obj_set_style_bg_opa(scr->button_7, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->button_7, LVGL_IMAGE_PATH(stopbk1.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->button_7, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->button_7, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->button_7, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->button_7, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->button_7, 0, LV_PART_MAIN | LV_STATE_FOCUSED);

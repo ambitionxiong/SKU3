@@ -36,23 +36,33 @@ void waitmenu_24_create(ui_manager_t *ui)
     lv_obj_set_size(scr->time_label, 438, 127);
 
     // Set style of scr->time_label
-    lv_obj_set_style_text_font(scr->time_label, fs_taiwanpearl_regular_128, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->time_label, &c_taiwanpearl_regular_128, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->time_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->time_label, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_letter_space(scr->time_label, 4, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->week_label
     scr->week_label = lv_label_create(scr->obj);
-    lv_label_set_text(scr->week_label, "星期日, 2025年12月15日");
+    lv_label_set_text(scr->week_label, "星期一二三四五六日, 2025年12月15日");
     lv_label_set_long_mode(scr->week_label, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->week_label, 373, 259);
     lv_obj_set_size(scr->week_label, 539, 51);
 
     // Set style of scr->week_label
-    lv_obj_set_style_text_font(scr->week_label, fs_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->week_label, &c_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->week_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->week_label, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_letter_space(scr->week_label, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // Init scr->label_13
+    scr->label_13 = lv_label_create(scr->obj);
+    lv_label_set_text(scr->label_13, "Label");
+    lv_label_set_long_mode(scr->label_13, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->label_13, 1096, 40);
+    lv_obj_set_size(scr->label_13, 100, 32);
+    lv_obj_add_flag(scr->label_13, LV_OBJ_FLAG_HIDDEN);
+
+    // Set style of scr->label_13
+    lv_obj_set_style_text_font(scr->label_13, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
 
 
 }

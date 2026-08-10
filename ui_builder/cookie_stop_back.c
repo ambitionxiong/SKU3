@@ -45,7 +45,7 @@ void cookie_stop_back_create(ui_manager_t *ui)
     lv_obj_set_size(scr->status, 490, 39);
 
     // Set style of scr->status
-    lv_obj_set_style_text_font(scr->status, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->status, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->status, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->image_68
@@ -76,7 +76,7 @@ void cookie_stop_back_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_139, 235, 60);
 
     // Set style of scr->label_139
-    lv_obj_set_style_text_font(scr->label_139, fs_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_139, &c_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_139, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->button_29
@@ -90,7 +90,7 @@ void cookie_stop_back_create(ui_manager_t *ui)
     // Set style of scr->button_29
     lv_obj_set_style_bg_opa(scr->button_29, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->button_29, LVGL_IMAGE_PATH(little.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->button_29, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->button_29, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->button_29, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->button_29, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->button_29, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -120,7 +120,7 @@ void cookie_stop_back_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_140, 252, 36);
 
     // Set style of scr->label_140
-    lv_obj_set_style_text_font(scr->label_140, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_140, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_140, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->label_140, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -132,7 +132,7 @@ void cookie_stop_back_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_141, 252, 36);
 
     // Set style of scr->label_141
-    lv_obj_set_style_text_font(scr->label_141, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_141, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_141, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->label_141, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -147,7 +147,7 @@ void cookie_stop_back_create(ui_manager_t *ui)
     // Set style of scr->sure
     lv_obj_set_style_bg_opa(scr->sure, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->sure, LVGL_IMAGE_PATH(stopbk1.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->sure, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->sure, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->sure, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->sure, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->sure, 0, LV_PART_MAIN | LV_STATE_FOCUSED);

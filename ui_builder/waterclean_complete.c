@@ -44,7 +44,7 @@ void waterclean_complete_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_12, 490, 39);
 
     // Set style of scr->label_12
-    lv_obj_set_style_text_font(scr->label_12, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_12, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_12, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->bar_4
@@ -75,7 +75,7 @@ void waterclean_complete_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_13, 235, 60);
 
     // Set style of scr->label_13
-    lv_obj_set_style_text_font(scr->label_13, fs_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_13, &c_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_13, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->image_12

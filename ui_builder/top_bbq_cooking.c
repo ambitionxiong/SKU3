@@ -36,7 +36,7 @@ void top_bbq_cooking_create(ui_manager_t *ui)
     lv_obj_set_size(scr->statu, 490, 39);
 
     // Set style of scr->statu
-    lv_obj_set_style_text_font(scr->statu, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->statu, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->statu, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->label_80
@@ -47,7 +47,7 @@ void top_bbq_cooking_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_80, 235, 60);
 
     // Set style of scr->label_80
-    lv_obj_set_style_text_font(scr->label_80, fs_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_80, &c_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_80, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->stop
@@ -61,7 +61,7 @@ void top_bbq_cooking_create(ui_manager_t *ui)
     // Set style of scr->stop
     lv_obj_set_style_bg_opa(scr->stop, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->stop, LVGL_IMAGE_PATH(stopbk1.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->stop, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->stop, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->stop, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->stop, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->stop, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -95,7 +95,7 @@ void top_bbq_cooking_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_81, 235, 60);
 
     // Set style of scr->label_81
-    lv_obj_set_style_text_font(scr->label_81, fs_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_81, &c_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_81, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->little
@@ -109,7 +109,7 @@ void top_bbq_cooking_create(ui_manager_t *ui)
     // Set style of scr->little
     lv_obj_set_style_bg_opa(scr->little, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->little, LVGL_IMAGE_PATH(little.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->little, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->little, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->little, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->little, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->little, 0, LV_PART_MAIN | LV_STATE_FOCUSED);

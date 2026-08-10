@@ -39,7 +39,7 @@ void top_bbq_menu_create(ui_manager_t *ui)
     // Set style of scr->next_button
     lv_obj_set_style_bg_opa(scr->next_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->next_button, LVGL_IMAGE_PATH(nextbk.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->next_button, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->next_button, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->next_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->next_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->next_button, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -69,7 +69,7 @@ void top_bbq_menu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_42, 64, 32);
 
     // Set style of scr->label_42
-    lv_obj_set_style_text_font(scr->label_42, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_42, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_42, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->temp_label
@@ -80,7 +80,7 @@ void top_bbq_menu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->temp_label, 120, 72);
 
     // Set style of scr->temp_label
-    lv_obj_set_style_text_font(scr->temp_label, fs_taiwanpearl_regular_72, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->temp_label, &c_taiwanpearl_regular_72, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->temp_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->temp_label, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_color(scr->temp_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -93,7 +93,7 @@ void top_bbq_menu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_44, 38, 32);
 
     // Set style of scr->label_44
-    lv_obj_set_style_text_font(scr->label_44, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_44, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_44, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->label_45
@@ -104,7 +104,7 @@ void top_bbq_menu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_45, 125, 32);
 
     // Set style of scr->label_45
-    lv_obj_set_style_text_font(scr->label_45, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_45, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_45, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->hour_label
@@ -115,7 +115,7 @@ void top_bbq_menu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->hour_label, 84, 72);
 
     // Set style of scr->hour_label
-    lv_obj_set_style_text_font(scr->hour_label, fs_taiwanpearl_regular_72, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->hour_label, &c_taiwanpearl_regular_72, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->hour_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->label_47
@@ -126,7 +126,7 @@ void top_bbq_menu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_47, 38, 32);
 
     // Set style of scr->label_47
-    lv_obj_set_style_text_font(scr->label_47, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_47, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_47, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->label_48
@@ -137,7 +137,7 @@ void top_bbq_menu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_48, 38, 32);
 
     // Set style of scr->label_48
-    lv_obj_set_style_text_font(scr->label_48, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_48, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_48, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->min_label
@@ -148,7 +148,7 @@ void top_bbq_menu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->min_label, 84, 72);
 
     // Set style of scr->min_label
-    lv_obj_set_style_text_font(scr->min_label, fs_taiwanpearl_regular_72, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->min_label, &c_taiwanpearl_regular_72, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->min_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->label_50
@@ -159,7 +159,7 @@ void top_bbq_menu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_50, 144, 32);
 
     // Set style of scr->label_50
-    lv_obj_set_style_text_font(scr->label_50, fs_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_50, &c_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_50, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->label_51
@@ -170,7 +170,7 @@ void top_bbq_menu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_51, 117, 32);
 
     // Set style of scr->label_51
-    lv_obj_set_style_text_font(scr->label_51, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_51, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_51, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->templine_long

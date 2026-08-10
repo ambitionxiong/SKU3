@@ -39,7 +39,7 @@ void pizza3_menu_create(ui_manager_t *ui)
     // Set style of scr->next
     lv_obj_set_style_bg_opa(scr->next, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->next, LVGL_IMAGE_PATH(nextbk.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->next, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->next, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->next, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->next, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->next, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -61,7 +61,7 @@ void pizza3_menu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_764, 125, 32);
 
     // Set style of scr->label_764
-    lv_obj_set_style_text_font(scr->label_764, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_764, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_764, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->hour
@@ -72,7 +72,7 @@ void pizza3_menu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->hour, 84, 72);
 
     // Set style of scr->hour
-    lv_obj_set_style_text_font(scr->hour, fs_taiwanpearl_regular_72, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->hour, &c_taiwanpearl_regular_72, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->hour, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->label_766
@@ -83,7 +83,7 @@ void pizza3_menu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_766, 38, 32);
 
     // Set style of scr->label_766
-    lv_obj_set_style_text_font(scr->label_766, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_766, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_766, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->label_767
@@ -94,7 +94,7 @@ void pizza3_menu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_767, 38, 32);
 
     // Set style of scr->label_767
-    lv_obj_set_style_text_font(scr->label_767, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_767, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_767, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->min
@@ -105,7 +105,7 @@ void pizza3_menu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->min, 84, 72);
 
     // Set style of scr->min
-    lv_obj_set_style_text_font(scr->min, fs_taiwanpearl_regular_72, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->min, &c_taiwanpearl_regular_72, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->min, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->label_769
@@ -116,7 +116,7 @@ void pizza3_menu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_769, 144, 32);
 
     // Set style of scr->label_769
-    lv_obj_set_style_text_font(scr->label_769, fs_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_769, &c_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_769, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->label_770
@@ -127,7 +127,7 @@ void pizza3_menu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_770, 117, 32);
 
     // Set style of scr->label_770
-    lv_obj_set_style_text_font(scr->label_770, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_770, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_770, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->hourline

@@ -36,7 +36,7 @@ void extra_color_create(ui_manager_t *ui)
     lv_obj_set_size(scr->status_label, 490, 39);
 
     // Set style of scr->status_label
-    lv_obj_set_style_text_font(scr->status_label, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->status_label, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->status_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->time_label
@@ -47,7 +47,7 @@ void extra_color_create(ui_manager_t *ui)
     lv_obj_set_size(scr->time_label, 235, 60);
 
     // Set style of scr->time_label
-    lv_obj_set_style_text_font(scr->time_label, fs_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->time_label, &c_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->time_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->start_button
@@ -61,7 +61,7 @@ void extra_color_create(ui_manager_t *ui)
     // Set style of scr->start_button
     lv_obj_set_style_bg_opa(scr->start_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->start_button, LVGL_IMAGE_PATH(stopbk1.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->start_button, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->start_button, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->start_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->start_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->start_button, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -103,7 +103,7 @@ void extra_color_create(ui_manager_t *ui)
     lv_obj_set_size(scr->color_label, 255, 60);
 
     // Set style of scr->color_label
-    lv_obj_set_style_text_font(scr->color_label, fs_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->color_label, &c_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->color_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
 

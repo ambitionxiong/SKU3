@@ -36,7 +36,7 @@ void hotwind_bbq_setting_create(ui_manager_t *ui)
     lv_obj_set_size(scr->timelabel, 235, 60);
 
     // Set style of scr->timelabel
-    lv_obj_set_style_text_font(scr->timelabel, fs_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->timelabel, &c_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->timelabel, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->container_1
@@ -71,7 +71,7 @@ void hotwind_bbq_setting_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_2, 73, 30);
 
     // Set style of scr->label_2
-    lv_obj_set_style_text_font(scr->label_2, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_2, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_2, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->label_2, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -83,7 +83,7 @@ void hotwind_bbq_setting_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_3, 135, 30);
 
     // Set style of scr->label_3
-    lv_obj_set_style_text_font(scr->label_3, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_3, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_3, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->label_3, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -95,7 +95,7 @@ void hotwind_bbq_setting_create(ui_manager_t *ui)
     lv_obj_set_size(scr->temp, 102, 46);
 
     // Set style of scr->temp
-    lv_obj_set_style_text_font(scr->temp, fs_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->temp, &c_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->temp, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->temp, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -107,7 +107,7 @@ void hotwind_bbq_setting_create(ui_manager_t *ui)
     lv_obj_set_size(scr->icon3, 37, 30);
 
     // Set style of scr->icon3
-    lv_obj_set_style_text_font(scr->icon3, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->icon3, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->icon3, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->icon3, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -135,7 +135,7 @@ void hotwind_bbq_setting_create(ui_manager_t *ui)
     lv_obj_set_size(scr->hour, 102, 46);
 
     // Set style of scr->hour
-    lv_obj_set_style_text_font(scr->hour, fs_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->hour, &c_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->hour, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->hour, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -147,7 +147,7 @@ void hotwind_bbq_setting_create(ui_manager_t *ui)
     lv_obj_set_size(scr->min, 102, 46);
 
     // Set style of scr->min
-    lv_obj_set_style_text_font(scr->min, fs_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->min, &c_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->min, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->min, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -159,7 +159,7 @@ void hotwind_bbq_setting_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_8, 37, 30);
 
     // Set style of scr->label_8
-    lv_obj_set_style_text_font(scr->label_8, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_8, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_8, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->label_8, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -171,7 +171,7 @@ void hotwind_bbq_setting_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_9, 37, 30);
 
     // Set style of scr->label_9
-    lv_obj_set_style_text_font(scr->label_9, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_9, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_9, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->label_9, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -199,7 +199,7 @@ void hotwind_bbq_setting_create(ui_manager_t *ui)
     lv_obj_set_size(scr->icon2, 37, 30);
 
     // Set style of scr->icon2
-    lv_obj_set_style_text_font(scr->icon2, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->icon2, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->icon2, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->icon2, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -214,7 +214,7 @@ void hotwind_bbq_setting_create(ui_manager_t *ui)
     // Set style of scr->sure
     lv_obj_set_style_bg_opa(scr->sure, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->sure, LVGL_IMAGE_PATH(stopbk1.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->sure, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->sure, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->sure, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->sure, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->sure, 0, LV_PART_MAIN | LV_STATE_FOCUSED);

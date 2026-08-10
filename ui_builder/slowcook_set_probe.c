@@ -36,7 +36,7 @@ void slowcook_set_probe_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_87, 144, 32);
 
     // Set style of scr->label_87
-    lv_obj_set_style_text_font(scr->label_87, fs_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_87, &c_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_87, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->label_88
@@ -47,7 +47,7 @@ void slowcook_set_probe_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_88, 26, 32);
 
     // Set style of scr->label_88
-    lv_obj_set_style_text_font(scr->label_88, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_88, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_88, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->label_89
@@ -58,7 +58,7 @@ void slowcook_set_probe_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_89, 64, 32);
 
     // Set style of scr->label_89
-    lv_obj_set_style_text_font(scr->label_89, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_89, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_89, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->label_89, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -70,7 +70,7 @@ void slowcook_set_probe_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_90, 175, 32);
 
     // Set style of scr->label_90
-    lv_obj_set_style_text_font(scr->label_90, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_90, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_90, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->label_90, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -90,7 +90,7 @@ void slowcook_set_probe_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_91, 148, 32);
 
     // Set style of scr->label_91
-    lv_obj_set_style_text_font(scr->label_91, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_91, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_91, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->label_91, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -105,7 +105,7 @@ void slowcook_set_probe_create(ui_manager_t *ui)
     // Set style of scr->sure
     lv_obj_set_style_bg_opa(scr->sure, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->sure, LVGL_IMAGE_PATH(surebk.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->sure, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->sure, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->sure, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->sure, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->sure, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -119,7 +119,7 @@ void slowcook_set_probe_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_92, 85, 36);
 
     // Set style of scr->label_92
-    lv_obj_set_style_text_font(scr->label_92, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_92, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_92, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->probetemp
@@ -130,7 +130,7 @@ void slowcook_set_probe_create(ui_manager_t *ui)
     lv_obj_set_size(scr->probetemp, 83, 53);
 
     // Set style of scr->probetemp
-    lv_obj_set_style_text_font(scr->probetemp, fs_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->probetemp, &c_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->probetemp, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->probetemp, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -142,7 +142,7 @@ void slowcook_set_probe_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_94, 32, 30);
 
     // Set style of scr->label_94
-    lv_obj_set_style_text_font(scr->label_94, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_94, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_94, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->label_94, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -154,7 +154,7 @@ void slowcook_set_probe_create(ui_manager_t *ui)
     lv_obj_set_size(scr->temp, 83, 53);
 
     // Set style of scr->temp
-    lv_obj_set_style_text_font(scr->temp, fs_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->temp, &c_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->temp, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->temp, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -166,7 +166,7 @@ void slowcook_set_probe_create(ui_manager_t *ui)
     lv_obj_set_size(scr->icon2, 32, 30);
 
     // Set style of scr->icon2
-    lv_obj_set_style_text_font(scr->icon2, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->icon2, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->icon2, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->icon2, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -178,7 +178,7 @@ void slowcook_set_probe_create(ui_manager_t *ui)
     lv_obj_set_size(scr->icon3, 32, 30);
 
     // Set style of scr->icon3
-    lv_obj_set_style_text_font(scr->icon3, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->icon3, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->icon3, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->icon3, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -201,7 +201,7 @@ void slowcook_set_probe_create(ui_manager_t *ui)
     // Set style of scr->offdelay
     lv_obj_set_style_bg_opa(scr->offdelay, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->offdelay, LVGL_IMAGE_PATH(off.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->offdelay, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->offdelay, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->offdelay, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->offdelay, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->offdelay, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -219,7 +219,7 @@ void slowcook_set_probe_create(ui_manager_t *ui)
     // Set style of scr->ondelay
     lv_obj_set_style_bg_opa(scr->ondelay, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->ondelay, LVGL_IMAGE_PATH(on1.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->ondelay, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->ondelay, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->ondelay, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->ondelay, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->ondelay, 0, LV_PART_MAIN | LV_STATE_FOCUSED);

@@ -44,7 +44,7 @@ void delayset_create(ui_manager_t *ui)
     lv_obj_set_size(scr->day, 126, 48);
 
     // Set style of scr->day
-    lv_obj_set_style_text_font(scr->day, fs_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->day, &c_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->day, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->day, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -56,7 +56,7 @@ void delayset_create(ui_manager_t *ui)
     lv_obj_set_size(scr->start, 126, 48);
 
     // Set style of scr->start
-    lv_obj_set_style_text_font(scr->start, fs_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->start, &c_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->start, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->start, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -68,7 +68,7 @@ void delayset_create(ui_manager_t *ui)
     lv_obj_set_size(scr->hour, 111, 73);
 
     // Set style of scr->hour
-    lv_obj_set_style_text_font(scr->hour, fs_taiwanpearl_regular_72, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->hour, &c_taiwanpearl_regular_72, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->hour, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->hour, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -80,7 +80,7 @@ void delayset_create(ui_manager_t *ui)
     lv_obj_set_size(scr->min, 111, 73);
 
     // Set style of scr->min
-    lv_obj_set_style_text_font(scr->min, fs_taiwanpearl_regular_72, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->min, &c_taiwanpearl_regular_72, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->min, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->min, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -92,7 +92,7 @@ void delayset_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_10, 37, 73);
 
     // Set style of scr->label_10
-    lv_obj_set_style_text_font(scr->label_10, fs_taiwanpearl_regular_72, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_10, &c_taiwanpearl_regular_72, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_10, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->label_10, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -131,7 +131,7 @@ void delayset_create(ui_manager_t *ui)
     lv_obj_set_size(scr->name, 144, 32);
 
     // Set style of scr->name
-    lv_obj_set_style_text_font(scr->name, fs_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->name, &c_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->name, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
 

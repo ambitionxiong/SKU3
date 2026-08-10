@@ -20,6 +20,7 @@ typedef struct {
     lv_obj_t *obj;
     lv_obj_t *time_label;
     lv_obj_t *week_label;
+    lv_obj_t *label_13;
 } waitmenu_24_t;
 
 typedef struct {
@@ -3899,24 +3900,47 @@ typedef struct {
 
 typedef struct {
     lv_obj_t *obj;
-    lv_obj_t *button_3;
-    lv_obj_t *button_1;
-    lv_obj_t *button_2;
-    lv_obj_t *image_1;
-    lv_obj_t *label_1;
-    lv_obj_t *label_2;
-    lv_obj_t *plus1;
-    lv_obj_t *plus2;
-    lv_obj_t *plus3;
-} somecook_t;
-
-typedef struct {
-    lv_obj_t *obj;
     lv_obj_t *currenttime;
     lv_obj_t *demo;
     lv_obj_t *timer;
     lv_obj_t *light;
 } topflagpage_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *button_3;
+    lv_obj_t *button_1;
+    lv_obj_t *button_2;
+    lv_obj_t *image_1;
+    lv_obj_t *label_1;
+    lv_obj_t *plus1;
+    lv_obj_t *plus2;
+    lv_obj_t *plus3;
+    lv_obj_t *step1;
+    lv_obj_t *modestatus;
+    lv_obj_t *tempstatus;
+    lv_obj_t *timestatus;
+    lv_obj_t *edit;
+    lv_obj_t *delete;
+    lv_obj_t *step2;
+    lv_obj_t *modestatus2;
+    lv_obj_t *tempstatus2;
+    lv_obj_t *timestatus2;
+    lv_obj_t *edit2;
+    lv_obj_t *delete2;
+    lv_obj_t *step3;
+    lv_obj_t *modestatus3;
+    lv_obj_t *tempstatus3;
+    lv_obj_t *timestatus3;
+    lv_obj_t *edit3;
+    lv_obj_t *delete3;
+} somecook_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *roller_1;
+    lv_obj_t *roller_2;
+} screen_1_t;
 
 
 typedef struct {
@@ -4173,8 +4197,9 @@ typedef struct {
     slowcook_complete_probe_t slowcook_complete_probe;
     delayset_t delayset;
     delaycooking_t delaycooking;
-    somecook_t somecook;
     topflagpage_t topflagpage;
+    somecook_t somecook;
+    screen_1_t screen_1;
 
 } ui_manager_t;
 
@@ -5444,14 +5469,19 @@ static inline delaycooking_t *delaycooking_get(ui_manager_t *ui)
     return &ui->delaycooking;
 }
 
+static inline topflagpage_t *topflagpage_get(ui_manager_t *ui)
+{
+    return &ui->topflagpage;
+}
+
 static inline somecook_t *somecook_get(ui_manager_t *ui)
 {
     return &ui->somecook;
 }
 
-static inline topflagpage_t *topflagpage_get(ui_manager_t *ui)
+static inline screen_1_t *screen_1_get(ui_manager_t *ui)
 {
-    return &ui->topflagpage;
+    return &ui->screen_1;
 }
 
 
@@ -5707,18 +5737,20 @@ void slowcook_stop_back_probe_create(ui_manager_t *ui);
 void slowcook_complete_probe_create(ui_manager_t *ui);
 void delayset_create(ui_manager_t *ui);
 void delaycooking_create(ui_manager_t *ui);
-void somecook_create(ui_manager_t *ui);
 void topflagpage_create(ui_manager_t *ui);
+void somecook_create(ui_manager_t *ui);
+void screen_1_create(ui_manager_t *ui);
 
 
-extern lv_font_t *fs_montserratmedium_16;
-extern lv_font_t *fs_taiwanpearl_regular_128;
-extern lv_font_t *fs_taiwanpearl_regular_48;
-extern lv_font_t *fs_taiwanpearl_regular_24;
-extern lv_font_t *fs_taiwanpearl_regular_36;
-extern lv_font_t *fs_taiwanpearl_regular_30;
-extern lv_font_t *fs_taiwanpearl_regular_60;
-extern lv_font_t *fs_taiwanpearl_regular_72;
+LV_FONT_DECLARE(c_montserratmedium_16);
+LV_FONT_DECLARE(c_taiwanpearl_regular_128);
+LV_FONT_DECLARE(c_taiwanpearl_regular_48);
+LV_FONT_DECLARE(c_taiwanpearl_regular_24);
+LV_FONT_DECLARE(c_taiwanpearl_regular_36);
+LV_FONT_DECLARE(c_taiwanpearl_regular_30);
+LV_FONT_DECLARE(c_taiwanpearl_regular_60);
+LV_FONT_DECLARE(c_taiwanpearl_regular_72);
+LV_FONT_DECLARE(c_taiwanpearl_regular_38);
 
 
 extern ui_manager_t ui_manager;

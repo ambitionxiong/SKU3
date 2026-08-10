@@ -6228,7 +6228,7 @@ static void updown_set_apply_delay_label(updown_bbq_set_t *set)
     if (!set) return;
     lv_obj_t *lbl = lv_obj_get_child(set->delay_on_button, 0);
     if (lbl) {
-        lv_obj_set_style_text_font(lbl, fs_taiwanpearl_regular_24,
+        lv_obj_set_style_text_font(lbl, &c_taiwanpearl_regular_24,
                                    LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_label_set_long_mode(lbl, LV_LABEL_LONG_SCROLL_CIRCULAR);
         lv_label_set_text_fmt(lbl, "%s%02d:%02d开始",
@@ -6439,7 +6439,7 @@ void mode_set_apply_delay_label(lv_obj_t *ondelay_btn)
                                 LV_PART_MAIN | LV_STATE_FOCUSED);
     lv_obj_t *lbl = lv_obj_get_child(ondelay_btn, 0);
     if (lbl) {
-        lv_obj_set_style_text_font(lbl, fs_taiwanpearl_regular_24,
+        lv_obj_set_style_text_font(lbl, &c_taiwanpearl_regular_24,
                                    LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_label_set_long_mode(lbl, LV_LABEL_LONG_SCROLL_CIRCULAR);
         lv_label_set_text_fmt(lbl, "%s%02d:%02d开始",

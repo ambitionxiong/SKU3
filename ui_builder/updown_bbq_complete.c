@@ -44,7 +44,7 @@ void updown_bbq_complete_create(ui_manager_t *ui)
     lv_obj_set_size(scr->statu_label, 490, 39);
 
     // Set style of scr->statu_label
-    lv_obj_set_style_text_font(scr->statu_label, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->statu_label, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->statu_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->bar_3
@@ -75,7 +75,7 @@ void updown_bbq_complete_create(ui_manager_t *ui)
     lv_obj_set_size(scr->complete_label, 235, 60);
 
     // Set style of scr->complete_label
-    lv_obj_set_style_text_font(scr->complete_label, fs_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->complete_label, &c_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->complete_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->image_26
@@ -97,7 +97,7 @@ void updown_bbq_complete_create(ui_manager_t *ui)
     // Set style of scr->little_button
     lv_obj_set_style_bg_opa(scr->little_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->little_button, LVGL_IMAGE_PATH(little.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->little_button, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->little_button, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->little_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->little_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->little_button, 0, LV_PART_MAIN | LV_STATE_FOCUSED);

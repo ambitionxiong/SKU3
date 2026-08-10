@@ -36,7 +36,7 @@ void waitmenu_12_create(ui_manager_t *ui)
     lv_obj_set_size(scr->time_label, 438, 127);
 
     // Set style of scr->time_label
-    lv_obj_set_style_text_font(scr->time_label, fs_taiwanpearl_regular_128, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->time_label, &c_taiwanpearl_regular_128, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->time_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->time_label, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_letter_space(scr->time_label, 4, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -49,7 +49,7 @@ void waitmenu_12_create(ui_manager_t *ui)
     lv_obj_set_size(scr->week_label, 170, 51);
 
     // Set style of scr->week_label
-    lv_obj_set_style_text_font(scr->week_label, fs_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->week_label, &c_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->week_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->week_label, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -61,7 +61,7 @@ void waitmenu_12_create(ui_manager_t *ui)
     lv_obj_set_size(scr->year_month_label, 367, 51);
 
     // Set style of scr->year_month_label
-    lv_obj_set_style_text_font(scr->year_month_label, fs_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->year_month_label, &c_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->year_month_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->year_month_label, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -74,7 +74,7 @@ void waitmenu_12_create(ui_manager_t *ui)
     lv_obj_add_flag(scr->halfday_label, LV_OBJ_FLAG_HIDDEN);
 
     // Set style of scr->halfday_label
-    lv_obj_set_style_text_font(scr->halfday_label, fs_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->halfday_label, &c_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->halfday_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->halfday_label, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_letter_space(scr->halfday_label, 4, LV_PART_MAIN | LV_STATE_DEFAULT);

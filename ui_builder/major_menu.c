@@ -39,7 +39,7 @@ void major_menu_create(ui_manager_t *ui)
     // Set style of scr->cook4_button
     lv_obj_set_style_bg_opa(scr->cook4_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->cook4_button, LVGL_IMAGE_PATH(div3bk30.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->cook4_button, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->cook4_button, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->cook4_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->cook4_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->cook4_button, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -56,7 +56,7 @@ void major_menu_create(ui_manager_t *ui)
     // Set style of scr->cook_button
     lv_obj_set_style_bg_opa(scr->cook_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->cook_button, LVGL_IMAGE_PATH(div3bk30.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->cook_button, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->cook_button, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->cook_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->cook_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->cook_button, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -73,7 +73,7 @@ void major_menu_create(ui_manager_t *ui)
     // Set style of scr->special_button
     lv_obj_set_style_bg_opa(scr->special_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->special_button, LVGL_IMAGE_PATH(div3bk30.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->special_button, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->special_button, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->special_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->special_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->special_button, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -95,7 +95,7 @@ void major_menu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->menu_label, 58, 22);
 
     // Set style of scr->menu_label
-    lv_obj_set_style_text_font(scr->menu_label, fs_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->menu_label, &c_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->menu_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->menu_label, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -107,7 +107,7 @@ void major_menu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->cook_label, 147, 28);
 
     // Set style of scr->cook_label
-    lv_obj_set_style_text_font(scr->cook_label, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->cook_label, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->cook_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->cook_label, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -119,7 +119,7 @@ void major_menu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->cook4_label, 147, 28);
 
     // Set style of scr->cook4_label
-    lv_obj_set_style_text_font(scr->cook4_label, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->cook4_label, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->cook4_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->cook4_label, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -131,7 +131,7 @@ void major_menu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->special_label, 147, 30);
 
     // Set style of scr->special_label
-    lv_obj_set_style_text_font(scr->special_label, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->special_label, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->special_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->special_label, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 

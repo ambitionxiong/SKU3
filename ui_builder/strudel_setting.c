@@ -36,7 +36,7 @@ void strudel_setting_create(ui_manager_t *ui)
     lv_obj_set_size(scr->timelabel, 235, 60);
 
     // Set style of scr->timelabel
-    lv_obj_set_style_text_font(scr->timelabel, fs_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->timelabel, &c_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->timelabel, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->container_31
@@ -71,7 +71,7 @@ void strudel_setting_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_709, 135, 30);
 
     // Set style of scr->label_709
-    lv_obj_set_style_text_font(scr->label_709, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_709, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_709, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->label_709, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -83,7 +83,7 @@ void strudel_setting_create(ui_manager_t *ui)
     lv_obj_set_size(scr->hour, 102, 46);
 
     // Set style of scr->hour
-    lv_obj_set_style_text_font(scr->hour, fs_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->hour, &c_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->hour, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->hour, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -95,7 +95,7 @@ void strudel_setting_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_711, 37, 30);
 
     // Set style of scr->label_711
-    lv_obj_set_style_text_font(scr->label_711, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_711, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_711, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->label_711, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -115,7 +115,7 @@ void strudel_setting_create(ui_manager_t *ui)
     lv_obj_set_size(scr->min, 102, 46);
 
     // Set style of scr->min
-    lv_obj_set_style_text_font(scr->min, fs_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->min, &c_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->min, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->min, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -127,7 +127,7 @@ void strudel_setting_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_713, 37, 30);
 
     // Set style of scr->label_713
-    lv_obj_set_style_text_font(scr->label_713, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_713, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_713, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->label_713, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -150,7 +150,7 @@ void strudel_setting_create(ui_manager_t *ui)
     // Set style of scr->sure
     lv_obj_set_style_bg_opa(scr->sure, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->sure, LVGL_IMAGE_PATH(stopbk1.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->sure, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->sure, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->sure, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->sure, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->sure, 0, LV_PART_MAIN | LV_STATE_FOCUSED);

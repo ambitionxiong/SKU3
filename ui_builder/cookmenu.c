@@ -39,7 +39,7 @@ void cookmenu_create(ui_manager_t *ui)
     // Set style of scr->top_bbq_button
     lv_obj_set_style_bg_opa(scr->top_bbq_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->top_bbq_button, LVGL_IMAGE_PATH(bottombk.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->top_bbq_button, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->top_bbq_button, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->top_bbq_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->top_bbq_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->top_bbq_button, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -56,7 +56,7 @@ void cookmenu_create(ui_manager_t *ui)
     // Set style of scr->hot_bbq_button
     lv_obj_set_style_bg_opa(scr->hot_bbq_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->hot_bbq_button, LVGL_IMAGE_PATH(bottombk.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->hot_bbq_button, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->hot_bbq_button, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->hot_bbq_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->hot_bbq_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->hot_bbq_button, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -73,7 +73,7 @@ void cookmenu_create(ui_manager_t *ui)
     // Set style of scr->hot_wind_button
     lv_obj_set_style_bg_opa(scr->hot_wind_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->hot_wind_button, LVGL_IMAGE_PATH(bottombk.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->hot_wind_button, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->hot_wind_button, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->hot_wind_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->hot_wind_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->hot_wind_button, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -90,7 +90,7 @@ void cookmenu_create(ui_manager_t *ui)
     // Set style of scr->save_button
     lv_obj_set_style_bg_opa(scr->save_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->save_button, LVGL_IMAGE_PATH(bottombk.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->save_button, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->save_button, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->save_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->save_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->save_button, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -107,7 +107,7 @@ void cookmenu_create(ui_manager_t *ui)
     // Set style of scr->bottom_button
     lv_obj_set_style_bg_opa(scr->bottom_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->bottom_button, LVGL_IMAGE_PATH(bottombk.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->bottom_button, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->bottom_button, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->bottom_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->bottom_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->bottom_button, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -124,7 +124,7 @@ void cookmenu_create(ui_manager_t *ui)
     // Set style of scr->central_button
     lv_obj_set_style_bg_opa(scr->central_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->central_button, LVGL_IMAGE_PATH(bottombk.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->central_button, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->central_button, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->central_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->central_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->central_button, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -141,7 +141,7 @@ void cookmenu_create(ui_manager_t *ui)
     // Set style of scr->windchange_buttonn
     lv_obj_set_style_bg_opa(scr->windchange_buttonn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->windchange_buttonn, LVGL_IMAGE_PATH(bottombk.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->windchange_buttonn, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->windchange_buttonn, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->windchange_buttonn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->windchange_buttonn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->windchange_buttonn, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -158,7 +158,7 @@ void cookmenu_create(ui_manager_t *ui)
     // Set style of scr->preheater_button
     lv_obj_set_style_bg_opa(scr->preheater_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->preheater_button, LVGL_IMAGE_PATH(bottombk.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->preheater_button, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->preheater_button, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->preheater_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->preheater_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->preheater_button, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -175,7 +175,7 @@ void cookmenu_create(ui_manager_t *ui)
     // Set style of scr->up_down_button
     lv_obj_set_style_bg_opa(scr->up_down_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->up_down_button, LVGL_IMAGE_PATH(updown80bk.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->up_down_button, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->up_down_button, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->up_down_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->up_down_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->up_down_button, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -197,7 +197,7 @@ void cookmenu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->hot_wind_labal, 63, 32);
 
     // Set style of scr->hot_wind_labal
-    lv_obj_set_style_text_font(scr->hot_wind_labal, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->hot_wind_labal, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->hot_wind_labal, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->save_labal
@@ -208,7 +208,7 @@ void cookmenu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->save_labal, 126, 32);
 
     // Set style of scr->save_labal
-    lv_obj_set_style_text_font(scr->save_labal, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->save_labal, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->save_labal, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->up_down_labal
@@ -219,7 +219,7 @@ void cookmenu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->up_down_labal, 150, 32);
 
     // Set style of scr->up_down_labal
-    lv_obj_set_style_text_font(scr->up_down_labal, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->up_down_labal, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->up_down_labal, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->up_down_labal, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -231,7 +231,7 @@ void cookmenu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->bottom_bbq_labal, 131, 32);
 
     // Set style of scr->bottom_bbq_labal
-    lv_obj_set_style_text_font(scr->bottom_bbq_labal, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->bottom_bbq_labal, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->bottom_bbq_labal, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->hotwind_bbq_labal
@@ -242,7 +242,7 @@ void cookmenu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->hotwind_bbq_labal, 126, 32);
 
     // Set style of scr->hotwind_bbq_labal
-    lv_obj_set_style_text_font(scr->hotwind_bbq_labal, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->hotwind_bbq_labal, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->hotwind_bbq_labal, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->central_labal
@@ -253,7 +253,7 @@ void cookmenu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->central_labal, 126, 32);
 
     // Set style of scr->central_labal
-    lv_obj_set_style_text_font(scr->central_labal, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->central_labal, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->central_labal, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->wind_change_labal
@@ -264,7 +264,7 @@ void cookmenu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->wind_change_labal, 126, 32);
 
     // Set style of scr->wind_change_labal
-    lv_obj_set_style_text_font(scr->wind_change_labal, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->wind_change_labal, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->wind_change_labal, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->preheater_labal
@@ -275,7 +275,7 @@ void cookmenu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->preheater_labal, 61, 32);
 
     // Set style of scr->preheater_labal
-    lv_obj_set_style_text_font(scr->preheater_labal, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->preheater_labal, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->preheater_labal, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->pengren_labal
@@ -286,7 +286,7 @@ void cookmenu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->pengren_labal, 97, 25);
 
     // Set style of scr->pengren_labal
-    lv_obj_set_style_text_font(scr->pengren_labal, fs_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->pengren_labal, &c_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->pengren_labal, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->hot_bbq_labal
@@ -297,7 +297,7 @@ void cookmenu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->hot_bbq_labal, 126, 32);
 
     // Set style of scr->hot_bbq_labal
-    lv_obj_set_style_text_font(scr->hot_bbq_labal, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->hot_bbq_labal, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->hot_bbq_labal, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
 

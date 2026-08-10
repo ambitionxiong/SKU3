@@ -30,6 +30,9 @@
 #undef LV_COLOR_DEPTH
 #define LV_COLOR_DEPTH 32
 
+#undef LV_USE_FONT_COMPRESSED
+#define LV_USE_FONT_COMPRESSED 0
+
 
 
 /* code end */

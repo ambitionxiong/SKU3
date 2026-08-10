@@ -39,7 +39,7 @@ void hotcleansave_set_create(ui_manager_t *ui)
     // Set style of scr->start
     lv_obj_set_style_bg_opa(scr->start, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->start, LVGL_IMAGE_PATH(stopbk1.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->start, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->start, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->start, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->start, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->start, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -61,7 +61,7 @@ void hotcleansave_set_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_14, 512, 60);
 
     // Set style of scr->label_14
-    lv_obj_set_style_text_font(scr->label_14, fs_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_14, &c_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_14, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->status
@@ -72,7 +72,7 @@ void hotcleansave_set_create(ui_manager_t *ui)
     lv_obj_set_size(scr->status, 233, 39);
 
     // Set style of scr->status
-    lv_obj_set_style_text_font(scr->status, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->status, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->status, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->label_16
@@ -83,7 +83,7 @@ void hotcleansave_set_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_16, 600, 39);
 
     // Set style of scr->label_16
-    lv_obj_set_style_text_font(scr->label_16, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_16, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_16, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->label_16, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 

@@ -36,7 +36,7 @@ void frozencookpage_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_631, 97, 25);
 
     // Set style of scr->label_631
-    lv_obj_set_style_text_font(scr->label_631, fs_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_631, &c_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_631, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->Lasagna
@@ -50,7 +50,7 @@ void frozencookpage_create(ui_manager_t *ui)
     // Set style of scr->Lasagna
     lv_obj_set_style_bg_opa(scr->Lasagna, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->Lasagna, LVGL_IMAGE_PATH(div6bg80.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->Lasagna, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->Lasagna, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->Lasagna, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->Lasagna, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->Lasagna, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -67,7 +67,7 @@ void frozencookpage_create(ui_manager_t *ui)
     // Set style of scr->Strudel
     lv_obj_set_style_bg_opa(scr->Strudel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->Strudel, LVGL_IMAGE_PATH(div6bg80.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->Strudel, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->Strudel, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->Strudel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->Strudel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->Strudel, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -84,7 +84,7 @@ void frozencookpage_create(ui_manager_t *ui)
     // Set style of scr->bread
     lv_obj_set_style_bg_opa(scr->bread, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->bread, LVGL_IMAGE_PATH(div6bg80.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->bread, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->bread, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->bread, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->bread, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->bread, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -101,7 +101,7 @@ void frozencookpage_create(ui_manager_t *ui)
     // Set style of scr->pizza3
     lv_obj_set_style_bg_opa(scr->pizza3, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->pizza3, LVGL_IMAGE_PATH(div6bg80.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->pizza3, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->pizza3, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->pizza3, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->pizza3, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->pizza3, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -118,7 +118,7 @@ void frozencookpage_create(ui_manager_t *ui)
     // Set style of scr->chip
     lv_obj_set_style_bg_opa(scr->chip, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->chip, LVGL_IMAGE_PATH(div6bg80.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->chip, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->chip, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->chip, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->chip, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->chip, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -135,7 +135,7 @@ void frozencookpage_create(ui_manager_t *ui)
     // Set style of scr->custom
     lv_obj_set_style_bg_opa(scr->custom, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->custom, LVGL_IMAGE_PATH(div6bg80.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->custom, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->custom, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->custom, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->custom, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->custom, 0, LV_PART_MAIN | LV_STATE_FOCUSED);

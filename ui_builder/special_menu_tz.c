@@ -39,7 +39,7 @@ void special_menu_tz_create(ui_manager_t *ui)
     // Set style of scr->slowcook_button
     lv_obj_set_style_bg_opa(scr->slowcook_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->slowcook_button, LVGL_IMAGE_PATH(div2bk30.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->slowcook_button, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->slowcook_button, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->slowcook_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->slowcook_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->slowcook_button, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -53,7 +53,7 @@ void special_menu_tz_create(ui_manager_t *ui)
     lv_obj_set_size(scr->special_label, 97, 25);
 
     // Set style of scr->special_label
-    lv_obj_set_style_text_font(scr->special_label, fs_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->special_label, &c_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->special_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->major_img
@@ -72,7 +72,7 @@ void special_menu_tz_create(ui_manager_t *ui)
     lv_obj_set_size(scr->slowcook_label, 131, 32);
 
     // Set style of scr->slowcook_label
-    lv_obj_set_style_text_font(scr->slowcook_label, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->slowcook_label, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->slowcook_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->slowcook_label, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 

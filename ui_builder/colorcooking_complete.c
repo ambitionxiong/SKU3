@@ -44,7 +44,7 @@ void colorcooking_complete_create(ui_manager_t *ui)
     lv_obj_set_size(scr->status_label, 490, 39);
 
     // Set style of scr->status_label
-    lv_obj_set_style_text_font(scr->status_label, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->status_label, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->status_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->bar
@@ -67,7 +67,7 @@ void colorcooking_complete_create(ui_manager_t *ui)
     lv_obj_set_size(scr->complete_label, 235, 60);
 
     // Set style of scr->complete_label
-    lv_obj_set_style_text_font(scr->complete_label, fs_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->complete_label, &c_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->complete_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->color_img

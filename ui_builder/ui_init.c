@@ -12,57 +12,9 @@
 
 ui_manager_t ui_manager;
 
-lv_font_t *fs_montserratmedium_16;
-lv_font_t *fs_taiwanpearl_regular_128;
-lv_font_t *fs_taiwanpearl_regular_48;
-lv_font_t *fs_taiwanpearl_regular_24;
-lv_font_t *fs_taiwanpearl_regular_36;
-lv_font_t *fs_taiwanpearl_regular_30;
-lv_font_t *fs_taiwanpearl_regular_60;
-lv_font_t *fs_taiwanpearl_regular_72;
 
 void ui_init(void)
 {
-    fs_montserratmedium_16 = ui_font_init(LVGL_FONT_PATH(montserratMedium.ttf), 16);
-    fs_taiwanpearl_regular_128 = ui_font_init(LVGL_FONT_PATH(TaiwanPearl_Regular.ttf), 128);
-    fs_taiwanpearl_regular_48 = ui_font_init(LVGL_FONT_PATH(TaiwanPearl_Regular.ttf), 48);
-    fs_taiwanpearl_regular_24 = ui_font_init(LVGL_FONT_PATH(TaiwanPearl_Regular.ttf), 24);
-    fs_taiwanpearl_regular_36 = ui_font_init(LVGL_FONT_PATH(TaiwanPearl_Regular.ttf), 36);
-    fs_taiwanpearl_regular_30 = ui_font_init(LVGL_FONT_PATH(TaiwanPearl_Regular.ttf), 30);
-    fs_taiwanpearl_regular_60 = ui_font_init(LVGL_FONT_PATH(TaiwanPearl_Regular.ttf), 60);
-    fs_taiwanpearl_regular_72 = ui_font_init(LVGL_FONT_PATH(TaiwanPearl_Regular.ttf), 72);
-    if (!fs_montserratmedium_16) {
-    	LV_LOG_ERROR("Failed to init fs_montserratmedium_16");
-    	return;
-    }
-    if (!fs_taiwanpearl_regular_128) {
-    	LV_LOG_ERROR("Failed to init fs_taiwanpearl_regular_128");
-    	return;
-    }
-    if (!fs_taiwanpearl_regular_48) {
-    	LV_LOG_ERROR("Failed to init fs_taiwanpearl_regular_48");
-    	return;
-    }
-    if (!fs_taiwanpearl_regular_24) {
-    	LV_LOG_ERROR("Failed to init fs_taiwanpearl_regular_24");
-    	return;
-    }
-    if (!fs_taiwanpearl_regular_36) {
-    	LV_LOG_ERROR("Failed to init fs_taiwanpearl_regular_36");
-    	return;
-    }
-    if (!fs_taiwanpearl_regular_30) {
-    	LV_LOG_ERROR("Failed to init fs_taiwanpearl_regular_30");
-    	return;
-    }
-    if (!fs_taiwanpearl_regular_60) {
-    	LV_LOG_ERROR("Failed to init fs_taiwanpearl_regular_60");
-    	return;
-    }
-    if (!fs_taiwanpearl_regular_72) {
-    	LV_LOG_ERROR("Failed to init fs_taiwanpearl_regular_72");
-    	return;
-    }
 
     // auto delete screen
     ui_manager_init(&ui_manager, true);

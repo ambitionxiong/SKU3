@@ -44,7 +44,7 @@ void hot_bbq_complete_probe_create(ui_manager_t *ui)
     lv_obj_set_size(scr->status, 490, 39);
 
     // Set style of scr->status
-    lv_obj_set_style_text_font(scr->status, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->status, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->status, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->bar_4
@@ -75,7 +75,7 @@ void hot_bbq_complete_probe_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_43, 235, 60);
 
     // Set style of scr->label_43
-    lv_obj_set_style_text_font(scr->label_43, fs_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_43, &c_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_43, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->label_44
@@ -86,7 +86,7 @@ void hot_bbq_complete_probe_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_44, 252, 36);
 
     // Set style of scr->label_44
-    lv_obj_set_style_text_font(scr->label_44, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_44, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_44, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->label_44, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -98,7 +98,7 @@ void hot_bbq_complete_probe_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_45, 252, 36);
 
     // Set style of scr->label_45
-    lv_obj_set_style_text_font(scr->label_45, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_45, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_45, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->label_45, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 

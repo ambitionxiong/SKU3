@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Size: 128 px
  * Bpp: 4
- * Opts: --font C:/My_STM32_Project/UIBUILDWER/first_ui_project/resources/font/TaiwanPearl_Regular.ttf --size 128 --bpp 4 -r 0x0020-0x007e --format lvgl --no-compress -o C:/My_STM32_Project/UIBUILDWER/first_ui_project/ui_builder/font/c_taiwanpearl_regular_128.c
+ * Opts: --font D:/My_STM32_Project/UIBUILDWER/first_ui_project/resources/font/TaiwanPearl_Regular.ttf --size 128 --bpp 4 -r 0x0020-0x007e --format lvgl --no-compress -o D:/My_STM32_Project/UIBUILDWER/first_ui_project/ui_builder/font/c_taiwanpearl_regular_128.c
  ******************************************************************************/
 
 #ifdef __has_include

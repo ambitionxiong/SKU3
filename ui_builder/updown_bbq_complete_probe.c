@@ -44,7 +44,7 @@ void updown_bbq_complete_probe_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_74, 490, 39);
 
     // Set style of scr->label_74
-    lv_obj_set_style_text_font(scr->label_74, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_74, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_74, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->bar_4
@@ -75,7 +75,7 @@ void updown_bbq_complete_probe_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_75, 235, 60);
 
     // Set style of scr->label_75
-    lv_obj_set_style_text_font(scr->label_75, fs_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_75, &c_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_75, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->image_2

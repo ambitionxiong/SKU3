@@ -36,7 +36,7 @@ void cook4menu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_83, 144, 32);
 
     // Set style of scr->label_83
-    lv_obj_set_style_text_font(scr->label_83, fs_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_83, &c_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_83, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->cookie
@@ -50,7 +50,7 @@ void cook4menu_create(ui_manager_t *ui)
     // Set style of scr->cookie
     lv_obj_set_style_bg_opa(scr->cookie, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->cookie, LVGL_IMAGE_PATH(div4bg30.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->cookie, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->cookie, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->cookie, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->cookie, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->cookie, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -67,7 +67,7 @@ void cook4menu_create(ui_manager_t *ui)
     // Set style of scr->west
     lv_obj_set_style_bg_opa(scr->west, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->west, LVGL_IMAGE_PATH(div4bg30.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->west, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->west, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->west, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->west, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->west, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -84,7 +84,7 @@ void cook4menu_create(ui_manager_t *ui)
     // Set style of scr->piza
     lv_obj_set_style_bg_opa(scr->piza, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->piza, LVGL_IMAGE_PATH(div4bg30.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->piza, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->piza, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->piza, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->piza, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->piza, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -101,7 +101,7 @@ void cook4menu_create(ui_manager_t *ui)
     // Set style of scr->menu
     lv_obj_set_style_bg_opa(scr->menu, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->menu, LVGL_IMAGE_PATH(div4bg30.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->menu, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->menu, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->menu, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->menu, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->menu, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -147,7 +147,7 @@ void cook4menu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_84, 100, 32);
 
     // Set style of scr->label_84
-    lv_obj_set_style_text_font(scr->label_84, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_84, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_84, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->label_85
@@ -158,7 +158,7 @@ void cook4menu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_85, 100, 32);
 
     // Set style of scr->label_85
-    lv_obj_set_style_text_font(scr->label_85, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_85, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_85, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->label_86
@@ -169,7 +169,7 @@ void cook4menu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_86, 100, 32);
 
     // Set style of scr->label_86
-    lv_obj_set_style_text_font(scr->label_86, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_86, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_86, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->label_87
@@ -180,7 +180,7 @@ void cook4menu_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_87, 100, 32);
 
     // Set style of scr->label_87
-    lv_obj_set_style_text_font(scr->label_87, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_87, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_87, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
 

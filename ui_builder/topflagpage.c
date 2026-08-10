@@ -43,7 +43,7 @@ void topflagpage_create(ui_manager_t *ui)
     lv_obj_set_size(scr->currenttime, 60, 22);
 
     // Set style of scr->currenttime
-    lv_obj_set_style_text_font(scr->currenttime, fs_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->currenttime, &c_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->currenttime, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->currenttime, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
 

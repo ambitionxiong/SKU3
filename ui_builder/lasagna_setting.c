@@ -36,7 +36,7 @@ void lasagna_setting_create(ui_manager_t *ui)
     lv_obj_set_size(scr->timelabel, 235, 60);
 
     // Set style of scr->timelabel
-    lv_obj_set_style_text_font(scr->timelabel, fs_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->timelabel, &c_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->timelabel, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->container_29
@@ -71,7 +71,7 @@ void lasagna_setting_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_663, 135, 30);
 
     // Set style of scr->label_663
-    lv_obj_set_style_text_font(scr->label_663, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_663, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_663, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->label_663, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -83,7 +83,7 @@ void lasagna_setting_create(ui_manager_t *ui)
     lv_obj_set_size(scr->hour, 102, 46);
 
     // Set style of scr->hour
-    lv_obj_set_style_text_font(scr->hour, fs_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->hour, &c_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->hour, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->hour, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -95,7 +95,7 @@ void lasagna_setting_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_668, 37, 30);
 
     // Set style of scr->label_668
-    lv_obj_set_style_text_font(scr->label_668, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_668, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_668, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->label_668, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -115,7 +115,7 @@ void lasagna_setting_create(ui_manager_t *ui)
     lv_obj_set_size(scr->min, 102, 46);
 
     // Set style of scr->min
-    lv_obj_set_style_text_font(scr->min, fs_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->min, &c_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->min, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->min, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -127,7 +127,7 @@ void lasagna_setting_create(ui_manager_t *ui)
     lv_obj_set_size(scr->label_669, 37, 30);
 
     // Set style of scr->label_669
-    lv_obj_set_style_text_font(scr->label_669, fs_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->label_669, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_669, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->label_669, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -150,7 +150,7 @@ void lasagna_setting_create(ui_manager_t *ui)
     // Set style of scr->button_200
     lv_obj_set_style_bg_opa(scr->button_200, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->button_200, LVGL_IMAGE_PATH(stopbk1.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->button_200, fs_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->button_200, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->button_200, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->button_200, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->button_200, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
