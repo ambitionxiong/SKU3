@@ -543,6 +543,7 @@ static void on_strudel_setting_sure_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
     if (screen_is_loading(act_scr)) return;
+    edit_clear();   /* 清除编辑注册表残留,防止悬空 label 指针(UAF) */
 
     cook_total_ms = (set_hour * 3600 + set_min * 60) * 1000;
 

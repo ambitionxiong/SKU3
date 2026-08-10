@@ -945,6 +945,7 @@ void page_pop(void)
 
     /* ②~④ 算出 child(子页) 和 prev(父页) */
     depth--;
+    edit_clear();   /* 离开当前页清编辑注册表,防止悬空 label 指针残留(UAF) */
     page_id_t child = page_stack[depth];
     page_id_t prev = page_stack[depth - 1];
     printf("[nav] page pop: depth=%d, back to id=%d (from id=%d)\n", depth, prev, child);
@@ -5736,6 +5737,7 @@ static void process_key(uint8_t key)
 
 void nav_key1_long_press(void)
 {
+    probetip_cancel_auto_dismiss();   /* 取消陈旧的探针提示自动关闭定时器,防止跨会话误触发 */
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
     g_on_stop_back = 0;
     g_complete_to_stop_back = 0;
@@ -6681,6 +6683,30 @@ static void auto_pause_on_door(void)
     else if (cur == PAGE_CENTRAL_BBQ_COOKING) jump_to_central_bbq_stop();
     else if (cur == PAGE_WINDCHANGE_BBQ_COOKING) jump_to_windchange_bbq_stop();
     else if (cur == PAGE_UPDOWN_BBQ_SETTING) jump_to_updown_bbq_stop();
+    else if (cur == PAGE_TOP_BBQ_SETTING) jump_to_top_bbq_stop();
+    else if (cur == PAGE_BOTTOM_BBQ_SETTING) jump_to_bottom_bbq_stop();
+    else if (cur == PAGE_HOT_BBQ_SETTING) jump_to_hot_bbq_stop();
+    else if (cur == PAGE_HOTWIND_BBQ_SETTING) jump_to_hotwind_bbq_stop();
+    else if (cur == PAGE_SAVE_BBQ_SETTING) jump_to_save_bbq_stop();
+    else if (cur == PAGE_CENTRAL_BBQ_SETTING) jump_to_central_bbq_stop();
+    else if (cur == PAGE_WINDCHANGE_BBQ_SETTING) jump_to_windchange_bbq_stop();
+    else if (cur == PAGE_COOKIE_SETTING) jump_to_cookie_stop();
+    else if (cur == PAGE_WEST_SETTING) jump_to_west_stop();
+    else if (cur == PAGE_PIZZA_SETTING) jump_to_pizza_stop();
+    else if (cur == PAGE_MENU_COOK_SETTING) jump_to_menu_stop();
+    else if (cur == PAGE_AIR_SETTING) jump_to_air_stop();
+    else if (cur == PAGE_PIZZA_2_SETTING) jump_to_pizza_2_stop();
+    else if (cur == PAGE_SLOWCOOK_SETTING) jump_to_slowcook_stop();
+    else if (cur == PAGE_UNFROZEN_SETTING) jump_to_unfrozen_stop();
+    else if (cur == PAGE_RISING_SETTING) jump_to_rising_stop();
+    else if (cur == PAGE_CORN_SETTING) jump_to_corn_stop();
+    else if (cur == PAGE_HEATCONTAIN_SETTING) jump_to_heatcontain_stop();
+    else if (cur == PAGE_LASAGNA_SETTING) jump_to_lasagna_stop();
+    else if (cur == PAGE_STRUDEL_SETTING) jump_to_strudel_stop();
+    else if (cur == PAGE_BREAD_SETTING) jump_to_bread_stop();
+    else if (cur == PAGE_PIZZA3_SETTING) jump_to_pizza3_stop();
+    else if (cur == PAGE_CHIP_SETTING) jump_to_chip_stop();
+    else if (cur == PAGE_CUSTOM_SETTING) jump_to_custom_stop();
     else if (cur == PAGE_PREHEAT_COOKING) jump_to_preheat_stop();
     else if (cur == PAGE_COOKIE_COOKING) jump_to_cookie_stop();
     else if (cur == PAGE_WEST_COOKING) jump_to_west_stop();
@@ -7847,8 +7873,12 @@ void cooking_timer_cb(lv_timer_t *timer)
         }
         if (current_group == g_color_cookoing) {
             jump_to_color_complete();
-        } else {
+        } else if (current_group == g_updown_bbq_cooking ||
+                   current_group == g_updown_bbq_setting) {
             jump_to_updown_bbq_complete();
+        } else {
+            /* 未识别页面：安全返回，不强制跳转（防止在错误页面跳转/破坏页面栈） */
+            return;
         }
         return;
     }
@@ -8587,6 +8617,7 @@ static void system_timer_cb(lv_timer_t *timer)
         return;
     }
 
+    probetip_cancel_auto_dismiss();   /* 取消陈旧的探针提示自动关闭定时器,防止跨会话误触发 */
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
     set_temp = 180; set_temp_up = 180; set_temp_down = 180;
     set_hour = 0; set_min = 30;
