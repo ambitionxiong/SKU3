@@ -23,6 +23,13 @@ void probetip_cancel_auto_dismiss(void)
 
 void jump_to_probetip(const char *text)
 {
+    if (depth > 0 && page_stack[depth - 1] == PAGE_PROBETIP) {
+        /* 已在探针提示页，只更新文字不重复压栈 */
+        probetip_t *tip = probetip_get(&ui_manager);
+        lv_obj_t *label = (tip && tip->button_1) ? lv_obj_get_child(tip->button_1, 0) : NULL;
+        if (label) lv_label_set_text(label, text);
+        return;
+    }
     page_push(PAGE_PROBETIP);
     lv_obj_clean(lv_scr_act());
     probetip_create(&ui_manager);

@@ -15,6 +15,8 @@ void topflagpage_create(ui_manager_t *ui)
 {
     topflagpage_t *scr = topflagpage_get(ui);
 
+    // NOTE: 本页面仅由 nav_init 调用一次（对象挂在 lv_layer_top 上，不会被屏幕加载回收）。
+    // auto_del=true 时下方守卫不生效——请勿二次调用本函数，否则顶层对象会泄漏。
     if (!ui->auto_del && scr->obj) {
         return;
     }
@@ -26,6 +28,7 @@ void topflagpage_create(ui_manager_t *ui)
     lv_obj_remove_style_all(scr->obj);
     lv_obj_set_size(scr->obj, LV_HOR_RES, LV_VER_RES);
     lv_obj_remove_flag(scr->obj, LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_remove_flag(scr->obj, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_CLICK_FOCUSABLE);
     lv_obj_set_scrollbar_mode(scr->obj, LV_SCROLLBAR_MODE_OFF);
 
     // Set style of scr->obj

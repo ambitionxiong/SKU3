@@ -56,7 +56,7 @@ uint8_t g_delay_cancel_to_stop_back;
 uint8_t g_keepwarm_active;
 int g_keepwarm_sec;
 page_id_t g_delay_source_page = PAGE_WAITMENU_24;
-int64_t g_delay_target = 0;
+int64_t g_delay_target = -1;   /* -1=无有效预约目标（哨兵，到点检测不触发） */
 lv_group_t *g_updown_bbq_cooking;
 lv_group_t *g_updown_bbq_complete;
 
@@ -435,7 +435,11 @@ void cooking_timer_cb(lv_timer_t *timer);
 static void topflag_update_visibility(void);
 static void topflag_clock_cb(lv_timer_t *timer);
 static void waitmenu_apply_clock(void);
+static void waitmenu_clock_cache_reset(void);
 static void color_exit_to_home(void);
+static void jump_to_color_menu(void);
+static void color_menu_rebuild(page_id_t child);
+static void on_color_menu_next_click(lv_event_t *e);
 static void jump_to_updown_bbq_complete(void);
 static void jump_to_color_cookoing(void);
 static void jump_to_color_complete(void);
@@ -1741,6 +1745,7 @@ void page_pop(void)
                 int m = (remaining_sec % 3600) / 60;
                 int s = remaining_sec % 60;
                 lv_label_set_text_fmt(cc->time_label, "%02d:%02d:%02d", h, m, s);
+                lv_label_set_text_fmt(cc->status_label, "| 额外上色 | %d℃ | 5分钟", set_temp);
                 lv_bar_set_range(cc->bar, 0, 100);
                     int progress = stop_back_progress(elapsed, cook_total_ms);
                     if (progress > 100) progress = 100;
@@ -1766,7 +1771,7 @@ void page_pop(void)
             colorcooking_complete_create(&ui_manager);
             colorcooking_complete_t *cc = colorcooking_complete_get(&ui_manager);
             if (cc) {
-                lv_label_set_text(cc->status_label, "| 额外上色 | 5分钟");
+                lv_label_set_text_fmt(cc->status_label, "| 额外上色 | %d℃ | 5分钟", set_temp);
                 lv_bar_set_range(cc->bar, 0, 100);
                 lv_bar_set_value(cc->bar, 100, LV_ANIM_OFF);
             }
@@ -1780,6 +1785,7 @@ void page_pop(void)
 
     case PAGE_UPDOWN_BBQ_MENU_TOP:
     case PAGE_UPDOWN_BBQ_MENU_LOW:
+        goto rebuild_updown_bbq_set;   /* 上级是 updown set 页，按 child 恢复对应温度 */
     case PAGE_DELAYCOOKING:
         rebuild_delaycooking();
         break;
@@ -1877,6 +1883,7 @@ void page_pop(void)
 
     case PAGE_COLOR_STOP:
         g_on_stop_back = 0;
+        if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }   /* 暂停页不跑烹饪计时 */
         color_stop_create(&ui_manager);
         {
             color_stop_t *cs = color_stop_get(&ui_manager);
@@ -1895,7 +1902,7 @@ void page_pop(void)
                 int m = (remaining_sec % 3600) / 60;
                 int s = remaining_sec % 60;
                 lv_label_set_text_fmt(cs->time_label, "%02d:%02d:%02d", h, m, s);
-                lv_label_set_text(cs->label_13, "| 额外上色 | 5分钟");
+                lv_label_set_text_fmt(cs->label_13, "| 额外上色 | %d℃ | 5分钟", set_temp);
                 lv_bar_set_range(cs->bar_3, 0, 100);
                 if (cook_bar_saved > 100) cook_bar_saved = 100;
                 lv_bar_set_value(cs->bar_3, cook_bar_saved, LV_ANIM_OFF);
@@ -1919,7 +1926,7 @@ void page_pop(void)
                 lv_obj_add_event_cb(csb->button_7, on_color_stop_back_sure_click,
                                     LV_EVENT_CLICKED, NULL);
 
-                lv_label_set_text(csb->label_17, "| 额外上色 | 5分钟");
+                lv_label_set_text_fmt(csb->label_17, "| 额外上色 | %d℃ | 5分钟", set_temp);
                 uint32_t _elapsed = cook_timer ? (lv_tick_get() - cook_start_time) : cook_elapsed_saved;
                 int _p = stop_back_progress(_elapsed, cook_total_ms);
                 if (_p > 100) _p = 100;
@@ -3730,6 +3737,9 @@ void page_pop(void)
     case PAGE_PREHEAT_MENU:
         preheat_rebuild_menu(child);
         break;
+    case PAGE_COLOR_MENU:
+        color_menu_rebuild(child);
+        break;
     case PAGE_PREHEAT_COOKING:
         if (child == PAGE_PREHEAT_STOP_BACK) {
             g_on_stop_back = 0;
@@ -3774,6 +3784,7 @@ void page_pop(void)
             major_menu_tz_rebuild(0);
         } else {
             depth = 2;
+            page_stack[1] = PAGE_MAJOR_MENU;   /* goto 进入时 stack[1] 可能是任意 prev 页，显式修正 */
             lv_obj_clean(lv_scr_act());
             major_menu_create(&ui_manager);
             groups_create();
@@ -3805,6 +3816,7 @@ void page_pop(void)
     case PAGE_WAITMENU_24:
     pop_to_waitmenu:
         waitmenu_24_create(&ui_manager);
+        waitmenu_clock_cache_reset();   /* 强制刷新为真实时间 */
         current_group = NULL;
         lv_scr_load_anim(waitmenu_24_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
@@ -4380,9 +4392,70 @@ static void jump_to_updown_bbq_menu_low(void)
     printf("[nav] jump: updown_bbq_set -> updown_bbq_menu_low\n");
 }
 
+// 额外上色设置页（复用 preheatmenu 结构）：label_69="额外上色"，温度 30-300，next → color cooking
+static void color_menu_open(void)
+{
+    preheatmenu_create(&ui_manager);
+    preheatmenu_t *menu = preheatmenu_get(&ui_manager);
+    if (menu) {
+        lv_label_set_text(menu->label_69, "额外上色");
+        lv_obj_t *btns[] = { menu->temp, menu->next };
+        if (g_preheat_menu) lv_group_del(g_preheat_menu);
+        g_preheat_menu = group_create_for_page(btns, 2);
+
+        edit_clear();
+        edit_register(menu->temp, menu->line2, menu->line3,
+                      &set_temp, 30, 300, 5, "%d");
+
+        lv_obj_add_event_cb(menu->temp, on_edit_focus, LV_EVENT_FOCUSED, NULL);
+        lv_obj_add_event_cb(menu->next, on_edit_focus, LV_EVENT_FOCUSED, NULL);
+
+        lv_label_set_text_fmt(menu->temp, "%d", set_temp);
+
+        lv_obj_add_flag(menu->line2, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(menu->line3, LV_OBJ_FLAG_HIDDEN);
+        if (set_temp < 100)
+            lv_obj_clear_flag(menu->line2, LV_OBJ_FLAG_HIDDEN);
+        else
+            lv_obj_clear_flag(menu->line3, LV_OBJ_FLAG_HIDDEN);
+
+        lv_obj_add_event_cb(menu->next, on_color_menu_next_click,
+                            LV_EVENT_CLICKED, NULL);
+        lv_group_focus_obj(menu->next);
+    }
+    current_group = g_preheat_menu;
+
+    lv_scr_load_anim(preheatmenu_get(&ui_manager)->obj,
+                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                     ui_manager.auto_del);
+    printf("[nav] color_menu open\n");
+}
+
+static void on_color_menu_next_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (screen_is_loading(act_scr)) return;
+    jump_to_color_cookoing();
+}
+
+static void jump_to_color_menu(void)
+{
+    set_temp = 180;                              /* 默认温度 */
+    g_color_from_probe = is_probe_inserted();   /* 记录进入时的探针状态（返回时区分） */
+    page_push(PAGE_COLOR_MENU);
+    lv_obj_clean(lv_scr_act());
+    color_menu_open();
+}
+
+static void color_menu_rebuild(page_id_t child)
+{
+    color_menu_open();
+}
+
 // extra_color → color_cookoing（固定 5 分钟倒计时）
 static void jump_to_color_cookoing(void)
 {
+    edit_clear();   /* 清除编辑注册表残留（color_menu_open 注册了 preheatmenu 的字段） */
     g_on_stop_back = 0;
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
@@ -4403,14 +4476,14 @@ static void jump_to_color_cookoing(void)
 
     /* 初始化显示 */
     if (cc) {
-        lv_label_set_text(cc->status_label, "| 额外上色 | 5分钟");
+        lv_label_set_text_fmt(cc->status_label, "| 额外上色 | %d℃ | 5分钟", set_temp);
         lv_label_set_text_fmt(cc->time_label, "%02d:%02d:%02d", 0, 5, 0);
         lv_bar_set_range(cc->bar, 0, 100);
         lv_bar_set_value(cc->bar, 3, LV_ANIM_OFF);
     }
 
     /* 启动进度条动画 */
-    cook_total_ms = 5 * 60 * 1000;
+    cook_total_ms = 1 * 60 * 1000;
     if (cc) {
         lv_anim_t a;
         lv_anim_init(&a);
@@ -4452,6 +4525,12 @@ static void jump_to_color_complete(void)
         depth--;
     if (depth > 0 && page_stack[depth - 1] == PAGE_COLOR_STOP)
         depth--;
+    /* 压缩本轮上色层（EXTRA_COLOR/COLOR_COOKING 仅本轮使用）：
+       防止完成态连续再上色时栈无限累积（MAX_STACK=16） */
+    if (depth > 0 && page_stack[depth - 1] == PAGE_COLOR_COOKING)
+        depth--;
+    if (depth > 0 && page_stack[depth - 1] == PAGE_EXTRA_COLOR)
+        depth--;
     page_push(PAGE_COLOR_COOKING_COMPLETE);
     lv_obj_clean(lv_scr_act());
     colorcooking_complete_create(&ui_manager);
@@ -4459,7 +4538,7 @@ static void jump_to_color_complete(void)
     {
         colorcooking_complete_t *cc = colorcooking_complete_get(&ui_manager);
         if (cc) {
-            lv_label_set_text(cc->status_label, "| 额外上色 | 5分钟");
+            lv_label_set_text_fmt(cc->status_label, "| 额外上色 | %d℃ | 5分钟", set_temp);
             lv_bar_set_range(cc->bar, 0, 100);
             lv_bar_set_value(cc->bar, 100, LV_ANIM_OFF);
         }
@@ -4509,6 +4588,7 @@ static void color_exit_to_home(void)
     if (g_color_from_probe) {
         depth = 2;
         page_stack[1] = PAGE_MAJOR_MENU_TZ;
+        lv_obj_clean(lv_scr_act());   /* 与普通分支对称，避免依赖 auto_del 回收旧屏 */
         major_menu_tz_rebuild(0);
         printf("[color] exit -> major_menu_tz (probe)\n");
     } else {
@@ -4602,20 +4682,28 @@ static void process_key(uint8_t key)
         uart_print();
         break;
     case KEY_EXTRA_COLOR:   // 5: 进入额外上色
-        if (g_send.iface_status != IFACE_COMPLETE ||
-            (g_send.cook_mode != MODE_UPDOWN_BBQ &&
-             g_send.cook_mode != MODE_HOTWIND_BBQ &&
-             g_send.cook_mode != MODE_WINDCHANGE_BBQ &&
-             g_send.cook_mode != MODE_PIZZA_2 &&
-             g_send.cook_mode != MODE_COOK4)) {
-            g_send.buzzer_req = BUZZER_KEY_INVALID;
-            break;
-        }
-        g_send.buzzer_req = BUZZER_KEY_VALID;
-        g_color_from_probe = is_probe_inserted();   /* 记录进入时的探针状态 */
-        page_push(PAGE_EXTRA_COLOR);
-        lv_obj_clean(lv_scr_act());
-        extra_color_create(&ui_manager);
+        if (g_send.iface_status == IFACE_COMPLETE) {
+            /* 完成状态：特定模式完成页可再次上色（进 extra_color 确认页） */
+            if (depth > 0 && page_stack[depth - 1] == PAGE_EXTRA_COLOR) {
+                /* 已在 extra_color 确认页，防重复入栈 */
+                g_send.buzzer_req = BUZZER_KEY_INVALID;
+                break;
+            }
+            if (g_send.cook_mode != MODE_UPDOWN_BBQ &&
+                g_send.cook_mode != MODE_HOTWIND_BBQ &&
+                g_send.cook_mode != MODE_WINDCHANGE_BBQ &&
+                g_send.cook_mode != MODE_PIZZA_2 &&
+                g_send.cook_mode != MODE_COOK4 &&
+                g_send.cook_mode != MODE_EXTRA_COLOR) {   /* 额外上色完成后可再次上色 */
+                g_send.buzzer_req = BUZZER_KEY_INVALID;
+                break;
+            }
+            g_send.buzzer_req = BUZZER_KEY_VALID;
+            g_color_from_probe = is_probe_inserted();   /* 记录进入时的探针状态 */
+            cook_elapsed_saved = 0; cook_bar_saved = 0;  /* 新一轮上色，清旧会话保存值 */
+            page_push(PAGE_EXTRA_COLOR);
+            lv_obj_clean(lv_scr_act());
+            extra_color_create(&ui_manager);
         {
             extra_color_t *ec = extra_color_get(&ui_manager);
             if (ec) {
@@ -4631,6 +4719,17 @@ static void process_key(uint8_t key)
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
                          ui_manager.auto_del);
         printf("[nav] jump: -> extra_color\n");
+        uart_print();
+        break;
+        }
+        /* 非完成状态：进入限制与 MENU/CLEAN 相同（白名单页面），进入额外上色设置页 */
+        if (!menu_clean_key_allowed() || g_send.iface_status == IFACE_COOKING) {
+            g_send.buzzer_req = BUZZER_KEY_INVALID;
+            uart_print();
+            break;
+        }
+        g_send.buzzer_req = BUZZER_KEY_VALID;
+        jump_to_color_menu();
         uart_print();
         break;
     case KEY_CLEAN:         // 7: 进入清洁菜单
@@ -5643,9 +5742,13 @@ void nav_key1_long_press(void)
     g_cooling_to_stop_back = 0;
     g_extra_color_to_stop_back = 0;
     g_keepwarm_active = 0;
+    g_keepwarm_sec = 0;
     cook_is_color = 0;
     g_stop_back_complete = NULL;
     cook_elapsed_saved = 0; cook_bar_saved = 0;
+    delay_on = 0; preheat_on = 0; contain_on = 0;
+    delay_hour = 0; delay_min = 0;
+    g_delay_target = -1;
     set_temp = 180; set_temp_up = 180; set_temp_down = 180; set_hour = 0; set_min = 30;
     g_send.cook_mode = MODE_NONE;
     g_send.set_temp = 0;
@@ -5659,6 +5762,7 @@ void nav_key1_long_press(void)
         page_push(PAGE_WAITMENU_24);
         lv_obj_clean(lv_scr_act());
         waitmenu_24_create(&ui_manager);
+        waitmenu_clock_cache_reset();   /* 强制刷新为真实时间 */
         current_group = NULL;
         lv_scr_load(waitmenu_24_get(&ui_manager)->obj);
         waitmenu_apply_clock();   /* 立即刷新为真实时间 */
@@ -6090,7 +6194,8 @@ static void on_delayset_focus(lv_event_t *e)
         lv_obj_clear_flag(ds->startline, LV_OBJ_FLAG_HIDDEN);
 }
 
-// delayset 点开始：与实时时间比较校正（已过 → 明天），启用延时并返回 set 页
+// delayset 点开始：与实时时间比较校正（已过 → 明天），用确定时日期一次性算好
+// 预约目标 g_delay_target 并保存（此后 delaycooking 重建不再重算，避免跨天漂移）
 static void on_delayset_start_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
@@ -6101,6 +6206,13 @@ static void on_delayset_start_click(lv_event_t *e)
             (delay_hour < now.hour ||
              (delay_hour == now.hour && delay_min < now.min)))
             delay_hour += 24;                       /* 实时已过 → 明天 */
+        int64_t base = (int64_t)rtc_days_from_epoch(now.year, now.month, now.day) * 86400000LL;
+        g_delay_target = base
+                       + (delay_hour >= 24 ? 86400000LL : 0)
+                       + (int64_t)(delay_hour % 24) * 3600000LL
+                       + (int64_t)delay_min * 60000LL;
+    } else {
+        g_delay_target = -1;                        /* RTC 失败哨兵，到点检测不触发 */
     }
     delay_on = 1;
     /* 互斥：开延时关预热（回 set 页重建时显示关） */
@@ -6487,17 +6599,8 @@ static void rebuild_delaycooking(void)
     }
     current_group = g_delaycooking;
 
-    /* 计算预约目标绝对时间（今天/明天 HH:MM）并启动到点检查定时器 */
-    {
-        rtc_time_t now;
-        if (rtc_get_time(&now) == 0) {
-            int64_t base = (int64_t)rtc_days_from_epoch(now.year, now.month, now.day) * 86400000LL;
-            g_delay_target = base
-                           + (delay_hour >= 24 ? 86400000LL : 0)
-                           + (int64_t)(delay_hour % 24) * 3600000LL
-                           + (int64_t)delay_min * 60000LL;
-        }
-    }
+    /* 预约目标 g_delay_target 已在 on_delayset_start_click 用确定时日期算好并保存，
+       此处不再重算（避免 delaycooking 重建/跨 0 点导致目标漂移一天） */
     if (cook_timer) lv_timer_del(cook_timer);
     cook_timer = lv_timer_create(cooking_timer_cb, 1000, NULL);
 
@@ -6742,7 +6845,7 @@ void cooking_timer_cb(lv_timer_t *timer)
          current_group == g_chip_stop_back ||
          current_group == g_custom_stop_back)) {
             /* 预约取消确认页（预约中态）：到点自动开始烹饪，不走时长完成检测 */
-            if (rtc_now_ms() >= g_delay_target) {
+            if (g_delay_target > 0 && rtc_now_ms() >= g_delay_target) {
                 if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
                 delay_on = 0;
                 delay_start_cook();
@@ -7210,7 +7313,7 @@ void cooking_timer_cb(lv_timer_t *timer)
         return;
     }
     if (current_group == g_delaycooking) {
-        if (rtc_now_ms() >= g_delay_target) {
+        if (g_delay_target > 0 && rtc_now_ms() >= g_delay_target) {
             delay_on = 0;
             if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
             delay_start_cook();
@@ -8083,7 +8186,7 @@ static void jump_to_color_stop(void)
         int m = (remaining_sec % 3600) / 60;
         int s = remaining_sec % 60;
         lv_label_set_text_fmt(cs->time_label, "%02d:%02d:%02d", h, m, s);
-        lv_label_set_text(cs->label_13, "| 额外上色 | 5分钟");
+        lv_label_set_text_fmt(cs->label_13, "| 额外上色 | %d℃ | 5分钟", set_temp);
         lv_bar_set_range(cs->bar_3, 0, 100);
         if (cook_bar_saved > 100) cook_bar_saved = 100;
         lv_bar_set_value(cs->bar_3, cook_bar_saved, LV_ANIM_OFF);
@@ -8115,7 +8218,7 @@ static void jump_to_color_stop_back(void)
         lv_obj_add_event_cb(csb->button_7, on_color_stop_back_sure_click,
                             LV_EVENT_CLICKED, NULL);
 
-        lv_label_set_text(csb->label_17, "| 额外上色 | 5分钟");
+        lv_label_set_text_fmt(csb->label_17, "| 额外上色 | %d℃ | 5分钟", set_temp);
         uint32_t _elapsed = cook_timer ? (lv_tick_get() - cook_start_time) : cook_elapsed_saved;
         int _p = stop_back_progress(_elapsed, cook_total_ms);
         if (_p > 100) _p = 100;
@@ -8191,6 +8294,7 @@ static void color_resume_cooking(void)
         int m = (remaining_sec % 3600) / 60;
         int s = remaining_sec % 60;
         lv_label_set_text_fmt(cc->time_label, "%02d:%02d:%02d", h, m, s);
+        lv_label_set_text_fmt(cc->status_label, "| 额外上色 | %d℃ | 5分钟", set_temp);
 
         /* 进度条从保存的值 → 100 */
         lv_bar_set_range(cc->bar, 0, 100);
@@ -8506,6 +8610,7 @@ static void system_timer_cb(lv_timer_t *timer)
     page_push(PAGE_WAITMENU_24);
     lv_obj_clean(lv_scr_act());
     waitmenu_24_create(&ui_manager);
+    waitmenu_clock_cache_reset();   /* 强制刷新为真实时间 */
     current_group = NULL;
     lv_scr_load(waitmenu_24_get(&ui_manager)->obj);
     waitmenu_apply_clock();   /* 立即刷新为真实时间 */
@@ -8571,19 +8676,33 @@ static void topflag_update_visibility(void)
     else lv_obj_clear_flag(tf->obj, LV_OBJ_FLAG_HIDDEN);
 }
 
+// 待机页时钟缓存（waitmenu_apply_clock 使用）
+static lv_obj_t *lw_obj = NULL;
+static uint8_t lw_hour = 0xFF, lw_min = 0xFF;
+static uint8_t lw_year = 0, lw_month = 0, lw_day = 0;
+static int lw_wday = -1;
+
+// 显式重置缓存：waitmenu_24_create 后调用，强制刷新为真实时间。
+// 不依赖指针相等判定——auto_del 下 malloc 地址复用会导致缓存不失效（显示默认假文本/陈旧星期）
+static void waitmenu_clock_cache_reset(void)
+{
+    lw_obj = NULL;
+    lw_hour = 0xFF; lw_min = 0xFF;
+    lw_year = 0; lw_month = 0; lw_day = 0; lw_wday = -1;
+}
+
 // 待机页 waitmenu_24 时间/星期/年月日 实时刷新：
-// 页面重建（obj 指针变化）时清缓存强制刷新为真实时间；平时按数值变化更新。
-// 仅在待机页为当前屏幕（obj == lv_scr_act）时访问，无悬空指针风险。
+// 页面重建（obj 指针变化或显式缓存重置）时清缓存强制刷新为真实时间；平时按数值变化更新。
+// 有效性判断使用"页面栈顶 == 待机页"（业务状态，可靠），
+// 不能用 obj == lv_scr_act 指针比较——离开待机页后 wait->obj 悬空，
+// malloc 地址复用时可能误判通过导致 UAF 写入（模拟器卡死根因）。
 static void waitmenu_apply_clock(void)
 {
     rtc_time_t t;
     if (rtc_get_time(&t) != 0) return;
+    if (depth <= 0 || page_stack[depth - 1] != PAGE_WAITMENU_24) return;
     waitmenu_24_t *wait = waitmenu_24_get(&ui_manager);
-    if (!wait || !wait->obj || wait->obj != lv_scr_act()) return;
-    static lv_obj_t *lw_obj = NULL;
-    static uint8_t lw_hour = 0xFF, lw_min = 0xFF;
-    static uint8_t lw_year = 0, lw_month = 0, lw_day = 0;
-    static int lw_wday = -1;
+    if (!wait || !wait->obj) return;
     if (wait->obj != lw_obj) {
         lw_obj = wait->obj;
         lw_hour = 0xFF; lw_min = 0xFF;

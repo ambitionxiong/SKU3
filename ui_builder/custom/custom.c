@@ -67,7 +67,7 @@ int64_t rtc_now_ms(void)
     struct _timeb tb;
     _ftime64_s(&tb);
     struct tm *lt = localtime(&tb.time);
-    if (!lt) return 0;
+    if (!lt) return -1;
     int64_t days = rtc_days_from_epoch(lt->tm_year + 1900, lt->tm_mon + 1, lt->tm_mday);
     return days * 86400000LL
          + lt->tm_hour * 3600000LL
@@ -78,7 +78,7 @@ int64_t rtc_now_ms(void)
     struct timespec ts;
     clock_gettime(CLOCK_REALTIME, &ts);
     struct tm *lt = localtime(&ts.tv_sec);
-    if (!lt) return 0;
+    if (!lt) return -1;
     int64_t days = rtc_days_from_epoch(lt->tm_year + 1900, lt->tm_mon + 1, lt->tm_mday);
     return days * 86400000LL
          + lt->tm_hour * 3600000LL
@@ -93,5 +93,7 @@ void custom_init()
     /* Add your codes here */
 
     nav_init();
+#ifdef LV_USE_AIC_SIMULATOR
     protocol_init();
+#endif
 }

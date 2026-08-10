@@ -148,7 +148,7 @@ static void on_top_bbq_stop_back_sure_click(lv_event_t *e)
     g_on_stop_back = 0;
     g_keepwarm_active = 0;
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
-    set_temp = 250; set_temp_up = 250; set_temp_down = 250; set_hour = 0; set_min = 30;
+    set_temp = 300; set_temp_up = 300; set_temp_down = 300; set_hour = 0; set_min = 30;
     cook_elapsed_saved = 0; cook_bar_saved = 0;
     depth = 2;
     lv_obj_clean(lv_scr_act());
@@ -173,7 +173,7 @@ static void on_top_bbq_stop_back_sure_click(lv_event_t *e)
 
 void jump_to_top_bbq_menu(void)
 {
-    set_temp = 250; set_hour = 0; set_min = 30;
+    set_temp = 300; set_hour = 0; set_min = 30;
     page_push(PAGE_TOP_BBQ_MENU);
     lv_obj_clean(lv_scr_act());
     top_bbq_menu_create(&ui_manager);

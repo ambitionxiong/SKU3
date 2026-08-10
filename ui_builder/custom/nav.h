@@ -32,6 +32,7 @@ typedef enum {
     PAGE_UPDOWN_BBQ_MENU_TOP,
     PAGE_UPDOWN_BBQ_MENU_LOW,
     PAGE_PREHEAT_MENU,
+    PAGE_COLOR_MENU,       // 额外上色设置页（复用 preheatmenu 结构）
     PAGE_PREHEAT_COOKING,
     PAGE_PREHEAT_STOP,
     PAGE_PREHEAT_STOP_BACK,

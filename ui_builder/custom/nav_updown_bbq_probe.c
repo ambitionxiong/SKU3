@@ -72,6 +72,7 @@ static void on_updown_probe_stop_back_sure_click(lv_event_t *e)
         jump_to_major_menu_tz();
     } else {
         depth = 2;
+        page_stack[1] = PAGE_MAJOR_MENU;   /* 探针拔出后回普通主菜单，修正栈残留 */
         lv_obj_clean(lv_scr_act());
         major_menu_create(&ui_manager);
         groups_create();

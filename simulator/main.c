@@ -17,6 +17,35 @@
 #include "nav.h"
 #undef main
 
+#ifdef _WIN32
+#include <windows.h>
+/* 执行位置标志：各关键点打点，看门狗卡死时打印定位死循环（仅模拟器调试） */
+volatile int g_exec_mark = 0;
+/* 看门狗线程（仅模拟器）：主循环卡死超 2 秒打印，用于定位死循环 */
+static DWORD WINAPI watchdog_proc(LPVOID param)
+{
+    volatile unsigned int *heartbeat = (volatile unsigned int *)param;
+    for (;;) {
+        Sleep(1000);
+        unsigned int now = SDL_GetTicks();
+        unsigned int last = *heartbeat;
+        if (last != 0 && (int)(now - last) > 2000) {
+            MEMORYSTATUSEX ms;
+            ms.dwLength = sizeof(ms);
+            GlobalMemoryStatusEx(&ms);
+            printf("[WATCHDOG] main loop frozen %u ms (heartbeat=%u now=%u) mark=%d"
+                   " mem_avail=%uMB/%uMB\n",
+                   (unsigned int)(now - last), last, now, g_exec_mark,
+                   (unsigned int)(ms.ullAvailPhys / (1024 * 1024)),
+                   (unsigned int)(ms.ullTotalPhys / (1024 * 1024)));
+        }
+    }
+    return 0;
+}
+#else
+volatile int g_exec_mark = 0;
+#endif
+
 /*********************
  *      DEFINES
  *********************/
@@ -67,6 +96,17 @@ int main(int argc, char **argv)
 	(void)argc; /*Unused*/
 	(void)argv; /*Unused*/
 
+#ifdef _WIN32
+	/* 看门狗（仅模拟器）：独立线程监测主循环心跳，卡死（lv_timer_handler 死循环/渲染卡住）时打印定位日志 */
+	volatile unsigned int *heartbeat = malloc(sizeof(unsigned int));
+	*heartbeat = 0;
+	DWORD tid;
+	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)watchdog_proc, (LPVOID)heartbeat, 0, &tid);
+#define WATCHDOG_HEARTBEAT() do { *heartbeat = SDL_GetTicks(); } while (0)
+#else
+#define WATCHDOG_HEARTBEAT() do { } while (0)
+#endif
+
 	/*Initialize LVGL*/
 	lv_init();
 
@@ -77,6 +117,7 @@ int main(int argc, char **argv)
     ui_init();
 
 	while(1) {
+		WATCHDOG_HEARTBEAT();
 		lv_timer_handler();
 
 		/* 读键状态模拟编码器（边沿触发防连击） */
