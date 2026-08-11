@@ -67,6 +67,8 @@ void bottom_bbq_stop_probe_create(ui_manager_t *ui)
     lv_obj_set_style_shadow_width(scr->start, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->start, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
     lv_obj_set_style_bg_img_src(scr->start, LVGL_IMAGE_PATH(stopbk2.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_border_opa(scr->start, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_shadow_opa(scr->start, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
 
     // Init scr->image_26
     scr->image_26 = lv_img_create(scr->obj);

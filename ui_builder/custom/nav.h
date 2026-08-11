@@ -594,6 +594,7 @@ uint8_t nav_key1_hold_check(void);
 void nav_init(void);
 void page_push(page_id_t id);
 void page_pop(void);
+void stepset_bind_events(void);
 
 lv_group_t *group_create_for_page(lv_obj_t **btns, int count);
 void set_time_label(lv_obj_t *label, int remaining_ms);

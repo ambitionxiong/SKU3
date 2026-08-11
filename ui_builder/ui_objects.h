@@ -3934,13 +3934,34 @@ typedef struct {
     lv_obj_t *timestatus3;
     lv_obj_t *edit3;
     lv_obj_t *delete3;
+    lv_obj_t *sure;
+    lv_obj_t *label_11;
 } somecook_t;
 
 typedef struct {
     lv_obj_t *obj;
-    lv_obj_t *roller_1;
-    lv_obj_t *roller_2;
-} screen_1_t;
+    lv_obj_t *roller_mode;
+    lv_obj_t *roller_main;
+    lv_obj_t *next;
+    lv_obj_t *image_1;
+    lv_obj_t *label_1;
+    lv_obj_t *stepname;
+    lv_obj_t *temp;
+    lv_obj_t *hour;
+    lv_obj_t *min;
+    lv_obj_t *label_7;
+    lv_obj_t *label_8;
+    lv_obj_t *label_9;
+    lv_obj_t *mainline;
+    lv_obj_t *modeline4;
+    lv_obj_t *modeline2;
+    lv_obj_t *modeline3;
+    lv_obj_t *templine3;
+    lv_obj_t *templine2;
+    lv_obj_t *hourline;
+    lv_obj_t *minline;
+    lv_obj_t *label_10;
+} stepset_t;
 
 
 typedef struct {
@@ -4199,7 +4220,7 @@ typedef struct {
     delaycooking_t delaycooking;
     topflagpage_t topflagpage;
     somecook_t somecook;
-    screen_1_t screen_1;
+    stepset_t stepset;
 
 } ui_manager_t;
 
@@ -5479,9 +5500,9 @@ static inline somecook_t *somecook_get(ui_manager_t *ui)
     return &ui->somecook;
 }
 
-static inline screen_1_t *screen_1_get(ui_manager_t *ui)
+static inline stepset_t *stepset_get(ui_manager_t *ui)
 {
-    return &ui->screen_1;
+    return &ui->stepset;
 }
 
 
@@ -5739,7 +5760,7 @@ void delayset_create(ui_manager_t *ui);
 void delaycooking_create(ui_manager_t *ui);
 void topflagpage_create(ui_manager_t *ui);
 void somecook_create(ui_manager_t *ui);
-void screen_1_create(ui_manager_t *ui);
+void stepset_create(ui_manager_t *ui);
 
 
 LV_FONT_DECLARE(c_montserratmedium_16);
@@ -5750,7 +5771,6 @@ LV_FONT_DECLARE(c_taiwanpearl_regular_36);
 LV_FONT_DECLARE(c_taiwanpearl_regular_30);
 LV_FONT_DECLARE(c_taiwanpearl_regular_60);
 LV_FONT_DECLARE(c_taiwanpearl_regular_72);
-LV_FONT_DECLARE(c_taiwanpearl_regular_38);
 
 
 extern ui_manager_t ui_manager;

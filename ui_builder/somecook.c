@@ -26,7 +26,7 @@ void somecook_create(ui_manager_t *ui)
     // Set style of scr->obj
     lv_obj_set_style_bg_color(scr->obj, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->obj, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->obj, LVGL_IMAGE_PATH(stepsetbg.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->obj, LVGL_IMAGE_PATH(sure.png), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->button_3
     scr->button_3 = lv_btn_create(scr->obj);
@@ -380,6 +380,34 @@ void somecook_create(ui_manager_t *ui)
     lv_obj_set_style_shadow_width(scr->delete3, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->delete3, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
     lv_obj_set_style_bg_img_src(scr->delete3, LVGL_IMAGE_PATH(editedbgfc.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+
+    // Init scr->sure
+    scr->sure = lv_btn_create(scr->obj);
+    lv_obj_t *sure_label = lv_label_create(scr->sure);
+    lv_label_set_text(sure_label, "");
+    lv_obj_align(sure_label, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_pos(scr->sure, 983, 22);
+    lv_obj_set_size(scr->sure, 135, 71);
+
+    // Set style of scr->sure
+    lv_obj_set_style_bg_opa(scr->sure, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->sure, LVGL_IMAGE_PATH(surebk.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->sure, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(scr->sure, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(scr->sure, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(scr->sure, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->sure, LVGL_IMAGE_PATH(nextstep_bk.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+
+    // Init scr->label_11
+    scr->label_11 = lv_label_create(scr->obj);
+    lv_label_set_text(scr->label_11, "确 定");
+    lv_label_set_long_mode(scr->label_11, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->label_11, 1010, 39);
+    lv_obj_set_size(scr->label_11, 85, 36);
+
+    // Set style of scr->label_11
+    lv_obj_set_style_text_font(scr->label_11, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->label_11, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
 
 }
