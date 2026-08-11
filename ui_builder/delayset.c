@@ -38,7 +38,7 @@ void delayset_create(ui_manager_t *ui)
 
     // Init scr->day
     scr->day = lv_label_create(scr->obj);
-    lv_label_set_text(scr->day, "今天");
+    lv_label_set_text(scr->day, "今明天");
     lv_label_set_long_mode(scr->day, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->day, 327, 265);
     lv_obj_set_size(scr->day, 126, 48);

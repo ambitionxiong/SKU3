@@ -89,7 +89,7 @@ void delaycooking_create(ui_manager_t *ui)
 
     // Init scr->tip2
     scr->tip2 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->tip2, "明天12:00");
+    lv_label_set_text(scr->tip2, "今明天12:00");
     lv_label_set_long_mode(scr->tip2, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->tip2, 907, 194);
     lv_obj_set_size(scr->tip2, 230, 34);

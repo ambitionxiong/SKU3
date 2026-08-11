@@ -3963,6 +3963,24 @@ typedef struct {
     lv_obj_t *label_10;
 } stepset_t;
 
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *label_12;
+    lv_obj_t *timelabel;
+    lv_obj_t *button_5;
+    lv_obj_t *image_10;
+    lv_obj_t *bar_1;
+    lv_obj_t *icon;
+    lv_obj_t *cookstatus;
+    lv_obj_t *image_12;
+    lv_obj_t *activestatus;
+} somecook_cooking_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *font24;
+} textpage_t;
+
 
 typedef struct {
     bool auto_del;
@@ -4221,6 +4239,8 @@ typedef struct {
     topflagpage_t topflagpage;
     somecook_t somecook;
     stepset_t stepset;
+    somecook_cooking_t somecook_cooking;
+    textpage_t textpage;
 
 } ui_manager_t;
 
@@ -5505,6 +5525,16 @@ static inline stepset_t *stepset_get(ui_manager_t *ui)
     return &ui->stepset;
 }
 
+static inline somecook_cooking_t *somecook_cooking_get(ui_manager_t *ui)
+{
+    return &ui->somecook_cooking;
+}
+
+static inline textpage_t *textpage_get(ui_manager_t *ui)
+{
+    return &ui->textpage;
+}
+
 
 void waitmenu_24_create(ui_manager_t *ui);
 void clean_menu_create(ui_manager_t *ui);
@@ -5761,6 +5791,8 @@ void delaycooking_create(ui_manager_t *ui);
 void topflagpage_create(ui_manager_t *ui);
 void somecook_create(ui_manager_t *ui);
 void stepset_create(ui_manager_t *ui);
+void somecook_cooking_create(ui_manager_t *ui);
+void textpage_create(ui_manager_t *ui);
 
 
 LV_FONT_DECLARE(c_montserratmedium_16);
