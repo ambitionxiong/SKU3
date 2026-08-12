@@ -121,7 +121,7 @@ void heatcontain_cooking_create(ui_manager_t *ui)
     lv_img_set_pivot(scr->image_269, 50, 50);
     lv_img_set_angle(scr->image_269, 0);
     lv_obj_set_style_img_opa(scr->image_269, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->image_269, 115, 161);
+    lv_obj_set_pos(scr->image_269, 90, 161);
 
 
 }

@@ -93,7 +93,7 @@ void corn_complete_create(ui_manager_t *ui)
     lv_img_set_pivot(scr->image_260, 50, 50);
     lv_img_set_angle(scr->image_260, 0);
     lv_obj_set_style_img_opa(scr->image_260, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->image_260, 115, 161);
+    lv_obj_set_pos(scr->image_260, 143, 161);
 
     // Init scr->image_10
     scr->image_10 = lv_img_create(scr->obj);

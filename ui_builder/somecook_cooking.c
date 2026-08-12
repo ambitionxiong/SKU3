@@ -50,22 +50,22 @@ void somecook_cooking_create(ui_manager_t *ui)
     lv_obj_set_style_text_font(scr->timelabel, &c_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->timelabel, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->button_5
-    scr->button_5 = lv_btn_create(scr->obj);
-    lv_obj_t *button_5_label = lv_label_create(scr->button_5);
-    lv_label_set_text(button_5_label, "暂 停");
-    lv_obj_align(button_5_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->button_5, 959, 295);
-    lv_obj_set_size(scr->button_5, 129, 83);
+    // Init scr->stop
+    scr->stop = lv_btn_create(scr->obj);
+    lv_obj_t *stop_label = lv_label_create(scr->stop);
+    lv_label_set_text(stop_label, "暂 停");
+    lv_obj_align(stop_label, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_pos(scr->stop, 959, 295);
+    lv_obj_set_size(scr->stop, 129, 83);
 
-    // Set style of scr->button_5
-    lv_obj_set_style_bg_opa(scr->button_5, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->button_5, LVGL_IMAGE_PATH(stopbk1.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->button_5, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_width(scr->button_5, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_shadow_width(scr->button_5, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(scr->button_5, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->button_5, LVGL_IMAGE_PATH(stopbk2.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    // Set style of scr->stop
+    lv_obj_set_style_bg_opa(scr->stop, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->stop, LVGL_IMAGE_PATH(stopbk1.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->stop, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(scr->stop, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(scr->stop, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(scr->stop, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->stop, LVGL_IMAGE_PATH(stopbk2.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
     // Init scr->image_10
     scr->image_10 = lv_img_create(scr->obj);
@@ -105,14 +105,6 @@ void somecook_cooking_create(ui_manager_t *ui)
     // Set style of scr->cookstatus
     lv_obj_set_style_text_font(scr->cookstatus, &c_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->cookstatus, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    // Init scr->image_12
-    scr->image_12 = lv_img_create(scr->obj);
-    lv_img_set_src(scr->image_12, LVGL_IMAGE_PATH(longtext.png));
-    lv_img_set_pivot(scr->image_12, 50, 50);
-    lv_img_set_angle(scr->image_12, 0);
-    lv_obj_set_style_img_opa(scr->image_12, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->image_12, 274, 231);
 
     // Init scr->activestatus
     scr->activestatus = lv_label_create(scr->obj);

@@ -6325,7 +6325,7 @@ void jump_to_delayset(void)
         lv_obj_add_event_cb(ds->min, on_delayset_focus, LV_EVENT_FOCUSED, NULL);
         lv_obj_add_event_cb(ds->start, on_delayset_focus, LV_EVENT_FOCUSED, NULL);
 
-        lv_group_focus_obj(ds->hour);
+        lv_group_focus_obj(ds->start);
 
         lv_label_set_text(ds->name, mode_display_name());
         delayset_refresh_display(ds);
@@ -6395,7 +6395,7 @@ void mode_apply_icon(lv_obj_t *icon)
     if (!icon) return;
     switch (g_send.cook_mode) {
     case MODE_UPDOWN_BBQ:     lv_img_set_src(icon, LVGL_IMAGE_PATH(updown_img.png)); break;
-    case MODE_TOP_BBQ:        lv_img_set_src(icon, LVGL_IMAGE_PATH(upbbq.png)); break;
+    case MODE_TOP_BBQ:        lv_img_set_src(icon, LVGL_IMAGE_PATH(topicon.png)); break;
     case MODE_BOTTOM_BBQ:     lv_img_set_src(icon, LVGL_IMAGE_PATH(dwbbqicon.png)); break;
     case MODE_HOT_BBQ:        lv_img_set_src(icon, LVGL_IMAGE_PATH(hotbbqicon.png)); break;
     case MODE_HOTWIND_BBQ:    lv_img_set_src(icon, LVGL_IMAGE_PATH(hotwindicon.png)); break;

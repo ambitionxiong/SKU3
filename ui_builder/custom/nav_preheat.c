@@ -42,7 +42,7 @@ static void preheat_apply_mode_ui(lv_obj_t *icon, lv_obj_t *status)
         txt = "| 上下烧烤 |";
         break;
     case MODE_TOP_BBQ:
-        if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(upbbq.png));
+        if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(topicon.png));
         txt = "| 顶部烧烤 |";
         break;
     case MODE_BOTTOM_BBQ:

@@ -24,9 +24,9 @@ void jump_to_corn_complete(void);
 static void corn_set_status(lv_obj_t *label, int temp, int hour, int min)
 {
     if (hour == 0)
-        lv_label_set_text_fmt(label, "| 玉米 | %d℃ | %02d分钟", temp, min);
+        lv_label_set_text_fmt(label, "| 干果 | %d℃ | %02d分钟", temp, min);
     else
-        lv_label_set_text_fmt(label, "| 玉米 | %d℃ | %d小时%02d分钟", temp, hour, min);
+        lv_label_set_text_fmt(label, "| 干果 | %d℃ | %d小时%02d分钟", temp, hour, min);
 }
 
 static void corn_preheat_toggle(lv_event_t *e)

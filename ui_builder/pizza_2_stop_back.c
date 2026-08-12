@@ -35,7 +35,7 @@ void pizza_2_stop_back_create(ui_manager_t *ui)
     lv_img_set_pivot(scr->image_172, 50, 50);
     lv_img_set_angle(scr->image_172, 0);
     lv_obj_set_style_img_opa(scr->image_172, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->image_172, 115, 161);
+    lv_obj_set_pos(scr->image_172, 140, 161);
 
     // Init scr->status
     scr->status = lv_label_create(scr->obj);

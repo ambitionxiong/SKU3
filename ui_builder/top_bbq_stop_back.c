@@ -31,7 +31,7 @@ void top_bbq_stop_back_create(ui_manager_t *ui)
 
     // Init scr->up
     scr->up = lv_img_create(scr->obj);
-    lv_img_set_src(scr->up, LVGL_IMAGE_PATH(upbbq.png));
+    lv_img_set_src(scr->up, LVGL_IMAGE_PATH(topicon.png));
     lv_img_set_pivot(scr->up, 50, 50);
     lv_img_set_angle(scr->up, 0);
     lv_obj_set_style_img_opa(scr->up, 255, LV_PART_MAIN | LV_STATE_DEFAULT);

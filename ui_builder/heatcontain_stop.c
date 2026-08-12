@@ -121,7 +121,7 @@ void heatcontain_stop_create(ui_manager_t *ui)
     lv_img_set_pivot(scr->image_276, 50, 50);
     lv_img_set_angle(scr->image_276, 0);
     lv_obj_set_style_img_opa(scr->image_276, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->image_276, 115, 161);
+    lv_obj_set_pos(scr->image_276, 90, 161);
 
 
 }

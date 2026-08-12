@@ -93,7 +93,7 @@ void unfrozen_complete_create(ui_manager_t *ui)
     lv_img_set_pivot(scr->image_218, 50, 50);
     lv_img_set_angle(scr->image_218, 0);
     lv_obj_set_style_img_opa(scr->image_218, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->image_218, 115, 161);
+    lv_obj_set_pos(scr->image_218, 149, 161);
 
     // Init scr->image_8
     scr->image_8 = lv_img_create(scr->obj);

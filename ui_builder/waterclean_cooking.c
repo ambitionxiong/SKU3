@@ -93,7 +93,7 @@ void waterclean_cooking_create(ui_manager_t *ui)
     lv_img_set_pivot(scr->image_6, 50, 50);
     lv_img_set_angle(scr->image_6, 0);
     lv_obj_set_style_img_opa(scr->image_6, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->image_6, 115, 161);
+    lv_obj_set_pos(scr->image_6, 167, 161);
 
     // Init scr->label_8
     scr->label_8 = lv_label_create(scr->obj);

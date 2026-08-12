@@ -93,7 +93,7 @@ void heatcontain_complete_create(ui_manager_t *ui)
     lv_img_set_pivot(scr->image_316, 50, 50);
     lv_img_set_angle(scr->image_316, 0);
     lv_obj_set_style_img_opa(scr->image_316, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->image_316, 115, 161);
+    lv_obj_set_pos(scr->image_316, 90, 161);
 
     // Init scr->image_11
     scr->image_11 = lv_img_create(scr->obj);

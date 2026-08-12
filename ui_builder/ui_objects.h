@@ -34,7 +34,8 @@ typedef struct {
 typedef struct {
     lv_obj_t *obj;
     lv_obj_t *start;
-    lv_obj_t *image_4;
+    lv_obj_t *image_1;
+    lv_obj_t *image_2;
 } waterclean_set_t;
 
 typedef struct {
@@ -3967,12 +3968,11 @@ typedef struct {
     lv_obj_t *obj;
     lv_obj_t *label_12;
     lv_obj_t *timelabel;
-    lv_obj_t *button_5;
+    lv_obj_t *stop;
     lv_obj_t *image_10;
     lv_obj_t *bar_1;
     lv_obj_t *icon;
     lv_obj_t *cookstatus;
-    lv_obj_t *image_12;
     lv_obj_t *activestatus;
 } somecook_cooking_t;
 

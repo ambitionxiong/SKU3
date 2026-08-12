@@ -65,7 +65,7 @@ void waterclean_stop_back_create(ui_manager_t *ui)
     lv_img_set_pivot(scr->image_2, 50, 50);
     lv_img_set_angle(scr->image_2, 0);
     lv_obj_set_style_img_opa(scr->image_2, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->image_2, 115, 161);
+    lv_obj_set_pos(scr->image_2, 167, 161);
 
     // Init scr->label_6
     scr->label_6 = lv_label_create(scr->obj);

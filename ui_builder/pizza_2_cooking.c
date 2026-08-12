@@ -121,7 +121,7 @@ void pizza_2_cooking_create(ui_manager_t *ui)
     lv_img_set_pivot(scr->image_164, 50, 50);
     lv_img_set_angle(scr->image_164, 0);
     lv_obj_set_style_img_opa(scr->image_164, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->image_164, 115, 161);
+    lv_obj_set_pos(scr->image_164, 140, 161);
 
 
 }

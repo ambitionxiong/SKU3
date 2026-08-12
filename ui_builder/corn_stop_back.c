@@ -35,7 +35,7 @@ void corn_stop_back_create(ui_manager_t *ui)
     lv_img_set_pivot(scr->image_256, 50, 50);
     lv_img_set_angle(scr->image_256, 0);
     lv_obj_set_style_img_opa(scr->image_256, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->image_256, 115, 161);
+    lv_obj_set_pos(scr->image_256, 143, 161);
 
     // Init scr->status
     scr->status = lv_label_create(scr->obj);
