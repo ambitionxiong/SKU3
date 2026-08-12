@@ -411,6 +411,7 @@ static void on_windchange_click(lv_event_t *e);
 static void on_preheat_click(lv_event_t *e);
 static void on_air_click(lv_event_t *e);
 static void on_pizza_click(lv_event_t *e);
+static void on_some_cook_click(lv_event_t *e);
 static void on_frozen_click(lv_event_t *e);
 static void on_slowcook_click(lv_event_t *e);
 static void on_unfrozen_click(lv_event_t *e);
@@ -1135,6 +1136,8 @@ void page_pop(void)
                                     LV_EVENT_CLICKED, NULL);
                 lv_obj_add_event_cb(sp->frozen_cook_button, on_frozen_click,
                                     LV_EVENT_CLICKED, NULL);
+                lv_obj_add_event_cb(sp->some_cook_button, on_some_cook_click,
+                                    LV_EVENT_CLICKED, NULL);
 
                 if (child == PAGE_AIR_MENU && sp->air_button)
                     lv_group_focus_obj(sp->air_button);
@@ -1152,6 +1155,8 @@ void page_pop(void)
                     lv_group_focus_obj(sp->heat_contain_button);
                 else if (child == PAGE_FROZEN_COOK && sp->frozen_cook_button)
                     lv_group_focus_obj(sp->frozen_cook_button);
+                else if (child == PAGE_SOMECOOK && sp->some_cook_button)
+                    lv_group_focus_obj(sp->some_cook_button);
             }
             current_group = g_special_menu;
         }
@@ -1160,6 +1165,10 @@ void page_pop(void)
                          ui_manager.auto_del);
         g_send.cook_mode = MODE_NONE;
         printf("[nav] back to special_menu\n");
+        break;
+
+    case PAGE_SOMECOOK:
+        somecook_rebuild(child);
         break;
 
     case PAGE_UPDOWN_BBQ_MENU:
@@ -3985,6 +3994,8 @@ static void jump_to_special_menu(void)
                             LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(sp->frozen_cook_button, on_frozen_click,
                             LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(sp->some_cook_button, on_some_cook_click,
+                            LV_EVENT_CLICKED, NULL);
     }
 
     current_group = g_special_menu;
@@ -4902,6 +4913,19 @@ static void process_key(uint8_t key)
                 g_delay_cancel_to_stop_back = 1;
                 delay_cancel_to_stop_back();
             }
+            else if (cur == PAGE_SOMECOOK) {
+                if (current_group == g_somecook_edit) {
+                    /* 步骤容器编辑组 BACK → 回对应大按钮（不弹栈） */
+                    somecook_t *sc = somecook_get(&ui_manager);
+                    lv_obj_t *df = lv_group_get_focused(current_group);
+                    int step = 0;
+                    if (sc && (df == sc->edit2 || df == sc->delete2)) step = 1;
+                    else if (sc && (df == sc->edit3 || df == sc->delete3)) step = 2;
+                    somecook_back_to_btns(step);
+                } else {
+                    page_pop();   /* 回 special_menu */
+                }
+            }
             else if (cur == PAGE_PREHEAT_STOP)
                 jump_to_preheat_stop_back();
             else if (cur == PAGE_PREHEAT_COMPLETE) {
@@ -5118,6 +5142,38 @@ static void process_key(uint8_t key)
             uart_print();
             break;
         }
+        if (current_group == g_stepset) {
+            lv_obj_t *df = lv_group_get_focused(current_group);
+            stepset_t *ss = stepset_get(&ui_manager);
+            if (ss && df == ss->roller_main) {
+                uint32_t sel = lv_roller_get_selected(ss->roller_main);
+                uint32_t cnt = lv_roller_get_option_count(ss->roller_main);
+                if (sel >= cnt - 1) {
+                    g_send.buzzer_req = BUZZER_KEY_INVALID;
+                    uart_print();
+                    break;
+                }
+                lv_roller_set_selected(ss->roller_main, sel + 1, LV_ANIM_ON);
+                lv_obj_send_event(ss->roller_main, LV_EVENT_VALUE_CHANGED, NULL);
+                g_send.buzzer_req = BUZZER_ENCODER;
+                uart_print();
+                break;
+            } else if (ss && df == ss->roller_mode) {
+                uint32_t sel = lv_roller_get_selected(ss->roller_mode);
+                uint32_t cnt = lv_roller_get_option_count(ss->roller_mode);
+                if (sel >= cnt - 1) {
+                    g_send.buzzer_req = BUZZER_KEY_INVALID;
+                    uart_print();
+                    break;
+                }
+                lv_roller_set_selected(ss->roller_mode, sel + 1, LV_ANIM_ON);
+                lv_obj_send_event(ss->roller_mode, LV_EVENT_VALUE_CHANGED, NULL);
+                g_send.buzzer_req = BUZZER_ENCODER;
+                uart_print();
+                break;
+            }
+            /* temp/hour/min/next:放行到通用逻辑(编辑字段调值 / 焦点移动) */
+        }
         lv_obj_t *focused = lv_group_get_focused(current_group);
         edit_field_t *ef = find_edit_field(focused);
         if (ef) {
@@ -5192,6 +5248,43 @@ static void process_key(uint8_t key)
             delayset_refresh_display(ds);
             uart_print();
             break;
+        }
+        if (current_group == g_stepset) {
+            lv_obj_t *df = lv_group_get_focused(current_group);
+            stepset_t *ss = stepset_get(&ui_manager);
+            if (ss && df == ss->next) {
+                /* 仿 updown menu:从 next 左转跳到 mainroller */
+                lv_group_focus_obj(ss->roller_main);
+                g_send.buzzer_req = BUZZER_ENCODER;
+                uart_print();
+                break;
+            }
+            if (ss && df == ss->roller_main) {
+                uint32_t sel = lv_roller_get_selected(ss->roller_main);
+                if (sel <= 0) {
+                    g_send.buzzer_req = BUZZER_KEY_INVALID;
+                    uart_print();
+                    break;
+                }
+                lv_roller_set_selected(ss->roller_main, sel - 1, LV_ANIM_ON);
+                lv_obj_send_event(ss->roller_main, LV_EVENT_VALUE_CHANGED, NULL);
+                g_send.buzzer_req = BUZZER_ENCODER;
+                uart_print();
+                break;
+            } else if (ss && df == ss->roller_mode) {
+                uint32_t sel = lv_roller_get_selected(ss->roller_mode);
+                if (sel <= 0) {
+                    g_send.buzzer_req = BUZZER_KEY_INVALID;
+                    uart_print();
+                    break;
+                }
+                lv_roller_set_selected(ss->roller_mode, sel - 1, LV_ANIM_ON);
+                lv_obj_send_event(ss->roller_mode, LV_EVENT_VALUE_CHANGED, NULL);
+                g_send.buzzer_req = BUZZER_ENCODER;
+                uart_print();
+                break;
+            }
+            /* temp/hour/min/next:放行到通用逻辑(编辑字段调值 / 焦点移动) */
         }
         lv_obj_t *focused = lv_group_get_focused(current_group);
         edit_field_t *ef = find_edit_field(focused);
@@ -5715,6 +5808,19 @@ static void process_key(uint8_t key)
             uart_print();
             break;
         }
+        if (current_group == g_stepset) {
+            lv_obj_t *df = lv_group_get_focused(current_group);
+            stepset_t *ss = stepset_get(&ui_manager);
+            if (ss && df == ss->next) {
+                g_send.buzzer_req = BUZZER_KEY_VALID;
+                lv_obj_send_event(ss->next, LV_EVENT_CLICKED, NULL);
+            } else {
+                g_send.buzzer_req = BUZZER_KEY_VALID;
+                lv_group_focus_next(current_group);
+            }
+            uart_print();
+            break;
+        }
         lv_obj_t *focused = lv_group_get_focused(current_group);
         edit_field_t *ef = find_edit_field(focused);
         if (ef) {
@@ -6060,6 +6166,13 @@ static void on_pizza_click(lv_event_t *e)
     lv_obj_t *act_scr = lv_scr_act();
     if (!screen_is_loading(act_scr))
         jump_to_pizza_2_menu();
+}
+
+static void on_some_cook_click(lv_event_t *e)
+{
+    lv_obj_t *act_scr = lv_scr_act();
+    if (!screen_is_loading(act_scr))
+        jump_to_somecook();
 }
 
 static void on_slowcook_click(lv_event_t *e)

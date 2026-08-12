@@ -3909,9 +3909,9 @@ typedef struct {
 
 typedef struct {
     lv_obj_t *obj;
-    lv_obj_t *button_3;
-    lv_obj_t *button_1;
-    lv_obj_t *button_2;
+    lv_obj_t *step3button;
+    lv_obj_t *step2button;
+    lv_obj_t *step1button;
     lv_obj_t *image_1;
     lv_obj_t *label_1;
     lv_obj_t *plus1;
@@ -3936,7 +3936,7 @@ typedef struct {
     lv_obj_t *edit3;
     lv_obj_t *delete3;
     lv_obj_t *sure;
-    lv_obj_t *label_11;
+    lv_obj_t *surelabel;
 } somecook_t;
 
 typedef struct {
@@ -3968,12 +3968,15 @@ typedef struct {
     lv_obj_t *obj;
     lv_obj_t *label_12;
     lv_obj_t *timelabel;
-    lv_obj_t *stop;
     lv_obj_t *image_10;
     lv_obj_t *bar_1;
     lv_obj_t *icon;
     lv_obj_t *cookstatus;
     lv_obj_t *activestatus;
+    lv_obj_t *container_1;
+    lv_obj_t *stop;
+    lv_obj_t *text1;
+    lv_obj_t *text2;
 } somecook_cooking_t;
 
 typedef struct {

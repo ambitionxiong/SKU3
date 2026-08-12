@@ -269,6 +269,8 @@ typedef enum {
     PAGE_HOTCLEANHIGH_COMPLETE,
     PAGE_DELAYSET,
     PAGE_DELAYCOOKING,
+    PAGE_SOMECOOK,          /* 多段烹饪主页面 */
+    PAGE_STEPSET,           /* 多段烹饪步骤设置页 */
 } page_id_t;
 
 extern page_id_t page_stack[];
@@ -597,6 +599,26 @@ void page_pop(void);
 void stepset_bind_events(void);
 void delay_cancel_exit_to_set(void);
 extern uint8_t g_delay_cancel_btn;
+void jump_to_somecook(void);
+extern lv_group_t *g_somecook_btns;
+extern lv_group_t *g_somecook_edit;
+extern lv_group_t *g_stepset;
+void jump_to_stepset(int i);
+void somecook_back_to_btns(int focus_btn);
+void somecook_rebuild(page_id_t child);
+
+/* 多段烹饪步骤数据（nav_somecook.c 定义） */
+typedef struct {
+    uint8_t mode;      /* MODE_xxx */
+    int temp;
+    int hour, min;
+    bool set;
+} somecook_step_t;
+extern somecook_step_t g_steps[3];
+extern int g_cur_step;
+void stepset_on_focus(lv_event_t *e);
+void stepset_apply_sel_mode(bool restore);
+void stepset_restore_mode(uint8_t mode);
 
 lv_group_t *group_create_for_page(lv_obj_t **btns, int count);
 void set_time_label(lv_obj_t *label, int remaining_ms);

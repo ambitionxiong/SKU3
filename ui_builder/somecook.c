@@ -26,58 +26,58 @@ void somecook_create(ui_manager_t *ui)
     // Set style of scr->obj
     lv_obj_set_style_bg_color(scr->obj, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->obj, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->obj, LVGL_IMAGE_PATH(sure.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->obj, LVGL_IMAGE_PATH(bg.jpg), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->button_3
-    scr->button_3 = lv_btn_create(scr->obj);
-    lv_obj_t *button_3_label = lv_label_create(scr->button_3);
-    lv_label_set_text(button_3_label, "");
-    lv_obj_align(button_3_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->button_3, 845, 110);
-    lv_obj_set_size(scr->button_3, 418, 355);
+    // Init scr->step3button
+    scr->step3button = lv_btn_create(scr->obj);
+    lv_obj_t *step3button_label = lv_label_create(scr->step3button);
+    lv_label_set_text(step3button_label, "");
+    lv_obj_align(step3button_label, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_pos(scr->step3button, 845, 110);
+    lv_obj_set_size(scr->step3button, 418, 355);
 
-    // Set style of scr->button_3
-    lv_obj_set_style_bg_opa(scr->button_3, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->button_3, LVGL_IMAGE_PATH(stepbg30.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->button_3, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_width(scr->button_3, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_shadow_width(scr->button_3, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(scr->button_3, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->button_3, LVGL_IMAGE_PATH(stepbg80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    // Set style of scr->step3button
+    lv_obj_set_style_bg_opa(scr->step3button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->step3button, LVGL_IMAGE_PATH(stepbg30.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->step3button, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(scr->step3button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(scr->step3button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(scr->step3button, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->step3button, LVGL_IMAGE_PATH(stepbg80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
-    // Init scr->button_1
-    scr->button_1 = lv_btn_create(scr->obj);
-    lv_obj_t *button_1_label = lv_label_create(scr->button_1);
-    lv_label_set_text(button_1_label, "");
-    lv_obj_align(button_1_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->button_1, 431, 110);
-    lv_obj_set_size(scr->button_1, 418, 355);
+    // Init scr->step2button
+    scr->step2button = lv_btn_create(scr->obj);
+    lv_obj_t *step2button_label = lv_label_create(scr->step2button);
+    lv_label_set_text(step2button_label, "");
+    lv_obj_align(step2button_label, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_pos(scr->step2button, 431, 110);
+    lv_obj_set_size(scr->step2button, 418, 355);
 
-    // Set style of scr->button_1
-    lv_obj_set_style_bg_opa(scr->button_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->button_1, LVGL_IMAGE_PATH(stepbg30.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->button_1, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_width(scr->button_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_shadow_width(scr->button_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(scr->button_1, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->button_1, LVGL_IMAGE_PATH(stepbg80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    // Set style of scr->step2button
+    lv_obj_set_style_bg_opa(scr->step2button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->step2button, LVGL_IMAGE_PATH(stepbg30.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->step2button, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(scr->step2button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(scr->step2button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(scr->step2button, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->step2button, LVGL_IMAGE_PATH(stepbg80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
-    // Init scr->button_2
-    scr->button_2 = lv_btn_create(scr->obj);
-    lv_obj_t *button_2_label = lv_label_create(scr->button_2);
-    lv_label_set_text(button_2_label, "");
-    lv_obj_align(button_2_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->button_2, 17, 110);
-    lv_obj_set_size(scr->button_2, 418, 355);
+    // Init scr->step1button
+    scr->step1button = lv_btn_create(scr->obj);
+    lv_obj_t *step1button_label = lv_label_create(scr->step1button);
+    lv_label_set_text(step1button_label, "");
+    lv_obj_align(step1button_label, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_pos(scr->step1button, 17, 110);
+    lv_obj_set_size(scr->step1button, 418, 355);
 
-    // Set style of scr->button_2
-    lv_obj_set_style_bg_opa(scr->button_2, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->button_2, LVGL_IMAGE_PATH(stepbg30.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->button_2, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_width(scr->button_2, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_shadow_width(scr->button_2, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(scr->button_2, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->button_2, LVGL_IMAGE_PATH(stepbg80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    // Set style of scr->step1button
+    lv_obj_set_style_bg_opa(scr->step1button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->step1button, LVGL_IMAGE_PATH(stepbg30.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->step1button, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(scr->step1button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(scr->step1button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(scr->step1button, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->step1button, LVGL_IMAGE_PATH(stepbg80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
     // Init scr->image_1
     scr->image_1 = lv_img_create(scr->obj);
@@ -398,16 +398,16 @@ void somecook_create(ui_manager_t *ui)
     lv_obj_set_style_bg_opa(scr->sure, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
     lv_obj_set_style_bg_img_src(scr->sure, LVGL_IMAGE_PATH(nextstep_bk.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
-    // Init scr->label_11
-    scr->label_11 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_11, "确 定");
-    lv_label_set_long_mode(scr->label_11, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_11, 1010, 39);
-    lv_obj_set_size(scr->label_11, 85, 36);
+    // Init scr->surelabel
+    scr->surelabel = lv_label_create(scr->obj);
+    lv_label_set_text(scr->surelabel, "确 定");
+    lv_label_set_long_mode(scr->surelabel, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->surelabel, 1010, 39);
+    lv_obj_set_size(scr->surelabel, 85, 36);
 
-    // Set style of scr->label_11
-    lv_obj_set_style_text_font(scr->label_11, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(scr->label_11, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    // Set style of scr->surelabel
+    lv_obj_set_style_text_font(scr->surelabel, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->surelabel, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
 
 }

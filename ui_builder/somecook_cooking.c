@@ -50,23 +50,6 @@ void somecook_cooking_create(ui_manager_t *ui)
     lv_obj_set_style_text_font(scr->timelabel, &c_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->timelabel, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->stop
-    scr->stop = lv_btn_create(scr->obj);
-    lv_obj_t *stop_label = lv_label_create(scr->stop);
-    lv_label_set_text(stop_label, "暂 停");
-    lv_obj_align(stop_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->stop, 959, 295);
-    lv_obj_set_size(scr->stop, 129, 83);
-
-    // Set style of scr->stop
-    lv_obj_set_style_bg_opa(scr->stop, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->stop, LVGL_IMAGE_PATH(stopbk1.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->stop, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_width(scr->stop, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_shadow_width(scr->stop, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(scr->stop, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->stop, LVGL_IMAGE_PATH(stopbk2.png), LV_PART_MAIN | LV_STATE_FOCUSED);
-
     // Init scr->image_10
     scr->image_10 = lv_img_create(scr->obj);
     lv_img_set_src(scr->image_10, LVGL_IMAGE_PATH(bar.png));
@@ -117,6 +100,64 @@ void somecook_cooking_create(ui_manager_t *ui)
     lv_obj_set_style_text_font(scr->activestatus, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->activestatus, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->activestatus, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // Init scr->container_1
+    scr->container_1 = lv_obj_create(scr->obj);
+    lv_obj_set_pos(scr->container_1, 0, 0);
+    lv_obj_set_size(scr->container_1, 1280, 480);
+    lv_obj_set_scrollbar_mode(scr->container_1, LV_SCROLLBAR_MODE_OFF);
+    lv_obj_add_flag(scr->container_1, LV_OBJ_FLAG_HIDDEN);
+
+    // Set style of scr->container_1
+    lv_obj_set_style_bg_color(scr->container_1, lv_color_hex(0x060505), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(scr->container_1, 113, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(scr->container_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(scr->container_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(scr->container_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_right(scr->container_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_bottom(scr->container_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_left(scr->container_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // Init scr->stop
+    scr->stop = lv_btn_create(scr->obj);
+    lv_obj_t *stop_label = lv_label_create(scr->stop);
+    lv_label_set_text(stop_label, "暂 停");
+    lv_obj_align(stop_label, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_pos(scr->stop, 959, 295);
+    lv_obj_set_size(scr->stop, 129, 83);
+
+    // Set style of scr->stop
+    lv_obj_set_style_bg_opa(scr->stop, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->stop, LVGL_IMAGE_PATH(stopbk1.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->stop, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(scr->stop, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(scr->stop, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(scr->stop, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->stop, LVGL_IMAGE_PATH(stopbk2.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+
+    // Init scr->text1
+    scr->text1 = lv_label_create(scr->obj);
+    lv_label_set_text(scr->text1, "是否结束当前任务");
+    lv_label_set_long_mode(scr->text1, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->text1, 895, 160);
+    lv_obj_set_size(scr->text1, 252, 36);
+
+    // Set style of scr->text1
+    lv_obj_set_style_text_font(scr->text1, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->text1, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->text1, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // Init scr->text2
+    scr->text2 = lv_label_create(scr->obj);
+    lv_label_set_text(scr->text2, "回到主页");
+    lv_label_set_long_mode(scr->text2, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->text2, 895, 198);
+    lv_obj_set_size(scr->text2, 252, 36);
+
+    // Set style of scr->text2
+    lv_obj_set_style_text_font(scr->text2, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->text2, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->text2, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
 
 }
