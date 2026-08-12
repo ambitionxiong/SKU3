@@ -1,6 +1,8 @@
 #include "nav.h"
 #include "protocol.h"
 
+static uint8_t g_preheat_solo;   /* 单独进入预热(来源 preheat_menu)标志 */
+
 // 预热进度：以进入 cooking 时的起始腔温为 13 基准，线性映射到目标温度 100
 static int preheat_progress(void)
 {
@@ -31,6 +33,8 @@ static void preheat_update_bar(lv_obj_t *bar, lv_obj_t *bartemp)
 // 按来源模式设置预热页的 icon 和 status（模式自己的 icon + 模式名，无温度）
 static void preheat_apply_mode_ui(lv_obj_t *icon, lv_obj_t *status)
 {
+    /* 单独进入预热:icon 右移 48px(排版修正,不改生成文件;模式预热保持原位) */
+    if (g_preheat_solo && icon) lv_obj_set_pos(icon, 163, 161);
     const char *txt = NULL;
     switch (g_send.cook_mode) {
     case MODE_UPDOWN_BBQ:
@@ -199,6 +203,7 @@ void jump_to_preheat_menu(void)
 {
     g_send.cook_mode = MODE_PREHEAT;
     g_send.cook_flag = 1;
+    set_temp = 180;   /* 单独进入预热:重置默认温度(预热无时间概念) */
 
     page_push(PAGE_PREHEAT_MENU);
     lv_obj_clean(lv_scr_act());
@@ -243,6 +248,8 @@ void jump_to_preheat_menu(void)
 void jump_to_preheat_cooking(void)
 {
     edit_clear();
+    /* 单独进入(来源 preheat_menu)vs 模式预热(来源各模式 set 页),需在 page_push 前判断 */
+    g_preheat_solo = (depth > 0 && page_stack[depth - 1] == PAGE_PREHEAT_MENU);
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;
