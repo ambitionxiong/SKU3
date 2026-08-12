@@ -53,6 +53,7 @@ lv_group_t *g_updown_bbq_set;
 lv_group_t *g_delayset;
 lv_group_t *g_delaycooking;
 uint8_t g_delay_cancel_to_stop_back;
+uint8_t g_delay_cancel_btn;         /* 仅 delaycooking 点"取消"按钮进入的 stop_back（区别于 BACK 键） */
 uint8_t g_keepwarm_active;
 int g_keepwarm_sec;
 page_id_t g_delay_source_page = PAGE_WAITMENU_24;
@@ -992,6 +993,7 @@ void page_pop(void)
         case PAGE_HOTCLEANHIGH_STOP_BACK:
         case PAGE_COLOR_STOP_BACK:
             g_on_stop_back = 0;
+            g_delay_cancel_btn = 0;
             break;
         default:
             break;
@@ -1564,8 +1566,7 @@ void page_pop(void)
                 g_updown_bbq_complete_probe = group_create_for_page(btns, 1);
                 updown_bbq_probe_complete_rebind(done->image_31);
                 lv_group_focus_obj(done->image_31);
-                int min_back = set_temp_up < set_temp_down ? set_temp_up : set_temp_down;
-                lv_label_set_text_fmt(done->label_74, "| 上下烧烤 | %d℃ | %d℃", min_back, probe_target_temp);
+                lv_label_set_text_fmt(done->label_74, "| 上下烧烤 | %d℃ | %d℃", set_temp, probe_target_temp);
                 lv_bar_set_value(done->bar_4, 100, LV_ANIM_OFF);
             }
             current_group = g_updown_bbq_complete_probe;
@@ -4756,6 +4757,7 @@ static void process_key(uint8_t key)
         g_on_stop_back = 0;
         g_complete_to_stop_back = 0;
         g_delay_cancel_to_stop_back = 0;
+        g_delay_cancel_btn = 0;
         g_keepwarm_active = 0;
         g_keepwarm_sec = 0;
         delay_on = 0;
@@ -5747,6 +5749,7 @@ void nav_key1_long_press(void)
     g_keepwarm_sec = 0;
     cook_is_color = 0;
     g_stop_back_complete = NULL;
+    g_delay_cancel_btn = 0;
     cook_elapsed_saved = 0; cook_bar_saved = 0;
     delay_on = 0; preheat_on = 0; contain_on = 0;
     delay_hour = 0; delay_min = 0;
@@ -6341,6 +6344,7 @@ static void on_delaycooking_cancel_click(lv_event_t *e)
     lv_obj_t *act_scr = lv_scr_act();
     if (screen_is_loading(act_scr)) return;
     g_delay_cancel_to_stop_back = 1;
+    g_delay_cancel_btn = 1;
     delay_cancel_to_stop_back();
 }
 
@@ -8029,6 +8033,7 @@ static void jump_to_updown_bbq_stop_back(void)
         if (g_delay_cancel_to_stop_back) {
             g_delay_cancel_to_stop_back = 0;
             lv_label_set_text(back->label_8, "预约中...");
+            lv_label_set_text(back->label_11, g_delay_cancel_btn ? "回到上一页" : "回到主页");
             lv_obj_add_flag(back->bar_2, LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(back->image_6, LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(back->littal_button, LV_OBJ_FLAG_HIDDEN);
@@ -8150,10 +8155,44 @@ static void stop_resume_cooking(void)
 }
 
 // stop_back 确定 → 退出到 major_menu
+// delay 取消确认（stop_back 确定）→ 取消预约并回来源 set 页（温度/时间等设置保持）
+void delay_cancel_exit_to_set(void)
+{
+    /* 栈守卫:仅当栈结构为 [.., DELAYCOOKING, STOP_BACK]（delay 取消场景）才执行;
+       标志残留误调时只清标志,不动页面栈,防止破坏栈 */
+    if (depth < 3 || page_stack[depth - 2] != PAGE_DELAYCOOKING) {
+        g_delay_cancel_btn = 0;
+        g_delay_cancel_to_stop_back = 0;
+        return;
+    }
+    g_delay_cancel_to_stop_back = 0;
+    g_delay_cancel_btn = 0;
+    delay_on = 0;
+    page_pop();   /* pop STOP_BACK（内部 rebuild_delaycooking 会重建 cook_timer/iface） */
+    page_pop();   /* pop DELAYCOOKING → 重建 set 屏 */
+    /* 清理必须放在两次 pop 之后，否则会被 rebuild_delaycooking 抵消 */
+    if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
+    cook_total_ms = 0;
+    cook_start_time = 0;
+    cook_elapsed_saved = 0;
+    cook_bar_saved = 0;
+    g_on_stop_back = 0;
+    g_complete_to_stop_back = 0;
+    g_stop_back_complete = NULL;
+    g_delay_target = -1;
+    g_send.iface_status = IFACE_SETTING;
+    g_send.remaining_ms = -1;
+    g_send.cook_flag = 0;
+}
+
 static void on_stop_back_sure_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
     if (screen_is_loading(act_scr)) return;
+    if (g_delay_cancel_btn) {
+        delay_cancel_exit_to_set();
+        return;
+    }
     g_on_stop_back = 0;
     g_keepwarm_active = 0;
 
@@ -8629,6 +8668,7 @@ static void system_timer_cb(lv_timer_t *timer)
     g_cooling_to_stop_back = 0;
     g_extra_color_to_stop_back = 0;
     g_stop_back_complete = NULL;
+    g_delay_cancel_btn = 0;
     probe_target_temp = 80;
     g_send.iface_status = IFACE_STANDBY;
     g_send.cook_mode = MODE_NONE;

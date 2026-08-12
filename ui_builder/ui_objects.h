@@ -3979,6 +3979,10 @@ typedef struct {
 typedef struct {
     lv_obj_t *obj;
     lv_obj_t *font24;
+    lv_obj_t *font30;
+    lv_obj_t *font36;
+    lv_obj_t *font48;
+    lv_obj_t *font60;
 } textpage_t;
 
 

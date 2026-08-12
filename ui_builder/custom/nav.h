@@ -595,6 +595,8 @@ void nav_init(void);
 void page_push(page_id_t id);
 void page_pop(void);
 void stepset_bind_events(void);
+void delay_cancel_exit_to_set(void);
+extern uint8_t g_delay_cancel_btn;
 
 lv_group_t *group_create_for_page(lv_obj_t **btns, int count);
 void set_time_label(lv_obj_t *label, int remaining_ms);

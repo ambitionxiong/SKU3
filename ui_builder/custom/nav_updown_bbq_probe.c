@@ -59,6 +59,11 @@ static void on_updown_probe_stop_start_click(lv_event_t *e)
 
 static void on_updown_probe_stop_back_sure_click(lv_event_t *e)
 {
+    if (g_delay_cancel_btn) {
+        delay_cancel_exit_to_set();
+        return;
+    }
+
     lv_obj_t *act_scr = lv_scr_act();
     if (screen_is_loading(act_scr)) return;
     g_on_stop_back = 0;
@@ -279,7 +284,7 @@ void jump_to_updown_bbq_cooking_probe(void)
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_COOKING;
     g_send.set_temp = set_temp;
-    g_send.set_temp_lower = 0;
+    g_send.set_temp_lower = set_temp;   /* 探针模式上下温相同 */
     g_send.remaining_ms = 0;
     g_send.probe_temp = probe_target_temp;
     printf("[updown_bbq_probe] jump: set_probe -> cooking_probe\n");
@@ -362,6 +367,7 @@ void jump_to_updown_bbq_stop_back_probe(void)
         if (g_delay_cancel_to_stop_back) {
             g_delay_cancel_to_stop_back = 0;
             lv_label_set_text(back->label_71, "预约中...");
+            lv_label_set_text(back->label_73, g_delay_cancel_btn ? "回到上一页" : "回到主页");
             lv_obj_add_flag(back->bar_3, LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(back->image_28, LV_OBJ_FLAG_HIDDEN);
         }
@@ -448,7 +454,7 @@ void updown_bbq_probe_resume_cooking(void)
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_COOKING;
     g_send.set_temp = set_temp;
-    g_send.set_temp_lower = 0;
+    g_send.set_temp_lower = set_temp;   /* 探针模式上下温相同 */
     g_send.remaining_ms = 0;
     printf("[updown_bbq_probe] resume: stop_probe -> cooking_probe\n");
 }

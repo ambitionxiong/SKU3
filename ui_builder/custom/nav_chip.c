@@ -103,6 +103,11 @@ static void on_chip_stop_start_click(lv_event_t *e)
 
 static void on_chip_stop_back_sure_click(lv_event_t *e)
 {
+    if (g_delay_cancel_btn) {
+        delay_cancel_exit_to_set();
+        return;
+    }
+
     lv_obj_t *act_scr = lv_scr_act();
     if (screen_is_loading(act_scr)) return;
     g_on_stop_back = 0;
@@ -461,6 +466,7 @@ void jump_to_chip_stop_back(void)
         if (g_delay_cancel_to_stop_back) {
             g_delay_cancel_to_stop_back = 0;
             lv_label_set_text(back->label_841, "预约中...");
+            lv_label_set_text(back->label_843, g_delay_cancel_btn ? "回到上一页" : "回到主页");
             lv_obj_add_flag(back->bar_66, LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(back->image_384, LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(back->little, LV_OBJ_FLAG_HIDDEN);

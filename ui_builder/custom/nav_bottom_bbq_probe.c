@@ -53,6 +53,11 @@ static void on_bottom_bbq_probe_stop_start_click(lv_event_t *e)
 
 static void on_bottom_bbq_probe_stop_back_sure_click(lv_event_t *e)
 {
+    if (g_delay_cancel_btn) {
+        delay_cancel_exit_to_set();
+        return;
+    }
+
     lv_obj_t *act_scr = lv_scr_act();
     if (screen_is_loading(act_scr)) return;
     g_on_stop_back = 0;
@@ -187,14 +192,12 @@ void jump_to_bottom_bbq_set_probe(void)
     bottom_bbq_set_probe_t *set = bottom_bbq_set_probe_get(&ui_manager);
     if (set) {
         lv_obj_t *btns[] = {
-            set->temp,
-            set->probetemp,
             set->sure,
             set->offdelay, set->ondelay,
         };
         if (g_bottom_bbq_set_probe) lv_group_del(g_bottom_bbq_set_probe);
-        g_bottom_bbq_set_probe = group_create_for_page(btns, 5);
-        clear_focus_states(btns, 5);
+        g_bottom_bbq_set_probe = group_create_for_page(btns, 3);
+        clear_focus_states(btns, 3);
         lv_group_focus_obj(set->sure);
 
         lv_label_set_text_fmt(set->temp, "%d", set_temp);
@@ -359,6 +362,7 @@ void jump_to_bottom_bbq_stop_back_probe(void)
         if (g_delay_cancel_to_stop_back) {
             g_delay_cancel_to_stop_back = 0;
             lv_label_set_text(back->label_72, "预约中...");
+            lv_label_set_text(back->label_74, g_delay_cancel_btn ? "回到上一页" : "回到主页");
             lv_obj_add_flag(back->bar_7, LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(back->image_29, LV_OBJ_FLAG_HIDDEN);
         }
@@ -510,14 +514,12 @@ void bottom_bbq_probe_rebuild_set(page_id_t child)
     bottom_bbq_set_probe_t *set = bottom_bbq_set_probe_get(&ui_manager);
     if (set) {
         lv_obj_t *btns[] = {
-            set->temp,
-            set->probetemp,
             set->sure,
             set->offdelay, set->ondelay,
         };
         if (g_bottom_bbq_set_probe) lv_group_del(g_bottom_bbq_set_probe);
-        g_bottom_bbq_set_probe = group_create_for_page(btns, 5);
-        clear_focus_states(btns, 5);
+        g_bottom_bbq_set_probe = group_create_for_page(btns, 3);
+        clear_focus_states(btns, 3);
         lv_group_focus_obj(set->sure);
 
         lv_label_set_text_fmt(set->temp, "%d", set_temp);

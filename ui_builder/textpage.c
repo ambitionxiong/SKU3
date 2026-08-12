@@ -29,15 +29,63 @@ void textpage_create(ui_manager_t *ui)
 
     // Init scr->font24
     scr->font24 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->font24, "今明天开始");
+    lv_label_set_text(scr->font24, "℃一三上下中主义二五今保入六冷冻出分到功加包千单却卷发四回外多天奇始完定对小层已干年底开式强慢成披拔探插放日时明星曲月期材条果步殊段气洁流清温炸烤烧热烹煮特玉空米约能自色节菜萨薯西解请部酵针钟集面页顶预额风食饪馅骤！该不支持，持烘焙");
     lv_label_set_long_mode(scr->font24, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->font24, 144, 102);
+    lv_obj_set_pos(scr->font24, 40, 34);
     lv_obj_set_size(scr->font24, 142, 32);
 
     // Set style of scr->font24
     lv_obj_set_style_text_font(scr->font24, &c_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->font24, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->font24, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // Init scr->font30
+    scr->font30 = lv_label_create(scr->obj);
+    lv_label_set_text(scr->font30, "℃一三上下中主义二五今保入六冷冻出分到功加包千单却卷发四回外多天奇始完定对小层已干年底开式强慢成披拔探插放日时明星曲月期材条果步殊段气洁流清温炸烤烧热烹煮特玉空米约能自色节菜萨薯西解请部酵针钟集面页顶预额风食饪馅骤！该不支持，持烘焙");
+    lv_label_set_long_mode(scr->font30, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->font30, 203, 34);
+    lv_obj_set_size(scr->font30, 142, 32);
+
+    // Set style of scr->font30
+    lv_obj_set_style_text_font(scr->font30, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->font30, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->font30, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // Init scr->font36
+    scr->font36 = lv_label_create(scr->obj);
+    lv_label_set_text(scr->font36, "℃一三上下中主义二五今保入六冷冻出分到功加包千单却卷发四回外多天奇始完定对小层已干年底开式强慢成披拔探插放日时明星曲月期材条果步殊段气洁流清温炸烤烧热烹煮特玉空米约能自色节菜萨薯西解请部酵针钟集面页顶预额风食饪馅骤！该不支持，持烘焙");
+    lv_label_set_long_mode(scr->font36, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->font36, 358, 34);
+    lv_obj_set_size(scr->font36, 142, 32);
+
+    // Set style of scr->font36
+    lv_obj_set_style_text_font(scr->font36, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->font36, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->font36, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // Init scr->font48
+    scr->font48 = lv_label_create(scr->obj);
+    lv_label_set_text(scr->font48, "℃一三上下中主义二五今保入六冷冻出分到功加包千单却卷发四回外多天奇始完定对小层已干年底开式强慢成披拔探插放日时明星曲月期材条果步殊段气洁流清温炸烤烧热烹煮特玉空米约能自色节菜萨薯西解请部酵针钟集面页顶预额风食饪馅骤！该不支持，持烘焙");
+    lv_label_set_long_mode(scr->font48, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->font48, 505, 34);
+    lv_obj_set_size(scr->font48, 142, 32);
+
+    // Set style of scr->font48
+    lv_obj_set_style_text_font(scr->font48, &c_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->font48, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->font48, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // Init scr->font60
+    scr->font60 = lv_label_create(scr->obj);
+    lv_label_set_text(scr->font60, "℃一三上下中主义二五今保入六冷冻出分到功加包千单却卷发四回外多天奇始完定对小层已干年底开式强慢成披拔探插放日时明星曲月期材条果步殊段气洁流清温炸烤烧热烹煮特玉空米约能自色节菜萨薯西解请部酵针钟集面页顶预额风食饪馅骤！该不支持，持烘焙");
+    lv_label_set_long_mode(scr->font60, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->font60, 704, 37);
+    lv_obj_set_size(scr->font60, 142, 32);
+
+    // Set style of scr->font60
+    lv_obj_set_style_text_font(scr->font60, &c_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->font60, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->font60, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
 
 }
