@@ -121,6 +121,9 @@ static void somecook_enter_edit_group(int i)
     clear_focus_states(btns, 2);
     lv_group_focus_obj(btns[0]);
     current_group = g_somecook_edit;
+    /* 去重:编辑/删除按钮跨"进编辑组→BACK"复用对象,避免回调累积导致多重跳转 */
+    lv_obj_remove_event_cb(btns[0], on_somecook_edit_click);
+    lv_obj_remove_event_cb(btns[1], on_somecook_delete_click);
     lv_obj_add_event_cb(btns[0], on_somecook_edit_click, LV_EVENT_CLICKED, (void *)(intptr_t)i);
     lv_obj_add_event_cb(btns[1], on_somecook_delete_click, LV_EVENT_CLICKED, (void *)(intptr_t)i);
 }
@@ -188,10 +191,21 @@ void somecook_rebuild(page_id_t child)
         g_somecook_btns = group_create_for_page(btns, n_btns);
         clear_focus_states(btns, n_btns);
 
-        if (child == PAGE_STEPSET)
-            lv_group_focus_obj(g_cur_step == 1 ? sc->step2button :
-                               g_cur_step == 2 ? sc->step3button : sc->step1button);
-        else {
+        if (child == PAGE_STEPSET) {
+            /* 设置完成返回:聚焦从步骤一开始最前面的未设置步骤;全部设置完 → "确 定" */
+            int f = -1;
+            for (int i = 0; i < 3; i++)
+                if (!g_steps[i].set) { f = i; break; }
+            if (f < 0) {
+                if (!lv_obj_has_flag(sc->sure, LV_OBJ_FLAG_HIDDEN))
+                    lv_group_focus_obj(sc->sure);
+                else
+                    lv_group_focus_obj(sc->step1button);   /* 防御兜底 */
+            } else {
+                lv_group_focus_obj(f == 1 ? sc->step2button :
+                                   f == 2 ? sc->step3button : sc->step1button);
+            }
+        } else {
             /* 首次进入:聚焦第一个未设置的步骤按钮 */
             int f = 0;
             for (int i = 0; i < 3; i++)
@@ -205,6 +219,8 @@ void somecook_rebuild(page_id_t child)
                             LV_EVENT_CLICKED, (void *)(intptr_t)1);
         lv_obj_add_event_cb(sc->step3button, on_somecook_btn_click,
                             LV_EVENT_CLICKED, (void *)(intptr_t)2);
+        lv_obj_add_event_cb(sc->sure, on_somecook_sure_click,
+                            LV_EVENT_CLICKED, NULL);
     }
     current_group = g_somecook_btns;
 
@@ -293,3 +309,4 @@ void jump_to_stepset(int i)
                      ui_manager.auto_del);
     printf("[somecook] jump: somecook -> stepset (%d)\n", i);
 }
+

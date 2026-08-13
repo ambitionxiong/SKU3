@@ -4913,6 +4913,9 @@ static void process_key(uint8_t key)
                 g_delay_cancel_to_stop_back = 1;
                 delay_cancel_to_stop_back();
             }
+            else if (cur == PAGE_SOMECOOK_COOKING) {
+                somecook_cooking_handle_back();
+            }
             else if (cur == PAGE_SOMECOOK) {
                 if (current_group == g_somecook_edit) {
                     /* 步骤容器编辑组 BACK → 回对应大按钮（不弹栈） */
@@ -5860,6 +5863,8 @@ void nav_key1_long_press(void)
     delay_on = 0; preheat_on = 0; contain_on = 0;
     delay_hour = 0; delay_min = 0;
     g_delay_target = -1;
+    g_somecook_running = 0;
+    g_somecook_run_idx = 0;
     set_temp = 180; set_temp_up = 180; set_temp_down = 180; set_hour = 0; set_min = 30;
     g_send.cook_mode = MODE_NONE;
     g_send.set_temp = 0;
@@ -7312,7 +7317,9 @@ void cooking_timer_cb(lv_timer_t *timer)
             g_send.buzzer_req = BUZZER_COOK_DONE;
             g_on_stop_back = 0;
             cook_is_color = 0;
-            if (g_stop_back_complete) {
+            if (g_somecook_running) {
+                somecook_cooking_next_step();
+            } else if (g_stop_back_complete) {
                 void (*fn)(void) = g_stop_back_complete;
                 g_stop_back_complete = NULL;
                 fn();
@@ -7320,7 +7327,25 @@ void cooking_timer_cb(lv_timer_t *timer)
         }
         return;
     }
+    if (current_group == g_somecook_cooking) {
+        somecook_cooking_t *sc = somecook_cooking_get(&ui_manager);
+        if (sc && cook_timer) {   /* cooking/stopback 态计时中 */
+            somecook_cooking_update_timer(sc);
+            /* 当前段到点 → 切下一段 / 全部完成 */
+            uint32_t elapsed = lv_tick_get() - cook_start_time;
+            if (elapsed >= (uint32_t)cook_total_ms) {
+                lv_timer_del(cook_timer);
+                cook_timer = NULL;
+                g_send.buzzer_req = BUZZER_COOK_DONE;
+                somecook_cooking_next_step();
+            }
+        }
+    }
     if (is_door_open()) {
+        if (g_somecook_running) {
+            somecook_cooking_auto_pause();
+            return;
+        }
         auto_pause_on_door();
         return;
     }
@@ -8782,6 +8807,8 @@ static void system_timer_cb(lv_timer_t *timer)
     g_extra_color_to_stop_back = 0;
     g_stop_back_complete = NULL;
     g_delay_cancel_btn = 0;
+    g_somecook_running = 0;
+    g_somecook_run_idx = 0;
     probe_target_temp = 80;
     g_send.iface_status = IFACE_STANDBY;
     g_send.cook_mode = MODE_NONE;

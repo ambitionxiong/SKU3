@@ -271,6 +271,7 @@ typedef enum {
     PAGE_DELAYCOOKING,
     PAGE_SOMECOOK,          /* 多段烹饪主页面 */
     PAGE_STEPSET,           /* 多段烹饪步骤设置页 */
+    PAGE_SOMECOOK_COOKING,  /* 多段烹饪运行页（单页五态） */
 } page_id_t;
 
 extern page_id_t page_stack[];
@@ -606,6 +607,14 @@ extern lv_group_t *g_stepset;
 void jump_to_stepset(int i);
 void somecook_back_to_btns(int focus_btn);
 void somecook_rebuild(page_id_t child);
+extern lv_group_t *g_somecook_cooking;
+extern uint8_t g_somecook_running;
+extern int g_somecook_run_idx;
+void somecook_cooking_handle_back(void);
+void somecook_cooking_auto_pause(void);
+void somecook_cooking_next_step(void);
+void somecook_cooking_update_timer(somecook_cooking_t *sc);
+void on_somecook_sure_click(lv_event_t *e);
 
 /* 多段烹饪步骤数据（nav_somecook.c 定义） */
 typedef struct {
