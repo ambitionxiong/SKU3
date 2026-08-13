@@ -193,23 +193,25 @@ void cookmenu_create(ui_manager_t *ui)
     scr->hot_wind_labal = lv_label_create(scr->obj);
     lv_label_set_text(scr->hot_wind_labal, "热风");
     lv_label_set_long_mode(scr->hot_wind_labal, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->hot_wind_labal, 858, 213);
+    lv_obj_set_pos(scr->hot_wind_labal, 857, 213);
     lv_obj_set_size(scr->hot_wind_labal, 63, 32);
 
     // Set style of scr->hot_wind_labal
     lv_obj_set_style_text_font(scr->hot_wind_labal, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->hot_wind_labal, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->hot_wind_labal, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->save_labal
     scr->save_labal = lv_label_create(scr->obj);
     lv_label_set_text(scr->save_labal, "节能热风");
     lv_label_set_long_mode(scr->save_labal, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->save_labal, 1077, 212);
+    lv_obj_set_pos(scr->save_labal, 1074, 212);
     lv_obj_set_size(scr->save_labal, 126, 32);
 
     // Set style of scr->save_labal
     lv_obj_set_style_text_font(scr->save_labal, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->save_labal, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->save_labal, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->up_down_labal
     scr->up_down_labal = lv_label_create(scr->obj);
@@ -227,45 +229,49 @@ void cookmenu_create(ui_manager_t *ui)
     scr->bottom_bbq_labal = lv_label_create(scr->obj);
     lv_label_set_text(scr->bottom_bbq_labal, "底部烧烤");
     lv_label_set_long_mode(scr->bottom_bbq_labal, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->bottom_bbq_labal, 331, 406);
+    lv_obj_set_pos(scr->bottom_bbq_labal, 327, 406);
     lv_obj_set_size(scr->bottom_bbq_labal, 131, 32);
 
     // Set style of scr->bottom_bbq_labal
     lv_obj_set_style_text_font(scr->bottom_bbq_labal, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->bottom_bbq_labal, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->bottom_bbq_labal, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->hotwind_bbq_labal
     scr->hotwind_bbq_labal = lv_label_create(scr->obj);
     lv_label_set_text(scr->hotwind_bbq_labal, "热风烧烤");
     lv_label_set_long_mode(scr->hotwind_bbq_labal, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->hotwind_bbq_labal, 581, 212);
+    lv_obj_set_pos(scr->hotwind_bbq_labal, 577, 212);
     lv_obj_set_size(scr->hotwind_bbq_labal, 126, 32);
 
     // Set style of scr->hotwind_bbq_labal
     lv_obj_set_style_text_font(scr->hotwind_bbq_labal, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->hotwind_bbq_labal, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->hotwind_bbq_labal, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->central_labal
     scr->central_labal = lv_label_create(scr->obj);
     lv_label_set_text(scr->central_labal, "集中烧烤");
     lv_label_set_long_mode(scr->central_labal, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->central_labal, 580, 405);
+    lv_obj_set_pos(scr->central_labal, 577, 405);
     lv_obj_set_size(scr->central_labal, 126, 32);
 
     // Set style of scr->central_labal
     lv_obj_set_style_text_font(scr->central_labal, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->central_labal, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->central_labal, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->wind_change_labal
     scr->wind_change_labal = lv_label_create(scr->obj);
     lv_label_set_text(scr->wind_change_labal, "热风对流");
     lv_label_set_long_mode(scr->wind_change_labal, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->wind_change_labal, 829, 404);
+    lv_obj_set_pos(scr->wind_change_labal, 826, 404);
     lv_obj_set_size(scr->wind_change_labal, 126, 32);
 
     // Set style of scr->wind_change_labal
     lv_obj_set_style_text_font(scr->wind_change_labal, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->wind_change_labal, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->wind_change_labal, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->preheater_labal
     scr->preheater_labal = lv_label_create(scr->obj);
@@ -277,6 +283,7 @@ void cookmenu_create(ui_manager_t *ui)
     // Set style of scr->preheater_labal
     lv_obj_set_style_text_font(scr->preheater_labal, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->preheater_labal, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->preheater_labal, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->pengren_labal
     scr->pengren_labal = lv_label_create(scr->obj);
@@ -293,12 +300,13 @@ void cookmenu_create(ui_manager_t *ui)
     scr->hot_bbq_labal = lv_label_create(scr->obj);
     lv_label_set_text(scr->hot_bbq_labal, "顶部烧烤");
     lv_label_set_long_mode(scr->hot_bbq_labal, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->hot_bbq_labal, 332, 212);
+    lv_obj_set_pos(scr->hot_bbq_labal, 328, 212);
     lv_obj_set_size(scr->hot_bbq_labal, 126, 32);
 
     // Set style of scr->hot_bbq_labal
     lv_obj_set_style_text_font(scr->hot_bbq_labal, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->hot_bbq_labal, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->hot_bbq_labal, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
 
 }

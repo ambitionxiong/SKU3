@@ -3988,6 +3988,50 @@ typedef struct {
     lv_obj_t *font60;
 } textpage_t;
 
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *bread;
+    lv_obj_t *cake;
+    lv_obj_t *chick;
+    lv_obj_t *meat;
+    lv_obj_t *fish;
+    lv_obj_t *vegetable;
+    lv_obj_t *pizza6;
+    lv_obj_t *pasta;
+    lv_obj_t *snack;
+    lv_obj_t *image_1;
+    lv_obj_t *label_9;
+} sixmenu_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *label_11;
+    lv_obj_t *breadroll;
+    lv_obj_t *wheat_bread;
+    lv_obj_t *toast;
+    lv_obj_t *croissant;
+} bread6menu_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_6;
+    lv_obj_t *label_16;
+    lv_obj_t *yes;
+    lv_obj_t *no;
+    lv_obj_t *label_17;
+} risingpage_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *label_19;
+    lv_obj_t *start;
+    lv_obj_t *container_1;
+    lv_obj_t *summary;
+    lv_obj_t *cookdescriptin;
+    lv_obj_t *cooktime;
+    lv_obj_t *delay;
+} descriptionmenu_t;
+
 
 typedef struct {
     bool auto_del;
@@ -4248,6 +4292,10 @@ typedef struct {
     stepset_t stepset;
     somecook_cooking_t somecook_cooking;
     textpage_t textpage;
+    sixmenu_t sixmenu;
+    bread6menu_t bread6menu;
+    risingpage_t risingpage;
+    descriptionmenu_t descriptionmenu;
 
 } ui_manager_t;
 
@@ -5542,6 +5590,26 @@ static inline textpage_t *textpage_get(ui_manager_t *ui)
     return &ui->textpage;
 }
 
+static inline sixmenu_t *sixmenu_get(ui_manager_t *ui)
+{
+    return &ui->sixmenu;
+}
+
+static inline bread6menu_t *bread6menu_get(ui_manager_t *ui)
+{
+    return &ui->bread6menu;
+}
+
+static inline risingpage_t *risingpage_get(ui_manager_t *ui)
+{
+    return &ui->risingpage;
+}
+
+static inline descriptionmenu_t *descriptionmenu_get(ui_manager_t *ui)
+{
+    return &ui->descriptionmenu;
+}
+
 
 void waitmenu_24_create(ui_manager_t *ui);
 void clean_menu_create(ui_manager_t *ui);
@@ -5800,6 +5868,10 @@ void somecook_create(ui_manager_t *ui);
 void stepset_create(ui_manager_t *ui);
 void somecook_cooking_create(ui_manager_t *ui);
 void textpage_create(ui_manager_t *ui);
+void sixmenu_create(ui_manager_t *ui);
+void bread6menu_create(ui_manager_t *ui);
+void risingpage_create(ui_manager_t *ui);
+void descriptionmenu_create(ui_manager_t *ui);
 
 
 LV_FONT_DECLARE(c_montserratmedium_16);

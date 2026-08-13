@@ -62,10 +62,14 @@ void updown_bbq_stop_create(ui_manager_t *ui)
     lv_obj_set_style_bg_opa(scr->start_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->start_button, LVGL_IMAGE_PATH(stopbk1.png), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(scr->start_button, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_opa(scr->start_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->start_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_opa(scr->start_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->start_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->start_button, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
     lv_obj_set_style_bg_img_src(scr->start_button, LVGL_IMAGE_PATH(stopbk2.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_border_opa(scr->start_button, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_shadow_opa(scr->start_button, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
 
     // Init scr->image_2
     scr->image_2 = lv_img_create(scr->obj);

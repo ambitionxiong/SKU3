@@ -272,6 +272,7 @@ typedef enum {
     PAGE_SOMECOOK,          /* 多段烹饪主页面 */
     PAGE_STEPSET,           /* 多段烹饪步骤设置页 */
     PAGE_SOMECOOK_COOKING,  /* 多段烹饪运行页（单页五态） */
+    PAGE_SCREEN_SET,        /* 设置页（覆盖层，任何页面可进） */
 } page_id_t;
 
 extern page_id_t page_stack[];
@@ -615,6 +616,12 @@ void somecook_cooking_auto_pause(void);
 void somecook_cooking_next_step(void);
 void somecook_cooking_update_timer(somecook_cooking_t *sc);
 void on_somecook_sure_click(lv_event_t *e);
+
+/* 设置页（覆盖层，nav_screen_set.c 实现） */
+extern lv_group_t *g_screen_set;
+void jump_to_screen_set(void);
+void screen_set_back(void);
+void screen_set_reset(void);
 
 /* 多段烹饪步骤数据（nav_somecook.c 定义） */
 typedef struct {

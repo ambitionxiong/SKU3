@@ -29,7 +29,7 @@ void textpage_create(ui_manager_t *ui)
 
     // Init scr->font24
     scr->font24 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->font24, "℃一三上下中主义二五今保入六冷冻出分到功加包千单却卷发四回外多天奇始完定对小层已干年底开式强慢成披拔探插放日时明星曲月期材条果步殊段气洁流清温炸烤烧热烹煮特玉空米约能自色节菜萨薯西解请部酵针钟集面页顶预额风食饪馅骤！该不支持，持烘焙");
+    lv_label_set_text(scr->font24, "℃一三上下中主义二五今保入六冷冻出分到功加包千单却卷发四回外多天奇始完定对小层已干年底开式强慢成披拔探插放日时明星曲月期材条果步殊段气洁流清温炸烤烧热烹煮特玉空米约能自色节菜萨薯西解请部酵针钟集面页顶预额风食饪馅骤！该不支持，持烘焙设、置、关、全、简、体、文");
     lv_label_set_long_mode(scr->font24, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->font24, 40, 34);
     lv_obj_set_size(scr->font24, 142, 32);

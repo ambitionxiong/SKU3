@@ -30,6 +30,7 @@ typedef enum {
 #define KEY_MENU              3    // 进入主菜单
 #define KEY_EXTRA_COLOR       5    // 进入额外上色
 #define KEY_CLEAN             7    // 进入清洁菜单
+#define KEY_SET               11   // 进入设置页（覆盖层，任何状态可进）
 #define KEY_BACK              21   // 返回键（触控板或按键板）
 #define KEY_ENCODER_CW       31   // 编码器顺时针旋转
 #define KEY_ENCODER_CCW      41   // 编码器逆时针旋转

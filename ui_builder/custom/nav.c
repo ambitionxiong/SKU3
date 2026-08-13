@@ -4695,6 +4695,11 @@ static void process_key(uint8_t key)
         uart_print();
         break;
     case KEY_EXTRA_COLOR:   // 5: 进入额外上色
+        if (depth > 0 && page_stack[depth - 1] == PAGE_SCREEN_SET) {
+            /* 设置页覆盖层打开:拦截,防止跳转销毁覆盖层(悬空+栈错乱) */
+            g_send.buzzer_req = BUZZER_KEY_INVALID;
+            break;
+        }
         if (g_send.iface_status == IFACE_COMPLETE) {
             /* 完成状态：特定模式完成页可再次上色（进 extra_color 确认页） */
             if (depth > 0 && page_stack[depth - 1] == PAGE_EXTRA_COLOR) {
@@ -4746,8 +4751,7 @@ static void process_key(uint8_t key)
         uart_print();
         break;
     case KEY_CLEAN:         // 7: 进入清洁菜单
-        if (!menu_clean_key_allowed() || g_send.iface_status == IFACE_COOKING) {
-            g_send.buzzer_req = BUZZER_KEY_INVALID;
+        if (!menu_clean_key_allowed() || g_send.iface_status == IFACE_COOKING) {            g_send.buzzer_req = BUZZER_KEY_INVALID;
             break;
         }
         if (is_probe_inserted()) {
@@ -4778,6 +4782,15 @@ static void process_key(uint8_t key)
         depth = 0;
         page_push(PAGE_WAITMENU_24);
         jump_to_clean_menu();
+        uart_print();
+        break;
+    case KEY_SET:           // 11: 进入设置页（覆盖层，任何状态可进）
+        if (depth > 0 && page_stack[depth - 1] == PAGE_SCREEN_SET) {
+            g_send.buzzer_req = BUZZER_KEY_INVALID;
+            break;
+        }
+        g_send.buzzer_req = BUZZER_KEY_VALID;
+        jump_to_screen_set();
         uart_print();
         break;
     case KEY_BACK:          // 21: 返回
@@ -4915,6 +4928,9 @@ static void process_key(uint8_t key)
             }
             else if (cur == PAGE_SOMECOOK_COOKING) {
                 somecook_cooking_handle_back();
+            }
+            else if (cur == PAGE_SCREEN_SET) {
+                screen_set_back();
             }
             else if (cur == PAGE_SOMECOOK) {
                 if (current_group == g_somecook_edit) {
@@ -5849,6 +5865,7 @@ static void process_key(uint8_t key)
 void nav_key1_long_press(void)
 {
     probetip_cancel_auto_dismiss();   /* 取消陈旧的探针提示自动关闭定时器,防止跨会话误触发 */
+    screen_set_reset();               /* 覆盖层若打开:清理对象/组/焦点指针,防悬空 */
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
     g_on_stop_back = 0;
     g_complete_to_stop_back = 0;
@@ -6961,6 +6978,10 @@ void cooking_timer_cb(lv_timer_t *timer)
         }
         return;
     }
+    /* 设置页覆盖层打开:跳过所有完成/跳转检测,避免下层跳转销毁覆盖层(悬空+栈错乱);
+       返回时 screen_set_back 会补刷一次,行为不丢 */
+    if (depth > 0 && page_stack[depth - 1] == PAGE_SCREEN_SET)
+        return;
     if (g_on_stop_back) {
         if (g_send.iface_status == IFACE_DELAY_RESERVE &&
             (current_group == g_updown_bbq_stop_back ||
@@ -8795,6 +8816,7 @@ static void system_timer_cb(lv_timer_t *timer)
     }
 
     probetip_cancel_auto_dismiss();   /* 取消陈旧的探针提示自动关闭定时器,防止跨会话误触发 */
+    screen_set_reset();               /* 覆盖层若打开:清理对象/组/焦点指针,防悬空 */
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
     set_temp = 180; set_temp_up = 180; set_temp_down = 180;
     set_hour = 0; set_min = 30;

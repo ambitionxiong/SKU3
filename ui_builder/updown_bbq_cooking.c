@@ -66,6 +66,8 @@ void updown_bbq_cooking_create(ui_manager_t *ui)
     lv_obj_set_style_shadow_width(scr->stop_button, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->stop_button, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
     lv_obj_set_style_bg_img_src(scr->stop_button, LVGL_IMAGE_PATH(stopbk2.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_border_opa(scr->stop_button, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_shadow_opa(scr->stop_button, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
 
     // Init scr->barbk_img
     scr->barbk_img = lv_img_create(scr->obj);
