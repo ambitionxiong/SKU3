@@ -27,6 +27,7 @@ typedef enum {
 
 // 按键值（接收数据 BUF[15]）
 #define KEY1                  1    // 开关机键（长按触发省电）
+#define KEY_SIXMENU           2    // 进入第六感菜单
 #define KEY_MENU              3    // 进入主菜单
 #define KEY_EXTRA_COLOR       5    // 进入额外上色
 #define KEY_CLEAN             7    // 进入清洁菜单

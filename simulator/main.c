@@ -140,6 +140,7 @@ int main(int argc, char **argv)
 		         keys[SDL_SCANCODE_UP])     sim_key = KEY_ENCODER_CCW;
 		else if (keys[SDL_SCANCODE_SPACE])  sim_key = KEY_ENCODER_PRESS;
 		else if (keys[SDL_SCANCODE_1])      sim_key = KEY1;
+		else if (keys[SDL_SCANCODE_2])      sim_key = KEY_SIXMENU;
 		else if (keys[SDL_SCANCODE_7])      sim_key = KEY_CLEAN;
 		else if (keys[SDL_SCANCODE_F9])     sim_key = KEY_SET;
 		if (cur_8 && !prev_8) {

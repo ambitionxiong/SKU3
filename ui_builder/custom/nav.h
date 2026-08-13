@@ -273,6 +273,10 @@ typedef enum {
     PAGE_STEPSET,           /* 多段烹饪步骤设置页 */
     PAGE_SOMECOOK_COOKING,  /* 多段烹饪运行页（单页五态） */
     PAGE_SCREEN_SET,        /* 设置页（覆盖层，任何页面可进） */
+    PAGE_SIXMENU,           /* 第六感菜单 */
+    PAGE_BREAD6MENU,        /* 第六感-面包 */
+    PAGE_RISINGPAGE,        /* 第六感-是否发酵 */
+    PAGE_DESCRIPTIONMENU,   /* 第六感-烹饪描述 */
 } page_id_t;
 
 extern page_id_t page_stack[];
@@ -622,6 +626,21 @@ extern lv_group_t *g_screen_set;
 void jump_to_screen_set(void);
 void screen_set_back(void);
 void screen_set_reset(void);
+
+/* 第六感菜单（nav_sixmenu.c 实现） */
+extern lv_group_t *g_sixmenu;
+extern lv_group_t *g_bread6menu;
+extern lv_group_t *g_risingpage;
+extern lv_group_t *g_descriptionmenu;
+extern int g_rising_choice;   /* -1 未选 0=否 1=是 */
+void jump_to_sixmenu(void);
+void sixmenu_rebuild(page_id_t child);
+void jump_to_bread6menu(void);
+void bread6menu_rebuild(page_id_t child);
+void jump_to_risingpage(void);
+void risingpage_rebuild(page_id_t child);
+void jump_to_descriptionmenu(void);
+void descriptionmenu_rebuild(page_id_t child);
 
 /* 多段烹饪步骤数据（nav_somecook.c 定义） */
 typedef struct {

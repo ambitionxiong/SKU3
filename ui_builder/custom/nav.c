@@ -1171,6 +1171,22 @@ void page_pop(void)
         somecook_rebuild(child);
         break;
 
+    case PAGE_SIXMENU:
+        sixmenu_rebuild(child);
+        break;
+
+    case PAGE_BREAD6MENU:
+        bread6menu_rebuild(child);
+        break;
+
+    case PAGE_RISINGPAGE:
+        risingpage_rebuild(child);
+        break;
+
+    case PAGE_DESCRIPTIONMENU:
+        descriptionmenu_rebuild(child);
+        break;
+
     case PAGE_UPDOWN_BBQ_MENU:
         updown_bbq_menu_create(&ui_manager);
         {
@@ -4791,6 +4807,45 @@ static void process_key(uint8_t key)
         }
         g_send.buzzer_req = BUZZER_KEY_VALID;
         jump_to_screen_set();
+        uart_print();
+        break;
+    case KEY_SIXMENU:       // 2: 进入第六感菜单
+        if (depth > 0) {
+            page_id_t cur = page_stack[depth - 1];
+            if (cur == PAGE_SIXMENU || cur == PAGE_BREAD6MENU ||
+                cur == PAGE_RISINGPAGE || cur == PAGE_DESCRIPTIONMENU) {
+                g_send.buzzer_req = BUZZER_KEY_INVALID;   /* 防重入 */
+                uart_print();
+                break;
+            }
+        }
+        if (is_probe_inserted()) {
+            g_send.buzzer_req = BUZZER_KEY_INVALID;
+            break;
+        }
+        g_send.buzzer_req = BUZZER_KEY_VALID;
+        if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
+        g_on_stop_back = 0;
+        g_complete_to_stop_back = 0;
+        g_delay_cancel_to_stop_back = 0;
+        g_delay_cancel_btn = 0;
+        g_keepwarm_active = 0;
+        g_keepwarm_sec = 0;
+        delay_on = 0;
+        contain_on = 0;
+        preheat_on = 0;
+        g_stop_back_complete = NULL;
+        g_somecook_running = 0;
+        g_somecook_run_idx = 0;
+        g_rising_choice = -1;
+        depth = 0;
+        page_push(PAGE_WAITMENU_24);
+        jump_to_sixmenu();
+        g_send.iface_status = IFACE_SETTING;
+        g_send.cook_mode = MODE_NONE;
+        g_send.set_temp = 0;
+        g_send.set_temp_lower = 0;
+        g_send.remaining_ms = -1;
         uart_print();
         break;
     case KEY_BACK:          // 21: 返回

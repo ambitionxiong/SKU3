@@ -4032,6 +4032,16 @@ typedef struct {
     lv_obj_t *delay;
 } descriptionmenu_t;
 
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_9;
+    lv_obj_t *label_23;
+    lv_obj_t *label_24;
+    lv_obj_t *next;
+    lv_obj_t *degree;
+    lv_obj_t *line;
+} toastcolor_t;
+
 
 typedef struct {
     bool auto_del;
@@ -4296,6 +4306,7 @@ typedef struct {
     bread6menu_t bread6menu;
     risingpage_t risingpage;
     descriptionmenu_t descriptionmenu;
+    toastcolor_t toastcolor;
 
 } ui_manager_t;
 
@@ -5610,6 +5621,11 @@ static inline descriptionmenu_t *descriptionmenu_get(ui_manager_t *ui)
     return &ui->descriptionmenu;
 }
 
+static inline toastcolor_t *toastcolor_get(ui_manager_t *ui)
+{
+    return &ui->toastcolor;
+}
+
 
 void waitmenu_24_create(ui_manager_t *ui);
 void clean_menu_create(ui_manager_t *ui);
@@ -5872,6 +5888,7 @@ void sixmenu_create(ui_manager_t *ui);
 void bread6menu_create(ui_manager_t *ui);
 void risingpage_create(ui_manager_t *ui);
 void descriptionmenu_create(ui_manager_t *ui);
+void toastcolor_create(ui_manager_t *ui);
 
 
 LV_FONT_DECLARE(c_montserratmedium_16);
