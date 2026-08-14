@@ -4661,6 +4661,8 @@ static int menu_clean_key_allowed(void)
     case PAGE_FROZEN_COOK:
     case PAGE_CLEAN_MENU:
     case PAGE_HOTCLEAN_MENU:
+    case PAGE_SIXMENU:       /* 第六感:只放开前两层 */
+    case PAGE_BREAD6MENU:
         return 1;
     default:
         return 0;
@@ -6462,7 +6464,10 @@ static void on_delayset_start_click(lv_event_t *e)
     delay_on = 1;
     /* 互斥：开延时关预热（回 set 页重建时显示关） */
     preheat_on = 0;
-    page_pop();
+    if (g_delay_source_page == PAGE_DESCRIPTIONMENU)
+        jump_to_delaycooking();   /* 六感:直接进预约运行页 */
+    else
+        page_pop();               /* 其他模式:回 set 页 */
 }
 
 // 设置 updown set 页 ondelay 按钮文字（"今天19:00开始"，taiwan 字体滚动显示）
@@ -6526,6 +6531,8 @@ static void apply_delay_cook_mode(page_id_t src)
     case PAGE_LASAGNA_SET: case PAGE_STRUDEL_SET: case PAGE_BREAD_SET:
     case PAGE_PIZZA3_SET: case PAGE_CHIP_SET: case PAGE_CUSTOM_SET:
         g_send.cook_mode = MODE_FROZEN_BAKE; break;
+    case PAGE_DESCRIPTIONMENU:
+        g_send.cook_mode = MODE_UPDOWN_BBQ; break;   /* 六感:保持前面烹饪模式 */
     default: break;
     }
 }
@@ -6553,6 +6560,8 @@ void jump_to_delayset(void)
 
     delayset_t *ds = delayset_get(&ui_manager);
     if (ds) {
+        if (g_delay_source_page == PAGE_DESCRIPTIONMENU)
+            lv_label_set_text(ds->name, "面包卷");   /* 六感名称 */
         lv_obj_t *btns[] = { ds->hour, ds->min, ds->start };
         if (g_delayset) lv_group_del(g_delayset);
         g_delayset = group_create_for_page(btns, 3);
@@ -6567,7 +6576,9 @@ void jump_to_delayset(void)
 
         lv_group_focus_obj(ds->start);
 
-        lv_label_set_text(ds->name, mode_display_name());
+        /* 六感已设"面包卷",其他模式显示模式名 */
+        if (g_delay_source_page != PAGE_DESCRIPTIONMENU)
+            lv_label_set_text(ds->name, mode_display_name());
         delayset_refresh_display(ds);
     }
     current_group = g_delayset;
@@ -6696,6 +6707,10 @@ void mode_set_apply_delay_label(lv_obj_t *ondelay_btn)
 // 延时预约到点：按 cook_mode 进入对应模式烹饪（探针插入走探针烹饪）
 static void delay_start_cook(void)
 {
+    if (g_delay_source_page == PAGE_DESCRIPTIONMENU) {
+        jump_to_six_cooking();   /* 六感:到点进入六感烹饪 */
+        return;
+    }
     if (is_probe_inserted()) {
         switch (g_send.cook_mode) {
         case MODE_UPDOWN_BBQ: jump_to_updown_bbq_cooking_probe(); return;
@@ -6750,6 +6765,10 @@ static void delay_start_cook(void)
 // delaycooking 取消/返回：按 cook_mode 跳对应模式 stop_back
 static void delay_cancel_to_stop_back(void)
 {
+    if (g_delay_source_page == PAGE_DESCRIPTIONMENU) {
+        jump_to_updown_bbq_stop_back();   /* 六感:复用 updown stop_back 页 */
+        return;
+    }
     if (is_probe_inserted()) {
         switch (g_send.cook_mode) {
         case MODE_UPDOWN_BBQ: jump_to_updown_bbq_stop_back_probe(); return;
@@ -6820,7 +6839,12 @@ static void rebuild_delaycooking(void)
         lv_obj_add_event_cb(dc->cancel, on_delaycooking_cancel_click,
                             LV_EVENT_CLICKED, NULL);
 
-        if (g_delay_source_page == PAGE_UPDOWN_BBQ_SET_PROBE ||
+        if (g_delay_source_page == PAGE_DESCRIPTIONMENU) {
+            /* 六感:status 显示模式+时间,icon 用 sixicon(与运行页一致) */
+            lv_label_set_text_fmt(dc->status, "| 面包卷 | %d分钟", 1);
+            lv_img_set_src(dc->icon, LVGL_IMAGE_PATH(sixicon.png));
+            lv_obj_set_pos(dc->icon, 163, 161);
+        } else if (g_delay_source_page == PAGE_UPDOWN_BBQ_SET_PROBE ||
             g_delay_source_page == PAGE_HOT_BBQ_SET_PROBE ||
             g_delay_source_page == PAGE_BOTTOM_BBQ_SET_PROBE ||
             g_delay_source_page == PAGE_SLOWCOOK_SET_PROBE) {
@@ -6837,7 +6861,8 @@ static void rebuild_delaycooking(void)
                 lv_label_set_text_fmt(dc->status, "| %s | %d℃ | %d小时%02d分钟",
                                       mode_display_name(), set_temp, set_hour, set_min);
         }
-        mode_apply_icon(dc->icon);
+        if (g_delay_source_page != PAGE_DESCRIPTIONMENU)
+            mode_apply_icon(dc->icon);   /* 六感已单独设 sixicon */
         lv_label_set_text(dc->label_14, "预约中...");
         lv_label_set_text_fmt(dc->tip2, "%s%02d:%02d",
                               delay_hour >= 24 ? "明天" : "今天",
@@ -8297,6 +8322,12 @@ static void jump_to_updown_bbq_stop_back(void)
         if (g_delay_cancel_to_stop_back) {
             g_delay_cancel_to_stop_back = 0;
             lv_label_set_text(back->label_8, "预约中...");
+            if (g_delay_source_page == PAGE_DESCRIPTIONMENU) {
+                /* 六感:status/图标/位置与六感运行页一致 */
+                lv_label_set_text_fmt(back->statu_label, "| 面包卷 | %d分钟", 1);
+                lv_img_set_src(back->image_7, LVGL_IMAGE_PATH(sixicon.png));
+                lv_obj_set_pos(back->image_7, 163, 161);
+            }
             lv_label_set_text(back->label_11, g_delay_cancel_btn ? "回到上一页" : "回到主页");
             lv_obj_add_flag(back->bar_2, LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(back->image_6, LV_OBJ_FLAG_HIDDEN);
@@ -8449,10 +8480,73 @@ void delay_cancel_exit_to_set(void)
     g_send.cook_flag = 0;
 }
 
+// 六感 delay 取消确认:取消按钮路径 → 回 descriptionmenu
+static void six_delay_exit_to_description(void)
+{
+    g_delay_cancel_btn = 0;
+    g_delay_cancel_to_stop_back = 0;
+    delay_on = 0;
+    if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
+    cook_total_ms = 0;
+    cook_start_time = 0;
+    cook_elapsed_saved = 0;
+    cook_bar_saved = 0;
+    g_on_stop_back = 0;
+    g_complete_to_stop_back = 0;
+    g_stop_back_complete = NULL;
+    g_delay_target = -1;
+    g_send.iface_status = IFACE_SETTING;
+    g_send.remaining_ms = -1;
+    g_send.cook_flag = 0;
+    g_delay_source_page = PAGE_WAITMENU_24;   /* 防残留误走六感分支 */
+    /* 栈守卫:仅当 [.., DELAYCOOKING, STOP_BACK] 结构才执行 */
+    if (depth < 3 || page_stack[depth - 1] != PAGE_UPDOWN_BBQ_STOP_BACK ||
+        page_stack[depth - 2] != PAGE_DELAYCOOKING)
+        return;
+    /* 弹 STOP_BACK + DELAYCOOKING + DELAYSET,不走 page_pop(会重建中间页并抵消清理) */
+    depth -= 3;
+    topflag_update_visibility();
+    descriptionmenu_rebuild(PAGE_DESCRIPTIONMENU);
+    printf("[six_cook] delay cancel -> descriptionmenu\n");
+}
+
+// 六感 delay 取消确认:BACK 路径 → 回 sixmenu
+static void six_delay_exit_to_sixmenu(void)
+{
+    g_delay_cancel_btn = 0;
+    g_delay_cancel_to_stop_back = 0;
+    delay_on = 0;
+    if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
+    cook_total_ms = 0;
+    cook_start_time = 0;
+    cook_elapsed_saved = 0;
+    cook_bar_saved = 0;
+    g_on_stop_back = 0;
+    g_stop_back_complete = NULL;
+    g_delay_target = -1;
+    g_send.iface_status = IFACE_SETTING;
+    g_send.remaining_ms = -1;
+    g_send.cook_flag = 0;
+    g_delay_source_page = PAGE_WAITMENU_24;   /* 防残留误走六感分支 */
+    depth = 0;
+    page_push(PAGE_WAITMENU_24);
+    jump_to_sixmenu();
+    printf("[six_cook] delay cancel -> sixmenu\n");
+}
+
 static void on_stop_back_sure_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
     if (screen_is_loading(act_scr)) return;
+    if (g_delay_source_page == PAGE_DESCRIPTIONMENU &&
+        depth >= 2 && page_stack[depth - 2] == PAGE_DELAYCOOKING) {
+        /* 六感 delay 取消确认(栈守卫,防来源标志残留误判) */
+        if (g_delay_cancel_btn)
+            six_delay_exit_to_description();
+        else
+            six_delay_exit_to_sixmenu();
+        return;
+    }
     if (g_delay_cancel_btn) {
         delay_cancel_exit_to_set();
         return;

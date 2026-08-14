@@ -83,7 +83,7 @@ void somecook_cooking_create(ui_manager_t *ui)
     lv_label_set_text(scr->cookstatus, "烹饪中...");
     lv_label_set_long_mode(scr->cookstatus, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->cookstatus, 273, 157);
-    lv_obj_set_size(scr->cookstatus, 235, 60);
+    lv_obj_set_size(scr->cookstatus, 262, 60);
 
     // Set style of scr->cookstatus
     lv_obj_set_style_text_font(scr->cookstatus, &c_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);

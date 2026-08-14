@@ -19,6 +19,7 @@ static void on_bread6menu_breadroll_click(lv_event_t *e);
 static void on_rising_yes_click(lv_event_t *e);
 static void on_rising_no_click(lv_event_t *e);
 static void on_description_start_click(lv_event_t *e);
+static void on_description_delay_click(lv_event_t *e);
 
 /* ================= sixmenu ================= */
 
@@ -278,7 +279,7 @@ void jump_to_descriptionmenu(void)
         clear_focus_states(btns, n);
 
         lv_obj_add_event_cb(dm->start, on_description_start_click, LV_EVENT_CLICKED, NULL);
-        /* delay：功能未实现，不绑事件 */
+        lv_obj_add_event_cb(dm->delay, on_description_delay_click, LV_EVENT_CLICKED, NULL);
 
         lv_group_focus_obj(dm->start);
     }
@@ -307,6 +308,7 @@ void descriptionmenu_rebuild(page_id_t child)
         clear_focus_states(btns, n);
 
         lv_obj_add_event_cb(dm->start, on_description_start_click, LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(dm->delay, on_description_delay_click, LV_EVENT_CLICKED, NULL);
 
         lv_group_focus_obj(dm->start);
     }
@@ -322,4 +324,10 @@ static void on_description_start_click(lv_event_t *e)
 {
     if (screen_is_loading(lv_scr_act())) return;
     jump_to_six_cooking();
+}
+
+static void on_description_delay_click(lv_event_t *e)
+{
+    if (screen_is_loading(lv_scr_act())) return;
+    jump_to_delayset();   /* 来源页自动记录为 PAGE_DESCRIPTIONMENU */
 }

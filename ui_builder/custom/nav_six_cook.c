@@ -276,6 +276,11 @@ static void on_six_stop_click(lv_event_t *e)
             g_six_paused = 1;
             six_cook_apply_display();
         } else {
+            /* 门开:无效音,不恢复(与其他模式一致) */
+            if (is_door_open()) {
+                g_send.buzzer_req = BUZZER_KEY_INVALID;
+                return;
+            }
             cook_start_time = lv_tick_get() - cook_elapsed_saved;
             cook_elapsed_saved = 0;
             g_six_paused = 0;
@@ -289,6 +294,11 @@ static void on_six_stop_click(lv_event_t *e)
         jump_to_toastcolor();
         break;
     case SIX_PHASE_COLOR_SETUP:
+        /* 门开:无效音,不开始上色(与其他模式一致) */
+        if (is_door_open()) {
+            g_send.buzzer_req = BUZZER_KEY_INVALID;
+            return;
+        }
         g_six_paused = 0;
         cook_elapsed_saved = 0;
         cook_start_time = lv_tick_get();
@@ -331,6 +341,7 @@ static void six_cook_exit(void)
     g_send.iface_status = IFACE_SETTING;
     g_send.cook_mode = MODE_NONE;
     g_send.set_temp = 0; g_send.set_temp_lower = 0; g_send.remaining_ms = -1;
+    g_delay_source_page = PAGE_WAITMENU_24;   /* 防残留误走六感分支 */
     /* 退出 → 回第六感主菜单(与 KEY_SIXMENU 入口栈形态一致) */
     depth = 0;
     page_push(PAGE_WAITMENU_24);
@@ -341,6 +352,10 @@ static void six_cook_exit(void)
 // 进入运行页(choice=1 有发酵)
 void jump_to_six_cooking(void)
 {
+    if (is_door_open()) {
+        g_send.buzzer_req = BUZZER_KEY_INVALID;
+        return;
+    }
     page_push(PAGE_SIX_COOKING);
     lv_obj_clean(lv_scr_act());
     somecook_cooking_create(&ui_manager);
