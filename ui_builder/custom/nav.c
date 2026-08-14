@@ -4672,13 +4672,23 @@ static int menu_clean_key_allowed(void)
 static void process_key(uint8_t key)
 {
     if (g_send.iface_status == IFACE_SLEEP) return;
+    /* 无效提示弹窗:仅 BACK 有效(KEY_BACK 分支关闭弹窗);长按关机由
+       nav_handle_key 独立检测不受影响;其余键静默忽略,避免主动操作 */
+    if (nav_hint_active() && key != KEY_BACK)
+        return;
     uart_data_receive[Receive_data_Touch_Key] = 0;
 
     switch (key) {
     case KEY1:              // 1: 开关机键，短按无操作
         break;
     case KEY_MENU:          // 3: 进入主菜单
-        if (!menu_clean_key_allowed() || g_send.iface_status == IFACE_COOKING) {
+        if (g_send.iface_status == IFACE_COOKING) {
+            g_send.buzzer_req = BUZZER_KEY_INVALID;
+            nav_show_invalid_hint();   /* 烹饪中:无效提示弹窗 */
+            uart_print();
+            break;
+        }
+        if (!menu_clean_key_allowed()) {
             g_send.buzzer_req = BUZZER_KEY_INVALID;
             break;
         }
@@ -4781,7 +4791,13 @@ static void process_key(uint8_t key)
                 break;
             }
         }
-        if (!menu_clean_key_allowed() || g_send.iface_status == IFACE_COOKING) {
+        if (g_send.iface_status == IFACE_COOKING) {
+            g_send.buzzer_req = BUZZER_KEY_INVALID;
+            nav_show_invalid_hint();   /* 烹饪中:无效提示弹窗 */
+            uart_print();
+            break;
+        }
+        if (!menu_clean_key_allowed()) {
             g_send.buzzer_req = BUZZER_KEY_INVALID;
             uart_print();
             break;
@@ -4807,7 +4823,14 @@ static void process_key(uint8_t key)
         uart_print();
         break;
     case KEY_CLEAN:         // 7: 进入清洁菜单
-        if (!menu_clean_key_allowed() || g_send.iface_status == IFACE_COOKING) {            g_send.buzzer_req = BUZZER_KEY_INVALID;
+        if (g_send.iface_status == IFACE_COOKING) {
+            g_send.buzzer_req = BUZZER_KEY_INVALID;
+            nav_show_invalid_hint();   /* 烹饪中:无效提示弹窗 */
+            uart_print();
+            break;
+        }
+        if (!menu_clean_key_allowed()) {
+            g_send.buzzer_req = BUZZER_KEY_INVALID;
             break;
         }
         if (is_probe_inserted()) {
@@ -4860,7 +4883,13 @@ static void process_key(uint8_t key)
                 break;
             }
         }
-        if (!menu_clean_key_allowed() || g_send.iface_status == IFACE_COOKING) {
+        if (g_send.iface_status == IFACE_COOKING) {
+            g_send.buzzer_req = BUZZER_KEY_INVALID;
+            nav_show_invalid_hint();   /* 烹饪中:无效提示弹窗 */
+            uart_print();
+            break;
+        }
+        if (!menu_clean_key_allowed()) {
             g_send.buzzer_req = BUZZER_KEY_INVALID;
             break;
         }
@@ -4897,9 +4926,23 @@ static void process_key(uint8_t key)
                 cur == PAGE_RISINGPAGE || cur == PAGE_DESCRIPTIONMENU ||
                 cur == PAGE_SIX_COOKING || cur == PAGE_TOASTCOLOR) {
                 g_send.buzzer_req = BUZZER_KEY_INVALID;   /* 防重入 */
+                /* 六感运行页(非遮罩确认态):与烹饪中行为一致,弹无效提示 */
+                if (cur == PAGE_SIX_COOKING && g_send.iface_status == IFACE_COOKING)
+                    nav_show_invalid_hint();
                 uart_print();
                 break;
             }
+        }
+        if (g_send.iface_status == IFACE_COOKING) {
+            g_send.buzzer_req = BUZZER_KEY_INVALID;
+            nav_show_invalid_hint();   /* 烹饪中:无效提示弹窗,不中止烹饪 */
+            uart_print();
+            break;
+        }
+        if (!menu_clean_key_allowed()) {
+            g_send.buzzer_req = BUZZER_KEY_INVALID;   /* 暂停态等非菜单页:防卫,与其他功能键一致 */
+            uart_print();
+            break;
         }
         if (is_probe_inserted()) {
             g_send.buzzer_req = BUZZER_KEY_INVALID;
@@ -4931,6 +4974,12 @@ static void process_key(uint8_t key)
         uart_print();
         break;
     case KEY_BACK:          // 21: 返回
+        if (nav_hint_active()) {
+            /* 无效提示弹窗中:BACK 直接结束提示恢复页面,不执行返回 */
+            nav_hint_cancel();
+            uart_print();
+            break;
+        }
         if (depth <= 1) {
             g_send.buzzer_req = BUZZER_KEY_INVALID;
             uart_print();

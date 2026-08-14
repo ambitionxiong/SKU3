@@ -85,7 +85,9 @@ static void six_cook_apply_display(void)
     lv_obj_add_flag(sc->container_1, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(sc->text1, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(sc->text2, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_clear_flag(sc->timelabel, LV_OBJ_FLAG_HIDDEN);
+    /* 提示激活期间不恢复 timelabel 显示(无效提示隐藏右侧元素,防被每秒刷新覆盖) */
+    if (!nav_hint_active())
+        lv_obj_clear_flag(sc->timelabel, LV_OBJ_FLAG_HIDDEN);
 
     lv_obj_t *bl = lv_obj_get_child(sc->stop, 0);
 
@@ -393,6 +395,21 @@ void jump_to_six_cooking(void)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[six_cook] jump: cooking (choice=%d)\n", g_rising_choice);
+}
+
+// 提示恢复后重放当前显示(供 nav_hint.c 调用)
+void six_cook_refresh_display(void)
+{
+    /* 地址复用场景下 current_group 可能误判,先校验页面对象有效再刷新 */
+    somecook_cooking_t *sc = somecook_cooking_get(&ui_manager);
+    if (sc && sc->obj && lv_obj_is_valid(sc->obj))
+        six_cook_apply_display();
+}
+
+// 六感是否处于遮罩确认态(供 nav_hint.c 判断不弹提示)
+int six_cook_is_overlay(void)
+{
+    return g_six_overlay;
 }
 
 // toastcolor next 确认:切到上色准备态(重建后显示)

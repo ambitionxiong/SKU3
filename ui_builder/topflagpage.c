@@ -71,6 +71,35 @@ void topflagpage_create(ui_manager_t *ui)
     lv_obj_set_style_img_opa(scr->light, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_pos(scr->light, 678, 24);
 
+    // Init scr->container_1 (同步自上机位:功能键无效提示遮罩,默认隐藏)
+    scr->container_1 = lv_obj_create(scr->obj);
+    lv_obj_set_pos(scr->container_1, 0, 0);
+    lv_obj_set_size(scr->container_1, 1280, 480);
+    lv_obj_set_scrollbar_mode(scr->container_1, LV_SCROLLBAR_MODE_OFF);
+    lv_obj_add_flag(scr->container_1, LV_OBJ_FLAG_HIDDEN);
+
+    // Set style of scr->container_1
+    lv_obj_set_style_bg_color(scr->container_1, lv_color_hex(0x060505), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(scr->container_1, 113, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(scr->container_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(scr->container_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(scr->container_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_right(scr->container_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_bottom(scr->container_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_left(scr->container_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // Init scr->tip1 (文字"烤箱运行时不可用。"默认隐藏)
+    scr->tip1 = lv_label_create(scr->obj);
+    lv_label_set_text(scr->tip1, "烤箱运行时不可用。");
+    lv_label_set_long_mode(scr->tip1, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->tip1, 885, 161);
+    lv_obj_set_size(scr->tip1, 275, 36);
+    lv_obj_add_flag(scr->tip1, LV_OBJ_FLAG_HIDDEN);
+
+    // Set style of scr->tip1
+    lv_obj_set_style_text_font(scr->tip1, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->tip1, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->tip1, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
 }
 

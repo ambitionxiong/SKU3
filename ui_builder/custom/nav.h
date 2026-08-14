@@ -622,12 +622,19 @@ void somecook_cooking_auto_pause(void);
 void somecook_cooking_next_step(void);
 void somecook_cooking_update_timer(somecook_cooking_t *sc);
 void on_somecook_sure_click(lv_event_t *e);
+void somecook_cooking_refresh(void);
+int somecook_cooking_is_stopback(void);
 
 /* 设置页（覆盖层，nav_screen_set.c 实现） */
 extern lv_group_t *g_screen_set;
 void jump_to_screen_set(void);
 void screen_set_back(void);
 void screen_set_reset(void);
+
+/* 功能键无效提示（nav_hint.c 实现） */
+void nav_show_invalid_hint(void);
+void nav_hint_cancel(void);
+int nav_hint_active(void);
 
 /* 第六感菜单（nav_sixmenu.c 实现） */
 extern lv_group_t *g_sixmenu;
@@ -653,6 +660,8 @@ void six_cook_handle_back(void);
 void six_cooking_rebuild(page_id_t child);
 void six_cook_goto_setup(void);
 void six_cook_reset(void);
+void six_cook_refresh_display(void);
+int six_cook_is_overlay(void);
 
 /* 第六感烤色选择（nav_toastcolor.c 实现） */
 extern lv_group_t *g_toastcolor;

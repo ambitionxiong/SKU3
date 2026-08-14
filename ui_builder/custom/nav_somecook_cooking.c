@@ -152,6 +152,21 @@ static void somecook_cooking_set_state(int state, int from)
     else if (state == SMC_COMPLETE) g_send.iface_status = IFACE_COMPLETE;
 }
 
+// 提示恢复后重放当前状态显隐(供 nav_hint.c 调用)
+void somecook_cooking_refresh(void)
+{
+    /* 地址复用场景下 current_group 可能误判,先校验页面对象有效再重放 */
+    somecook_cooking_t *sc = somecook_cooking_get(&ui_manager);
+    if (sc && sc->obj && lv_obj_is_valid(sc->obj))
+        somecook_cooking_set_state(g_somecook_state, g_somecook_from);
+}
+
+// 多段是否处于 stopback 遮罩确认态(供 nav_hint.c 判断不弹提示)
+int somecook_cooking_is_stopback(void)
+{
+    return g_somecook_state == SMC_STOPBACK;
+}
+
 // 取消/停止确认 → 回主菜单（清状态）
 static void somecook_cooking_exit(void)
 {

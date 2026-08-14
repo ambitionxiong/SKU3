@@ -33,12 +33,12 @@ void probetip_create(ui_manager_t *ui)
     lv_obj_t *button_1_label = lv_label_create(scr->button_1);
     lv_label_set_text(button_1_label, "探针已插入");
     lv_obj_align(button_1_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->button_1, 18, 73);
-    lv_obj_set_size(scr->button_1, 1243, 391);
+    lv_obj_set_pos(scr->button_1, 19, 113);
+    lv_obj_set_size(scr->button_1, 1243, 347);
 
     // Set style of scr->button_1
     lv_obj_set_style_bg_opa(scr->button_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->button_1, LVGL_IMAGE_PATH(div1button.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->button_1, LVGL_IMAGE_PATH(div1bg.png), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(scr->button_1, &c_taiwanpearl_regular_48, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->button_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->button_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
