@@ -277,6 +277,8 @@ typedef enum {
     PAGE_BREAD6MENU,        /* 第六感-面包 */
     PAGE_RISINGPAGE,        /* 第六感-是否发酵 */
     PAGE_DESCRIPTIONMENU,   /* 第六感-烹饪描述 */
+    PAGE_SIX_COOKING,       /* 第六感-运行页（复用 somecook_cooking UI） */
+    PAGE_TOASTCOLOR,        /* 第六感-烤色选择 */
 } page_id_t;
 
 extern page_id_t page_stack[];
@@ -641,6 +643,22 @@ void jump_to_risingpage(void);
 void risingpage_rebuild(page_id_t child);
 void jump_to_descriptionmenu(void);
 void descriptionmenu_rebuild(page_id_t child);
+
+/* 第六感运行（nav_six_cook.c 实现） */
+extern lv_group_t *g_six_cooking;
+extern uint8_t g_six_running;
+extern int g_six_color_min;   /* 烤色分钟 2/4/6 */
+void jump_to_six_cooking(void);
+void six_cook_handle_back(void);
+void six_cooking_rebuild(page_id_t child);
+void six_cook_goto_setup(void);
+void six_cook_reset(void);
+
+/* 第六感烤色选择（nav_toastcolor.c 实现） */
+extern lv_group_t *g_toastcolor;
+void jump_to_toastcolor(void);
+void toastcolor_rebuild(page_id_t child);
+void toastcolor_cycle(int dir);
 
 /* 多段烹饪步骤数据（nav_somecook.c 定义） */
 typedef struct {

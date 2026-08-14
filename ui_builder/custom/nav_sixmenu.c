@@ -18,6 +18,7 @@ static void on_sixmenu_bread_click(lv_event_t *e);
 static void on_bread6menu_breadroll_click(lv_event_t *e);
 static void on_rising_yes_click(lv_event_t *e);
 static void on_rising_no_click(lv_event_t *e);
+static void on_description_start_click(lv_event_t *e);
 
 /* ================= sixmenu ================= */
 
@@ -158,6 +159,7 @@ static void on_bread6menu_breadroll_click(lv_event_t *e)
 
 void jump_to_risingpage(void)
 {
+    g_rising_choice = -1;   /* 每次进入默认未选,焦点回"是" */
     page_push(PAGE_RISINGPAGE);
     lv_obj_clean(lv_scr_act());
     risingpage_create(&ui_manager);
@@ -274,7 +276,9 @@ void jump_to_descriptionmenu(void)
         if (g_descriptionmenu) lv_group_del(g_descriptionmenu);
         g_descriptionmenu = group_create_for_page(btns, n);
         clear_focus_states(btns, n);
-        /* start/delay：功能未实现，不绑事件 */
+
+        lv_obj_add_event_cb(dm->start, on_description_start_click, LV_EVENT_CLICKED, NULL);
+        /* delay：功能未实现，不绑事件 */
 
         lv_group_focus_obj(dm->start);
     }
@@ -302,6 +306,8 @@ void descriptionmenu_rebuild(page_id_t child)
         g_descriptionmenu = group_create_for_page(btns, n);
         clear_focus_states(btns, n);
 
+        lv_obj_add_event_cb(dm->start, on_description_start_click, LV_EVENT_CLICKED, NULL);
+
         lv_group_focus_obj(dm->start);
     }
     current_group = g_descriptionmenu;
@@ -310,4 +316,10 @@ void descriptionmenu_rebuild(page_id_t child)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[sixmenu] rebuild: descriptionmenu\n");
+}
+
+static void on_description_start_click(lv_event_t *e)
+{
+    if (screen_is_loading(lv_scr_act())) return;
+    jump_to_six_cooking();
 }

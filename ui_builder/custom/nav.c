@@ -1187,6 +1187,14 @@ void page_pop(void)
         descriptionmenu_rebuild(child);
         break;
 
+    case PAGE_SIX_COOKING:
+        six_cooking_rebuild(child);
+        break;
+
+    case PAGE_TOASTCOLOR:
+        toastcolor_rebuild(child);
+        break;
+
     case PAGE_UPDOWN_BBQ_MENU:
         updown_bbq_menu_create(&ui_manager);
         {
@@ -4711,10 +4719,14 @@ static void process_key(uint8_t key)
         uart_print();
         break;
     case KEY_EXTRA_COLOR:   // 5: 进入额外上色
-        if (depth > 0 && page_stack[depth - 1] == PAGE_SCREEN_SET) {
-            /* 设置页覆盖层打开:拦截,防止跳转销毁覆盖层(悬空+栈错乱) */
-            g_send.buzzer_req = BUZZER_KEY_INVALID;
-            break;
+        if (depth > 0) {
+            page_id_t cur = page_stack[depth - 1];
+            if (cur == PAGE_SCREEN_SET || cur == PAGE_SIX_COOKING ||
+                cur == PAGE_TOASTCOLOR) {
+                /* 设置页覆盖层/六感流程:拦截,防止跳转破坏流程 */
+                g_send.buzzer_req = BUZZER_KEY_INVALID;
+                break;
+            }
         }
         if (g_send.iface_status == IFACE_COMPLETE) {
             /* 完成状态：特定模式完成页可再次上色（进 extra_color 确认页） */
@@ -4813,7 +4825,8 @@ static void process_key(uint8_t key)
         if (depth > 0) {
             page_id_t cur = page_stack[depth - 1];
             if (cur == PAGE_SIXMENU || cur == PAGE_BREAD6MENU ||
-                cur == PAGE_RISINGPAGE || cur == PAGE_DESCRIPTIONMENU) {
+                cur == PAGE_RISINGPAGE || cur == PAGE_DESCRIPTIONMENU ||
+                cur == PAGE_SIX_COOKING || cur == PAGE_TOASTCOLOR) {
                 g_send.buzzer_req = BUZZER_KEY_INVALID;   /* 防重入 */
                 uart_print();
                 break;
@@ -4983,6 +4996,9 @@ static void process_key(uint8_t key)
             }
             else if (cur == PAGE_SOMECOOK_COOKING) {
                 somecook_cooking_handle_back();
+            }
+            else if (cur == PAGE_SIX_COOKING) {
+                six_cook_handle_back();
             }
             else if (cur == PAGE_SCREEN_SET) {
                 screen_set_back();
@@ -5196,6 +5212,17 @@ static void process_key(uint8_t key)
             uart_print();
             break;
         }
+        if (current_group == g_toastcolor) {
+            lv_obj_t *df = lv_group_get_focused(current_group);
+            toastcolor_t *tc = toastcolor_get(&ui_manager);
+            if (tc && df != tc->degree)
+                lv_group_focus_obj(tc->degree);   /* 第一次转动:仅移焦点,不切程度 */
+            else
+                toastcolor_cycle(+1);
+            g_send.buzzer_req = BUZZER_ENCODER;
+            uart_print();
+            break;
+        }
         if (current_group == g_delayset) {
             lv_obj_t *df = lv_group_get_focused(current_group);
             delayset_t *ds = delayset_get(&ui_manager);
@@ -5300,6 +5327,17 @@ static void process_key(uint8_t key)
 #endif
         if (!current_group) {
             g_send.buzzer_req = BUZZER_KEY_INVALID;
+            uart_print();
+            break;
+        }
+        if (current_group == g_toastcolor) {
+            lv_obj_t *df = lv_group_get_focused(current_group);
+            toastcolor_t *tc = toastcolor_get(&ui_manager);
+            if (tc && df != tc->degree)
+                lv_group_focus_obj(tc->degree);   /* 第一次转动:仅移焦点,不切程度 */
+            else
+                toastcolor_cycle(-1);
+            g_send.buzzer_req = BUZZER_ENCODER;
             uart_print();
             break;
         }
@@ -5895,6 +5933,17 @@ static void process_key(uint8_t key)
             uart_print();
             break;
         }
+        if (current_group == g_toastcolor) {
+            lv_obj_t *df = lv_group_get_focused(current_group);
+            toastcolor_t *tc = toastcolor_get(&ui_manager);
+            if (tc && df == tc->degree) {
+                g_send.buzzer_req = BUZZER_KEY_VALID;
+                lv_group_focus_obj(tc->next);   /* 确定:切到下一焦点(FOCUSED 触发 line 隐藏) */
+                uart_print();
+                break;
+            }
+            /* next:放行通用逻辑(点击 → 回上色准备态) */
+        }
         lv_obj_t *focused = lv_group_get_focused(current_group);
         edit_field_t *ef = find_edit_field(focused);
         if (ef) {
@@ -5937,6 +5986,7 @@ void nav_key1_long_press(void)
     g_delay_target = -1;
     g_somecook_running = 0;
     g_somecook_run_idx = 0;
+    six_cook_reset();   /* 六感运行:清理状态(定时器已由上面 cook_timer 删除覆盖) */
     set_temp = 180; set_temp_up = 180; set_temp_down = 180; set_hour = 0; set_min = 30;
     g_send.cook_mode = MODE_NONE;
     g_send.set_temp = 0;
@@ -8886,6 +8936,7 @@ static void system_timer_cb(lv_timer_t *timer)
     g_delay_cancel_btn = 0;
     g_somecook_running = 0;
     g_somecook_run_idx = 0;
+    six_cook_reset();   /* 六感运行:清理状态 */
     probe_target_temp = 80;
     g_send.iface_status = IFACE_STANDBY;
     g_send.cook_mode = MODE_NONE;
