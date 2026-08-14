@@ -4770,14 +4770,40 @@ static void process_key(uint8_t key)
         uart_print();
         break;
         }
-        /* 非完成状态：进入限制与 MENU/CLEAN 相同（白名单页面），进入额外上色设置页 */
+        /* 非完成状态:重置栈式功能键入口(与其他功能键一致,返回回待机页;不拦截探针) */
+        if (depth > 0) {
+            page_id_t cur = page_stack[depth - 1];
+            if (cur == PAGE_COLOR_MENU || cur == PAGE_EXTRA_COLOR ||
+                cur == PAGE_COLOR_COOKING || cur == PAGE_COLOR_STOP ||
+                cur == PAGE_COLOR_STOP_BACK || cur == PAGE_COLOR_COOKING_COMPLETE) {
+                g_send.buzzer_req = BUZZER_KEY_INVALID;   /* 防重入 */
+                uart_print();
+                break;
+            }
+        }
         if (!menu_clean_key_allowed() || g_send.iface_status == IFACE_COOKING) {
             g_send.buzzer_req = BUZZER_KEY_INVALID;
             uart_print();
             break;
         }
         g_send.buzzer_req = BUZZER_KEY_VALID;
+        if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
+        g_on_stop_back = 0;
+        g_complete_to_stop_back = 0;
+        g_cooling_to_stop_back = 0;
+        g_extra_color_to_stop_back = 0;
+        g_keepwarm_active = 0;
+        g_keepwarm_sec = 0;
+        cook_is_color = 0;
+        g_stop_back_complete = NULL;
+        g_somecook_running = 0;
+        g_somecook_run_idx = 0;
+        six_cook_reset();
+        depth = 0;
+        page_push(PAGE_WAITMENU_24);
         jump_to_color_menu();
+        g_send.iface_status = IFACE_SETTING;
+        g_send.remaining_ms = -1;
         uart_print();
         break;
     case KEY_CLEAN:         // 7: 进入清洁菜单
@@ -4821,6 +4847,47 @@ static void process_key(uint8_t key)
         }
         g_send.buzzer_req = BUZZER_KEY_VALID;
         jump_to_screen_set();
+        uart_print();
+        break;
+    case KEY_PREHEAT:       // 4: 进入快速预热
+        if (depth > 0) {
+            page_id_t cur = page_stack[depth - 1];
+            if (cur == PAGE_PREHEAT_MENU || cur == PAGE_PREHEAT_COOKING ||
+                cur == PAGE_PREHEAT_STOP || cur == PAGE_PREHEAT_STOP_BACK ||
+                cur == PAGE_PREHEAT_COMPLETE) {
+                g_send.buzzer_req = BUZZER_KEY_INVALID;   /* 防重入 */
+                uart_print();
+                break;
+            }
+        }
+        if (!menu_clean_key_allowed() || g_send.iface_status == IFACE_COOKING) {
+            g_send.buzzer_req = BUZZER_KEY_INVALID;
+            break;
+        }
+        if (is_probe_inserted()) {
+            g_send.buzzer_req = BUZZER_KEY_INVALID;
+            break;
+        }
+        g_send.buzzer_req = BUZZER_KEY_VALID;
+        if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
+        g_on_stop_back = 0;
+        g_complete_to_stop_back = 0;
+        g_delay_cancel_to_stop_back = 0;
+        g_delay_cancel_btn = 0;
+        g_keepwarm_active = 0;
+        g_keepwarm_sec = 0;
+        delay_on = 0;
+        contain_on = 0;
+        preheat_on = 0;
+        g_stop_back_complete = NULL;
+        g_somecook_running = 0;
+        g_somecook_run_idx = 0;
+        six_cook_reset();
+        depth = 0;
+        page_push(PAGE_WAITMENU_24);
+        jump_to_preheat_menu();
+        g_send.iface_status = IFACE_SETTING;
+        g_send.remaining_ms = -1;
         uart_print();
         break;
     case KEY_SIXMENU:       // 2: 进入第六感菜单

@@ -2,6 +2,7 @@
 #include "protocol.h"
 
 static uint8_t g_preheat_solo;   /* 单独进入预热(来源 preheat_menu)标志 */
+static uint8_t g_preheat_fast = 0;   /* 按键4快速预热入口标志 */
 
 // 预热进度：以进入 cooking 时的起始腔温为 13 基准，线性映射到目标温度 100
 static int preheat_progress(void)
@@ -98,7 +99,9 @@ static void preheat_apply_mode_ui(lv_obj_t *icon, lv_obj_t *status)
         txt = "| 保温 |";
         break;
     default:
-        // 预热菜单入口（MODE_PREHEAT）保持默认
+        /* 预热菜单入口（MODE_PREHEAT）:仅按键4入口显示"快速预热",cookmenu 入口保持"| 预热 |" */
+        if (g_preheat_fast && status)
+            lv_label_set_text(status, "| 快速预热 |");
         return;
     }
     if (status) lv_label_set_text(status, txt);
@@ -140,7 +143,12 @@ static void on_preheat_stop_back_sure_click(lv_event_t *e)
     g_send.set_temp = 0;
     g_send.set_temp_lower = 0;
     g_send.remaining_ms = -1;
-    depth = 2;
+    g_stop_back_complete = NULL;
+    preheat_start_cavity = 0;
+    /* 显式重置栈(按键4入口栈[1]是 PREHEAT_MENU,不能 depth=2 截栈) */
+    depth = 0;
+    page_push(PAGE_WAITMENU_24);
+    page_push(PAGE_MAJOR_MENU);
     lv_obj_clean(lv_scr_act());
     major_menu_create(&ui_manager);
     groups_create();
@@ -194,13 +202,42 @@ static void on_preheat_complete_sure_click(lv_event_t *e)
 void preheat_complete_exit(void)
 {
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
-    set_temp = 180;
-    depth = 2;
-    jump_to_cookmenu();
+    g_on_stop_back = 0;
+    g_stop_back_complete = NULL;
+    preheat_wait_door = 0;
+    preheat_start_cavity = 0;
+    g_keepwarm_active = 0;
+    g_keepwarm_sec = 0;
+    set_temp = 180; set_temp_up = 180; set_temp_down = 180; set_hour = 0; set_min = 30;
+    cook_elapsed_saved = 0; cook_bar_saved = 0; cook_total_ms = 0; cook_start_time = 0;
+    g_send.iface_status = IFACE_SETTING;
+    g_send.cook_mode = MODE_NONE;
+    g_send.cook_flag = 0;
+    g_send.set_temp = 0; g_send.set_temp_lower = 0; g_send.remaining_ms = -1;
+    if (g_preheat_fast) {
+        /* 按键4入口栈[1]是 PREHEAT_MENU,显式重置为 [WAITMENU, MAJOR_MENU] 再显示主菜单 */
+        depth = 0;
+        page_push(PAGE_WAITMENU_24);
+        page_push(PAGE_MAJOR_MENU);
+        lv_obj_clean(lv_scr_act());
+        major_menu_create(&ui_manager);
+        groups_create();
+        bind_events();
+        current_group = g_major_menu;
+        lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
+                         LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                         ui_manager.auto_del);
+        printf("[nav_preheat] complete exit -> major_menu\n");
+    } else {
+        /* cookmenu 入口:回 cookmenu(栈[1]=MAJOR_MENU,depth=2 截栈正确) */
+        depth = 2;
+        jump_to_cookmenu();
+    }
 }
 
 void jump_to_preheat_menu(void)
 {
+    g_preheat_fast = (depth <= 2);   /* 按键4入口(depth=1)vs cookmenu 入口(depth=3),须在 push 前判断 */
     g_send.cook_mode = MODE_PREHEAT;
     g_send.cook_flag = 1;
     set_temp = 180;   /* 单独进入预热:重置默认温度(预热无时间概念) */
@@ -211,6 +248,7 @@ void jump_to_preheat_menu(void)
 
     preheatmenu_t *menu = preheatmenu_get(&ui_manager);
     if (menu) {
+        if (g_preheat_fast) lv_label_set_text(menu->label_69, "快速预热");
         lv_obj_t *btns[] = { menu->temp, menu->next };
         if (g_preheat_menu) lv_group_del(g_preheat_menu);
         g_preheat_menu = group_create_for_page(btns, 2);
@@ -273,6 +311,7 @@ void jump_to_preheat_cooking(void)
                             LV_EVENT_CLICKED, NULL);
 
         lv_label_set_text_fmt(cook->temp, "%d℃", set_temp);
+        lv_label_set_text(cook->name, "预热中...");
         preheat_apply_mode_ui(cook->icon, cook->status);
         preheat_update_bar(cook->bar_1, cook->bartemp);
     }
@@ -345,6 +384,7 @@ void preheat_resume_cooking(void)
                             LV_EVENT_CLICKED, NULL);
 
         lv_label_set_text_fmt(cook->temp, "%d℃", set_temp);
+        lv_label_set_text(cook->name, "预热中...");
         preheat_apply_mode_ui(cook->icon, cook->status);
         preheat_update_bar(cook->bar_1, cook->bartemp);
     }
@@ -482,6 +522,7 @@ void jump_to_preheat_complete(void)
             lv_obj_add_event_cb(cook->sure, on_preheat_complete_sure_click,
                                 LV_EVENT_CLICKED, NULL);
             lv_bar_set_value(cook->bar_3, 100, LV_ANIM_OFF);
+            lv_label_set_text(cook->name, "预热完成");
             preheat_apply_mode_ui(cook->icon, cook->status);
             if (cook->bartemp) {
                 lv_label_set_text_fmt(cook->bartemp, "%d℃", set_temp);
@@ -510,6 +551,7 @@ void preheat_rebuild_menu(page_id_t child)
     preheatmenu_create(&ui_manager);
     preheatmenu_t *menu = preheatmenu_get(&ui_manager);
     if (menu) {
+        if (g_preheat_fast) lv_label_set_text(menu->label_69, "快速预热");
         lv_obj_t *btns[] = { menu->temp, menu->next };
         if (g_preheat_menu) lv_group_del(g_preheat_menu);
         g_preheat_menu = group_create_for_page(btns, 2);
@@ -556,6 +598,7 @@ void preheat_rebuild_cooking(void)
                             LV_EVENT_CLICKED, NULL);
 
         lv_label_set_text_fmt(cook->temp, "%d℃", set_temp);
+        lv_label_set_text(cook->name, "预热中...");
         preheat_apply_mode_ui(cook->icon, cook->status);
         preheat_update_bar(cook->bar_1, cook->bartemp);
     }
@@ -603,6 +646,7 @@ void preheat_rebuild_complete(void)
             lv_obj_add_event_cb(cook->sure, on_preheat_complete_sure_click,
                                 LV_EVENT_CLICKED, NULL);
             lv_bar_set_value(cook->bar_3, 100, LV_ANIM_OFF);
+            lv_label_set_text(cook->name, "预热完成");
             preheat_apply_mode_ui(cook->icon, cook->status);
             if (cook->bartemp) {
                 lv_label_set_text_fmt(cook->bartemp, "%d℃", set_temp);

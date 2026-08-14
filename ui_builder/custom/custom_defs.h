@@ -29,6 +29,7 @@ typedef enum {
 #define KEY1                  1    // 开关机键（长按触发省电）
 #define KEY_SIXMENU           2    // 进入第六感菜单
 #define KEY_MENU              3    // 进入主菜单
+#define KEY_PREHEAT           4    // 进入快速预热
 #define KEY_EXTRA_COLOR       5    // 进入额外上色
 #define KEY_CLEAN             7    // 进入清洁菜单
 #define KEY_SET               11   // 进入设置页（覆盖层，任何状态可进）
