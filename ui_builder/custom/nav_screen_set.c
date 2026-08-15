@@ -89,16 +89,14 @@ void screen_set_back(void)
     printf("[screen_set] back (restore prev)\n");
 }
 
-// 外部路径（长按关机/探针插入等重置页面）调用：清理覆盖层对象/组/焦点指针,防悬空 UAF
+// 外部路径（长按关机/探针插入/功能键弹栈等重置页面）调用：清理覆盖层对象/焦点指针,防悬空 UAF
+// 注意:保留 g_screen_set 组不删——current_group 可能仍指向它,删组会悬空;
+//       对象删除后组自动清空(空组安全),下次 jump_to_screen_set 会 lv_group_del 清理
 void screen_set_reset(void)
 {
     if (screen_SET.obj) {
         lv_obj_del(screen_SET.obj);
         screen_SET.obj = NULL;
-    }
-    if (g_screen_set) {
-        lv_group_del(g_screen_set);
-        g_screen_set = NULL;
     }
     s_prev_group = NULL;
 }

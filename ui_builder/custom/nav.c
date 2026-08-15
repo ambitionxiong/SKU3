@@ -4669,6 +4669,33 @@ static int menu_clean_key_allowed(void)
     }
 }
 
+/* 设置页下层页面是否允许功能键跳转(与各 case 内白名单/防重入/拦截一致) */
+static int screen_set_key_allowed(page_id_t below, uint8_t key)
+{
+    switch (below) {   /* 菜单白名单(与 menu_clean_key_allowed 同列表) */
+    case PAGE_WAITMENU_24: case PAGE_PROBETIP: case PAGE_MAJOR_MENU:
+    case PAGE_MAJOR_MENU_TZ: case PAGE_COOKMENU: case PAGE_COOK_MENU_TZ:
+    case PAGE_SPECIAL_MENU: case PAGE_SPECIAL_MENU_TZ: case PAGE_COOK4_MENU:
+    case PAGE_FROZEN_COOK: case PAGE_CLEAN_MENU: case PAGE_HOTCLEAN_MENU:
+    case PAGE_SIXMENU: case PAGE_BREAD6MENU:
+        break;
+    default:
+        return 0;
+    }
+    /* 各键专属防重入/拦截 */
+    if (key == KEY_MENU && (below == PAGE_MAJOR_MENU || below == PAGE_MAJOR_MENU_TZ)) return 0;
+    if (key == KEY_CLEAN && below == PAGE_CLEAN_MENU) return 0;
+    if (key == KEY_SIXMENU && (below == PAGE_SIXMENU || below == PAGE_BREAD6MENU ||
+        below == PAGE_RISINGPAGE || below == PAGE_DESCRIPTIONMENU ||
+        below == PAGE_SIX_COOKING || below == PAGE_TOASTCOLOR)) return 0;
+    if (key == KEY_PREHEAT && (below == PAGE_PREHEAT_MENU || below == PAGE_PREHEAT_COOKING ||
+        below == PAGE_PREHEAT_STOP || below == PAGE_PREHEAT_STOP_BACK ||
+        below == PAGE_PREHEAT_COMPLETE)) return 0;
+    if (key == KEY_EXTRA_COLOR && (below == PAGE_SCREEN_SET ||
+        below == PAGE_SIX_COOKING || below == PAGE_TOASTCOLOR)) return 0;
+    return 1;
+}
+
 static void process_key(uint8_t key)
 {
     if (g_send.iface_status == IFACE_SLEEP) return;
@@ -4679,6 +4706,22 @@ static void process_key(uint8_t key)
     /* 探针提示页:仅 BACK 有效(probetip_dismiss_now 提前结束),功能键静默忽略 */
     if (depth > 0 && page_stack[depth - 1] == PAGE_PROBETIP && key != KEY_BACK)
         return;
+    /* 设置页覆盖层打开时按功能键:
+       - 下层运行态(烹饪/暂停)或下层不允许该键 → 防御:无效音,设置页保持
+       - 下层允许该键(菜单页) → 关闭设置页 + 弹栈,按下层正常跳转 */
+    if (depth > 1 && page_stack[depth - 1] == PAGE_SCREEN_SET &&
+        (key == KEY_MENU || key == KEY_SIXMENU || key == KEY_PREHEAT ||
+         key == KEY_EXTRA_COLOR || key == KEY_CLEAN)) {
+        if (g_send.iface_status == IFACE_COOKING || g_send.iface_status == IFACE_PAUSE ||
+            g_send.iface_status == IFACE_COMPLETE ||
+            !screen_set_key_allowed(page_stack[depth - 2], key)) {
+            g_send.buzzer_req = BUZZER_KEY_INVALID;   /* 防御:设置页不关 */
+            return;
+        }
+        screen_set_reset();   /* 清覆盖层对象/指针,防悬空 */
+        depth--;              /* 弹掉 PAGE_SCREEN_SET,栈顶恢复下层页面 */
+        topflag_update_visibility();   /* 与 page_pop 一致刷新 topflag 显隐 */
+    }
     uart_data_receive[Receive_data_Touch_Key] = 0;
 
     switch (key) {
