@@ -794,7 +794,7 @@ void validate_constraints(void)
 
     /* 根据 hour 动态调整 minute 的循环范围 */
     if (set_hour == 0) {
-        min_field->min = 1;    // hour=0时，最少1分钟（调试用）
+        min_field->min = 5;    // hour=0时，最少5分钟
         min_field->max = 59;
     } else if (set_hour == max_h) {
         min_field->min = 0;    // 最大小时时 minute 不可调
@@ -4520,7 +4520,7 @@ static void jump_to_color_cookoing(void)
     }
 
     /* 启动进度条动画 */
-    cook_total_ms = 1 * 60 * 1000;
+    cook_total_ms = 5 * 60 * 1000;
     if (cc) {
         lv_anim_t a;
         lv_anim_init(&a);
@@ -4675,6 +4675,9 @@ static void process_key(uint8_t key)
     /* 无效提示弹窗:仅 BACK 有效(KEY_BACK 分支关闭弹窗);长按关机由
        nav_handle_key 独立检测不受影响;其余键静默忽略,避免主动操作 */
     if (nav_hint_active() && key != KEY_BACK)
+        return;
+    /* 探针提示页:仅 BACK 有效(probetip_dismiss_now 提前结束),功能键静默忽略 */
+    if (depth > 0 && page_stack[depth - 1] == PAGE_PROBETIP && key != KEY_BACK)
         return;
     uart_data_receive[Receive_data_Touch_Key] = 0;
 
@@ -4895,6 +4898,8 @@ static void process_key(uint8_t key)
         }
         if (is_probe_inserted()) {
             g_send.buzzer_req = BUZZER_KEY_INVALID;
+            if (depth > 0 && page_stack[depth - 1] != PAGE_PROBETIP)
+                jump_to_probetip("该功能不支持探针，请拔出探针！");   /* 与 KEY_CLEAN 一致 */
             break;
         }
         g_send.buzzer_req = BUZZER_KEY_VALID;
@@ -5117,6 +5122,9 @@ static void process_key(uint8_t key)
             }
             else if (cur == PAGE_SIX_COOKING) {
                 six_cook_handle_back();
+            }
+            else if (cur == PAGE_PROBETIP) {
+                probetip_dismiss_now();   /* 探针提示:BACK 提前结束(恢复 iface + 回 prev) */
             }
             else if (cur == PAGE_SCREEN_SET) {
                 screen_set_back();
@@ -6957,7 +6965,7 @@ static void rebuild_delaycooking(void)
 
         if (g_delay_source_page == PAGE_DESCRIPTIONMENU) {
             /* 六感:status 显示模式+时间,icon 用 sixicon(与运行页一致) */
-            lv_label_set_text_fmt(dc->status, "| 面包卷 | %d分钟", 1);
+            lv_label_set_text_fmt(dc->status, "| 面包卷 | %d分钟", 20);
             lv_img_set_src(dc->icon, LVGL_IMAGE_PATH(sixicon.png));
             lv_obj_set_pos(dc->icon, 163, 161);
         } else if (g_delay_source_page == PAGE_UPDOWN_BBQ_SET_PROBE ||
@@ -8440,7 +8448,7 @@ static void jump_to_updown_bbq_stop_back(void)
             lv_label_set_text(back->label_8, "预约中...");
             if (g_delay_source_page == PAGE_DESCRIPTIONMENU) {
                 /* 六感:status/图标/位置与六感运行页一致 */
-                lv_label_set_text_fmt(back->statu_label, "| 面包卷 | %d分钟", 1);
+                lv_label_set_text_fmt(back->statu_label, "| 面包卷 | %d分钟", 20);
                 lv_img_set_src(back->image_7, LVGL_IMAGE_PATH(sixicon.png));
                 lv_obj_set_pos(back->image_7, 163, 161);
             }

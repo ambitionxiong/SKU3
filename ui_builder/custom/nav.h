@@ -565,6 +565,7 @@ void slowcook_probe_rebuild_complete(void);
 void jump_to_probetip(const char *text);
 void probetip_rebuild(page_id_t child);
 void probetip_cancel_auto_dismiss(void);
+void probetip_dismiss_now(void);
 void jump_to_major_menu_tz(void);
 void jump_to_cook_menu_tz(void);
 void jump_to_special_menu_tz(void);

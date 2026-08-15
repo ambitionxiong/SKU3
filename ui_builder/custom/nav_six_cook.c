@@ -26,8 +26,8 @@ static uint8_t g_six_overlay = 0;   /* 遮罩确认态 */
 static uint8_t g_six_from = SIX_PHASE_COOKING;  /* 遮罩进入源 */
 static uint8_t g_six_has_rising = 0;   /* 是否有发酵段 */
 
-#define SIX_RISING_SEC     (1 * 60)
-#define SIX_COOKING_SEC    (1 * 60)
+#define SIX_RISING_SEC     (45 * 60)
+#define SIX_COOKING_SEC    (20 * 60)
 #define SIX_TOTAL_SEC      (SIX_RISING_SEC + SIX_COOKING_SEC)
 
 static void six_cook_apply_display(void);
@@ -94,17 +94,18 @@ static void six_cook_apply_display(void)
     switch (g_six_phase) {
     case SIX_PHASE_RISING:
         lv_label_set_text(sc->cookstatus, g_six_paused ? "暂停中..." : "发酵中...");
-        lv_label_set_text(sc->label_12, "| 面包卷 | 45℃ | 1分钟");
+        lv_label_set_text(sc->label_12, "| 面包卷 | 45℃ | 45分钟");
         if (bl) lv_label_set_text(bl, g_six_paused ? "开 始" : "暂 停");
         break;
     case SIX_PHASE_COOKING:
         lv_label_set_text(sc->cookstatus, g_six_paused ? "暂停中..." : "烹饪中...");
-        lv_label_set_text(sc->label_12, "| 面包卷 | 1分钟");
+        lv_label_set_text(sc->label_12, "| 面包卷 | 20分钟");
         if (bl) lv_label_set_text(bl, g_six_paused ? "开 始" : "暂 停");
         break;
     case SIX_PHASE_ASK:
     case SIX_PHASE_ASK_COLOR:
         lv_obj_add_flag(sc->timelabel, LV_OBJ_FLAG_HIDDEN);
+        lv_label_set_text(sc->label_12, "| 面包卷 | 20分钟");   /* 完成询问态保持最后烹饪信息 */
         lv_label_set_text(sc->cookstatus, "已完成");
         if (g_six_phase == SIX_PHASE_ASK) {
             lv_label_set_text(sc->text1, "请问需要增加");
@@ -197,13 +198,13 @@ static void six_cook_set_phase(int phase)
     case SIX_PHASE_COLOR_SETUP:
         g_send.cook_mode = MODE_UPDOWN_BBQ;   /* 烤色阶段保持前面模式,不发 color */
         g_send.set_temp = 160;
-        g_send.set_temp_lower = 0;
+        g_send.set_temp_lower = 160;   /* 额外上色上下温都发(与烹饪阶段一致) */
         /* iface_status 不设:保持完成状态(尚未开始烹饪) */
         break;
     case SIX_PHASE_COLOR_COOKING:
         g_send.cook_mode = MODE_UPDOWN_BBQ;
         g_send.set_temp = 160;
-        g_send.set_temp_lower = 0;
+        g_send.set_temp_lower = 160;   /* 额外上色上下温都发 */
         g_send.iface_status = IFACE_COOKING;   /* 点"开 始"后才发烹饪状态 */
         break;
     case SIX_PHASE_ASK:
@@ -232,6 +233,7 @@ static void six_cook_timer_cb(lv_timer_t *timer)
         cook_elapsed_saved = lv_tick_get() - cook_start_time;
         if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
         g_six_paused = 1;
+        g_send.iface_status = IFACE_PAUSE;   /* 门开自动暂停发暂停状态 */
         six_cook_apply_display();
         printf("[six_cook] door open -> auto pause\n");
         return;
@@ -276,6 +278,7 @@ static void on_six_stop_click(lv_event_t *e)
             cook_elapsed_saved = lv_tick_get() - cook_start_time;
             if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
             g_six_paused = 1;
+            g_send.iface_status = IFACE_PAUSE;   /* 暂停发暂停状态(与其他模式一致) */
             six_cook_apply_display();
         } else {
             /* 门开:无效音,不恢复(与其他模式一致) */
@@ -286,6 +289,7 @@ static void on_six_stop_click(lv_event_t *e)
             cook_start_time = lv_tick_get() - cook_elapsed_saved;
             cook_elapsed_saved = 0;
             g_six_paused = 0;
+            g_send.iface_status = IFACE_COOKING;   /* 恢复发烹饪状态 */
             if (cook_timer) lv_timer_del(cook_timer);
             cook_timer = lv_timer_create(six_cook_timer_cb, 1000, NULL);
             six_cook_apply_display();
@@ -422,7 +426,7 @@ void six_cook_goto_setup(void)
     g_six_phase = SIX_PHASE_COLOR_SETUP;
     g_send.cook_mode = MODE_UPDOWN_BBQ;   /* 保持前面模式,不发 color */
     g_send.set_temp = 160;
-    g_send.set_temp_lower = 0;
+    g_send.set_temp_lower = 160;   /* 额外上色上下温都发 */
     /* iface_status 不设:保持完成状态,点"开 始"后才发烹饪状态 */
 }
 

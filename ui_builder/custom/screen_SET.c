@@ -452,6 +452,7 @@ void screen_SET_create(ui_manager_t *ui)
     // Set style of scr->TS_Lb
     lv_obj_set_style_text_font(scr->TS_Lb, &c_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->TS_Lb, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(scr->TS_Lb, 30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->TS_Lb, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_opa(scr->TS_Lb, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_opa(scr->TS_Lb, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -466,6 +467,7 @@ void screen_SET_create(ui_manager_t *ui)
     // Set style of scr->ZDBW_Lb
     lv_obj_set_style_text_font(scr->ZDBW_Lb, &c_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->ZDBW_Lb, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(scr->ZDBW_Lb, 30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->ZDBW_Lb, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_opa(scr->ZDBW_Lb, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_opa(scr->ZDBW_Lb, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -480,6 +482,7 @@ void screen_SET_create(ui_manager_t *ui)
     // Set style of scr->Six_Lb
     lv_obj_set_style_text_font(scr->Six_Lb, &c_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->Six_Lb, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(scr->Six_Lb, 30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->Six_Lb, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_opa(scr->Six_Lb, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_opa(scr->Six_Lb, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -494,6 +497,7 @@ void screen_SET_create(ui_manager_t *ui)
     // Set style of scr->WDDW_Lb
     lv_obj_set_style_text_font(scr->WDDW_Lb, &c_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->WDDW_Lb, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(scr->WDDW_Lb, 30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->WDDW_Lb, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_opa(scr->WDDW_Lb, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_opa(scr->WDDW_Lb, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -508,6 +512,7 @@ void screen_SET_create(ui_manager_t *ui)
     // Set style of scr->YY_Lb
     lv_obj_set_style_text_font(scr->YY_Lb, &c_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->YY_Lb, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(scr->YY_Lb, 30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->YY_Lb, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_opa(scr->YY_Lb, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_opa(scr->YY_Lb, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -522,6 +527,7 @@ void screen_SET_create(ui_manager_t *ui)
     // Set style of scr->Power_Lb
     lv_obj_set_style_text_font(scr->Power_Lb, &c_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->Power_Lb, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(scr->Power_Lb, 30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->Power_Lb, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_opa(scr->Power_Lb, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_opa(scr->Power_Lb, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -536,6 +542,7 @@ void screen_SET_create(ui_manager_t *ui)
     // Set style of scr->Demo_Lb
     lv_obj_set_style_text_font(scr->Demo_Lb, &c_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->Demo_Lb, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(scr->Demo_Lb, 30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->Demo_Lb, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_opa(scr->Demo_Lb, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_opa(scr->Demo_Lb, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
