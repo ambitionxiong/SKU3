@@ -182,6 +182,10 @@ void stepset_on_focus(lv_event_t *e)
         lv_obj_clear_flag(scr->minline, LV_OBJ_FLAG_HIDDEN);
     }
     /* next：全部隐藏 */
+
+    /* 整屏强制重绘，彻底清除真机显示缓冲区残留 */
+    if (lv_scr_act())
+        lv_obj_invalidate(lv_scr_act());
 }
 
 // 大类切换：更新子类选项（步骤 2/3 去掉发酵/解冻）+ 应用模式
@@ -209,8 +213,25 @@ void stepset_bind_events(void)
 {
     stepset_t *scr = stepset_get(&ui_manager);
     if (!scr || !scr->roller_main) return;
+    /* 先移除旧回调防重复累积(stepset_bind_events 每次进入页面都会调用) */
+    lv_obj_remove_event_cb(scr->roller_main, stepset_on_main_change);
+    lv_obj_remove_event_cb(scr->roller_mode, stepset_on_mode_change);
+    lv_obj_remove_event_cb(scr->roller_main, stepset_on_focus);
+    lv_obj_remove_event_cb(scr->roller_mode, stepset_on_focus);
+    lv_obj_remove_event_cb(scr->temp, stepset_on_focus);
+    lv_obj_remove_event_cb(scr->hour, stepset_on_focus);
+    lv_obj_remove_event_cb(scr->min, stepset_on_focus);
+    lv_obj_remove_event_cb(scr->next, stepset_on_focus);
+
     lv_obj_add_event_cb(scr->roller_main, stepset_on_main_change,
                         LV_EVENT_VALUE_CHANGED, scr);
     lv_obj_add_event_cb(scr->roller_mode, stepset_on_mode_change,
                         LV_EVENT_VALUE_CHANGED, scr);
+    /* 焦点切换时刷新 line 显隐(与 updown_bbq_menu 一致) */
+    lv_obj_add_event_cb(scr->roller_main, stepset_on_focus, LV_EVENT_FOCUSED, NULL);
+    lv_obj_add_event_cb(scr->roller_mode, stepset_on_focus, LV_EVENT_FOCUSED, NULL);
+    lv_obj_add_event_cb(scr->temp, stepset_on_focus, LV_EVENT_FOCUSED, NULL);
+    lv_obj_add_event_cb(scr->hour, stepset_on_focus, LV_EVENT_FOCUSED, NULL);
+    lv_obj_add_event_cb(scr->min, stepset_on_focus, LV_EVENT_FOCUSED, NULL);
+    lv_obj_add_event_cb(scr->next, stepset_on_focus, LV_EVENT_FOCUSED, NULL);
 }

@@ -127,7 +127,7 @@ void delayset_create(ui_manager_t *ui)
     scr->name = lv_label_create(scr->obj);
     lv_label_set_text(scr->name, "上下烧烤");
     lv_label_set_long_mode(scr->name, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->name, 24, 25);
+    lv_obj_set_pos(scr->name, 24, 24);
     lv_obj_set_size(scr->name, 144, 32);
 
     // Set style of scr->name

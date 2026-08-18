@@ -33,7 +33,7 @@ static void on_toastcolor_focus(lv_event_t *e)
 static void on_toastcolor_next_click(lv_event_t *e)
 {
     if (screen_is_loading(lv_scr_act())) return;
-    g_six_color_min = s_toast_color == 1 ? 2 : s_toast_color == 3 ? 6 : 4;
+    g_six_color_min = six_bread_color_min(s_toast_color);   /* 1浅 2中 3深,按菜查表 */
     six_cook_goto_setup();   /* 重建后显示上色准备态 */
     /* 回运行页:弹 toastcolor */
     page_pop();
@@ -47,6 +47,8 @@ void jump_to_toastcolor(void)
 
     toastcolor_t *tc = toastcolor_get(&ui_manager);
     if (tc) {
+        if (tc->label_24)
+            lv_label_set_text(tc->label_24, six_bread_name());   /* 左上角菜名 */
         /* 焦点组:degree(档位设置) + next */
         lv_obj_t *btns[] = { tc->degree, tc->next };
         const int n = (int)(sizeof(btns) / sizeof(btns[0]));
@@ -86,6 +88,8 @@ void toastcolor_rebuild(page_id_t child)
 
     toastcolor_t *tc = toastcolor_get(&ui_manager);
     if (tc) {
+        if (tc->label_24)
+            lv_label_set_text(tc->label_24, six_bread_name());   /* 左上角菜名 */
         lv_obj_t *btns[] = { tc->degree, tc->next };
         const int n = (int)(sizeof(btns) / sizeof(btns[0]));
         for (int k = 0; k < n; k++) {

@@ -53,7 +53,12 @@ static void somecook_refresh(void)
             default: break;
             }
             if (mode_lb[i]) lv_label_set_text_fmt(mode_lb[i], "模式: %s", name);
-            if (temp_lb[i]) lv_label_set_text_fmt(temp_lb[i], "温度: %d℃", g_steps[i].temp);
+            if (temp_lb[i]) {
+                if (g_steps[i].mode == MODE_UPDOWN_BBQ)
+                    lv_label_set_text_fmt(temp_lb[i], "温度: ↑%d℃/↓%d℃", g_steps[i].temp, g_steps[i].temp);
+                else
+                    lv_label_set_text_fmt(temp_lb[i], "温度: %d℃", g_steps[i].temp);
+            }
             if (time_lb[i]) {
                 if (g_steps[i].hour == 0)
                     lv_label_set_text_fmt(time_lb[i], "时间: %d分钟", g_steps[i].min);

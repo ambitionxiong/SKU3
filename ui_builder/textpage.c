@@ -29,7 +29,7 @@ void textpage_create(ui_manager_t *ui)
 
     // Init scr->font24
     scr->font24 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->font24, "℃一三上下中主义二五今保入六冷冻出分到功加包千单却卷发四回外多天奇始完定对小层已干年底开式强慢成披拔探插放日时明星曲月期材条果步殊段气洁流清温炸烤烧热烹煮特玉空米约能自色节菜萨薯西解请部酵针钟集面页顶预额风食饪馅骤！该不支持，持烘焙设、置、关、全、简、体、文快速");
+    lv_label_set_text(scr->font24, "℃一三上下中主义二五今保入六冷冻出分到功加包千单却卷发四回外多天奇始完定对小层已干年底开式强慢成披拔探插放日时明星曲月期材条果步殊段气洁流清温炸烤烧热烹煮特玉空米约能自色节菜萨薯西解请部酵针钟集面页顶预额风食饪馅骤！该不支持，持烘焙设、置、关、全、简、体、文快速全麦面包土司可颂麦颂配卷条网容把按展\n↑↓℃");
     lv_label_set_long_mode(scr->font24, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->font24, 40, 34);
     lv_obj_set_size(scr->font24, 142, 32);
@@ -41,7 +41,7 @@ void textpage_create(ui_manager_t *ui)
 
     // Init scr->font30
     scr->font30 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->font30, "℃一三上下中主义二五今保入六冷冻出分到功加包千单却卷发四回外多天奇始完定对小层已干年底开式强慢成披拔探插放日时明星曲月期材条果步殊段气洁流清温炸烤烧热烹煮特玉空米约能自色节菜萨薯西解请部酵针钟集面页顶预额风食饪馅骤！该不支持，持烘焙没吗、增、要、还、问、需");
+    lv_label_set_text(scr->font30, "℃一三上下中主义二五今保入六冷冻出分到功加包千单却卷发四回外多天奇始完定对小层已干年底开式强慢成披拔探插放日时明星曲月期材条果步殊段气洁流清温炸烤烧热烹煮特玉空米约能自色节菜萨薯西解请部酵针钟集面页顶预额风食饪馅骤！该不支持，持烘焙没吗、增、要、还、问、需全麦面包土司可颂麦颂配卷条网容把按展\n↑↓℃");
     lv_label_set_long_mode(scr->font30, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->font30, 203, 34);
     lv_obj_set_size(scr->font30, 142, 32);
@@ -53,7 +53,7 @@ void textpage_create(ui_manager_t *ui)
 
     // Init scr->font36
     scr->font36 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->font36, "℃一三上下中主义二五今保入六冷冻出分到功加包千单却卷发四回外多天奇始完定对小层已干年底开式强慢成披拔探插放日时明星曲月期材条果步殊段气洁流清温炸烤烧热烹煮特玉空米约能自色节菜萨薯西解请部酵针钟集面页顶预额风食饪馅骤！该不支持，持烘焙要、需");
+    lv_label_set_text(scr->font36, "℃一三上下中主义二五今保入六冷冻出分到功加包千单却卷发四回外多天奇始完定对小层已干年底开式强慢成披拔探插放日时明星曲月期材条果步殊段气洁流清温炸烤烧热烹煮特玉空米约能自色节菜萨薯西解请部酵针钟集面页顶预额风食饪馅骤！该不支持，持烘焙要、需全麦面包土司可颂麦颂配卷条网容把按展\n↑↓℃");
     lv_label_set_long_mode(scr->font36, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->font36, 358, 34);
     lv_obj_set_size(scr->font36, 142, 32);
@@ -65,7 +65,7 @@ void textpage_create(ui_manager_t *ui)
 
     // Init scr->font48
     scr->font48 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->font48, "℃一三上下中主义二五今保入六冷冻出分到功加包千单却卷发四回外多天奇始完定对小层已干年底开式强慢成披拔探插放日时明星曲月期材条果步殊段气洁流清温炸烤烧热烹煮特玉空米约能自色节菜萨薯西解请部酵针钟集面页顶预额风食饪馅骤！该不支持，持烘焙");
+    lv_label_set_text(scr->font48, "℃一三上下中主义二五今保入六冷冻出分到功加包千单却卷发四回外多天奇始完定对小层已干年底开式强慢成披拔探插放日时明星曲月期材条果步殊段气洁流清温炸烤烧热烹煮特玉空米约能自色节菜萨薯西解请部酵针钟集面页顶预额风食饪馅骤！该不支持，持烘焙全麦面包土司可颂麦颂配卷条网容把按展\n↑↓℃");
     lv_label_set_long_mode(scr->font48, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->font48, 505, 34);
     lv_obj_set_size(scr->font48, 142, 32);
@@ -77,7 +77,7 @@ void textpage_create(ui_manager_t *ui)
 
     // Init scr->font60
     scr->font60 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->font60, "℃一三上下中主义二五今保入六冷冻出分到功加包千单却卷发四回外多天奇始完定对小层已干年底开式强慢成披拔探插放日时明星曲月期材条果步殊段气洁流清温炸烤烧热烹煮特玉空米约能自色节菜萨薯西解请部酵针钟集面页顶预额风食饪馅骤！该不支持，持烘焙");
+    lv_label_set_text(scr->font60, "℃一三上下中主义二五今保入六冷冻出分到功加包千单却卷发四回外多天奇始完定对小层已干年底开式强慢成披拔探插放日时明星曲月期材条果步殊段气洁流清温炸烤烧热烹煮特玉空米约能自色节菜萨薯西解请部酵针钟集面页顶预额风食饪馅骤！该不支持，持烘焙全麦面包土司可颂麦颂配卷条网容把按展\n↑↓℃");
     lv_label_set_long_mode(scr->font60, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->font60, 704, 37);
     lv_obj_set_size(scr->font60, 142, 32);

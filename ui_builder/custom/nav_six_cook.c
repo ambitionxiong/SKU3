@@ -8,16 +8,67 @@
  * 独立状态机/组/timer，不干扰多段烹饪的 cooking_timer_cb 逻辑
  * ============================== */
 
+/* ==============================
+ * 第六感-面包类 运行流程（复用 somecook_cooking 页面 UI）
+ * 发酵(45min) → 烹饪 → 完成询问烤色(可选) → 上色准备 → 上色 → 再询问(循环)
+ * 支持四个面包品类：面包卷 / 全麦面包 / 土司 / 可颂
+ * ============================== */
+
 lv_group_t *g_six_cooking = NULL;
 uint8_t g_six_running = 0;
-int g_six_color_min = 4;   /* 烤色分钟:浅2 中4 深6 */
+int g_six_color_min = 4;   /* 当前烤色分钟 */
+
+/* 面包品类 */
+#define SIX_BREAD_ROLL      0   /* 面包卷 */
+#define SIX_BREAD_WHEAT     1   /* 全麦面包 */
+#define SIX_BREAD_TOAST     2   /* 土司 */
+#define SIX_BREAD_CROISSANT 3   /* 可颂 */
+uint8_t g_six_bread_type = SIX_BREAD_ROLL;
+
+/* 每菜配置 */
+typedef struct {
+    const char *name;          /* 显示名称 */
+    uint8_t mode;              /* 烹饪模式 */
+    int cook_temp;             /* 烹饪温度(上腔) */
+    int cook_sec;              /* 烹饪秒数 */
+    int color_min[3];          /* 烤色分钟(浅/中/深) */
+    int has_color;             /* 是否支持烤色加强 */
+    int cook_min;              /* 烹饪分钟(descriptionmenu 显示) */
+    const char *cook_desc;     /* 烹饪说明(descriptionmenu 显示) */
+} six_bread_cfg_t;
+
+static const six_bread_cfg_t s_bread_cfg[SIX_BREAD_CROISSANT + 1] = {
+    /* 面包卷 */
+    { "面包卷", MODE_UPDOWN_BBQ, 160, 20 * 60, {2, 4, 6}, 1, 20,
+      "烹饪说明：\n根据你最喜欢的食谱准备面团，放在烤盘上\n现在将食物放在第3层\n使用网架和盘" },
+    /* 全麦面包 */
+    { "全麦面包", MODE_UPDOWN_BBQ, 160, 25 * 60, {2, 4, 6}, 1, 25,
+      "烹饪说明：\n根据你最喜欢的食谱准备面团，放在烤盘上\n现在将食物放在第3层\n使用烤盘" },
+    /* 土司 */
+    { "土司", MODE_UPDOWN_BBQ, 170, 45 * 60, {3, 6, 10}, 1, 45,
+      "烹饪说明：\n按照你喜欢的白面包配方准备面团，面团卷成长条状，并把它放在烤盘中\n现在将食物放在第2层\n使用网架和面包容器" },
+    /* 可颂(热风对流 windchange, 无烤色) */
+    { "可颂", MODE_WINDCHANGE_BBQ, 180, 20 * 60, {0, 0, 0}, 0, 20,
+      "烹饪说明：\n根据你最喜欢的食谱准备面团，放在烤盘上\n现在将食物放在第3层\n使用烤盘" },
+};
+
+const six_bread_cfg_t *six_bread_cfg(void) { return &s_bread_cfg[g_six_bread_type]; }
+const char *six_bread_name(void)     { return s_bread_cfg[g_six_bread_type].name; }
+const char *six_bread_desc(void)     { return s_bread_cfg[g_six_bread_type].cook_desc; }
+int six_bread_cook_min(void)         { return s_bread_cfg[g_six_bread_type].cook_min; }
+int six_bread_has_color(void)        { return s_bread_cfg[g_six_bread_type].has_color; }
+int six_bread_color_min(int level)   /* 1浅 2中 3深 */
+{
+    if (level < 1 || level > 3) return 0;
+    return s_bread_cfg[g_six_bread_type].color_min[level - 1];
+}
 
 enum {
     SIX_PHASE_RISING,      /* 发酵 45min */
-    SIX_PHASE_COOKING,     /* 烹饪 20min */
-    SIX_PHASE_ASK,         /* 完成:询问是否需要烤色 */
+    SIX_PHASE_COOKING,     /* 烹饪 */
+    SIX_PHASE_ASK,         /* 完成:询问是否需要烤色(有烤色) */
     SIX_PHASE_COLOR_SETUP, /* 上色准备:等待"开 始" */
-    SIX_PHASE_COLOR_COOKING, /* 上色烹饪 2/4/6min */
+    SIX_PHASE_COLOR_COOKING, /* 上色烹饪 */
     SIX_PHASE_ASK_COLOR,   /* 上色完成:询问是否还需要烤色 */
 };
 static uint8_t g_six_phase = SIX_PHASE_COOKING;
@@ -27,8 +78,8 @@ static uint8_t g_six_from = SIX_PHASE_COOKING;  /* 遮罩进入源 */
 static uint8_t g_six_has_rising = 0;   /* 是否有发酵段 */
 
 #define SIX_RISING_SEC     (45 * 60)
-#define SIX_COOKING_SEC    (20 * 60)
-#define SIX_TOTAL_SEC      (SIX_RISING_SEC + SIX_COOKING_SEC)
+/* 烹饪秒数按菜: SIX_COOKING_SEC() 宏 */
+#define SIX_COOKING_SEC(cfg)    ((cfg)->cook_sec)
 
 static void six_cook_apply_display(void);
 static void six_cook_exit(void);
@@ -39,7 +90,7 @@ static int32_t six_phase_sec(int phase)
 {
     switch (phase) {
     case SIX_PHASE_RISING:        return SIX_RISING_SEC;
-    case SIX_PHASE_COOKING:       return SIX_COOKING_SEC;
+    case SIX_PHASE_COOKING:       return six_bread_cfg()->cook_sec;
     case SIX_PHASE_COLOR_COOKING: return g_six_color_min * 60;
     default:                      return 0;
     }
@@ -60,10 +111,10 @@ static int32_t six_remaining_sec(void)
     int32_t ph = six_phase_sec(g_six_phase);
     if (e > ph) e = ph;
     switch (g_six_phase) {
-    case SIX_PHASE_RISING:        return SIX_TOTAL_SEC - e;
+    case SIX_PHASE_RISING:        return (SIX_RISING_SEC + six_bread_cfg()->cook_sec) - e;
     case SIX_PHASE_COOKING:
-        return g_six_has_rising ? SIX_TOTAL_SEC - (SIX_RISING_SEC + e)
-                                : SIX_COOKING_SEC - e;
+        return g_six_has_rising ? (SIX_RISING_SEC + six_bread_cfg()->cook_sec) - (SIX_RISING_SEC + e)
+                                : six_bread_cfg()->cook_sec - e;
     case SIX_PHASE_COLOR_COOKING: return ph - e;
     default:                      return 0;
     }
@@ -100,44 +151,52 @@ static void six_cook_apply_display(void)
     switch (g_six_phase) {
     case SIX_PHASE_RISING:
         lv_label_set_text(sc->cookstatus, g_six_paused ? "暂停中..." : "发酵中...");
-        lv_label_set_text(sc->label_12, "| 面包卷 | 45℃ | 45分钟");
+        lv_label_set_text_fmt(sc->label_12, "| %s | 45℃ | 45分钟", six_bread_name());
         if (bl) lv_label_set_text(bl, g_six_paused ? "开 始" : "暂 停");
         break;
     case SIX_PHASE_COOKING:
         lv_label_set_text(sc->cookstatus, g_six_paused ? "暂停中..." : "烹饪中...");
-        lv_label_set_text(sc->label_12, "| 面包卷 | 20分钟");
+        lv_label_set_text_fmt(sc->label_12, "| %s | %d分钟", six_bread_name(), six_bread_cfg()->cook_min);
         if (bl) lv_label_set_text(bl, g_six_paused ? "开 始" : "暂 停");
         break;
     case SIX_PHASE_ASK:
     case SIX_PHASE_ASK_COLOR:
         lv_obj_add_flag(sc->timelabel, LV_OBJ_FLAG_HIDDEN);
-        lv_label_set_text(sc->label_12, "| 面包卷 | 20分钟");   /* 完成询问态保持最后烹饪信息 */
+        lv_label_set_text_fmt(sc->label_12, "| %s | %d分钟", six_bread_name(), six_bread_cfg()->cook_min);   /* 完成询问态保持最后烹饪信息 */
         lv_label_set_text(sc->cookstatus, "已完成");
-        if (g_six_phase == SIX_PHASE_ASK) {
-            lv_label_set_text(sc->text1, "请问需要增加");
-            lv_label_set_text(sc->text2, "烤色吗!");
+        if (six_bread_has_color()) {
+            /* 有烤色:显示烤色询问 */
+            if (g_six_phase == SIX_PHASE_ASK) {
+                lv_label_set_text(sc->text1, "请问需要增加");
+                lv_label_set_text(sc->text2, "烤色吗!");
+            } else {
+                lv_label_set_text(sc->text1, "请问还需要增加");
+                lv_label_set_text(sc->text2, "烤色吗!");
+            }
+            lv_obj_clear_flag(sc->text1, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(sc->text2, LV_OBJ_FLAG_HIDDEN);
+            if (bl) lv_label_set_text(bl, "需 要");
         } else {
-            lv_label_set_text(sc->text1, "请问还需要增加");
-            lv_label_set_text(sc->text2, "烤色吗!");
+            /* 无烤色:直接显示完成,按钮为"完 成" */
+            lv_obj_add_flag(sc->text1, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(sc->text2, LV_OBJ_FLAG_HIDDEN);
+            if (bl) lv_label_set_text(bl, "完 成");
         }
-        lv_obj_clear_flag(sc->text1, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_clear_flag(sc->text2, LV_OBJ_FLAG_HIDDEN);
         lv_bar_set_range(sc->bar_1, 0, 100);
         lv_bar_set_value(sc->bar_1, 100, LV_ANIM_OFF);
-        if (bl) lv_label_set_text(bl, "需 要");
         break;
     case SIX_PHASE_COLOR_SETUP:
         lv_obj_clear_flag(sc->timelabel, LV_OBJ_FLAG_HIDDEN);
         lv_label_set_text_fmt(sc->timelabel, "00:%02d:00", g_six_color_min);   /* 所选程度时长 */
         lv_label_set_text(sc->cookstatus, "额外上色");
-        lv_label_set_text_fmt(sc->label_12, "| 面包卷 | %d分钟", g_six_color_min);
+        lv_label_set_text_fmt(sc->label_12, "| %s | %d分钟", six_bread_name(), g_six_color_min);
         if (bl) lv_label_set_text(bl, "开 始");
         lv_bar_set_range(sc->bar_1, 0, 100);
         lv_bar_set_value(sc->bar_1, 3, LV_ANIM_OFF);
         break;
     case SIX_PHASE_COLOR_COOKING:
         lv_label_set_text(sc->cookstatus, g_six_paused ? "暂停中..." : "烹饪中...");
-        lv_label_set_text_fmt(sc->label_12, "| 面包卷 | 额外上色 | %d分钟", g_six_color_min);
+        lv_label_set_text_fmt(sc->label_12, "| %s | 额外上色 | %d分钟", six_bread_name(), g_six_color_min);
         if (bl) lv_label_set_text(bl, g_six_paused ? "开 始" : "暂 停");
         break;
     default:
@@ -156,7 +215,7 @@ static void six_cook_apply_display(void)
             done = six_elapsed_sec(); total = six_phase_sec(SIX_PHASE_COLOR_COOKING);
         } else if (g_six_has_rising) {
             done = six_elapsed_sec() + (g_six_phase == SIX_PHASE_COOKING ? SIX_RISING_SEC : 0);
-            total = SIX_TOTAL_SEC;
+            total = SIX_RISING_SEC + six_bread_cfg()->cook_sec;
         } else {
             done = six_elapsed_sec(); total = six_phase_sec(SIX_PHASE_COOKING);
         }
@@ -195,24 +254,30 @@ static void six_cook_set_phase(int phase)
         g_send.set_temp_lower = 0;
         g_send.iface_status = IFACE_COOKING;
         break;
-    case SIX_PHASE_COOKING:
-        g_send.cook_mode = MODE_UPDOWN_BBQ;
-        g_send.set_temp = 160;
-        g_send.set_temp_lower = 160;   /* 上下烧烤:发上下温(一致) */
+    case SIX_PHASE_COOKING: {
+        const six_bread_cfg_t *cfg = six_bread_cfg();
+        g_send.cook_mode = cfg->mode;
+        g_send.set_temp = cfg->cook_temp;
+        g_send.set_temp_lower = (cfg->mode == MODE_WINDCHANGE_BBQ) ? 0 : cfg->cook_temp;
         g_send.iface_status = IFACE_COOKING;
         break;
-    case SIX_PHASE_COLOR_SETUP:
-        g_send.cook_mode = MODE_UPDOWN_BBQ;   /* 烤色阶段保持前面模式,不发 color */
-        g_send.set_temp = 160;
-        g_send.set_temp_lower = 160;   /* 额外上色上下温都发(与烹饪阶段一致) */
+    }
+    case SIX_PHASE_COLOR_SETUP: {
+        const six_bread_cfg_t *cfg = six_bread_cfg();
+        g_send.cook_mode = cfg->mode;   /* 烤色阶段保持前面模式,不发 color */
+        g_send.set_temp = cfg->cook_temp;
+        g_send.set_temp_lower = (cfg->mode == MODE_WINDCHANGE_BBQ) ? 0 : cfg->cook_temp;
         /* iface_status 不设:保持完成状态(尚未开始烹饪) */
         break;
-    case SIX_PHASE_COLOR_COOKING:
-        g_send.cook_mode = MODE_UPDOWN_BBQ;
-        g_send.set_temp = 160;
-        g_send.set_temp_lower = 160;   /* 额外上色上下温都发 */
+    }
+    case SIX_PHASE_COLOR_COOKING: {
+        const six_bread_cfg_t *cfg = six_bread_cfg();
+        g_send.cook_mode = cfg->mode;
+        g_send.set_temp = cfg->cook_temp;
+        g_send.set_temp_lower = (cfg->mode == MODE_WINDCHANGE_BBQ) ? 0 : cfg->cook_temp;
         g_send.iface_status = IFACE_COOKING;   /* 点"开 始"后才发烹饪状态 */
         break;
+    }
     case SIX_PHASE_ASK:
     case SIX_PHASE_ASK_COLOR:
         g_send.iface_status = IFACE_COMPLETE;   /* 完成状态 */
@@ -220,7 +285,7 @@ static void six_cook_set_phase(int phase)
         g_send.buzzer_req = BUZZER_COOK_DONE;
         break;
     default:
-        g_send.cook_mode = MODE_UPDOWN_BBQ;
+        g_send.cook_mode = six_bread_cfg()->mode;
         break;
     }
     six_cook_apply_display();
@@ -303,7 +368,11 @@ static void on_six_stop_click(lv_event_t *e)
         break;
     case SIX_PHASE_ASK:
     case SIX_PHASE_ASK_COLOR:
-        jump_to_toastcolor();
+        if (six_bread_has_color()) {
+            jump_to_toastcolor();
+        } else {
+            six_cook_exit();   /* 无烤色:完成后直接结束,回六感主菜单 */
+        }
         break;
     case SIX_PHASE_COLOR_SETUP:
         /* 门开:无效音,不开始上色(与其他模式一致) */
@@ -400,6 +469,7 @@ void jump_to_six_cooking(void)
     g_six_overlay = 0;
     g_six_paused = 0;
     g_six_has_rising = (g_rising_choice == 1);
+    g_six_color_min = six_bread_color_min(2);   /* 默认"中"档 */
     cook_elapsed_saved = 0;
     cook_start_time = lv_tick_get();
     six_cook_set_phase(g_rising_choice == 1 ? SIX_PHASE_RISING : SIX_PHASE_COOKING);
@@ -437,9 +507,9 @@ void six_cook_goto_setup(void)
     g_six_overlay = 0;
     g_six_paused = 0;
     g_six_phase = SIX_PHASE_COLOR_SETUP;
-    g_send.cook_mode = MODE_UPDOWN_BBQ;   /* 保持前面模式,不发 color */
-    g_send.set_temp = 160;
-    g_send.set_temp_lower = 160;   /* 额外上色上下温都发 */
+    g_send.cook_mode = six_bread_cfg()->mode;   /* 保持前面模式,不发 color */
+    g_send.set_temp = six_bread_cfg()->cook_temp;
+    g_send.set_temp_lower = (g_send.cook_mode == MODE_WINDCHANGE_BBQ) ? 0 : six_bread_cfg()->cook_temp;
     /* iface_status 不设:保持完成状态,点"开 始"后才发烹饪状态 */
 }
 

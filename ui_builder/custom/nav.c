@@ -6738,7 +6738,7 @@ void jump_to_delayset(void)
     delayset_t *ds = delayset_get(&ui_manager);
     if (ds) {
         if (g_delay_source_page == PAGE_DESCRIPTIONMENU)
-            lv_label_set_text(ds->name, "面包卷");   /* 六感名称 */
+            lv_label_set_text(ds->name, six_bread_name());   /* 六感菜名 */
         lv_obj_t *btns[] = { ds->hour, ds->min, ds->start };
         if (g_delayset) lv_group_del(g_delayset);
         g_delayset = group_create_for_page(btns, 3);
@@ -7018,7 +7018,7 @@ static void rebuild_delaycooking(void)
 
         if (g_delay_source_page == PAGE_DESCRIPTIONMENU) {
             /* 六感:status 显示模式+时间,icon 用 sixicon(与运行页一致) */
-            lv_label_set_text_fmt(dc->status, "| 面包卷 | %d分钟", 20);
+            lv_label_set_text_fmt(dc->status, "| %s | %d分钟", six_bread_name(), six_bread_cook_min());
             lv_img_set_src(dc->icon, LVGL_IMAGE_PATH(sixicon.png));
             lv_obj_set_pos(dc->icon, 163, 161);
         } else if (g_delay_source_page == PAGE_UPDOWN_BBQ_SET_PROBE ||
@@ -8501,7 +8501,7 @@ static void jump_to_updown_bbq_stop_back(void)
             lv_label_set_text(back->label_8, "预约中...");
             if (g_delay_source_page == PAGE_DESCRIPTIONMENU) {
                 /* 六感:status/图标/位置与六感运行页一致 */
-                lv_label_set_text_fmt(back->statu_label, "| 面包卷 | %d分钟", 20);
+                lv_label_set_text_fmt(back->statu_label, "| %s | %d分钟", six_bread_name(), six_bread_cook_min());
                 lv_img_set_src(back->image_7, LVGL_IMAGE_PATH(sixicon.png));
                 lv_obj_set_pos(back->image_7, 163, 161);
             }

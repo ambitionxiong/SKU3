@@ -4044,6 +4044,22 @@ typedef struct {
     lv_obj_t *line;
 } toastcolor_t;
 
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *label_1;
+    lv_obj_t *swissroll;
+    lv_obj_t *strudel;
+    lv_obj_t *muffin;
+    lv_obj_t *madeleine;
+    lv_obj_t *spongecake;
+    lv_obj_t *cupcake;
+    lv_obj_t *chocolatecake;
+    lv_obj_t *creampuff;
+    lv_obj_t *eggtart;
+    lv_obj_t *millefeuille;
+    lv_obj_t *cookies;
+} cake6menu_t;
+
 
 typedef struct {
     bool auto_del;
@@ -4309,6 +4325,7 @@ typedef struct {
     risingpage_t risingpage;
     descriptionmenu_t descriptionmenu;
     toastcolor_t toastcolor;
+    cake6menu_t cake6menu;
 
 } ui_manager_t;
 
@@ -5628,6 +5645,11 @@ static inline toastcolor_t *toastcolor_get(ui_manager_t *ui)
     return &ui->toastcolor;
 }
 
+static inline cake6menu_t *cake6menu_get(ui_manager_t *ui)
+{
+    return &ui->cake6menu;
+}
+
 
 void waitmenu_24_create(ui_manager_t *ui);
 void clean_menu_create(ui_manager_t *ui);
@@ -5891,6 +5913,7 @@ void bread6menu_create(ui_manager_t *ui);
 void risingpage_create(ui_manager_t *ui);
 void descriptionmenu_create(ui_manager_t *ui);
 void toastcolor_create(ui_manager_t *ui);
+void cake6menu_create(ui_manager_t *ui);
 
 
 LV_FONT_DECLARE(c_montserratmedium_16);

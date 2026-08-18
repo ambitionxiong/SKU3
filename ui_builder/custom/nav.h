@@ -658,6 +658,16 @@ void descriptionmenu_rebuild(page_id_t child);
 extern lv_group_t *g_six_cooking;
 extern uint8_t g_six_running;
 extern int g_six_color_min;   /* 烤色分钟 2/4/6 */
+extern uint8_t g_six_bread_type;   /* 面包品类: SIX_BREAD_ROLL/WHEAT/TOAST/CROISSANT */
+#define SIX_BREAD_ROLL      0
+#define SIX_BREAD_WHEAT     1
+#define SIX_BREAD_TOAST     2
+#define SIX_BREAD_CROISSANT 3
+extern const char *six_bread_name(void);
+extern const char *six_bread_desc(void);
+extern int six_bread_cook_min(void);
+extern int six_bread_has_color(void);
+extern int six_bread_color_min(int level);
 void jump_to_six_cooking(void);
 void six_cook_handle_back(void);
 void six_cooking_rebuild(page_id_t child);

@@ -16,6 +16,9 @@ int g_rising_choice = -1;   /* -1 未选 0=否 1=是 */
 
 static void on_sixmenu_bread_click(lv_event_t *e);
 static void on_bread6menu_breadroll_click(lv_event_t *e);
+static void on_bread6menu_wheat_click(lv_event_t *e);
+static void on_bread6menu_toast_click(lv_event_t *e);
+static void on_bread6menu_croissant_click(lv_event_t *e);
 static void on_rising_yes_click(lv_event_t *e);
 static void on_rising_no_click(lv_event_t *e);
 static void on_description_start_click(lv_event_t *e);
@@ -119,9 +122,17 @@ void jump_to_bread6menu(void)
 
         if (b6->breadroll) {
             lv_obj_add_event_cb(b6->breadroll, on_bread6menu_breadroll_click, LV_EVENT_CLICKED, NULL);
-            lv_group_focus_obj(b6->breadroll);
         }
-        /* 其余 3 个按钮：功能未实现，不绑事件 */
+        if (b6->wheat_bread) {
+            lv_obj_add_event_cb(b6->wheat_bread, on_bread6menu_wheat_click, LV_EVENT_CLICKED, NULL);
+        }
+        if (b6->toast) {
+            lv_obj_add_event_cb(b6->toast, on_bread6menu_toast_click, LV_EVENT_CLICKED, NULL);
+        }
+        if (b6->croissant) {
+            lv_obj_add_event_cb(b6->croissant, on_bread6menu_croissant_click, LV_EVENT_CLICKED, NULL);
+        }
+        lv_group_focus_obj(b6->breadroll);
     }
     current_group = g_bread6menu;
 
@@ -151,8 +162,25 @@ void bread6menu_rebuild(page_id_t child)
 
         if (b6->breadroll) {
             lv_obj_add_event_cb(b6->breadroll, on_bread6menu_breadroll_click, LV_EVENT_CLICKED, NULL);
-            lv_group_focus_obj(b6->breadroll);
         }
+        if (b6->wheat_bread) {
+            lv_obj_add_event_cb(b6->wheat_bread, on_bread6menu_wheat_click, LV_EVENT_CLICKED, NULL);
+        }
+        if (b6->toast) {
+            lv_obj_add_event_cb(b6->toast, on_bread6menu_toast_click, LV_EVENT_CLICKED, NULL);
+        }
+        if (b6->croissant) {
+            lv_obj_add_event_cb(b6->croissant, on_bread6menu_croissant_click, LV_EVENT_CLICKED, NULL);
+        }
+        /* 返回时恢复进入时的菜焦点 */
+        if (g_six_bread_type == SIX_BREAD_WHEAT && b6->wheat_bread)
+            lv_group_focus_obj(b6->wheat_bread);
+        else if (g_six_bread_type == SIX_BREAD_TOAST && b6->toast)
+            lv_group_focus_obj(b6->toast);
+        else if (g_six_bread_type == SIX_BREAD_CROISSANT && b6->croissant)
+            lv_group_focus_obj(b6->croissant);
+        else if (b6->breadroll)
+            lv_group_focus_obj(b6->breadroll);
     }
     current_group = g_bread6menu;
 
@@ -165,6 +193,28 @@ void bread6menu_rebuild(page_id_t child)
 static void on_bread6menu_breadroll_click(lv_event_t *e)
 {
     if (screen_is_loading(lv_scr_act())) return;
+    g_six_bread_type = SIX_BREAD_ROLL;
+    jump_to_risingpage();
+}
+
+static void on_bread6menu_wheat_click(lv_event_t *e)
+{
+    if (screen_is_loading(lv_scr_act())) return;
+    g_six_bread_type = SIX_BREAD_WHEAT;
+    jump_to_risingpage();
+}
+
+static void on_bread6menu_toast_click(lv_event_t *e)
+{
+    if (screen_is_loading(lv_scr_act())) return;
+    g_six_bread_type = SIX_BREAD_TOAST;
+    jump_to_risingpage();
+}
+
+static void on_bread6menu_croissant_click(lv_event_t *e)
+{
+    if (screen_is_loading(lv_scr_act())) return;
+    g_six_bread_type = SIX_BREAD_CROISSANT;
     jump_to_risingpage();
 }
 
@@ -188,6 +238,8 @@ void jump_to_risingpage(void)
         g_risingpage = group_create_for_page(btns, n);
         clear_focus_states(btns, n);
 
+        if (rp->label_17)
+            lv_label_set_text(rp->label_17, six_bread_name());   /* 左上角菜名 */
         if (rp->yes) {
             lv_obj_add_event_cb(rp->yes, on_rising_yes_click, LV_EVENT_CLICKED, NULL);
         }
@@ -223,6 +275,8 @@ void risingpage_rebuild(page_id_t child)
         g_risingpage = group_create_for_page(btns, n);
         clear_focus_states(btns, n);
 
+        if (rp->label_17)
+            lv_label_set_text(rp->label_17, six_bread_name());   /* 左上角菜名 */
         if (rp->yes) {
             lv_obj_add_event_cb(rp->yes, on_rising_yes_click, LV_EVENT_CLICKED, NULL);
         }
@@ -261,10 +315,22 @@ static void descriptionmenu_layout(descriptionmenu_t *dm)
 {
     if (!dm || !dm->container_1) return;
 
+    /* 左上角菜名 */
+    if (dm->label_19)
+        lv_label_set_text(dm->label_19, six_bread_name());
+
     /* 摘要文本按是否发酵选择 */
     if (dm->summary)
         lv_label_set_text(dm->summary, g_rising_choice == 1 ?
                           "小结：\n有发酵阶段\n" : "小结：\n没有发酵阶段\n");
+
+    /* 烹饪时间 + 烹饪说明按当前菜填充 */
+    if (dm->cooktime) {
+        lv_label_set_text_fmt(dm->cooktime, "预计烹饪时间：%d分钟", six_bread_cook_min());
+    }
+    if (dm->cookdescriptin) {
+        lv_label_set_text(dm->cookdescriptin, six_bread_desc());
+    }
 
     /* 容器 Flex 竖排：左/上边距 24，垂直间距 16 */
     lv_obj_set_flex_flow(dm->container_1, LV_FLEX_FLOW_COLUMN);
@@ -342,11 +408,15 @@ void descriptionmenu_rebuild(page_id_t child)
 
         if (dm->start) {
             lv_obj_add_event_cb(dm->start, on_description_start_click, LV_EVENT_CLICKED, NULL);
-            lv_group_focus_obj(dm->start);
         }
         if (dm->delay) {
             lv_obj_add_event_cb(dm->delay, on_description_delay_click, LV_EVENT_CLICKED, NULL);
         }
+        /* 从延迟设置返回时恢复焦点到“延迟”，否则默认“开始” */
+        if (child == PAGE_DELAYSET && dm->delay)
+            lv_group_focus_obj(dm->delay);
+        else if (dm->start)
+            lv_group_focus_obj(dm->start);
     }
     current_group = g_descriptionmenu;
 
