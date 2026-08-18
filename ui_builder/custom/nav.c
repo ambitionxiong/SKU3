@@ -436,8 +436,8 @@ static void on_sure_click(lv_event_t *e);
 void cooking_timer_cb(lv_timer_t *timer);
 static void topflag_update_visibility(void);
 static void topflag_clock_cb(lv_timer_t *timer);
-static void waitmenu_apply_clock(void);
-static void waitmenu_clock_cache_reset(void);
+void waitmenu_apply_clock(void);
+void waitmenu_clock_cache_reset(void);
 static void color_exit_to_home(void);
 static void jump_to_color_menu(void);
 static void color_menu_rebuild(page_id_t child);
@@ -4909,10 +4909,19 @@ static void process_key(uint8_t key)
         jump_to_clean_menu();
         uart_print();
         break;
-    case KEY_SET:           // 11: 进入设置页（覆盖层，任何状态可进）
+    case KEY_SET:           // 11: 进入设置页（覆盖层）
         if (depth > 0 && page_stack[depth - 1] == PAGE_SCREEN_SET) {
-            g_send.buzzer_req = BUZZER_KEY_INVALID;
+            g_send.buzzer_req = BUZZER_KEY_INVALID;   /* 防重入 */
             break;
+        }
+        /* 与其他功能键相同入口限制(菜单白名单),运行态放行 */
+        if (g_send.iface_status != IFACE_COOKING && g_send.iface_status != IFACE_PAUSE &&
+            g_send.iface_status != IFACE_COMPLETE && g_send.iface_status != IFACE_DELAY_RESERVE) {
+            if (!menu_clean_key_allowed()) {
+                g_send.buzzer_req = BUZZER_KEY_INVALID;   /* 非运行态:仅菜单页可进 */
+                uart_print();
+                break;
+            }
         }
         g_send.buzzer_req = BUZZER_KEY_VALID;
         jump_to_screen_set();
@@ -4992,10 +5001,7 @@ static void process_key(uint8_t key)
             uart_print();
             break;
         }
-        if (is_probe_inserted()) {
-            g_send.buzzer_req = BUZZER_KEY_INVALID;
-            break;
-        }
+        /* 探针模式下也允许进入第六感（2026-08-15 需求调整） */
         g_send.buzzer_req = BUZZER_KEY_VALID;
         if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
         g_on_stop_back = 0;
@@ -9284,7 +9290,7 @@ static int lw_wday = -1;
 
 // 显式重置缓存：waitmenu_24_create 后调用，强制刷新为真实时间。
 // 不依赖指针相等判定——auto_del 下 malloc 地址复用会导致缓存不失效（显示默认假文本/陈旧星期）
-static void waitmenu_clock_cache_reset(void)
+void waitmenu_clock_cache_reset(void)
 {
     lw_obj = NULL;
     lw_hour = 0xFF; lw_min = 0xFF;
@@ -9296,7 +9302,7 @@ static void waitmenu_clock_cache_reset(void)
 // 有效性判断使用"页面栈顶 == 待机页"（业务状态，可靠），
 // 不能用 obj == lv_scr_act 指针比较——离开待机页后 wait->obj 悬空，
 // malloc 地址复用时可能误判通过导致 UAF 写入（模拟器卡死根因）。
-static void waitmenu_apply_clock(void)
+void waitmenu_apply_clock(void)
 {
     rtc_time_t t;
     if (rtc_get_time(&t) != 0) return;
