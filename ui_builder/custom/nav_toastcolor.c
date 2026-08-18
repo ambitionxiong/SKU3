@@ -50,19 +50,25 @@ void jump_to_toastcolor(void)
         /* 焦点组:degree(档位设置) + next */
         lv_obj_t *btns[] = { tc->degree, tc->next };
         const int n = (int)(sizeof(btns) / sizeof(btns[0]));
-        for (int k = 0; k < n; k++) lv_group_remove_obj(btns[k]);
+        for (int k = 0; k < n; k++) {
+            if (btns[k]) lv_group_remove_obj(btns[k]);
+        }
         if (g_toastcolor) lv_group_del(g_toastcolor);
         g_toastcolor = group_create_for_page(btns, n);
         clear_focus_states(btns, n);
 
-        lv_obj_add_event_cb(tc->next, on_toastcolor_next_click, LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(tc->degree, on_toastcolor_focus, LV_EVENT_FOCUSED, NULL);
-        lv_obj_add_event_cb(tc->next, on_toastcolor_focus, LV_EVENT_FOCUSED, NULL);
+        if (tc->next) {
+            lv_obj_add_event_cb(tc->next, on_toastcolor_next_click, LV_EVENT_CLICKED, NULL);
+            lv_obj_add_event_cb(tc->next, on_toastcolor_focus, LV_EVENT_FOCUSED, NULL);
+            lv_group_focus_obj(tc->next);     /* 默认焦点 next */
+            toastcolor_apply_line(tc->next);  /* 显式隐藏 line(不依赖事件时序) */
+        }
+        if (tc->degree) {
+            lv_obj_add_event_cb(tc->degree, on_toastcolor_focus, LV_EVENT_FOCUSED, NULL);
+        }
 
         s_toast_color = 2;                /* 每次进入默认"中" */
         toastcolor_update_degree();
-        lv_group_focus_obj(tc->next);     /* 默认焦点 next */
-        toastcolor_apply_line(tc->next);  /* 显式隐藏 line(不依赖事件时序) */
     }
     current_group = g_toastcolor;
 
@@ -82,18 +88,24 @@ void toastcolor_rebuild(page_id_t child)
     if (tc) {
         lv_obj_t *btns[] = { tc->degree, tc->next };
         const int n = (int)(sizeof(btns) / sizeof(btns[0]));
-        for (int k = 0; k < n; k++) lv_group_remove_obj(btns[k]);
+        for (int k = 0; k < n; k++) {
+            if (btns[k]) lv_group_remove_obj(btns[k]);
+        }
         g_toastcolor = group_create_for_page(btns, n);
         clear_focus_states(btns, n);
 
-        lv_obj_add_event_cb(tc->next, on_toastcolor_next_click, LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(tc->degree, on_toastcolor_focus, LV_EVENT_FOCUSED, NULL);
-        lv_obj_add_event_cb(tc->next, on_toastcolor_focus, LV_EVENT_FOCUSED, NULL);
+        if (tc->next) {
+            lv_obj_add_event_cb(tc->next, on_toastcolor_next_click, LV_EVENT_CLICKED, NULL);
+            lv_obj_add_event_cb(tc->next, on_toastcolor_focus, LV_EVENT_FOCUSED, NULL);
+            lv_group_focus_obj(tc->next);
+            toastcolor_apply_line(tc->next);
+        }
+        if (tc->degree) {
+            lv_obj_add_event_cb(tc->degree, on_toastcolor_focus, LV_EVENT_FOCUSED, NULL);
+        }
 
         s_toast_color = 2;                /* 每次进入默认"中" */
         toastcolor_update_degree();
-        lv_group_focus_obj(tc->next);
-        toastcolor_apply_line(tc->next);
     }
     current_group = g_toastcolor;
 

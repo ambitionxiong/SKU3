@@ -46,11 +46,16 @@ void jump_to_probetip(const char *text)
     probetip_t *tip = probetip_get(&ui_manager);
     if (tip) {
         lv_obj_t *btns[] = { tip->button_1 };
+        for (int k = 0; k < 1; k++) {
+            if (btns[k]) lv_group_remove_obj(btns[k]);
+        }
         if (g_probetip) lv_group_del(g_probetip);
         g_probetip = group_create_for_page(btns, 1);
-        lv_obj_t *label = lv_obj_get_child(tip->button_1, 0);
-        if (label) lv_label_set_text(label, text);
-        lv_group_focus_obj(tip->button_1);
+        if (tip->button_1) {
+            lv_obj_t *label = lv_obj_get_child(tip->button_1, 0);
+            if (label) lv_label_set_text(label, text);
+            lv_group_focus_obj(tip->button_1);
+        }
     }
     current_group = g_probetip;
     if (probetip_get(&ui_manager)->obj)
@@ -68,9 +73,13 @@ void probetip_rebuild(page_id_t child)
     probetip_t *tip = probetip_get(&ui_manager);
     if (tip) {
         lv_obj_t *btns[] = { tip->button_1 };
+        for (int k = 0; k < 1; k++) {
+            if (btns[k]) lv_group_remove_obj(btns[k]);
+        }
         if (g_probetip) lv_group_del(g_probetip);
         g_probetip = group_create_for_page(btns, 1);
-        lv_group_focus_obj(tip->button_1);
+        if (tip->button_1)
+            lv_group_focus_obj(tip->button_1);
     }
     current_group = g_probetip;
     if (probetip_get(&ui_manager)->obj)

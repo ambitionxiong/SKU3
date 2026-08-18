@@ -165,6 +165,15 @@ void nav_show_invalid_hint(void)
     g_hint_scr = lv_scr_act();
     if (g_hint_scr) {
         g_hint_mask = lv_obj_create(g_hint_scr);
+        if (!g_hint_mask) {
+            /* 遮罩创建失败:恢复已隐藏元素并放弃提示,避免后续空指针 */
+            for (int i = 0; i < g_hint_n; i++)
+                if (g_hint_objs[i]) lv_obj_clear_flag(g_hint_objs[i], LV_OBJ_FLAG_HIDDEN);
+            g_hint_n = 0;
+            g_hint_group = NULL;
+            g_hint_scr = NULL;
+            return;
+        }
         lv_obj_remove_style_all(g_hint_mask);   /* 防默认主题白底 */
         lv_obj_set_pos(g_hint_mask, 0, 0);
         lv_obj_set_size(g_hint_mask, 1280, 480);
@@ -179,6 +188,17 @@ void nav_show_invalid_hint(void)
         lv_obj_set_style_pad_left(g_hint_mask, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
         g_hint_tip = lv_label_create(g_hint_scr);
+        if (!g_hint_tip) {
+            /* 提示标签创建失败:删除遮罩并恢复元素,避免后续空指针 */
+            lv_obj_del(g_hint_mask);
+            g_hint_mask = NULL;
+            for (int i = 0; i < g_hint_n; i++)
+                if (g_hint_objs[i]) lv_obj_clear_flag(g_hint_objs[i], LV_OBJ_FLAG_HIDDEN);
+            g_hint_n = 0;
+            g_hint_group = NULL;
+            g_hint_scr = NULL;
+            return;
+        }
         lv_label_set_text(g_hint_tip, "烤箱运行时不可用。");
         lv_label_set_long_mode(g_hint_tip, LV_LABEL_LONG_WRAP);
         lv_obj_set_pos(g_hint_tip, 885, 161);

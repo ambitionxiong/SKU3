@@ -4783,6 +4783,10 @@ static void process_key(uint8_t key)
                 cur == PAGE_TOASTCOLOR) {
                 /* 设置页覆盖层/六感流程:拦截,防止跳转破坏流程 */
                 g_send.buzzer_req = BUZZER_KEY_INVALID;
+                /* 六感运行页且正在烹饪:与其他功能键一致弹无效提示 */
+                if (cur == PAGE_SIX_COOKING && g_send.iface_status == IFACE_COOKING)
+                    nav_show_invalid_hint();
+                uart_print();
                 break;
             }
         }

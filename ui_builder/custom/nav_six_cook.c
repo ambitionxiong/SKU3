@@ -75,6 +75,12 @@ static void six_cook_apply_display(void)
     somecook_cooking_t *sc = somecook_cooking_get(&ui_manager);
     if (!sc) return;
 
+    /* 防御:所需子对象任一缺失则跳过刷新,避免空指针崩溃 */
+    if (!sc->icon || !sc->cookstatus || !sc->image_10 || !sc->bar_1 ||
+        !sc->stop || !sc->activestatus || !sc->container_1 ||
+        !sc->text1 || !sc->text2 || !sc->timelabel || !sc->label_12)
+        return;
+
     /* 基础显隐 */
     lv_obj_clear_flag(sc->icon, LV_OBJ_FLAG_HIDDEN);
     lv_obj_clear_flag(sc->cookstatus, LV_OBJ_FLAG_HIDDEN);
@@ -369,17 +375,24 @@ void jump_to_six_cooking(void)
     somecook_cooking_t *sc = somecook_cooking_get(&ui_manager);
     if (sc) {
         lv_obj_t *btns[] = { sc->stop };
-        for (int k = 0; k < 1; k++) lv_group_remove_obj(btns[k]);
+        for (int k = 0; k < 1; k++) {
+            if (btns[k]) lv_group_remove_obj(btns[k]);
+        }
         if (g_six_cooking) lv_group_del(g_six_cooking);
         g_six_cooking = group_create_for_page(btns, 1);
         clear_focus_states(btns, 1);
-        lv_group_focus_obj(sc->stop);
-        lv_obj_add_event_cb(sc->stop, on_six_stop_click, LV_EVENT_CLICKED, NULL);
+        if (sc->stop) {
+            lv_group_focus_obj(sc->stop);
+            lv_obj_add_event_cb(sc->stop, on_six_stop_click, LV_EVENT_CLICKED, NULL);
+        }
 
         /* icon:六感图标,右移 23(115 -> 138) */
-        lv_img_set_src(sc->icon, LVGL_IMAGE_PATH(sixicon.png));
-        lv_obj_set_pos(sc->icon, 163, 161);
-        lv_obj_add_flag(sc->activestatus, LV_OBJ_FLAG_HIDDEN);
+        if (sc->icon) {
+            lv_img_set_src(sc->icon, LVGL_IMAGE_PATH(sixicon.png));
+            lv_obj_set_pos(sc->icon, 163, 161);
+        }
+        if (sc->activestatus)
+            lv_obj_add_flag(sc->activestatus, LV_OBJ_FLAG_HIDDEN);
     }
     current_group = g_six_cooking;
 
@@ -450,15 +463,22 @@ void six_cooking_rebuild(page_id_t child)
     somecook_cooking_t *sc = somecook_cooking_get(&ui_manager);
     if (sc) {
         lv_obj_t *btns[] = { sc->stop };
-        for (int k = 0; k < 1; k++) lv_group_remove_obj(btns[k]);
+        for (int k = 0; k < 1; k++) {
+            if (btns[k]) lv_group_remove_obj(btns[k]);
+        }
         g_six_cooking = group_create_for_page(btns, 1);
         clear_focus_states(btns, 1);
-        lv_group_focus_obj(sc->stop);
-        lv_obj_add_event_cb(sc->stop, on_six_stop_click, LV_EVENT_CLICKED, NULL);
+        if (sc->stop) {
+            lv_group_focus_obj(sc->stop);
+            lv_obj_add_event_cb(sc->stop, on_six_stop_click, LV_EVENT_CLICKED, NULL);
+        }
 
-        lv_img_set_src(sc->icon, LVGL_IMAGE_PATH(sixicon.png));
-        lv_obj_set_pos(sc->icon, 163, 161);
-        lv_obj_add_flag(sc->activestatus, LV_OBJ_FLAG_HIDDEN);
+        if (sc->icon) {
+            lv_img_set_src(sc->icon, LVGL_IMAGE_PATH(sixicon.png));
+            lv_obj_set_pos(sc->icon, 163, 161);
+        }
+        if (sc->activestatus)
+            lv_obj_add_flag(sc->activestatus, LV_OBJ_FLAG_HIDDEN);
     }
     current_group = g_six_cooking;
 
