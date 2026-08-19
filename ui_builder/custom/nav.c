@@ -1179,6 +1179,10 @@ void page_pop(void)
         bread6menu_rebuild(child);
         break;
 
+    case PAGE_CAKE6MENU:
+        cake6menu_rebuild(child);
+        break;
+
     case PAGE_RISINGPAGE:
         risingpage_rebuild(child);
         break;
@@ -4663,6 +4667,7 @@ static int menu_clean_key_allowed(void)
     case PAGE_HOTCLEAN_MENU:
     case PAGE_SIXMENU:       /* 第六感:只放开前两层 */
     case PAGE_BREAD6MENU:
+    case PAGE_CAKE6MENU:
         return 1;
     default:
         return 0;
@@ -4677,7 +4682,7 @@ static int screen_set_key_allowed(page_id_t below, uint8_t key)
     case PAGE_MAJOR_MENU_TZ: case PAGE_COOKMENU: case PAGE_COOK_MENU_TZ:
     case PAGE_SPECIAL_MENU: case PAGE_SPECIAL_MENU_TZ: case PAGE_COOK4_MENU:
     case PAGE_FROZEN_COOK: case PAGE_CLEAN_MENU: case PAGE_HOTCLEAN_MENU:
-    case PAGE_SIXMENU: case PAGE_BREAD6MENU:
+    case PAGE_SIXMENU: case PAGE_BREAD6MENU: case PAGE_CAKE6MENU:
         break;
     default:
         return 0;
@@ -4686,7 +4691,7 @@ static int screen_set_key_allowed(page_id_t below, uint8_t key)
     if (key == KEY_MENU && (below == PAGE_MAJOR_MENU || below == PAGE_MAJOR_MENU_TZ)) return 0;
     if (key == KEY_CLEAN && below == PAGE_CLEAN_MENU) return 0;
     if (key == KEY_SIXMENU && (below == PAGE_SIXMENU || below == PAGE_BREAD6MENU ||
-        below == PAGE_RISINGPAGE || below == PAGE_DESCRIPTIONMENU ||
+        below == PAGE_CAKE6MENU || below == PAGE_RISINGPAGE || below == PAGE_DESCRIPTIONMENU ||
         below == PAGE_SIX_COOKING || below == PAGE_TOASTCOLOR)) return 0;
     if (key == KEY_PREHEAT && (below == PAGE_PREHEAT_MENU || below == PAGE_PREHEAT_COOKING ||
         below == PAGE_PREHEAT_STOP || below == PAGE_PREHEAT_STOP_BACK ||
@@ -4984,7 +4989,7 @@ static void process_key(uint8_t key)
         if (depth > 0) {
             page_id_t cur = page_stack[depth - 1];
             if (cur == PAGE_SIXMENU || cur == PAGE_BREAD6MENU ||
-                cur == PAGE_RISINGPAGE || cur == PAGE_DESCRIPTIONMENU ||
+                cur == PAGE_CAKE6MENU || cur == PAGE_RISINGPAGE || cur == PAGE_DESCRIPTIONMENU ||
                 cur == PAGE_SIX_COOKING || cur == PAGE_TOASTCOLOR) {
                 g_send.buzzer_req = BUZZER_KEY_INVALID;   /* 防重入 */
                 /* 六感运行页(非遮罩确认态):与烹饪中行为一致,弹无效提示 */

@@ -50,7 +50,7 @@ void sixmenu_create(ui_manager_t *ui)
     lv_obj_t *cake_label = lv_label_create(scr->cake);
     lv_label_set_text(cake_label, "");
     lv_obj_align(cake_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->cake, 267, 75);
+    lv_obj_set_pos(scr->cake, 267, 76);
     lv_obj_set_size(scr->cake, 248, 193);
 
     // Set style of scr->cake

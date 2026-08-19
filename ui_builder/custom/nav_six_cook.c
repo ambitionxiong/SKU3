@@ -18,11 +18,22 @@ lv_group_t *g_six_cooking = NULL;
 uint8_t g_six_running = 0;
 int g_six_color_min = 4;   /* 当前烤色分钟 */
 
-/* 面包品类 */
+/* 六感菜品类（面包 + 蛋糕共用同一套 cooking/description 流程） */
 #define SIX_BREAD_ROLL      0   /* 面包卷 */
 #define SIX_BREAD_WHEAT     1   /* 全麦面包 */
 #define SIX_BREAD_TOAST     2   /* 土司 */
 #define SIX_BREAD_CROISSANT 3   /* 可颂 */
+#define SIX_CAKE_SWISSROLL      4   /* 瑞士卷 */
+#define SIX_CAKE_STRUDEL        5   /* 果馅卷 */
+#define SIX_CAKE_MADELEINE      6   /* 玛德琳 */
+#define SIX_CAKE_SPONGECAKE     7   /* 海绵蛋糕 */
+#define SIX_CAKE_CUPCAKE        8   /* 纸杯蛋糕 */
+#define SIX_CAKE_CHOCOLATECAKE  9   /* 巧克力蛋糕 */
+#define SIX_CAKE_CREAMPUFF      10  /* 泡芙 */
+#define SIX_CAKE_EGGTART        11  /* 蛋挞 */
+#define SIX_CAKE_MILLEFEUILLE   12  /* 千层酥 */
+#define SIX_CAKE_COOKIES        13  /* 曲奇饼干 */
+#define SIX_CAKE_MUFFIN         14  /* 松饼 */
 uint8_t g_six_bread_type = SIX_BREAD_ROLL;
 
 /* 每菜配置 */
@@ -33,23 +44,57 @@ typedef struct {
     int cook_sec;              /* 烹饪秒数 */
     int color_min[3];          /* 烤色分钟(浅/中/深) */
     int has_color;             /* 是否支持烤色加强 */
+    int has_rising;            /* 是否有发酵阶段 */
     int cook_min;              /* 烹饪分钟(descriptionmenu 显示) */
     const char *cook_desc;     /* 烹饪说明(descriptionmenu 显示) */
 } six_bread_cfg_t;
 
-static const six_bread_cfg_t s_bread_cfg[SIX_BREAD_CROISSANT + 1] = {
+static const six_bread_cfg_t s_bread_cfg[SIX_CAKE_MUFFIN + 1] = {
     /* 面包卷 */
-    { "面包卷", MODE_UPDOWN_BBQ, 160, 20 * 60, {2, 4, 6}, 1, 20,
+    { "面包卷", MODE_UPDOWN_BBQ, 160, 1 * 60, {2, 4, 6}, 1, 1, 1,  /* 调试:1分钟 */
       "烹饪说明：\n根据你最喜欢的食谱准备面团，放在烤盘上\n现在将食物放在第3层\n使用网架和盘" },
     /* 全麦面包 */
-    { "全麦面包", MODE_UPDOWN_BBQ, 160, 25 * 60, {2, 4, 6}, 1, 25,
+    { "全麦面包", MODE_UPDOWN_BBQ, 160, 1 * 60, {2, 4, 6}, 1, 1, 1,  /* 调试:1分钟 */
       "烹饪说明：\n根据你最喜欢的食谱准备面团，放在烤盘上\n现在将食物放在第3层\n使用烤盘" },
     /* 土司 */
-    { "土司", MODE_UPDOWN_BBQ, 170, 45 * 60, {3, 6, 10}, 1, 45,
+    { "土司", MODE_UPDOWN_BBQ, 170, 1 * 60, {3, 6, 10}, 1, 1, 1,  /* 调试:1分钟 */
       "烹饪说明：\n按照你喜欢的白面包配方准备面团，面团卷成长条状，并把它放在烤盘中\n现在将食物放在第2层\n使用网架和面包容器" },
     /* 可颂(热风对流 windchange, 无烤色) */
-    { "可颂", MODE_WINDCHANGE_BBQ, 180, 20 * 60, {0, 0, 0}, 0, 20,
+    { "可颂", MODE_WINDCHANGE_BBQ, 180, 1 * 60, {0, 0, 0}, 0, 1, 1,  /* 调试:1分钟 */
       "烹饪说明：\n根据你最喜欢的食谱准备面团，放在烤盘上\n现在将食物放在第3层\n使用烤盘" },
+    /* 瑞士卷(蛋糕:上下烧烤, 无发酵无烤色) */
+    { "瑞士卷", MODE_UPDOWN_BBQ, 160, 1 * 60, {0, 0, 0}, 0, 0, 1,   /* 调试:1分钟 */
+      "烹饪说明：\n准备500~900g无脂肪海绵蛋糕面糊。倒入铺了烹调纸并刷油的烤盘中\n现在将食物放在第3层\n使用网架和盘" },
+    /* 果馅卷(热风 hotwind, 无发酵无烤色) */
+    { "果馅卷", MODE_HOTWIND_BBQ, 200, 1 * 60, {0, 0, 0}, 0, 0, 1,   /* 调试:1分钟 */
+      "烹饪说明：\n根据你喜欢的食谱准备面团，放在烤盘上。烹饪结束后，让它冷却下来，然后撒上糖粉\n现在将食物放在第3层\n使用烤盘" },
+    /* 玛德琳(上下烧烤, 无发酵无烤色) */
+    { "玛德琳", MODE_UPDOWN_BBQ, 190, 1 * 60, {0, 0, 0}, 0, 0, 1,   /* 调试:1分钟 */
+      "烹饪说明：\n根据你最喜欢的食谱准备和冷却面糊。将冷面糊直接倒入涂油的玛德琳烤盘\n现在将食物放在第3层\n使用网架和蛋糕模具盘" },
+    /* 海绵蛋糕(上下烧烤, 无发酵无烤色) */
+    { "海绵蛋糕", MODE_UPDOWN_BBQ, 180, 1 * 60, {0, 0, 0}, 0, 0, 1,   /* 调试:1分钟 */
+      "烹饪说明：\n准备无脂海绵蛋糕面糊500-900克。倒入涂了油的烤盘\n现在将食物放在第2层\n使用网架和模具盘" },
+    /* 纸杯蛋糕(上下烧烤, 无发酵无烤色) */
+    { "纸杯蛋糕", MODE_UPDOWN_BBQ, 160, 1 * 60, {0, 0, 0}, 0, 0, 1,   /* 调试:1分钟 */
+      "烹饪说明：\n根据你喜欢的食谱准备面糊，每个纸杯填满2/3左右。烹饪结束后移到网架冷却\n现在将食物放在第3层\n使用烤盘" },
+    /* 巧克力蛋糕(上下烧烤, 无发酵无烤色) */
+    { "巧克力蛋糕", MODE_UPDOWN_BBQ, 160, 1 * 60, {0, 0, 0}, 0, 0, 1,   /* 调试:1分钟 */
+      "烹饪说明：\n准备500~900g巧克力蛋糕面糊。倒入铺了烹调纸并刷油的烤盘中\n现在将食物放在第2层\n使用网架和模具盘" },
+    /* 泡芙(上下烧烤, 无发酵无烤色) */
+    { "泡芙", MODE_UPDOWN_BBQ, 170, 1 * 60, {0, 0, 0}, 0, 0, 1,   /* 调试:1分钟 */
+      "烹饪说明：\n根据你最喜欢的食谱准备面团，放到烤盘上。烹饪结束时移到网架\n现在将食物放在第3层\n使用烤盘" },
+    /* 蛋挞(上下烧烤, 无发酵无烤色) */
+    { "蛋挞", MODE_UPDOWN_BBQ, 230, 1 * 60, {0, 0, 0}, 0, 0, 1,   /* 调试:1分钟 */
+      "烹饪说明：\n根据你最喜欢的食谱准备面团和蛋奶冻。将面团压入模具中，倒入蛋奶液至八成\n现在将食物放在第3层\n使用烤盘" },
+    /* 千层酥(热风 hotwind, 无发酵无烤色) */
+    { "千层酥", MODE_HOTWIND_BBQ, 200, 1 * 60, {0, 0, 0}, 0, 0, 1,   /* 调试:1分钟 */
+      "烹饪说明：\n根据你喜欢的食谱准备酥皮和冰奶油。将酥皮放在烤盘上，撒上糖粉\n现在将食物放在第3层\n使用烤盘" },
+    /* 曲奇饼干(上下烧烤, 无发酵无烤色) */
+    { "曲奇饼干", MODE_UPDOWN_BBQ, 160, 1 * 60, {0, 0, 0}, 0, 0, 1,   /* 调试:1分钟 */
+      "烹饪说明：\n根据你最喜欢的食谱准备面团。团出1.5汤匙大小的面团，放在烤盘上\n现在将食物放在第3层\n使用烤盘" },
+    /* 松饼(上下烧烤, 无发酵无烤色) */
+    { "松饼", MODE_UPDOWN_BBQ, 180, 1 * 60, {0, 0, 0}, 0, 0, 1,   /* 调试:1分钟 */
+      "烹饪说明：\n根据你最喜欢的食谱准备面糊，放在烤盘上\n现在将食物放在第3层\n使用烤盘" },
 };
 
 const six_bread_cfg_t *six_bread_cfg(void) { return &s_bread_cfg[g_six_bread_type]; }
@@ -57,6 +102,7 @@ const char *six_bread_name(void)     { return s_bread_cfg[g_six_bread_type].name
 const char *six_bread_desc(void)     { return s_bread_cfg[g_six_bread_type].cook_desc; }
 int six_bread_cook_min(void)         { return s_bread_cfg[g_six_bread_type].cook_min; }
 int six_bread_has_color(void)        { return s_bread_cfg[g_six_bread_type].has_color; }
+int six_bread_has_rising(void)       { return s_bread_cfg[g_six_bread_type].has_rising; }
 int six_bread_color_min(int level)   /* 1浅 2中 3深 */
 {
     if (level < 1 || level > 3) return 0;
@@ -77,7 +123,7 @@ static uint8_t g_six_overlay = 0;   /* 遮罩确认态 */
 static uint8_t g_six_from = SIX_PHASE_COOKING;  /* 遮罩进入源 */
 static uint8_t g_six_has_rising = 0;   /* 是否有发酵段 */
 
-#define SIX_RISING_SEC     (45 * 60)
+#define SIX_RISING_SEC     (1 * 60)   /* 调试:临时 1 分钟,正式 45 分钟 */
 /* 烹饪秒数按菜: SIX_COOKING_SEC() 宏 */
 #define SIX_COOKING_SEC(cfg)    ((cfg)->cook_sec)
 
@@ -177,10 +223,13 @@ static void six_cook_apply_display(void)
             lv_obj_clear_flag(sc->text2, LV_OBJ_FLAG_HIDDEN);
             if (bl) lv_label_set_text(bl, "需 要");
         } else {
-            /* 无烤色:直接显示完成,按钮为"完 成" */
-            lv_obj_add_flag(sc->text1, LV_OBJ_FLAG_HIDDEN);
-            lv_obj_add_flag(sc->text2, LV_OBJ_FLAG_HIDDEN);
-            if (bl) lv_label_set_text(bl, "完 成");
+            /* 无烤色:完成提示,彻底隐藏按钮(移出焦点组,按确定不再触发) */
+            lv_obj_add_flag(sc->stop, LV_OBJ_FLAG_HIDDEN);
+            if (g_six_cooking) lv_group_remove_obj(sc->stop);
+            lv_obj_clear_flag(sc->text1, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(sc->text2, LV_OBJ_FLAG_HIDDEN);
+            lv_label_set_text(sc->text1, "高温防烫");
+            lv_label_set_text(sc->text2, "请缓慢打开门体！");
         }
         lv_bar_set_range(sc->bar_1, 0, 100);
         lv_bar_set_value(sc->bar_1, 100, LV_ANIM_OFF);
@@ -237,6 +286,12 @@ static void six_cook_apply_display(void)
         lv_obj_clear_flag(sc->text2, LV_OBJ_FLAG_HIDDEN);
         lv_label_set_text(sc->text1, "是否结束当前任务");
         lv_label_set_text(sc->text2, "回到主页");
+        /* 确认层:按钮恢复显示并加回焦点组(可操作) */
+        lv_obj_clear_flag(sc->stop, LV_OBJ_FLAG_HIDDEN);
+        if (g_six_cooking) {
+            lv_group_remove_obj(sc->stop);   /* 防重复添加 */
+            lv_group_add_obj(g_six_cooking, sc->stop);
+        }
         if (bl) lv_label_set_text(bl, "确 定");
     }
 }
@@ -258,7 +313,7 @@ static void six_cook_set_phase(int phase)
         const six_bread_cfg_t *cfg = six_bread_cfg();
         g_send.cook_mode = cfg->mode;
         g_send.set_temp = cfg->cook_temp;
-        g_send.set_temp_lower = (cfg->mode == MODE_WINDCHANGE_BBQ) ? 0 : cfg->cook_temp;
+        g_send.set_temp_lower = (cfg->mode == MODE_UPDOWN_BBQ) ? cfg->cook_temp : 0;   /* 仅上下烧烤发下温 */
         g_send.iface_status = IFACE_COOKING;
         break;
     }
@@ -266,7 +321,7 @@ static void six_cook_set_phase(int phase)
         const six_bread_cfg_t *cfg = six_bread_cfg();
         g_send.cook_mode = cfg->mode;   /* 烤色阶段保持前面模式,不发 color */
         g_send.set_temp = cfg->cook_temp;
-        g_send.set_temp_lower = (cfg->mode == MODE_WINDCHANGE_BBQ) ? 0 : cfg->cook_temp;
+        g_send.set_temp_lower = (cfg->mode == MODE_UPDOWN_BBQ) ? cfg->cook_temp : 0;   /* 仅上下烧烤发下温 */
         /* iface_status 不设:保持完成状态(尚未开始烹饪) */
         break;
     }
@@ -274,7 +329,7 @@ static void six_cook_set_phase(int phase)
         const six_bread_cfg_t *cfg = six_bread_cfg();
         g_send.cook_mode = cfg->mode;
         g_send.set_temp = cfg->cook_temp;
-        g_send.set_temp_lower = (cfg->mode == MODE_WINDCHANGE_BBQ) ? 0 : cfg->cook_temp;
+        g_send.set_temp_lower = (cfg->mode == MODE_UPDOWN_BBQ) ? cfg->cook_temp : 0;   /* 仅上下烧烤发下温 */
         g_send.iface_status = IFACE_COOKING;   /* 点"开 始"后才发烹饪状态 */
         break;
     }
@@ -371,7 +426,8 @@ static void on_six_stop_click(lv_event_t *e)
         if (six_bread_has_color()) {
             jump_to_toastcolor();
         } else {
-            six_cook_exit();   /* 无烤色:完成后直接结束,回六感主菜单 */
+            /* 无烤色:进入确认(遮罩),确认后再退出,避免直接返回 */
+            six_cook_handle_back();
         }
         break;
     case SIX_PHASE_COLOR_SETUP:
@@ -468,11 +524,11 @@ void jump_to_six_cooking(void)
     g_six_running = 1;
     g_six_overlay = 0;
     g_six_paused = 0;
-    g_six_has_rising = (g_rising_choice == 1);
+    g_six_has_rising = six_bread_has_rising() && (g_rising_choice == 1);
     g_six_color_min = six_bread_color_min(2);   /* 默认"中"档 */
     cook_elapsed_saved = 0;
     cook_start_time = lv_tick_get();
-    six_cook_set_phase(g_rising_choice == 1 ? SIX_PHASE_RISING : SIX_PHASE_COOKING);
+    six_cook_set_phase((six_bread_has_rising() && g_rising_choice == 1) ? SIX_PHASE_RISING : SIX_PHASE_COOKING);
     if (cook_timer) lv_timer_del(cook_timer);
     cook_timer = lv_timer_create(six_cook_timer_cb, 1000, NULL);
     g_send.iface_status = IFACE_COOKING;
@@ -509,7 +565,7 @@ void six_cook_goto_setup(void)
     g_six_phase = SIX_PHASE_COLOR_SETUP;
     g_send.cook_mode = six_bread_cfg()->mode;   /* 保持前面模式,不发 color */
     g_send.set_temp = six_bread_cfg()->cook_temp;
-    g_send.set_temp_lower = (g_send.cook_mode == MODE_WINDCHANGE_BBQ) ? 0 : six_bread_cfg()->cook_temp;
+    g_send.set_temp_lower = (g_send.cook_mode == MODE_UPDOWN_BBQ) ? six_bread_cfg()->cook_temp : 0;   /* 仅上下烧烤发下温 */
     /* iface_status 不设:保持完成状态,点"开 始"后才发烹饪状态 */
 }
 

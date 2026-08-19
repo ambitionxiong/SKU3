@@ -302,10 +302,15 @@ void jump_to_stepset(int i)
 
         stepset_bind_events();
         /* 已设置步骤：定位 roller 并回填；新设置：按当前选中模式给默认值 */
-        if (g_steps[i].set)
+        if (g_steps[i].set) {
             stepset_restore_mode(g_steps[i].mode);
-        else
+        } else {
+            /* 首进新设置: roller_main 默认"烹饪功能",先设置 roller_mode 为 cook 菜单新顺序 */
+            lv_roller_set_options(ss->roller_mode,
+                                  "上下烧烤\n顶部烧烤\n热风烧烤\n热风\n节能热风\n底部烧烤\n集中烧烤\n热风对流",
+                                  LV_ROLLER_MODE_NORMAL);
             stepset_apply_sel_mode(true);
+        }
     }
     current_group = g_stepset;
 

@@ -54,7 +54,9 @@ void cake6menu_create(ui_manager_t *ui)
     lv_obj_set_style_border_width(scr->swissroll, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->swissroll, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->swissroll, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->swissroll, LVGL_IMAGE_PATH(div4bg80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->swissroll, LVGL_IMAGE_PATH(div11_1_80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_border_opa(scr->swissroll, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_shadow_opa(scr->swissroll, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
 
     // Init scr->strudel
     scr->strudel = lv_btn_create(scr->obj);
@@ -71,7 +73,7 @@ void cake6menu_create(ui_manager_t *ui)
     lv_obj_set_style_border_width(scr->strudel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->strudel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->strudel, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->strudel, LVGL_IMAGE_PATH(div4bg80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->strudel, LVGL_IMAGE_PATH(div11_2_80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
     // Init scr->muffin
     scr->muffin = lv_btn_create(scr->obj);
@@ -88,7 +90,7 @@ void cake6menu_create(ui_manager_t *ui)
     lv_obj_set_style_border_width(scr->muffin, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->muffin, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->muffin, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->muffin, LVGL_IMAGE_PATH(div4bg80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->muffin, LVGL_IMAGE_PATH(div11_2_80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
     // Init scr->madeleine
     scr->madeleine = lv_btn_create(scr->obj);
@@ -105,7 +107,7 @@ void cake6menu_create(ui_manager_t *ui)
     lv_obj_set_style_border_width(scr->madeleine, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->madeleine, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->madeleine, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->madeleine, LVGL_IMAGE_PATH(div4bg80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->madeleine, LVGL_IMAGE_PATH(div11_2_80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
     // Init scr->spongecake
     scr->spongecake = lv_btn_create(scr->obj);
@@ -122,7 +124,7 @@ void cake6menu_create(ui_manager_t *ui)
     lv_obj_set_style_border_width(scr->spongecake, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->spongecake, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->spongecake, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->spongecake, LVGL_IMAGE_PATH(div4bg80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->spongecake, LVGL_IMAGE_PATH(div11_2_80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
     // Init scr->cupcake
     scr->cupcake = lv_btn_create(scr->obj);
@@ -139,7 +141,7 @@ void cake6menu_create(ui_manager_t *ui)
     lv_obj_set_style_border_width(scr->cupcake, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->cupcake, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->cupcake, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->cupcake, LVGL_IMAGE_PATH(div4bg80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->cupcake, LVGL_IMAGE_PATH(div11_2_80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
     // Init scr->chocolatecake
     scr->chocolatecake = lv_btn_create(scr->obj);
@@ -156,7 +158,7 @@ void cake6menu_create(ui_manager_t *ui)
     lv_obj_set_style_border_width(scr->chocolatecake, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->chocolatecake, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->chocolatecake, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->chocolatecake, LVGL_IMAGE_PATH(div4bg80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->chocolatecake, LVGL_IMAGE_PATH(div11_2_80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
     // Init scr->creampuff
     scr->creampuff = lv_btn_create(scr->obj);
@@ -173,7 +175,7 @@ void cake6menu_create(ui_manager_t *ui)
     lv_obj_set_style_border_width(scr->creampuff, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->creampuff, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->creampuff, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->creampuff, LVGL_IMAGE_PATH(div4bg80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->creampuff, LVGL_IMAGE_PATH(div11_2_80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
     // Init scr->eggtart
     scr->eggtart = lv_btn_create(scr->obj);
@@ -190,7 +192,7 @@ void cake6menu_create(ui_manager_t *ui)
     lv_obj_set_style_border_width(scr->eggtart, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->eggtart, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->eggtart, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->eggtart, LVGL_IMAGE_PATH(div4bg80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->eggtart, LVGL_IMAGE_PATH(div11_2_80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
     // Init scr->millefeuille
     scr->millefeuille = lv_btn_create(scr->obj);
@@ -207,7 +209,7 @@ void cake6menu_create(ui_manager_t *ui)
     lv_obj_set_style_border_width(scr->millefeuille, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->millefeuille, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->millefeuille, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->millefeuille, LVGL_IMAGE_PATH(div4bg80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->millefeuille, LVGL_IMAGE_PATH(div11_2_80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
     // Init scr->cookies
     scr->cookies = lv_btn_create(scr->obj);
@@ -224,7 +226,7 @@ void cake6menu_create(ui_manager_t *ui)
     lv_obj_set_style_border_width(scr->cookies, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->cookies, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->cookies, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->cookies, LVGL_IMAGE_PATH(div4bg80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->cookies, LVGL_IMAGE_PATH(div11_2_80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
 
 }

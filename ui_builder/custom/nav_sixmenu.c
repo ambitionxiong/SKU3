@@ -10,19 +10,13 @@
 
 lv_group_t *g_sixmenu = NULL;
 lv_group_t *g_bread6menu = NULL;
-lv_group_t *g_risingpage = NULL;
-lv_group_t *g_descriptionmenu = NULL;
-int g_rising_choice = -1;   /* -1 未选 0=否 1=是 */
 
 static void on_sixmenu_bread_click(lv_event_t *e);
+static void on_sixmenu_cake_click(lv_event_t *e);
 static void on_bread6menu_breadroll_click(lv_event_t *e);
 static void on_bread6menu_wheat_click(lv_event_t *e);
 static void on_bread6menu_toast_click(lv_event_t *e);
 static void on_bread6menu_croissant_click(lv_event_t *e);
-static void on_rising_yes_click(lv_event_t *e);
-static void on_rising_no_click(lv_event_t *e);
-static void on_description_start_click(lv_event_t *e);
-static void on_description_delay_click(lv_event_t *e);
 
 /* ================= sixmenu ================= */
 
@@ -50,7 +44,10 @@ void jump_to_sixmenu(void)
             lv_obj_add_event_cb(sm->bread, on_sixmenu_bread_click, LV_EVENT_CLICKED, NULL);
             lv_group_focus_obj(sm->bread);
         }
-        /* 其余 8 个按钮：功能未实现，不绑事件（点击静默无效） */
+        if (sm->cake) {
+            lv_obj_add_event_cb(sm->cake, on_sixmenu_cake_click, LV_EVENT_CLICKED, NULL);
+        }
+        /* 其余按钮：功能未实现，不绑事件（点击静默无效） */
     }
     current_group = g_sixmenu;
 
@@ -84,6 +81,9 @@ void sixmenu_rebuild(page_id_t child)
             /* 从 bread6menu 返回时焦点回到面包按钮 */
             lv_group_focus_obj(sm->bread);
         }
+        if (sm->cake) {
+            lv_obj_add_event_cb(sm->cake, on_sixmenu_cake_click, LV_EVENT_CLICKED, NULL);
+        }
     }
     current_group = g_sixmenu;
 
@@ -97,6 +97,12 @@ static void on_sixmenu_bread_click(lv_event_t *e)
 {
     if (screen_is_loading(lv_scr_act())) return;
     jump_to_bread6menu();
+}
+
+static void on_sixmenu_cake_click(lv_event_t *e)
+{
+    if (screen_is_loading(lv_scr_act())) return;
+    jump_to_cake6menu();
 }
 
 /* ================= bread6menu ================= */
@@ -218,7 +224,7 @@ static void on_bread6menu_croissant_click(lv_event_t *e)
     jump_to_risingpage();
 }
 
-/* ================= risingpage ================= */
+#if 0 /* 已拆分到 nav_six_rising.c / nav_six_desc.c */
 
 void jump_to_risingpage(void)
 {
@@ -437,3 +443,4 @@ static void on_description_delay_click(lv_event_t *e)
     if (screen_is_loading(lv_scr_act())) return;
     jump_to_delayset();   /* 来源页自动记录为 PAGE_DESCRIPTIONMENU */
 }
+#endif /* 已拆分到 nav_six_rising.c / nav_six_desc.c */

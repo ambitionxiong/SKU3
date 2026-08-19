@@ -275,6 +275,7 @@ typedef enum {
     PAGE_SCREEN_SET,        /* 设置页（覆盖层，任何页面可进） */
     PAGE_SIXMENU,           /* 第六感菜单 */
     PAGE_BREAD6MENU,        /* 第六感-面包 */
+    PAGE_CAKE6MENU,         /* 第六感-蛋糕 */
     PAGE_RISINGPAGE,        /* 第六感-是否发酵 */
     PAGE_DESCRIPTIONMENU,   /* 第六感-烹饪描述 */
     PAGE_SIX_COOKING,       /* 第六感-运行页（复用 somecook_cooking UI） */
@@ -642,6 +643,7 @@ int nav_hint_active(void);
 /* 第六感菜单（nav_sixmenu.c 实现） */
 extern lv_group_t *g_sixmenu;
 extern lv_group_t *g_bread6menu;
+extern lv_group_t *g_cake6menu;
 extern lv_group_t *g_risingpage;
 extern lv_group_t *g_descriptionmenu;
 extern int g_rising_choice;   /* -1 未选 0=否 1=是 */
@@ -649,6 +651,8 @@ void jump_to_sixmenu(void);
 void sixmenu_rebuild(page_id_t child);
 void jump_to_bread6menu(void);
 void bread6menu_rebuild(page_id_t child);
+void jump_to_cake6menu(void);
+void cake6menu_rebuild(page_id_t child);
 void jump_to_risingpage(void);
 void risingpage_rebuild(page_id_t child);
 void jump_to_descriptionmenu(void);
@@ -663,10 +667,22 @@ extern uint8_t g_six_bread_type;   /* 面包品类: SIX_BREAD_ROLL/WHEAT/TOAST/C
 #define SIX_BREAD_WHEAT     1
 #define SIX_BREAD_TOAST     2
 #define SIX_BREAD_CROISSANT 3
+#define SIX_CAKE_SWISSROLL      4   /* 蛋糕-瑞士卷 */
+#define SIX_CAKE_STRUDEL        5   /* 蛋糕-果馅卷 */
+#define SIX_CAKE_MADELEINE      6   /* 蛋糕-玛德琳 */
+#define SIX_CAKE_SPONGECAKE     7   /* 蛋糕-海绵蛋糕 */
+#define SIX_CAKE_CUPCAKE        8   /* 蛋糕-纸杯蛋糕 */
+#define SIX_CAKE_CHOCOLATECAKE  9   /* 蛋糕-巧克力蛋糕 */
+#define SIX_CAKE_CREAMPUFF      10  /* 蛋糕-泡芙 */
+#define SIX_CAKE_EGGTART        11  /* 蛋糕-蛋挞 */
+#define SIX_CAKE_MILLEFEUILLE   12  /* 蛋糕-千层酥 */
+#define SIX_CAKE_COOKIES        13  /* 蛋糕-曲奇饼干 */
+#define SIX_CAKE_MUFFIN         14  /* 蛋糕-松饼 */
 extern const char *six_bread_name(void);
 extern const char *six_bread_desc(void);
 extern int six_bread_cook_min(void);
 extern int six_bread_has_color(void);
+extern int six_bread_has_rising(void);
 extern int six_bread_color_min(int level);
 void jump_to_six_cooking(void);
 void six_cook_handle_back(void);

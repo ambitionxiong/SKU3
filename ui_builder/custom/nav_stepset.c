@@ -26,18 +26,18 @@ static const stepset_range_t g_stepset_ranges[] = {
 
 /* 烹饪功能 8 项（roller_main 第 0 项） */
 static const char *g_modes_cook[] = {
-    "热风", "节能热风", "上下烧烤", "底部烧烤",
-    "热风烧烤", "集中烧烤", "热风对流", "顶部烧烤",
+    "上下烧烤", "顶部烧烤", "热风烧烤", "热风",
+    "节能热风", "底部烧烤", "集中烧烤", "热风对流",
 };
 static const uint8_t g_modes_cook_id[] = {
-    MODE_HOTWIND_BBQ, MODE_SAVE_BBQ, MODE_UPDOWN_BBQ, MODE_BOTTOM_BBQ,
-    MODE_HOT_BBQ, MODE_CENTRAL_BBQ, MODE_WINDCHANGE_BBQ, MODE_TOP_BBQ,
+    MODE_UPDOWN_BBQ, MODE_TOP_BBQ, MODE_HOT_BBQ, MODE_HOTWIND_BBQ,
+    MODE_SAVE_BBQ, MODE_BOTTOM_BBQ, MODE_CENTRAL_BBQ, MODE_WINDCHANGE_BBQ,
 };
 
 /* 特殊功能（步骤一 4 项；步骤 2/3 去掉发酵/解冻 → 前 2 项） */
-static const char *g_modes_special[] = { "空气炸", "发酵", "慢煮", "解冻" };
+static const char *g_modes_special[] = { "空气炸", "慢煮", "解冻", "发酵" };
 static const uint8_t g_modes_special_id[] = {
-    MODE_AIR, MODE_RISING, MODE_SLOWCOOK, MODE_UNFROZEN,
+    MODE_AIR, MODE_SLOWCOOK, MODE_UNFROZEN, MODE_RISING,
 };
 
 // 当前 roller 选中项 → MODE
@@ -118,14 +118,13 @@ void stepset_restore_mode(uint8_t mode)
     lv_roller_set_selected(scr->roller_main, main_sel, LV_ANIM_OFF);
     if (main_sel == 0)
         lv_roller_set_options(scr->roller_mode,
-                              "热风\n节能热风\n上下烧烤\n底部烧烤\n热风烧烤\n集中烧烤\n热风对流\n顶部烧烤",
+                              "上下烧烤\n顶部烧烤\n热风烧烤\n热风\n节能热风\n底部烧烤\n集中烧烤\n热风对流",
                               LV_ROLLER_MODE_NORMAL);
     else if (g_cur_step == 0)
-        lv_roller_set_options(scr->roller_mode, "空气炸\n发酵\n慢煮\n解冻", LV_ROLLER_MODE_NORMAL);
+        lv_roller_set_options(scr->roller_mode, "空气炸\n慢煮\n解冻\n发酵", LV_ROLLER_MODE_NORMAL);
     else
         lv_roller_set_options(scr->roller_mode, "空气炸\n慢煮", LV_ROLLER_MODE_NORMAL);
-    if (main_sel == 1 && g_cur_step > 0 && sub_sel == 2)
-        sub_sel = 1;   /* 步骤 2/3:慢煮在 4 项表索引 2 → 2 项表索引 1 */
+    /* 步骤 2/3: 4 项表前两项(空气炸/慢煮)与 2 项表一一对应,无需映射 */
     lv_roller_set_selected(scr->roller_mode, sub_sel, LV_ANIM_OFF);
     stepset_apply_sel_mode(true);
 }
@@ -196,11 +195,11 @@ static void stepset_on_main_change(lv_event_t *e)
     uint32_t sel = lv_roller_get_selected(scr->roller_main);
     if (sel == 0) {
         lv_roller_set_options(scr->roller_mode,
-                              "热风\n节能热风\n上下烧烤\n底部烧烤\n热风烧烤\n集中烧烤\n热风对流\n顶部烧烤",
+                              "上下烧烤\n顶部烧烤\n热风烧烤\n热风\n节能热风\n底部烧烤\n集中烧烤\n热风对流",
                               LV_ROLLER_MODE_NORMAL);
     } else {
         if (g_cur_step == 0)
-            lv_roller_set_options(scr->roller_mode, "空气炸\n发酵\n慢煮\n解冻", LV_ROLLER_MODE_NORMAL);
+            lv_roller_set_options(scr->roller_mode, "空气炸\n慢煮\n解冻\n发酵", LV_ROLLER_MODE_NORMAL);
         else
             lv_roller_set_options(scr->roller_mode, "空气炸\n慢煮", LV_ROLLER_MODE_NORMAL);
     }
