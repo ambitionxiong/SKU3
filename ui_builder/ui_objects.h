@@ -4120,6 +4120,27 @@ typedef struct {
     lv_obj_t *image_13;
 } screen_5_t;
 
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *next;
+    lv_obj_t *image_1;
+    lv_obj_t *image_2;
+    lv_obj_t *name1;
+    lv_obj_t *maturity;
+    lv_obj_t *label_13;
+    lv_obj_t *degree;
+    lv_obj_t *label_18;
+    lv_obj_t *label_19;
+    lv_obj_t *maturityline3;
+    lv_obj_t *maturityline2;
+    lv_obj_t *degreeline;
+    lv_obj_t *image_7;
+    lv_obj_t *weight;
+    lv_obj_t *weighticon;
+    lv_obj_t *weightline4;
+    lv_obj_t *weightline3;
+} screen_1_t;
+
 
 typedef struct {
     bool auto_del;
@@ -4390,6 +4411,7 @@ typedef struct {
     chickenmenu_t chickenmenu;
     weightpage_t weightpage;
     screen_5_t screen_5;
+    screen_1_t screen_1;
 
 } ui_manager_t;
 
@@ -5734,6 +5756,11 @@ static inline screen_5_t *screen_5_get(ui_manager_t *ui)
     return &ui->screen_5;
 }
 
+static inline screen_1_t *screen_1_get(ui_manager_t *ui)
+{
+    return &ui->screen_1;
+}
+
 
 void waitmenu_24_create(ui_manager_t *ui);
 void clean_menu_create(ui_manager_t *ui);
@@ -6002,6 +6029,7 @@ void chick6menu_create(ui_manager_t *ui);
 void chickenmenu_create(ui_manager_t *ui);
 void weightpage_create(ui_manager_t *ui);
 void screen_5_create(ui_manager_t *ui);
+void screen_1_create(ui_manager_t *ui);
 
 
 LV_FONT_DECLARE(c_montserratmedium_16);

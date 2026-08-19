@@ -66,11 +66,12 @@ void updown_bbq_menu_create(ui_manager_t *ui)
     lv_label_set_text(scr->label_1, "温度");
     lv_label_set_long_mode(scr->label_1, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->label_1, 300, 137);
-    lv_obj_set_size(scr->label_1, 64, 32);
+    lv_obj_set_size(scr->label_1, 60, 32);
 
     // Set style of scr->label_1
     lv_obj_set_style_text_font(scr->label_1, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->label_1, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->label_1, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->tempnum_label
     scr->tempnum_label = lv_label_create(scr->obj);
@@ -101,11 +102,12 @@ void updown_bbq_menu_create(ui_manager_t *ui)
     lv_label_set_text(scr->cook_label, "烹饪时间");
     lv_label_set_long_mode(scr->cook_label, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->cook_label, 891, 137);
-    lv_obj_set_size(scr->cook_label, 125, 32);
+    lv_obj_set_size(scr->cook_label, 120, 32);
 
     // Set style of scr->cook_label
     lv_obj_set_style_text_font(scr->cook_label, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->cook_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->cook_label, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->hournum_label
     scr->hournum_label = lv_label_create(scr->obj);
@@ -167,11 +169,12 @@ void updown_bbq_menu_create(ui_manager_t *ui)
     lv_label_set_text(scr->next_label, "下一步");
     lv_label_set_long_mode(scr->next_label, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->next_label, 996, 39);
-    lv_obj_set_size(scr->next_label, 117, 32);
+    lv_obj_set_size(scr->next_label, 108, 32);
 
     // Set style of scr->next_label
     lv_obj_set_style_text_font(scr->next_label, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->next_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->next_label, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->temeline_long
     scr->temeline_long = lv_img_create(scr->obj);

@@ -15,6 +15,7 @@
 #include LV_SDL_INCLUDE_PATH
 #include "ui_init.h"
 #include "nav.h"
+#include "i18n.h"
 #undef main
 
 #ifdef _WIN32
@@ -123,7 +124,7 @@ int main(int argc, char **argv)
 		/* 读键状态模拟编码器（边沿触发防连击） */
 		static uint8_t prev_key = 0;
 		static uint8_t prev_door = 0;
-		static uint8_t prev_8 = 0, prev_9 = 0, prev_minus = 0;
+		static uint8_t prev_8 = 0, prev_9 = 0, prev_minus = 0, prev_lang = 0;
 		SDL_PumpEvents();
 		const Uint8 *keys = SDL_GetKeyboardState(NULL);
 		uint8_t sim_key = 0;
@@ -131,6 +132,7 @@ int main(int argc, char **argv)
 		uint8_t cur_8 = keys[SDL_SCANCODE_8];
 		uint8_t cur_9 = keys[SDL_SCANCODE_9];
 		uint8_t cur_minus = keys[SDL_SCANCODE_MINUS];
+		uint8_t cur_lang = keys[SDL_SCANCODE_F8];
 		if      (keys[SDL_SCANCODE_TAB])       sim_key = KEY_MENU;
 		else if (keys[SDL_SCANCODE_5])         sim_key = KEY_EXTRA_COLOR;
 		else if (keys[SDL_SCANCODE_ESCAPE])    sim_key = KEY_BACK;
@@ -161,6 +163,12 @@ int main(int argc, char **argv)
 				((uint16_t)uart_data_receive[Receive_data_Probe_Temp_H] << 8) | uart_data_receive[Receive_data_Probe_Temp_L]);
 		}
 		prev_8 = cur_8; prev_9 = cur_9; prev_minus = cur_minus;
+
+		if (cur_lang && !prev_lang) {
+			g_lang_en = !g_lang_en;   /* 只改标志位, 下次进入页面生效 */
+			printf("[sim] lang %s\n", g_lang_en ? "EN" : "CN");
+		}
+		prev_lang = cur_lang;
 		if (cur_door && !prev_door) {
 			uart_data_receive[Receive_data_Power_ALL_State] ^= (1 << 1);
 			printf("[sim] door %s\n",

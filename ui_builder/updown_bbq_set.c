@@ -163,8 +163,8 @@ void updown_bbq_set_create(ui_manager_t *ui)
     scr->preheat_label = lv_label_create(scr->obj);
     lv_label_set_text(scr->preheat_label, "快速预热");
     lv_label_set_long_mode(scr->preheat_label, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->preheat_label, 830, 154);
-    lv_obj_set_size(scr->preheat_label, 130, 32);
+    lv_obj_set_pos(scr->preheat_label, 840, 154);
+    lv_obj_set_size(scr->preheat_label, 120, 32);
 
     // Set style of scr->preheat_label
     lv_obj_set_style_text_font(scr->preheat_label, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -231,8 +231,8 @@ void updown_bbq_set_create(ui_manager_t *ui)
     scr->contain_label = lv_label_create(scr->obj);
     lv_label_set_text(scr->contain_label, "自动保温");
     lv_label_set_long_mode(scr->contain_label, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->contain_label, 831, 381);
-    lv_obj_set_size(scr->contain_label, 130, 32);
+    lv_obj_set_pos(scr->contain_label, 841, 381);
+    lv_obj_set_size(scr->contain_label, 120, 32);
 
     // Set style of scr->contain_label
     lv_obj_set_style_text_font(scr->contain_label, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -367,11 +367,12 @@ void updown_bbq_set_create(ui_manager_t *ui)
     lv_label_set_text(scr->sure_label, "确 定");
     lv_label_set_long_mode(scr->sure_label, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->sure_label, 1010, 39);
-    lv_obj_set_size(scr->sure_label, 85, 36);
+    lv_obj_set_size(scr->sure_label, 80, 36);
 
     // Set style of scr->sure_label
     lv_obj_set_style_text_font(scr->sure_label, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->sure_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->sure_label, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->preheat_on_button
     scr->preheat_on_button = lv_btn_create(scr->obj);

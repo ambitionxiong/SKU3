@@ -283,7 +283,7 @@ void cookmenu_create(ui_manager_t *ui)
     // Set style of scr->preheater_labal
     lv_obj_set_style_text_font(scr->preheater_labal, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->preheater_labal, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(scr->preheater_labal, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->preheater_labal, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->pengren_labal
     scr->pengren_labal = lv_label_create(scr->obj);

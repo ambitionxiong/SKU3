@@ -1,5 +1,6 @@
 #include "nav.h"
 #include "protocol.h"
+#include "i18n.h"
 
 // === 页面栈 ===
 #define MAX_STACK 16
@@ -1010,6 +1011,7 @@ void page_pop(void)
         major_menu_create(&ui_manager);
         groups_create();
         bind_events();   // 新按钮需要重新绑定点击事件
+        major_menu_apply_lang();   /* i18n */
         current_group = g_major_menu;
 
         /* ⑦ 根据 child 恢复焦点 */
@@ -1101,6 +1103,7 @@ void page_pop(void)
             set_min = 30;
             g_send.cook_mode = MODE_NONE;
         }
+        cookmenu_apply_lang();   /* i18n: 英文模式设置文本+字体 */
         lv_scr_load_anim(cookmenu_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
                          ui_manager.auto_del);
@@ -3828,6 +3831,7 @@ void page_pop(void)
             major_menu_create(&ui_manager);
             groups_create();
             bind_events();
+            major_menu_apply_lang();   /* i18n */
             current_group = g_major_menu;
             lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0,
@@ -3980,6 +3984,8 @@ void jump_to_cookmenu(void)
     if (cook && cook->preheater_button)
         lv_obj_add_event_cb(cook->preheater_button, on_preheat_click,
                             LV_EVENT_CLICKED, NULL);
+
+    cookmenu_apply_lang();   /* i18n: 英文模式设置文本+字体 */
 
     lv_scr_load_anim(cookmenu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
@@ -4639,6 +4645,7 @@ static void color_exit_to_home(void)
         major_menu_create(&ui_manager);
         groups_create();
         bind_events();
+        major_menu_apply_lang();   /* i18n */
         current_group = g_major_menu;
         lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
@@ -4769,6 +4776,7 @@ static void process_key(uint8_t key)
             major_menu_create(&ui_manager);
             groups_create();
             bind_events();
+            major_menu_apply_lang();   /* i18n */
             current_group = g_major_menu;
             lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0,
@@ -6203,6 +6211,7 @@ void nav_key1_long_press(void)
             major_menu_create(&ui_manager);
             groups_create();
             bind_events();
+            major_menu_apply_lang();   /* i18n */
             current_group = g_major_menu;
             lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, 0);
@@ -8751,6 +8760,7 @@ static void on_stop_back_sure_click(lv_event_t *e)
     major_menu_create(&ui_manager);
     groups_create();
     bind_events();
+    major_menu_apply_lang();   /* i18n */
     current_group = g_major_menu;
     lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
@@ -9256,6 +9266,7 @@ void nav_init(void)
     major_menu_create(&ui_manager);
     groups_create();
     bind_events();
+    major_menu_apply_lang();   /* i18n */
     current_group = g_major_menu;
     lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
