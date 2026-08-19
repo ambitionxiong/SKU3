@@ -98,6 +98,74 @@ void toastcolor_create(ui_manager_t *ui)
     lv_obj_set_style_img_opa(scr->line, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_pos(scr->line, 606, 328);
 
+    // Init scr->weight
+    scr->weight = lv_label_create(scr->obj);
+    lv_label_set_text(scr->weight, "1600");
+    lv_label_set_long_mode(scr->weight, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->weight, 519, 248);
+    lv_obj_set_size(scr->weight, 167, 77);
+
+    // Set style of scr->weight
+    lv_obj_set_style_text_font(scr->weight, &c_taiwanpearl_regular_72, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->weight, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->weight, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // Init scr->weighticon
+    scr->weighticon = lv_label_create(scr->obj);
+    lv_label_set_text(scr->weighticon, "g");
+    lv_label_set_long_mode(scr->weighticon, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->weighticon, 685, 280);
+    lv_obj_set_size(scr->weighticon, 21, 42);
+
+    // Set style of scr->weighticon
+    lv_obj_set_style_text_font(scr->weighticon, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->weighticon, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->weighticon, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // Init scr->weightline3
+    scr->weightline3 = lv_img_create(scr->obj);
+    lv_img_set_src(scr->weightline3, LVGL_IMAGE_PATH(settingline3_141x4.png));
+    lv_img_set_pivot(scr->weightline3, 50, 50);
+    lv_img_set_angle(scr->weightline3, 0);
+    lv_obj_set_style_img_opa(scr->weightline3, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(scr->weightline3, 569, 328);
+
+    // Init scr->weightline4
+    scr->weightline4 = lv_img_create(scr->obj);
+    lv_img_set_src(scr->weightline4, LVGL_IMAGE_PATH(settingline3_179x4.png));
+    lv_img_set_pivot(scr->weightline4, 50, 50);
+    lv_img_set_angle(scr->weightline4, 0);
+    lv_obj_set_style_img_opa(scr->weightline4, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(scr->weightline4, 530, 328);
+
+    // Init scr->Maturity
+    scr->Maturity = lv_label_create(scr->obj);
+    lv_label_set_text(scr->Maturity, "全熟");
+    lv_label_set_long_mode(scr->Maturity, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->Maturity, 531, 248);
+    lv_obj_set_size(scr->Maturity, 218, 77);
+
+    // Set style of scr->Maturity
+    lv_obj_set_style_text_font(scr->Maturity, &c_taiwanpearl_regular_72, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->Maturity, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->Maturity, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // Init scr->maturityline3
+    scr->maturityline3 = lv_img_create(scr->obj);
+    lv_img_set_src(scr->maturityline3, LVGL_IMAGE_PATH(settingline3_211x4.png));
+    lv_img_set_pivot(scr->maturityline3, 50, 50);
+    lv_img_set_angle(scr->maturityline3, 0);
+    lv_obj_set_style_img_opa(scr->maturityline3, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(scr->maturityline3, 537, 328);
+
+    // Init scr->maturityline2
+    scr->maturityline2 = lv_img_create(scr->obj);
+    lv_img_set_src(scr->maturityline2, LVGL_IMAGE_PATH(settingline3_139x4.png));
+    lv_img_set_pivot(scr->maturityline2, 50, 50);
+    lv_img_set_angle(scr->maturityline2, 0);
+    lv_obj_set_style_img_opa(scr->maturityline2, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(scr->maturityline2, 572, 328);
+
 
 }
 

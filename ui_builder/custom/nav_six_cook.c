@@ -97,16 +97,22 @@ static const six_bread_cfg_t s_bread_cfg[SIX_CAKE_MUFFIN + 1] = {
       "烹饪说明：\n根据你最喜欢的食谱准备面糊，放在烤盘上\n现在将食物放在第3层\n使用烤盘" },
 };
 
-const six_bread_cfg_t *six_bread_cfg(void) { return &s_bread_cfg[g_six_bread_type]; }
-const char *six_bread_name(void)     { return s_bread_cfg[g_six_bread_type].name; }
-const char *six_bread_desc(void)     { return s_bread_cfg[g_six_bread_type].cook_desc; }
-int six_bread_cook_min(void)         { return s_bread_cfg[g_six_bread_type].cook_min; }
-int six_bread_has_color(void)        { return s_bread_cfg[g_six_bread_type].has_color; }
-int six_bread_has_rising(void)       { return s_bread_cfg[g_six_bread_type].has_rising; }
+/* 越界钳制: g_six_bread_type 异常时回退到面包卷,防数组越界死机 */
+static uint8_t six_bread_type_safe(void)
+{
+    return (g_six_bread_type <= SIX_CAKE_MUFFIN) ? g_six_bread_type : SIX_BREAD_ROLL;
+}
+const six_bread_cfg_t *six_bread_cfg(void) { return &s_bread_cfg[six_bread_type_safe()]; }
+const char *six_bread_name(void)     { return six_bread_cfg()->name; }
+const char *six_bread_desc(void)     { return six_bread_cfg()->cook_desc; }
+int six_bread_cook_min(void)         { return six_bread_cfg()->cook_min; }
+int six_bread_has_color(void)        { return six_bread_cfg()->has_color; }
+int six_bread_has_rising(void)       { return six_bread_cfg()->has_rising; }
 int six_bread_color_min(int level)   /* 1浅 2中 3深 */
 {
+    const six_bread_cfg_t *cfg = six_bread_cfg();
     if (level < 1 || level > 3) return 0;
-    return s_bread_cfg[g_six_bread_type].color_min[level - 1];
+    return cfg->color_min[level - 1];
 }
 
 enum {

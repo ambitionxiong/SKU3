@@ -3988,6 +3988,13 @@ typedef struct {
     lv_obj_t *font36;
     lv_obj_t *font48;
     lv_obj_t *font60;
+    lv_obj_t *label_1;
+    lv_obj_t *label_2;
+    lv_obj_t *label_5;
+    lv_obj_t *label_6;
+    lv_obj_t *label_7;
+    lv_obj_t *label_8;
+    lv_obj_t *label_9;
 } textpage_t;
 
 typedef struct {
@@ -4042,6 +4049,13 @@ typedef struct {
     lv_obj_t *next;
     lv_obj_t *degree;
     lv_obj_t *line;
+    lv_obj_t *weight;
+    lv_obj_t *weighticon;
+    lv_obj_t *weightline3;
+    lv_obj_t *weightline4;
+    lv_obj_t *Maturity;
+    lv_obj_t *maturityline3;
+    lv_obj_t *maturityline2;
 } toastcolor_t;
 
 typedef struct {
@@ -4059,6 +4073,52 @@ typedef struct {
     lv_obj_t *millefeuille;
     lv_obj_t *cookies;
 } cake6menu_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *label_1;
+    lv_obj_t *chicken;
+    lv_obj_t *duck;
+} chick6menu_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *label_2;
+    lv_obj_t *wholechicken;
+    lv_obj_t *grillchickenwing;
+    lv_obj_t *friedchickenwing;
+    lv_obj_t *friedchickenleg;
+    lv_obj_t *grillchickenbreast;
+    lv_obj_t *label_4;
+    lv_obj_t *label_5;
+    lv_obj_t *label_6;
+    lv_obj_t *label_7;
+    lv_obj_t *label_8;
+    lv_obj_t *image_2;
+} chickenmenu_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_3;
+    lv_obj_t *label_9;
+    lv_obj_t *name;
+    lv_obj_t *next;
+    lv_obj_t *weight;
+    lv_obj_t *line3;
+    lv_obj_t *label_12;
+    lv_obj_t *line4;
+} weightpage_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *image_9;
+    lv_obj_t *label_15;
+    lv_obj_t *label_16;
+    lv_obj_t *button_15;
+    lv_obj_t *label_17;
+    lv_obj_t *line3;
+    lv_obj_t *image_13;
+} screen_5_t;
 
 
 typedef struct {
@@ -4326,6 +4386,10 @@ typedef struct {
     descriptionmenu_t descriptionmenu;
     toastcolor_t toastcolor;
     cake6menu_t cake6menu;
+    chick6menu_t chick6menu;
+    chickenmenu_t chickenmenu;
+    weightpage_t weightpage;
+    screen_5_t screen_5;
 
 } ui_manager_t;
 
@@ -5650,6 +5714,26 @@ static inline cake6menu_t *cake6menu_get(ui_manager_t *ui)
     return &ui->cake6menu;
 }
 
+static inline chick6menu_t *chick6menu_get(ui_manager_t *ui)
+{
+    return &ui->chick6menu;
+}
+
+static inline chickenmenu_t *chickenmenu_get(ui_manager_t *ui)
+{
+    return &ui->chickenmenu;
+}
+
+static inline weightpage_t *weightpage_get(ui_manager_t *ui)
+{
+    return &ui->weightpage;
+}
+
+static inline screen_5_t *screen_5_get(ui_manager_t *ui)
+{
+    return &ui->screen_5;
+}
+
 
 void waitmenu_24_create(ui_manager_t *ui);
 void clean_menu_create(ui_manager_t *ui);
@@ -5914,6 +5998,10 @@ void risingpage_create(ui_manager_t *ui);
 void descriptionmenu_create(ui_manager_t *ui);
 void toastcolor_create(ui_manager_t *ui);
 void cake6menu_create(ui_manager_t *ui);
+void chick6menu_create(ui_manager_t *ui);
+void chickenmenu_create(ui_manager_t *ui);
+void weightpage_create(ui_manager_t *ui);
+void screen_5_create(ui_manager_t *ui);
 
 
 LV_FONT_DECLARE(c_montserratmedium_16);
@@ -5924,6 +6012,13 @@ LV_FONT_DECLARE(c_taiwanpearl_regular_36);
 LV_FONT_DECLARE(c_taiwanpearl_regular_30);
 LV_FONT_DECLARE(c_taiwanpearl_regular_60);
 LV_FONT_DECLARE(c_taiwanpearl_regular_72);
+LV_FONT_DECLARE(c_aktivgroteskmedium_24);
+LV_FONT_DECLARE(c_aktivgroteskmedium_30);
+LV_FONT_DECLARE(c_aktivgroteskmedium_36);
+LV_FONT_DECLARE(c_aktivgroteskmedium_48);
+LV_FONT_DECLARE(c_aktivgroteskmedium_60);
+LV_FONT_DECLARE(c_aktivgroteskmedium_72);
+LV_FONT_DECLARE(c_aktivgroteskmedium_128);
 
 
 extern ui_manager_t ui_manager;
