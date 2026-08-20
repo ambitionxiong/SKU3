@@ -287,10 +287,13 @@ typedef enum {
     PAGE_SIXMENU,           /* 第六感菜单 */
     PAGE_BREAD6MENU,        /* 第六感-面包 */
     PAGE_CAKE6MENU,         /* 第六感-蛋糕 */
+    PAGE_CHICK6MENU,        /* 第六感-家禽 */
+    PAGE_CHICKENMENU,       /* 第六感-鸡 */
     PAGE_RISINGPAGE,        /* 第六感-是否发酵 */
     PAGE_DESCRIPTIONMENU,   /* 第六感-烹饪描述 */
     PAGE_SIX_COOKING,       /* 第六感-运行页（复用 somecook_cooking UI） */
     PAGE_TOASTCOLOR,        /* 第六感-烤色选择 */
+    PAGE_CHICKENCOOKING,    /* 第六感-烤鸡烹饪页（chickencooking UI） */
 } page_id_t;
 
 extern page_id_t page_stack[];
@@ -664,6 +667,13 @@ void jump_to_bread6menu(void);
 void bread6menu_rebuild(page_id_t child);
 void jump_to_cake6menu(void);
 void cake6menu_rebuild(page_id_t child);
+/* 第六感-家禽/鸡（nav_six_chicken.c 实现） */
+extern lv_group_t *g_chick6menu;
+extern lv_group_t *g_chickenmenu;
+void jump_to_chick6menu(void);
+void chick6menu_rebuild(page_id_t child);
+void jump_to_chickenmenu(void);
+void chickenmenu_rebuild(page_id_t child);
 void jump_to_risingpage(void);
 void risingpage_rebuild(page_id_t child);
 void jump_to_descriptionmenu(void);

@@ -18,6 +18,7 @@ lv_group_t *g_bread6menu = NULL;
 
 static void on_sixmenu_bread_click(lv_event_t *e);
 static void on_sixmenu_cake_click(lv_event_t *e);
+static void on_sixmenu_chick_click(lv_event_t *e);
 static void on_bread6menu_breadroll_click(lv_event_t *e);
 static void on_bread6menu_wheat_click(lv_event_t *e);
 static void on_bread6menu_toast_click(lv_event_t *e);
@@ -52,6 +53,9 @@ void jump_to_sixmenu(void)
         if (sm->cake) {
             lv_obj_add_event_cb(sm->cake, on_sixmenu_cake_click, LV_EVENT_CLICKED, NULL);
         }
+        if (sm->chick) {
+            lv_obj_add_event_cb(sm->chick, on_sixmenu_chick_click, LV_EVENT_CLICKED, NULL);
+        }
         /* 其余按钮：功能未实现，不绑事件（点击静默无效） */
     }
     current_group = g_sixmenu;
@@ -83,11 +87,18 @@ void sixmenu_rebuild(page_id_t child)
 
         if (sm->bread) {
             lv_obj_add_event_cb(sm->bread, on_sixmenu_bread_click, LV_EVENT_CLICKED, NULL);
-            /* 从 bread6menu 返回时焦点回到面包按钮 */
-            lv_group_focus_obj(sm->bread);
+            /* 默认焦点：面包（从子菜单返回时按 child 下方恢复） */
+            if (child != PAGE_CHICK6MENU && child != PAGE_CAKE6MENU)
+                lv_group_focus_obj(sm->bread);
         }
         if (sm->cake) {
             lv_obj_add_event_cb(sm->cake, on_sixmenu_cake_click, LV_EVENT_CLICKED, NULL);
+        }
+        if (sm->chick) {
+            lv_obj_add_event_cb(sm->chick, on_sixmenu_chick_click, LV_EVENT_CLICKED, NULL);
+            /* 从 chick6menu 返回时焦点回到鸡按钮 */
+            if (child == PAGE_CHICK6MENU)
+                lv_group_focus_obj(sm->chick);
         }
     }
     current_group = g_sixmenu;
@@ -108,6 +119,13 @@ static void on_sixmenu_cake_click(lv_event_t *e)
 {
     if (screen_is_loading(lv_scr_act())) return;
     jump_to_cake6menu();
+}
+
+/* 鸡入口：sixmenu → chick6menu */
+static void on_sixmenu_chick_click(lv_event_t *e)
+{
+    if (screen_is_loading(lv_scr_act())) return;
+    jump_to_chick6menu();
 }
 
 /* ================= bread6menu ================= */

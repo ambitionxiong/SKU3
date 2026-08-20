@@ -278,6 +278,14 @@ void page_pop(void)
         cake6menu_rebuild(child);
         break;
 
+    case PAGE_CHICK6MENU:
+        chick6menu_rebuild(child);
+        break;
+
+    case PAGE_CHICKENMENU:
+        chickenmenu_rebuild(child);
+        break;
+
     case PAGE_RISINGPAGE:
         risingpage_rebuild(child);
         break;
