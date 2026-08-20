@@ -80,7 +80,7 @@ void chickencooking_create(ui_manager_t *ui)
 
     // Init scr->bartemp
     scr->bartemp = lv_label_create(scr->obj);
-    lv_label_set_text(scr->bartemp, "110℃");
+    lv_label_set_text(scr->bartemp, "10℃");
     lv_label_set_long_mode(scr->bartemp, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->bartemp, 125, 323);
     lv_obj_set_size(scr->bartemp, 66, 24);

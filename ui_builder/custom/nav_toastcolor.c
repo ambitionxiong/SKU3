@@ -125,7 +125,9 @@ static void on_toastcolor_next_click(lv_event_t *e)
 {
     if (screen_is_loading(lv_scr_act())) return;
     if (g_six_bread_type == SIX_CHICK_WHOLE) {
-        /* 烤全鸡:next 逻辑后续步骤接入，暂时不响应 */
+        /* 烤全鸡:浅/中/深 → 探针目标温度 75/80/85℃,进入烤全鸡烹饪页(探针驱动) */
+        g_six_probe_temp = 75 + (s_toast_color - 1) * 5;
+        jump_to_chick_cooking();
         return;
     }
     g_six_color_min = six_bread_color_min(s_toast_color);   /* 1浅 2中 3深,按菜查表 */

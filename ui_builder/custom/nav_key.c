@@ -570,6 +570,9 @@ void process_key(uint8_t key)
             else if (cur == PAGE_SIX_COOKING) {
                 six_cook_handle_back();
             }
+            else if (cur == PAGE_CHICKENCOOKING) {
+                six_chick_handle_back();   /* 烤全鸡烹饪:BACK → 遮罩确认/完成退出 */
+            }
             else if (cur == PAGE_PROBETIP) {
                 probetip_dismiss_now();   /* 探针提示:BACK 提前结束(恢复 iface + 回 prev) */
             }
