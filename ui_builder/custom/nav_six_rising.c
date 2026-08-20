@@ -1,3 +1,7 @@
+/*
+ * nav_six_rising.c - 第六感-发酵判断页
+ * 面包是否发酵选择，进入描述页。
+ */
 #include "nav.h"
 #include "protocol.h"
 #include "custom_defs.h"

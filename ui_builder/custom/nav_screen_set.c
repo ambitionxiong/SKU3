@@ -1,3 +1,9 @@
+/*
+ * nav_screen_set.c - 设置页(覆盖层)
+ * KEY11 进入的覆盖层设置页(不挂页面栈)。
+ * 运行态进入:仅前3个按钮可聚焦+work背景图;非运行态:16按钮。
+ * 返回:运行态回原页面,非运行态回待机页。功能键入口防御/跳转在此判定。
+ */
 #include "nav.h"
 #include "protocol.h"
 #include "custom_defs.h"

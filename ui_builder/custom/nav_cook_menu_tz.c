@@ -1,3 +1,7 @@
+/*
+ * nav_cook_menu_tz.c - 探针下烹调菜单
+ * 探针模式下的烹调模式列表，进入探针版各模式。
+ */
 #include "protocol.h"
 #include "nav.h"
 

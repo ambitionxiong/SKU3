@@ -1,3 +1,19 @@
+/*
+ * nav_key.c - 按键分发处理 process_key
+ *
+ * 职责：
+ *   1. 按键白名单（menu_clean_key_allowed：MENU/CLEAN 键仅在菜单/待机/探针页有效）
+ *   2. 设置页功能键跳转/防御判断（screen_set_key_allowed）
+ *   3. 核心按键分发 process_key：按 KEY 值分发到各功能入口
+ *      （主菜单/清洁/快速预热/额外上色/第六感/设置页/BACK/编码器/确认）
+ *
+ * 按键状态机(key_state/active_key/active_key_time)定义于此，
+ * 由 nav_keyio.c 的 nav_handle_key 驱动、nav_key1_long_press 处理长按。
+ *
+ * 注意：process_key 不做输入防抖（那是 nav_keyio.c 的职责），
+ *   仅按"当前键 + 当前页面状态"决定有效动作与蜂鸣器反馈。
+ */
+
 #include "nav.h"
 #include "nav_internal.h"
 
@@ -61,6 +77,9 @@ static int screen_set_key_allowed(page_id_t below, uint8_t key)
         below == PAGE_SIX_COOKING || below == PAGE_TOASTCOLOR)) return 0;
     return 1;
 }
+/* 核心按键分发：按 key 值进入各功能分支。
+   入口统一处理：SLEEP 拦截 → 无效提示弹窗屏蔽 → 探针提示页屏蔽 → 设置页防御。
+   各 case 内再做白名单/防重入/运行态拦截，并设置 buzzer_req 反馈。 */
 void process_key(uint8_t key)
 {
     if (g_send.iface_status == IFACE_SLEEP) return;

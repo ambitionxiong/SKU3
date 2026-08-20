@@ -1,3 +1,7 @@
+/*
+ * nav_frozen.c - 冷冻烘焙(冷食速烹)菜单
+ * 千层面/果馅卷/面包/披萨/薯条/自定义 入口分发。
+ */
 #include "nav.h"
 
 static void on_frozen_lasagna_click(lv_event_t *e)

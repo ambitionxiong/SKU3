@@ -1,3 +1,15 @@
+/*
+ * nav_settings.c - 上下烧烤设置页(setting)
+ *
+ * 职责：
+ *   jump_to_updown_bbq_setting：进入设置页(保存原始值，BACK 返回时恢复)
+ *   on_setting_edit_focus：焦点跟随(线随焦点，dir/icon 按数值固定显示)
+ *   on_setting_sure_click：确定 → 应用新参数(上下温/时长)回到 cooking
+ *   update_setting_dir_icon：上下温数值变化时 dir/icon 即时更新
+ *
+ * 约束：上下温差 ≤20℃，由 adjust_value(nav_core.c) 执行。
+ */
+
 #include "nav.h"
 #include "nav_internal.h"
 

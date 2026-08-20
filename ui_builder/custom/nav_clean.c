@@ -1,3 +1,7 @@
+/*
+ * nav_clean.c - 清洁入口
+ * 主菜单清洁入口分发：自清洁(水) / 高温清洁三档(节能/常规/强力)。
+ */
 #include "protocol.h"
 #include "nav.h"
 

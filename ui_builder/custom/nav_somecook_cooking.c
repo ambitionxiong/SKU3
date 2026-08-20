@@ -1,3 +1,7 @@
+/*
+ * nav_somecook_cooking.c - 多段烹饪运行页
+ * 单页五态(烹饪/暂停/确认退出/完成/编辑)，按步骤顺序运行。
+ */
 #include "nav.h"
 #include "protocol.h"
 

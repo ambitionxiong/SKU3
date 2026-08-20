@@ -1,3 +1,7 @@
+/*
+ * nav_slowcook_probe.c - 慢煮探针版
+ * 探针模式下慢煮全流程，进度按探针目标温度驱动。
+ */
 #include "protocol.h"
 #include "nav.h"
 

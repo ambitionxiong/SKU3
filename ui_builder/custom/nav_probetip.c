@@ -1,3 +1,7 @@
+/*
+ * nav_probetip.c - 探针提示页
+ * 插拔探针提示(3秒自动关闭)；探针下不支持的按键跳此页提示拔出。
+ */
 #include "protocol.h"
 #include "nav.h"
 

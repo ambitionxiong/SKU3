@@ -1,3 +1,11 @@
+/*
+ * nav_hot_bbq.c - 热风烧烤模式 完整流程
+ *
+ * 页面流程：菜单(menu) → 设置(set) → 烹饪(cooking) → 暂停(stop) → 确认退出(stop_back) → 完成(complete)
+ *   cooking 页可点设置按钮进入 setting 页(运行时改参数)。
+ * 模式标识：MODE_HOT_BBQ，通讯/图标/描述均按此分发。
+ * 支持：延迟预约(ondelay)、保温(contain)、预热(preheat)入口与聚焦移动。
+ */
 #include "protocol.h"
 #include "nav.h"
 

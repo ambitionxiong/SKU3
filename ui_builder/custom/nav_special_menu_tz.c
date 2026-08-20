@@ -1,3 +1,7 @@
+/*
+ * nav_special_menu_tz.c - 探针下特色菜单
+ * 探针模式下的特色模式列表。
+ */
 #include "protocol.h"
 #include "nav.h"
 

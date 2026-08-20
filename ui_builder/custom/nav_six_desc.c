@@ -1,3 +1,7 @@
+/*
+ * nav_six_desc.c - 第六感-烹饪描述页
+ * 显示配方描述/温度时间，确认进入六感运行页。
+ */
 #include "nav.h"
 #include "protocol.h"
 #include "custom_defs.h"

@@ -1,3 +1,7 @@
+/*
+ * nav_stepset.c - 多段烹饪步骤设置页
+ * 每个步骤的模式/温度/时间设置，返回多段主页面。
+ */
 #include "nav.h"
 #include "protocol.h"
 

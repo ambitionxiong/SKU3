@@ -1,6 +1,22 @@
+/*
+ * nav_keyio.c - 按键输入状态机 + 长按
+ *
+ * 职责：
+ *   1. nav_handle_key：按键状态机（KEY_IDLE/KEY_PRESSED），
+ *      首按触发 process_key，编码器长按按 ENC_REPEAT_MS 重复触发，
+ *      松开回空闲。由底层按键回调(硬件/模拟器)逐次调用。
+ *   2. nav_key1_long_press：KEY1 长按(2s)开关机——
+ *      关机:清理全部运行状态→SLEEP 待机暗屏；开机:回主菜单(探针则探针主菜单)。
+ *   3. nav_key1_hold_check：供外部周期查询 KEY1 是否已长按 2s。
+ *
+ * 状态变量(key_state/active_key/active_key_time)定义在 nav_key.c。
+ */
+
 #include "nav.h"
 #include "nav_internal.h"
 
+/* KEY1 长按(2s)：开关机。开机=回主菜单，关机=清状态+进入 SLEEP 待机暗屏。
+   执行前清理所有残留(定时器/标志/覆盖层)，避免跨会话悬空。 */
 void nav_key1_long_press(void)
 {
     probetip_cancel_auto_dismiss();   /* 取消陈旧的探针提示自动关闭定时器,防止跨会话误触发 */
@@ -70,6 +86,7 @@ void nav_key1_long_press(void)
     uart_print();
 #endif
 }
+/* 供外部周期调用：KEY1 按住已持续 2s 则触发长按并返回 1（用于长按防抖） */
 uint8_t nav_key1_hold_check(void)
 {
     if (active_key == KEY1 && key_state == KEY_PRESSED) {
@@ -82,6 +99,8 @@ uint8_t nav_key1_hold_check(void)
     }
     return 0;
 }
+/* 按键状态机：KEY_IDLE 首按→记键值+调 process_key；
+   KEY_PRESSED 按住→编码器按 50ms 重复、KEY1 按 2s 长按；松开回 KEY_IDLE。 */
 void nav_handle_key(uint8_t key)
 {
     uint32_t now = lv_tick_get();

@@ -1,3 +1,10 @@
+/*
+ * nav_updown_bbq_probe.c - 上下烧烤探针版
+ *
+ * 插入探针时使用：菜单/设置/烹饪/暂停/确认退出/完成，
+ * 烹饪进度按探针温度目标(probe_target_temp)驱动。
+ * 由 nav_updown_bbq.c 的探针检测分支调用 jump_to_*_probe。
+ */
 #include "protocol.h"
 #include "nav.h"
 

@@ -1,3 +1,9 @@
+/*
+ * nav_special.c - 特色模式通用模板
+ * 各特色模式(慢煮/解冻/发酵/干果/保温等)共用的
+ * 菜单(setup menu)/设置(setup set)通用构建函数，
+ * 通过字段偏移(见 nav_special.h)统一访问控件。
+ */
 #include "nav_special.h"
 #include "protocol.h"
 

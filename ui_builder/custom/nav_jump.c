@@ -1,3 +1,16 @@
+/*
+ * nav_jump.c - 页面跳转
+ *
+ * 职责：各入口/回调调用的跳转函数——从当前页进入下一个页面。
+ *   统一模式：page_push(目标页) + lv_obj_clean 清屏 + 创建目标页 UI +
+ *   建焦点组 + 设 current_group + lv_scr_load_anim。
+ *
+ * 包含：
+ *   - 主菜单 → 烹调菜单/特色菜单
+ *   - 上下烧烤全流程（menu/set/menu_top/menu_low/cooking/complete）
+ *   - 额外上色流程（color_menu/cookoing/complete/exit_to_home）
+ */
+
 #include "nav.h"
 #include "nav_internal.h"
 

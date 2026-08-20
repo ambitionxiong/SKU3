@@ -1,3 +1,7 @@
+/*
+ * nav_hot_bbq_probe.c - 热风烧烤探针版
+ * 探针模式下热风烧烤全流程，进度按探针目标温度驱动。
+ */
 #include "protocol.h"
 #include "nav.h"
 

@@ -1,3 +1,7 @@
+/*
+ * nav_hotcleanmiddle.c - 高温清洁(常规档)
+ * 高温清洁三档之一：设置/烹饪/暂停/确认退出/冷却/完成。
+ */
 #include "protocol.h"
 #include "nav.h"
 

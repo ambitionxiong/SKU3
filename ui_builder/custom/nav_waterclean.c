@@ -1,3 +1,7 @@
+/*
+ * nav_waterclean.c - 自清洁(水)流程
+ * 水自清洁全流程：设置/烹饪/暂停/确认退出/完成。
+ */
 #include "protocol.h"
 #include "nav.h"
 

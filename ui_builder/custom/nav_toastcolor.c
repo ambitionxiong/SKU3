@@ -1,3 +1,7 @@
+/*
+ * nav_toastcolor.c - 第六感-烤色选择页
+ * 浅/中/深三档烤色，编码器切换，确认进入额外上色。
+ */
 #include "nav.h"
 #include "protocol.h"
 #include "custom_defs.h"

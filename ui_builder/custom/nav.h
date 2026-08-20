@@ -39,6 +39,7 @@ typedef enum {
     PAGE_PREHEAT_COMPLETE,
     PAGE_COOK4_MENU,
     PAGE_COOKIE_MENU,
+    /* ---- 多层烹调(COOK4)子模式: 曲奇/西式/披萨/菜单 ---- */
     PAGE_COOKIE_SET,
     PAGE_COOKIE_COOKING,
     PAGE_COOKIE_SETTING,
@@ -74,6 +75,7 @@ typedef enum {
     PAGE_AIR_STOP_BACK,
     PAGE_AIR_COMPLETE,
     PAGE_UPDOWN_BBQ_SET,
+    /* ---- 上下烧烤: 设置/烹饪/完成 + 探针版 ---- */
     PAGE_UPDOWN_BBQ_COOKING,
     PAGE_UPDOWN_BBQ_COMPLETE,
     PAGE_UPDOWN_BBQ_MENU_PROBE,
@@ -83,6 +85,7 @@ typedef enum {
     PAGE_UPDOWN_BBQ_STOP_BACK_PROBE,
     PAGE_UPDOWN_BBQ_COMPLETE_PROBE,
     PAGE_HOT_BBQ_MENU_PROBE,
+    /* ---- 探针版: 热风烧烤/底部烧烤/慢煮 ---- */
     PAGE_HOT_BBQ_SET_PROBE,
     PAGE_HOT_BBQ_COOKING_PROBE,
     PAGE_HOT_BBQ_STOP_PROBE,
@@ -101,6 +104,7 @@ typedef enum {
     PAGE_SLOWCOOK_STOP_BACK_PROBE,
     PAGE_SLOWCOOK_COMPLETE_PROBE,
     PAGE_EXTRA_COLOR,
+    /* ---- 额外上色 ---- */
     PAGE_COLOR_COOKING,
     PAGE_COLOR_COOKING_COMPLETE,
     PAGE_UPDOWN_BBQ_STOP,
@@ -109,6 +113,7 @@ typedef enum {
     PAGE_COLOR_STOP,
     PAGE_COLOR_STOP_BACK,
     PAGE_TOP_BBQ_MENU,
+    /* ---- 顶部烧烤/底部烧烤/热风烧烤 ---- */
     PAGE_TOP_BBQ_SET,
     PAGE_TOP_BBQ_COOKING,
     PAGE_TOP_BBQ_SETTING,
@@ -130,6 +135,7 @@ typedef enum {
     PAGE_HOT_BBQ_STOP_BACK,
     PAGE_HOT_BBQ_COMPLETE,
     PAGE_HOTWIND_BBQ_MENU,
+    /* ---- 热风对流/节能热风/集中烧烤/加强热风对流 ---- */
     PAGE_HOTWIND_BBQ_SET,
     PAGE_HOTWIND_BBQ_COOKING,
     PAGE_HOTWIND_BBQ_SETTING,
@@ -158,6 +164,7 @@ typedef enum {
     PAGE_WINDCHANGE_BBQ_STOP_BACK,
     PAGE_WINDCHANGE_BBQ_COMPLETE,
     PAGE_PIZZA_2_MENU,
+    /* ---- 披萨(空气炸)/慢煮 ---- */
     PAGE_PIZZA_2_SET,
     PAGE_PIZZA_2_COOKING,
     PAGE_PIZZA_2_SETTING,
@@ -172,6 +179,7 @@ typedef enum {
     PAGE_SLOWCOOK_STOP_BACK,
     PAGE_SLOWCOOK_COMPLETE,
     PAGE_UNFROZEN_MENU,
+    /* ---- 解冻/发酵/干果/保温 ---- */
     PAGE_UNFROZEN_SET,
     PAGE_UNFROZEN_COOKING,
     PAGE_UNFROZEN_SETTING,
@@ -200,6 +208,7 @@ typedef enum {
     PAGE_HEATCONTAIN_STOP_BACK,
     PAGE_HEATCONTAIN_COMPLETE,
     PAGE_FROZEN_COOK,
+    /* ---- 冷冻烘焙(冷食速烹): 千层面/果馅卷/面包/披萨/薯条/自定义 ---- */
     PAGE_LASAGNA_MENU,
     PAGE_LASAGNA_SET,
     PAGE_LASAGNA_COOKING,
@@ -243,6 +252,7 @@ typedef enum {
     PAGE_CUSTOM_STOP_BACK,
     PAGE_CUSTOM_COMPLETE,
     PAGE_CLEAN_MENU,
+    /* ---- 清洁: 自清洁/高温清洁(三档) ---- */
     PAGE_WATER_CLEAN_SET,
     PAGE_WATER_CLEAN_COOKING,
     PAGE_WATER_CLEAN_STOP,
@@ -268,6 +278,7 @@ typedef enum {
     PAGE_HOTCLEANHIGH_COOLING,
     PAGE_HOTCLEANHIGH_COMPLETE,
     PAGE_DELAYSET,
+    /* ---- 延时预约/多段烹饪/设置页/第六感 ---- */
     PAGE_DELAYCOOKING,
     PAGE_SOMECOOK,          /* 多段烹饪主页面 */
     PAGE_STEPSET,           /* 多段烹饪步骤设置页 */

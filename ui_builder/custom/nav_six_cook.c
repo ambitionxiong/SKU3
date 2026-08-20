@@ -1,3 +1,8 @@
+/*
+ * nav_six_cook.c - 第六感运行核心
+ * 发酵→烹饪→询问(烤色)→烤色→额外上色循环，
+ * 状态机+定时驱动，负责六感全流程的通讯状态与页面跳转。
+ */
 #include "nav.h"
 #include "protocol.h"
 #include "custom_defs.h"

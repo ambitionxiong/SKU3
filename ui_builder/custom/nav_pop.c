@@ -1,3 +1,21 @@
+/*
+ * nav_pop.c - 页面栈弹出/返回重建
+ *
+ * 职责：
+ *   核心函数 page_pop（收到 KEY_BACK 时调用）：回到上一页。
+ *   内部是一个巨型 switch：按"要返回的父页 prev"重建对应页面 UI + 焦点组，
+ *   并按"从哪个子页 child 回来"恢复焦点/特殊状态。
+ *
+ * 页面栈模型：
+ *   page_push(id) 入栈 → page_pop() 出栈并重建 prev。
+ *   覆盖层(设置页/探针提示/无效提示)不通过此栈管理，单独处理。
+ *
+ * 安全点：
+ *   - depth<=1 根页保护
+ *   - 返回前 edit_clear() 防悬空 label 指针(UAF)
+ *   - 各 stop_back/六感/预约/多段页面的状态标志按 child 清理，防残留错分支
+ */
+
 #include "nav.h"
 #include "nav_internal.h"
 

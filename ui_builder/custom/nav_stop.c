@@ -1,3 +1,16 @@
+/*
+ * nav_stop.c - 暂停/恢复 + 额外上色暂停/恢复
+ *
+ * 职责：
+ *   1. 各模式烹饪页 → 暂停页(stop) → 确认退出页(stop_back) 的跳转与恢复
+ *   2. stop_resume_cooking：暂停后恢复计时(不经过 page_pop，直接重建 cooking)
+ *   3. 额外上色(color) 的 stop/stop_back/resume 对称流程
+ *   4. stop_back 确认退出后的清理与目标跳转(含延时取消、六感取消分支)
+ *
+ * 状态标志：g_on_stop_back / g_complete_to_stop_back / g_delay_cancel_* 控制
+ *   stop_back 页的显示文案与确定后跳转目标。
+ */
+
 #include "nav.h"
 #include "nav_internal.h"
 

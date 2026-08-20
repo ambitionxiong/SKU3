@@ -1,3 +1,16 @@
+/*
+ * nav_events.c - 事件绑定与回调
+ *
+ * 职责：
+ *   1. bind_events：为主菜单三个按钮绑定 LV_EVENT_CLICKED 回调
+ *      (每次 groups_create 后必须调用，新按钮需重新绑定)
+ *   2. 各 on_xxx_click 回调：主菜单/烹调菜单/六感前两层等入口按钮 → 跳转
+ *   3. 延迟预约(delayset/delaycooking) 完整流程回调
+ *   4. 额外上色 color 入口回调、模式名/图标工具(mode_display_name/mode_apply_icon)
+ *
+ * 回调统一防重入：screen_is_loading(lv_scr_act()) 时忽略点击。
+ */
+
 #include "nav.h"
 #include "nav_internal.h"
 

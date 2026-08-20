@@ -1,3 +1,16 @@
+/*
+ * nav_system.c - 系统级组件
+ *
+ * 职责：
+ *   1. system_timer_cb：常驻 500ms 系统检测（探针插拔、门状态边沿、系统时间刷新）
+ *   2. nav_init：初始化入口（建页面栈根页、常驻定时器、待机页）
+ *   3. topflag 组件：顶栏时间/状态，随页面切换显隐、每 500ms 刷新
+ *   4. waitmenu 时钟缓存：待机页时间刷新（避免重复读 RTC）
+ *
+ * 定时器约定：cook_timer 为烹饪专属(按需创建/删除)；
+ *   system_timer_cb 常驻，仅做检测不驱动 UI 倒计时。
+ */
+
 #include "nav.h"
 #include "nav_internal.h"
 

@@ -1,6 +1,20 @@
+/*
+ * nav_cooktimer.c - 烹饪定时器
+ *
+ * 职责：
+ *   1. cooking_timer_cb：核心烹饪驱动定时器(常驻创建/按需删除)。
+ *      每 100ms 更新倒计时/进度条/状态文本，处理到点完成、
+ *      门开自动暂停(auto_pause_on_door)、保温/预约/六感/多段等分发。
+ *   2. auto_pause_on_door：检测到门开 → 各运行页进入暂停(stop)页。
+ *
+ * 注意：此定时器在开始烹饪时创建，停止/完成时删除；
+ *   页面切换期间通过 current_group/页面栈判断是否继续驱动。
+ */
+
 #include "nav.h"
 #include "nav_internal.h"
 
+/* 门开自动暂停：当前为烹饪页时跳入对应暂停页(各模式 stop) */
 static void auto_pause_on_door(void)
 {
     if (!is_door_open()) return;

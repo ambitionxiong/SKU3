@@ -1,3 +1,8 @@
+/*
+ * nav_special.h - 特色模式通用控件偏移
+ * 定义各 special_menu 页对象内的通用字段索引，
+ * 供 nav_special.c 按统一偏移访问(无需逐个类型强转)。
+ */
 #ifndef NAV_SPECIAL_H
 #define NAV_SPECIAL_H
 

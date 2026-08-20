@@ -1,3 +1,7 @@
+/*
+ * nav_somecook.c - 多段烹饪主页面
+ * 多段(步骤)烹饪列表/选择，进入步骤设置(stepset)。
+ */
 #include "nav.h"
 #include "protocol.h"
 

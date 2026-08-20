@@ -1,3 +1,7 @@
+/*
+ * nav_major_menu_tz.c - 探针下主菜单
+ * 插入探针时的主菜单(烹调/特色入口指向探针版流程)。
+ */
 #include "protocol.h"
 #include "nav.h"
 

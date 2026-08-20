@@ -1,5 +1,20 @@
 #ifndef NAV_INTERNAL_H
 #define NAV_INTERNAL_H
+/*
+ * nav_internal.h - 导航控制器内部共享头
+ *
+ * 原 nav.c(9377 行)拆分后的跨文件共享符号声明。
+ * 供 nav_core/nav_pop/nav_jump/nav_key/nav_keyio/nav_events/
+ *    nav_cooktimer/nav_stop/nav_settings/nav_system 各文件引用。
+ *
+ * 内容：
+ *   1. 按键状态机类型(key_state_t)与常量
+ *   2. 跨文件共享变量 extern(焦点组、状态标志、setting 保存值等)
+ *   3. 原 nav.c 内部函数声明(拆分后去 static 形成跨文件接口)
+ *
+ * 注意：此头仅 custom 内部使用，勿将对外接口(页面 ID、模式枚举、
+ *   rtc 接口等)放于此——那些在 nav.h / protocol.h 中。
+ */
 
 #include "nav.h"
 #include "protocol.h"

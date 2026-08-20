@@ -1,3 +1,8 @@
+/*
+ * nav_hint.c - 功能键无效提示弹窗
+ * 烹饪中按功能键弹出'烤箱运行时不可用'提示(3秒自动关闭)，
+ * 期间仅BACK有效，UAF安全处理。
+ */
 #include "nav.h"
 #include "protocol.h"
 

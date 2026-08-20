@@ -1,3 +1,9 @@
+/*
+ * protocol.c - 通讯协议封装
+ * uart_send_fill: 将 g_send 状态结构打包为 24 字节发送帧(含校验和)，
+ *   供显示→电源板通讯。CalculateChecksum: 累加校验。
+ * 模拟器下另有 sim_scan 定时扫描(模拟按键/探针/温度输入)。
+ */
 #include "protocol.h"
 #include "nav.h"
 #include "custom_defs.h"

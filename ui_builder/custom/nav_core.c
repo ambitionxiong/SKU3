@@ -1,3 +1,18 @@
+/*
+ * nav_core.c - 导航核心：全局状态 + 基础工具
+ *
+ * 职责：
+ *   1. 全局变量定义（页面栈、温度/时间设置值、各页面焦点组、运行状态标志）
+ *   2. 可编辑字段注册表（edit_*：支持编码器加减数值的页面字段）
+ *   3. 公共 UI 工具（时间/进度/开关/焦点态设置）
+ *   4. 页面栈操作 page_push（跳转子页前入栈）
+ *   5. 焦点组创建 groups_create（主菜单焦点组，开机/返回时重建）
+ *
+ * 页面栈约定：
+ *   page_stack[0] = 根页(WAITMENU)，depth-1 = 当前页；
+ *   跳转 = page_push + 重建 UI + 切 current_group；返回 = page_pop。
+ */
+
 #include "nav.h"
 #include "nav_internal.h"
 
@@ -406,10 +421,13 @@ int updown_setting_saved_hour, updown_setting_saved_min;
 edit_field_t edit_fields[MAX_EDIT_FIELDS];
 int edit_count = 0;
 
+/* 清空可编辑字段注册表（切页前调用，防止 find_edit_field 指针复用误判） */
 void edit_clear(void)
 {
     edit_count = 0;
 }
+/* 注册一个可编辑字段：label 为显示标签，ind_s/ind_l 为温度<100/≥100 的指示条，
+   value 指向实际存储值，min/max/step 为循环范围，fmt 为显示格式（"%d"/"%02d"） */
 void edit_register(lv_obj_t *label, lv_obj_t *ind_s, lv_obj_t *ind_l,
                    int *value, int min, int max, int step, const char *fmt)
 {
@@ -425,6 +443,7 @@ void edit_register(lv_obj_t *label, lv_obj_t *ind_s, lv_obj_t *ind_l,
         edit_count++;
     }
 }
+/* 按 label 查找已注册的可编辑字段（编码器加减时定位字段） */
 edit_field_t *find_edit_field(lv_obj_t *obj)
 {
     for (int i = 0; i < edit_count; i++)
@@ -432,6 +451,8 @@ edit_field_t *find_edit_field(lv_obj_t *obj)
             return &edit_fields[i];
     return NULL;
 }
+/* 编码器加减：循环调整数值、刷新标签与温度指示线、
+   执行各设置页的温差约束(上下≤20℃)与 dir/icon 即时更新 */
 void adjust_value(edit_field_t *f, int delta)
 {
     int old_val = *f->value;

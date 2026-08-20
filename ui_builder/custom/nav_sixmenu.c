@@ -1,3 +1,8 @@
+/*
+ * nav_sixmenu.c - 第六感菜单
+ * KEY2 进入。面包/蛋糕两个子入口，面包走发酵判断页(rising)，
+ * 蛋糕直接走烤色。菜单重置页面栈后进入。
+ */
 #include "nav.h"
 #include "protocol.h"
 #include "custom_defs.h"

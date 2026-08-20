@@ -1,3 +1,7 @@
+/*
+ * nav_six_cake.c - 第六感-蛋糕
+ * 蛋糕子流程入口与描述页跳转。
+ */
 #include "nav.h"
 #include "protocol.h"
 #include "custom_defs.h"
