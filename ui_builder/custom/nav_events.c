@@ -442,7 +442,7 @@ void jump_to_delayset(void)
     delayset_t *ds = delayset_get(&ui_manager);
     if (ds) {
         if (g_delay_source_page == PAGE_DESCRIPTIONMENU)
-            lv_label_set_text(ds->name, six_bread_name());   /* 六感菜名 */
+            lv_label_set_text(ds->name, six_current_name());   /* 六感菜名（烤全鸡走独立名） */
         lv_obj_t *btns[] = { ds->hour, ds->min, ds->start };
         if (g_delayset) lv_group_del(g_delayset);
         g_delayset = group_create_for_page(btns, 3);
@@ -584,7 +584,10 @@ void mode_set_apply_delay_label(lv_obj_t *ondelay_btn)
 void delay_start_cook(void)
 {
     if (g_delay_source_page == PAGE_DESCRIPTIONMENU) {
-        jump_to_six_cooking();   /* 六感:到点进入六感烹饪 */
+        if (g_six_bread_type == SIX_CHICK_WHOLE)
+            jump_to_chick_cooking();   /* 烤全鸡:到点直接进烤全鸡烹饪（探针驱动） */
+        else
+            jump_to_six_cooking();     /* 六感:到点进入六感烹饪 */
         return;
     }
     if (is_probe_inserted()) {
@@ -714,8 +717,12 @@ void rebuild_delaycooking(void)
                             LV_EVENT_CLICKED, NULL);
 
         if (g_delay_source_page == PAGE_DESCRIPTIONMENU) {
-            /* 六感:status 显示模式+时间,icon 用 sixicon(与运行页一致) */
-            lv_label_set_text_fmt(dc->status, "| %s | %d分钟", six_bread_name(), six_bread_cook_min());
+            /* 六感:status 显示菜+信息,icon 用 sixicon(与运行页一致) */
+            if (g_six_bread_type == SIX_CHICK_WHOLE)
+                lv_label_set_text_fmt(dc->status, "| %s | %s |",
+                                      six_chick_name(), six_chick_degree_text());   /* 烤全鸡:菜名+烤色程度 */
+            else
+                lv_label_set_text_fmt(dc->status, "| %s | %d分钟", six_bread_name(), six_bread_cook_min());
             lv_img_set_src(dc->icon, LVGL_IMAGE_PATH(sixicon.png));
             lv_obj_set_pos(dc->icon, 163, 161);
         } else if (g_delay_source_page == PAGE_UPDOWN_BBQ_SET_PROBE ||

@@ -714,7 +714,10 @@ extern int g_six_probe_temp;        /* 烤全鸡所选探针目标温度（浅75
 extern lv_group_t *g_probeneedtip;
 extern lv_group_t *g_chick_cooking; /* 烤全鸡烹饪页（chickencooking UI） */
 const char *six_chick_name(void);   /* 烤全鸡名称 */
+const char *six_chick_desc(void);   /* 烤全鸡烹饪说明 */
+const char *six_chick_degree_text(void); /* 烤全鸡烤色程度（浅色/中等色/深色） */
 const char *six_current_name(void); /* 当前六感菜名：烤鸡走独立名，其余走面包/蛋糕表 */
+const char *six_current_desc(void); /* 当前六感说明：烤鸡走独立名，其余走面包/蛋糕表 */
 void jump_to_probeneedtip(void);    /* 烤鸡探针提示页：未插探针时进入 */
 void jump_to_chick_cooking(void);   /* 烤全鸡烹饪页（探针温度标记完成） */
 void six_chick_handle_back(void);   /* 烤全鸡烹饪页 BACK：遮罩确认/完成退出 */

@@ -20,30 +20,43 @@ static void descriptionmenu_layout(descriptionmenu_t *dm)
 {
     if (!dm || !dm->container_1) return;
 
+    int is_chick = (g_six_bread_type == SIX_CHICK_WHOLE || g_six_bread_type == SIX_CHICK_WING);
+
     /* 左上角菜名 */
     if (dm->label_19)
-        lv_label_set_text(dm->label_19, six_bread_name());
+        lv_label_set_text(dm->label_19, six_current_name());
 
-    /* 摘要(仅面包类有发酵才显示小结;蛋糕类无发酵则隐藏) */
+    /* 摘要：烤全鸡显示烧烤程度；面包有发酵显示发酵小结；其余隐藏 */
     if (dm->summary) {
-        if (six_bread_has_rising())
+        if (g_six_bread_type == SIX_CHICK_WHOLE) {
+            lv_obj_clear_flag(dm->summary, LV_OBJ_FLAG_HIDDEN);
+            const char *lv = (g_six_probe_temp <= 75) ? "浅" :
+                             (g_six_probe_temp >= 85) ? "深" : "中等";
+            lv_label_set_text_fmt(dm->summary, "小结：\n烧烤程度：%s\n", lv);
+        } else if (six_bread_has_rising()) {
             lv_label_set_text(dm->summary, g_rising_choice == 1 ?
                               "小结：\n有发酵阶段\n" : "小结：\n没有发酵阶段\n");
-        else
+        } else {
             lv_obj_add_flag(dm->summary, LV_OBJ_FLAG_HIDDEN);
+        }
     }
 
-    /* 烹饪时间 + 烹饪说明按当前菜填充 */
+    /* 烹饪时间：烤全鸡不显示（探针温度标记完成），隐藏后其余两内容上移顶对齐 */
     if (dm->cooktime) {
-        /* 选了发酵:发酵分钟+烹饪分钟分开显示 */
-        if (six_bread_has_rising() && g_rising_choice == 1)
-            lv_label_set_text_fmt(dm->cooktime, "预计烹饪时间：发酵%d分钟+烹饪%d分钟",
-                                  six_rising_min(), six_bread_cook_min());
-        else
-            lv_label_set_text_fmt(dm->cooktime, "预计烹饪时间：%d分钟", six_bread_cook_min());
+        if (g_six_bread_type == SIX_CHICK_WHOLE) {
+            lv_obj_add_flag(dm->cooktime, LV_OBJ_FLAG_HIDDEN);
+        } else {
+            lv_obj_clear_flag(dm->cooktime, LV_OBJ_FLAG_HIDDEN);
+            /* 选了发酵:发酵分钟+烹饪分钟分开显示 */
+            if (six_bread_has_rising() && g_rising_choice == 1)
+                lv_label_set_text_fmt(dm->cooktime, "预计烹饪时间：发酵%d分钟+烹饪%d分钟",
+                                      six_rising_min(), six_bread_cook_min());
+            else
+                lv_label_set_text_fmt(dm->cooktime, "预计烹饪时间：%d分钟", six_bread_cook_min());
+        }
     }
     if (dm->cookdescriptin) {
-        lv_label_set_text(dm->cookdescriptin, six_bread_desc());
+        lv_label_set_text(dm->cookdescriptin, six_current_desc());
     }
 
     /* 容器 Flex 竖排：左/上边距 24，垂直间距 16 */
@@ -63,6 +76,11 @@ static void descriptionmenu_layout(descriptionmenu_t *dm)
         if (!labels[k]) continue;
         lv_obj_set_height(labels[k], LV_SIZE_CONTENT);
         lv_obj_set_style_text_line_space(labels[k], -5, 0);
+    }
+    /* 烤全鸡:隐藏时间后，说明与小结整体上移顶对齐（隐藏项不占 flex 位） */
+    if (g_six_bread_type == SIX_CHICK_WHOLE) {
+        if (dm->cookdescriptin) lv_obj_move_to_index(dm->cookdescriptin, 0);
+        if (dm->summary) lv_obj_move_to_index(dm->summary, 1);
     }
     lv_obj_update_layout(dm->container_1);
 }
@@ -143,7 +161,10 @@ void descriptionmenu_rebuild(page_id_t child)
 static void on_description_start_click(lv_event_t *e)
 {
     if (screen_is_loading(lv_scr_act())) return;
-    jump_to_six_cooking();
+    if (g_six_bread_type == SIX_CHICK_WHOLE)
+        jump_to_chick_cooking();   /* 烤全鸡:探针温度驱动烹饪页 */
+    else
+        jump_to_six_cooking();
 }
 
 static void on_description_delay_click(lv_event_t *e)

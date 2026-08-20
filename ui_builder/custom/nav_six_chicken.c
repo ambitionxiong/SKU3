@@ -30,6 +30,19 @@ const char *six_current_name(void)
            ? six_chick_name() : six_bread_name();
 }
 
+/* 烤全鸡烹饪说明（descriptionmenu 显示） */
+const char *six_chick_desc(void)
+{
+    return "烹饪说明：\n刷油，并根据个人喜好进行调味。抹上盐和胡椒。放入烤箱，胸脯面朝上\n现在将食物放在第2层\n使用深盘";
+}
+
+/* 当前六感说明：烤鸡走独立配置，其余走面包/蛋糕共用表 */
+const char *six_current_desc(void)
+{
+    return (g_six_bread_type == SIX_CHICK_WHOLE || g_six_bread_type == SIX_CHICK_WING)
+           ? six_chick_desc() : six_bread_desc();
+}
+
 static void on_chick6menu_chicken_click(lv_event_t *e);
 static void on_chickenmenu_whole_click(lv_event_t *e);
 static void on_chickenmenu_wing_click(lv_event_t *e);
@@ -352,7 +365,7 @@ static int six_chick_bar_value(int cur)
 }
 
 /* 烤色程度文字：按所选档位（浅75/中80/深85℃）显示 */
-static const char *six_chick_degree_text(void)
+const char *six_chick_degree_text(void)
 {
     return g_six_probe_temp <= 75 ? "浅色" :
            g_six_probe_temp >= 85 ? "深色" : "中等色";
