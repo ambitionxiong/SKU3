@@ -44,7 +44,7 @@ void descriptionmenu_create(ui_manager_t *ui)
     lv_obj_t *start_label = lv_label_create(scr->start);
     lv_label_set_text(start_label, "开 始");
     lv_obj_align(start_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->start, 986, 21);
+    lv_obj_set_pos(scr->start, 983, 22);
     lv_obj_set_size(scr->start, 135, 71);
 
     // Set style of scr->start
@@ -116,7 +116,7 @@ void descriptionmenu_create(ui_manager_t *ui)
     lv_obj_t *delay_label = lv_label_create(scr->delay);
     lv_label_set_text(delay_label, "延 迟");
     lv_obj_align(delay_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->delay, 986, 364);
+    lv_obj_set_pos(scr->delay, 983, 364);
     lv_obj_set_size(scr->delay, 135, 71);
 
     // Set style of scr->delay

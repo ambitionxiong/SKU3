@@ -14,38 +14,97 @@ lv_group_t *g_chickenmenu = NULL;
 lv_group_t *g_probeneedtip = NULL;
 int g_six_probe_temp = 80;   /* 烤全鸡所选探针目标温度（浅75/中80/深85℃），默认中 */
 
-/* 烤鸡菜名（按菜谱表；后续可扩展为配置表） */
+/* ==================== 烤鸡翅类（份量驱动）菜谱配置表 ==================== */
+typedef struct {
+    const char *name;
+    const int *weights;     /* 份量选项(g) */
+    const int *times;       /* 对应烹饪分钟(与 weights 对齐) */
+    int count;              /* 选项数 */
+    int default_idx;        /* 默认份量下标 */
+    uint8_t mode;           /* 热风对流/空气炸 */
+    int temp;
+    const char *desc;
+} chick_dish_t;
+
+static const int w_wing_w[] = { 400, 600, 800, 1000 };
+static const int w_wing_t[] = { 21, 24, 27, 30 };
+static const int w_fwing_w[] = { 400, 600, 800 };
+static const int w_fwing_t[] = { 22, 24, 26 };
+static const int w_fleg_w[]  = { 600, 800, 1000 };
+static const int w_fleg_t[]  = { 27, 30, 33 };
+static const int w_breast_w[] = { 400, 600, 800, 1000 };
+static const int w_breast_t[] = { 20, 25, 30, 35 };
+
+static const chick_dish_t s_chick_dishes[] = {
+    /* 烤鸡翅 */
+    { "烤鸡翅", w_wing_w, w_wing_t, 4, 2, MODE_WINDCHANGE_BBQ, 250,
+      "烹饪说明：\n刷油，并根据个人喜好进行调味。在烤盘内均匀铺开，表皮朝上\n现在将食物放在第3层\n使用深盘" },
+    /* 炸鸡中翅 */
+    { "炸鸡中翅", w_fwing_w, w_fwing_t, 3, 1, MODE_AIR, 250,
+      "烹饪说明：\n根据你的喜好加盐和胡椒调味。把鸡翅裹上蛋液，然后裹上面包屑。均匀分布在气炸盘中，轻轻喷上食用油\n现在将食物放在第3层\n使用气炸盘和深盘" },
+    /* 炸鸡腿 */
+    { "炸鸡腿", w_fleg_w, w_fleg_t, 3, 1, MODE_AIR, 250,
+      "烹饪说明：\n根据你的喜好加盐和胡椒调味。把鸡腿裹上蛋液，然后裹上面包屑。均匀分布在气炸盘中，轻轻喷上食用油\n现在将食物放在第3层\n使用气炸盘和深盘" },
+    /* 烤鸡胸肉 */
+    { "烤鸡胸肉", w_breast_w, w_breast_t, 4, 2, MODE_WINDCHANGE_BBQ, 250,
+      "烹饪说明：\n刷油，并根据个人喜好进行调味。在烤盘内均匀铺开，表皮朝上\n现在将食物放在第3层\n使用深盘" },
+};
+
+/* 当前类型是否为烤鸡翅类(份量驱动) */
+int six_chick_is_kind(void)
+{
+    return (g_six_bread_type >= SIX_CHICK_KIND_MIN && g_six_bread_type <= SIX_CHICK_KIND_MAX);
+}
+
+static const chick_dish_t *chick_dish_cfg(void)
+{
+    return six_chick_is_kind() ? &s_chick_dishes[g_six_bread_type - SIX_CHICK_KIND_MIN] : NULL;
+}
+
+/* 烤鸡菜名：份量驱动类按配置表；烤全鸡固定 */
 const char *six_chick_name(void)
 {
-    return (g_six_bread_type == SIX_CHICK_WING) ? "烤鸡翅" : "烤全鸡";
+    const chick_dish_t *c = chick_dish_cfg();
+    return c ? c->name : "烤全鸡";
 }
 
-/* 烤鸡翅份量选项(g)：与 SKU3 菜谱表一致（400/600/800/1000g，对应 21/24/27/30 分钟） */
-static const int s_chick_wing_weights[] = { 400, 600, 800, 1000 };
+uint8_t six_chick_mode(void) { const chick_dish_t *c = chick_dish_cfg(); return c ? c->mode : MODE_WINDCHANGE_BBQ; }
+int six_chick_temp(void)     { const chick_dish_t *c = chick_dish_cfg(); return c ? c->temp : 230; }
 
-/* 当前六感菜名：烤鸡走独立名，其余走面包/蛋糕共用表 */
-const char *six_current_name(void)
+/* 份量→烹饪分钟（查表，找不到取中间档兜底） */
+int six_chick_cook_min(int weight_g)
 {
-    return (g_six_bread_type == SIX_CHICK_WHOLE || g_six_bread_type == SIX_CHICK_WING)
-           ? six_chick_name() : six_bread_name();
+    const chick_dish_t *c = chick_dish_cfg();
+    if (!c) return 0;
+    for (int i = 0; i < c->count; i++) {
+        if (c->weights[i] == weight_g) return c->times[i];
+    }
+    return c->count > 0 ? c->times[c->count / 2] : 0;
 }
 
-/* 烤全鸡烹饪说明（descriptionmenu 显示） */
+/* 烹饪说明（按菜谱表；descriptionmenu/延迟页显示） */
 const char *six_chick_desc(void)
 {
+    const chick_dish_t *c = chick_dish_cfg();
+    if (c) return c->desc;
     return "烹饪说明：\n刷油，并根据个人喜好进行调味。抹上盐和胡椒。放入烤箱，胸脯面朝上\n现在将食物放在第2层\n使用深盘";
 }
 
-/* 当前六感说明：烤鸡走独立配置，其余走面包/蛋糕共用表 */
+/* 当前六感菜名/说明：烤鸡走独立名，其余走面包/蛋糕共用表 */
+const char *six_current_name(void)
+{
+    return (g_six_bread_type == SIX_CHICK_WHOLE || six_chick_is_kind())
+           ? six_chick_name() : six_bread_name();
+}
 const char *six_current_desc(void)
 {
-    return (g_six_bread_type == SIX_CHICK_WHOLE || g_six_bread_type == SIX_CHICK_WING)
+    return (g_six_bread_type == SIX_CHICK_WHOLE || six_chick_is_kind())
            ? six_chick_desc() : six_bread_desc();
 }
 
 static void on_chick6menu_chicken_click(lv_event_t *e);
 static void on_chickenmenu_whole_click(lv_event_t *e);
-static void on_chickenmenu_wing_click(lv_event_t *e);
+static void on_chickenmenu_weight_dish_click(lv_event_t *e);
 static void on_probeneedtip_sure_click(lv_event_t *e);
 
 /* ================= chick6menu（家禽：鸡/鸭） ================= */
@@ -139,14 +198,15 @@ void jump_to_chickenmenu(void)
         g_chickenmenu = group_create_for_page(btns, n);
         clear_focus_states(btns, n);
 
-        /* 菜谱事件：烤全鸡/烤鸡翅已接入；其余菜谱后续步骤接入 */
+        /* 菜谱事件：烤全鸡走探针流程；四个烤鸡翅类走份量流程(user_data=菜类型) */
         if (cm->wholechicken) {
             lv_obj_add_event_cb(cm->wholechicken, on_chickenmenu_whole_click, LV_EVENT_CLICKED, NULL);
             lv_group_focus_obj(cm->wholechicken);
         }
-        if (cm->grillchickenwing) {
-            lv_obj_add_event_cb(cm->grillchickenwing, on_chickenmenu_wing_click, LV_EVENT_CLICKED, NULL);
-        }
+        if (cm->grillchickenwing)  lv_obj_add_event_cb(cm->grillchickenwing,  on_chickenmenu_weight_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CHICK_WING);
+        if (cm->friedchickenwing)  lv_obj_add_event_cb(cm->friedchickenwing,  on_chickenmenu_weight_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CHICK_FRIED_WING);
+        if (cm->friedchickenleg)   lv_obj_add_event_cb(cm->friedchickenleg,   on_chickenmenu_weight_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CHICK_FRIED_LEG);
+        if (cm->grillchickenbreast) lv_obj_add_event_cb(cm->grillchickenbreast, on_chickenmenu_weight_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CHICK_GRILL_BREAST);
     }
     current_group = g_chickenmenu;
 
@@ -175,14 +235,15 @@ void chickenmenu_rebuild(page_id_t child)
         g_chickenmenu = group_create_for_page(btns, n);
         clear_focus_states(btns, n);
 
-        /* 菜谱事件：烤全鸡/烤鸡翅已接入；其余菜谱后续步骤接入 */
+        /* 菜谱事件：烤全鸡走探针流程；四个烤鸡翅类走份量流程(user_data=菜类型) */
         if (cm->wholechicken) {
             lv_obj_add_event_cb(cm->wholechicken, on_chickenmenu_whole_click, LV_EVENT_CLICKED, NULL);
             lv_group_focus_obj(cm->wholechicken);
         }
-        if (cm->grillchickenwing) {
-            lv_obj_add_event_cb(cm->grillchickenwing, on_chickenmenu_wing_click, LV_EVENT_CLICKED, NULL);
-        }
+        if (cm->grillchickenwing)  lv_obj_add_event_cb(cm->grillchickenwing,  on_chickenmenu_weight_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CHICK_WING);
+        if (cm->friedchickenwing)  lv_obj_add_event_cb(cm->friedchickenwing,  on_chickenmenu_weight_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CHICK_FRIED_WING);
+        if (cm->friedchickenleg)   lv_obj_add_event_cb(cm->friedchickenleg,   on_chickenmenu_weight_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CHICK_FRIED_LEG);
+        if (cm->grillchickenbreast) lv_obj_add_event_cb(cm->grillchickenbreast, on_chickenmenu_weight_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CHICK_GRILL_BREAST);
     }
     current_group = g_chickenmenu;
 
@@ -204,13 +265,16 @@ static void on_chickenmenu_whole_click(lv_event_t *e)
         jump_to_probeneedtip();
 }
 
-/* 烤鸡翅：份量驱动 → 进 toastcolor 份量/种类组（默认 800g） */
-static void on_chickenmenu_wing_click(lv_event_t *e)
+/* 烤鸡翅类（份量驱动）：进 toastcolor 份量/种类组（选项/默认按当前菜配置表） */
+static void on_chickenmenu_weight_dish_click(lv_event_t *e)
 {
     if (screen_is_loading(lv_scr_act())) return;
-    g_six_bread_type = SIX_CHICK_WING;
-    toastcolor_set_weight_options(s_chick_wing_weights, 4, 2);   /* 400/600/800/1000，默认 800g */
-    g_toast_mode = TOAST_MODE_WEIGHT;   /* 烤鸡翅:份量/种类组 */
+    int t = (int)(intptr_t)lv_event_get_user_data(e);
+    g_six_bread_type = (uint8_t)t;
+    const chick_dish_t *c = chick_dish_cfg();
+    if (c)
+        toastcolor_set_weight_options(c->weights, c->count, c->default_idx);
+    g_toast_mode = TOAST_MODE_WEIGHT;   /* 份量/种类组 */
     jump_to_toastcolor();
 }
 
@@ -300,6 +364,7 @@ static void on_chick_cooking_stop_click(lv_event_t *e)
     six_chick_apply_display();
 }
 
+/* 烤全鸡烹饪页（探针温度标记完成，无倒计时；独立于面包/蛋糕 cooking 页） */
 void jump_to_chick_cooking(void)
 {
     page_push(PAGE_CHICKENCOOKING);
@@ -499,7 +564,7 @@ void six_chick_handle_back(void)
     printf("[six_chicken] overlay\n");
 }
 
-/* 退出：回到鸡菜菜单（弹掉 cooking + toastcolor，不残留栈） */
+/* 退出：回到第六感主菜单（弹掉 cooking + toastcolor，不残留栈） */
 static void six_chick_exit_to_menu(void)
 {
     s_chick_running = 0;
@@ -517,6 +582,6 @@ static void six_chick_exit_to_menu(void)
     g_send.probe_temp = 0;
     depth = 0;
     page_push(PAGE_WAITMENU_24);
-    jump_to_chickenmenu();
-    printf("[six_chicken] exit -> chickenmenu\n");
+    jump_to_sixmenu();   /* 返回主页 = 第六感主菜单（与面包六感一致） */
+    printf("[six_chicken] exit -> sixmenu\n");
 }

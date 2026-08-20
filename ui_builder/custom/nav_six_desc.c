@@ -20,19 +20,22 @@ static void descriptionmenu_layout(descriptionmenu_t *dm)
 {
     if (!dm || !dm->container_1) return;
 
-    int is_chick = (g_six_bread_type == SIX_CHICK_WHOLE || g_six_bread_type == SIX_CHICK_WING);
-
     /* 左上角菜名 */
     if (dm->label_19)
         lv_label_set_text(dm->label_19, six_current_name());
 
-    /* 摘要：烤全鸡显示烧烤程度；面包有发酵显示发酵小结；其余隐藏 */
+    /* 摘要：烤全鸡显示烧烤程度；烤鸡翅显示份量；面包有发酵显示发酵小结；其余隐藏 */
     if (dm->summary) {
         if (g_six_bread_type == SIX_CHICK_WHOLE) {
             lv_obj_clear_flag(dm->summary, LV_OBJ_FLAG_HIDDEN);
             const char *lv = (g_six_probe_temp <= 75) ? "浅" :
                              (g_six_probe_temp >= 85) ? "深" : "中等";
             lv_label_set_text_fmt(dm->summary, "小结：\n烧烤程度：%s\n", lv);
+        } else if (six_chick_is_kind()) {
+            int w = toastcolor_weight_value();
+            if (w < 0) w = 800;   /* 兜底 */
+            lv_obj_clear_flag(dm->summary, LV_OBJ_FLAG_HIDDEN);
+            lv_label_set_text_fmt(dm->summary, "小结：\n份量/种类：%dg\n", w);
         } else if (six_bread_has_rising()) {
             lv_label_set_text(dm->summary, g_rising_choice == 1 ?
                               "小结：\n有发酵阶段\n" : "小结：\n没有发酵阶段\n");
@@ -41,10 +44,15 @@ static void descriptionmenu_layout(descriptionmenu_t *dm)
         }
     }
 
-    /* 烹饪时间：烤全鸡不显示（探针温度标记完成），隐藏后其余两内容上移顶对齐 */
+    /* 烹饪时间：烤全鸡不显示；烤鸡翅按份量显示；其余原逻辑 */
     if (dm->cooktime) {
         if (g_six_bread_type == SIX_CHICK_WHOLE) {
             lv_obj_add_flag(dm->cooktime, LV_OBJ_FLAG_HIDDEN);
+        } else if (six_chick_is_kind()) {
+            int w = toastcolor_weight_value();
+            if (w < 0) w = 800;
+            lv_obj_clear_flag(dm->cooktime, LV_OBJ_FLAG_HIDDEN);
+            lv_label_set_text_fmt(dm->cooktime, "预计烹饪时间：%d分钟", six_chick_cook_min(w));
         } else {
             lv_obj_clear_flag(dm->cooktime, LV_OBJ_FLAG_HIDDEN);
             /* 选了发酵:发酵分钟+烹饪分钟分开显示 */

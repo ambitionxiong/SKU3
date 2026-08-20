@@ -709,7 +709,12 @@ extern int six_bread_has_rising(void);
 extern int six_bread_color_min(int level);
 /* 烤鸡（nav_six_chicken.c 实现；探针菜，独立于面包/蛋糕流程） */
 #define SIX_CHICK_WHOLE         15  /* 烤全鸡（探针菜，类型标记，不占 s_bread_cfg） */
-#define SIX_CHICK_WING          16  /* 烤鸡翅（份量驱动，类型标记） */
+#define SIX_CHICK_WING          16  /* 烤鸡翅（份量驱动） */
+#define SIX_CHICK_FRIED_WING    17  /* 炸鸡中翅（份量驱动） */
+#define SIX_CHICK_FRIED_LEG     18  /* 炸鸡腿（份量驱动） */
+#define SIX_CHICK_GRILL_BREAST  19  /* 烤鸡胸肉（份量驱动） */
+#define SIX_CHICK_KIND_MIN      16  /* 烤鸡翅类(份量驱动)类型下限 */
+#define SIX_CHICK_KIND_MAX      19  /* 烤鸡翅类(份量驱动)类型上限 */
 extern int g_six_probe_temp;        /* 烤全鸡所选探针目标温度（浅75/中80/深85℃），默认中 */
 extern lv_group_t *g_probeneedtip;
 extern lv_group_t *g_chick_cooking; /* 烤全鸡烹饪页（chickencooking UI） */
@@ -719,8 +724,13 @@ const char *six_chick_degree_text(void); /* 烤全鸡烤色程度（浅色/中�
 const char *six_current_name(void); /* 当前六感菜名：烤鸡走独立名，其余走面包/蛋糕表 */
 const char *six_current_desc(void); /* 当前六感说明：烤鸡走独立名，其余走面包/蛋糕表 */
 void jump_to_probeneedtip(void);    /* 烤鸡探针提示页：未插探针时进入 */
+int toastcolor_weight_value(void);   /* 当前选中份量克数(-1=未选/非份量组) */
 void jump_to_chick_cooking(void);   /* 烤全鸡烹饪页（探针温度标记完成） */
-void six_chick_handle_back(void);   /* 烤全鸡烹饪页 BACK：遮罩确认/完成退出 */
+void six_chick_handle_back(void);   /* 烤鸡烹饪页 BACK：遮罩确认/完成退出 */
+int six_chick_is_kind(void);        /* 当前是否为烤鸡翅类(份量驱动, 16..19) */
+uint8_t six_chick_mode(void);       /* 烤鸡翅类当前菜的模式（热风对流/空气炸） */
+int six_chick_temp(void);           /* 烤鸡翅类当前菜的温度 */
+int six_chick_cook_min(int weight_g);   /* 烤鸡翅类：份量→烹饪分钟（SKU3 菜谱表） */
 
 /* 第六感烤色选择（nav_toastcolor.c 实现）：三组互斥显示模式 */
 #define TOAST_MODE_DEGREE   0     /* 烤色程度（degree+line） */

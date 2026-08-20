@@ -414,7 +414,14 @@ static void apply_delay_cook_mode(page_id_t src)
     case PAGE_PIZZA3_SET: case PAGE_CHIP_SET: case PAGE_CUSTOM_SET:
         g_send.cook_mode = MODE_FROZEN_BAKE; break;
     case PAGE_DESCRIPTIONMENU:
-        g_send.cook_mode = MODE_UPDOWN_BBQ; break;   /* 六感:保持前面烹饪模式 */
+        /* 六感:烤全鸡热风对流；烤鸡翅类按菜谱(热风对流/空气炸)；其余保持前面模式 */
+        if (g_six_bread_type == SIX_CHICK_WHOLE)
+            g_send.cook_mode = MODE_WINDCHANGE_BBQ;
+        else if (six_chick_is_kind())
+            g_send.cook_mode = six_chick_mode();
+        else
+            g_send.cook_mode = MODE_UPDOWN_BBQ;
+        break;
     default: break;
     }
 }
@@ -721,7 +728,12 @@ void rebuild_delaycooking(void)
             if (g_six_bread_type == SIX_CHICK_WHOLE)
                 lv_label_set_text_fmt(dc->status, "| %s | %s |",
                                       six_chick_name(), six_chick_degree_text());   /* 烤全鸡:菜名+烤色程度 */
-            else
+            else if (six_chick_is_kind()) {
+                int w = toastcolor_weight_value();
+                if (w < 0) w = 800;
+                lv_label_set_text_fmt(dc->status, "| %s | %dg | %d分钟 |",
+                                      six_chick_name(), w, six_chick_cook_min(w));   /* 烤鸡翅类:菜名+克重+时间 */
+            } else
                 lv_label_set_text_fmt(dc->status, "| %s | %d分钟", six_bread_name(), six_bread_cook_min());
             lv_img_set_src(dc->icon, LVGL_IMAGE_PATH(sixicon.png));
             lv_obj_set_pos(dc->icon, 163, 161);

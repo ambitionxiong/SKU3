@@ -111,8 +111,8 @@ const six_bread_cfg_t *six_bread_cfg(void) { return &s_bread_cfg[six_bread_type_
 const char *six_bread_name(void)     { return six_bread_cfg()->name; }
 const char *six_bread_desc(void)     { return six_bread_cfg()->cook_desc; }
 int six_bread_cook_min(void)         { return six_bread_cfg()->cook_min; }
-int six_bread_has_color(void)        { return six_bread_cfg()->has_color; }
-int six_bread_has_rising(void)       { return six_bread_cfg()->has_rising; }
+int six_bread_has_color(void)  { return six_chick_is_kind() ? 0 : six_bread_cfg()->has_color; }   /* 烤鸡翅类:无烤色 */
+int six_bread_has_rising(void) { return six_chick_is_kind() ? 0 : six_bread_cfg()->has_rising; }  /* 烤鸡翅类:无发酵 */
 int six_bread_color_min(int level)   /* 1浅 2中 3深 */
 {
     const six_bread_cfg_t *cfg = six_bread_cfg();
@@ -143,12 +143,46 @@ static void six_cook_apply_display(void);
 static void six_cook_exit(void);
 static void six_cook_set_phase(int phase);
 
+// 烹饪阶段秒数:烤鸡翅类按所选份量对应时间,面包/蛋糕按配置
+static int32_t six_cook_sec(void)
+{
+    if (six_chick_is_kind()) {
+        int w = toastcolor_weight_value();
+        if (w < 0) w = 800;   /* 兜底 */
+        return six_chick_cook_min(w) * 60;
+    }
+    return six_bread_cfg()->cook_sec;
+}
+
+// 烹饪页 status 文案:烤鸡翅类=菜名+份量+时间;面包/蛋糕=菜名+时间
+static void six_label_status(somecook_cooking_t *sc)
+{
+    if (six_chick_is_kind()) {
+        int w = toastcolor_weight_value();
+        if (w < 0) w = 800;   /* 兜底 */
+        lv_label_set_text_fmt(sc->label_12, "| %s | %dg | %d分钟 |",
+                              six_chick_name(), w, six_chick_cook_min(w));
+    } else {
+        lv_label_set_text_fmt(sc->label_12, "| %s | %d分钟", six_bread_name(), six_bread_cfg()->cook_min);
+    }
+}
+
+// 运行模式/温度:烤鸡翅类按菜谱表(热风对流/空气炸250℃),面包/蛋糕按配置
+static uint8_t six_cook_mode(void)
+{
+    return six_chick_is_kind() ? six_chick_mode() : six_bread_cfg()->mode;
+}
+static int six_cook_temp(void)
+{
+    return six_chick_is_kind() ? six_chick_temp() : six_bread_cfg()->cook_temp;
+}
+
 // 当前阶段秒数
 static int32_t six_phase_sec(int phase)
 {
     switch (phase) {
     case SIX_PHASE_RISING:        return SIX_RISING_SEC;
-    case SIX_PHASE_COOKING:       return six_bread_cfg()->cook_sec;
+    case SIX_PHASE_COOKING:       return six_cook_sec();
     case SIX_PHASE_COLOR_COOKING: return g_six_color_min * 60;
     default:                      return 0;
     }
@@ -169,10 +203,10 @@ static int32_t six_remaining_sec(void)
     int32_t ph = six_phase_sec(g_six_phase);
     if (e > ph) e = ph;
     switch (g_six_phase) {
-    case SIX_PHASE_RISING:        return (SIX_RISING_SEC + six_bread_cfg()->cook_sec) - e;
+    case SIX_PHASE_RISING:        return (SIX_RISING_SEC + six_cook_sec()) - e;
     case SIX_PHASE_COOKING:
-        return g_six_has_rising ? (SIX_RISING_SEC + six_bread_cfg()->cook_sec) - (SIX_RISING_SEC + e)
-                                : six_bread_cfg()->cook_sec - e;
+        return g_six_has_rising ? (SIX_RISING_SEC + six_cook_sec()) - (SIX_RISING_SEC + e)
+                                : six_cook_sec() - e;
     case SIX_PHASE_COLOR_COOKING: return ph - e;
     default:                      return 0;
     }
@@ -214,13 +248,13 @@ static void six_cook_apply_display(void)
         break;
     case SIX_PHASE_COOKING:
         lv_label_set_text(sc->cookstatus, g_six_paused ? "暂停中..." : "烹饪中...");
-        lv_label_set_text_fmt(sc->label_12, "| %s | %d分钟", six_bread_name(), six_bread_cfg()->cook_min);
+        six_label_status(sc);   /* 烤鸡翅=菜名+克重+时间 */
         if (bl) lv_label_set_text(bl, g_six_paused ? "开 始" : "暂 停");
         break;
     case SIX_PHASE_ASK:
     case SIX_PHASE_ASK_COLOR:
         lv_obj_add_flag(sc->timelabel, LV_OBJ_FLAG_HIDDEN);
-        lv_label_set_text_fmt(sc->label_12, "| %s | %d分钟", six_bread_name(), six_bread_cfg()->cook_min);   /* 完成询问态保持最后烹饪信息 */
+        six_label_status(sc);   /* 完成询问态保持最后烹饪信息 */
         lv_label_set_text(sc->cookstatus, "已完成");
         if (six_bread_has_color()) {
             /* 有烤色:显示烤色询问 */
@@ -276,7 +310,7 @@ static void six_cook_apply_display(void)
             done = six_elapsed_sec(); total = six_phase_sec(SIX_PHASE_COLOR_COOKING);
         } else if (g_six_has_rising) {
             done = six_elapsed_sec() + (g_six_phase == SIX_PHASE_COOKING ? SIX_RISING_SEC : 0);
-            total = SIX_RISING_SEC + six_bread_cfg()->cook_sec;
+            total = SIX_RISING_SEC + six_cook_sec();
         } else {
             done = six_elapsed_sec(); total = six_phase_sec(SIX_PHASE_COOKING);
         }
@@ -321,30 +355,24 @@ static void six_cook_set_phase(int phase)
         g_send.set_temp_lower = 0;
         g_send.iface_status = IFACE_COOKING;
         break;
-    case SIX_PHASE_COOKING: {
-        const six_bread_cfg_t *cfg = six_bread_cfg();
-        g_send.cook_mode = cfg->mode;
-        g_send.set_temp = cfg->cook_temp;
-        g_send.set_temp_lower = (cfg->mode == MODE_UPDOWN_BBQ) ? cfg->cook_temp : 0;   /* 仅上下烧烤发下温 */
+    case SIX_PHASE_COOKING:
+        g_send.cook_mode = six_cook_mode();   /* 烤鸡翅=热风对流25(250℃)，面包/蛋糕按配置 */
+        g_send.set_temp = six_cook_temp();
+        g_send.set_temp_lower = (g_send.cook_mode == MODE_UPDOWN_BBQ) ? six_cook_temp() : 0;   /* 仅上下烧烤发下温 */
         g_send.iface_status = IFACE_COOKING;
         break;
-    }
-    case SIX_PHASE_COLOR_SETUP: {
-        const six_bread_cfg_t *cfg = six_bread_cfg();
-        g_send.cook_mode = cfg->mode;   /* 烤色阶段保持前面模式,不发 color */
-        g_send.set_temp = cfg->cook_temp;
-        g_send.set_temp_lower = (cfg->mode == MODE_UPDOWN_BBQ) ? cfg->cook_temp : 0;   /* 仅上下烧烤发下温 */
+    case SIX_PHASE_COLOR_SETUP:
+        g_send.cook_mode = six_cook_mode();   /* 烤色阶段保持前面模式,不发 color */
+        g_send.set_temp = six_cook_temp();
+        g_send.set_temp_lower = (g_send.cook_mode == MODE_UPDOWN_BBQ) ? six_cook_temp() : 0;
         /* iface_status 不设:保持完成状态(尚未开始烹饪) */
         break;
-    }
-    case SIX_PHASE_COLOR_COOKING: {
-        const six_bread_cfg_t *cfg = six_bread_cfg();
-        g_send.cook_mode = cfg->mode;
-        g_send.set_temp = cfg->cook_temp;
-        g_send.set_temp_lower = (cfg->mode == MODE_UPDOWN_BBQ) ? cfg->cook_temp : 0;   /* 仅上下烧烤发下温 */
+    case SIX_PHASE_COLOR_COOKING:
+        g_send.cook_mode = six_cook_mode();
+        g_send.set_temp = six_cook_temp();
+        g_send.set_temp_lower = (g_send.cook_mode == MODE_UPDOWN_BBQ) ? six_cook_temp() : 0;
         g_send.iface_status = IFACE_COOKING;   /* 点"开 始"后才发烹饪状态 */
         break;
-    }
     case SIX_PHASE_ASK:
     case SIX_PHASE_ASK_COLOR:
         g_send.iface_status = IFACE_COMPLETE;   /* 完成状态 */
@@ -352,7 +380,11 @@ static void six_cook_set_phase(int phase)
         g_send.buzzer_req = BUZZER_COOK_DONE;
         break;
     default:
-        g_send.cook_mode = six_bread_cfg()->mode;
+        g_send.cook_mode = six_cook_mode();
+        if (six_chick_is_kind()) {   /* 烤鸡翅类:按菜谱温度/模式 */
+            g_send.set_temp = six_cook_temp();
+            g_send.set_temp_lower = 0;
+        }
         break;
     }
     six_cook_apply_display();

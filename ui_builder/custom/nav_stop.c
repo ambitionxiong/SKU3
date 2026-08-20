@@ -131,7 +131,12 @@ void jump_to_updown_bbq_stop_back(void)
                 if (g_six_bread_type == SIX_CHICK_WHOLE)
                     lv_label_set_text_fmt(back->statu_label, "| %s | %s |",
                                           six_chick_name(), six_chick_degree_text());   /* 烤全鸡:菜名+烤色程度 */
-                else
+                else if (six_chick_is_kind()) {
+                    int w = toastcolor_weight_value();
+                    if (w < 0) w = 800;
+                    lv_label_set_text_fmt(back->statu_label, "| %s | %dg | %d分钟 |",
+                                          six_chick_name(), w, six_chick_cook_min(w));   /* 烤鸡翅类:菜名+克重+时间 */
+                } else
                     lv_label_set_text_fmt(back->statu_label, "| %s | %d分钟", six_bread_name(), six_bread_cook_min());
                 lv_img_set_src(back->image_7, LVGL_IMAGE_PATH(sixicon.png));
                 lv_obj_set_pos(back->image_7, 163, 161);

@@ -93,6 +93,9 @@ void sixmenu_rebuild(page_id_t child)
         }
         if (sm->cake) {
             lv_obj_add_event_cb(sm->cake, on_sixmenu_cake_click, LV_EVENT_CLICKED, NULL);
+            /* 从 cake6menu 返回时焦点回到蛋糕按钮 */
+            if (child == PAGE_CAKE6MENU)
+                lv_group_focus_obj(sm->cake);
         }
         if (sm->chick) {
             lv_obj_add_event_cb(sm->chick, on_sixmenu_chick_click, LV_EVENT_CLICKED, NULL);

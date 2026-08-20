@@ -40,6 +40,14 @@ void toastcolor_set_weight_options(const int *opts, int count, int default_idx)
         s_weight_index = 0;
 }
 
+/* 当前选中份量克数；非份量组/未设置返回 -1 */
+int toastcolor_weight_value(void)
+{
+    if (g_toast_mode != TOAST_MODE_WEIGHT || s_weight_count <= 0 || !s_weight_opts)
+        return -1;
+    return s_weight_opts[s_weight_index];
+}
+
 /* 互斥显示：仅显示当前激活组，其余两组整体隐藏 */
 static void toastcolor_apply_mode_visibility(void)
 {
@@ -161,8 +169,9 @@ static void on_toastcolor_next_click(lv_event_t *e)
         jump_to_descriptionmenu();
         return;
     }
-    if (g_six_bread_type == SIX_CHICK_WING) {
-        /* 烤鸡翅:份量已选（s_weight_opts[s_weight_index]），下一步按份量进入烹饪，后续接入 */
+    if (six_chick_is_kind()) {
+        /* 烤鸡翅类:份量已选（toastcolor_weight_value()），进 cooking 说明页 */
+        jump_to_descriptionmenu();
         return;
     }
     g_six_color_min = six_bread_color_min(s_toast_color);   /* 1浅 2中 3深,按菜查表 */
@@ -181,8 +190,8 @@ void jump_to_toastcolor(void)
     if (tc) {
         if (tc->label_24)
             lv_label_set_text(tc->label_24, six_current_name());   /* 左上角菜名（烤鸡走独立名） */
-        /* 模式：面包/蛋糕固定烤色程度；鸡流程进入前已设置（烤全鸡=烤色程度/烤鸡翅=份量） */
-        if (g_six_bread_type != SIX_CHICK_WHOLE && g_six_bread_type != SIX_CHICK_WING)
+        /* 模式：面包/蛋糕固定烤色程度；鸡流程进入前已设置（烤全鸡=烤色程度/烤鸡翅类=份量） */
+        if (g_six_bread_type != SIX_CHICK_WHOLE && !six_chick_is_kind())
             g_toast_mode = TOAST_MODE_DEGREE;
         toastcolor_apply_mode_visibility(); /* 三组互斥：仅显示当前组 */
         /* 焦点组:当前组标签 + next（烤色程度→degree，份量→weight） */
@@ -235,7 +244,7 @@ void toastcolor_rebuild(page_id_t child)
         if (tc->label_24)
             lv_label_set_text(tc->label_24, six_current_name());   /* 左上角菜名（烤鸡走独立名） */
         /* 模式：面包/蛋糕固定烤色程度；鸡流程重建时保持进入时设置的组 */
-        if (g_six_bread_type != SIX_CHICK_WHOLE && g_six_bread_type != SIX_CHICK_WING)
+        if (g_six_bread_type != SIX_CHICK_WHOLE && !six_chick_is_kind())
             g_toast_mode = TOAST_MODE_DEGREE;
         toastcolor_apply_mode_visibility(); /* 三组互斥：仅显示当前组 */
         lv_obj_t *btns[] = { (g_toast_mode == TOAST_MODE_WEIGHT) ? tc->weight : tc->degree,
