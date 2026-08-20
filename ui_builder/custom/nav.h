@@ -293,6 +293,7 @@ typedef enum {
     PAGE_DESCRIPTIONMENU,   /* 第六感-烹饪描述 */
     PAGE_SIX_COOKING,       /* 第六感-运行页（复用 somecook_cooking UI） */
     PAGE_TOASTCOLOR,        /* 第六感-烤色选择 */
+    PAGE_PROBENEEDTIP,      /* 第六感-烤鸡探针提示（未插探针） */
     PAGE_CHICKENCOOKING,    /* 第六感-烤鸡烹饪页（chickencooking UI） */
 } page_id_t;
 
@@ -706,6 +707,13 @@ extern int six_rising_min(void);
 extern int six_bread_has_color(void);
 extern int six_bread_has_rising(void);
 extern int six_bread_color_min(int level);
+/* 烤鸡（nav_six_chicken.c 实现；探针菜，独立于面包/蛋糕流程） */
+#define SIX_CHICK_WHOLE         15  /* 烤全鸡（类型标记，不占 s_bread_cfg） */
+extern int g_six_probe_temp;        /* 烤全鸡所选探针目标温度（浅75/中80/深85℃），默认中 */
+extern lv_group_t *g_probeneedtip;
+const char *six_chick_name(void);   /* 烤全鸡名称 */
+const char *six_current_name(void); /* 当前六感菜名：烤鸡走独立名，其余走面包/蛋糕表 */
+void jump_to_probeneedtip(void);    /* 烤鸡探针提示页：未插探针时进入 */
 void jump_to_six_cooking(void);
 void six_cook_handle_back(void);
 void six_cooking_rebuild(page_id_t child);

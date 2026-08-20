@@ -94,6 +94,10 @@ void process_key(uint8_t key)
     /* 探针提示页:仅 BACK 有效(probetip_dismiss_now 提前结束),功能键静默忽略 */
     if (depth > 0 && page_stack[depth - 1] == PAGE_PROBETIP && key != KEY_BACK)
         return;
+    /* 烤鸡探针提示页:仅 BACK / 确定(编码器按下=点击 sure)有效，其余功能键静默忽略 */
+    if (depth > 0 && page_stack[depth - 1] == PAGE_PROBENEEDTIP &&
+        key != KEY_BACK && key != KEY_ENCODER_PRESS)
+        return;
     /* 设置页覆盖层打开时按功能键:
        - 下层运行态(烹饪/暂停)或下层不允许该键 → 防御:无效音,设置页保持
        - 下层允许该键(菜单页) → 关闭设置页 + 弹栈,按下层正常跳转 */

@@ -5,18 +5,105 @@
 #include "nav.h"
 #include "protocol.h"
 #include "custom_defs.h"
+#include <string.h>
 
 /* ==============================
  * 第六感-烤色选择（toastcolor 页）
- * degree 标签(浅/中/深)入焦点组,编码器切换档位(默认中),
- * line 跟随 degree 焦点显隐(聚焦显示/离开隐藏,固定位置);
- * 确定(PRESS)从 degree 切到 next;next 点击 → 回六感运行页上色准备态
+ * 页面包含三组互斥的设置信息，同一时间仅显示一组，由 label_23 标题标明当前组：
+ *   1) 烤色程度：degree 标签(浅/中/深) + line（跟随 degree 聚焦显隐）
+ *   2) 成熟度：  Maturity 标签 + 其下划线（maturityline2/3 按文字字数择一显示）
+ *   3) 份量/种类： weight 标签 + 其下划线（weightline3/4 按数值位数择一显示）
+ * 编码器切换档位(默认中)；确定(PRESS)从当前组切到 next；next 点击进入下一步。
  * ============================== */
 
 lv_group_t *g_toastcolor = NULL;
 static int s_toast_color = 2;   /* 1浅 2中 3深 */
 
+/* 当前激活组：三组互斥（默认烤色程度） */
+enum { TOAST_MODE_DEGREE = 0, TOAST_MODE_MATURITY = 1, TOAST_MODE_WEIGHT = 2 };
+static int s_toast_mode = TOAST_MODE_DEGREE;
+
 static void toastcolor_update_degree(void);
+
+/* 互斥显示：仅显示当前激活组，其余两组整体隐藏 */
+static void toastcolor_apply_mode_visibility(void)
+{
+    toastcolor_t *tc = toastcolor_get(&ui_manager);
+    if (!tc) return;
+
+    int show_deg = (s_toast_mode == TOAST_MODE_DEGREE);
+    int show_mat = (s_toast_mode == TOAST_MODE_MATURITY);
+    int show_wt  = (s_toast_mode == TOAST_MODE_WEIGHT);
+
+    /* 烤色程度组 */
+    if (tc->degree) {
+        if (show_deg) lv_obj_clear_flag(tc->degree, LV_OBJ_FLAG_HIDDEN);
+        else lv_obj_add_flag(tc->degree, LV_OBJ_FLAG_HIDDEN);
+    }
+    if (tc->line) {
+        if (show_deg) lv_obj_clear_flag(tc->line, LV_OBJ_FLAG_HIDDEN);
+        else lv_obj_add_flag(tc->line, LV_OBJ_FLAG_HIDDEN);
+    }
+    /* 成熟度组 */
+    if (tc->Maturity) {
+        if (show_mat) lv_obj_clear_flag(tc->Maturity, LV_OBJ_FLAG_HIDDEN);
+        else lv_obj_add_flag(tc->Maturity, LV_OBJ_FLAG_HIDDEN);
+    }
+    if (tc->maturityline2) {
+        if (show_mat) lv_obj_clear_flag(tc->maturityline2, LV_OBJ_FLAG_HIDDEN);
+        else lv_obj_add_flag(tc->maturityline2, LV_OBJ_FLAG_HIDDEN);
+    }
+    if (tc->maturityline3) {
+        if (show_mat) lv_obj_clear_flag(tc->maturityline3, LV_OBJ_FLAG_HIDDEN);
+        else lv_obj_add_flag(tc->maturityline3, LV_OBJ_FLAG_HIDDEN);
+    }
+    /* 份量/种类组 */
+    if (tc->weight) {
+        if (show_wt) lv_obj_clear_flag(tc->weight, LV_OBJ_FLAG_HIDDEN);
+        else lv_obj_add_flag(tc->weight, LV_OBJ_FLAG_HIDDEN);
+    }
+    if (tc->weighticon) {
+        if (show_wt) lv_obj_clear_flag(tc->weighticon, LV_OBJ_FLAG_HIDDEN);
+        else lv_obj_add_flag(tc->weighticon, LV_OBJ_FLAG_HIDDEN);
+    }
+    if (tc->weightline3) {
+        if (show_wt) lv_obj_clear_flag(tc->weightline3, LV_OBJ_FLAG_HIDDEN);
+        else lv_obj_add_flag(tc->weightline3, LV_OBJ_FLAG_HIDDEN);
+    }
+    if (tc->weightline4) {
+        if (show_wt) lv_obj_clear_flag(tc->weightline4, LV_OBJ_FLAG_HIDDEN);
+        else lv_obj_add_flag(tc->weightline4, LV_OBJ_FLAG_HIDDEN);
+    }
+
+    /* 激活组内部细化：线条按内容长度/位数择一显示 */
+    if (show_mat && tc->Maturity) {
+        int len = (int)strlen(lv_label_get_text(tc->Maturity));
+        if (tc->maturityline3) {
+            if (len >= 2) lv_obj_clear_flag(tc->maturityline3, LV_OBJ_FLAG_HIDDEN);
+            else lv_obj_add_flag(tc->maturityline3, LV_OBJ_FLAG_HIDDEN);
+        }
+        if (tc->maturityline2) {
+            if (len >= 2) lv_obj_add_flag(tc->maturityline2, LV_OBJ_FLAG_HIDDEN);
+            else lv_obj_clear_flag(tc->maturityline2, LV_OBJ_FLAG_HIDDEN);
+        }
+    }
+    if (show_wt && tc->weight) {
+        int len = (int)strlen(lv_label_get_text(tc->weight));
+        if (tc->weightline4) {
+            if (len >= 4) lv_obj_clear_flag(tc->weightline4, LV_OBJ_FLAG_HIDDEN);
+            else lv_obj_add_flag(tc->weightline4, LV_OBJ_FLAG_HIDDEN);
+        }
+        if (tc->weightline3) {
+            if (len >= 4) lv_obj_add_flag(tc->weightline3, LV_OBJ_FLAG_HIDDEN);
+            else lv_obj_clear_flag(tc->weightline3, LV_OBJ_FLAG_HIDDEN);
+        }
+    }
+
+    /* 标题跟随当前组 */
+    if (tc->label_23)
+        lv_label_set_text(tc->label_23, show_deg ? "选择烤色程度" :
+                                          show_mat ? "成熟度" : "份量/种类");
+}
 
 // line 固定位置(生成默认),仅按 degree 是否聚焦显隐
 static void toastcolor_apply_line(lv_obj_t *focused)
@@ -37,6 +124,10 @@ static void on_toastcolor_focus(lv_event_t *e)
 static void on_toastcolor_next_click(lv_event_t *e)
 {
     if (screen_is_loading(lv_scr_act())) return;
+    if (g_six_bread_type == SIX_CHICK_WHOLE) {
+        /* 烤全鸡:next 逻辑后续步骤接入，暂时不响应 */
+        return;
+    }
     g_six_color_min = six_bread_color_min(s_toast_color);   /* 1浅 2中 3深,按菜查表 */
     six_cook_goto_setup();   /* 重建后显示上色准备态 */
     /* 回运行页:弹 toastcolor */
@@ -52,7 +143,9 @@ void jump_to_toastcolor(void)
     toastcolor_t *tc = toastcolor_get(&ui_manager);
     if (tc) {
         if (tc->label_24)
-            lv_label_set_text(tc->label_24, six_bread_name());   /* 左上角菜名 */
+            lv_label_set_text(tc->label_24, six_current_name());   /* 左上角菜名（烤鸡走独立名） */
+        s_toast_mode = TOAST_MODE_DEGREE;   /* 默认烤色程度组（后续菜谱可按需设置其它组） */
+        toastcolor_apply_mode_visibility(); /* 三组互斥：仅显示当前组 */
         /* 焦点组:degree(档位设置) + next */
         lv_obj_t *btns[] = { tc->degree, tc->next };
         const int n = (int)(sizeof(btns) / sizeof(btns[0]));
@@ -93,7 +186,9 @@ void toastcolor_rebuild(page_id_t child)
     toastcolor_t *tc = toastcolor_get(&ui_manager);
     if (tc) {
         if (tc->label_24)
-            lv_label_set_text(tc->label_24, six_bread_name());   /* 左上角菜名 */
+            lv_label_set_text(tc->label_24, six_current_name());   /* 左上角菜名（烤鸡走独立名） */
+        s_toast_mode = TOAST_MODE_DEGREE;   /* 默认烤色程度组（后续菜谱可按需设置其它组） */
+        toastcolor_apply_mode_visibility(); /* 三组互斥：仅显示当前组 */
         lv_obj_t *btns[] = { tc->degree, tc->next };
         const int n = (int)(sizeof(btns) / sizeof(btns[0]));
         for (int k = 0; k < n; k++) {
