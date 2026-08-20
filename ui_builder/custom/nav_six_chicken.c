@@ -11,6 +11,7 @@
 
 lv_group_t *g_chick6menu = NULL;
 lv_group_t *g_chickenmenu = NULL;
+lv_group_t *g_duckmenu = NULL;
 lv_group_t *g_probeneedtip = NULL;
 int g_six_probe_temp = 80;   /* 烤全鸡所选探针目标温度（浅75/中80/深85℃），默认中 */
 
@@ -61,15 +62,65 @@ static const chick_dish_t *chick_dish_cfg(void)
     return six_chick_is_kind() ? &s_chick_dishes[g_six_bread_type - SIX_CHICK_KIND_MIN] : NULL;
 }
 
-/* 烤鸡菜名：份量驱动类按配置表；烤全鸡固定 */
+/* ==================== 探针菜（烤全鸡/烤全鸭）配置表 ==================== */
+typedef struct {
+    const char *name;
+    uint8_t mode;
+    int temp;
+    int probe[3];       /* 浅/中/深 探针目标温度 */
+    int max_min;        /* 最长防护分钟(探针异常兜底,非倒计时) */
+    const char *desc;
+} chick_probe_t;
+
+static const chick_probe_t s_chick_probes[] = {
+    /* 烤全鸡 */
+    { "烤全鸡", MODE_WINDCHANGE_BBQ, 230, {75, 80, 85}, 80,
+      "烹饪说明：\n刷油，并根据个人喜好进行调味。抹上盐和胡椒。放入烤箱，胸脯面朝上\n现在将食物放在第2层\n使用深盘" },
+    /* 烤全鸭 */
+    { "烤全鸭", MODE_WINDCHANGE_BBQ, 230, {86, 88, 90}, 90,
+      "烹饪说明：\n刷油，抹上盐和胡椒。根据个人喜好，用蒜和香草调味\n现在将食物放在第2层\n使用深盘" },
+};
+
+/* 当前类型是否为探针菜（烤全鸡/烤全鸭） */
+int six_chick_is_probe(void)
+{
+    return (g_six_bread_type == SIX_CHICK_WHOLE || g_six_bread_type == SIX_CHICK_DUCK_WHOLE);
+}
+
+static const chick_probe_t *chick_probe_cfg(void)
+{
+    if (!six_chick_is_probe()) return NULL;
+    return &s_chick_probes[(g_six_bread_type == SIX_CHICK_DUCK_WHOLE) ? 1 : 0];
+}
+
+/* 探针菜档位(1浅2中3深)→探针目标温度 */
+int six_chick_probe_temp(int level)
+{
+    const chick_probe_t *p = chick_probe_cfg();
+    if (!p) return 80;
+    if (level < 1 || level > 3) level = 2;
+    return p->probe[level - 1];
+}
+
+/* 烤鸡菜名：份量驱动类按份量表；探针菜按探针配置 */
 const char *six_chick_name(void)
 {
     const chick_dish_t *c = chick_dish_cfg();
-    return c ? c->name : "烤全鸡";
+    if (c) return c->name;
+    const chick_probe_t *p = chick_probe_cfg();
+    return p ? p->name : "烤全鸡";
 }
 
-uint8_t six_chick_mode(void) { const chick_dish_t *c = chick_dish_cfg(); return c ? c->mode : MODE_WINDCHANGE_BBQ; }
-int six_chick_temp(void)     { const chick_dish_t *c = chick_dish_cfg(); return c ? c->temp : 230; }
+uint8_t six_chick_mode(void) {
+    const chick_dish_t *c = chick_dish_cfg(); if (c) return c->mode;
+    const chick_probe_t *p = chick_probe_cfg(); if (p) return p->mode;
+    return MODE_WINDCHANGE_BBQ;
+}
+int six_chick_temp(void) {
+    const chick_dish_t *c = chick_dish_cfg(); if (c) return c->temp;
+    const chick_probe_t *p = chick_probe_cfg(); if (p) return p->temp;
+    return 230;
+}
 
 /* 份量→烹饪分钟（查表，找不到取中间档兜底） */
 int six_chick_cook_min(int weight_g)
@@ -87,24 +138,28 @@ const char *six_chick_desc(void)
 {
     const chick_dish_t *c = chick_dish_cfg();
     if (c) return c->desc;
+    const chick_probe_t *p = chick_probe_cfg();
+    if (p) return p->desc;
     return "烹饪说明：\n刷油，并根据个人喜好进行调味。抹上盐和胡椒。放入烤箱，胸脯面朝上\n现在将食物放在第2层\n使用深盘";
 }
 
-/* 当前六感菜名/说明：烤鸡走独立名，其余走面包/蛋糕共用表 */
+/* 当前六感菜名/说明：烤鸡/鸭走独立名，其余走面包/蛋糕共用表 */
 const char *six_current_name(void)
 {
-    return (g_six_bread_type == SIX_CHICK_WHOLE || six_chick_is_kind())
+    return (six_chick_is_probe() || six_chick_is_kind())
            ? six_chick_name() : six_bread_name();
 }
 const char *six_current_desc(void)
 {
-    return (g_six_bread_type == SIX_CHICK_WHOLE || six_chick_is_kind())
+    return (six_chick_is_probe() || six_chick_is_kind())
            ? six_chick_desc() : six_bread_desc();
 }
 
 static void on_chick6menu_chicken_click(lv_event_t *e);
-static void on_chickenmenu_whole_click(lv_event_t *e);
+static void on_chick6menu_duck_click(lv_event_t *e);
+static void on_probe_dish_click(lv_event_t *e);
 static void on_chickenmenu_weight_dish_click(lv_event_t *e);
+static void on_duckmenu_wholeduck_click(lv_event_t *e);
 static void on_probeneedtip_sure_click(lv_event_t *e);
 
 /* ================= chick6menu（家禽：鸡/鸭） ================= */
@@ -130,7 +185,9 @@ void jump_to_chick6menu(void)
             lv_obj_add_event_cb(cm->chicken, on_chick6menu_chicken_click, LV_EVENT_CLICKED, NULL);
             lv_group_focus_obj(cm->chicken);
         }
-        /* duck 暂未接入：不绑事件（点击静默） */
+        if (cm->duck) {
+            lv_obj_add_event_cb(cm->duck, on_chick6menu_duck_click, LV_EVENT_CLICKED, NULL);
+        }
     }
     current_group = g_chick6menu;
 
@@ -158,9 +215,15 @@ void chick6menu_rebuild(page_id_t child)
 
         if (cm->chicken) {
             lv_obj_add_event_cb(cm->chicken, on_chick6menu_chicken_click, LV_EVENT_CLICKED, NULL);
-            /* 从 chickenmenu 返回时焦点回到鸡按钮 */
-            lv_group_focus_obj(cm->chicken);
         }
+        if (cm->duck) {
+            lv_obj_add_event_cb(cm->duck, on_chick6menu_duck_click, LV_EVENT_CLICKED, NULL);
+        }
+        /* 焦点恢复：从子菜单返回进入时的按钮 */
+        if (child == PAGE_DUCK6MENU && cm->duck)
+            lv_group_focus_obj(cm->duck);
+        else if (cm->chicken)
+            lv_group_focus_obj(cm->chicken);
     }
     current_group = g_chick6menu;
 
@@ -174,6 +237,12 @@ static void on_chick6menu_chicken_click(lv_event_t *e)
 {
     if (screen_is_loading(lv_scr_act())) return;
     jump_to_chickenmenu();
+}
+
+static void on_chick6menu_duck_click(lv_event_t *e)
+{
+    if (screen_is_loading(lv_scr_act())) return;
+    jump_to_duckmenu();
 }
 
 /* ================= chickenmenu（鸡：烤全鸡/烤鸡翅/炸鸡翅/炸鸡腿/烤鸡胸） ================= */
@@ -198,9 +267,9 @@ void jump_to_chickenmenu(void)
         g_chickenmenu = group_create_for_page(btns, n);
         clear_focus_states(btns, n);
 
-        /* 菜谱事件：烤全鸡走探针流程；四个烤鸡翅类走份量流程(user_data=菜类型) */
+        /* 菜谱事件：探针菜(烤全鸡)走探针流程；四个烤鸡翅类走份量流程(user_data=菜类型) */
         if (cm->wholechicken) {
-            lv_obj_add_event_cb(cm->wholechicken, on_chickenmenu_whole_click, LV_EVENT_CLICKED, NULL);
+            lv_obj_add_event_cb(cm->wholechicken, on_probe_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CHICK_WHOLE);
             lv_group_focus_obj(cm->wholechicken);
         }
         if (cm->grillchickenwing)  lv_obj_add_event_cb(cm->grillchickenwing,  on_chickenmenu_weight_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CHICK_WING);
@@ -235,9 +304,9 @@ void chickenmenu_rebuild(page_id_t child)
         g_chickenmenu = group_create_for_page(btns, n);
         clear_focus_states(btns, n);
 
-        /* 菜谱事件：烤全鸡走探针流程；四个烤鸡翅类走份量流程(user_data=菜类型) */
+        /* 菜谱事件：探针菜(烤全鸡)走探针流程；四个烤鸡翅类走份量流程(user_data=菜类型) */
         if (cm->wholechicken) {
-            lv_obj_add_event_cb(cm->wholechicken, on_chickenmenu_whole_click, LV_EVENT_CLICKED, NULL);
+            lv_obj_add_event_cb(cm->wholechicken, on_probe_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CHICK_WHOLE);
             lv_group_focus_obj(cm->wholechicken);
         }
         if (cm->grillchickenwing)  lv_obj_add_event_cb(cm->grillchickenwing,  on_chickenmenu_weight_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CHICK_WING);
@@ -253,12 +322,12 @@ void chickenmenu_rebuild(page_id_t child)
     printf("[six_chicken] rebuild: chickenmenu (child=%d)\n", (int)child);
 }
 
-/* 烤全鸡：探针判断 → 未插探针进提示页，已插入进烤色/程度选择页（degree 组） */
-static void on_chickenmenu_whole_click(lv_event_t *e)
+/* 探针菜（烤全鸡/烤全鸭）：探针判断 → 未插探针进提示页，已插入进烤色/程度选择页（degree 组） */
+static void on_probe_dish_click(lv_event_t *e)
 {
     if (screen_is_loading(lv_scr_act())) return;
-    g_six_bread_type = SIX_CHICK_WHOLE;
-    g_toast_mode = TOAST_MODE_DEGREE;   /* 烤全鸡:烤色程度组（浅/中/深=探针温度） */
+    g_six_bread_type = (uint8_t)(intptr_t)lv_event_get_user_data(e);
+    g_toast_mode = TOAST_MODE_DEGREE;   /* 浅/中/深=探针目标温度（按菜谱配置） */
     if (is_probe_inserted())
         jump_to_toastcolor();
     else
@@ -276,6 +345,79 @@ static void on_chickenmenu_weight_dish_click(lv_event_t *e)
         toastcolor_set_weight_options(c->weights, c->count, c->default_idx);
     g_toast_mode = TOAST_MODE_WEIGHT;   /* 份量/种类组 */
     jump_to_toastcolor();
+}
+
+/* ================= duckmenu（鸭：烤全鸭） ================= */
+
+void jump_to_duckmenu(void)
+{
+    page_push(PAGE_DUCK6MENU);
+    lv_obj_clean(lv_scr_act());
+    duckmenu_create(&ui_manager);
+
+    duckmenu_t *dm = duckmenu_get(&ui_manager);
+    if (dm) {
+        lv_obj_t *btns[] = { dm->wholeduck };
+        const int n = (int)(sizeof(btns) / sizeof(btns[0]));
+        for (int k = 0; k < n; k++) {
+            if (btns[k]) lv_group_remove_obj(btns[k]);
+        }
+        if (g_duckmenu) lv_group_del(g_duckmenu);
+        g_duckmenu = group_create_for_page(btns, n);
+        clear_focus_states(btns, n);
+
+        if (dm->wholeduck) {
+            lv_obj_add_event_cb(dm->wholeduck, on_duckmenu_wholeduck_click, LV_EVENT_CLICKED, NULL);
+            lv_group_focus_obj(dm->wholeduck);
+        }
+    }
+    current_group = g_duckmenu;
+
+    lv_scr_load_anim(duckmenu_get(&ui_manager)->obj,
+                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                     ui_manager.auto_del);
+    printf("[six_chicken] jump: duckmenu\n");
+}
+
+void duckmenu_rebuild(page_id_t child)
+{
+    if (g_duckmenu) { lv_group_del(g_duckmenu); g_duckmenu = NULL; }
+    lv_obj_clean(lv_scr_act());
+    duckmenu_create(&ui_manager);
+
+    duckmenu_t *dm = duckmenu_get(&ui_manager);
+    if (dm) {
+        lv_obj_t *btns[] = { dm->wholeduck };
+        const int n = (int)(sizeof(btns) / sizeof(btns[0]));
+        for (int k = 0; k < n; k++) {
+            if (btns[k]) lv_group_remove_obj(btns[k]);
+        }
+        g_duckmenu = group_create_for_page(btns, n);
+        clear_focus_states(btns, n);
+
+        if (dm->wholeduck) {
+            lv_obj_add_event_cb(dm->wholeduck, on_duckmenu_wholeduck_click, LV_EVENT_CLICKED, NULL);
+            lv_group_focus_obj(dm->wholeduck);
+        }
+    }
+    current_group = g_duckmenu;
+
+    lv_scr_load_anim(duckmenu_get(&ui_manager)->obj,
+                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                     ui_manager.auto_del);
+    printf("[six_chicken] rebuild: duckmenu (child=%d)\n", (int)child);
+}
+
+/* 烤全鸭：与烤全鸡同款探针流程（温度/描述按菜谱配置表） */
+static void on_duckmenu_wholeduck_click(lv_event_t *e)
+{
+    if (screen_is_loading(lv_scr_act())) return;
+    g_six_bread_type = SIX_CHICK_DUCK_WHOLE;
+    g_toast_mode = TOAST_MODE_DEGREE;
+    if (is_probe_inserted())
+        jump_to_toastcolor();
+    else
+        jump_to_probeneedtip();
 }
 
 /* ================= probeneedtip（烤鸡探针提示页） =================
@@ -398,11 +540,12 @@ void jump_to_chick_cooking(void)
     s_chick_start_probe = get_probe_temp();   /* 进度条起点：起始探针温度 */
     cook_elapsed_saved = 0;
     cook_start_time = lv_tick_get();
-    cook_total_ms = 80 * 60 * 1000;   /* 探针异常时兜底，非倒计时 */
+    const chick_probe_t *pcfg = chick_probe_cfg();
+    cook_total_ms = (pcfg ? pcfg->max_min : 80) * 60 * 1000;   /* 探针异常时兜底，非倒计时 */
 
     g_send.iface_status = IFACE_COOKING;
-    g_send.cook_mode = MODE_WINDCHANGE_BBQ;   /* 烤全鸡：热风对流 */
-    g_send.set_temp = 230;
+    g_send.cook_mode = six_chick_mode();   /* 烤全鸡/烤全鸭:热风对流 */
+    g_send.set_temp = six_chick_temp();
     g_send.set_temp_lower = 0;
     g_send.cook_flag = 2;                     /* 探针模式 */
     g_send.probe_temp = (uint8_t)g_six_probe_temp;
@@ -429,11 +572,22 @@ static int six_chick_bar_value(int cur)
     return p;
 }
 
-/* 烤色程度文字：按所选档位（浅75/中80/深85℃）显示 */
+/* 烤色程度文字：按已选探针目标温度映射（阈值按菜谱配置） */
 const char *six_chick_degree_text(void)
 {
-    return g_six_probe_temp <= 75 ? "浅色" :
-           g_six_probe_temp >= 85 ? "深色" : "中等色";
+    const chick_probe_t *p = chick_probe_cfg();
+    if (!p) return "中等色";
+    if (g_six_probe_temp <= p->probe[0]) return "浅色";
+    if (g_six_probe_temp >= p->probe[2]) return "深色";
+    return "中等色";
+}
+const char *six_chick_degree_short(void)
+{
+    const chick_probe_t *p = chick_probe_cfg();
+    if (!p) return "中等";
+    if (g_six_probe_temp <= p->probe[0]) return "浅";
+    if (g_six_probe_temp >= p->probe[2]) return "深";
+    return "中等";
 }
 
 /* 烹饪页显示刷新 */

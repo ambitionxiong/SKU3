@@ -76,7 +76,7 @@ void chickencooking_create(ui_manager_t *ui)
     lv_img_set_pivot(scr->icon, 50, 50);
     lv_img_set_angle(scr->icon, 0);
     lv_obj_set_style_img_opa(scr->icon, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->icon, 138, 161);
+    lv_obj_set_pos(scr->icon, 163, 161);
 
     // Init scr->bartemp
     scr->bartemp = lv_label_create(scr->obj);

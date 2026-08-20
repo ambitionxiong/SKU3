@@ -24,13 +24,11 @@ static void descriptionmenu_layout(descriptionmenu_t *dm)
     if (dm->label_19)
         lv_label_set_text(dm->label_19, six_current_name());
 
-    /* 摘要：烤全鸡显示烧烤程度；烤鸡翅显示份量；面包有发酵显示发酵小结；其余隐藏 */
+    /* 摘要：探针菜显示烧烤程度；烤鸡翅类显示份量；面包有发酵显示发酵小结；其余隐藏 */
     if (dm->summary) {
-        if (g_six_bread_type == SIX_CHICK_WHOLE) {
+        if (six_chick_is_probe()) {
             lv_obj_clear_flag(dm->summary, LV_OBJ_FLAG_HIDDEN);
-            const char *lv = (g_six_probe_temp <= 75) ? "浅" :
-                             (g_six_probe_temp >= 85) ? "深" : "中等";
-            lv_label_set_text_fmt(dm->summary, "小结：\n烧烤程度：%s\n", lv);
+            lv_label_set_text_fmt(dm->summary, "小结：\n烧烤程度：%s\n", six_chick_degree_short());
         } else if (six_chick_is_kind()) {
             int w = toastcolor_weight_value();
             if (w < 0) w = 800;   /* 兜底 */
@@ -44,9 +42,9 @@ static void descriptionmenu_layout(descriptionmenu_t *dm)
         }
     }
 
-    /* 烹饪时间：烤全鸡不显示；烤鸡翅按份量显示；其余原逻辑 */
+    /* 烹饪时间：探针菜不显示；烤鸡翅类按份量显示；其余原逻辑 */
     if (dm->cooktime) {
-        if (g_six_bread_type == SIX_CHICK_WHOLE) {
+        if (six_chick_is_probe()) {
             lv_obj_add_flag(dm->cooktime, LV_OBJ_FLAG_HIDDEN);
         } else if (six_chick_is_kind()) {
             int w = toastcolor_weight_value();
@@ -85,8 +83,8 @@ static void descriptionmenu_layout(descriptionmenu_t *dm)
         lv_obj_set_height(labels[k], LV_SIZE_CONTENT);
         lv_obj_set_style_text_line_space(labels[k], -5, 0);
     }
-    /* 烤全鸡:隐藏时间后，说明与小结整体上移顶对齐（隐藏项不占 flex 位） */
-    if (g_six_bread_type == SIX_CHICK_WHOLE) {
+    /* 探针菜:隐藏时间后，说明与小结整体上移顶对齐（隐藏项不占 flex 位） */
+    if (six_chick_is_probe()) {
         if (dm->cookdescriptin) lv_obj_move_to_index(dm->cookdescriptin, 0);
         if (dm->summary) lv_obj_move_to_index(dm->summary, 1);
     }
@@ -169,8 +167,8 @@ void descriptionmenu_rebuild(page_id_t child)
 static void on_description_start_click(lv_event_t *e)
 {
     if (screen_is_loading(lv_scr_act())) return;
-    if (g_six_bread_type == SIX_CHICK_WHOLE)
-        jump_to_chick_cooking();   /* 烤全鸡:探针温度驱动烹饪页 */
+    if (six_chick_is_probe())
+        jump_to_chick_cooking();   /* 探针菜(烤全鸡/烤全鸭):探针温度驱动烹饪页 */
     else
         jump_to_six_cooking();
 }

@@ -289,6 +289,7 @@ typedef enum {
     PAGE_CAKE6MENU,         /* 第六感-蛋糕 */
     PAGE_CHICK6MENU,        /* 第六感-家禽 */
     PAGE_CHICKENMENU,       /* 第六感-鸡 */
+    PAGE_DUCK6MENU,         /* 第六感-鸭 */
     PAGE_RISINGPAGE,        /* 第六感-是否发酵 */
     PAGE_DESCRIPTIONMENU,   /* 第六感-烹饪描述 */
     PAGE_SIX_COOKING,       /* 第六感-运行页（复用 somecook_cooking UI） */
@@ -668,13 +669,16 @@ void jump_to_bread6menu(void);
 void bread6menu_rebuild(page_id_t child);
 void jump_to_cake6menu(void);
 void cake6menu_rebuild(page_id_t child);
-/* 第六感-家禽/鸡（nav_six_chicken.c 实现） */
+/* 第六感-家禽/鸡/鸭（nav_six_chicken.c 实现） */
 extern lv_group_t *g_chick6menu;
 extern lv_group_t *g_chickenmenu;
+extern lv_group_t *g_duckmenu;
 void jump_to_chick6menu(void);
 void chick6menu_rebuild(page_id_t child);
 void jump_to_chickenmenu(void);
 void chickenmenu_rebuild(page_id_t child);
+void jump_to_duckmenu(void);
+void duckmenu_rebuild(page_id_t child);
 void jump_to_risingpage(void);
 void risingpage_rebuild(page_id_t child);
 void jump_to_descriptionmenu(void);
@@ -715,12 +719,12 @@ extern int six_bread_color_min(int level);
 #define SIX_CHICK_GRILL_BREAST  19  /* 烤鸡胸肉（份量驱动） */
 #define SIX_CHICK_KIND_MIN      16  /* 烤鸡翅类(份量驱动)类型下限 */
 #define SIX_CHICK_KIND_MAX      19  /* 烤鸡翅类(份量驱动)类型上限 */
+#define SIX_CHICK_DUCK_WHOLE    20  /* 烤全鸭（探针菜） */
 extern int g_six_probe_temp;        /* 烤全鸡所选探针目标温度（浅75/中80/深85℃），默认中 */
 extern lv_group_t *g_probeneedtip;
 extern lv_group_t *g_chick_cooking; /* 烤全鸡烹饪页（chickencooking UI） */
 const char *six_chick_name(void);   /* 烤全鸡名称 */
-const char *six_chick_desc(void);   /* 烤全鸡烹饪说明 */
-const char *six_chick_degree_text(void); /* 烤全鸡烤色程度（浅色/中等色/深色） */
+const char *six_chick_desc(void);   /* 烤鸡类烹饪说明（探针菜含烤全鸭） */
 const char *six_current_name(void); /* 当前六感菜名：烤鸡走独立名，其余走面包/蛋糕表 */
 const char *six_current_desc(void); /* 当前六感说明：烤鸡走独立名，其余走面包/蛋糕表 */
 void jump_to_probeneedtip(void);    /* 烤鸡探针提示页：未插探针时进入 */
@@ -728,8 +732,12 @@ int toastcolor_weight_value(void);   /* 当前选中份量克数(-1=未选/非�
 void jump_to_chick_cooking(void);   /* 烤全鸡烹饪页（探针温度标记完成） */
 void six_chick_handle_back(void);   /* 烤鸡烹饪页 BACK：遮罩确认/完成退出 */
 int six_chick_is_kind(void);        /* 当前是否为烤鸡翅类(份量驱动, 16..19) */
-uint8_t six_chick_mode(void);       /* 烤鸡翅类当前菜的模式（热风对流/空气炸） */
-int six_chick_temp(void);           /* 烤鸡翅类当前菜的温度 */
+int six_chick_is_probe(void);       /* 当前是否为探针菜(烤全鸡/烤全鸭) */
+int six_chick_probe_temp(int level);/* 探针菜档位(1浅2中3深)→探针目标温度 */
+const char *six_chick_degree_text(void); /* 烤鸡探针菜烤色程度（浅色/中等色/深色） */
+const char *six_chick_degree_short(void);/* 同上（浅/中等/深，descriptionmenu 用） */
+uint8_t six_chick_mode(void);       /* 烤鸡类当前菜的模式（热风对流/空气炸） */
+int six_chick_temp(void);           /* 烤鸡类当前菜的温度 */
 int six_chick_cook_min(int weight_g);   /* 烤鸡翅类：份量→烹饪分钟（SKU3 菜谱表） */
 
 /* 第六感烤色选择（nav_toastcolor.c 实现）：三组互斥显示模式 */

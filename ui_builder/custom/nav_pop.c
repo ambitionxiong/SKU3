@@ -286,6 +286,10 @@ void page_pop(void)
         chickenmenu_rebuild(child);
         break;
 
+    case PAGE_DUCK6MENU:
+        duckmenu_rebuild(child);
+        break;
+
     case PAGE_RISINGPAGE:
         risingpage_rebuild(child);
         break;

@@ -128,9 +128,9 @@ void jump_to_updown_bbq_stop_back(void)
             lv_label_set_text(back->label_8, "预约中...");
             if (g_delay_source_page == PAGE_DESCRIPTIONMENU) {
                 /* 六感:status/图标/位置与六感运行页一致 */
-                if (g_six_bread_type == SIX_CHICK_WHOLE)
+                if (six_chick_is_probe())
                     lv_label_set_text_fmt(back->statu_label, "| %s | %s |",
-                                          six_chick_name(), six_chick_degree_text());   /* 烤全鸡:菜名+烤色程度 */
+                                          six_chick_name(), six_chick_degree_text());   /* 探针菜:菜名+烤色程度 */
                 else if (six_chick_is_kind()) {
                     int w = toastcolor_weight_value();
                     if (w < 0) w = 800;

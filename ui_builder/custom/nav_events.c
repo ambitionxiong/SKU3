@@ -414,8 +414,8 @@ static void apply_delay_cook_mode(page_id_t src)
     case PAGE_PIZZA3_SET: case PAGE_CHIP_SET: case PAGE_CUSTOM_SET:
         g_send.cook_mode = MODE_FROZEN_BAKE; break;
     case PAGE_DESCRIPTIONMENU:
-        /* 六感:烤全鸡热风对流；烤鸡翅类按菜谱(热风对流/空气炸)；其余保持前面模式 */
-        if (g_six_bread_type == SIX_CHICK_WHOLE)
+        /* 六感:探针菜热风对流；烤鸡翅类按菜谱(热风对流/空气炸)；其余保持前面模式 */
+        if (six_chick_is_probe())
             g_send.cook_mode = MODE_WINDCHANGE_BBQ;
         else if (six_chick_is_kind())
             g_send.cook_mode = six_chick_mode();
@@ -591,8 +591,8 @@ void mode_set_apply_delay_label(lv_obj_t *ondelay_btn)
 void delay_start_cook(void)
 {
     if (g_delay_source_page == PAGE_DESCRIPTIONMENU) {
-        if (g_six_bread_type == SIX_CHICK_WHOLE)
-            jump_to_chick_cooking();   /* 烤全鸡:到点直接进烤全鸡烹饪（探针驱动） */
+        if (six_chick_is_probe())
+            jump_to_chick_cooking();   /* 探针菜(烤全鸡/烤全鸭):到点直接进烹饪页（探针驱动） */
         else
             jump_to_six_cooking();     /* 六感:到点进入六感烹饪 */
         return;
@@ -725,9 +725,9 @@ void rebuild_delaycooking(void)
 
         if (g_delay_source_page == PAGE_DESCRIPTIONMENU) {
             /* 六感:status 显示菜+信息,icon 用 sixicon(与运行页一致) */
-            if (g_six_bread_type == SIX_CHICK_WHOLE)
+            if (six_chick_is_probe())
                 lv_label_set_text_fmt(dc->status, "| %s | %s |",
-                                      six_chick_name(), six_chick_degree_text());   /* 烤全鸡:菜名+烤色程度 */
+                                      six_chick_name(), six_chick_degree_text());   /* 探针菜:菜名+烤色程度 */
             else if (six_chick_is_kind()) {
                 int w = toastcolor_weight_value();
                 if (w < 0) w = 800;

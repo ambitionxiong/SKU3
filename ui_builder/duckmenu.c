@@ -28,22 +28,22 @@ void duckmenu_create(ui_manager_t *ui)
     lv_obj_set_style_bg_opa(scr->obj, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->obj, LVGL_IMAGE_PATH(bg.jpg), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->button_1
-    scr->button_1 = lv_btn_create(scr->obj);
-    lv_obj_t *button_1_label = lv_label_create(scr->button_1);
-    lv_label_set_text(button_1_label, "");
-    lv_obj_align(button_1_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->button_1, 18, 68);
-    lv_obj_set_size(scr->button_1, 624, 400);
+    // Init scr->wholeduck
+    scr->wholeduck = lv_btn_create(scr->obj);
+    lv_obj_t *wholeduck_label = lv_label_create(scr->wholeduck);
+    lv_label_set_text(wholeduck_label, "");
+    lv_obj_align(wholeduck_label, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_pos(scr->wholeduck, 18, 68);
+    lv_obj_set_size(scr->wholeduck, 624, 400);
 
-    // Set style of scr->button_1
-    lv_obj_set_style_bg_opa(scr->button_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->button_1, LVGL_IMAGE_PATH(div2bk30.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->button_1, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_width(scr->button_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_shadow_width(scr->button_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(scr->button_1, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->button_1, LVGL_IMAGE_PATH(div2bk80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    // Set style of scr->wholeduck
+    lv_obj_set_style_bg_opa(scr->wholeduck, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->wholeduck, LVGL_IMAGE_PATH(div2bk30.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->wholeduck, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(scr->wholeduck, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(scr->wholeduck, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(scr->wholeduck, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->wholeduck, LVGL_IMAGE_PATH(div2bk80.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
     // Init scr->label_1
     scr->label_1 = lv_label_create(scr->obj);

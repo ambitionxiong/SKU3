@@ -163,9 +163,9 @@ static void on_toastcolor_focus(lv_event_t *e)
 static void on_toastcolor_next_click(lv_event_t *e)
 {
     if (screen_is_loading(lv_scr_act())) return;
-    if (g_six_bread_type == SIX_CHICK_WHOLE) {
-        /* 烤全鸡:浅/中/深 → 探针目标温度 75/80/85℃,进 descriptionmenu（开始后才进烹饪页） */
-        g_six_probe_temp = 75 + (s_toast_color - 1) * 5;
+    if (six_chick_is_probe()) {
+        /* 探针菜(烤全鸡/烤全鸭):浅/中/深 → 探针目标温度(按菜谱),进 descriptionmenu */
+        g_six_probe_temp = six_chick_probe_temp(s_toast_color);
         jump_to_descriptionmenu();
         return;
     }
@@ -190,8 +190,8 @@ void jump_to_toastcolor(void)
     if (tc) {
         if (tc->label_24)
             lv_label_set_text(tc->label_24, six_current_name());   /* 左上角菜名（烤鸡走独立名） */
-        /* 模式：面包/蛋糕固定烤色程度；鸡流程进入前已设置（烤全鸡=烤色程度/烤鸡翅类=份量） */
-        if (g_six_bread_type != SIX_CHICK_WHOLE && !six_chick_is_kind())
+        /* 模式：面包/蛋糕固定烤色程度；鸡流程进入前已设置（探针菜=烤色程度/份量菜=份量） */
+        if (!six_chick_is_probe() && !six_chick_is_kind())
             g_toast_mode = TOAST_MODE_DEGREE;
         toastcolor_apply_mode_visibility(); /* 三组互斥：仅显示当前组 */
         /* 焦点组:当前组标签 + next（烤色程度→degree，份量→weight） */
@@ -244,7 +244,7 @@ void toastcolor_rebuild(page_id_t child)
         if (tc->label_24)
             lv_label_set_text(tc->label_24, six_current_name());   /* 左上角菜名（烤鸡走独立名） */
         /* 模式：面包/蛋糕固定烤色程度；鸡流程重建时保持进入时设置的组 */
-        if (g_six_bread_type != SIX_CHICK_WHOLE && !six_chick_is_kind())
+        if (!six_chick_is_probe() && !six_chick_is_kind())
             g_toast_mode = TOAST_MODE_DEGREE;
         toastcolor_apply_mode_visibility(); /* 三组互斥：仅显示当前组 */
         lv_obj_t *btns[] = { (g_toast_mode == TOAST_MODE_WEIGHT) ? tc->weight : tc->degree,

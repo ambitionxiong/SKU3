@@ -4142,7 +4142,7 @@ typedef struct {
 
 typedef struct {
     lv_obj_t *obj;
-    lv_obj_t *button_1;
+    lv_obj_t *wholeduck;
     lv_obj_t *label_1;
     lv_obj_t *label_2;
     lv_obj_t *image_2;
