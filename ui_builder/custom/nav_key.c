@@ -791,10 +791,12 @@ void process_key(uint8_t key)
         if (current_group == g_toastcolor) {
             lv_obj_t *df = lv_group_get_focused(current_group);
             toastcolor_t *tc = toastcolor_get(&ui_manager);
-            if (tc && df != tc->degree)
-                lv_group_focus_obj(tc->degree);   /* 第一次转动:仅移焦点,不切程度 */
-            else
+            if (tc && df != tc->degree && df != tc->weight) {
+                /* 第一次转动:仅移焦点到当前组标签（烤色程度/份量），不切档位 */
+                lv_group_focus_obj((g_toast_mode == TOAST_MODE_WEIGHT) ? tc->weight : tc->degree);
+            } else {
                 toastcolor_cycle(+1);
+            }
             g_send.buzzer_req = BUZZER_ENCODER;
             uart_print();
             break;
@@ -909,10 +911,12 @@ void process_key(uint8_t key)
         if (current_group == g_toastcolor) {
             lv_obj_t *df = lv_group_get_focused(current_group);
             toastcolor_t *tc = toastcolor_get(&ui_manager);
-            if (tc && df != tc->degree)
-                lv_group_focus_obj(tc->degree);   /* 第一次转动:仅移焦点,不切程度 */
-            else
+            if (tc && df != tc->degree && df != tc->weight) {
+                /* 第一次转动:仅移焦点到当前组标签（烤色程度/份量），不切档位 */
+                lv_group_focus_obj((g_toast_mode == TOAST_MODE_WEIGHT) ? tc->weight : tc->degree);
+            } else {
                 toastcolor_cycle(-1);
+            }
             g_send.buzzer_req = BUZZER_ENCODER;
             uart_print();
             break;
@@ -1512,9 +1516,9 @@ void process_key(uint8_t key)
         if (current_group == g_toastcolor) {
             lv_obj_t *df = lv_group_get_focused(current_group);
             toastcolor_t *tc = toastcolor_get(&ui_manager);
-            if (tc && df == tc->degree) {
+            if (tc && (df == tc->degree || df == tc->weight)) {
                 g_send.buzzer_req = BUZZER_KEY_VALID;
-                lv_group_focus_obj(tc->next);   /* 确定:切到下一焦点(FOCUSED 触发 line 隐藏) */
+                lv_group_focus_obj(tc->next);   /* 确定:从当前组标签切到下一焦点 */
                 uart_print();
                 break;
             }

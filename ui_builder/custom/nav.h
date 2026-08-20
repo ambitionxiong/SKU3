@@ -708,7 +708,8 @@ extern int six_bread_has_color(void);
 extern int six_bread_has_rising(void);
 extern int six_bread_color_min(int level);
 /* 烤鸡（nav_six_chicken.c 实现；探针菜，独立于面包/蛋糕流程） */
-#define SIX_CHICK_WHOLE         15  /* 烤全鸡（类型标记，不占 s_bread_cfg） */
+#define SIX_CHICK_WHOLE         15  /* 烤全鸡（探针菜，类型标记，不占 s_bread_cfg） */
+#define SIX_CHICK_WING          16  /* 烤鸡翅（份量驱动，类型标记） */
 extern int g_six_probe_temp;        /* 烤全鸡所选探针目标温度（浅75/中80/深85℃），默认中 */
 extern lv_group_t *g_probeneedtip;
 extern lv_group_t *g_chick_cooking; /* 烤全鸡烹饪页（chickencooking UI） */
@@ -717,6 +718,13 @@ const char *six_current_name(void); /* 当前六感菜名：烤鸡走独立名�
 void jump_to_probeneedtip(void);    /* 烤鸡探针提示页：未插探针时进入 */
 void jump_to_chick_cooking(void);   /* 烤全鸡烹饪页（探针温度标记完成） */
 void six_chick_handle_back(void);   /* 烤全鸡烹饪页 BACK：遮罩确认/完成退出 */
+
+/* 第六感烤色选择（nav_toastcolor.c 实现）：三组互斥显示模式 */
+#define TOAST_MODE_DEGREE   0     /* 烤色程度（degree+line） */
+#define TOAST_MODE_MATURITY 1     /* 成熟度（Maturity+maturityline2/3） */
+#define TOAST_MODE_WEIGHT   2     /* 份量/种类（weight+weightline3/4） */
+extern int g_toast_mode;                /* 进入页面时由流程设置的当前组 */
+void toastcolor_set_weight_options(const int *opts, int count, int default_idx);
 void jump_to_six_cooking(void);
 void six_cook_handle_back(void);
 void six_cooking_rebuild(page_id_t child);

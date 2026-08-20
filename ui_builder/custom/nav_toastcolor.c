@@ -19,11 +19,26 @@
 lv_group_t *g_toastcolor = NULL;
 static int s_toast_color = 2;   /* 1浅 2中 3深 */
 
-/* 当前激活组：三组互斥（默认烤色程度） */
-enum { TOAST_MODE_DEGREE = 0, TOAST_MODE_MATURITY = 1, TOAST_MODE_WEIGHT = 2 };
-static int s_toast_mode = TOAST_MODE_DEGREE;
+/* 当前激活组：三组互斥（默认烤色程度；进入前由流程设置 g_toast_mode） */
+int g_toast_mode = TOAST_MODE_DEGREE;
+
+/* 份量/种类组选项（克数，由调用方按菜谱表传入） */
+static const int *s_weight_opts = NULL;
+static int s_weight_count = 0;
+static int s_weight_index = 0;   /* 当前选中份量下标 */
 
 static void toastcolor_update_degree(void);
+static void toastcolor_update_weight(void);
+
+/* 设置份量选项并选定默认下标（default_idx <0 时取 0） */
+void toastcolor_set_weight_options(const int *opts, int count, int default_idx)
+{
+    s_weight_opts = opts;
+    s_weight_count = count > 0 ? count : 0;
+    s_weight_index = default_idx;
+    if (s_weight_index < 0 || s_weight_index >= s_weight_count)
+        s_weight_index = 0;
+}
 
 /* 互斥显示：仅显示当前激活组，其余两组整体隐藏 */
 static void toastcolor_apply_mode_visibility(void)
@@ -31,9 +46,9 @@ static void toastcolor_apply_mode_visibility(void)
     toastcolor_t *tc = toastcolor_get(&ui_manager);
     if (!tc) return;
 
-    int show_deg = (s_toast_mode == TOAST_MODE_DEGREE);
-    int show_mat = (s_toast_mode == TOAST_MODE_MATURITY);
-    int show_wt  = (s_toast_mode == TOAST_MODE_WEIGHT);
+    int show_deg = (g_toast_mode == TOAST_MODE_DEGREE);
+    int show_mat = (g_toast_mode == TOAST_MODE_MATURITY);
+    int show_wt  = (g_toast_mode == TOAST_MODE_WEIGHT);
 
     /* 烤色程度组 */
     if (tc->degree) {
@@ -67,35 +82,26 @@ static void toastcolor_apply_mode_visibility(void)
         else lv_obj_add_flag(tc->weighticon, LV_OBJ_FLAG_HIDDEN);
     }
     if (tc->weightline3) {
-        if (show_wt) lv_obj_clear_flag(tc->weightline3, LV_OBJ_FLAG_HIDDEN);
-        else lv_obj_add_flag(tc->weightline3, LV_OBJ_FLAG_HIDDEN);
+        if (!show_wt) lv_obj_add_flag(tc->weightline3, LV_OBJ_FLAG_HIDDEN);
+        /* weight 组激活时下划线交给焦点控制（apply_weight_line） */
     }
     if (tc->weightline4) {
-        if (show_wt) lv_obj_clear_flag(tc->weightline4, LV_OBJ_FLAG_HIDDEN);
-        else lv_obj_add_flag(tc->weightline4, LV_OBJ_FLAG_HIDDEN);
+        if (!show_wt) lv_obj_add_flag(tc->weightline4, LV_OBJ_FLAG_HIDDEN);
     }
-
-    /* 激活组内部细化：线条按内容长度/位数择一显示 */
-    if (show_mat && tc->Maturity) {
-        int len = (int)strlen(lv_label_get_text(tc->Maturity));
-        if (tc->maturityline3) {
-            if (len >= 2) lv_obj_clear_flag(tc->maturityline3, LV_OBJ_FLAG_HIDDEN);
-            else lv_obj_add_flag(tc->maturityline3, LV_OBJ_FLAG_HIDDEN);
-        }
-        if (tc->maturityline2) {
+    if (tc->maturityline2) {
+        if (!show_mat) lv_obj_add_flag(tc->maturityline2, LV_OBJ_FLAG_HIDDEN);
+        else {
+            int len = (int)strlen(lv_label_get_text(tc->Maturity));
             if (len >= 2) lv_obj_add_flag(tc->maturityline2, LV_OBJ_FLAG_HIDDEN);
             else lv_obj_clear_flag(tc->maturityline2, LV_OBJ_FLAG_HIDDEN);
         }
     }
-    if (show_wt && tc->weight) {
-        int len = (int)strlen(lv_label_get_text(tc->weight));
-        if (tc->weightline4) {
-            if (len >= 4) lv_obj_clear_flag(tc->weightline4, LV_OBJ_FLAG_HIDDEN);
-            else lv_obj_add_flag(tc->weightline4, LV_OBJ_FLAG_HIDDEN);
-        }
-        if (tc->weightline3) {
-            if (len >= 4) lv_obj_add_flag(tc->weightline3, LV_OBJ_FLAG_HIDDEN);
-            else lv_obj_clear_flag(tc->weightline3, LV_OBJ_FLAG_HIDDEN);
+    if (tc->maturityline3) {
+        if (!show_mat) lv_obj_add_flag(tc->maturityline3, LV_OBJ_FLAG_HIDDEN);
+        else {
+            int len = (int)strlen(lv_label_get_text(tc->Maturity));
+            if (len >= 2) lv_obj_clear_flag(tc->maturityline3, LV_OBJ_FLAG_HIDDEN);
+            else lv_obj_add_flag(tc->maturityline3, LV_OBJ_FLAG_HIDDEN);
         }
     }
 
@@ -116,9 +122,34 @@ static void toastcolor_apply_line(lv_obj_t *focused)
         lv_obj_add_flag(tc->line, LV_OBJ_FLAG_HIDDEN);
 }
 
+// weight 组下划线:仅 weight 聚焦时显示(按位数择一)，其他情况隐藏
+static void toastcolor_apply_weight_line(lv_obj_t *focused)
+{
+    toastcolor_t *tc = toastcolor_get(&ui_manager);
+    if (!tc) return;
+    int on = (focused == tc->weight);
+    if (on && tc->weight) {
+        int len = (int)strlen(lv_label_get_text(tc->weight));
+        if (tc->weightline4) {
+            if (len >= 4) lv_obj_clear_flag(tc->weightline4, LV_OBJ_FLAG_HIDDEN);
+            else lv_obj_add_flag(tc->weightline4, LV_OBJ_FLAG_HIDDEN);
+        }
+        if (tc->weightline3) {
+            if (len >= 4) lv_obj_add_flag(tc->weightline3, LV_OBJ_FLAG_HIDDEN);
+            else lv_obj_clear_flag(tc->weightline3, LV_OBJ_FLAG_HIDDEN);
+        }
+    } else {
+        if (tc->weightline3) lv_obj_add_flag(tc->weightline3, LV_OBJ_FLAG_HIDDEN);
+        if (tc->weightline4) lv_obj_add_flag(tc->weightline4, LV_OBJ_FLAG_HIDDEN);
+    }
+}
+
 static void on_toastcolor_focus(lv_event_t *e)
 {
-    toastcolor_apply_line(lv_event_get_target(e));
+    if (g_toast_mode == TOAST_MODE_WEIGHT)
+        toastcolor_apply_weight_line(lv_event_get_target(e));
+    else
+        toastcolor_apply_line(lv_event_get_target(e));
 }
 
 static void on_toastcolor_next_click(lv_event_t *e)
@@ -128,6 +159,10 @@ static void on_toastcolor_next_click(lv_event_t *e)
         /* 烤全鸡:浅/中/深 → 探针目标温度 75/80/85℃,进入烤全鸡烹饪页(探针驱动) */
         g_six_probe_temp = 75 + (s_toast_color - 1) * 5;
         jump_to_chick_cooking();
+        return;
+    }
+    if (g_six_bread_type == SIX_CHICK_WING) {
+        /* 烤鸡翅:份量已选（s_weight_opts[s_weight_index]），下一步按份量进入烹饪，后续接入 */
         return;
     }
     g_six_color_min = six_bread_color_min(s_toast_color);   /* 1浅 2中 3深,按菜查表 */
@@ -146,10 +181,13 @@ void jump_to_toastcolor(void)
     if (tc) {
         if (tc->label_24)
             lv_label_set_text(tc->label_24, six_current_name());   /* 左上角菜名（烤鸡走独立名） */
-        s_toast_mode = TOAST_MODE_DEGREE;   /* 默认烤色程度组（后续菜谱可按需设置其它组） */
+        /* 模式：面包/蛋糕固定烤色程度；鸡流程进入前已设置（烤全鸡=烤色程度/烤鸡翅=份量） */
+        if (g_six_bread_type != SIX_CHICK_WHOLE && g_six_bread_type != SIX_CHICK_WING)
+            g_toast_mode = TOAST_MODE_DEGREE;
         toastcolor_apply_mode_visibility(); /* 三组互斥：仅显示当前组 */
-        /* 焦点组:degree(档位设置) + next */
-        lv_obj_t *btns[] = { tc->degree, tc->next };
+        /* 焦点组:当前组标签 + next（烤色程度→degree，份量→weight） */
+        lv_obj_t *btns[] = { (g_toast_mode == TOAST_MODE_WEIGHT) ? tc->weight : tc->degree,
+                             tc->next };
         const int n = (int)(sizeof(btns) / sizeof(btns[0]));
         for (int k = 0; k < n; k++) {
             if (btns[k]) lv_group_remove_obj(btns[k]);
@@ -163,13 +201,20 @@ void jump_to_toastcolor(void)
             lv_obj_add_event_cb(tc->next, on_toastcolor_focus, LV_EVENT_FOCUSED, NULL);
             lv_group_focus_obj(tc->next);     /* 默认焦点 next */
             toastcolor_apply_line(tc->next);  /* 显式隐藏 line(不依赖事件时序) */
+            if (g_toast_mode == TOAST_MODE_WEIGHT)
+                toastcolor_apply_weight_line(tc->next);   /* 初始焦点不在 weight:隐藏份量下划线 */
         }
         if (tc->degree) {
             lv_obj_add_event_cb(tc->degree, on_toastcolor_focus, LV_EVENT_FOCUSED, NULL);
         }
+        if (tc->weight && g_toast_mode == TOAST_MODE_WEIGHT) {
+            lv_obj_add_event_cb(tc->weight, on_toastcolor_focus, LV_EVENT_FOCUSED, NULL);
+        }
 
         s_toast_color = 2;                /* 每次进入默认"中" */
         toastcolor_update_degree();
+        if (g_toast_mode == TOAST_MODE_WEIGHT)
+            toastcolor_update_weight();   /* 份量显示当前选中项 */
     }
     current_group = g_toastcolor;
 
@@ -189,9 +234,12 @@ void toastcolor_rebuild(page_id_t child)
     if (tc) {
         if (tc->label_24)
             lv_label_set_text(tc->label_24, six_current_name());   /* 左上角菜名（烤鸡走独立名） */
-        s_toast_mode = TOAST_MODE_DEGREE;   /* 默认烤色程度组（后续菜谱可按需设置其它组） */
+        /* 模式：面包/蛋糕固定烤色程度；鸡流程重建时保持进入时设置的组 */
+        if (g_six_bread_type != SIX_CHICK_WHOLE && g_six_bread_type != SIX_CHICK_WING)
+            g_toast_mode = TOAST_MODE_DEGREE;
         toastcolor_apply_mode_visibility(); /* 三组互斥：仅显示当前组 */
-        lv_obj_t *btns[] = { tc->degree, tc->next };
+        lv_obj_t *btns[] = { (g_toast_mode == TOAST_MODE_WEIGHT) ? tc->weight : tc->degree,
+                             tc->next };
         const int n = (int)(sizeof(btns) / sizeof(btns[0]));
         for (int k = 0; k < n; k++) {
             if (btns[k]) lv_group_remove_obj(btns[k]);
@@ -204,13 +252,20 @@ void toastcolor_rebuild(page_id_t child)
             lv_obj_add_event_cb(tc->next, on_toastcolor_focus, LV_EVENT_FOCUSED, NULL);
             lv_group_focus_obj(tc->next);
             toastcolor_apply_line(tc->next);
+            if (g_toast_mode == TOAST_MODE_WEIGHT)
+                toastcolor_apply_weight_line(tc->next);
         }
         if (tc->degree) {
             lv_obj_add_event_cb(tc->degree, on_toastcolor_focus, LV_EVENT_FOCUSED, NULL);
         }
+        if (tc->weight && g_toast_mode == TOAST_MODE_WEIGHT) {
+            lv_obj_add_event_cb(tc->weight, on_toastcolor_focus, LV_EVENT_FOCUSED, NULL);
+        }
 
         s_toast_color = 2;                /* 每次进入默认"中" */
         toastcolor_update_degree();
+        if (g_toast_mode == TOAST_MODE_WEIGHT)
+            toastcolor_update_weight();
     }
     current_group = g_toastcolor;
 
@@ -229,9 +284,29 @@ static void toastcolor_update_degree(void)
                                   s_toast_color == 3 ? "深" : "中");
 }
 
-// 编码器切换档位(CW/CCW 由 nav.c 调用,任意焦点都切程度)
+// weight 标签显示当前选中份量(g)；下划线由焦点+位数控制（见 toastcolor_apply_weight_line）
+static void toastcolor_update_weight(void)
+{
+    toastcolor_t *tc = toastcolor_get(&ui_manager);
+    if (!tc || !tc->weight) return;
+    if (s_weight_count <= 0 || !s_weight_opts) return;
+
+    lv_label_set_text_fmt(tc->weight, "%d", s_weight_opts[s_weight_index]);
+}
+
+// 编码器切换(CW/CCW 由 nav_key.c 调用)：按当前组切换档位或份量
 void toastcolor_cycle(int dir)
 {
+    if (g_toast_mode == TOAST_MODE_WEIGHT) {
+        toastcolor_t *tc = toastcolor_get(&ui_manager);
+        if (s_weight_count <= 1) return;
+        s_weight_index = (s_weight_index + dir + s_weight_count) % s_weight_count;
+        toastcolor_update_weight();
+        if (tc)
+            toastcolor_apply_weight_line(tc->weight);   /* 切档后刷新下划线（焦点在 weight 上） */
+        printf("[toastcolor] weight -> %dg\n", s_weight_opts[s_weight_index]);
+        return;
+    }
     s_toast_color += dir;
     if (s_toast_color < 1) s_toast_color = 3;
     if (s_toast_color > 3) s_toast_color = 1;
