@@ -35,7 +35,12 @@ static void descriptionmenu_layout(descriptionmenu_t *dm)
 
     /* 烹饪时间 + 烹饪说明按当前菜填充 */
     if (dm->cooktime) {
-        lv_label_set_text_fmt(dm->cooktime, "预计烹饪时间：%d分钟", six_bread_cook_min());
+        /* 选了发酵:发酵分钟+烹饪分钟分开显示 */
+        if (six_bread_has_rising() && g_rising_choice == 1)
+            lv_label_set_text_fmt(dm->cooktime, "预计烹饪时间：发酵%d分钟+烹饪%d分钟",
+                                  six_rising_min(), six_bread_cook_min());
+        else
+            lv_label_set_text_fmt(dm->cooktime, "预计烹饪时间：%d分钟", six_bread_cook_min());
     }
     if (dm->cookdescriptin) {
         lv_label_set_text(dm->cookdescriptin, six_bread_desc());

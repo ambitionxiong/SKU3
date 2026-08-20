@@ -104,7 +104,7 @@ void descriptionmenu_create(ui_manager_t *ui)
     lv_label_set_text(scr->cooktime, "预计烹饪时间：25分钟");
     lv_label_set_long_mode(scr->cooktime, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->cooktime, 0, 0);
-    lv_obj_set_size(scr->cooktime, 496, 30);
+    lv_obj_set_size(scr->cooktime, 628, 30);
 
     // Set style of scr->cooktime
     lv_obj_set_style_text_font(scr->cooktime, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);

@@ -11,9 +11,9 @@
 
 
 
-void screen_1_create(ui_manager_t *ui)
+void sixset2_create(ui_manager_t *ui)
 {
-    screen_1_t *scr = screen_1_get(ui);
+    sixset2_t *scr = sixset2_get(ui);
 
     if (!ui->auto_del && scr->obj) {
         return;
@@ -26,7 +26,7 @@ void screen_1_create(ui_manager_t *ui)
     // Set style of scr->obj
     lv_obj_set_style_bg_color(scr->obj, lv_color_hex(0xfcfcfc), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->obj, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->obj, LVGL_IMAGE_PATH(set2bg.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->obj, LVGL_IMAGE_PATH(bg.jpg), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->next
     scr->next = lv_btn_create(scr->obj);
@@ -157,14 +157,6 @@ void screen_1_create(ui_manager_t *ui)
     lv_obj_set_style_img_opa(scr->degreeline, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_pos(scr->degreeline, 918, 328);
     lv_obj_add_flag(scr->degreeline, LV_OBJ_FLAG_HIDDEN);
-
-    // Init scr->image_7
-    scr->image_7 = lv_img_create(scr->obj);
-    lv_img_set_src(scr->image_7, LVGL_IMAGE_PATH(weightbg.png));
-    lv_img_set_pivot(scr->image_7, 50, 50);
-    lv_img_set_angle(scr->image_7, 0);
-    lv_obj_set_style_img_opa(scr->image_7, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->image_7, 260, 247);
 
     // Init scr->weight
     scr->weight = lv_label_create(scr->obj);

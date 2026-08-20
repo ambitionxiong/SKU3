@@ -4134,12 +4134,66 @@ typedef struct {
     lv_obj_t *maturityline3;
     lv_obj_t *maturityline2;
     lv_obj_t *degreeline;
-    lv_obj_t *image_7;
     lv_obj_t *weight;
     lv_obj_t *weighticon;
     lv_obj_t *weightline4;
     lv_obj_t *weightline3;
-} screen_1_t;
+} sixset2_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *button_1;
+    lv_obj_t *label_1;
+    lv_obj_t *label_2;
+    lv_obj_t *image_2;
+} duckmenu_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *bt2;
+    lv_obj_t *bt1;
+    lv_obj_t *bt3;
+    lv_obj_t *name;
+    lv_obj_t *op1;
+    lv_obj_t *op2;
+    lv_obj_t *op3;
+    lv_obj_t *probe1;
+    lv_obj_t *probe2;
+    lv_obj_t *probe3;
+} sixop3page_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *bt1;
+    lv_obj_t *button_11;
+    lv_obj_t *label_7;
+    lv_obj_t *button_15;
+    lv_obj_t *button_16;
+    lv_obj_t *button_17;
+    lv_obj_t *button_18;
+    lv_obj_t *button_19;
+} vegetablemenu_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *button_20;
+    lv_obj_t *name;
+    lv_obj_t *sure;
+} probeneedtip_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *status;
+    lv_obj_t *image_10;
+    lv_obj_t *bar_2;
+    lv_obj_t *cookstatus;
+    lv_obj_t *icon;
+    lv_obj_t *bartemp;
+    lv_obj_t *container_1;
+    lv_obj_t *text2;
+    lv_obj_t *text1;
+    lv_obj_t *stop;
+} chickencooking_t;
 
 
 typedef struct {
@@ -4411,7 +4465,12 @@ typedef struct {
     chickenmenu_t chickenmenu;
     weightpage_t weightpage;
     screen_5_t screen_5;
-    screen_1_t screen_1;
+    sixset2_t sixset2;
+    duckmenu_t duckmenu;
+    sixop3page_t sixop3page;
+    vegetablemenu_t vegetablemenu;
+    probeneedtip_t probeneedtip;
+    chickencooking_t chickencooking;
 
 } ui_manager_t;
 
@@ -5756,9 +5815,34 @@ static inline screen_5_t *screen_5_get(ui_manager_t *ui)
     return &ui->screen_5;
 }
 
-static inline screen_1_t *screen_1_get(ui_manager_t *ui)
+static inline sixset2_t *sixset2_get(ui_manager_t *ui)
 {
-    return &ui->screen_1;
+    return &ui->sixset2;
+}
+
+static inline duckmenu_t *duckmenu_get(ui_manager_t *ui)
+{
+    return &ui->duckmenu;
+}
+
+static inline sixop3page_t *sixop3page_get(ui_manager_t *ui)
+{
+    return &ui->sixop3page;
+}
+
+static inline vegetablemenu_t *vegetablemenu_get(ui_manager_t *ui)
+{
+    return &ui->vegetablemenu;
+}
+
+static inline probeneedtip_t *probeneedtip_get(ui_manager_t *ui)
+{
+    return &ui->probeneedtip;
+}
+
+static inline chickencooking_t *chickencooking_get(ui_manager_t *ui)
+{
+    return &ui->chickencooking;
 }
 
 
@@ -6029,7 +6113,12 @@ void chick6menu_create(ui_manager_t *ui);
 void chickenmenu_create(ui_manager_t *ui);
 void weightpage_create(ui_manager_t *ui);
 void screen_5_create(ui_manager_t *ui);
-void screen_1_create(ui_manager_t *ui);
+void sixset2_create(ui_manager_t *ui);
+void duckmenu_create(ui_manager_t *ui);
+void sixop3page_create(ui_manager_t *ui);
+void vegetablemenu_create(ui_manager_t *ui);
+void probeneedtip_create(ui_manager_t *ui);
+void chickencooking_create(ui_manager_t *ui);
 
 
 LV_FONT_DECLARE(c_montserratmedium_16);
