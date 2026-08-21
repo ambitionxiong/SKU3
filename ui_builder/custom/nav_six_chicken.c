@@ -304,15 +304,25 @@ void chickenmenu_rebuild(page_id_t child)
         g_chickenmenu = group_create_for_page(btns, n);
         clear_focus_states(btns, n);
 
-        /* 菜谱事件：探针菜(烤全鸡)走探针流程；四个烤鸡翅类走份量流程(user_data=菜类型) */
-        if (cm->wholechicken) {
+        /* 菜谱事件：探针菜(烤全鸡/烤全鸭)走探针流程；四个烤鸡翅类走份量流程(user_data=菜类型) */
+        if (cm->wholechicken)
             lv_obj_add_event_cb(cm->wholechicken, on_probe_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CHICK_WHOLE);
-            lv_group_focus_obj(cm->wholechicken);
-        }
         if (cm->grillchickenwing)  lv_obj_add_event_cb(cm->grillchickenwing,  on_chickenmenu_weight_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CHICK_WING);
         if (cm->friedchickenwing)  lv_obj_add_event_cb(cm->friedchickenwing,  on_chickenmenu_weight_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CHICK_FRIED_WING);
         if (cm->friedchickenleg)   lv_obj_add_event_cb(cm->friedchickenleg,   on_chickenmenu_weight_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CHICK_FRIED_LEG);
         if (cm->grillchickenbreast) lv_obj_add_event_cb(cm->grillchickenbreast, on_chickenmenu_weight_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CHICK_GRILL_BREAST);
+
+        /* 恢复焦点到返回前选择的菜（否则默认烤全鸡） */
+        if (g_six_bread_type == SIX_CHICK_WING && cm->grillchickenwing)
+            lv_group_focus_obj(cm->grillchickenwing);
+        else if (g_six_bread_type == SIX_CHICK_FRIED_WING && cm->friedchickenwing)
+            lv_group_focus_obj(cm->friedchickenwing);
+        else if (g_six_bread_type == SIX_CHICK_FRIED_LEG && cm->friedchickenleg)
+            lv_group_focus_obj(cm->friedchickenleg);
+        else if (g_six_bread_type == SIX_CHICK_GRILL_BREAST && cm->grillchickenbreast)
+            lv_group_focus_obj(cm->grillchickenbreast);
+        else if (cm->wholechicken)
+            lv_group_focus_obj(cm->wholechicken);
     }
     current_group = g_chickenmenu;
 
