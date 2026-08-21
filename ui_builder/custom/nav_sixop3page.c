@@ -2,12 +2,16 @@
  * nav_sixop3page.c - 六选项3页（复用页面）
  *
  * 通用三栏菜单：name 标题 + 三个 tile(bt1/bt2/bt3) + 三个标签(op1/op2/op3)。
- * 通过参数设定文字，点击 bt 暂留空（后续接菜谱）。
+ * 通过参数设定文字，点击 bt 跳对应流程。
  * 注：probe1/2/3 是图片(lv_img)，只做显隐，不写文字（避免类型错配）。
  * 复用场景：牛肉(烤牛排/炸牛排/烤牛肉)、羊肉、猪肉等。
  */
 #include "protocol.h"
 #include "nav.h"
+
+/* ---- 炸牛排（份量驱动）菜谱配置 ---- */
+static const int w_fsteak_w[] = { 250, 500, 750 };
+static const int w_fsteak_t[] = { 18, 21, 24 };
 
 lv_group_t *g_sixop3page = NULL;
 
@@ -18,8 +22,16 @@ static int s_op3_probe_mask = 0;   /* probe 图标显隐掩码: bit0=p1 bit1=p2 
 
 /* bt 按钮点击 */
 static void on_sixop3page_bt1_click(lv_event_t *e) { (void)e; g_six_bread_type = SIX_MEAT_GRILL_STEAK; jump_to_probeneedtip(); }  /* 烤牛排 */
-static void on_sixop3page_bt2_click(lv_event_t *e) { (void)e; }  /* 炸牛排：TODO */
 static void on_sixop3page_bt3_click(lv_event_t *e) { (void)e; g_six_bread_type = SIX_MEAT_GRILL_BEEF; jump_to_probeneedtip(); }  /* 烤牛肉 */
+static void on_sixop3page_bt2_click(lv_event_t *e)
+{
+    (void)e;
+    if (screen_is_loading(lv_scr_act())) return;
+    g_six_bread_type = SIX_MEAT_FRIED_STEAK;
+    toastcolor_set_weight_options(w_fsteak_w, 3, 1);  /* 默认500g */
+    g_toast_mode = TOAST_MODE_WEIGHT;
+    jump_to_toastcolor();
+}
 
 static void sixop3page_apply_labels(sixop3page_t *sp)
 {
@@ -63,6 +75,8 @@ static void sixop3page_setup_groups(sixop3page_t *sp)
     /* 焦点恢复：按 g_six_bread_type 恢复到进入时的按钮 */
     if (g_six_bread_type == SIX_MEAT_GRILL_BEEF && sp->bt3)
         lv_group_focus_obj(sp->bt3);
+    else if (g_six_bread_type == SIX_MEAT_FRIED_STEAK && sp->bt2)
+        lv_group_focus_obj(sp->bt2);
     else if (g_six_bread_type == SIX_MEAT_GRILL_STEAK && sp->bt1)
         lv_group_focus_obj(sp->bt1);
     else if (sp->bt1)

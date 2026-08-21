@@ -54,11 +54,13 @@ static const chick_dish_t s_chick_dishes[] = {
 /* 当前类型是否为烤鸡翅类(份量驱动) */
 int six_chick_is_kind(void)
 {
-    return (g_six_bread_type >= SIX_CHICK_KIND_MIN && g_six_bread_type <= SIX_CHICK_KIND_MAX);
+    return (g_six_bread_type >= SIX_CHICK_KIND_MIN && g_six_bread_type <= SIX_CHICK_KIND_MAX)
+        || g_six_bread_type == SIX_MEAT_FRIED_STEAK;
 }
 
 static const chick_dish_t *chick_dish_cfg(void)
 {
+    if (g_six_bread_type == SIX_MEAT_FRIED_STEAK) return NULL;  /* 炸牛排用独立表 */
     return six_chick_is_kind() ? &s_chick_dishes[g_six_bread_type - SIX_CHICK_KIND_MIN] : NULL;
 }
 
@@ -105,6 +107,7 @@ int six_chick_probe_temp(int level)
 /* 烤鸡菜名：份量驱动类按份量表；探针菜按探针配置 */
 const char *six_chick_name(void)
 {
+    if (g_six_bread_type == SIX_MEAT_FRIED_STEAK) return "炸牛排";
     const chick_dish_t *c = chick_dish_cfg();
     if (c) return c->name;
     const chick_probe_t *p = chick_probe_cfg();
@@ -112,11 +115,13 @@ const char *six_chick_name(void)
 }
 
 uint8_t six_chick_mode(void) {
+    if (g_six_bread_type == SIX_MEAT_FRIED_STEAK) return MODE_AIR;
     const chick_dish_t *c = chick_dish_cfg(); if (c) return c->mode;
     const chick_probe_t *p = chick_probe_cfg(); if (p) return p->mode;
     return MODE_WINDCHANGE_BBQ;
 }
 int six_chick_temp(void) {
+    if (g_six_bread_type == SIX_MEAT_FRIED_STEAK) return 250;
     const chick_dish_t *c = chick_dish_cfg(); if (c) return c->temp;
     const chick_probe_t *p = chick_probe_cfg(); if (p) return p->temp;
     return 230;
@@ -125,6 +130,15 @@ int six_chick_temp(void) {
 /* 份量→烹饪分钟（查表，找不到取中间档兜底） */
 int six_chick_cook_min(int weight_g)
 {
+    /* 炸牛排：独立份量表 */
+    if (g_six_bread_type == SIX_MEAT_FRIED_STEAK) {
+        static const int fw[] = { 250, 500, 750 };
+        static const int ft[] = { 18, 21, 24 };
+        for (int i = 0; i < 3; i++) {
+            if (fw[i] == weight_g) return ft[i];
+        }
+        return 21;  /* 默认500g */
+    }
     const chick_dish_t *c = chick_dish_cfg();
     if (!c) return 0;
     for (int i = 0; i < c->count; i++) {
@@ -136,6 +150,8 @@ int six_chick_cook_min(int weight_g)
 /* 烹饪说明（按菜谱表；descriptionmenu/延迟页显示） */
 const char *six_chick_desc(void)
 {
+    if (g_six_bread_type == SIX_MEAT_FRIED_STEAK)
+        return "根据个人喜好进行调味。抹上盐和黑胡椒碎，在炸盘内均匀铺开，在表面喷一层薄油\n现在将食物放在第3层\n使用气炸盘和深盘";
     const chick_dish_t *c = chick_dish_cfg();
     if (c) return c->desc;
     const chick_probe_t *p = chick_probe_cfg();
