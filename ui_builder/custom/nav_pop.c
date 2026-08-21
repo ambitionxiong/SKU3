@@ -294,6 +294,14 @@ void page_pop(void)
         sixop3page_rebuild(child);
         break;
 
+    case PAGE_SIXMENUTZ:
+        sixmenutz_rebuild(child);
+        break;
+
+    case PAGE_CHICKMENUTZ:
+        chickmenutz_rebuild(child);
+        break;
+
     case PAGE_RISINGPAGE:
         risingpage_rebuild(child);
         break;

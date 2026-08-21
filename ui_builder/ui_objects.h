@@ -4203,6 +4203,27 @@ typedef struct {
     lv_obj_t *tip3;
 } temptip_t;
 
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *wholechicken;
+    lv_obj_t *label_4;
+    lv_obj_t *label_5;
+    lv_obj_t *image_1;
+    lv_obj_t *wholeduck;
+    lv_obj_t *image_2;
+    lv_obj_t *label_6;
+} chickmenutz_t;
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *label_7;
+    lv_obj_t *chick;
+    lv_obj_t *meat;
+    lv_obj_t *image_3;
+    lv_obj_t *label_8;
+    lv_obj_t *label_9;
+} sixmenutz_t;
+
 
 typedef struct {
     bool auto_del;
@@ -4480,6 +4501,8 @@ typedef struct {
     probeneedtip_t probeneedtip;
     chickencooking_t chickencooking;
     temptip_t temptip;
+    chickmenutz_t chickmenutz;
+    sixmenutz_t sixmenutz;
 
 } ui_manager_t;
 
@@ -5859,6 +5882,16 @@ static inline temptip_t *temptip_get(ui_manager_t *ui)
     return &ui->temptip;
 }
 
+static inline chickmenutz_t *chickmenutz_get(ui_manager_t *ui)
+{
+    return &ui->chickmenutz;
+}
+
+static inline sixmenutz_t *sixmenutz_get(ui_manager_t *ui)
+{
+    return &ui->sixmenutz;
+}
+
 
 void waitmenu_24_create(ui_manager_t *ui);
 void clean_menu_create(ui_manager_t *ui);
@@ -6134,6 +6167,8 @@ void vegetablemenu_create(ui_manager_t *ui);
 void probeneedtip_create(ui_manager_t *ui);
 void chickencooking_create(ui_manager_t *ui);
 void temptip_create(ui_manager_t *ui);
+void chickmenutz_create(ui_manager_t *ui);
+void sixmenutz_create(ui_manager_t *ui);
 
 
 LV_FONT_DECLARE(c_montserratmedium_16);

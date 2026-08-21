@@ -332,16 +332,14 @@ void chickenmenu_rebuild(page_id_t child)
     printf("[six_chicken] rebuild: chickenmenu (child=%d)\n", (int)child);
 }
 
-/* 探针菜（烤全鸡/烤全鸭）：探针判断 → 未插探针进提示页，已插入进烤色/程度选择页（degree 组） */
+/* 探针菜（烤全鸡/烤全鸭）：非探针模式入口仅跳探针提示页
+   （完整探针流程在探针模式 sixmenutz→chickmenutz 里走） */
 static void on_probe_dish_click(lv_event_t *e)
 {
     if (screen_is_loading(lv_scr_act())) return;
     g_six_bread_type = (uint8_t)(intptr_t)lv_event_get_user_data(e);
-    g_toast_mode = TOAST_MODE_DEGREE;   /* 浅/中/深=探针目标温度（按菜谱配置） */
-    if (is_probe_inserted())
-        jump_to_toastcolor();
-    else
-        jump_to_probeneedtip();
+    g_toast_mode = TOAST_MODE_DEGREE;
+    jump_to_probeneedtip();
 }
 
 /* 烤鸡翅类（份量驱动）：进 toastcolor 份量/种类组（选项/默认按当前菜配置表） */
@@ -419,15 +417,13 @@ void duckmenu_rebuild(page_id_t child)
 }
 
 /* 烤全鸭：与烤全鸡同款探针流程（温度/描述按菜谱配置表） */
+/* 烤全鸭：非探针模式入口仅跳探针提示页（完整流程在探针模式 chickmenutz 走） */
 static void on_duckmenu_wholeduck_click(lv_event_t *e)
 {
     if (screen_is_loading(lv_scr_act())) return;
     g_six_bread_type = SIX_CHICK_DUCK_WHOLE;
     g_toast_mode = TOAST_MODE_DEGREE;
-    if (is_probe_inserted())
-        jump_to_toastcolor();
-    else
-        jump_to_probeneedtip();
+    jump_to_probeneedtip();
 }
 
 /* ================= probeneedtip（烤鸡探针提示页） =================
@@ -750,6 +746,9 @@ static void six_chick_exit_to_menu(void)
     g_send.probe_temp = 0;
     depth = 0;
     page_push(PAGE_WAITMENU_24);
-    jump_to_sixmenu();   /* 返回主页 = 第六感主菜单（与面包六感一致） */
-    printf("[six_chicken] exit -> sixmenu\n");
+    if (is_probe_inserted())
+        jump_to_sixmenutz();   /* 探针模式：返回主页 = 探针版第六感菜单 */
+    else
+        jump_to_sixmenu();     /* 非探针（异常路径兜底） */
+    printf("[six_chicken] exit -> %s\n", is_probe_inserted() ? "sixmenutz" : "sixmenu");
 }

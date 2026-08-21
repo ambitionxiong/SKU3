@@ -298,6 +298,8 @@ typedef enum {
     PAGE_PROBENEEDTIP,      /* 第六感-烤鸡探针提示（未插探针） */
     PAGE_CHICKENCOOKING,    /* 第六感-烤鸡烹饪页（chickencooking UI） */
     PAGE_SIXOP3PAGE,        /* 六选项3页（复用：牛肉/羊肉/猪肉子菜单） */
+    PAGE_SIXMENUTZ,         /* 第六感-探针版菜单 */
+    PAGE_CHICKMENUTZ,       /* 第六感-探针版家禽菜单 */
 } page_id_t;
 
 extern page_id_t page_stack[];
@@ -743,6 +745,13 @@ void six_chick_handle_back(void);   /* 烤鸡烹饪页 BACK：遮罩确认/完�
 extern lv_group_t *g_sixop3page;
 void jump_to_sixop3page(const char *name, const char *op1, const char *op2, const char *op3, int probe_mask);
 void sixop3page_rebuild(page_id_t child);
+/* 探针版第六感菜单（nav_six_tz.c 实现） */
+extern lv_group_t *g_sixmenutz;
+extern lv_group_t *g_chickmenutz;
+void jump_to_sixmenutz(void);
+void sixmenutz_rebuild(page_id_t child);
+void jump_to_chickmenutz(void);
+void chickmenutz_rebuild(page_id_t child);
 int six_chick_is_kind(void);        /* 当前是否为烤鸡翅类(份量驱动, 16..19) */
 int six_chick_is_probe(void);       /* 当前是否为探针菜(烤全鸡/烤全鸭) */
 int six_chick_probe_temp(int level);/* 探针菜档位(1浅2中3深)→探针目标温度 */

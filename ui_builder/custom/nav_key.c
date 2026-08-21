@@ -51,6 +51,8 @@ static int menu_clean_key_allowed(void)
     case PAGE_CHICK6MENU:
     case PAGE_CHICKENMENU:
     case PAGE_DUCK6MENU:
+    case PAGE_SIXMENUTZ:
+    case PAGE_CHICKMENUTZ:
         return 1;
     default:
         return 0;
@@ -66,6 +68,7 @@ static int screen_set_key_allowed(page_id_t below, uint8_t key)
     case PAGE_FROZEN_COOK: case PAGE_CLEAN_MENU: case PAGE_HOTCLEAN_MENU:
     case PAGE_SIXMENU: case PAGE_BREAD6MENU: case PAGE_CAKE6MENU:
     case PAGE_CHICK6MENU: case PAGE_CHICKENMENU: case PAGE_DUCK6MENU:
+    case PAGE_SIXMENUTZ: case PAGE_CHICKMENUTZ:
     case PAGE_SIXOP3PAGE:
         break;
     default:
@@ -77,6 +80,7 @@ static int screen_set_key_allowed(page_id_t below, uint8_t key)
     if (key == KEY_SIXMENU && (below == PAGE_SIXMENU || below == PAGE_BREAD6MENU ||
         below == PAGE_CAKE6MENU || below == PAGE_CHICK6MENU || below == PAGE_CHICKENMENU ||
         below == PAGE_DUCK6MENU ||
+        below == PAGE_SIXMENUTZ || below == PAGE_CHICKMENUTZ ||
         below == PAGE_RISINGPAGE || below == PAGE_DESCRIPTIONMENU ||
         below == PAGE_SIX_COOKING || below == PAGE_TOASTCOLOR)) return 0;
     if (key == KEY_PREHEAT && (below == PAGE_PREHEAT_MENU || below == PAGE_PREHEAT_COOKING ||
@@ -387,6 +391,7 @@ void process_key(uint8_t key)
             if (cur == PAGE_SIXMENU || cur == PAGE_BREAD6MENU ||
                 cur == PAGE_CAKE6MENU || cur == PAGE_CHICK6MENU || cur == PAGE_CHICKENMENU ||
                 cur == PAGE_DUCK6MENU ||
+                cur == PAGE_SIXMENUTZ || cur == PAGE_CHICKMENUTZ ||
                 cur == PAGE_RISINGPAGE || cur == PAGE_DESCRIPTIONMENU ||
                 cur == PAGE_SIX_COOKING || cur == PAGE_TOASTCOLOR) {
                 g_send.buzzer_req = BUZZER_KEY_INVALID;   /* 防重入 */
@@ -426,7 +431,10 @@ void process_key(uint8_t key)
         g_rising_choice = -1;
         depth = 0;
         page_push(PAGE_WAITMENU_24);
-        jump_to_sixmenu();
+        if (is_probe_inserted())
+            jump_to_sixmenutz();   /* 探针模式：进探针版第六感菜单 */
+        else
+            jump_to_sixmenu();
         g_send.iface_status = IFACE_SETTING;
         g_send.cook_mode = MODE_NONE;
         g_send.set_temp = 0;
