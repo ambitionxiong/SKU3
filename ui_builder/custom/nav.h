@@ -730,6 +730,8 @@ extern int six_bread_color_min(int level);
 #define SIX_CHICK_KIND_MIN      16  /* 烤鸡翅类(份量驱动)类型下限 */
 #define SIX_CHICK_KIND_MAX      19  /* 烤鸡翅类(份量驱动)类型上限 */
 #define SIX_CHICK_DUCK_WHOLE    20  /* 烤全鸭（探针菜） */
+#define SIX_MEAT_GRILL_STEAK    21  /* 烤牛排（探针菜） */
+#define SIX_MEAT_GRILL_BEEF     22  /* 烤牛肉（探针菜） */
 extern int g_six_probe_temp;        /* 烤全鸡所选探针目标温度（浅75/中80/深85℃），默认中 */
 extern lv_group_t *g_probeneedtip;
 extern lv_group_t *g_chick_cooking; /* 烤全鸡烹饪页（chickencooking UI） */
