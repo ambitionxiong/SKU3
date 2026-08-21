@@ -689,6 +689,7 @@ void jump_to_chickenmenu(void);
 void chickenmenu_rebuild(page_id_t child);
 void jump_to_duckmenu(void);
 void duckmenu_rebuild(page_id_t child);
+void jump_to_meatdish_menu(void);
 void jump_to_risingpage(void);
 void risingpage_rebuild(page_id_t child);
 void jump_to_descriptionmenu(void);
@@ -736,6 +737,10 @@ extern int six_bread_color_min(int level);
 #define SIX_MEAT_GRILL_LEG      24  /* 烤羊腿（探针菜） */
 #define SIX_MEAT_GRILL_LAMBS    25  /* 烤羊排（探针菜） */
 #define SIX_MEAT_GRILL_SKEWER   26  /* 烤羊肉串（程度→时间驱动, 浅18/中20/深24分钟） */
+#define SIX_MEAT_GRILL_TENDERLOIN 27 /* 烤猪里脊肉（探针菜） */
+#define SIX_MEAT_GRILL_BELLY    28  /* 烤五花肉（探针菜） */
+#define SIX_MEAT_FRIED_RIB      29  /* 炸排骨（份量驱动） */
+#define SIX_MEAT_SAUSAGE        30  /* 烤香肠（份量驱动） */
 extern int g_six_probe_temp;        /* 烤全鸡所选探针目标温度（浅75/中80/深85℃），默认中 */
 extern lv_group_t *g_probeneedtip;
 extern lv_group_t *g_chick_cooking; /* 烤全鸡烹饪页（chickencooking UI） */

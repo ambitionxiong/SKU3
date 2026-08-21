@@ -11,6 +11,9 @@
 
 /* ---- 炸牛排（份量驱动）菜谱配置 ---- */
 static const int w_fsteak_w[] = { 250, 500, 750 };
+
+/* ---- 炸排骨（份量驱动）菜谱配置 ---- */
+static const int w_frib_w[] = { 600, 800, 1000 };
 static const int w_fsteak_t[] = { 18, 21, 24 };
 
 lv_group_t *g_sixop3page = NULL;
@@ -26,7 +29,8 @@ static void on_sixop3page_bt1_click(lv_event_t *e)
 {
     (void)e;
     if (screen_is_loading(lv_scr_act())) return;
-    if (s_op3_kind == SIX_OP3_KIND_MUTTON) { g_six_bread_type = SIX_MEAT_GRILL_LEG; jump_to_probeneedtip(); return; }  /* 烤羊腿 */
+    if (s_op3_kind == SIX_OP3_KIND_MUTTON)  { g_six_bread_type = SIX_MEAT_GRILL_LEG; jump_to_probeneedtip(); return; }
+    if (s_op3_kind == SIX_OP3_KIND_PORK)    { g_six_bread_type = SIX_MEAT_GRILL_TENDERLOIN; jump_to_probeneedtip(); return; }
     g_six_bread_type = SIX_MEAT_GRILL_STEAK;   /* 烤牛排 */
     jump_to_probeneedtip();
 }
@@ -34,7 +38,8 @@ static void on_sixop3page_bt2_click(lv_event_t *e)
 {
     (void)e;
     if (screen_is_loading(lv_scr_act())) return;
-    if (s_op3_kind == SIX_OP3_KIND_MUTTON) { g_six_bread_type = SIX_MEAT_GRILL_LAMBS; jump_to_probeneedtip(); return; }  /* 烤羊排 */
+    if (s_op3_kind == SIX_OP3_KIND_MUTTON)  { g_six_bread_type = SIX_MEAT_GRILL_LAMBS; jump_to_probeneedtip(); return; }
+    if (s_op3_kind == SIX_OP3_KIND_PORK)    { g_six_bread_type = SIX_MEAT_GRILL_BELLY; jump_to_probeneedtip(); return; }
     g_six_bread_type = SIX_MEAT_FRIED_STEAK;   /* 炸牛排:份量驱动 */
     toastcolor_set_weight_options(w_fsteak_w, 3, 1);  /* 默认500g */
     g_toast_mode = TOAST_MODE_WEIGHT;
@@ -45,9 +50,15 @@ static void on_sixop3page_bt3_click(lv_event_t *e)
     (void)e;
     if (screen_is_loading(lv_scr_act())) return;
     if (s_op3_kind == SIX_OP3_KIND_MUTTON) {
-        /* 烤羊肉串:程度→时间,进 toastcolor degree 组 */
         g_six_bread_type = SIX_MEAT_GRILL_SKEWER;
         g_toast_mode = TOAST_MODE_DEGREE;
+        jump_to_toastcolor();
+        return;
+    }
+    if (s_op3_kind == SIX_OP3_KIND_PORK) {
+        g_six_bread_type = SIX_MEAT_FRIED_RIB;   /* 炸排骨:份量驱动 */
+        toastcolor_set_weight_options(w_frib_w, 3, 1);  /* 默认800g */
+        g_toast_mode = TOAST_MODE_WEIGHT;
         jump_to_toastcolor();
         return;
     }
@@ -96,11 +107,17 @@ static void sixop3page_setup_groups(sixop3page_t *sp)
     if (sp->bt3) lv_obj_add_event_cb(sp->bt3, on_sixop3page_bt3_click, LV_EVENT_CLICKED, NULL);
     /* 焦点恢复：按 g_six_bread_type 恢复到进入时的按钮 */
     if (g_six_bread_type == SIX_MEAT_GRILL_LEG && sp->bt1)
-        lv_group_focus_obj(sp->bt1);              /* 烤羊腿 */
+        lv_group_focus_obj(sp->bt1);
     else if (g_six_bread_type == SIX_MEAT_GRILL_LAMBS && sp->bt2)
-        lv_group_focus_obj(sp->bt2);              /* 烤羊排 */
+        lv_group_focus_obj(sp->bt2);
     else if (g_six_bread_type == SIX_MEAT_GRILL_SKEWER && sp->bt3)
-        lv_group_focus_obj(sp->bt3);              /* 烤羊肉串 */
+        lv_group_focus_obj(sp->bt3);
+    else if (g_six_bread_type == SIX_MEAT_GRILL_TENDERLOIN && sp->bt1)
+        lv_group_focus_obj(sp->bt1);
+    else if (g_six_bread_type == SIX_MEAT_GRILL_BELLY && sp->bt2)
+        lv_group_focus_obj(sp->bt2);
+    else if (g_six_bread_type == SIX_MEAT_FRIED_RIB && sp->bt3)
+        lv_group_focus_obj(sp->bt3);
     else if (g_six_bread_type == SIX_MEAT_GRILL_BEEF && sp->bt3)
         lv_group_focus_obj(sp->bt3);
     else if (g_six_bread_type == SIX_MEAT_FRIED_STEAK && sp->bt2)

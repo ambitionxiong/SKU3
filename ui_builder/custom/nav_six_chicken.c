@@ -13,7 +13,9 @@ lv_group_t *g_chick6menu = NULL;
 lv_group_t *g_chickenmenu = NULL;
 lv_group_t *g_duckmenu = NULL;
 lv_group_t *g_probeneedtip = NULL;
-int g_six_probe_temp = 80;   /* 烤全鸡所选探针目标温度（浅75/中80/深85℃），默认中 */
+int g_six_probe_temp = 80;
+static uint8_t s_meatdish_mode = 0;   /* 1=肉菜模式（复用 duckmenu） */
+static void on_meatdish_sausage_click(lv_event_t *e);
 
 /* ==================== 烤鸡翅类（份量驱动）菜谱配置表 ==================== */
 typedef struct {
@@ -56,7 +58,9 @@ int six_chick_is_kind(void)
 {
     return (g_six_bread_type >= SIX_CHICK_KIND_MIN && g_six_bread_type <= SIX_CHICK_KIND_MAX)
         || g_six_bread_type == SIX_MEAT_FRIED_STEAK
-        || g_six_bread_type == SIX_MEAT_GRILL_SKEWER;
+        || g_six_bread_type == SIX_MEAT_GRILL_SKEWER
+        || g_six_bread_type == SIX_MEAT_FRIED_RIB
+        || g_six_bread_type == SIX_MEAT_SAUSAGE;
 }
 
 /* 当前是否为程度→时间驱动（烤羊肉串） */
@@ -75,8 +79,11 @@ int six_chick_degree_min(int degree)
 
 static const chick_dish_t *chick_dish_cfg(void)
 {
-    if (g_six_bread_type == SIX_MEAT_FRIED_STEAK) return NULL;  /* 炸牛排用独立表 */
-    if (g_six_bread_type == SIX_MEAT_GRILL_SKEWER) return NULL; /* 烤羊肉串用程度表 */
+    if (g_six_bread_type == SIX_MEAT_FRIED_STEAK ||
+        g_six_bread_type == SIX_MEAT_GRILL_SKEWER ||
+        g_six_bread_type == SIX_MEAT_FRIED_RIB ||
+        g_six_bread_type == SIX_MEAT_SAUSAGE)
+        return NULL;  /* 独立表 */
     return six_chick_is_kind() ? &s_chick_dishes[g_six_bread_type - SIX_CHICK_KIND_MIN] : NULL;
 }
 
@@ -99,7 +106,7 @@ static const chick_probe_t s_chick_probes[] = {
       "烹饪说明：\n刷油，抹上盐和胡椒。根据个人喜好，用蒜和香草调味\n现在将食物放在第2层\n使用深盘" },
 };
 
-/* 当前类型是否为探针菜（烤全鸡/烤全鸭） */
+/* 当前类型是否为探针菜 */
 int six_chick_is_probe(void)
 {
     return (g_six_bread_type == SIX_CHICK_WHOLE || g_six_bread_type == SIX_CHICK_DUCK_WHOLE);
@@ -125,6 +132,8 @@ const char *six_chick_name(void)
 {
     if (g_six_bread_type == SIX_MEAT_FRIED_STEAK) return "炸牛排";
     if (g_six_bread_type == SIX_MEAT_GRILL_SKEWER) return "烤羊肉串";
+    if (g_six_bread_type == SIX_MEAT_FRIED_RIB) return "炸排骨";
+    if (g_six_bread_type == SIX_MEAT_SAUSAGE) return "烤香肠";
     const chick_dish_t *c = chick_dish_cfg();
     if (c) return c->name;
     const chick_probe_t *p = chick_probe_cfg();
@@ -133,7 +142,9 @@ const char *six_chick_name(void)
 
 uint8_t six_chick_mode(void) {
     if (g_six_bread_type == SIX_MEAT_FRIED_STEAK) return MODE_AIR;
-    if (g_six_bread_type == SIX_MEAT_GRILL_SKEWER) return MODE_HOTWIND_BBQ;   /* 烤羊肉串:热风(hotwind) */
+    if (g_six_bread_type == SIX_MEAT_GRILL_SKEWER) return MODE_HOTWIND_BBQ;
+    if (g_six_bread_type == SIX_MEAT_FRIED_RIB) return MODE_AIR;
+    if (g_six_bread_type == SIX_MEAT_SAUSAGE) return MODE_HOTWIND_BBQ;
     const chick_dish_t *c = chick_dish_cfg(); if (c) return c->mode;
     const chick_probe_t *p = chick_probe_cfg(); if (p) return p->mode;
     return MODE_WINDCHANGE_BBQ;
@@ -141,6 +152,8 @@ uint8_t six_chick_mode(void) {
 int six_chick_temp(void) {
     if (g_six_bread_type == SIX_MEAT_FRIED_STEAK) return 250;
     if (g_six_bread_type == SIX_MEAT_GRILL_SKEWER) return 230;
+    if (g_six_bread_type == SIX_MEAT_FRIED_RIB) return 250;
+    if (g_six_bread_type == SIX_MEAT_SAUSAGE) return 180;
     const chick_dish_t *c = chick_dish_cfg(); if (c) return c->temp;
     const chick_probe_t *p = chick_probe_cfg(); if (p) return p->temp;
     return 230;
@@ -156,7 +169,25 @@ int six_chick_cook_min(int weight_g)
         for (int i = 0; i < 3; i++) {
             if (fw[i] == weight_g) return ft[i];
         }
-        return 21;  /* 默认500g */
+        return 21;
+    }
+    /* 炸排骨：独立份量表 */
+    if (g_six_bread_type == SIX_MEAT_FRIED_RIB) {
+        static const int rw[] = { 600, 800, 1000 };
+        static const int rt[] = { 24, 27, 30 };
+        for (int i = 0; i < 3; i++) {
+            if (rw[i] == weight_g) return rt[i];
+        }
+        return 27;
+    }
+    /* 烤香肠：独立份量表 */
+    if (g_six_bread_type == SIX_MEAT_SAUSAGE) {
+        static const int sw[] = { 200, 400, 600, 800 };
+        static const int st[] = { 12, 14, 16, 18 };
+        for (int i = 0; i < 4; i++) {
+            if (sw[i] == weight_g) return st[i];
+        }
+        return 16;  /* 默认600g */
     }
     const chick_dish_t *c = chick_dish_cfg();
     if (!c) return 0;
@@ -173,6 +204,10 @@ const char *six_chick_desc(void)
         return "根据个人喜好进行调味。抹上盐和黑胡椒碎，在炸盘内均匀铺开，在表面喷一层薄油\n现在将食物放在第3层\n使用气炸盘和深盘";
     if (g_six_bread_type == SIX_MEAT_GRILL_SKEWER)
         return "刷油，根据个人喜好，撒上盐、烧烤料、孜然。在烤盘内均匀铺开\n现在将食物放在第3层\n使用深盘";
+    if (g_six_bread_type == SIX_MEAT_FRIED_RIB)
+        return "根据个人喜好进行调味。在炸盘内均匀铺开，在表面喷一层薄油\n现在将食物放在第3层\n使用气炸盘和深盘";
+    if (g_six_bread_type == SIX_MEAT_SAUSAGE)
+        return "均匀分布在深盘中\n现在将食物放在第3层\n使用深盘";
     const chick_dish_t *c = chick_dish_cfg();
     if (c) return c->desc;
     const chick_probe_t *p = chick_probe_cfg();
@@ -432,6 +467,17 @@ void duckmenu_rebuild(page_id_t child)
 
     duckmenu_t *dm = duckmenu_get(&ui_manager);
     if (dm) {
+        if (s_meatdish_mode) {
+            /* 肉菜模式：恢复自定义标签 */
+            if (dm->label_1) lv_label_set_text(dm->label_1, "肉菜");
+            if (dm->wholeduck) {
+                lv_obj_t *child = lv_obj_get_child(dm->wholeduck, 0);
+                if (child) lv_label_set_text(child, "烤香肠");
+            }
+            if (dm->label_2) lv_obj_add_flag(dm->label_2, LV_OBJ_FLAG_HIDDEN);
+            if (dm->image_2) lv_obj_add_flag(dm->image_2, LV_OBJ_FLAG_HIDDEN);
+        }
+
         lv_obj_t *btns[] = { dm->wholeduck };
         const int n = (int)(sizeof(btns) / sizeof(btns[0]));
         for (int k = 0; k < n; k++) {
@@ -441,7 +487,9 @@ void duckmenu_rebuild(page_id_t child)
         clear_focus_states(btns, n);
 
         if (dm->wholeduck) {
-            lv_obj_add_event_cb(dm->wholeduck, on_duckmenu_wholeduck_click, LV_EVENT_CLICKED, NULL);
+            lv_obj_add_event_cb(dm->wholeduck,
+                s_meatdish_mode ? on_meatdish_sausage_click : on_duckmenu_wholeduck_click,
+                LV_EVENT_CLICKED, NULL);
             lv_group_focus_obj(dm->wholeduck);
         }
     }
@@ -450,7 +498,7 @@ void duckmenu_rebuild(page_id_t child)
     lv_scr_load_anim(duckmenu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[six_chicken] rebuild: duckmenu (child=%d)\n", (int)child);
+    printf("[six_chicken] rebuild: duckmenu (child=%d, meatdish=%d)\n", (int)child, s_meatdish_mode);
 }
 
 /* 烤全鸭：与烤全鸡同款探针流程（温度/描述按菜谱配置表） */
@@ -461,6 +509,61 @@ static void on_duckmenu_wholeduck_click(lv_event_t *e)
     g_six_bread_type = SIX_CHICK_DUCK_WHOLE;
     g_toast_mode = TOAST_MODE_DEGREE;
     jump_to_probeneedtip();
+}
+
+/* ================= meatdishmenu（肉菜：复用 duckmenu UI） ================= */
+
+/* 烤香肠份量表 */
+static const int w_sausage_w[] = { 200, 400, 600, 800 };
+
+static void on_meatdish_sausage_click(lv_event_t *e)
+{
+    (void)e;
+    if (screen_is_loading(lv_scr_act())) return;
+    g_six_bread_type = SIX_MEAT_SAUSAGE;
+    toastcolor_set_weight_options(w_sausage_w, 4, 2);  /* 默认600g */
+    g_toast_mode = TOAST_MODE_WEIGHT;
+    jump_to_toastcolor();
+}
+
+void jump_to_meatdish_menu(void)
+{
+    s_meatdish_mode = 1;
+    page_push(PAGE_DUCK6MENU);
+    lv_obj_clean(lv_scr_act());
+    duckmenu_create(&ui_manager);
+
+    duckmenu_t *dm = duckmenu_get(&ui_manager);
+    if (dm) {
+        /* label1 = 肉菜, 按钮label = 烤香肠, 隐藏 img2/label2 */
+        if (dm->label_1) lv_label_set_text(dm->label_1, "肉菜");
+        if (dm->wholeduck) {
+            lv_obj_t *child = lv_obj_get_child(dm->wholeduck, 0);
+            if (child) lv_label_set_text(child, "烤香肠");
+        }
+        if (dm->label_2) lv_obj_add_flag(dm->label_2, LV_OBJ_FLAG_HIDDEN);
+        if (dm->image_2) lv_obj_add_flag(dm->image_2, LV_OBJ_FLAG_HIDDEN);
+
+        lv_obj_t *btns[] = { dm->wholeduck };
+        const int n = (int)(sizeof(btns) / sizeof(btns[0]));
+        for (int k = 0; k < n; k++) {
+            if (btns[k]) lv_group_remove_obj(btns[k]);
+        }
+        if (g_duckmenu) lv_group_del(g_duckmenu);
+        g_duckmenu = group_create_for_page(btns, n);
+        clear_focus_states(btns, n);
+
+        if (dm->wholeduck) {
+            lv_obj_add_event_cb(dm->wholeduck, on_meatdish_sausage_click, LV_EVENT_CLICKED, NULL);
+            lv_group_focus_obj(dm->wholeduck);
+        }
+    }
+    current_group = g_duckmenu;
+
+    lv_scr_load_anim(duckmenu_get(&ui_manager)->obj,
+                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                     ui_manager.auto_del);
+    printf("[six_chicken] jump: meatdishmenu\n");
 }
 
 /* ================= probeneedtip（烤鸡探针提示页） =================

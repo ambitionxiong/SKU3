@@ -176,8 +176,16 @@ static void on_meat6menu_mutton_click(lv_event_t *e)
     (void)e;
     jump_to_sixop3page("羊肉", "烤羊腿", "烤羊排", "烤羊肉串", (1 | 2), SIX_OP3_KIND_MUTTON);   /* (1|2)=011: 显示 probe1/2, 隐藏 probe3 */
 }
-static void on_meat6menu_pork_click(lv_event_t *e)  { (void)e; /* TODO:猪肉 */ }
-static void on_meat6menu_meatdish_click(lv_event_t *e) { (void)e; /* TODO:肉菜 */ }
+static void on_meat6menu_pork_click(lv_event_t *e)
+{
+    (void)e;
+    jump_to_sixop3page("猪肉", "烤猪里脊肉", "烤五花肉", "炸排骨", (1 | 2), SIX_OP3_KIND_PORK);  /* (1|2)=011: 显示 probe1/2, 隐藏 probe3 */
+}
+static void on_meat6menu_meatdish_click(lv_event_t *e)
+{
+    (void)e;
+    jump_to_meatdish_menu();
+}
 
 static void jump_to_meat6menu(void)
 {

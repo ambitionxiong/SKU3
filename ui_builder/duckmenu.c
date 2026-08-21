@@ -39,7 +39,7 @@ void duckmenu_create(ui_manager_t *ui)
     // Set style of scr->wholeduck
     lv_obj_set_style_bg_opa(scr->wholeduck, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->wholeduck, LVGL_IMAGE_PATH(div2bk30.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->wholeduck, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->wholeduck, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->wholeduck, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->wholeduck, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->wholeduck, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -47,7 +47,7 @@ void duckmenu_create(ui_manager_t *ui)
 
     // Init scr->label_1
     scr->label_1 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_1, "特殊功能");
+    lv_label_set_text(scr->label_1, "鸭");
     lv_label_set_long_mode(scr->label_1, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->label_1, 24, 24);
     lv_obj_set_size(scr->label_1, 97, 25);
