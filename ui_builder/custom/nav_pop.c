@@ -290,6 +290,10 @@ void page_pop(void)
         duckmenu_rebuild(child);
         break;
 
+    case PAGE_SIXOP3PAGE:
+        sixop3page_rebuild(child);
+        break;
+
     case PAGE_RISINGPAGE:
         risingpage_rebuild(child);
         break;

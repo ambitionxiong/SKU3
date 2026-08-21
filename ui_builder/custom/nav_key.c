@@ -34,6 +34,7 @@ static int menu_clean_key_allowed(void)
     case PAGE_WAITMENU_24:
     case PAGE_PROBETIP:
     case PAGE_TEMPTIP:
+    case PAGE_SIXOP3PAGE:
     case PAGE_MAJOR_MENU:
     case PAGE_MAJOR_MENU_TZ:
     case PAGE_COOKMENU:
@@ -65,6 +66,7 @@ static int screen_set_key_allowed(page_id_t below, uint8_t key)
     case PAGE_FROZEN_COOK: case PAGE_CLEAN_MENU: case PAGE_HOTCLEAN_MENU:
     case PAGE_SIXMENU: case PAGE_BREAD6MENU: case PAGE_CAKE6MENU:
     case PAGE_CHICK6MENU: case PAGE_CHICKENMENU: case PAGE_DUCK6MENU:
+    case PAGE_SIXOP3PAGE:
         break;
     default:
         return 0;
