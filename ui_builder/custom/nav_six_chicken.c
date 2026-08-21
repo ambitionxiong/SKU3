@@ -506,9 +506,13 @@ static void on_chick_cooking_stop_click(lv_event_t *e)
     six_chick_apply_display();
 }
 
-/* 烤全鸡烹饪页（探针温度标记完成，无倒计时；独立于面包/蛋糕 cooking 页） */
+/* 探针菜烹饪页（烤全鸡/烤全鸭，探针温度标记完成，无倒计时） */
 void jump_to_chick_cooking(void)
 {
+    if (is_door_open()) {   /* 门开不直接进烹饪（与面包 jump_to_six_cooking 一致） */
+        g_send.buzzer_req = BUZZER_KEY_INVALID;
+        return;
+    }
     page_push(PAGE_CHICKENCOOKING);
     lv_obj_clean(lv_scr_act());
     chickencooking_create(&ui_manager);
