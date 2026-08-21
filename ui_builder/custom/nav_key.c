@@ -33,6 +33,7 @@ static int menu_clean_key_allowed(void)
     switch (page_stack[depth - 1]) {
     case PAGE_WAITMENU_24:
     case PAGE_PROBETIP:
+    case PAGE_TEMPTIP:
     case PAGE_MAJOR_MENU:
     case PAGE_MAJOR_MENU_TZ:
     case PAGE_COOKMENU:
@@ -58,7 +59,7 @@ static int menu_clean_key_allowed(void)
 static int screen_set_key_allowed(page_id_t below, uint8_t key)
 {
     switch (below) {   /* 菜单白名单(与 menu_clean_key_allowed 同列表) */
-    case PAGE_WAITMENU_24: case PAGE_PROBETIP: case PAGE_MAJOR_MENU:
+    case PAGE_WAITMENU_24: case PAGE_PROBETIP: case PAGE_TEMPTIP: case PAGE_MAJOR_MENU:
     case PAGE_MAJOR_MENU_TZ: case PAGE_COOKMENU: case PAGE_COOK_MENU_TZ:
     case PAGE_SPECIAL_MENU: case PAGE_SPECIAL_MENU_TZ: case PAGE_COOK4_MENU:
     case PAGE_FROZEN_COOK: case PAGE_CLEAN_MENU: case PAGE_HOTCLEAN_MENU:
@@ -95,6 +96,9 @@ void process_key(uint8_t key)
         return;
     /* 探针提示页:仅 BACK 有效(probetip_dismiss_now 提前结束),功能键静默忽略 */
     if (depth > 0 && page_stack[depth - 1] == PAGE_PROBETIP && key != KEY_BACK)
+        return;
+    /* 腔温过热提示页:仅 BACK 有效(temptip_dismiss_now 提前结束),功能键静默忽略 */
+    if (depth > 0 && page_stack[depth - 1] == PAGE_TEMPTIP && key != KEY_BACK)
         return;
     /* 烤鸡探针提示页:仅 BACK / 确定(编码器按下=点击 sure)有效，其余功能键静默忽略 */
     if (depth > 0 && page_stack[depth - 1] == PAGE_PROBENEEDTIP &&
@@ -578,6 +582,9 @@ void process_key(uint8_t key)
             }
             else if (cur == PAGE_PROBETIP) {
                 probetip_dismiss_now();   /* 探针提示:BACK 提前结束(恢复 iface + 回 prev) */
+            }
+            else if (cur == PAGE_TEMPTIP) {
+                temptip_dismiss_now();   /* 温度提示:BACK 提前结束(恢复 iface + 回 prev) */
             }
             else if (cur == PAGE_SCREEN_SET) {
                 screen_set_back();

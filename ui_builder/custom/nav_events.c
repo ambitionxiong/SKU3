@@ -214,8 +214,13 @@ void on_unfrozen_click(lv_event_t *e)
 void on_rising_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
-    if (!screen_is_loading(act_scr))
-        jump_to_rising_menu();
+    if (screen_is_loading(act_scr)) return;
+    /* 发酵需冷却状态:腔温>50℃ 跳温度提示页(5秒自动返回,可 BACK 提前返回) */
+    if (get_cavity_temp() > 50) {
+        jump_to_temptip();
+        return;
+    }
+    jump_to_rising_menu();
 }
 void on_corn_click(lv_event_t *e)
 {

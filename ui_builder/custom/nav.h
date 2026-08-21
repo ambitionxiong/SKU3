@@ -22,6 +22,7 @@ extern int64_t g_delay_target;                // 延时预约目标绝对毫秒
 typedef enum {
     PAGE_WAITMENU_24,     // 等待界面（根页，开机首页）
     PAGE_PROBETIP,         // 探针提示页
+    PAGE_TEMPTIP,          // 腔温过热提示页
     PAGE_MAJOR_MENU_TZ,    // 探针下主菜单
     PAGE_COOK_MENU_TZ,     // 探针下烹调菜单
     PAGE_SPECIAL_MENU_TZ,  // 探针下特色菜单
@@ -583,6 +584,12 @@ void jump_to_probetip(const char *text);
 void probetip_rebuild(page_id_t child);
 void probetip_cancel_auto_dismiss(void);
 void probetip_dismiss_now(void);
+/* 腔温过热提示页（nav_temptip.c 实现） */
+extern lv_group_t *g_temptip;
+void jump_to_temptip(void);
+void temptip_rebuild(page_id_t child);
+void temptip_cancel_auto_dismiss(void);
+void temptip_dismiss_now(void);
 void waitmenu_apply_clock(void);
 void waitmenu_clock_cache_reset(void);
 void jump_to_major_menu_tz(void);

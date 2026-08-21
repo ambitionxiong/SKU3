@@ -4195,6 +4195,14 @@ typedef struct {
     lv_obj_t *stop;
 } chickencooking_t;
 
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *button_1;
+    lv_obj_t *tip1;
+    lv_obj_t *tip2;
+    lv_obj_t *tip3;
+} temptip_t;
+
 
 typedef struct {
     bool auto_del;
@@ -4471,6 +4479,7 @@ typedef struct {
     vegetablemenu_t vegetablemenu;
     probeneedtip_t probeneedtip;
     chickencooking_t chickencooking;
+    temptip_t temptip;
 
 } ui_manager_t;
 
@@ -5845,6 +5854,11 @@ static inline chickencooking_t *chickencooking_get(ui_manager_t *ui)
     return &ui->chickencooking;
 }
 
+static inline temptip_t *temptip_get(ui_manager_t *ui)
+{
+    return &ui->temptip;
+}
+
 
 void waitmenu_24_create(ui_manager_t *ui);
 void clean_menu_create(ui_manager_t *ui);
@@ -6119,6 +6133,7 @@ void sixop3page_create(ui_manager_t *ui);
 void vegetablemenu_create(ui_manager_t *ui);
 void probeneedtip_create(ui_manager_t *ui);
 void chickencooking_create(ui_manager_t *ui);
+void temptip_create(ui_manager_t *ui);
 
 
 LV_FONT_DECLARE(c_montserratmedium_16);
