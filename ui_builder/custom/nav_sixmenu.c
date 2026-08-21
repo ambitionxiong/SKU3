@@ -22,6 +22,7 @@ static void on_sixmenu_bread_click(lv_event_t *e);
 static void on_sixmenu_cake_click(lv_event_t *e);
 static void on_sixmenu_chick_click(lv_event_t *e);
 static void on_sixmenu_meat_click(lv_event_t *e);
+static void on_sixmenu_fish_click(lv_event_t *e);
 static void on_bread6menu_breadroll_click(lv_event_t *e);
 static void on_bread6menu_wheat_click(lv_event_t *e);
 static void on_bread6menu_toast_click(lv_event_t *e);
@@ -68,6 +69,9 @@ void jump_to_sixmenu(void)
         if (sm->meat) {
             lv_obj_add_event_cb(sm->meat, on_sixmenu_meat_click, LV_EVENT_CLICKED, NULL);
         }
+        if (sm->fish) {
+            lv_obj_add_event_cb(sm->fish, on_sixmenu_fish_click, LV_EVENT_CLICKED, NULL);
+        }
         /* 其余按钮：功能未实现，不绑事件（点击静默无效） */
     }
     current_group = g_sixmenu;
@@ -109,16 +113,21 @@ void sixmenu_rebuild(page_id_t child)
         if (sm->meat) {
             lv_obj_add_event_cb(sm->meat, on_sixmenu_meat_click, LV_EVENT_CLICKED, NULL);
         }
+        if (sm->fish) {
+            lv_obj_add_event_cb(sm->fish, on_sixmenu_fish_click, LV_EVENT_CLICKED, NULL);
+        }
 
-        /* 焦点恢复：按 child + 肉模式恢复到进入时的按钮 */
+        /* 焦点恢复：按 child + 模式恢复到进入时的按钮 */
         if (s_six_meat_mode && child == PAGE_BREAD6MENU && sm->meat)
-            lv_group_focus_obj(sm->meat);      /* 从肉菜单返回 */
-        else if (child == PAGE_CHICK6MENU && sm->chick)
+            lv_group_focus_obj(sm->meat);
+        else if (six_chick_get_fish_mode() && child == PAGE_CHICK6MENU && sm->fish)
+            lv_group_focus_obj(sm->fish);      /* 从鱼/海鲜菜单返回 */
+        else if (!six_chick_get_fish_mode() && child == PAGE_CHICK6MENU && sm->chick)
             lv_group_focus_obj(sm->chick);     /* 从鸡菜单返回 */
         else if (child == PAGE_CAKE6MENU && sm->cake)
-            lv_group_focus_obj(sm->cake);      /* 从蛋糕菜单返回 */
+            lv_group_focus_obj(sm->cake);
         else if (sm->bread)
-            lv_group_focus_obj(sm->bread);     /* 默认面包 */
+            lv_group_focus_obj(sm->bread);
     }
     current_group = g_sixmenu;
 
@@ -144,6 +153,7 @@ static void on_sixmenu_cake_click(lv_event_t *e)
 static void on_sixmenu_chick_click(lv_event_t *e)
 {
     if (screen_is_loading(lv_scr_act())) return;
+    six_chick_reset_fish_mode();   /* 重置鱼模式，进鸡流程 */
     jump_to_chick6menu();
 }
 
@@ -151,7 +161,16 @@ static void on_sixmenu_chick_click(lv_event_t *e)
 static void on_sixmenu_meat_click(lv_event_t *e)
 {
     if (screen_is_loading(lv_scr_act())) return;
+    six_chick_reset_fish_mode();
     jump_to_meat6menu();
+}
+
+/* 鱼/海鲜入口 */
+static void on_sixmenu_fish_click(lv_event_t *e)
+{
+    (void)e;
+    if (screen_is_loading(lv_scr_act())) return;
+    jump_to_fish_menu();
 }
 
 /* 肉菜单：复用 bread6menu 页面,换文字 */

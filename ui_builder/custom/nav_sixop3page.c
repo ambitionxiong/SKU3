@@ -105,7 +105,12 @@ static void sixop3page_setup_groups(sixop3page_t *sp)
     if (sp->bt1) lv_obj_add_event_cb(sp->bt1, on_sixop3page_bt1_click, LV_EVENT_CLICKED, NULL);
     if (sp->bt2) lv_obj_add_event_cb(sp->bt2, on_sixop3page_bt2_click, LV_EVENT_CLICKED, NULL);
     if (sp->bt3) lv_obj_add_event_cb(sp->bt3, on_sixop3page_bt3_click, LV_EVENT_CLICKED, NULL);
-    /* 焦点恢复：按 g_six_bread_type 恢复到进入时的按钮 */
+}
+
+/* 仅返回重建时恢复焦点：按 g_six_bread_type 回到进入时的按钮 */
+static void sixop3page_restore_focus(sixop3page_t *sp)
+{
+    if (!sp) return;
     if (g_six_bread_type == SIX_MEAT_GRILL_LEG && sp->bt1)
         lv_group_focus_obj(sp->bt1);
     else if (g_six_bread_type == SIX_MEAT_GRILL_LAMBS && sp->bt2)
@@ -146,6 +151,8 @@ void jump_to_sixop3page(const char *name, const char *op1, const char *op2, cons
         sixop3page_apply_labels(sp);
         sixop3page_apply_probe(sp);
         sixop3page_setup_groups(sp);
+        /* 新进入:默认焦点第一个按钮(不继承上次使用页面的残留焦点) */
+        if (sp->bt1) lv_group_focus_obj(sp->bt1);
     }
     current_group = g_sixop3page;
 
@@ -166,6 +173,7 @@ void sixop3page_rebuild(page_id_t child)
         sixop3page_apply_labels(sp);
         sixop3page_apply_probe(sp);
         sixop3page_setup_groups(sp);
+        sixop3page_restore_focus(sp);   /* 返回重建:按进入的菜恢复焦点 */
     }
     current_group = g_sixop3page;
 

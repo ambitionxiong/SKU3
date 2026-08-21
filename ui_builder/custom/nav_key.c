@@ -457,6 +457,12 @@ void process_key(uint8_t key)
         g_send.buzzer_req = BUZZER_KEY_VALID;
         {
             page_id_t cur = page_stack[depth - 1];
+            if (cur == PAGE_CHICK6MENU && six_chick_get_fish_mode() == 2) {
+                six_chick_fish_go_back();   /* 烤鱼子页:原地重绘回鱼/海鲜首页,不弹页 */
+                g_send.buzzer_req = BUZZER_KEY_VALID;
+                uart_print();
+                break;
+            }
             if (cur == PAGE_UPDOWN_BBQ_COOKING) {
                 // 不暂停，后台继续cooking，直接跳stopback确认退出
                 jump_to_updown_bbq_stop_back();
