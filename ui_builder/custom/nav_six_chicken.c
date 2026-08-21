@@ -51,16 +51,32 @@ static const chick_dish_t s_chick_dishes[] = {
       "烹饪说明：\n刷油，并根据个人喜好进行调味。在烤盘内均匀铺开，表皮朝上\n现在将食物放在第3层\n使用深盘" },
 };
 
-/* 当前类型是否为烤鸡翅类(份量驱动) */
+/* 当前类型是否为烤鸡翅类(份量驱动) + 烤羊肉串(程度→时间) */
 int six_chick_is_kind(void)
 {
     return (g_six_bread_type >= SIX_CHICK_KIND_MIN && g_six_bread_type <= SIX_CHICK_KIND_MAX)
-        || g_six_bread_type == SIX_MEAT_FRIED_STEAK;
+        || g_six_bread_type == SIX_MEAT_FRIED_STEAK
+        || g_six_bread_type == SIX_MEAT_GRILL_SKEWER;
+}
+
+/* 当前是否为程度→时间驱动（烤羊肉串） */
+int six_chick_is_degree_time(void)
+{
+    return g_six_bread_type == SIX_MEAT_GRILL_SKEWER;
+}
+
+/* 程度→烹饪分钟（1浅2中3深: 18/20/24） */
+int six_chick_degree_min(int degree)
+{
+    static const int m[] = { 18, 20, 24 };
+    if (degree < 1 || degree > 3) degree = 2;
+    return m[degree - 1];
 }
 
 static const chick_dish_t *chick_dish_cfg(void)
 {
     if (g_six_bread_type == SIX_MEAT_FRIED_STEAK) return NULL;  /* 炸牛排用独立表 */
+    if (g_six_bread_type == SIX_MEAT_GRILL_SKEWER) return NULL; /* 烤羊肉串用程度表 */
     return six_chick_is_kind() ? &s_chick_dishes[g_six_bread_type - SIX_CHICK_KIND_MIN] : NULL;
 }
 
@@ -108,6 +124,7 @@ int six_chick_probe_temp(int level)
 const char *six_chick_name(void)
 {
     if (g_six_bread_type == SIX_MEAT_FRIED_STEAK) return "炸牛排";
+    if (g_six_bread_type == SIX_MEAT_GRILL_SKEWER) return "烤羊肉串";
     const chick_dish_t *c = chick_dish_cfg();
     if (c) return c->name;
     const chick_probe_t *p = chick_probe_cfg();
@@ -116,12 +133,14 @@ const char *six_chick_name(void)
 
 uint8_t six_chick_mode(void) {
     if (g_six_bread_type == SIX_MEAT_FRIED_STEAK) return MODE_AIR;
+    if (g_six_bread_type == SIX_MEAT_GRILL_SKEWER) return MODE_HOTWIND_BBQ;   /* 烤羊肉串:热风(hotwind) */
     const chick_dish_t *c = chick_dish_cfg(); if (c) return c->mode;
     const chick_probe_t *p = chick_probe_cfg(); if (p) return p->mode;
     return MODE_WINDCHANGE_BBQ;
 }
 int six_chick_temp(void) {
     if (g_six_bread_type == SIX_MEAT_FRIED_STEAK) return 250;
+    if (g_six_bread_type == SIX_MEAT_GRILL_SKEWER) return 230;
     const chick_dish_t *c = chick_dish_cfg(); if (c) return c->temp;
     const chick_probe_t *p = chick_probe_cfg(); if (p) return p->temp;
     return 230;
@@ -152,6 +171,8 @@ const char *six_chick_desc(void)
 {
     if (g_six_bread_type == SIX_MEAT_FRIED_STEAK)
         return "根据个人喜好进行调味。抹上盐和黑胡椒碎，在炸盘内均匀铺开，在表面喷一层薄油\n现在将食物放在第3层\n使用气炸盘和深盘";
+    if (g_six_bread_type == SIX_MEAT_GRILL_SKEWER)
+        return "刷油，根据个人喜好，撒上盐、烧烤料、孜然。在烤盘内均匀铺开\n现在将食物放在第3层\n使用深盘";
     const chick_dish_t *c = chick_dish_cfg();
     if (c) return c->desc;
     const chick_probe_t *p = chick_probe_cfg();
@@ -445,6 +466,20 @@ static void on_duckmenu_wholeduck_click(lv_event_t *e)
 /* ================= probeneedtip（烤鸡探针提示页） =================
  * 未插探针时的提示页：仅 sure 进焦点组；点 sure 或 BACK 都回到 chickenmenu。 */
 
+/* 探针提示页左上角菜名（按进入的菜） */
+static const char *probeneedtip_dish_name(void)
+{
+    switch (g_six_bread_type) {
+    case SIX_CHICK_WHOLE:        return "烤全鸡";
+    case SIX_CHICK_DUCK_WHOLE:   return "烤全鸭";
+    case SIX_MEAT_GRILL_STEAK:   return "烤牛排";
+    case SIX_MEAT_GRILL_BEEF:    return "烤牛肉";
+    case SIX_MEAT_GRILL_LEG:     return "烤羊腿";
+    case SIX_MEAT_GRILL_LAMBS:   return "烤羊排";
+    default:                     return "第六感";
+    }
+}
+
 void jump_to_probeneedtip(void)
 {
     page_push(PAGE_PROBENEEDTIP);
@@ -453,6 +488,10 @@ void jump_to_probeneedtip(void)
 
     probeneedtip_t *pt = probeneedtip_get(&ui_manager);
     if (pt) {
+        /* 左上角显示进入时的菜名 */
+        if (pt->name)
+            lv_label_set_text(pt->name, probeneedtip_dish_name());
+
         lv_obj_t *btns[] = { pt->sure };
         const int n = (int)(sizeof(btns) / sizeof(btns[0]));
         for (int k = 0; k < n; k++) {

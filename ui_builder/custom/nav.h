@@ -733,6 +733,9 @@ extern int six_bread_color_min(int level);
 #define SIX_MEAT_GRILL_STEAK    21  /* 烤牛排（探针菜） */
 #define SIX_MEAT_GRILL_BEEF     22  /* 烤牛肉（探针菜） */
 #define SIX_MEAT_FRIED_STEAK    23  /* 炸牛排（份量驱动） */
+#define SIX_MEAT_GRILL_LEG      24  /* 烤羊腿（探针菜） */
+#define SIX_MEAT_GRILL_LAMBS    25  /* 烤羊排（探针菜） */
+#define SIX_MEAT_GRILL_SKEWER   26  /* 烤羊肉串（程度→时间驱动, 浅18/中20/深24分钟） */
 extern int g_six_probe_temp;        /* 烤全鸡所选探针目标温度（浅75/中80/深85℃），默认中 */
 extern lv_group_t *g_probeneedtip;
 extern lv_group_t *g_chick_cooking; /* 烤全鸡烹饪页（chickencooking UI） */
@@ -746,7 +749,11 @@ void jump_to_chick_cooking(void);   /* 烤全鸡烹饪页（探针温度标记�
 void six_chick_handle_back(void);   /* 烤鸡烹饪页 BACK：遮罩确认/完成退出 */
 /* 六选项3页（nav_sixop3page.c 实现，可复用：牛肉/羊肉等子菜单） */
 extern lv_group_t *g_sixop3page;
-void jump_to_sixop3page(const char *name, const char *op1, const char *op2, const char *op3, int probe_mask);
+#define SIX_OP3_KIND_BEEF     0  /* 牛肉 */
+#define SIX_OP3_KIND_MUTTON   1  /* 羊肉 */
+#define SIX_OP3_KIND_PORK     2  /* 猪肉 */
+#define SIX_OP3_KIND_MEAT     3  /* 肉菜 */
+void jump_to_sixop3page(const char *name, const char *op1, const char *op2, const char *op3, int probe_mask, int kind);
 void sixop3page_rebuild(page_id_t child);
 /* 探针版第六感菜单（nav_six_tz.c 实现） */
 extern lv_group_t *g_sixmenutz;
@@ -763,6 +770,9 @@ const char *six_chick_degree_short(void);/* 同上（浅/中等/深，descriptio
 uint8_t six_chick_mode(void);       /* 烤鸡类当前菜的模式（热风对流/空气炸） */
 int six_chick_temp(void);           /* 烤鸡类当前菜的温度 */
 int six_chick_cook_min(int weight_g);   /* 烤鸡翅类：份量→烹饪分钟（SKU3 菜谱表） */
+int six_chick_is_degree_time(void);     /* 当前是否为程度→时间驱动(烤羊肉串) */
+int six_chick_degree_min(int degree);   /* 程度→烹饪分钟(1浅2中3深: 18/20/24) */
+int toastcolor_degree_value(void);      /* 当前选中程度(1浅2中3深, -1=非degree组) */
 
 /* 第六感烤色选择（nav_toastcolor.c 实现）：三组互斥显示模式 */
 #define TOAST_MODE_DEGREE   0     /* 烤色程度（degree+line） */

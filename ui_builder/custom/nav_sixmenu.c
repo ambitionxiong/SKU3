@@ -165,13 +165,17 @@ static void meat6menu_apply_labels(bread6menu_t *b6)
     if (b6->croissant)   lv_label_set_text(lv_obj_get_child(b6->croissant, 0), "肉菜");
 }
 
-/* 肉菜单按钮点击：牛肉进六选项3页；其余暂留空 */
+/* 肉菜单按钮点击：牛肉/羊肉进六选项3页；其余暂留空 */
 static void on_meat6menu_beef_click(lv_event_t *e)
 {
     (void)e;
-    jump_to_sixop3page("牛肉", "烤牛排", "炸牛排", "烤牛肉", (1 | 4));   /* (1|4)=101: 显示 probe1/3, 隐藏 probe2 */
+    jump_to_sixop3page("牛肉", "烤牛排", "炸牛排", "烤牛肉", (1 | 4), SIX_OP3_KIND_BEEF);   /* (1|4)=101: 显示 probe1/3, 隐藏 probe2 */
 }
-static void on_meat6menu_mutton_click(lv_event_t *e) { (void)e; /* TODO:羊肉 */ }
+static void on_meat6menu_mutton_click(lv_event_t *e)
+{
+    (void)e;
+    jump_to_sixop3page("羊肉", "烤羊腿", "烤羊排", "烤羊肉串", (1 | 2), SIX_OP3_KIND_MUTTON);   /* (1|2)=011: 显示 probe1/2, 隐藏 probe3 */
+}
 static void on_meat6menu_pork_click(lv_event_t *e)  { (void)e; /* TODO:猪肉 */ }
 static void on_meat6menu_meatdish_click(lv_event_t *e) { (void)e; /* TODO:肉菜 */ }
 

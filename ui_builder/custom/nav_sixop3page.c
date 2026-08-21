@@ -19,18 +19,40 @@ lv_group_t *g_sixop3page = NULL;
 static const char *s_op3_name  = NULL;
 static const char *s_op3_ops[3] = { NULL, NULL, NULL };
 static int s_op3_probe_mask = 0;   /* probe 图标显隐掩码: bit0=p1 bit1=p2 bit2=p3 */
+static int s_op3_kind = SIX_OP3_KIND_BEEF;   /* 当前菜父类别（牛肉/羊肉/…） */
 
-/* bt 按钮点击 */
-static void on_sixop3page_bt1_click(lv_event_t *e) { (void)e; g_six_bread_type = SIX_MEAT_GRILL_STEAK; jump_to_probeneedtip(); }  /* 烤牛排 */
-static void on_sixop3page_bt3_click(lv_event_t *e) { (void)e; g_six_bread_type = SIX_MEAT_GRILL_BEEF; jump_to_probeneedtip(); }  /* 烤牛肉 */
+/* bt 按钮点击（按菜类别分发） */
+static void on_sixop3page_bt1_click(lv_event_t *e)
+{
+    (void)e;
+    if (screen_is_loading(lv_scr_act())) return;
+    if (s_op3_kind == SIX_OP3_KIND_MUTTON) { g_six_bread_type = SIX_MEAT_GRILL_LEG; jump_to_probeneedtip(); return; }  /* 烤羊腿 */
+    g_six_bread_type = SIX_MEAT_GRILL_STEAK;   /* 烤牛排 */
+    jump_to_probeneedtip();
+}
 static void on_sixop3page_bt2_click(lv_event_t *e)
 {
     (void)e;
     if (screen_is_loading(lv_scr_act())) return;
-    g_six_bread_type = SIX_MEAT_FRIED_STEAK;
+    if (s_op3_kind == SIX_OP3_KIND_MUTTON) { g_six_bread_type = SIX_MEAT_GRILL_LAMBS; jump_to_probeneedtip(); return; }  /* 烤羊排 */
+    g_six_bread_type = SIX_MEAT_FRIED_STEAK;   /* 炸牛排:份量驱动 */
     toastcolor_set_weight_options(w_fsteak_w, 3, 1);  /* 默认500g */
     g_toast_mode = TOAST_MODE_WEIGHT;
     jump_to_toastcolor();
+}
+static void on_sixop3page_bt3_click(lv_event_t *e)
+{
+    (void)e;
+    if (screen_is_loading(lv_scr_act())) return;
+    if (s_op3_kind == SIX_OP3_KIND_MUTTON) {
+        /* 烤羊肉串:程度→时间,进 toastcolor degree 组 */
+        g_six_bread_type = SIX_MEAT_GRILL_SKEWER;
+        g_toast_mode = TOAST_MODE_DEGREE;
+        jump_to_toastcolor();
+        return;
+    }
+    g_six_bread_type = SIX_MEAT_GRILL_BEEF;   /* 烤牛肉 */
+    jump_to_probeneedtip();
 }
 
 static void sixop3page_apply_labels(sixop3page_t *sp)
@@ -73,7 +95,13 @@ static void sixop3page_setup_groups(sixop3page_t *sp)
     if (sp->bt2) lv_obj_add_event_cb(sp->bt2, on_sixop3page_bt2_click, LV_EVENT_CLICKED, NULL);
     if (sp->bt3) lv_obj_add_event_cb(sp->bt3, on_sixop3page_bt3_click, LV_EVENT_CLICKED, NULL);
     /* 焦点恢复：按 g_six_bread_type 恢复到进入时的按钮 */
-    if (g_six_bread_type == SIX_MEAT_GRILL_BEEF && sp->bt3)
+    if (g_six_bread_type == SIX_MEAT_GRILL_LEG && sp->bt1)
+        lv_group_focus_obj(sp->bt1);              /* 烤羊腿 */
+    else if (g_six_bread_type == SIX_MEAT_GRILL_LAMBS && sp->bt2)
+        lv_group_focus_obj(sp->bt2);              /* 烤羊排 */
+    else if (g_six_bread_type == SIX_MEAT_GRILL_SKEWER && sp->bt3)
+        lv_group_focus_obj(sp->bt3);              /* 烤羊肉串 */
+    else if (g_six_bread_type == SIX_MEAT_GRILL_BEEF && sp->bt3)
         lv_group_focus_obj(sp->bt3);
     else if (g_six_bread_type == SIX_MEAT_FRIED_STEAK && sp->bt2)
         lv_group_focus_obj(sp->bt2);
@@ -83,13 +111,14 @@ static void sixop3page_setup_groups(sixop3page_t *sp)
         lv_group_focus_obj(sp->bt1);
 }
 
-void jump_to_sixop3page(const char *name, const char *op1, const char *op2, const char *op3, int probe_mask)
+void jump_to_sixop3page(const char *name, const char *op1, const char *op2, const char *op3, int probe_mask, int kind)
 {
     s_op3_name  = name;
     s_op3_ops[0] = op1;
     s_op3_ops[1] = op2;
     s_op3_ops[2] = op3;
     s_op3_probe_mask = probe_mask;
+    s_op3_kind = kind;
 
     page_push(PAGE_SIXOP3PAGE);
     lv_obj_clean(lv_scr_act());

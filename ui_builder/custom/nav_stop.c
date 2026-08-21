@@ -131,7 +131,13 @@ void jump_to_updown_bbq_stop_back(void)
                 if (six_chick_is_probe())
                     lv_label_set_text_fmt(back->statu_label, "| %s | %s |",
                                           six_chick_name(), six_chick_degree_text());   /* 探针菜:菜名+烤色程度 */
-                else if (six_chick_is_kind()) {
+                else if (six_chick_is_degree_time()) {
+                    int d = toastcolor_degree_value();
+                    if (d < 1 || d > 3) d = 2;
+                    const char *dt = (d == 1) ? "浅色" : (d == 3) ? "深色" : "中等色";
+                    lv_label_set_text_fmt(back->statu_label, "| %s | %s | %d分钟 |",
+                                          six_chick_name(), dt, six_chick_degree_min(d));   /* 烤羊肉串:菜名+程度+时间 */
+                } else if (six_chick_is_kind()) {
                     int w = toastcolor_weight_value();
                     if (w < 0) w = 800;
                     lv_label_set_text_fmt(back->statu_label, "| %s | %dg | %d分钟 |",

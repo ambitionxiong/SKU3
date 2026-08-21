@@ -146,6 +146,11 @@ static void six_cook_set_phase(int phase);
 // 烹饪阶段秒数:烤鸡翅类按所选份量对应时间,面包/蛋糕按配置
 static int32_t six_cook_sec(void)
 {
+    if (six_chick_is_degree_time()) {
+        int d = toastcolor_degree_value();   /* 烤羊肉串:程度→时间 */
+        if (d < 1 || d > 3) d = 2;
+        return six_chick_degree_min(d) * 60;
+    }
     if (six_chick_is_kind()) {
         int w = toastcolor_weight_value();
         if (w < 0) w = 800;   /* 兜底 */
@@ -154,10 +159,16 @@ static int32_t six_cook_sec(void)
     return six_bread_cfg()->cook_sec;
 }
 
-// 烹饪页 status 文案:烤鸡翅类=菜名+份量+时间;面包/蛋糕=菜名+时间
+// 烹饪页 status 文案:程度→时间=菜名+程度+时间;份量=菜名+克重+时间;面包/蛋糕=菜名+时间
 static void six_label_status(somecook_cooking_t *sc)
 {
-    if (six_chick_is_kind()) {
+    if (six_chick_is_degree_time()) {
+        int d = toastcolor_degree_value();
+        if (d < 1 || d > 3) d = 2;
+        const char *dt = (d == 1) ? "浅色" : (d == 3) ? "深色" : "中等色";
+        lv_label_set_text_fmt(sc->label_12, "| %s | %s | %d分钟 |",
+                              six_chick_name(), dt, six_chick_degree_min(d));
+    } else if (six_chick_is_kind()) {
         int w = toastcolor_weight_value();
         if (w < 0) w = 800;   /* 兜底 */
         lv_label_set_text_fmt(sc->label_12, "| %s | %dg | %d分钟 |",

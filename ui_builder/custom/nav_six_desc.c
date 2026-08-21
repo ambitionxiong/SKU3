@@ -24,11 +24,16 @@ static void descriptionmenu_layout(descriptionmenu_t *dm)
     if (dm->label_19)
         lv_label_set_text(dm->label_19, six_current_name());
 
-    /* 摘要：探针菜显示烧烤程度；烤鸡翅类显示份量；面包有发酵显示发酵小结；其余隐藏 */
+    /* 摘要：探针菜/程度→时间显示烧烤程度；烤鸡翅类显示份量；面包有发酵显示发酵小结；其余隐藏 */
     if (dm->summary) {
         if (six_chick_is_probe()) {
             lv_obj_clear_flag(dm->summary, LV_OBJ_FLAG_HIDDEN);
             lv_label_set_text_fmt(dm->summary, "小结：\n烧烤程度：%s\n", six_chick_degree_short());
+        } else if (six_chick_is_degree_time()) {
+            int d = toastcolor_degree_value();
+            const char *dt = (d == 1) ? "浅" : (d == 3) ? "深" : "中等";
+            lv_obj_clear_flag(dm->summary, LV_OBJ_FLAG_HIDDEN);
+            lv_label_set_text_fmt(dm->summary, "小结：\n烧烤程度：%s\n", dt);
         } else if (six_chick_is_kind()) {
             int w = toastcolor_weight_value();
             if (w < 0) w = 800;   /* 兜底 */
@@ -42,10 +47,15 @@ static void descriptionmenu_layout(descriptionmenu_t *dm)
         }
     }
 
-    /* 烹饪时间：探针菜不显示；烤鸡翅类按份量显示；其余原逻辑 */
+    /* 烹饪时间：探针菜不显示；程度→时间/份量按各自时间显示；其余原逻辑 */
     if (dm->cooktime) {
         if (six_chick_is_probe()) {
             lv_obj_add_flag(dm->cooktime, LV_OBJ_FLAG_HIDDEN);
+        } else if (six_chick_is_degree_time()) {
+            int d = toastcolor_degree_value();
+            if (d < 1 || d > 3) d = 2;
+            lv_obj_clear_flag(dm->cooktime, LV_OBJ_FLAG_HIDDEN);
+            lv_label_set_text_fmt(dm->cooktime, "预计烹饪时间：%d分钟", six_chick_degree_min(d));
         } else if (six_chick_is_kind()) {
             int w = toastcolor_weight_value();
             if (w < 0) w = 800;

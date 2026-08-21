@@ -48,6 +48,14 @@ int toastcolor_weight_value(void)
     return s_weight_opts[s_weight_index];
 }
 
+/* 当前选中程度(1浅2中3深)；非 degree 组返回 -1 */
+int toastcolor_degree_value(void)
+{
+    if (g_toast_mode != TOAST_MODE_DEGREE)
+        return -1;
+    return s_toast_color;
+}
+
 /* 互斥显示：仅显示当前激活组，其余两组整体隐藏 */
 static void toastcolor_apply_mode_visibility(void)
 {
