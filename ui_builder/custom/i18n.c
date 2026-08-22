@@ -460,7 +460,7 @@ const char *tr(const char *zh)
 
 void cookmenu_apply_lang(void)
 {
-    /* 仅 cook menu 页面生效, 其他页面(如 F8 任意页按)直接返回, 避免空指针 */
+    /* 仅 cook menu 页面生效, 其他页面(如数字键6语言切换时任意页按)直接返回, 避免空指针 */
     if (depth <= 0 || page_stack[depth - 1] != PAGE_COOKMENU) return;
     cookmenu_t *cm = cookmenu_get(&ui_manager);
     if (!cm) return;

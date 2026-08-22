@@ -8,7 +8,7 @@
 |------|------|-----------|
 | `ui_builder/custom/` | 手写导航/逻辑/i18n 层（nav_*.c、i18n.c、protocol.h 等） | ✅ **只改这里** |
 | `ui_builder/*.c`（根部） | AiUIBuilder 生成的页面 UI（air_menu.c、major_menu.c 等），含全部控件布局坐标 | ⚠️ **不要手改**，会被 `sync_ui_from_base.bat` 覆盖 |
-| `simulator/` | SDL2 模拟器（main.c 按键模拟）+ LVGL 源码 | 少改（F8 语言切换钩子在此） |
+| `simulator/` | SDL2 模拟器（main.c 按键模拟）+ LVGL 源码 | 少改（数字键 6 语言切换钩子在此） |
 | `ui_builder/font/` | 字库（taiwanpearl 中文 / aktivgrotesk 英文） | 只加不改 |
 
 ## 2. 代码模块地图（custom/）
@@ -45,7 +45,7 @@
 ## 4. 模拟器运行与键位
 
 - 构建：VS Code + CMake（AiUIBuilder 工具链），产物 `build/main.exe`，1280×480 SDL 窗口
-- 键位：`Tab`=菜单、`Esc`=BACK、`方向键`=编码器、`空格`=确认、`F8`=**中英切换**、`0`=门、`8/9/-`=探针、`4`=预热、`2`=六感、`7`=清洁
+- 键位：`Tab`=菜单、`Esc`=BACK、`方向键`=编码器、`空格`=确认、`6`=**中英切换**、`0`=门、`8/9/-`=探针、`4`=预热、`2`=六感、`7`=清洁
 
 ## 5. i18n 机制速览（详见 I18N_GUIDE.md）
 

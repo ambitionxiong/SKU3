@@ -132,7 +132,7 @@ int main(int argc, char **argv)
 		uint8_t cur_8 = keys[SDL_SCANCODE_8];
 		uint8_t cur_9 = keys[SDL_SCANCODE_9];
 		uint8_t cur_minus = keys[SDL_SCANCODE_MINUS];
-		uint8_t cur_lang = keys[SDL_SCANCODE_F8];
+		uint8_t cur_lang = keys[SDL_SCANCODE_6];   /* 6=中英切换（原F8） */
 		if      (keys[SDL_SCANCODE_TAB])       sim_key = KEY_MENU;
 		else if (keys[SDL_SCANCODE_5])         sim_key = KEY_EXTRA_COLOR;
 		else if (keys[SDL_SCANCODE_ESCAPE])    sim_key = KEY_BACK;
