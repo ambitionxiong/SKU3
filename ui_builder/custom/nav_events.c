@@ -424,6 +424,8 @@ static void apply_delay_cook_mode(page_id_t src)
             g_send.cook_mode = MODE_WINDCHANGE_BBQ;
         else if (six_chick_is_kind())
             g_send.cook_mode = six_chick_mode();
+        else if (six_chick_is_seafood())
+            g_send.cook_mode = six_chick_mode();   /* 烤海鲜:按菜谱(热风对流/上下烧烤) */
         else
             g_send.cook_mode = MODE_UPDOWN_BBQ;
         break;
@@ -744,6 +746,10 @@ void rebuild_delaycooking(void)
                 if (w < 0) w = 800;
                 lv_label_set_text_fmt(dc->status, "| %s | %dg | %d分钟 |",
                                       six_chick_name(), w, six_chick_cook_min(w));   /* 烤鸡翅类:菜名+克重+时间 */
+            } else if (six_chick_is_seafood()) {
+                const seafood_dish_t *sd = seafood_dish_cfg();
+                lv_label_set_text_fmt(dc->status, "| %s | %d分钟", six_chick_name(),
+                                      sd ? sd->cook_min : 18);   /* 烤海鲜:菜名+固定时间 */
             } else
                 lv_label_set_text_fmt(dc->status, "| %s | %d分钟", six_bread_name(), six_bread_cook_min());
             lv_img_set_src(dc->icon, LVGL_IMAGE_PATH(sixicon.png));

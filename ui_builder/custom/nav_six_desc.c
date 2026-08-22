@@ -61,6 +61,10 @@ static void descriptionmenu_layout(descriptionmenu_t *dm)
             if (w < 0) w = 800;
             lv_obj_clear_flag(dm->cooktime, LV_OBJ_FLAG_HIDDEN);
             lv_label_set_text_fmt(dm->cooktime, "预计烹饪时间：%d分钟", six_chick_cook_min(w));
+        } else if (six_chick_is_seafood()) {
+            const seafood_dish_t *sd = seafood_dish_cfg();
+            lv_obj_clear_flag(dm->cooktime, LV_OBJ_FLAG_HIDDEN);
+            lv_label_set_text_fmt(dm->cooktime, "预计烹饪时间：%d分钟", sd ? sd->cook_min : 18);
         } else {
             lv_obj_clear_flag(dm->cooktime, LV_OBJ_FLAG_HIDDEN);
             /* 选了发酵:发酵分钟+烹饪分钟分开显示 */

@@ -64,6 +64,38 @@ static const int w_cod_t[] = { 18, 21, 24, 27 };
 static const int w_wf_w[]  = { 400, 600, 800, 1000 };
 static const int w_wf_t[]  = { 20, 25, 30, 35 };
 
+/* 烤海鲜:固定参数菜配置表(无份量/烤色/发酵; 类型在 nav.h) */
+static const seafood_dish_t s_seafood_dishes[] = {
+    /* 烤扇贝(热风对流200) */
+    { "烤扇贝", MODE_WINDCHANGE_BBQ, 200, 18,
+      "根据个人喜好，用油、蒜、胡椒和香芹进行调味\n现在将食物放在第3层\n使用烤盘" },
+    /* 烤青口贝(上下烧烤230) */
+    { "烤青口贝", MODE_UPDOWN_BBQ, 230, 18,
+      "根据个人喜好，用油、白葡萄酒、蒜、胡椒和欧芹进行调味\n现在将食物放在第3层\n使用烤盘" },
+    /* 烤生蚝(上下烧烤230) */
+    { "烤生蚝", MODE_UPDOWN_BBQ, 230, 15,
+      "根据你的喜好，用油、大蒜、胡椒和欧芹调味\n现在将食物放在第3层\n使用烤盘" },
+    /* 烤大虾(热风对流230) */
+    { "烤大虾", MODE_WINDCHANGE_BBQ, 230, 20,
+      "刷油，抹上盐和胡椒。根据个人喜好，用蒜和香草调味\n现在将食物放在第3层\n使用烤盘" },
+    /* 烤鱿鱼(热风对流230) */
+    { "烤鱿鱼", MODE_WINDCHANGE_BBQ, 230, 18,
+      "根据个人喜好调味，刷上油，撒上烧烤调料\n现在将食物放在第3层\n使用烤盘" },
+};
+
+const seafood_dish_t *seafood_dish_cfg(void)
+{
+    if (g_six_bread_type < SIX_SEAFOOD_SCALLOP || g_six_bread_type > SIX_SEAFOOD_SQUID)
+        return NULL;
+    return &s_seafood_dishes[g_six_bread_type - SIX_SEAFOOD_SCALLOP];
+}
+
+/* 当前类型是否为烤海鲜固定参数菜 */
+int six_chick_is_seafood(void)
+{
+    return (g_six_bread_type >= SIX_SEAFOOD_SCALLOP && g_six_bread_type <= SIX_SEAFOOD_SQUID);
+}
+
 static const chick_dish_t s_chick_dishes[] = {
     /* 烤鸡翅 */
     { "烤鸡翅", w_wing_w, w_wing_t, 4, 2, MODE_WINDCHANGE_BBQ, 250,
@@ -166,6 +198,10 @@ const char *six_chick_name(void)
     if (g_six_bread_type == SIX_MEAT_SAUSAGE) return "烤香肠";
     if (g_six_bread_type == SIX_FISH_COD) return "烤鳕鱼";
     if (g_six_bread_type == SIX_FISH_WHOLEFISH) return "烤全鱼";
+    if (six_chick_is_seafood()) {
+        const seafood_dish_t *sd = seafood_dish_cfg();
+        return sd ? sd->name : "烤海鲜";
+    }
     const chick_dish_t *c = chick_dish_cfg();
     if (c) return c->name;
     const chick_probe_t *p = chick_probe_cfg();
@@ -179,6 +215,10 @@ uint8_t six_chick_mode(void) {
     if (g_six_bread_type == SIX_MEAT_SAUSAGE) return MODE_HOTWIND_BBQ;
     if (g_six_bread_type == SIX_FISH_COD) return MODE_WINDCHANGE_BBQ;   /* 热风对流 */
     if (g_six_bread_type == SIX_FISH_WHOLEFISH) return MODE_HOTWIND_BBQ;/* 热风 */
+    if (six_chick_is_seafood()) {
+        const seafood_dish_t *sd = seafood_dish_cfg();
+        return sd ? sd->mode : MODE_WINDCHANGE_BBQ;
+    }
     const chick_dish_t *c = chick_dish_cfg(); if (c) return c->mode;
     const chick_probe_t *p = chick_probe_cfg(); if (p) return p->mode;
     return MODE_WINDCHANGE_BBQ;
@@ -190,6 +230,10 @@ int six_chick_temp(void) {
     if (g_six_bread_type == SIX_MEAT_SAUSAGE) return 180;
     if (g_six_bread_type == SIX_FISH_COD) return 250;
     if (g_six_bread_type == SIX_FISH_WHOLEFISH) return 250;
+    if (six_chick_is_seafood()) {
+        const seafood_dish_t *sd = seafood_dish_cfg();
+        return sd ? sd->temp : 230;
+    }
     const chick_dish_t *c = chick_dish_cfg(); if (c) return c->temp;
     const chick_probe_t *p = chick_probe_cfg(); if (p) return p->temp;
     return 230;
@@ -259,6 +303,10 @@ const char *six_chick_desc(void)
         return "均匀分布在深盘中\n现在将食物放在第3层\n使用深盘";
     if (g_six_bread_type == SIX_FISH_COD || g_six_bread_type == SIX_FISH_WHOLEFISH)
         return "刷油，抹上盐和胡椒。根据个人喜好，用蒜和香草调味\n现在将食物放在第3层\n使用烤盘";
+    if (six_chick_is_seafood()) {
+        const seafood_dish_t *sd = seafood_dish_cfg();
+        if (sd) return sd->desc;
+    }
     const chick_dish_t *c = chick_dish_cfg();
     if (c) return c->desc;
     const chick_probe_t *p = chick_probe_cfg();
@@ -269,12 +317,12 @@ const char *six_chick_desc(void)
 /* 当前六感菜名/说明：烤鸡/鸭走独立名，其余走面包/蛋糕共用表 */
 const char *six_current_name(void)
 {
-    return (six_chick_is_probe() || six_chick_is_kind())
+    return (six_chick_is_probe() || six_chick_is_kind() || six_chick_is_seafood())
            ? six_chick_name() : six_bread_name();
 }
 const char *six_current_desc(void)
 {
-    return (six_chick_is_probe() || six_chick_is_kind())
+    return (six_chick_is_probe() || six_chick_is_kind() || six_chick_is_seafood())
            ? six_chick_desc() : six_bread_desc();
 }
 
@@ -452,11 +500,11 @@ void jump_to_chickenmenu(void)
         clear_focus_states(btns, n);
 
         if (s_seafood_mode) {
-            if (cm->wholechicken)      lv_obj_add_event_cb(cm->wholechicken, on_seafood_dish_click, LV_EVENT_CLICKED, NULL);
-            if (cm->grillchickenwing)  lv_obj_add_event_cb(cm->grillchickenwing, on_seafood_dish_click, LV_EVENT_CLICKED, NULL);
-            if (cm->friedchickenwing)  lv_obj_add_event_cb(cm->friedchickenwing, on_seafood_dish_click, LV_EVENT_CLICKED, NULL);
-            if (cm->friedchickenleg)   lv_obj_add_event_cb(cm->friedchickenleg, on_seafood_dish_click, LV_EVENT_CLICKED, NULL);
-            if (cm->grillchickenbreast) lv_obj_add_event_cb(cm->grillchickenbreast, on_seafood_dish_click, LV_EVENT_CLICKED, NULL);
+            if (cm->wholechicken)      lv_obj_add_event_cb(cm->wholechicken,      on_seafood_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_SEAFOOD_SCALLOP);
+            if (cm->grillchickenwing)  lv_obj_add_event_cb(cm->grillchickenwing,  on_seafood_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_SEAFOOD_MUSSEL);
+            if (cm->friedchickenwing)  lv_obj_add_event_cb(cm->friedchickenwing,  on_seafood_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_SEAFOOD_OYSTER);
+            if (cm->friedchickenleg)   lv_obj_add_event_cb(cm->friedchickenleg,   on_seafood_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_SEAFOOD_PRAWN);
+            if (cm->grillchickenbreast) lv_obj_add_event_cb(cm->grillchickenbreast, on_seafood_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_SEAFOOD_SQUID);
             if (cm->wholechicken) lv_group_focus_obj(cm->wholechicken);
         } else {
             if (cm->wholechicken) {
@@ -514,12 +562,22 @@ void chickenmenu_rebuild(page_id_t child)
         clear_focus_states(btns, n);
 
         if (s_seafood_mode) {
-            if (cm->wholechicken)      lv_obj_add_event_cb(cm->wholechicken, on_seafood_dish_click, LV_EVENT_CLICKED, NULL);
-            if (cm->grillchickenwing)  lv_obj_add_event_cb(cm->grillchickenwing, on_seafood_dish_click, LV_EVENT_CLICKED, NULL);
-            if (cm->friedchickenwing)  lv_obj_add_event_cb(cm->friedchickenwing, on_seafood_dish_click, LV_EVENT_CLICKED, NULL);
-            if (cm->friedchickenleg)   lv_obj_add_event_cb(cm->friedchickenleg, on_seafood_dish_click, LV_EVENT_CLICKED, NULL);
-            if (cm->grillchickenbreast) lv_obj_add_event_cb(cm->grillchickenbreast, on_seafood_dish_click, LV_EVENT_CLICKED, NULL);
-            if (cm->wholechicken) lv_group_focus_obj(cm->wholechicken);
+            if (cm->wholechicken)      lv_obj_add_event_cb(cm->wholechicken,      on_seafood_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_SEAFOOD_SCALLOP);
+            if (cm->grillchickenwing)  lv_obj_add_event_cb(cm->grillchickenwing,  on_seafood_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_SEAFOOD_MUSSEL);
+            if (cm->friedchickenwing)  lv_obj_add_event_cb(cm->friedchickenwing,  on_seafood_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_SEAFOOD_OYSTER);
+            if (cm->friedchickenleg)   lv_obj_add_event_cb(cm->friedchickenleg,   on_seafood_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_SEAFOOD_PRAWN);
+            if (cm->grillchickenbreast) lv_obj_add_event_cb(cm->grillchickenbreast, on_seafood_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_SEAFOOD_SQUID);
+            /* 返回时恢复到进入前的菜(fish 子页同款机制) */
+            if (g_six_bread_type == SIX_SEAFOOD_MUSSEL && cm->grillchickenwing)
+                lv_group_focus_obj(cm->grillchickenwing);       /* 烤青口贝 */
+            else if (g_six_bread_type == SIX_SEAFOOD_OYSTER && cm->friedchickenwing)
+                lv_group_focus_obj(cm->friedchickenwing);       /* 烤生蚝 */
+            else if (g_six_bread_type == SIX_SEAFOOD_PRAWN && cm->friedchickenleg)
+                lv_group_focus_obj(cm->friedchickenleg);        /* 烤大虾 */
+            else if (g_six_bread_type == SIX_SEAFOOD_SQUID && cm->grillchickenbreast)
+                lv_group_focus_obj(cm->grillchickenbreast);     /* 烤鱿鱼 */
+            else if (cm->wholechicken)
+                lv_group_focus_obj(cm->wholechicken);           /* 烤扇贝/首次进入默认 */
         } else {
             if (cm->wholechicken)
                 lv_obj_add_event_cb(cm->wholechicken, on_probe_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CHICK_WHOLE);
@@ -763,7 +821,12 @@ static void on_fish_wholefish_click(lv_event_t *e)
     g_toast_mode = TOAST_MODE_WEIGHT;
     jump_to_toastcolor();
 }
-static void on_seafood_dish_click(lv_event_t *e) { (void)e; }   /* TODO:烤海鲜5种 */
+static void on_seafood_dish_click(lv_event_t *e)
+{
+    if (screen_is_loading(lv_scr_act())) return;
+    g_six_bread_type = (uint8_t)(intptr_t)lv_event_get_user_data(e);
+    jump_to_descriptionmenu();   /* 固定参数菜:无份量/烤色,直接描述页 */
+}
 
 void jump_to_fish_menu(void)
 {
