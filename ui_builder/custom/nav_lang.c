@@ -52,6 +52,17 @@ static lang_tune_fn lang_tune_for_page(page_id_t pid)
     return tune_placeholder;
 }
 
+
+/* 取 opts 中 s 起 len 字节的子串查表（临时缓冲） */
+static const char *tr_line(const char *s, size_t len)
+{
+    static char tmp[128];
+    if (len >= sizeof(tmp)) return s;
+    memcpy(tmp, s, len);
+    tmp[len] = '\0';
+    return tr(tmp);
+}
+
 /* ============ 树遍历双 pass ============ */
 
 /* ============ 模糊匹配：状态条 "| 模式 | 数值℃ | 时间" ============
@@ -106,6 +117,34 @@ static int lang_fuzzy_status(lv_obj_t *obj, const char *txt, char *buf, int buf_
 
 static void lang_apply_obj(lv_obj_t *obj)
 {
+    /* roller 选项翻译：逐行查表替换（树遍历能看到当前选中项，但需覆盖全部选项） */
+    if (lv_obj_check_type(obj, &lv_roller_class)) {
+        const char *opts = lv_roller_get_options(obj);
+        if (opts && opts[0] && strchr(opts, '\n')) {
+            char nb[256];
+            const char *s = opts;
+            size_t pos = 0;
+            while (pos < sizeof(nb) - 1) {
+                const char *e = strchr(s, '\n');
+                size_t len = e ? (size_t)(e - s) : strlen(s);
+                const char *en = tr_line(s, len);
+                size_t enlen = strlen(en);
+                if (pos + enlen + (e ? 1 : 0) >= sizeof(nb)) break;
+                memcpy(nb + pos, en, enlen);
+                pos += enlen;
+                if (e) { nb[pos++] = '\n'; s = e + 1; }
+                else break;
+            }
+            nb[pos] = '\0';
+            if (strcmp(nb, opts) != 0) {
+                uint32_t sel = lv_roller_get_selected(obj);
+                lv_roller_set_options(obj, nb, LV_ROLLER_MODE_NORMAL);
+                lv_roller_set_selected(obj, sel, LV_ANIM_OFF);
+            }
+        }
+        return;
+    }
+
     /* 只处理 label（button 的子 label 由 LV_OBJ_FLAG_CLICKABLE 区分，直接遍历叶子） */
     if (lv_obj_check_type(obj, &lv_label_class)) {
         /* pass 1: 文本翻译——先精确查表，命中不了再模糊匹配状态条结构 */
@@ -120,8 +159,15 @@ static void lang_apply_obj(lv_obj_t *obj)
                     lv_label_set_text(obj, fbuf);
             }
         }
-        /* pass 2: 字体切换（taiwanpearl → aktivgrotesk，按字号一一映射） */
+        /* pass 2: 字体切换（taiwanpearl → aktivgrotesk，按字号一一映射）
+         * 仅当文本全为 ASCII 才切换——aktivgrotesk 只含 0x20-0x7E，
+         * 含 ℃/°↑↓/中文等符号的文本保留 taiwanpearl（全字形）避免方块 */
         const lv_font_t *f = lv_obj_get_style_text_font(obj, 0);
+        const char *tp = lv_label_get_text(obj);
+        bool ascii_only = true;
+        for (const char *q = tp; q && *q; q++)
+            if ((unsigned char)*q > 0x7E) { ascii_only = false; break; }
+        if (!ascii_only) return;
         if (f == &c_taiwanpearl_regular_128)
             lv_obj_set_style_text_font(obj, &c_aktivgroteskmedium_128, LV_PART_MAIN | 0);
         else if (f == &c_taiwanpearl_regular_72)

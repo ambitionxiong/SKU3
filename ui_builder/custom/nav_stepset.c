@@ -125,9 +125,9 @@ void stepset_restore_mode(uint8_t mode)
                               "上下烧烤\n顶部烧烤\n热风烧烤\n热风\n节能热风\n底部烧烤\n集中烧烤\n热风对流",
                               LV_ROLLER_MODE_NORMAL);
     else if (g_cur_step == 0)
-        lv_roller_set_options(scr->roller_mode, "空气炸\n慢煮\n解冻\n发酵", LV_ROLLER_MODE_NORMAL);
+        lv_roller_set_options(scr->roller_mode, tr("空气炸\n慢煮\n解冻\n发酵"), LV_ROLLER_MODE_NORMAL);
     else
-        lv_roller_set_options(scr->roller_mode, "空气炸\n慢煮", LV_ROLLER_MODE_NORMAL);
+        lv_roller_set_options(scr->roller_mode, tr("空气炸\n慢煮"), LV_ROLLER_MODE_NORMAL);
     /* 步骤 2/3: 4 项表前两项(空气炸/慢煮)与 2 项表一一对应,无需映射 */
     lv_roller_set_selected(scr->roller_mode, sub_sel, LV_ANIM_OFF);
     stepset_apply_sel_mode(true);
@@ -203,9 +203,9 @@ static void stepset_on_main_change(lv_event_t *e)
                               LV_ROLLER_MODE_NORMAL);
     } else {
         if (g_cur_step == 0)
-            lv_roller_set_options(scr->roller_mode, "空气炸\n慢煮\n解冻\n发酵", LV_ROLLER_MODE_NORMAL);
+            lv_roller_set_options(scr->roller_mode, tr("空气炸\n慢煮\n解冻\n发酵"), LV_ROLLER_MODE_NORMAL);
         else
-            lv_roller_set_options(scr->roller_mode, "空气炸\n慢煮", LV_ROLLER_MODE_NORMAL);
+            lv_roller_set_options(scr->roller_mode, tr("空气炸\n慢煮"), LV_ROLLER_MODE_NORMAL);
     }
     lv_roller_set_selected(scr->roller_mode, 0, LV_ANIM_OFF);
     stepset_apply_sel_mode(false);

@@ -311,7 +311,7 @@ void jump_to_stepset(int i)
         } else {
             /* 首进新设置: roller_main 默认"烹饪功能",先设置 roller_mode 为 cook 菜单新顺序 */
             lv_roller_set_options(ss->roller_mode,
-                                  "上下烧烤\n顶部烧烤\n热风烧烤\n热风\n节能热风\n底部烧烤\n集中烧烤\n热风对流",
+                                  tr("上下烧烤\n顶部烧烤\n热风烧烤\n热风\n节能热风\n底部烧烤\n集中烧烤\n热风对流"),
                                   LV_ROLLER_MODE_NORMAL);
             stepset_apply_sel_mode(true);
         }
