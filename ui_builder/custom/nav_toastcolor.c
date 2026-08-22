@@ -123,7 +123,7 @@ static void toastcolor_apply_mode_visibility(void)
 
     /* 标题跟随当前组 */
     if (tc->label_23)
-        lv_label_set_text(tc->label_23, show_deg ? "选择烤色程度" :
+        lv_label_set_text(tc->label_23, show_deg ? tr("选择烤色程度") :
                                           show_mat ? "成熟度" : "份量/种类");
 }
 
@@ -297,7 +297,7 @@ static void toastcolor_update_degree(void)
 {
     toastcolor_t *tc = toastcolor_get(&ui_manager);
     if (!tc || !tc->degree) return;
-    lv_label_set_text(tc->degree, s_toast_color == 1 ? "浅" :
+    lv_label_set_text(tc->degree, s_toast_color == 1 ? tr("浅") :
                                   s_toast_color == 3 ? "深" : "中");
 }
 

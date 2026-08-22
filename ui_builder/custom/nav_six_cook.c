@@ -263,14 +263,14 @@ static void six_cook_apply_display(void)
 
     switch (g_six_phase) {
     case SIX_PHASE_RISING:
-        lv_label_set_text(sc->cookstatus, g_six_paused ? "暂停中..." : "发酵中...");
+        lv_label_set_text(sc->cookstatus, g_six_paused ? tr("暂停中...") : tr("发酵中..."));
         lv_label_set_text_fmt(sc->label_12, tr("| %s | 45℃ | 45分钟"), six_bread_name());
-        if (bl) lv_label_set_text(bl, g_six_paused ? "开 始" : "暂 停");
+        if (bl) lv_label_set_text(bl, g_six_paused ? tr("开 始") : tr("暂 停"));
         break;
     case SIX_PHASE_COOKING:
-        lv_label_set_text(sc->cookstatus, g_six_paused ? "暂停中..." : "烹饪中...");
+        lv_label_set_text(sc->cookstatus, g_six_paused ? tr("暂停中...") : tr("烹饪中..."));
         six_label_status(sc);   /* 烤鸡翅=菜名+克重+时间 */
-        if (bl) lv_label_set_text(bl, g_six_paused ? "开 始" : "暂 停");
+        if (bl) lv_label_set_text(bl, g_six_paused ? tr("开 始") : tr("暂 停"));
         break;
     case SIX_PHASE_ASK:
     case SIX_PHASE_ASK_COLOR:
@@ -311,9 +311,9 @@ static void six_cook_apply_display(void)
         lv_bar_set_value(sc->bar_1, 3, LV_ANIM_OFF);
         break;
     case SIX_PHASE_COLOR_COOKING:
-        lv_label_set_text(sc->cookstatus, g_six_paused ? "暂停中..." : "烹饪中...");
+        lv_label_set_text(sc->cookstatus, g_six_paused ? tr("暂停中...") : tr("烹饪中..."));
         lv_label_set_text_fmt(sc->label_12, tr("| %s | 额外上色 | %d分钟"), six_bread_name(), g_six_color_min);
-        if (bl) lv_label_set_text(bl, g_six_paused ? "开 始" : "暂 停");
+        if (bl) lv_label_set_text(bl, g_six_paused ? tr("开 始") : tr("暂 停"));
         break;
     default:
         break;

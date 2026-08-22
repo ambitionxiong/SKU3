@@ -195,11 +195,11 @@ static void on_sixmenu_fish_click(lv_event_t *e)
 static void meat6menu_apply_labels(bread6menu_t *b6)
 {
     if (!b6) return;
-    if (b6->label_11) lv_label_set_text(b6->label_11, "肉");
-    if (b6->breadroll)   lv_label_set_text(lv_obj_get_child(b6->breadroll, 0), "牛肉");
-    if (b6->wheat_bread) lv_label_set_text(lv_obj_get_child(b6->wheat_bread, 0), "羊肉");
-    if (b6->toast)       lv_label_set_text(lv_obj_get_child(b6->toast, 0), "猪肉");
-    if (b6->croissant)   lv_label_set_text(lv_obj_get_child(b6->croissant, 0), "肉菜");
+    if (b6->label_11) lv_label_set_text(b6->label_11, tr("肉"));
+    if (b6->breadroll)   lv_label_set_text(lv_obj_get_child(b6->breadroll, 0), tr("牛肉"));
+    if (b6->wheat_bread) lv_label_set_text(lv_obj_get_child(b6->wheat_bread, 0), tr("羊肉"));
+    if (b6->toast)       lv_label_set_text(lv_obj_get_child(b6->toast, 0), tr("猪肉"));
+    if (b6->croissant)   lv_label_set_text(lv_obj_get_child(b6->croissant, 0), tr("肉菜"));
 }
 
 /* 肉菜单按钮点击：牛肉/羊肉/猪肉进六选项3页；肉菜进肉菜页 */

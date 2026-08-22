@@ -57,7 +57,7 @@ static void system_timer_cb(lv_timer_t *timer)
         probetip_t *tip = probetip_get(&ui_manager);
         if (tip && tip->button_1) {
             lv_obj_t *label = lv_obj_get_child(tip->button_1, 0);
-            if (label) lv_label_set_text(label, probe_now ? "探针已插入" : "探针已拔出");
+            if (label) lv_label_set_text(label, probe_now ? tr("探针已插入") : tr("探针已拔出"));
         }
         return;
     }

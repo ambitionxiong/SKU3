@@ -773,7 +773,7 @@ void rebuild_delaycooking(void)
         }
         if (g_delay_source_page != PAGE_DESCRIPTIONMENU)
             mode_apply_icon(dc->icon);   /* 六感已单独设 sixicon */
-        lv_label_set_text(dc->label_14, "预约中...");
+        lv_label_set_text(dc->label_14, tr("预约中..."));
         lv_label_set_text_fmt(dc->tip2, "%s%02d:%02d",
                               delay_hour >= 24 ? "明天" : "今天",
                               delay_hour % 24, delay_min);

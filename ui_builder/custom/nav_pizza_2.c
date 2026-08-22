@@ -559,7 +559,7 @@ void jump_to_pizza_2_stop_back(void)
         if (g_delay_cancel_to_stop_back) {
             g_delay_cancel_to_stop_back = 0;
             lv_label_set_text(back->label_382, tr("预约中..."));
-            lv_label_set_text(back->label_384, g_delay_cancel_btn ? "回到上一页" : "回到主页");
+            lv_label_set_text(back->label_384, g_delay_cancel_btn ? tr("回到上一页") : tr("回到主页"));
             lv_obj_add_flag(back->bar_26, LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(back->image_173, LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(back->little, LV_OBJ_FLAG_HIDDEN);

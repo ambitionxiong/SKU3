@@ -109,7 +109,7 @@ static void preheat_apply_mode_ui(lv_obj_t *icon, lv_obj_t *status)
     default:
         /* 预热菜单入口（MODE_PREHEAT）:仅按键4入口显示"快速预热",cookmenu 入口保持"| 预热 |" */
         if (g_preheat_fast && status)
-            lv_label_set_text(status, "| 快速预热 |");
+            lv_label_set_text(status, tr("| 快速预热 |"));
         return;
     }
     if (status) lv_label_set_text(status, txt);
@@ -256,7 +256,7 @@ void jump_to_preheat_menu(void)
 
     preheatmenu_t *menu = preheatmenu_get(&ui_manager);
     if (menu) {
-        if (g_preheat_fast) lv_label_set_text(menu->label_69, "快速预热");
+        if (g_preheat_fast) lv_label_set_text(menu->label_69, tr("快速预热"));
         lv_obj_t *btns[] = { menu->temp, menu->next };
         if (g_preheat_menu) lv_group_del(g_preheat_menu);
         g_preheat_menu = group_create_for_page(btns, 2);
@@ -319,7 +319,7 @@ void jump_to_preheat_cooking(void)
                             LV_EVENT_CLICKED, NULL);
 
         lv_label_set_text_fmt(cook->temp, "%d℃", set_temp);
-        lv_label_set_text(cook->name, "预热中...");
+        lv_label_set_text(cook->name, tr("预热中..."));
         preheat_apply_mode_ui(cook->icon, cook->status);
         preheat_update_bar(cook->bar_1, cook->bartemp);
     }
@@ -392,7 +392,7 @@ void preheat_resume_cooking(void)
                             LV_EVENT_CLICKED, NULL);
 
         lv_label_set_text_fmt(cook->temp, "%d℃", set_temp);
-        lv_label_set_text(cook->name, "预热中...");
+        lv_label_set_text(cook->name, tr("预热中..."));
         preheat_apply_mode_ui(cook->icon, cook->status);
         preheat_update_bar(cook->bar_1, cook->bartemp);
     }
@@ -429,11 +429,11 @@ void jump_to_preheat_stop_back(void)
         preheat_apply_mode_ui(back->icon, back->status);
 
         if (g_send.iface_status == IFACE_COOKING)
-            lv_label_set_text(back->name, "预热中...");
+            lv_label_set_text(back->name, tr("预热中..."));
 
         if (g_complete_to_stop_back) {
             g_complete_to_stop_back = 0;
-            lv_label_set_text(back->name, "预热完成");
+            lv_label_set_text(back->name, tr("预热完成"));
             lv_bar_set_value(back->bar_1, 100, LV_ANIM_OFF);
             if (back->bartemp) lv_obj_set_pos(back->bartemp, 679, 323);
         }
@@ -463,11 +463,11 @@ void preheat_rebuild_stop_back(void)
         preheat_apply_mode_ui(back->icon, back->status);
 
         if (g_send.iface_status == IFACE_COOKING)
-            lv_label_set_text(back->name, "预热中...");
+            lv_label_set_text(back->name, tr("预热中..."));
 
         if (g_complete_to_stop_back) {
             g_complete_to_stop_back = 0;
-            lv_label_set_text(back->name, "预热完成");
+            lv_label_set_text(back->name, tr("预热完成"));
             lv_bar_set_value(back->bar_1, 100, LV_ANIM_OFF);
             if (back->bartemp) lv_obj_set_pos(back->bartemp, 679, 323);
         }
@@ -486,10 +486,10 @@ static void preheat_complete_update_ui(preheatcomplete_t *cook)
         lv_obj_add_flag(cook->tip2, LV_OBJ_FLAG_HIDDEN);
         if (preheat_wait_door) {
             lv_obj_add_flag(cook->sure, LV_OBJ_FLAG_HIDDEN);
-            lv_label_set_text(cook->tip1, "请放入食材！");
+            lv_label_set_text(cook->tip1, tr("请放入食材！"));
         } else {
             lv_obj_clear_flag(cook->sure, LV_OBJ_FLAG_HIDDEN);
-            lv_label_set_text(cook->tip1, "已放入食材！");
+            lv_label_set_text(cook->tip1, tr("已放入食材！"));
         }
     }
 }
@@ -530,7 +530,7 @@ void jump_to_preheat_complete(void)
             lv_obj_add_event_cb(cook->sure, on_preheat_complete_sure_click,
                                 LV_EVENT_CLICKED, NULL);
             lv_bar_set_value(cook->bar_3, 100, LV_ANIM_OFF);
-            lv_label_set_text(cook->name, "预热完成");
+            lv_label_set_text(cook->name, tr("预热完成"));
             preheat_apply_mode_ui(cook->icon, cook->status);
             if (cook->bartemp) {
                 lv_label_set_text_fmt(cook->bartemp, "%d℃", set_temp);
@@ -559,7 +559,7 @@ void preheat_rebuild_menu(page_id_t child)
     preheatmenu_create(&ui_manager);
     preheatmenu_t *menu = preheatmenu_get(&ui_manager);
     if (menu) {
-        if (g_preheat_fast) lv_label_set_text(menu->label_69, "快速预热");
+        if (g_preheat_fast) lv_label_set_text(menu->label_69, tr("快速预热"));
         lv_obj_t *btns[] = { menu->temp, menu->next };
         if (g_preheat_menu) lv_group_del(g_preheat_menu);
         g_preheat_menu = group_create_for_page(btns, 2);
@@ -606,7 +606,7 @@ void preheat_rebuild_cooking(void)
                             LV_EVENT_CLICKED, NULL);
 
         lv_label_set_text_fmt(cook->temp, "%d℃", set_temp);
-        lv_label_set_text(cook->name, "预热中...");
+        lv_label_set_text(cook->name, tr("预热中..."));
         preheat_apply_mode_ui(cook->icon, cook->status);
         preheat_update_bar(cook->bar_1, cook->bartemp);
     }
@@ -654,7 +654,7 @@ void preheat_rebuild_complete(void)
             lv_obj_add_event_cb(cook->sure, on_preheat_complete_sure_click,
                                 LV_EVENT_CLICKED, NULL);
             lv_bar_set_value(cook->bar_3, 100, LV_ANIM_OFF);
-            lv_label_set_text(cook->name, "预热完成");
+            lv_label_set_text(cook->name, tr("预热完成"));
             preheat_apply_mode_ui(cook->icon, cook->status);
             if (cook->bartemp) {
                 lv_label_set_text_fmt(cook->bartemp, "%d℃", set_temp);

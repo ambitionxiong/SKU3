@@ -559,7 +559,7 @@ void jump_to_bottom_bbq_stop_back(void)
         if (g_delay_cancel_to_stop_back) {
             g_delay_cancel_to_stop_back = 0;
             lv_label_set_text(back->label_152, tr("预约中..."));
-            lv_label_set_text(back->label_154, g_delay_cancel_btn ? "回到上一页" : "回到主页");
+            lv_label_set_text(back->label_154, g_delay_cancel_btn ? tr("回到上一页") : tr("回到主页"));
             lv_obj_add_flag(back->bar_12, LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(back->image_73, LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(back->little, LV_OBJ_FLAG_HIDDEN);

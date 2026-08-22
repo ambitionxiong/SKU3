@@ -356,17 +356,17 @@ void jump_to_chick6menu(void)
     if (cm) {
         /* fish 模式：设置标签 */
         if (s_vegetable_mode) {
-            if (cm->label_1) lv_label_set_text(cm->label_1, "蔬菜/配菜");
-            if (cm->chicken) { lv_obj_t *c = lv_obj_get_child(cm->chicken, 0); if (c) lv_label_set_text(c, "蔬菜"); }
-            if (cm->duck)    { lv_obj_t *c = lv_obj_get_child(cm->duck, 0);    if (c) lv_label_set_text(c, "配菜"); }
+            if (cm->label_1) lv_label_set_text(cm->label_1, tr("蔬菜/配菜"));
+            if (cm->chicken) { lv_obj_t *c = lv_obj_get_child(cm->chicken, 0); if (c) lv_label_set_text(c, tr("蔬菜")); }
+            if (cm->duck)    { lv_obj_t *c = lv_obj_get_child(cm->duck, 0);    if (c) lv_label_set_text(c, tr("配菜")); }
         } else if (s_fish_mode == 1) {
-            if (cm->label_1) lv_label_set_text(cm->label_1, "鱼/海鲜");
-            if (cm->chicken) { lv_obj_t *c = lv_obj_get_child(cm->chicken, 0); if (c) lv_label_set_text(c, "烤鱼"); }
-            if (cm->duck)    { lv_obj_t *c = lv_obj_get_child(cm->duck, 0);    if (c) lv_label_set_text(c, "烤海鲜"); }
+            if (cm->label_1) lv_label_set_text(cm->label_1, tr("鱼/海鲜"));
+            if (cm->chicken) { lv_obj_t *c = lv_obj_get_child(cm->chicken, 0); if (c) lv_label_set_text(c, tr("烤鱼")); }
+            if (cm->duck)    { lv_obj_t *c = lv_obj_get_child(cm->duck, 0);    if (c) lv_label_set_text(c, tr("烤海鲜")); }
         } else if (s_fish_mode == 2) {
-            if (cm->label_1) lv_label_set_text(cm->label_1, "烤鱼");
-            if (cm->chicken) { lv_obj_t *c = lv_obj_get_child(cm->chicken, 0); if (c) lv_label_set_text(c, "烤鳕鱼"); }
-            if (cm->duck)    { lv_obj_t *c = lv_obj_get_child(cm->duck, 0);    if (c) lv_label_set_text(c, "烤全鱼"); }
+            if (cm->label_1) lv_label_set_text(cm->label_1, tr("烤鱼"));
+            if (cm->chicken) { lv_obj_t *c = lv_obj_get_child(cm->chicken, 0); if (c) lv_label_set_text(c, tr("烤鳕鱼")); }
+            if (cm->duck)    { lv_obj_t *c = lv_obj_get_child(cm->duck, 0);    if (c) lv_label_set_text(c, tr("烤全鱼")); }
         }
 
         lv_obj_t *btns[] = { cm->chicken, cm->duck };
@@ -423,17 +423,17 @@ void chick6menu_rebuild(page_id_t child)
     if (cm) {
         /* fish 模式：恢复标签 */
         if (s_vegetable_mode) {
-            if (cm->label_1) lv_label_set_text(cm->label_1, "蔬菜/配菜");
-            if (cm->chicken) { lv_obj_t *c = lv_obj_get_child(cm->chicken, 0); if (c) lv_label_set_text(c, "蔬菜"); }
-            if (cm->duck)    { lv_obj_t *c = lv_obj_get_child(cm->duck, 0);    if (c) lv_label_set_text(c, "配菜"); }
+            if (cm->label_1) lv_label_set_text(cm->label_1, tr("蔬菜/配菜"));
+            if (cm->chicken) { lv_obj_t *c = lv_obj_get_child(cm->chicken, 0); if (c) lv_label_set_text(c, tr("蔬菜")); }
+            if (cm->duck)    { lv_obj_t *c = lv_obj_get_child(cm->duck, 0);    if (c) lv_label_set_text(c, tr("配菜")); }
         } else if (s_fish_mode == 1) {
-            if (cm->label_1) lv_label_set_text(cm->label_1, "鱼/海鲜");
-            if (cm->chicken) { lv_obj_t *c = lv_obj_get_child(cm->chicken, 0); if (c) lv_label_set_text(c, "烤鱼"); }
-            if (cm->duck)    { lv_obj_t *c = lv_obj_get_child(cm->duck, 0);    if (c) lv_label_set_text(c, "烤海鲜"); }
+            if (cm->label_1) lv_label_set_text(cm->label_1, tr("鱼/海鲜"));
+            if (cm->chicken) { lv_obj_t *c = lv_obj_get_child(cm->chicken, 0); if (c) lv_label_set_text(c, tr("烤鱼")); }
+            if (cm->duck)    { lv_obj_t *c = lv_obj_get_child(cm->duck, 0);    if (c) lv_label_set_text(c, tr("烤海鲜")); }
         } else if (s_fish_mode == 2) {
-            if (cm->label_1) lv_label_set_text(cm->label_1, "烤鱼");
-            if (cm->chicken) { lv_obj_t *c = lv_obj_get_child(cm->chicken, 0); if (c) lv_label_set_text(c, "烤鳕鱼"); }
-            if (cm->duck)    { lv_obj_t *c = lv_obj_get_child(cm->duck, 0);    if (c) lv_label_set_text(c, "烤全鱼"); }
+            if (cm->label_1) lv_label_set_text(cm->label_1, tr("烤鱼"));
+            if (cm->chicken) { lv_obj_t *c = lv_obj_get_child(cm->chicken, 0); if (c) lv_label_set_text(c, tr("烤鳕鱼")); }
+            if (cm->duck)    { lv_obj_t *c = lv_obj_get_child(cm->duck, 0);    if (c) lv_label_set_text(c, tr("烤全鱼")); }
         }
 
         lv_obj_t *btns[] = { cm->chicken, cm->duck };
@@ -500,7 +500,7 @@ void jump_to_chickenmenu(void)
     if (cm) {
         /* seafood 模式：设置标签 */
         if (s_seafood_mode) {
-            if (cm->label_2) lv_label_set_text(cm->label_2, "烤海鲜");
+            if (cm->label_2) lv_label_set_text(cm->label_2, tr("烤海鲜"));
             if (cm->image_2) lv_obj_add_flag(cm->image_2, LV_OBJ_FLAG_HIDDEN);
             /* 隐藏鸡菜独立标签(烤全鸡/烤鸡翅/炸鸡中翅/炸鸡腿/烤鸡胸肉) */
             if (cm->label_4) lv_obj_add_flag(cm->label_4, LV_OBJ_FLAG_HIDDEN);
@@ -563,7 +563,7 @@ void chickenmenu_rebuild(page_id_t child)
     if (cm) {
         /* seafood 模式：恢复标签 */
         if (s_seafood_mode) {
-            if (cm->label_2) lv_label_set_text(cm->label_2, "烤海鲜");
+            if (cm->label_2) lv_label_set_text(cm->label_2, tr("烤海鲜"));
             if (cm->image_2) lv_obj_add_flag(cm->image_2, LV_OBJ_FLAG_HIDDEN);
             /* 隐藏鸡菜独立标签(烤全鸡/烤鸡翅/炸鸡中翅/炸鸡腿/烤鸡胸肉) */
             if (cm->label_4) lv_obj_add_flag(cm->label_4, LV_OBJ_FLAG_HIDDEN);
@@ -701,19 +701,19 @@ void duckmenu_rebuild(page_id_t child)
     if (dm) {
         if (s_sidedish_mode) {
             /* 配菜模式：恢复自定义标签(炸薯条) */
-            if (dm->label_1) lv_label_set_text(dm->label_1, "配菜");
+            if (dm->label_1) lv_label_set_text(dm->label_1, tr("配菜"));
             if (dm->wholeduck) {
                 lv_obj_t *child = lv_obj_get_child(dm->wholeduck, 0);
-                if (child) lv_label_set_text(child, "炸薯条");
+                if (child) lv_label_set_text(child, tr("炸薯条"));
             }
             if (dm->label_2) lv_obj_add_flag(dm->label_2, LV_OBJ_FLAG_HIDDEN);
             if (dm->image_2) lv_obj_add_flag(dm->image_2, LV_OBJ_FLAG_HIDDEN);
         } else if (s_meatdish_mode) {
             /* 肉菜模式：恢复自定义标签 */
-            if (dm->label_1) lv_label_set_text(dm->label_1, "肉菜");
+            if (dm->label_1) lv_label_set_text(dm->label_1, tr("肉菜"));
             if (dm->wholeduck) {
                 lv_obj_t *child = lv_obj_get_child(dm->wholeduck, 0);
-                if (child) lv_label_set_text(child, "烤香肠");
+                if (child) lv_label_set_text(child, tr("烤香肠"));
             }
             if (dm->label_2) lv_obj_add_flag(dm->label_2, LV_OBJ_FLAG_HIDDEN);
             if (dm->image_2) lv_obj_add_flag(dm->image_2, LV_OBJ_FLAG_HIDDEN);
@@ -780,10 +780,10 @@ void jump_to_meatdish_menu(void)
     duckmenu_t *dm = duckmenu_get(&ui_manager);
     if (dm) {
         /* label1 = 肉菜, 按钮label = 烤香肠, 隐藏 img2/label2 */
-        if (dm->label_1) lv_label_set_text(dm->label_1, "肉菜");
+        if (dm->label_1) lv_label_set_text(dm->label_1, tr("肉菜"));
         if (dm->wholeduck) {
             lv_obj_t *child = lv_obj_get_child(dm->wholeduck, 0);
-            if (child) lv_label_set_text(child, "烤香肠");
+            if (child) lv_label_set_text(child, tr("烤香肠"));
         }
         if (dm->label_2) lv_obj_add_flag(dm->label_2, LV_OBJ_FLAG_HIDDEN);
         if (dm->image_2) lv_obj_add_flag(dm->image_2, LV_OBJ_FLAG_HIDDEN);
@@ -821,9 +821,9 @@ static void on_fish_grillfish_click(lv_event_t *e)
         s_fish_mode = 2;
         chick6menu_t *cm = chick6menu_get(&ui_manager);
         if (cm) {
-            if (cm->label_1) lv_label_set_text(cm->label_1, "烤鱼");
-            if (cm->chicken) { lv_obj_t *c = lv_obj_get_child(cm->chicken, 0); if (c) lv_label_set_text(c, "烤鳕鱼"); }
-            if (cm->duck)    { lv_obj_t *c = lv_obj_get_child(cm->duck, 0);    if (c) lv_label_set_text(c, "烤全鱼"); }
+            if (cm->label_1) lv_label_set_text(cm->label_1, tr("烤鱼"));
+            if (cm->chicken) { lv_obj_t *c = lv_obj_get_child(cm->chicken, 0); if (c) lv_label_set_text(c, tr("烤鳕鱼")); }
+            if (cm->duck)    { lv_obj_t *c = lv_obj_get_child(cm->duck, 0);    if (c) lv_label_set_text(c, tr("烤全鱼")); }
         }
     } else if (s_fish_mode == 2) {
         /* 烤鱼子页 → 烤鳕鱼 */
@@ -991,10 +991,10 @@ void jump_to_sidedish_menu(void)
     duckmenu_t *dm = duckmenu_get(&ui_manager);
     if (dm) {
         /* label1 = 配菜, 按钮label = 炸薯条, 隐藏 img2/label2 */
-        if (dm->label_1) lv_label_set_text(dm->label_1, "配菜");
+        if (dm->label_1) lv_label_set_text(dm->label_1, tr("配菜"));
         if (dm->wholeduck) {
             lv_obj_t *child = lv_obj_get_child(dm->wholeduck, 0);
-            if (child) lv_label_set_text(child, "炸薯条");
+            if (child) lv_label_set_text(child, tr("炸薯条"));
         }
         if (dm->label_2) lv_obj_add_flag(dm->label_2, LV_OBJ_FLAG_HIDDEN);
         if (dm->image_2) lv_obj_add_flag(dm->image_2, LV_OBJ_FLAG_HIDDEN);
@@ -1230,9 +1230,9 @@ static void six_chick_apply_display(void)
 
     /* cookstatus:烹饪中/暂停中/已完成（遮罩确认态不改 cookstatus） */
     if (ck->cookstatus) {
-        if (s_chick_done)           lv_label_set_text(ck->cookstatus, "已完成");
-        else if (s_chick_paused)    lv_label_set_text(ck->cookstatus, "暂停中...");
-        else                        lv_label_set_text(ck->cookstatus, "烹饪中...");
+        if (s_chick_done)           lv_label_set_text(ck->cookstatus, tr("已完成"));
+        else if (s_chick_paused)    lv_label_set_text(ck->cookstatus, tr("暂停中..."));
+        else                        lv_label_set_text(ck->cookstatus, tr("烹饪中..."));
     }
 
     /* 按钮:遮罩→"确 定";暂停→"开 始";运行→"暂 停";完成页(无遮罩)→隐藏 */
@@ -1242,7 +1242,7 @@ static void six_chick_apply_display(void)
             lv_obj_add_flag(ck->stop, LV_OBJ_FLAG_HIDDEN);
         } else {
             lv_obj_clear_flag(ck->stop, LV_OBJ_FLAG_HIDDEN);
-            if (bl) lv_label_set_text(bl, s_chick_overlay ? "确 定" :
+            if (bl) lv_label_set_text(bl, s_chick_overlay ? tr("确 定") :
                                              s_chick_paused  ? "开 始" : "暂 停");
         }
     }
