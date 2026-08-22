@@ -61,6 +61,11 @@ static const int w_fleg_w[]  = { 600, 800, 1000 };
 static const int w_fleg_t[]  = { 27, 30, 33 };
 static const int w_breast_w[] = { 400, 600, 800, 1000 };
 static const int w_breast_t[] = { 20, 25, 30, 35 };
+/* 鱼:烤鳕鱼/烤全鱼 份量表 */
+static const int w_cod_w[] = { 400, 600, 800, 1000 };
+static const int w_cod_t[] = { 18, 21, 24, 27 };
+static const int w_wf_w[]  = { 400, 600, 800, 1000 };
+static const int w_wf_t[]  = { 20, 25, 30, 35 };
 
 static const chick_dish_t s_chick_dishes[] = {
     /* 烤鸡翅 */
@@ -84,7 +89,9 @@ int six_chick_is_kind(void)
         || g_six_bread_type == SIX_MEAT_FRIED_STEAK
         || g_six_bread_type == SIX_MEAT_GRILL_SKEWER
         || g_six_bread_type == SIX_MEAT_FRIED_RIB
-        || g_six_bread_type == SIX_MEAT_SAUSAGE;
+        || g_six_bread_type == SIX_MEAT_SAUSAGE
+        || g_six_bread_type == SIX_FISH_COD
+        || g_six_bread_type == SIX_FISH_WHOLEFISH;
 }
 
 /* 当前是否为程度→时间驱动（烤羊肉串） */
@@ -106,7 +113,9 @@ static const chick_dish_t *chick_dish_cfg(void)
     if (g_six_bread_type == SIX_MEAT_FRIED_STEAK ||
         g_six_bread_type == SIX_MEAT_GRILL_SKEWER ||
         g_six_bread_type == SIX_MEAT_FRIED_RIB ||
-        g_six_bread_type == SIX_MEAT_SAUSAGE)
+        g_six_bread_type == SIX_MEAT_SAUSAGE ||
+        g_six_bread_type == SIX_FISH_COD ||
+        g_six_bread_type == SIX_FISH_WHOLEFISH)
         return NULL;  /* 独立表 */
     return six_chick_is_kind() ? &s_chick_dishes[g_six_bread_type - SIX_CHICK_KIND_MIN] : NULL;
 }
@@ -158,6 +167,8 @@ const char *six_chick_name(void)
     if (g_six_bread_type == SIX_MEAT_GRILL_SKEWER) return "烤羊肉串";
     if (g_six_bread_type == SIX_MEAT_FRIED_RIB) return "炸排骨";
     if (g_six_bread_type == SIX_MEAT_SAUSAGE) return "烤香肠";
+    if (g_six_bread_type == SIX_FISH_COD) return "烤鳕鱼";
+    if (g_six_bread_type == SIX_FISH_WHOLEFISH) return "烤全鱼";
     const chick_dish_t *c = chick_dish_cfg();
     if (c) return c->name;
     const chick_probe_t *p = chick_probe_cfg();
@@ -169,6 +180,8 @@ uint8_t six_chick_mode(void) {
     if (g_six_bread_type == SIX_MEAT_GRILL_SKEWER) return MODE_HOTWIND_BBQ;
     if (g_six_bread_type == SIX_MEAT_FRIED_RIB) return MODE_AIR;
     if (g_six_bread_type == SIX_MEAT_SAUSAGE) return MODE_HOTWIND_BBQ;
+    if (g_six_bread_type == SIX_FISH_COD) return MODE_WINDCHANGE_BBQ;   /* 热风对流 */
+    if (g_six_bread_type == SIX_FISH_WHOLEFISH) return MODE_HOTWIND_BBQ;/* 热风 */
     const chick_dish_t *c = chick_dish_cfg(); if (c) return c->mode;
     const chick_probe_t *p = chick_probe_cfg(); if (p) return p->mode;
     return MODE_WINDCHANGE_BBQ;
@@ -178,6 +191,8 @@ int six_chick_temp(void) {
     if (g_six_bread_type == SIX_MEAT_GRILL_SKEWER) return 230;
     if (g_six_bread_type == SIX_MEAT_FRIED_RIB) return 250;
     if (g_six_bread_type == SIX_MEAT_SAUSAGE) return 180;
+    if (g_six_bread_type == SIX_FISH_COD) return 250;
+    if (g_six_bread_type == SIX_FISH_WHOLEFISH) return 250;
     const chick_dish_t *c = chick_dish_cfg(); if (c) return c->temp;
     const chick_probe_t *p = chick_probe_cfg(); if (p) return p->temp;
     return 230;
@@ -213,6 +228,19 @@ int six_chick_cook_min(int weight_g)
         }
         return 16;  /* 默认600g */
     }
+    /* 烤鳕鱼/烤全鱼：独立份量表 */
+    if (g_six_bread_type == SIX_FISH_COD) {
+        for (int i = 0; i < 4; i++) {
+            if (w_cod_w[i] == weight_g) return w_cod_t[i];
+        }
+        return 24;  /* 默认800g */
+    }
+    if (g_six_bread_type == SIX_FISH_WHOLEFISH) {
+        for (int i = 0; i < 4; i++) {
+            if (w_wf_w[i] == weight_g) return w_wf_t[i];
+        }
+        return 30;  /* 默认800g */
+    }
     const chick_dish_t *c = chick_dish_cfg();
     if (!c) return 0;
     for (int i = 0; i < c->count; i++) {
@@ -232,6 +260,8 @@ const char *six_chick_desc(void)
         return "根据个人喜好进行调味。在炸盘内均匀铺开，在表面喷一层薄油\n现在将食物放在第3层\n使用气炸盘和深盘";
     if (g_six_bread_type == SIX_MEAT_SAUSAGE)
         return "均匀分布在深盘中\n现在将食物放在第3层\n使用深盘";
+    if (g_six_bread_type == SIX_FISH_COD || g_six_bread_type == SIX_FISH_WHOLEFISH)
+        return "刷油，抹上盐和胡椒。根据个人喜好，用蒜和香草调味\n现在将食物放在第3层\n使用烤盘";
     const chick_dish_t *c = chick_dish_cfg();
     if (c) return c->desc;
     const chick_probe_t *p = chick_probe_cfg();
@@ -700,8 +730,25 @@ static void on_fish_seafood_click(lv_event_t *e)
         on_fish_wholefish_click(e);
     }
 }
-static void on_fish_cod_click(lv_event_t *e) { (void)e; }   /* TODO:烤鳕鱼 */
-static void on_fish_wholefish_click(lv_event_t *e) { (void)e; }  /* TODO:烤全鱼 */
+static void on_fish_cod_click(lv_event_t *e)
+{
+    (void)e;
+    if (screen_is_loading(lv_scr_act())) return;
+    g_six_bread_type = SIX_FISH_COD;
+    toastcolor_set_weight_options(w_cod_w, 4, 2);   /* 默认800g */
+    g_toast_mode = TOAST_MODE_WEIGHT;
+    jump_to_toastcolor();
+}
+
+static void on_fish_wholefish_click(lv_event_t *e)
+{
+    (void)e;
+    if (screen_is_loading(lv_scr_act())) return;
+    g_six_bread_type = SIX_FISH_WHOLEFISH;
+    toastcolor_set_weight_options(w_wf_w, 4, 2);    /* 默认800g */
+    g_toast_mode = TOAST_MODE_WEIGHT;
+    jump_to_toastcolor();
+}
 static void on_seafood_dish_click(lv_event_t *e) { (void)e; }   /* TODO:烤海鲜5种 */
 
 void jump_to_fish_menu(void)
