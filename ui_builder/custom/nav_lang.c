@@ -13,8 +13,18 @@
 /* 字体 extern（生成于 ui_builder/font/，当前仅 24/30 两档在用） */
 extern const lv_font_t c_taiwanpearl_regular_24;
 extern const lv_font_t c_taiwanpearl_regular_30;
+extern const lv_font_t c_taiwanpearl_regular_36;
+extern const lv_font_t c_taiwanpearl_regular_48;
+extern const lv_font_t c_taiwanpearl_regular_60;
+extern const lv_font_t c_taiwanpearl_regular_72;
+extern const lv_font_t c_taiwanpearl_regular_128;
 extern const lv_font_t c_aktivgroteskmedium_24;
 extern const lv_font_t c_aktivgroteskmedium_30;
+extern const lv_font_t c_aktivgroteskmedium_36;
+extern const lv_font_t c_aktivgroteskmedium_48;
+extern const lv_font_t c_aktivgroteskmedium_60;
+extern const lv_font_t c_aktivgroteskmedium_72;
+extern const lv_font_t c_aktivgroteskmedium_128;
 
 /* tr() 查表入口（i18n.c 提供，这里做首字节哈希加速可后续优化） */
 extern const char *tr(const char *zh);
@@ -55,9 +65,19 @@ static void lang_apply_obj(lv_obj_t *obj)
             if (en != txt)
                 lv_label_set_text(obj, en);
         }
-        /* pass 2: 字体切换（taiwanpearl → aktivgrotesk） */
+        /* pass 2: 字体切换（taiwanpearl → aktivgrotesk，按字号一一映射） */
         const lv_font_t *f = lv_obj_get_style_text_font(obj, 0);
-        if (f == &c_taiwanpearl_regular_30)
+        if (f == &c_taiwanpearl_regular_128)
+            lv_obj_set_style_text_font(obj, &c_aktivgroteskmedium_128, LV_PART_MAIN | 0);
+        else if (f == &c_taiwanpearl_regular_72)
+            lv_obj_set_style_text_font(obj, &c_aktivgroteskmedium_72, LV_PART_MAIN | 0);
+        else if (f == &c_taiwanpearl_regular_60)
+            lv_obj_set_style_text_font(obj, &c_aktivgroteskmedium_60, LV_PART_MAIN | 0);
+        else if (f == &c_taiwanpearl_regular_48)
+            lv_obj_set_style_text_font(obj, &c_aktivgroteskmedium_48, LV_PART_MAIN | 0);
+        else if (f == &c_taiwanpearl_regular_36)
+            lv_obj_set_style_text_font(obj, &c_aktivgroteskmedium_36, LV_PART_MAIN | 0);
+        else if (f == &c_taiwanpearl_regular_30)
             lv_obj_set_style_text_font(obj, &c_aktivgroteskmedium_30, LV_PART_MAIN | 0);
         else if (f == &c_taiwanpearl_regular_24)
             lv_obj_set_style_text_font(obj, &c_aktivgroteskmedium_24, LV_PART_MAIN | 0);
