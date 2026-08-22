@@ -51,6 +51,7 @@ static int menu_clean_key_allowed(void)
     case PAGE_CHICK6MENU:
     case PAGE_CHICKENMENU:
     case PAGE_DUCK6MENU:
+    case PAGE_VEGETABLEMENU:
     case PAGE_SIXMENUTZ:
     case PAGE_CHICKMENUTZ:
         return 1;
@@ -68,6 +69,7 @@ static int screen_set_key_allowed(page_id_t below, uint8_t key)
     case PAGE_FROZEN_COOK: case PAGE_CLEAN_MENU: case PAGE_HOTCLEAN_MENU:
     case PAGE_SIXMENU: case PAGE_BREAD6MENU: case PAGE_CAKE6MENU:
     case PAGE_CHICK6MENU: case PAGE_CHICKENMENU: case PAGE_DUCK6MENU:
+    case PAGE_VEGETABLEMENU:
     case PAGE_SIXMENUTZ: case PAGE_CHICKMENUTZ:
     case PAGE_SIXOP3PAGE:
         break;
@@ -390,7 +392,7 @@ void process_key(uint8_t key)
             page_id_t cur = page_stack[depth - 1];
             if (cur == PAGE_SIXMENU || cur == PAGE_BREAD6MENU ||
                 cur == PAGE_CAKE6MENU || cur == PAGE_CHICK6MENU || cur == PAGE_CHICKENMENU ||
-                cur == PAGE_DUCK6MENU ||
+                cur == PAGE_DUCK6MENU || cur == PAGE_VEGETABLEMENU ||
                 cur == PAGE_SIXMENUTZ || cur == PAGE_CHICKMENUTZ ||
                 cur == PAGE_RISINGPAGE || cur == PAGE_DESCRIPTIONMENU ||
                 cur == PAGE_SIX_COOKING || cur == PAGE_TOASTCOLOR) {

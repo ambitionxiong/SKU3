@@ -33,7 +33,7 @@ void chick6menu_create(ui_manager_t *ui)
     lv_label_set_text(scr->label_1, "家禽");
     lv_label_set_long_mode(scr->label_1, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->label_1, 24, 24);
-    lv_obj_set_size(scr->label_1, 97, 25);
+    lv_obj_set_size(scr->label_1, 118, 25);
 
     // Set style of scr->label_1
     lv_obj_set_style_text_font(scr->label_1, &c_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);

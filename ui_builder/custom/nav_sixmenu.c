@@ -22,6 +22,7 @@ static int s_six_meat_kind = 0;   /* 肉菜单进入的子类: 0牛肉 1羊肉 2
 static void on_sixmenu_bread_click(lv_event_t *e);
 static void on_sixmenu_cake_click(lv_event_t *e);
 static void on_sixmenu_chick_click(lv_event_t *e);
+static void on_sixmenu_vegetable_click(lv_event_t *e);
 static void on_sixmenu_meat_click(lv_event_t *e);
 static void on_sixmenu_fish_click(lv_event_t *e);
 static void on_bread6menu_breadroll_click(lv_event_t *e);
@@ -63,6 +64,9 @@ void jump_to_sixmenu(void)
         }
         if (sm->cake) {
             lv_obj_add_event_cb(sm->cake, on_sixmenu_cake_click, LV_EVENT_CLICKED, NULL);
+        }
+        if (sm->vegetable) {
+            lv_obj_add_event_cb(sm->vegetable, on_sixmenu_vegetable_click, LV_EVENT_CLICKED, NULL);
         }
         if (sm->chick) {
             lv_obj_add_event_cb(sm->chick, on_sixmenu_chick_click, LV_EVENT_CLICKED, NULL);
@@ -108,6 +112,9 @@ void sixmenu_rebuild(page_id_t child)
         if (sm->cake) {
             lv_obj_add_event_cb(sm->cake, on_sixmenu_cake_click, LV_EVENT_CLICKED, NULL);
         }
+        if (sm->vegetable) {
+            lv_obj_add_event_cb(sm->vegetable, on_sixmenu_vegetable_click, LV_EVENT_CLICKED, NULL);
+        }
         if (sm->chick) {
             lv_obj_add_event_cb(sm->chick, on_sixmenu_chick_click, LV_EVENT_CLICKED, NULL);
         }
@@ -123,6 +130,8 @@ void sixmenu_rebuild(page_id_t child)
             lv_group_focus_obj(sm->meat);
         else if (six_chick_get_fish_mode() && child == PAGE_CHICK6MENU && sm->fish)
             lv_group_focus_obj(sm->fish);      /* 从鱼/海鲜菜单返回 */
+        else if (six_chick_get_vegetable_mode() && child == PAGE_CHICK6MENU && sm->vegetable)
+            lv_group_focus_obj(sm->vegetable); /* 从蔬菜/配菜菜单返回 */
         else if (!six_chick_get_fish_mode() && child == PAGE_CHICK6MENU && sm->chick)
             lv_group_focus_obj(sm->chick);     /* 从鸡菜单返回 */
         else if (child == PAGE_CAKE6MENU && sm->cake)
@@ -156,6 +165,14 @@ static void on_sixmenu_chick_click(lv_event_t *e)
     if (screen_is_loading(lv_scr_act())) return;
     six_chick_reset_fish_mode();   /* 重置鱼模式，进鸡流程 */
     jump_to_chick6menu();
+}
+
+/* 蔬菜入口：sixmenu → vegetable (复用 chick6menu 页面) */
+static void on_sixmenu_vegetable_click(lv_event_t *e)
+{
+    if (screen_is_loading(lv_scr_act())) return;
+    six_chick_reset_fish_mode();   /* 重置鱼/海鲜等模式,进蔬菜流程 */
+    jump_to_vegetable_menu();
 }
 
 /* 肉入口：sixmenu → meat (复用 bread6menu 页面) */

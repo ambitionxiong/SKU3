@@ -291,6 +291,7 @@ typedef enum {
     PAGE_CHICK6MENU,        /* 第六感-家禽 */
     PAGE_CHICKENMENU,       /* 第六感-鸡 */
     PAGE_DUCK6MENU,         /* 第六感-鸭 */
+    PAGE_VEGETABLEMENU,     /* 第六感-蔬菜 */
     PAGE_RISINGPAGE,        /* 第六感-是否发酵 */
     PAGE_DESCRIPTIONMENU,   /* 第六感-烹饪描述 */
     PAGE_SIX_COOKING,       /* 第六感-运行页（复用 somecook_cooking UI） */
@@ -687,6 +688,10 @@ void jump_to_chick6menu(void);
 void chick6menu_rebuild(page_id_t child);
 void jump_to_chickenmenu(void);
 void chickenmenu_rebuild(page_id_t child);
+void jump_to_vegetable_menu(void);      /* 蔬菜/配菜首页(复用 chick6menu UI) */
+int six_chick_get_vegetable_mode(void);
+void jump_to_vegetablemenu(void);       /* 蔬菜子页(独立页面) */
+void vegetablemenu_rebuild(page_id_t child);
 void jump_to_duckmenu(void);
 void duckmenu_rebuild(page_id_t child);
 void jump_to_meatdish_menu(void);

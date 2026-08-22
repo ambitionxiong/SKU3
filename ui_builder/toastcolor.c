@@ -115,12 +115,12 @@ void toastcolor_create(ui_manager_t *ui)
     lv_label_set_text(scr->weighticon, "g");
     lv_label_set_long_mode(scr->weighticon, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->weighticon, 685, 280);
-    lv_obj_set_size(scr->weighticon, 21, 42);
+    lv_obj_set_size(scr->weighticon, 37, 42);
 
     // Set style of scr->weighticon
     lv_obj_set_style_text_font(scr->weighticon, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->weighticon, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(scr->weighticon, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->weighticon, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->weightline3
     scr->weightline3 = lv_img_create(scr->obj);
