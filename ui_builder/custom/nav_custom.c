@@ -137,7 +137,7 @@ static void on_custom_stop_back_sure_click(lv_event_t *e)
     g_send.set_temp = 0;
     g_send.set_temp_lower = 0;
     g_send.remaining_ms = -1;
-    printf("[lasagna] stop_back sure -> major_menu\n");
+    printf("[custom] stop_back sure -> major_menu\n");
 }
 
 void jump_to_custom_menu(void)
@@ -187,7 +187,7 @@ void jump_to_custom_menu(void)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.cook_mode = MODE_FROZEN_BAKE;
-    printf("[lasagna] jump: frozencook -> custom_menu\n");
+    printf("[custom] jump: frozencook -> custom_menu\n");
 }
 
 void jump_to_custom_set(void)
@@ -261,7 +261,7 @@ void jump_to_custom_set(void)
     lv_scr_load_anim(custom_set_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[lasagna] jump: menu -> custom_set\n");
+    printf("[custom] jump: menu -> custom_set\n");
 }
 
 void jump_to_custom_cooking(void)
@@ -321,7 +321,7 @@ void jump_to_custom_cooking(void)
     g_send.set_temp = set_temp;
     g_send.set_temp_lower = 0;
     g_send.remaining_ms = cook_total_ms;
-    printf("[lasagna] jump: set -> custom_cooking\n");
+    printf("[custom] jump: set -> custom_cooking\n");
 }
 
 void jump_to_custom_setting(void)
@@ -379,7 +379,7 @@ void jump_to_custom_setting(void)
                      ui_manager.auto_del);
     if (g_send.iface_status != IFACE_COMPLETE)
         g_send.iface_status = (cook_timer != NULL) ? IFACE_COOKING : IFACE_SETTING;
-    printf("[lasagna] jump: cooking -> custom_setting\n");
+    printf("[custom] jump: cooking -> custom_setting\n");
 }
 
 void jump_to_custom_stop(void)
@@ -426,7 +426,7 @@ void jump_to_custom_stop(void)
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_PAUSE;
     g_send.remaining_ms = (cook_total_ms > (int)cook_elapsed_saved) ? cook_total_ms - (int)cook_elapsed_saved : 0;
-    printf("[lasagna] jump: cooking -> stop (pause)\n");
+    printf("[custom] jump: cooking -> stop (pause)\n");
 }
 
 void jump_to_custom_stop_back(void)
@@ -486,7 +486,7 @@ void jump_to_custom_stop_back(void)
     lv_scr_load_anim(custom_stop_back_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[lasagna] stop/cooking -> stop_back\n");
+    printf("[custom] stop/cooking -> stop_back\n");
 }
 
 void custom_resume_cooking(void)
@@ -550,7 +550,7 @@ void custom_resume_cooking(void)
         g_send.iface_status = IFACE_COOKING;
         g_send.remaining_ms = rem;
     }
-    printf("[lasagna] resume: stop -> cooking\n");
+    printf("[custom] resume: stop -> cooking\n");
 }
 
 static void on_custom_setting_sure_click(lv_event_t *e)
@@ -607,7 +607,7 @@ static void on_custom_setting_sure_click(lv_event_t *e)
     g_send.iface_status = IFACE_COOKING;
     g_send.set_temp = set_temp;
     g_send.remaining_ms = cook_total_ms;
-    printf("[lasagna] setting sure -> cooking\n");
+    printf("[custom] setting sure -> cooking\n");
 }
 
 void jump_to_custom_complete(void)
@@ -640,7 +640,7 @@ void jump_to_custom_complete(void)
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_COMPLETE;
     g_send.remaining_ms = 0;
-    printf("[lasagna] jump: cooking -> complete\n");
+    printf("[custom] jump: cooking -> complete\n");
     /* 自动保温：保温开关开启时 complete 页停留 1 分钟无操作 → 保温（15 分钟） */
     if (contain_on) {
         g_keepwarm_active = 0;
@@ -689,7 +689,7 @@ void custom_rebuild_menu(page_id_t child)
     lv_scr_load_anim(custom_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[lasagna] back to custom_menu\n");
+    printf("[custom] back to custom_menu\n");
 }
 
 void custom_rebuild_set(page_id_t child)
@@ -763,7 +763,7 @@ void custom_rebuild_set(page_id_t child)
     lv_scr_load_anim(custom_set_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[lasagna] back to custom_set\n");
+    printf("[custom] back to custom_set\n");
 }
 
 void custom_rebuild_cooking(page_id_t child)
@@ -823,7 +823,7 @@ void custom_rebuild_cooking(page_id_t child)
     lv_scr_load_anim(custom_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[lasagna] back to custom_cooking\n");
+    printf("[custom] back to custom_cooking\n");
 }
 
 void custom_rebuild_setting(void)
@@ -869,7 +869,7 @@ void custom_rebuild_setting(void)
     lv_scr_load_anim(custom_setting_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[lasagna] back to custom_setting\n");
+    printf("[custom] back to custom_setting\n");
 }
 
 void custom_rebuild_stop(void)
@@ -905,7 +905,7 @@ void custom_rebuild_stop(void)
     lv_scr_load_anim(custom_stop_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[lasagna] back to custom_stop\n");
+    printf("[custom] back to custom_stop\n");
     g_send.iface_status = IFACE_PAUSE;
 }
 
@@ -944,7 +944,7 @@ void custom_rebuild_stop_back(void)
     lv_scr_load_anim(custom_stop_back_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[lasagna] back to custom_stop_back\n");
+    printf("[custom] back to custom_stop_back\n");
 }
 
 void custom_rebuild_complete(void)
@@ -955,7 +955,7 @@ void custom_rebuild_complete(void)
     lv_scr_load_anim(custom_complete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[lasagna] back to custom_complete\n");
+    printf("[custom] back to custom_complete\n");
 }
 
 void custom_complete_rebind(lv_obj_t *btn)

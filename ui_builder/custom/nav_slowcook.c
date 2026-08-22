@@ -178,7 +178,7 @@ static void on_slowcook_stop_back_sure_click(lv_event_t *e)
     g_send.set_temp = 0;
     g_send.set_temp_lower = 0;
     g_send.remaining_ms = -1;
-    printf("[pizza_2] stop_back sure -> major_menu\n");
+    printf("[slowcook] stop_back sure -> major_menu\n");
 }
 
 // ==============================
@@ -244,7 +244,7 @@ void jump_to_slowcook_menu(void)
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         g_send.cook_mode = MODE_SLOWCOOK;
-    printf("[pizza_2] jump: special_menu -> slowcook_menu\n");
+    printf("[slowcook] jump: special_menu -> slowcook_menu\n");
 }
 
 // menu → set
@@ -329,7 +329,7 @@ void jump_to_slowcook_set(void)
     lv_scr_load_anim(slowcook_set_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[pizza_2] jump: menu -> slowcook_set\n");
+    printf("[slowcook] jump: menu -> slowcook_set\n");
 }
 
 // set → cooking
@@ -390,7 +390,7 @@ void jump_to_slowcook_cooking(void)
     g_send.set_temp = set_temp;
     g_send.set_temp_lower = 0;
     g_send.remaining_ms = cook_total_ms;
-    printf("[pizza_2] jump: set -> slowcook_cooking\n");
+    printf("[slowcook] jump: set -> slowcook_cooking\n");
 }
 
 // cooking → setting（不暂停 timer）
@@ -464,7 +464,7 @@ void jump_to_slowcook_setting(void)
                      ui_manager.auto_del);
         if (g_send.iface_status != IFACE_COMPLETE)
         g_send.iface_status = (cook_timer != NULL) ? IFACE_COOKING : IFACE_SETTING;
-    printf("[pizza_2] jump: cooking -> slowcook_setting\n");
+    printf("[slowcook] jump: cooking -> slowcook_setting\n");
 }
 
 // cooking → stop（暂停）
@@ -512,7 +512,7 @@ void jump_to_slowcook_stop(void)
                      ui_manager.auto_del);
         g_send.iface_status = IFACE_PAUSE;
     g_send.remaining_ms = (cook_total_ms > (int)cook_elapsed_saved) ? cook_total_ms - (int)cook_elapsed_saved : 0;
-    printf("[pizza_2] jump: cooking -> stop (pause)\n");
+    printf("[slowcook] jump: cooking -> stop (pause)\n");
 }
 
 // stop → stop_back
@@ -573,7 +573,7 @@ void jump_to_slowcook_stop_back(void)
     lv_scr_load_anim(slowcook_stop_back_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[pizza_2] jump: stop/cooking -> stop_back\n");
+    printf("[slowcook] jump: stop/cooking -> stop_back\n");
 }
 
 // stop 恢复 cooking
@@ -638,7 +638,7 @@ void slowcook_resume_cooking(void)
         g_send.iface_status = IFACE_COOKING;
         g_send.remaining_ms = rem;
     }
-    printf("[pizza_2] resume: stop -> cooking\n");
+    printf("[slowcook] resume: stop -> cooking\n");
 }
 
 // setting 确定 → 回到 cooking
@@ -696,7 +696,7 @@ static void on_slowcook_setting_sure_click(lv_event_t *e)
         g_send.iface_status = IFACE_COOKING;
     g_send.set_temp = set_temp;
     g_send.remaining_ms = cook_total_ms;
-    printf("[pizza_2] setting sure -> cooking\n");
+    printf("[slowcook] setting sure -> cooking\n");
 }
 
 // cooking → complete
@@ -733,7 +733,7 @@ void jump_to_slowcook_complete(void)
                      ui_manager.auto_del);
         g_send.iface_status = IFACE_COMPLETE;
     g_send.remaining_ms = 0;
-    printf("[pizza_2] jump: cooking -> complete\n");
+    printf("[slowcook] jump: cooking -> complete\n");
     /* 自动保温：保温开关开启时 complete 页停留 1 分钟无操作 → 保温（15 分钟） */
     if (contain_on) {
         g_keepwarm_active = 0;
@@ -798,7 +798,7 @@ void slowcook_rebuild_menu(page_id_t child)
     lv_scr_load_anim(slowcook_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[pizza_2] back to slowcook_menu\n");
+    printf("[slowcook] back to slowcook_menu\n");
 }
 
 void slowcook_rebuild_set(page_id_t child)
@@ -884,7 +884,7 @@ void slowcook_rebuild_set(page_id_t child)
     lv_scr_load_anim(slowcook_set_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[pizza_2] back to slowcook_set\n");
+    printf("[slowcook] back to slowcook_set\n");
 }
 
 void slowcook_rebuild_cooking(page_id_t child)
@@ -944,7 +944,7 @@ void slowcook_rebuild_cooking(page_id_t child)
     lv_scr_load_anim(slowcook_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[pizza_2] back to slowcook_cooking\n");
+    printf("[slowcook] back to slowcook_cooking\n");
 }
 
 void slowcook_rebuild_setting(void)
@@ -1005,7 +1005,7 @@ void slowcook_rebuild_setting(void)
     lv_scr_load_anim(slowcook_setting_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[pizza_2] back to slowcook_setting\n");
+    printf("[slowcook] back to slowcook_setting\n");
 }
 
 void slowcook_rebuild_stop(void)
@@ -1041,7 +1041,7 @@ void slowcook_rebuild_stop(void)
     lv_scr_load_anim(slowcook_stop_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[pizza_2] back to slowcook_stop\n");
+    printf("[slowcook] back to slowcook_stop\n");
     g_send.iface_status = IFACE_PAUSE;
 }
 
@@ -1086,7 +1086,7 @@ void slowcook_rebuild_stop_back(void)
     lv_scr_load_anim(slowcook_stop_back_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[pizza_2] back to slowcook_stop_back\n");
+    printf("[slowcook] back to slowcook_stop_back\n");
 }
 
 void slowcook_rebuild_complete(void)
@@ -1097,7 +1097,7 @@ void slowcook_rebuild_complete(void)
     lv_scr_load_anim(slowcook_complete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[pizza_2] back to slowcook_complete\n");
+    printf("[slowcook] back to slowcook_complete\n");
 }
 void slowcook_complete_rebind(lv_obj_t *btn)
 {

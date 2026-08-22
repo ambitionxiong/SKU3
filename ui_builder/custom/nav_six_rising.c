@@ -53,7 +53,7 @@ void jump_to_risingpage(void)
     lv_scr_load_anim(risingpage_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[sixmenu] jump: risingpage\n");
+    printf("[six_rising] jump: risingpage\n");
 }
 
 void risingpage_rebuild(page_id_t child)
@@ -89,7 +89,7 @@ void risingpage_rebuild(page_id_t child)
     lv_scr_load_anim(risingpage_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[sixmenu] rebuild: risingpage\n");
+    printf("[six_rising] rebuild: risingpage\n");
 }
 
 static void on_rising_yes_click(lv_event_t *e)

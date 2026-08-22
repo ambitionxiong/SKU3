@@ -55,7 +55,7 @@ void jump_to_cake6menu(void)
     lv_scr_load_anim(cake6menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[sixmenu] jump: cake6menu\n");
+    printf("[six_cake] jump: cake6menu\n");
 }
 
 void cake6menu_rebuild(page_id_t child)
@@ -113,7 +113,7 @@ void cake6menu_rebuild(page_id_t child)
     lv_scr_load_anim(cake6menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[sixmenu] rebuild: cake6menu\n");
+    printf("[six_cake] rebuild: cake6menu\n");
 }
 
 static void on_cake6menu_click(lv_event_t *e)

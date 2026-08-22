@@ -137,7 +137,7 @@ void jump_to_descriptionmenu(void)
     lv_scr_load_anim(descriptionmenu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[sixmenu] jump: descriptionmenu (choice=%d)\n", g_rising_choice);
+    printf("[six_desc] jump: descriptionmenu (choice=%d)\n", g_rising_choice);
 }
 
 void descriptionmenu_rebuild(page_id_t child)
@@ -175,7 +175,7 @@ void descriptionmenu_rebuild(page_id_t child)
     lv_scr_load_anim(descriptionmenu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[sixmenu] rebuild: descriptionmenu\n");
+    printf("[six_desc] rebuild: descriptionmenu\n");
 }
 
 static void on_description_start_click(lv_event_t *e)

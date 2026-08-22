@@ -1067,8 +1067,6 @@ void air_rebuild_stop_back(void);
 void air_rebuild_complete(void);
 void air_complete_rebind(lv_obj_t *btn);
 void air_resume_cooking(void);
-void air_back_to_stop(void);
-void air_back_to_stop_back(void);
 
 extern lv_group_t *g_pizza_2_menu;
 extern lv_group_t *g_pizza_2_set;

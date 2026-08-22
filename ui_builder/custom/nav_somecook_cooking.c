@@ -196,7 +196,7 @@ static void somecook_cooking_exit(void)
     lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[somecook] cooking exit -> major_menu\n");
+    printf("[somecook_cooking] cooking exit -> major_menu\n");
 }
 
 // 运行页 stop 按钮："暂 停" / "开 始" / "确 定"
@@ -227,7 +227,7 @@ void somecook_cooking_auto_pause(void)
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
     somecook_cooking_set_state(SMC_STOP, SMC_COOKING);
     somecook_cooking_update_timer(somecook_cooking_get(&ui_manager));
-    printf("[somecook] door open -> auto pause\n");
+    printf("[somecook_cooking] door open -> auto pause\n");
 }
 
 // 进入当前段 cooking
@@ -287,7 +287,7 @@ static void somecook_cooking_start(void)
     lv_scr_load_anim(somecook_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    printf("[somecook] cooking start: step %d mode=%d\n", i, g_send.cook_mode);
+    printf("[somecook_cooking] cooking start: step %d mode=%d\n", i, g_send.cook_mode);
 }
 
 // 当前段完成：切下一段 / 全部完成 → complete 态
@@ -335,7 +335,7 @@ void somecook_cooking_next_step(void)
         lv_scr_load_anim(somecook_cooking_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
                          ui_manager.auto_del);
-        printf("[somecook] all steps done -> complete\n");
+        printf("[somecook_cooking] all steps done -> complete\n");
     }
 }
 
