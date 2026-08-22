@@ -38,7 +38,7 @@ void screen_SET_create(ui_manager_t *ui)
 
     // Init scr->Title_Lb
     scr->Title_Lb = lv_label_create(scr->obj);
-    lv_label_set_text(scr->Title_Lb, "设置");
+    lv_label_set_text(scr->Title_Lb, tr("设置"));
     lv_label_set_long_mode(scr->Title_Lb, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->Title_Lb, 24, 24);
     lv_obj_set_size(scr->Title_Lb, 110, 32);
@@ -444,7 +444,7 @@ void screen_SET_create(ui_manager_t *ui)
 
     // Init scr->TS_Lb
     scr->TS_Lb = lv_label_create(scr->obj);
-    lv_label_set_text(scr->TS_Lb, "关");
+    lv_label_set_text(scr->TS_Lb, tr("关"));
     lv_label_set_long_mode(scr->TS_Lb, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->TS_Lb, 215, 210);
     lv_obj_set_size(scr->TS_Lb, 65, 30);
@@ -459,7 +459,7 @@ void screen_SET_create(ui_manager_t *ui)
 
     // Init scr->ZDBW_Lb
     scr->ZDBW_Lb = lv_label_create(scr->obj);
-    lv_label_set_text(scr->ZDBW_Lb, "关");
+    lv_label_set_text(scr->ZDBW_Lb, tr("关"));
     lv_label_set_long_mode(scr->ZDBW_Lb, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->ZDBW_Lb, 215, 304);
     lv_obj_set_size(scr->ZDBW_Lb, 65, 30);
@@ -474,7 +474,7 @@ void screen_SET_create(ui_manager_t *ui)
 
     // Init scr->Six_Lb
     scr->Six_Lb = lv_label_create(scr->obj);
-    lv_label_set_text(scr->Six_Lb, "全部");
+    lv_label_set_text(scr->Six_Lb, tr("全部"));
     lv_label_set_long_mode(scr->Six_Lb, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->Six_Lb, 508, 116);
     lv_obj_set_size(scr->Six_Lb, 80, 30);
@@ -504,7 +504,7 @@ void screen_SET_create(ui_manager_t *ui)
 
     // Init scr->YY_Lb
     scr->YY_Lb = lv_label_create(scr->obj);
-    lv_label_set_text(scr->YY_Lb, "简体中文");
+    lv_label_set_text(scr->YY_Lb, tr("简体中文"));
     lv_label_set_long_mode(scr->YY_Lb, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->YY_Lb, 771, 398);
     lv_obj_set_size(scr->YY_Lb, 125, 30);
@@ -534,7 +534,7 @@ void screen_SET_create(ui_manager_t *ui)
 
     // Init scr->Demo_Lb
     scr->Demo_Lb = lv_label_create(scr->obj);
-    lv_label_set_text(scr->Demo_Lb, "关");
+    lv_label_set_text(scr->Demo_Lb, tr("关"));
     lv_label_set_long_mode(scr->Demo_Lb, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->Demo_Lb, 1154, 210);
     lv_obj_set_size(scr->Demo_Lb, 55, 30);

@@ -28,17 +28,17 @@ static void descriptionmenu_layout(descriptionmenu_t *dm)
     if (dm->summary) {
         if (six_chick_is_probe()) {
             lv_obj_clear_flag(dm->summary, LV_OBJ_FLAG_HIDDEN);
-            lv_label_set_text_fmt(dm->summary, "小结：\n烧烤程度：%s\n", six_chick_degree_short());
+            lv_label_set_text_fmt(dm->summary, tr("小结：\n烧烤程度：%s\n"), six_chick_degree_short());
         } else if (six_chick_is_degree_time()) {
             int d = toastcolor_degree_value();
             const char *dt = (d == 1) ? "浅" : (d == 3) ? "深" : "中等";
             lv_obj_clear_flag(dm->summary, LV_OBJ_FLAG_HIDDEN);
-            lv_label_set_text_fmt(dm->summary, "小结：\n烧烤程度：%s\n", dt);
+            lv_label_set_text_fmt(dm->summary, tr("小结：\n烧烤程度：%s\n"), dt);
         } else if (six_chick_is_kind()) {
             int w = toastcolor_weight_value();
             if (w < 0) w = 800;   /* 兜底 */
             lv_obj_clear_flag(dm->summary, LV_OBJ_FLAG_HIDDEN);
-            lv_label_set_text_fmt(dm->summary, "小结：\n份量/种类：%dg\n", w);
+            lv_label_set_text_fmt(dm->summary, tr("小结：\n份量/种类：%dg\n"), w);
         } else if (six_bread_has_rising()) {
             lv_label_set_text(dm->summary, g_rising_choice == 1 ?
                               "小结：\n有发酵阶段\n" : "小结：\n没有发酵阶段\n");
@@ -55,24 +55,24 @@ static void descriptionmenu_layout(descriptionmenu_t *dm)
             int d = toastcolor_degree_value();
             if (d < 1 || d > 3) d = 2;
             lv_obj_clear_flag(dm->cooktime, LV_OBJ_FLAG_HIDDEN);
-            lv_label_set_text_fmt(dm->cooktime, "预计烹饪时间：%d分钟", six_chick_degree_min(d));
+            lv_label_set_text_fmt(dm->cooktime, tr("预计烹饪时间：%d分钟"), six_chick_degree_min(d));
         } else if (six_chick_is_kind()) {
             int w = toastcolor_weight_value();
             if (w < 0) w = 800;
             lv_obj_clear_flag(dm->cooktime, LV_OBJ_FLAG_HIDDEN);
-            lv_label_set_text_fmt(dm->cooktime, "预计烹饪时间：%d分钟", six_chick_cook_min(w));
+            lv_label_set_text_fmt(dm->cooktime, tr("预计烹饪时间：%d分钟"), six_chick_cook_min(w));
         } else if (six_chick_is_seafood()) {
             const seafood_dish_t *sd = seafood_dish_cfg();
             lv_obj_clear_flag(dm->cooktime, LV_OBJ_FLAG_HIDDEN);
-            lv_label_set_text_fmt(dm->cooktime, "预计烹饪时间：%d分钟", sd ? sd->cook_min : 18);
+            lv_label_set_text_fmt(dm->cooktime, tr("预计烹饪时间：%d分钟"), sd ? sd->cook_min : 18);
         } else {
             lv_obj_clear_flag(dm->cooktime, LV_OBJ_FLAG_HIDDEN);
             /* 选了发酵:发酵分钟+烹饪分钟分开显示 */
             if (six_bread_has_rising() && g_rising_choice == 1)
-                lv_label_set_text_fmt(dm->cooktime, "预计烹饪时间：发酵%d分钟+烹饪%d分钟",
+                lv_label_set_text_fmt(dm->cooktime, tr("预计烹饪时间：发酵%d分钟+烹饪%d分钟"),
                                       six_rising_min(), six_bread_cook_min());
             else
-                lv_label_set_text_fmt(dm->cooktime, "预计烹饪时间：%d分钟", six_bread_cook_min());
+                lv_label_set_text_fmt(dm->cooktime, tr("预计烹饪时间：%d分钟"), six_bread_cook_min());
         }
     }
     if (dm->cookdescriptin) {

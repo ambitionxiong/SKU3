@@ -170,7 +170,7 @@ void cooking_timer_cb(lv_timer_t *timer)
                 if (g_keepwarm_sec >= 60) {
                     g_keepwarm_active = 1;
                     g_keepwarm_sec = 0;
-                    lv_label_set_text(kw_label, "保温中...");
+                    lv_label_set_text(kw_label, tr("保温中..."));
                     printf("[keepwarm] START: sec=%d active=%d buf17=%d timer=%p\n",
                            g_keepwarm_sec, g_keepwarm_active,
                            g_keepwarm_active ? 0x01 : 0x00, (void *)cook_timer);
@@ -178,7 +178,7 @@ void cooking_timer_cb(lv_timer_t *timer)
             } else {
                 if (g_keepwarm_sec >= 60) {
                     g_keepwarm_active = 0;
-                    lv_label_set_text(kw_label, "已完成");
+                    lv_label_set_text(kw_label, tr("已完成"));
                     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
                     printf("[keepwarm] END: sec=%d active=%d buf17=%d timer=%p\n",
                            g_keepwarm_sec, g_keepwarm_active,

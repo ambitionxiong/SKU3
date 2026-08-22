@@ -117,15 +117,15 @@ void jump_to_updown_bbq_stop_back(void)
                    g_keepwarm_active, g_send.iface_status);
             g_complete_to_stop_back = 0;
             if (g_keepwarm_active)
-                lv_label_set_text(back->label_8, "保温中...");
+                lv_label_set_text(back->label_8, tr("保温中..."));
             else
-                lv_label_set_text(back->label_8, "已完成");
+                lv_label_set_text(back->label_8, tr("已完成"));
             lv_bar_set_value(back->bar_2, 100, LV_ANIM_OFF);
         }
 
         if (g_delay_cancel_to_stop_back) {
             g_delay_cancel_to_stop_back = 0;
-            lv_label_set_text(back->label_8, "预约中...");
+            lv_label_set_text(back->label_8, tr("预约中..."));
             if (g_delay_source_page == PAGE_DESCRIPTIONMENU) {
                 /* 六感:status/图标/位置与六感运行页一致 */
                 if (six_chick_is_probe())
@@ -135,15 +135,15 @@ void jump_to_updown_bbq_stop_back(void)
                     int d = toastcolor_degree_value();
                     if (d < 1 || d > 3) d = 2;
                     const char *dt = (d == 1) ? "浅色" : (d == 3) ? "深色" : "中等色";
-                    lv_label_set_text_fmt(back->statu_label, "| %s | %s | %d分钟 |",
+                    lv_label_set_text_fmt(back->statu_label, tr("| %s | %s | %d分钟 |"),
                                           six_chick_name(), dt, six_chick_degree_min(d));   /* 烤羊肉串:菜名+程度+时间 */
                 } else if (six_chick_is_kind()) {
                     int w = toastcolor_weight_value();
                     if (w < 0) w = 800;
-                    lv_label_set_text_fmt(back->statu_label, "| %s | %dg | %d分钟 |",
+                    lv_label_set_text_fmt(back->statu_label, tr("| %s | %dg | %d分钟 |"),
                                           six_chick_name(), w, six_chick_cook_min(w));   /* 烤鸡翅类:菜名+克重+时间 */
                 } else
-                    lv_label_set_text_fmt(back->statu_label, "| %s | %d分钟", six_bread_name(), six_bread_cook_min());
+                    lv_label_set_text_fmt(back->statu_label, tr("| %s | %d分钟"), six_bread_name(), six_bread_cook_min());
                 lv_img_set_src(back->image_7, LVGL_IMAGE_PATH(sixicon.png));
                 lv_obj_set_pos(back->image_7, 163, 161);
             }
@@ -156,7 +156,7 @@ void jump_to_updown_bbq_stop_back(void)
         }
 
         if (g_send.iface_status == IFACE_COOKING)
-            lv_label_set_text(back->label_8, "烹饪中...");
+            lv_label_set_text(back->label_8, tr("烹饪中..."));
         printf("[keepwarm] stop_back enter: keepwarm=%d iface=%d label=%s\n",
                g_keepwarm_active, g_send.iface_status,
                lv_label_get_text(back->label_8) ? lv_label_get_text(back->label_8) : "?");
@@ -424,7 +424,7 @@ void jump_to_color_stop(void)
         int m = (remaining_sec % 3600) / 60;
         int s = remaining_sec % 60;
         lv_label_set_text_fmt(cs->time_label, "%02d:%02d:%02d", h, m, s);
-        lv_label_set_text_fmt(cs->label_13, "| 额外上色 | %d℃ | 5分钟", set_temp);
+        lv_label_set_text_fmt(cs->label_13, tr("| 额外上色 | %d℃ | 5分钟"), set_temp);
         lv_bar_set_range(cs->bar_3, 0, 100);
         if (cook_bar_saved > 100) cook_bar_saved = 100;
         lv_bar_set_value(cs->bar_3, cook_bar_saved, LV_ANIM_OFF);
@@ -455,7 +455,7 @@ void jump_to_color_stop_back(void)
         lv_obj_add_event_cb(csb->button_7, on_color_stop_back_sure_click,
                             LV_EVENT_CLICKED, NULL);
 
-        lv_label_set_text_fmt(csb->label_17, "| 额外上色 | %d℃ | 5分钟", set_temp);
+        lv_label_set_text_fmt(csb->label_17, tr("| 额外上色 | %d℃ | 5分钟"), set_temp);
         uint32_t _elapsed = cook_timer ? (lv_tick_get() - cook_start_time) : cook_elapsed_saved;
         int _p = stop_back_progress(_elapsed, cook_total_ms);
         if (_p > 100) _p = 100;
@@ -463,18 +463,18 @@ void jump_to_color_stop_back(void)
         lv_bar_set_value(csb->bar_4, _p, LV_ANIM_OFF);
 
         if (g_send.iface_status == IFACE_COOKING)
-            lv_label_set_text(csb->label_19, "烹饪中...");
+            lv_label_set_text(csb->label_19, tr("烹饪中..."));
 
         if (g_complete_to_stop_back) {
             g_complete_to_stop_back = 0;
-            lv_label_set_text(csb->label_19, "已完成");
+            lv_label_set_text(csb->label_19, tr("已完成"));
             lv_bar_set_value(csb->bar_4, 100, LV_ANIM_OFF);
         }
 
         if (g_extra_color_to_stop_back) {
             g_extra_color_to_stop_back = 0;
-            lv_label_set_text(csb->label_17, "| 5分钟 |");
-            lv_label_set_text(csb->label_19, "额外上色");
+            lv_label_set_text(csb->label_17, tr("| 5分钟 |"));
+            lv_label_set_text(csb->label_19, tr("额外上色"));
             lv_bar_set_value(csb->bar_4, 0, LV_ANIM_OFF);
         }
     }
@@ -528,7 +528,7 @@ void color_resume_cooking(void)
         int m = (remaining_sec % 3600) / 60;
         int s = remaining_sec % 60;
         lv_label_set_text_fmt(cc->time_label, "%02d:%02d:%02d", h, m, s);
-        lv_label_set_text_fmt(cc->status_label, "| 额外上色 | %d℃ | 5分钟", set_temp);
+        lv_label_set_text_fmt(cc->status_label, tr("| 额外上色 | %d℃ | 5分钟"), set_temp);
 
         /* 进度条从保存的值 → 100 */
         lv_bar_set_range(cc->bar, 0, 100);

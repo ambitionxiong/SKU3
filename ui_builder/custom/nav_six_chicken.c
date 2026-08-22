@@ -511,7 +511,7 @@ void jump_to_chickenmenu(void)
             static const char *sn[] = { "烤扇贝", "烤青口贝", "烤生蚝", "烤大虾", "烤鱿鱼" };
             lv_obj_t *dish_btns[] = { cm->wholechicken, cm->grillchickenwing, cm->friedchickenwing, cm->friedchickenleg, cm->grillchickenbreast };
             for (int i = 0; i < 5; i++) {
-                if (dish_btns[i]) { lv_obj_t *c = lv_obj_get_child(dish_btns[i], 0); if (c) lv_label_set_text(c, sn[i]); }
+                if (dish_btns[i]) { lv_obj_t *c = lv_obj_get_child(dish_btns[i], 0); if (c) lv_label_set_text(c, tr(sn[i])); }
             }
         }
 
@@ -574,7 +574,7 @@ void chickenmenu_rebuild(page_id_t child)
             static const char *sn[] = { "烤扇贝", "烤青口贝", "烤生蚝", "烤大虾", "烤鱿鱼" };
             lv_obj_t *dish_btns[] = { cm->wholechicken, cm->grillchickenwing, cm->friedchickenwing, cm->friedchickenleg, cm->grillchickenbreast };
             for (int i = 0; i < 5; i++) {
-                if (dish_btns[i]) { lv_obj_t *c = lv_obj_get_child(dish_btns[i], 0); if (c) lv_label_set_text(c, sn[i]); }
+                if (dish_btns[i]) { lv_obj_t *c = lv_obj_get_child(dish_btns[i], 0); if (c) lv_label_set_text(c, tr(sn[i])); }
             }
         }
 
@@ -1048,7 +1048,7 @@ void jump_to_probeneedtip(void)
     if (pt) {
         /* 左上角显示进入时的菜名 */
         if (pt->name)
-            lv_label_set_text(pt->name, probeneedtip_dish_name());
+            lv_label_set_text(pt->name, tr(probeneedtip_dish_name()));
 
         lv_obj_t *btns[] = { pt->sure };
         const int n = (int)(sizeof(btns) / sizeof(btns[0]));

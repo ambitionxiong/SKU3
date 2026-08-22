@@ -263,7 +263,7 @@ void jump_to_bottom_bbq_cooking_probe(void)
 
         cook_start_probe = get_probe_temp();
 
-        lv_label_set_text_fmt(cook->status, "| 底部烧烤 | %d℃ | %d℃", set_temp, probe_target_temp);
+        lv_label_set_text_fmt(cook->status, tr("| 底部烧烤 | %d℃ | %d℃"), set_temp, probe_target_temp);
         {int tp = get_probe_temp(); if (tp > probe_target_temp) tp = probe_target_temp; lv_label_set_text_fmt(cook->temp, "%d℃", tp);}
 
         lv_bar_set_range(cook->bar_5, 0, 100);
@@ -312,7 +312,7 @@ void jump_to_bottom_bbq_stop_probe(void)
         lv_obj_add_event_cb(stop->start, on_bottom_bbq_probe_stop_start_click,
                             LV_EVENT_CLICKED, NULL);
 
-        lv_label_set_text_fmt(stop->label_68, "| 底部烧烤 | %d℃ | %d℃", set_temp, probe_target_temp);
+        lv_label_set_text_fmt(stop->label_68, tr("| 底部烧烤 | %d℃ | %d℃"), set_temp, probe_target_temp);
         {int tp = probe_temp; if (tp > probe_target_temp) tp = probe_target_temp; lv_label_set_text_fmt(stop->temp, "%d℃", tp);}
 
         lv_bar_set_range(stop->bar_6, 0, 100);
@@ -351,21 +351,21 @@ void jump_to_bottom_bbq_stop_back_probe(void)
         lv_obj_add_event_cb(back->sure, on_bottom_bbq_probe_stop_back_sure_click,
                             LV_EVENT_CLICKED, NULL);
 
-        lv_label_set_text_fmt(back->status, "| 底部烧烤 | %d℃ | %d℃", set_temp, probe_target_temp);
+        lv_label_set_text_fmt(back->status, tr("| 底部烧烤 | %d℃ | %d℃"), set_temp, probe_target_temp);
 
         lv_bar_set_range(back->bar_7, 0, 100);
         lv_bar_set_value(back->bar_7, bar_val, LV_ANIM_OFF);
         if (g_send.iface_status == IFACE_COOKING)
-            lv_label_set_text(back->label_72, "烹饪中...");
+            lv_label_set_text(back->label_72, tr("烹饪中..."));
 
         if (g_complete_to_stop_back) {
             g_complete_to_stop_back = 0;
-            lv_label_set_text(back->label_72, "已完成");
+            lv_label_set_text(back->label_72, tr("已完成"));
             lv_bar_set_value(back->bar_7, 100, LV_ANIM_OFF);
         }
         if (g_delay_cancel_to_stop_back) {
             g_delay_cancel_to_stop_back = 0;
-            lv_label_set_text(back->label_72, "预约中...");
+            lv_label_set_text(back->label_72, tr("预约中..."));
             lv_label_set_text(back->label_74, g_delay_cancel_btn ? "回到上一页" : "回到主页");
             lv_obj_add_flag(back->bar_7, LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(back->image_29, LV_OBJ_FLAG_HIDDEN);
@@ -399,7 +399,7 @@ void jump_to_bottom_bbq_complete_probe(void)
             g_bottom_bbq_complete_probe = group_create_for_page(btns, 1);
             lv_obj_add_event_cb(complete->image_32, on_bottom_bbq_probe_complete_click,
                                 LV_EVENT_CLICKED, NULL);
-            lv_label_set_text_fmt(complete->status, "| 底部烧烤 | %d℃ | %d℃", set_temp, probe_target_temp);
+            lv_label_set_text_fmt(complete->status, tr("| 底部烧烤 | %d℃ | %d℃"), set_temp, probe_target_temp);
             lv_bar_set_value(complete->bar_8, 100, LV_ANIM_OFF);
         }
     }
@@ -434,7 +434,7 @@ void bottom_bbq_probe_resume_cooking(void)
         lv_obj_add_event_cb(cook->stop, on_bottom_bbq_probe_cooking_stop_click,
                             LV_EVENT_CLICKED, NULL);
 
-        lv_label_set_text_fmt(cook->status, "| 底部烧烤 | %d℃ | %d℃", set_temp, probe_target_temp);
+        lv_label_set_text_fmt(cook->status, tr("| 底部烧烤 | %d℃ | %d℃"), set_temp, probe_target_temp);
         {int tp = get_probe_temp(); if (tp > probe_target_temp) tp = probe_target_temp; lv_label_set_text_fmt(cook->temp, "%d℃", tp);}
 
         lv_bar_set_range(cook->bar_5, 0, 100);
@@ -574,7 +574,7 @@ void bottom_bbq_probe_rebuild_cooking(page_id_t child)
         lv_obj_add_event_cb(cook->stop, on_bottom_bbq_probe_cooking_stop_click,
                             LV_EVENT_CLICKED, NULL);
 
-        lv_label_set_text_fmt(cook->status, "| 底部烧烤 | %d℃ | %d℃", set_temp, probe_target_temp);
+        lv_label_set_text_fmt(cook->status, tr("| 底部烧烤 | %d℃ | %d℃"), set_temp, probe_target_temp);
         {int tp = get_probe_temp(); if (tp > probe_target_temp) tp = probe_target_temp; lv_label_set_text_fmt(cook->temp, "%d℃", tp);}
 
         lv_bar_set_range(cook->bar_5, 0, 100);
@@ -602,7 +602,7 @@ void bottom_bbq_probe_rebuild_stop(void)
         lv_obj_add_event_cb(stop->start, on_bottom_bbq_probe_stop_start_click,
                             LV_EVENT_CLICKED, NULL);
 
-        lv_label_set_text_fmt(stop->label_68, "| 底部烧烤 | %d℃ | %d℃", set_temp, probe_target_temp);
+        lv_label_set_text_fmt(stop->label_68, tr("| 底部烧烤 | %d℃ | %d℃"), set_temp, probe_target_temp);
         {int tp = get_probe_temp(); if (tp > probe_target_temp) tp = probe_target_temp; lv_label_set_text_fmt(stop->temp, "%d℃", tp);}
 
         lv_bar_set_range(stop->bar_6, 0, 100);
@@ -639,11 +639,11 @@ void bottom_bbq_probe_rebuild_stop_back(void)
         lv_bar_set_value(back->bar_7, bar_val, LV_ANIM_OFF);
 
         if (g_send.iface_status == IFACE_COOKING)
-            lv_label_set_text(back->label_72, "烹饪中...");
+            lv_label_set_text(back->label_72, tr("烹饪中..."));
 
         if (g_complete_to_stop_back) {
             g_complete_to_stop_back = 0;
-            lv_label_set_text(back->label_72, "已完成");
+            lv_label_set_text(back->label_72, tr("已完成"));
             lv_bar_set_value(back->bar_7, 100, LV_ANIM_OFF);
         }
     }

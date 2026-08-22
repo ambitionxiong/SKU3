@@ -32,9 +32,9 @@ void jump_to_unfrozen_complete(void);
 static void unfrozen_set_status(lv_obj_t *label, int temp, int hour, int min)
 {
     if (hour == 0)
-        lv_label_set_text_fmt(label, "| 解冻 | %d℃ | %02d分钟", temp, min);
+        lv_label_set_text_fmt(label, tr("| 解冻 | %d℃ | %02d分钟"), temp, min);
     else
-        lv_label_set_text_fmt(label, "| 解冻 | %d℃ | %d小时%02d分钟", temp, hour, min);
+        lv_label_set_text_fmt(label, tr("| 解冻 | %d℃ | %d小时%02d分钟"), temp, hour, min);
 }
 
 static void unfrozen_preheat_toggle(lv_event_t *e)
@@ -551,14 +551,14 @@ void jump_to_unfrozen_stop_back(void)
         if (g_complete_to_stop_back) {
             g_complete_to_stop_back = 0;
             if (g_keepwarm_active)
-                lv_label_set_text(back->label_480, "保温中...");
+                lv_label_set_text(back->label_480, tr("保温中..."));
             else
-                lv_label_set_text(back->label_480, "已完成");
+                lv_label_set_text(back->label_480, tr("已完成"));
             lv_bar_set_value(back->bar_34, 100, LV_ANIM_OFF);
         }
         if (g_delay_cancel_to_stop_back) {
             g_delay_cancel_to_stop_back = 0;
-            lv_label_set_text(back->label_480, "预约中...");
+            lv_label_set_text(back->label_480, tr("预约中..."));
             lv_label_set_text(back->label_482, g_delay_cancel_btn ? "回到上一页" : "回到主页");
             lv_obj_add_flag(back->bar_34, LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(back->image_215, LV_OBJ_FLAG_HIDDEN);
@@ -566,7 +566,7 @@ void jump_to_unfrozen_stop_back(void)
         }
 
         if (g_send.iface_status == IFACE_COOKING)
-            lv_label_set_text(back->label_480, "烹饪中...");
+            lv_label_set_text(back->label_480, tr("烹饪中..."));
     }
     current_group = g_unfrozen_stop_back;
 
@@ -720,9 +720,9 @@ void jump_to_unfrozen_complete(void)
             lv_obj_add_event_cb(cook->little, on_unfrozen_cooking_setting_click,
                                 LV_EVENT_CLICKED, NULL);
             if (set_hour == 0)
-                lv_label_set_text_fmt(cook->status, "| 解冻 | %d℃ | %02d分钟", set_temp, set_min);
+                lv_label_set_text_fmt(cook->status, tr("| 解冻 | %d℃ | %02d分钟"), set_temp, set_min);
             else
-                lv_label_set_text_fmt(cook->status, "| 解冻 | %d℃ | %d小时%02d分钟", set_temp, set_hour, set_min);
+                lv_label_set_text_fmt(cook->status, tr("| 解冻 | %d℃ | %d小时%02d分钟"), set_temp, set_hour, set_min);
             lv_bar_set_value(cook->bar_35, 100, LV_ANIM_OFF);
         }
     }
@@ -1076,9 +1076,9 @@ void unfrozen_rebuild_stop_back(void)
         if (g_complete_to_stop_back) {
             g_complete_to_stop_back = 0;
             if (g_keepwarm_active)
-                lv_label_set_text(back->label_480, "保温中...");
+                lv_label_set_text(back->label_480, tr("保温中..."));
             else
-                lv_label_set_text(back->label_480, "已完成");
+                lv_label_set_text(back->label_480, tr("已完成"));
             lv_bar_set_value(back->bar_34, 100, LV_ANIM_OFF);
         }
     }

@@ -207,19 +207,19 @@ static void on_meat6menu_beef_click(lv_event_t *e)
 {
     (void)e;
     s_six_meat_kind = 0;
-    jump_to_sixop3page("牛肉", "烤牛排", "炸牛排", "烤牛肉", (1 | 4), SIX_OP3_KIND_BEEF);   /* (1|4)=101: 显示 probe1/3, 隐藏 probe2 */
+    jump_to_sixop3page(tr("牛肉"), tr("烤牛排"), tr("炸牛排"), tr("烤牛肉"),  (1 | 4), SIX_OP3_KIND_BEEF);   /* (1|4)=101: 显示 probe1/3, 隐藏 probe2 */
 }
 static void on_meat6menu_mutton_click(lv_event_t *e)
 {
     (void)e;
     s_six_meat_kind = 1;
-    jump_to_sixop3page("羊肉", "烤羊腿", "烤羊排", "烤羊肉串", (1 | 2), SIX_OP3_KIND_MUTTON);   /* (1|2)=011: 显示 probe1/2, 隐藏 probe3 */
+    jump_to_sixop3page(tr("羊肉"), tr("烤羊腿"), tr("烤羊排"), tr("烤羊肉串"),  (1 | 2), SIX_OP3_KIND_MUTTON);   /* (1|2)=011: 显示 probe1/2, 隐藏 probe3 */
 }
 static void on_meat6menu_pork_click(lv_event_t *e)
 {
     (void)e;
     s_six_meat_kind = 2;
-    jump_to_sixop3page("猪肉", "烤猪里脊肉", "烤五花肉", "炸排骨", (1 | 2), SIX_OP3_KIND_PORK);  /* (1|2)=011: 显示 probe1/2, 隐藏 probe3 */
+    jump_to_sixop3page(tr("猪肉"), tr("烤猪里脊肉"), tr("烤五花肉"), tr("炸排骨"),  (1 | 2), SIX_OP3_KIND_PORK);  /* (1|2)=011: 显示 probe1/2, 隐藏 probe3 */
 }
 static void on_meat6menu_meatdish_click(lv_event_t *e)
 {

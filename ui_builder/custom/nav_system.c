@@ -63,7 +63,7 @@ static void system_timer_cb(lv_timer_t *timer)
     }
 
     if (g_send.iface_status == IFACE_SLEEP) {
-        jump_to_probetip(probe_now ? "探针已插入" : "探针已拔出");
+        jump_to_probetip(probe_now ? tr("探针已插入") : tr("探针已拔出"));
         return;
     }
 
@@ -100,7 +100,7 @@ static void system_timer_cb(lv_timer_t *timer)
     current_group = NULL;
     lv_scr_load(waitmenu_24_get(&ui_manager)->obj);
     waitmenu_apply_clock();   /* 立即刷新为真实时间 */
-    jump_to_probetip(probe_now ? "探针已插入" : "探针已拔出");
+    jump_to_probetip(probe_now ? tr("探针已插入") : tr("探针已拔出"));
 }
 
 // ==============================

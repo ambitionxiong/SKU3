@@ -32,9 +32,9 @@ void jump_to_slowcook_complete(void);
 static void slowcook_set_status(lv_obj_t *label, int temp, int hour, int min)
 {
     if (hour == 0)
-        lv_label_set_text_fmt(label, "| 慢煮 | %d℃ | %02d分钟", temp, min);
+        lv_label_set_text_fmt(label, tr("| 慢煮 | %d℃ | %02d分钟"), temp, min);
     else
-        lv_label_set_text_fmt(label, "| 慢煮 | %d℃ | %d小时%02d分钟", temp, hour, min);
+        lv_label_set_text_fmt(label, tr("| 慢煮 | %d℃ | %d小时%02d分钟"), temp, hour, min);
 }
 
 static void slowcook_preheat_toggle(lv_event_t *e)
@@ -551,14 +551,14 @@ void jump_to_slowcook_stop_back(void)
         if (g_complete_to_stop_back) {
             g_complete_to_stop_back = 0;
             if (g_keepwarm_active)
-                lv_label_set_text(back->label_431, "保温中...");
+                lv_label_set_text(back->label_431, tr("保温中..."));
             else
-                lv_label_set_text(back->label_431, "已完成");
+                lv_label_set_text(back->label_431, tr("已完成"));
             lv_bar_set_value(back->bar_30, 100, LV_ANIM_OFF);
         }
         if (g_delay_cancel_to_stop_back) {
             g_delay_cancel_to_stop_back = 0;
-            lv_label_set_text(back->label_431, "预约中...");
+            lv_label_set_text(back->label_431, tr("预约中..."));
             lv_label_set_text(back->label_433, g_delay_cancel_btn ? "回到上一页" : "回到主页");
             lv_obj_add_flag(back->bar_30, LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(back->image_194, LV_OBJ_FLAG_HIDDEN);
@@ -566,7 +566,7 @@ void jump_to_slowcook_stop_back(void)
         }
 
         if (g_send.iface_status == IFACE_COOKING)
-            lv_label_set_text(back->label_431, "烹饪中...");
+            lv_label_set_text(back->label_431, tr("烹饪中..."));
     }
     current_group = g_slowcook_stop_back;
 
@@ -720,9 +720,9 @@ void jump_to_slowcook_complete(void)
             lv_obj_add_event_cb(cook->little, on_slowcook_cooking_setting_click,
                                 LV_EVENT_CLICKED, NULL);
             if (set_hour == 0)
-                lv_label_set_text_fmt(cook->status, "| 慢煮 | %d℃ | %02d分钟", set_temp, set_min);
+                lv_label_set_text_fmt(cook->status, tr("| 慢煮 | %d℃ | %02d分钟"), set_temp, set_min);
             else
-                lv_label_set_text_fmt(cook->status, "| 慢煮 | %d℃ | %d小时%02d分钟", set_temp, set_hour, set_min);
+                lv_label_set_text_fmt(cook->status, tr("| 慢煮 | %d℃ | %d小时%02d分钟"), set_temp, set_hour, set_min);
             lv_bar_set_value(cook->bar_31, 100, LV_ANIM_OFF);
         }
     }
@@ -1076,9 +1076,9 @@ void slowcook_rebuild_stop_back(void)
         if (g_complete_to_stop_back) {
             g_complete_to_stop_back = 0;
             if (g_keepwarm_active)
-                lv_label_set_text(back->label_431, "保温中...");
+                lv_label_set_text(back->label_431, tr("保温中..."));
             else
-                lv_label_set_text(back->label_431, "已完成");
+                lv_label_set_text(back->label_431, tr("已完成"));
             lv_bar_set_value(back->bar_30, 100, LV_ANIM_OFF);
         }
     }

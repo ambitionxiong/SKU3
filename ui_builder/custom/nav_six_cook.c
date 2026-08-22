@@ -170,19 +170,19 @@ static void six_label_status(somecook_cooking_t *sc)
         int d = toastcolor_degree_value();
         if (d < 1 || d > 3) d = 2;
         const char *dt = (d == 1) ? "浅色" : (d == 3) ? "深色" : "中等色";
-        lv_label_set_text_fmt(sc->label_12, "| %s | %s | %d分钟 |",
+        lv_label_set_text_fmt(sc->label_12, tr("| %s | %s | %d分钟 |"),
                               six_chick_name(), dt, six_chick_degree_min(d));
     } else if (six_chick_is_kind()) {
         int w = toastcolor_weight_value();
         if (w < 0) w = 800;   /* 兜底 */
-        lv_label_set_text_fmt(sc->label_12, "| %s | %dg | %d分钟 |",
+        lv_label_set_text_fmt(sc->label_12, tr("| %s | %dg | %d分钟 |"),
                               six_chick_name(), w, six_chick_cook_min(w));
     } else if (six_chick_is_seafood()) {
         const seafood_dish_t *sd = seafood_dish_cfg();
-        lv_label_set_text_fmt(sc->label_12, "| %s | %d分钟 |",
+        lv_label_set_text_fmt(sc->label_12, tr("| %s | %d分钟 |"),
                               six_chick_name(), sd ? sd->cook_min : 18);
     } else {
-        lv_label_set_text_fmt(sc->label_12, "| %s | %d分钟", six_bread_name(), six_bread_cfg()->cook_min);
+        lv_label_set_text_fmt(sc->label_12, tr("| %s | %d分钟"), six_bread_name(), six_bread_cfg()->cook_min);
     }
 }
 
@@ -264,7 +264,7 @@ static void six_cook_apply_display(void)
     switch (g_six_phase) {
     case SIX_PHASE_RISING:
         lv_label_set_text(sc->cookstatus, g_six_paused ? "暂停中..." : "发酵中...");
-        lv_label_set_text_fmt(sc->label_12, "| %s | 45℃ | 45分钟", six_bread_name());
+        lv_label_set_text_fmt(sc->label_12, tr("| %s | 45℃ | 45分钟"), six_bread_name());
         if (bl) lv_label_set_text(bl, g_six_paused ? "开 始" : "暂 停");
         break;
     case SIX_PHASE_COOKING:
@@ -276,27 +276,27 @@ static void six_cook_apply_display(void)
     case SIX_PHASE_ASK_COLOR:
         lv_obj_add_flag(sc->timelabel, LV_OBJ_FLAG_HIDDEN);
         six_label_status(sc);   /* 完成询问态保持最后烹饪信息 */
-        lv_label_set_text(sc->cookstatus, "已完成");
+        lv_label_set_text(sc->cookstatus, tr("已完成"));
         if (six_bread_has_color()) {
             /* 有烤色:显示烤色询问 */
             if (g_six_phase == SIX_PHASE_ASK) {
-                lv_label_set_text(sc->text1, "请问需要增加");
-                lv_label_set_text(sc->text2, "烤色吗!");
+                lv_label_set_text(sc->text1, tr("请问需要增加"));
+                lv_label_set_text(sc->text2, tr("烤色吗!"));
             } else {
-                lv_label_set_text(sc->text1, "请问还需要增加");
-                lv_label_set_text(sc->text2, "烤色吗!");
+                lv_label_set_text(sc->text1, tr("请问还需要增加"));
+                lv_label_set_text(sc->text2, tr("烤色吗!"));
             }
             lv_obj_clear_flag(sc->text1, LV_OBJ_FLAG_HIDDEN);
             lv_obj_clear_flag(sc->text2, LV_OBJ_FLAG_HIDDEN);
-            if (bl) lv_label_set_text(bl, "需 要");
+            if (bl) lv_label_set_text(bl, tr("需 要"));
         } else {
             /* 无烤色:完成提示,彻底隐藏按钮(移出焦点组,按确定不再触发) */
             lv_obj_add_flag(sc->stop, LV_OBJ_FLAG_HIDDEN);
             if (g_six_cooking) lv_group_remove_obj(sc->stop);
             lv_obj_clear_flag(sc->text1, LV_OBJ_FLAG_HIDDEN);
             lv_obj_clear_flag(sc->text2, LV_OBJ_FLAG_HIDDEN);
-            lv_label_set_text(sc->text1, "高温防烫");
-            lv_label_set_text(sc->text2, "请缓慢打开门体！");
+            lv_label_set_text(sc->text1, tr("高温防烫"));
+            lv_label_set_text(sc->text2, tr("请缓慢打开门体！"));
         }
         lv_bar_set_range(sc->bar_1, 0, 100);
         lv_bar_set_value(sc->bar_1, 100, LV_ANIM_OFF);
@@ -304,15 +304,15 @@ static void six_cook_apply_display(void)
     case SIX_PHASE_COLOR_SETUP:
         lv_obj_clear_flag(sc->timelabel, LV_OBJ_FLAG_HIDDEN);
         lv_label_set_text_fmt(sc->timelabel, "00:%02d:00", g_six_color_min);   /* 所选程度时长 */
-        lv_label_set_text(sc->cookstatus, "额外上色");
-        lv_label_set_text_fmt(sc->label_12, "| %s | %d分钟", six_bread_name(), g_six_color_min);
-        if (bl) lv_label_set_text(bl, "开 始");
+        lv_label_set_text(sc->cookstatus, tr("额外上色"));
+        lv_label_set_text_fmt(sc->label_12, tr("| %s | %d分钟"), six_bread_name(), g_six_color_min);
+        if (bl) lv_label_set_text(bl, tr("开 始"));
         lv_bar_set_range(sc->bar_1, 0, 100);
         lv_bar_set_value(sc->bar_1, 3, LV_ANIM_OFF);
         break;
     case SIX_PHASE_COLOR_COOKING:
         lv_label_set_text(sc->cookstatus, g_six_paused ? "暂停中..." : "烹饪中...");
-        lv_label_set_text_fmt(sc->label_12, "| %s | 额外上色 | %d分钟", six_bread_name(), g_six_color_min);
+        lv_label_set_text_fmt(sc->label_12, tr("| %s | 额外上色 | %d分钟"), six_bread_name(), g_six_color_min);
         if (bl) lv_label_set_text(bl, g_six_paused ? "开 始" : "暂 停");
         break;
     default:
@@ -351,15 +351,15 @@ static void six_cook_apply_display(void)
         lv_obj_clear_flag(sc->container_1, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(sc->text1, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(sc->text2, LV_OBJ_FLAG_HIDDEN);
-        lv_label_set_text(sc->text1, "是否结束当前任务");
-        lv_label_set_text(sc->text2, "回到主页");
+        lv_label_set_text(sc->text1, tr("是否结束当前任务"));
+        lv_label_set_text(sc->text2, tr("回到主页"));
         /* 确认层:按钮恢复显示并加回焦点组(可操作) */
         lv_obj_clear_flag(sc->stop, LV_OBJ_FLAG_HIDDEN);
         if (g_six_cooking) {
             lv_group_remove_obj(sc->stop);   /* 防重复添加 */
             lv_group_add_obj(g_six_cooking, sc->stop);
         }
-        if (bl) lv_label_set_text(bl, "确 定");
+        if (bl) lv_label_set_text(bl, tr("确 定"));
     }
 }
 

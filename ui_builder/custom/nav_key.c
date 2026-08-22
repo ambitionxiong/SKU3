@@ -293,7 +293,7 @@ void process_key(uint8_t key)
         if (is_probe_inserted()) {
             g_send.buzzer_req = BUZZER_KEY_INVALID;
             if (depth > 0 && page_stack[depth - 1] != PAGE_PROBETIP)
-                jump_to_probetip("该功能不支持探针，请拔出探针！");
+                jump_to_probetip(tr("该功能不支持探针，请拔出探针！"));
             break;
         }
         if (depth > 0) {
@@ -362,7 +362,7 @@ void process_key(uint8_t key)
         if (is_probe_inserted()) {
             g_send.buzzer_req = BUZZER_KEY_INVALID;
             if (depth > 0 && page_stack[depth - 1] != PAGE_PROBETIP)
-                jump_to_probetip("该功能不支持探针，请拔出探针！");   /* 与 KEY_CLEAN 一致 */
+                jump_to_probetip(tr("该功能不支持探针，请拔出探针！"));   /* 与 KEY_CLEAN 一致 */
             break;
         }
         g_send.buzzer_req = BUZZER_KEY_VALID;

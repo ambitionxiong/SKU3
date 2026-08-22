@@ -310,9 +310,9 @@ void delayset_refresh_display(delayset_t *ds)
     if (delayset_enter_hour >= 0 &&
         (delay_hour < delayset_enter_hour ||
          (delay_hour == delayset_enter_hour && delay_min < delayset_enter_min)))
-        day = "明天";   /* 小时或分钟小于时间戳 → 明天 */
+        day = tr("明天");   /* 小时或分钟小于时间戳 → 明天 */
     else
-        day = "今天";   /* 大于或相等 → 今天 */
+        day = tr("今天");   /* 大于或相等 → 今天 */
     lv_label_set_text(ds->day, day);
 }
 // delayset 焦点切换：显示对应字段的下划线

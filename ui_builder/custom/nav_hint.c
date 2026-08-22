@@ -204,7 +204,7 @@ void nav_show_invalid_hint(void)
             g_hint_scr = NULL;
             return;
         }
-        lv_label_set_text(g_hint_tip, "烤箱运行时不可用。");
+        lv_label_set_text(g_hint_tip, tr("烤箱运行时不可用。"));
         lv_label_set_long_mode(g_hint_tip, LV_LABEL_LONG_WRAP);
         lv_obj_set_pos(g_hint_tip, 885, 161);
         lv_obj_set_size(g_hint_tip, 275, 36);

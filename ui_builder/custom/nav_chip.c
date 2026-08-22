@@ -28,9 +28,9 @@ void jump_to_chip_complete(void);
 static void chip_set_status(lv_obj_t *label, int temp, int hour, int min)
 {
     if (hour == 0)
-        lv_label_set_text_fmt(label, "| 薯条 | %d℃ | %02d分钟", temp, min);
+        lv_label_set_text_fmt(label, tr("| 薯条 | %d℃ | %02d分钟"), temp, min);
     else
-        lv_label_set_text_fmt(label, "| 薯条 | %d℃ | %d小时%02d分钟", temp, hour, min);
+        lv_label_set_text_fmt(label, tr("| 薯条 | %d℃ | %d小时%02d分钟"), temp, hour, min);
 }
 
 static void chip_delay_toggle(lv_event_t *e)
@@ -461,19 +461,19 @@ void jump_to_chip_stop_back(void)
         lv_bar_set_range(back->bar_66, 0, 100);
         lv_bar_set_value(back->bar_66, p, LV_ANIM_OFF);
         if (g_send.iface_status == IFACE_COOKING)
-            lv_label_set_text(back->label_841, "烹饪中...");
+            lv_label_set_text(back->label_841, tr("烹饪中..."));
 
         if (g_complete_to_stop_back) {
             g_complete_to_stop_back = 0;
             if (g_keepwarm_active)
-                lv_label_set_text(back->label_841, "保温中...");
+                lv_label_set_text(back->label_841, tr("保温中..."));
             else
-                lv_label_set_text(back->label_841, "已完成");
+                lv_label_set_text(back->label_841, tr("已完成"));
             lv_bar_set_value(back->bar_66, 100, LV_ANIM_OFF);
         }
         if (g_delay_cancel_to_stop_back) {
             g_delay_cancel_to_stop_back = 0;
-            lv_label_set_text(back->label_841, "预约中...");
+            lv_label_set_text(back->label_841, tr("预约中..."));
             lv_label_set_text(back->label_843, g_delay_cancel_btn ? "回到上一页" : "回到主页");
             lv_obj_add_flag(back->bar_66, LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(back->image_384, LV_OBJ_FLAG_HIDDEN);
@@ -926,9 +926,9 @@ void chip_rebuild_stop_back(void)
         if (g_complete_to_stop_back) {
             g_complete_to_stop_back = 0;
             if (g_keepwarm_active)
-                lv_label_set_text(back->label_841, "保温中...");
+                lv_label_set_text(back->label_841, tr("保温中..."));
             else
-                lv_label_set_text(back->label_841, "已完成");
+                lv_label_set_text(back->label_841, tr("已完成"));
             lv_bar_set_value(back->bar_66, 100, LV_ANIM_OFF);
         }
 

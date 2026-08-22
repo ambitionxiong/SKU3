@@ -277,18 +277,18 @@ void jump_to_hcm_stop_back(void)
         lv_bar_set_range(back->bar_2, 0, 100);
         lv_bar_set_value(back->bar_2, p, LV_ANIM_OFF);
         if (g_send.iface_status == IFACE_COOKING)
-            lv_label_set_text(back->label_11, "清洁中...");
+            lv_label_set_text(back->label_11, tr("清洁中..."));
 
         if (g_complete_to_stop_back) {
             g_complete_to_stop_back = 0;
-            lv_label_set_text(back->label_11, "已完成");
+            lv_label_set_text(back->label_11, tr("已完成"));
             lv_bar_set_value(back->bar_2, 100, LV_ANIM_OFF);
             lv_obj_add_flag(back->button_3, LV_OBJ_FLAG_HIDDEN);
         }
 
         if (g_cooling_to_stop_back) {
             g_cooling_to_stop_back = 0;
-            lv_label_set_text(back->label_11, "冷却中...");
+            lv_label_set_text(back->label_11, tr("冷却中..."));
         }
 
         if (back->sure) lv_group_focus_obj(back->sure);
@@ -491,14 +491,14 @@ void hcm_rebuild_stop_back(void)
 
         if (g_complete_to_stop_back) {
             g_complete_to_stop_back = 0;
-            lv_label_set_text(back->label_11, "已完成");
+            lv_label_set_text(back->label_11, tr("已完成"));
             lv_bar_set_value(back->bar_2, 100, LV_ANIM_OFF);
             lv_obj_add_flag(back->button_3, LV_OBJ_FLAG_HIDDEN);
         }
 
         if (g_cooling_to_stop_back) {
             g_cooling_to_stop_back = 0;
-            lv_label_set_text(back->label_11, "冷却中...");
+            lv_label_set_text(back->label_11, tr("冷却中..."));
         }
 
         if (back->sure) lv_group_focus_obj(back->sure);

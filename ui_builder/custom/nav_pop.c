@@ -562,11 +562,11 @@ void page_pop(void)
                 lv_bar_set_value(back->bar_2, p, LV_ANIM_OFF);
 
                 if (g_send.iface_status == IFACE_COOKING)
-                    lv_label_set_text(back->label_8, "烹饪中...");
+                    lv_label_set_text(back->label_8, tr("烹饪中..."));
 
                 if (g_complete_to_stop_back) {
                     g_complete_to_stop_back = 0;
-                    lv_label_set_text(back->label_8, "已完成");
+                    lv_label_set_text(back->label_8, tr("已完成"));
                     lv_bar_set_value(back->bar_2, 100, LV_ANIM_OFF);
                 }
             }
@@ -676,7 +676,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_3, 100, LV_ANIM_OFF);
                 /* 保温场景（stop_back 返回）：恢复"保温中..."显示，计时继续 */
                 if (g_keepwarm_active)
-                    lv_label_set_text(done->complete_label, "保温中...");
+                    lv_label_set_text(done->complete_label, tr("保温中..."));
                 lv_group_focus_obj(done->little_button);
             }
             current_group = g_updown_bbq_complete;
@@ -726,7 +726,7 @@ void page_pop(void)
                 g_updown_bbq_complete_probe = group_create_for_page(btns, 1);
                 updown_bbq_probe_complete_rebind(done->image_31);
                 lv_group_focus_obj(done->image_31);
-                lv_label_set_text_fmt(done->label_74, "| 上下烧烤 | %d℃ | %d℃", set_temp, probe_target_temp);
+                lv_label_set_text_fmt(done->label_74, tr("| 上下烧烤 | %d℃ | %d℃"), set_temp, probe_target_temp);
                 lv_bar_set_value(done->bar_4, 100, LV_ANIM_OFF);
             }
             current_group = g_updown_bbq_complete_probe;
@@ -768,7 +768,7 @@ void page_pop(void)
                 g_hot_bbq_complete_probe = group_create_for_page(btns, 1);
                 hot_bbq_probe_complete_rebind(done->image_15);
                 lv_group_focus_obj(done->image_15);
-                lv_label_set_text_fmt(done->status, "| 热风烧烤 | %d℃ | %d℃", set_temp, probe_target_temp);
+                lv_label_set_text_fmt(done->status, tr("| 热风烧烤 | %d℃ | %d℃"), set_temp, probe_target_temp);
                 lv_bar_set_value(done->bar_4, 100, LV_ANIM_OFF);
             }
             current_group = g_hot_bbq_complete_probe;
@@ -810,7 +810,7 @@ void page_pop(void)
                 g_bottom_bbq_complete_probe = group_create_for_page(btns, 1);
                 bottom_bbq_probe_complete_rebind(done->image_32);
                 lv_group_focus_obj(done->image_32);
-                lv_label_set_text_fmt(done->status, "| 底部烧烤 | %d℃ | %d℃", set_temp, probe_target_temp);
+                lv_label_set_text_fmt(done->status, tr("| 底部烧烤 | %d℃ | %d℃"), set_temp, probe_target_temp);
                 lv_bar_set_value(done->bar_8, 100, LV_ANIM_OFF);
             }
             current_group = g_bottom_bbq_complete_probe;
@@ -852,7 +852,7 @@ void page_pop(void)
                 g_slowcook_complete_probe = group_create_for_page(btns, 1);
                 slowcook_probe_complete_rebind(done->image_48);
                 lv_group_focus_obj(done->image_48);
-                lv_label_set_text_fmt(done->status, "| 慢煮 | %d℃ | %d℃", set_temp, probe_target_temp);
+                lv_label_set_text_fmt(done->status, tr("| 慢煮 | %d℃ | %d℃"), set_temp, probe_target_temp);
                 lv_bar_set_value(done->bar_12, 100, LV_ANIM_OFF);
             }
             current_group = g_slowcook_complete_probe;
@@ -907,7 +907,7 @@ void page_pop(void)
                 int m = (remaining_sec % 3600) / 60;
                 int s = remaining_sec % 60;
                 lv_label_set_text_fmt(cc->time_label, "%02d:%02d:%02d", h, m, s);
-                lv_label_set_text_fmt(cc->status_label, "| 额外上色 | %d℃ | 5分钟", set_temp);
+                lv_label_set_text_fmt(cc->status_label, tr("| 额外上色 | %d℃ | 5分钟"), set_temp);
                 lv_bar_set_range(cc->bar, 0, 100);
                     int progress = stop_back_progress(elapsed, cook_total_ms);
                     if (progress > 100) progress = 100;
@@ -933,7 +933,7 @@ void page_pop(void)
             colorcooking_complete_create(&ui_manager);
             colorcooking_complete_t *cc = colorcooking_complete_get(&ui_manager);
             if (cc) {
-                lv_label_set_text_fmt(cc->status_label, "| 额外上色 | %d℃ | 5分钟", set_temp);
+                lv_label_set_text_fmt(cc->status_label, tr("| 额外上色 | %d℃ | 5分钟"), set_temp);
                 lv_bar_set_range(cc->bar, 0, 100);
                 lv_bar_set_value(cc->bar, 100, LV_ANIM_OFF);
             }
@@ -1064,7 +1064,7 @@ void page_pop(void)
                 int m = (remaining_sec % 3600) / 60;
                 int s = remaining_sec % 60;
                 lv_label_set_text_fmt(cs->time_label, "%02d:%02d:%02d", h, m, s);
-                lv_label_set_text_fmt(cs->label_13, "| 额外上色 | %d℃ | 5分钟", set_temp);
+                lv_label_set_text_fmt(cs->label_13, tr("| 额外上色 | %d℃ | 5分钟"), set_temp);
                 lv_bar_set_range(cs->bar_3, 0, 100);
                 if (cook_bar_saved > 100) cook_bar_saved = 100;
                 lv_bar_set_value(cs->bar_3, cook_bar_saved, LV_ANIM_OFF);
@@ -1088,7 +1088,7 @@ void page_pop(void)
                 lv_obj_add_event_cb(csb->button_7, on_color_stop_back_sure_click,
                                     LV_EVENT_CLICKED, NULL);
 
-                lv_label_set_text_fmt(csb->label_17, "| 额外上色 | %d℃ | 5分钟", set_temp);
+                lv_label_set_text_fmt(csb->label_17, tr("| 额外上色 | %d℃ | 5分钟"), set_temp);
                 uint32_t _elapsed = cook_timer ? (lv_tick_get() - cook_start_time) : cook_elapsed_saved;
                 int _p = stop_back_progress(_elapsed, cook_total_ms);
                 if (_p > 100) _p = 100;
@@ -1097,7 +1097,7 @@ void page_pop(void)
 
                 if (g_complete_to_stop_back) {
                     g_complete_to_stop_back = 0;
-                    lv_label_set_text(csb->label_19, "已完成");
+                    lv_label_set_text(csb->label_19, tr("已完成"));
                     lv_bar_set_value(csb->bar_4, 100, LV_ANIM_OFF);
                 }
             }
@@ -1171,9 +1171,9 @@ void page_pop(void)
                 top_bbq_complete_rebind(done->button_27);
                 lv_group_focus_obj(done->button_27);
                 if (g_keepwarm_active)
-                    lv_label_set_text(done->label_108, "保温中...");
+                    lv_label_set_text(done->label_108, tr("保温中..."));
 
-                lv_label_set_text_fmt(done->label_107, "| 顶部烧烤 | %d℃ | %02d分钟", set_temp, set_min);
+                lv_label_set_text_fmt(done->label_107, tr("| 顶部烧烤 | %d℃ | %02d分钟"), set_temp, set_min);
                 lv_bar_set_value(done->bar_9, 100, LV_ANIM_OFF);
             }
             current_group = g_top_bbq_complete;
@@ -1245,9 +1245,9 @@ void page_pop(void)
                 bottom_bbq_complete_rebind(done->button_43);
                 lv_group_focus_obj(done->button_43);
                 if (g_keepwarm_active)
-                    lv_label_set_text(done->label_156, "保温中...");
+                    lv_label_set_text(done->label_156, tr("保温中..."));
 
-                lv_label_set_text_fmt(done->status, "| 底部烧烤 | %d℃ | %02d分钟", set_temp, set_min);
+                lv_label_set_text_fmt(done->status, tr("| 底部烧烤 | %d℃ | %02d分钟"), set_temp, set_min);
                 lv_bar_set_value(done->bar_13, 100, LV_ANIM_OFF);
             }
             current_group = g_bottom_bbq_complete;
@@ -1319,9 +1319,9 @@ void page_pop(void)
                 hot_bbq_complete_rebind(done->button_59);
                 lv_group_focus_obj(done->button_59);
                 if (g_keepwarm_active)
-                    lv_label_set_text(done->label_204, "保温中...");
+                    lv_label_set_text(done->label_204, tr("保温中..."));
 
-                lv_label_set_text_fmt(done->status, "| 热风烧烤 | %d℃ | %02d分钟", set_temp, set_min);
+                lv_label_set_text_fmt(done->status, tr("| 热风烧烤 | %d℃ | %02d分钟"), set_temp, set_min);
                 lv_bar_set_value(done->bar_17, 100, LV_ANIM_OFF);
             }
             current_group = g_hot_bbq_complete;
@@ -1387,9 +1387,9 @@ void page_pop(void)
                 hotwind_bbq_complete_rebind(done->button_74);
                 lv_group_focus_obj(done->button_74);
                 if (g_keepwarm_active)
-                    lv_label_set_text(done->label_242, "保温中...");
+                    lv_label_set_text(done->label_242, tr("保温中..."));
 
-                lv_label_set_text_fmt(done->status, "| 热风对流 | %d℃ | %02d分钟", set_temp, set_min);
+                lv_label_set_text_fmt(done->status, tr("| 热风对流 | %d℃ | %02d分钟"), set_temp, set_min);
                 lv_bar_set_value(done->bar_21, 100, LV_ANIM_OFF);
             }
             current_group = g_hotwind_bbq_complete;
@@ -1455,9 +1455,9 @@ void page_pop(void)
                 save_bbq_complete_rebind(done->button_89);
                 lv_group_focus_obj(done->button_89);
                 if (g_keepwarm_active)
-                    lv_label_set_text(done->label_280, "保温中...");
+                    lv_label_set_text(done->label_280, tr("保温中..."));
 
-                lv_label_set_text_fmt(done->status, "| 节能热风 | %d℃ | %02d分钟", set_temp, set_min);
+                lv_label_set_text_fmt(done->status, tr("| 节能热风 | %d℃ | %02d分钟"), set_temp, set_min);
                 lv_bar_set_value(done->bar_25, 100, LV_ANIM_OFF);
             }
             current_group = g_save_bbq_complete;
@@ -1523,9 +1523,9 @@ void page_pop(void)
                 central_bbq_complete_rebind(done->button_104);
                 lv_group_focus_obj(done->button_104);
                 if (g_keepwarm_active)
-                    lv_label_set_text(done->label_318, "保温中...");
+                    lv_label_set_text(done->label_318, tr("保温中..."));
 
-                lv_label_set_text_fmt(done->status, "| 集中烧烤 | %d℃ | %02d分钟", set_temp, set_min);
+                lv_label_set_text_fmt(done->status, tr("| 集中烧烤 | %d℃ | %02d分钟"), set_temp, set_min);
                 lv_bar_set_value(done->bar_29, 100, LV_ANIM_OFF);
             }
             current_group = g_central_bbq_complete;
@@ -1591,9 +1591,9 @@ void page_pop(void)
                 windchange_bbq_complete_rebind(done->button_119);
                 lv_group_focus_obj(done->button_119);
                 if (g_keepwarm_active)
-                    lv_label_set_text(done->label_356, "保温中...");
+                    lv_label_set_text(done->label_356, tr("保温中..."));
 
-                lv_label_set_text_fmt(done->status, "| 加强热风 | %d℃ | %02d分钟", set_temp, set_min);
+                lv_label_set_text_fmt(done->status, tr("| 加强热风 | %d℃ | %02d分钟"), set_temp, set_min);
                 lv_bar_set_value(done->bar_33, 100, LV_ANIM_OFF);
             }
             current_group = g_windchange_bbq_complete;
@@ -1662,9 +1662,9 @@ void page_pop(void)
                 cookie_complete_rebind(done->little);
                 lv_group_focus_obj(done->little);
                 if (g_keepwarm_active)
-                    lv_label_set_text(done->label_143, "保温中...");
+                    lv_label_set_text(done->label_143, tr("保温中..."));
 
-                lv_label_set_text_fmt(done->status, "| 曲奇 | %d℃ | %02d分钟", set_temp, set_min);
+                lv_label_set_text_fmt(done->status, tr("| 曲奇 | %d℃ | %02d分钟"), set_temp, set_min);
                 lv_bar_set_value(done->bar_7, 100, LV_ANIM_OFF);
             }
             current_group = g_cookie_complete;
@@ -1730,9 +1730,9 @@ void page_pop(void)
                 west_complete_rebind(done->little);
                 lv_group_focus_obj(done->little);
                 if (g_keepwarm_active)
-                    lv_label_set_text(done->label_192, "保温中...");
+                    lv_label_set_text(done->label_192, tr("保温中..."));
 
-                lv_label_set_text_fmt(done->status, "| 西式 | %d℃ | %02d分钟", set_temp, set_min);
+                lv_label_set_text_fmt(done->status, tr("| 西式 | %d℃ | %02d分钟"), set_temp, set_min);
                 lv_bar_set_value(done->bar_11, 100, LV_ANIM_OFF);
             }
             current_group = g_west_complete;
@@ -1798,9 +1798,9 @@ void page_pop(void)
                 pizza_complete_rebind(done->little);
                 lv_group_focus_obj(done->little);
                 if (g_keepwarm_active)
-                    lv_label_set_text(done->label_240, "保温中...");
+                    lv_label_set_text(done->label_240, tr("保温中..."));
 
-                lv_label_set_text_fmt(done->status, "| 披萨 | %d℃ | %02d分钟", set_temp, set_min);
+                lv_label_set_text_fmt(done->status, tr("| 披萨 | %d℃ | %02d分钟"), set_temp, set_min);
                 lv_bar_set_value(done->bar_15, 100, LV_ANIM_OFF);
             }
             current_group = g_pizza_complete;
@@ -1866,9 +1866,9 @@ void page_pop(void)
                 menu_complete_rebind(done->little);
                 lv_group_focus_obj(done->little);
                 if (g_keepwarm_active)
-                    lv_label_set_text(done->label_288, "保温中...");
+                    lv_label_set_text(done->label_288, tr("保温中..."));
 
-                lv_label_set_text_fmt(done->status, "| 菜单 | %d℃ | %02d分钟", set_temp, set_min);
+                lv_label_set_text_fmt(done->status, tr("| 菜单 | %d℃ | %02d分钟"), set_temp, set_min);
                 lv_bar_set_value(done->bar_19, 100, LV_ANIM_OFF);
             }
             current_group = g_menu_cook_complete;
@@ -1934,9 +1934,9 @@ void page_pop(void)
                 air_complete_rebind(done->little);
                 lv_group_focus_obj(done->little);
                 if (g_keepwarm_active)
-                    lv_label_set_text(done->label_337, "保温中...");
+                    lv_label_set_text(done->label_337, tr("保温中..."));
 
-                lv_label_set_text_fmt(done->status, "| 空气炸 | %d℃ | %02d分钟", set_temp, set_min);
+                lv_label_set_text_fmt(done->status, tr("| 空气炸 | %d℃ | %02d分钟"), set_temp, set_min);
                 lv_bar_set_value(done->bar_23, 100, LV_ANIM_OFF);
             }
             current_group = g_air_complete;
@@ -2002,9 +2002,9 @@ void page_pop(void)
                 pizza_2_complete_rebind(done->little);
                 lv_group_focus_obj(done->little);
                 if (g_keepwarm_active)
-                    lv_label_set_text(done->label_386, "保温中...");
+                    lv_label_set_text(done->label_386, tr("保温中..."));
 
-                lv_label_set_text_fmt(done->status, "| 披萨 | %d℃ | %02d分钟", set_temp, set_min);
+                lv_label_set_text_fmt(done->status, tr("| 披萨 | %d℃ | %02d分钟"), set_temp, set_min);
                 lv_bar_set_value(done->bar_27, 100, LV_ANIM_OFF);
             }
             current_group = g_pizza_2_complete;
@@ -2070,9 +2070,9 @@ void page_pop(void)
                 slowcook_complete_rebind(done->little);
                 lv_group_focus_obj(done->little);
                 if (g_keepwarm_active)
-                    lv_label_set_text(done->label_435, "保温中...");
+                    lv_label_set_text(done->label_435, tr("保温中..."));
 
-                lv_label_set_text_fmt(done->status, "| 慢煮 | %d℃ | %02d分钟", set_temp, set_min);
+                lv_label_set_text_fmt(done->status, tr("| 慢煮 | %d℃ | %02d分钟"), set_temp, set_min);
                 lv_bar_set_value(done->bar_31, 100, LV_ANIM_OFF);
             }
             current_group = g_slowcook_complete;
@@ -2138,9 +2138,9 @@ void page_pop(void)
                 unfrozen_complete_rebind(done->little);
                 lv_group_focus_obj(done->little);
                 if (g_keepwarm_active)
-                    lv_label_set_text(done->label_484, "保温中...");
+                    lv_label_set_text(done->label_484, tr("保温中..."));
 
-                lv_label_set_text_fmt(done->status, "| 解冻 | %d℃ | %02d分钟", set_temp, set_min);
+                lv_label_set_text_fmt(done->status, tr("| 解冻 | %d℃ | %02d分钟"), set_temp, set_min);
                 lv_bar_set_value(done->bar_35, 100, LV_ANIM_OFF);
             }
             current_group = g_unfrozen_complete;
@@ -2206,9 +2206,9 @@ void page_pop(void)
                 rising_complete_rebind(done->little);
                 lv_group_focus_obj(done->little);
                 if (g_keepwarm_active)
-                    lv_label_set_text(done->label_533, "保温中...");
+                    lv_label_set_text(done->label_533, tr("保温中..."));
 
-                lv_label_set_text_fmt(done->status, "| 发酵 | %d℃ | %02d分钟", set_temp, set_min);
+                lv_label_set_text_fmt(done->status, tr("| 发酵 | %d℃ | %02d分钟"), set_temp, set_min);
                 lv_bar_set_value(done->bar_39, 100, LV_ANIM_OFF);
             }
             current_group = g_rising_complete;
@@ -2274,9 +2274,9 @@ void page_pop(void)
                 corn_complete_rebind(done->little);
                 lv_group_focus_obj(done->little);
                 if (g_keepwarm_active)
-                    lv_label_set_text(done->label_582, "保温中...");
+                    lv_label_set_text(done->label_582, tr("保温中..."));
 
-                lv_label_set_text_fmt(done->status, "| 干果 | %d℃ | %02d分钟", set_temp, set_min);
+                lv_label_set_text_fmt(done->status, tr("| 干果 | %d℃ | %02d分钟"), set_temp, set_min);
                 lv_bar_set_value(done->bar_43, 100, LV_ANIM_OFF);
             }
             current_group = g_corn_complete;
@@ -2342,9 +2342,9 @@ void page_pop(void)
                 heatcontain_complete_rebind(done->little);
                 lv_group_focus_obj(done->little);
                 if (g_keepwarm_active)
-                    lv_label_set_text(done->label_672, "保温中...");
+                    lv_label_set_text(done->label_672, tr("保温中..."));
 
-                lv_label_set_text_fmt(done->status, "| 保温 | %d℃ | %02d分钟", set_temp, set_min);
+                lv_label_set_text_fmt(done->status, tr("| 保温 | %d℃ | %02d分钟"), set_temp, set_min);
                 lv_bar_set_value(done->bar_48, 100, LV_ANIM_OFF);
             }
             current_group = g_heatcontain_complete;
@@ -2406,12 +2406,12 @@ void page_pop(void)
                 lasagna_complete_rebind(done->little);
                 lv_group_focus_obj(done->little);
                 if (g_keepwarm_active)
-                    lv_label_set_text(done->label_681, "保温中...");
+                    lv_label_set_text(done->label_681, tr("保温中..."));
 
                 if (set_hour == 0)
-                    lv_label_set_text_fmt(done->status, "| 千层面 | %d℃ | %02d分钟", set_temp, set_min);
+                    lv_label_set_text_fmt(done->status, tr("| 千层面 | %d℃ | %02d分钟"), set_temp, set_min);
                 else
-                    lv_label_set_text_fmt(done->status, "| 千层面 | %d℃ | %d小时%02d分钟", set_temp, set_hour, set_min);
+                    lv_label_set_text_fmt(done->status, tr("| 千层面 | %d℃ | %d小时%02d分钟"), set_temp, set_hour, set_min);
                 lv_bar_set_value(done->bar_51, 100, LV_ANIM_OFF);
             }
             current_group = g_lasagna_complete;
@@ -2469,12 +2469,12 @@ void page_pop(void)
                 strudel_complete_rebind(done->little);
                 lv_group_focus_obj(done->little);
                 if (g_keepwarm_active)
-                    lv_label_set_text(done->label_722, "保温中...");
+                    lv_label_set_text(done->label_722, tr("保温中..."));
 
                 if (set_hour == 0)
-                    lv_label_set_text_fmt(done->status, "| 果馅卷 | %d℃ | %02d分钟", set_temp, set_min);
+                    lv_label_set_text_fmt(done->status, tr("| 果馅卷 | %d℃ | %02d分钟"), set_temp, set_min);
                 else
-                    lv_label_set_text_fmt(done->status, "| 果馅卷 | %d℃ | %d小时%02d分钟", set_temp, set_hour, set_min);
+                    lv_label_set_text_fmt(done->status, tr("| 果馅卷 | %d℃ | %d小时%02d分钟"), set_temp, set_hour, set_min);
                 lv_bar_set_value(done->bar_55, 100, LV_ANIM_OFF);
             }
             current_group = g_strudel_complete;
@@ -2532,12 +2532,12 @@ void page_pop(void)
                 bread_complete_rebind(done->little);
                 lv_group_focus_obj(done->little);
                 if (g_keepwarm_active)
-                    lv_label_set_text(done->label_763, "保温中...");
+                    lv_label_set_text(done->label_763, tr("保温中..."));
 
                 if (set_hour == 0)
-                    lv_label_set_text_fmt(done->status, "| 面包 | %d℃ | %02d分钟", set_temp, set_min);
+                    lv_label_set_text_fmt(done->status, tr("| 面包 | %d℃ | %02d分钟"), set_temp, set_min);
                 else
-                    lv_label_set_text_fmt(done->status, "| 面包 | %d℃ | %d小时%02d分钟", set_temp, set_hour, set_min);
+                    lv_label_set_text_fmt(done->status, tr("| 面包 | %d℃ | %d小时%02d分钟"), set_temp, set_hour, set_min);
                 lv_bar_set_value(done->bar_59, 100, LV_ANIM_OFF);
             }
             current_group = g_bread_complete;
@@ -2595,12 +2595,12 @@ void page_pop(void)
                 pizza3_complete_rebind(done->little);
                 lv_group_focus_obj(done->little);
                 if (g_keepwarm_active)
-                    lv_label_set_text(done->label_804, "保温中...");
+                    lv_label_set_text(done->label_804, tr("保温中..."));
 
                 if (set_hour == 0)
-                    lv_label_set_text_fmt(done->status, "| 披萨 | %d℃ | %02d分钟", set_temp, set_min);
+                    lv_label_set_text_fmt(done->status, tr("| 披萨 | %d℃ | %02d分钟"), set_temp, set_min);
                 else
-                    lv_label_set_text_fmt(done->status, "| 披萨 | %d℃ | %d小时%02d分钟", set_temp, set_hour, set_min);
+                    lv_label_set_text_fmt(done->status, tr("| 披萨 | %d℃ | %d小时%02d分钟"), set_temp, set_hour, set_min);
                 lv_bar_set_value(done->bar_63, 100, LV_ANIM_OFF);
             }
             current_group = g_pizza3_complete;
@@ -2658,12 +2658,12 @@ void page_pop(void)
                 chip_complete_rebind(done->little);
                 lv_group_focus_obj(done->little);
                 if (g_keepwarm_active)
-                    lv_label_set_text(done->label_845, "保温中...");
+                    lv_label_set_text(done->label_845, tr("保温中..."));
 
                 if (set_hour == 0)
-                    lv_label_set_text_fmt(done->status, "| 薯条 | %d℃ | %02d分钟", set_temp, set_min);
+                    lv_label_set_text_fmt(done->status, tr("| 薯条 | %d℃ | %02d分钟"), set_temp, set_min);
                 else
-                    lv_label_set_text_fmt(done->status, "| 薯条 | %d℃ | %d小时%02d分钟", set_temp, set_hour, set_min);
+                    lv_label_set_text_fmt(done->status, tr("| 薯条 | %d℃ | %d小时%02d分钟"), set_temp, set_hour, set_min);
                 lv_bar_set_value(done->bar_67, 100, LV_ANIM_OFF);
             }
             current_group = g_chip_complete;
@@ -2721,12 +2721,12 @@ void page_pop(void)
                 custom_complete_rebind(done->little);
                 lv_group_focus_obj(done->little);
                 if (g_keepwarm_active)
-                    lv_label_set_text(done->label_886, "保温中...");
+                    lv_label_set_text(done->label_886, tr("保温中..."));
 
                 if (set_hour == 0)
-                    lv_label_set_text_fmt(done->status, "| 自定义 | %d℃ | %02d分钟", set_temp, set_min);
+                    lv_label_set_text_fmt(done->status, tr("| 自定义 | %d℃ | %02d分钟"), set_temp, set_min);
                 else
-                    lv_label_set_text_fmt(done->status, "| 自定义 | %d℃ | %d小时%02d分钟", set_temp, set_hour, set_min);
+                    lv_label_set_text_fmt(done->status, tr("| 自定义 | %d℃ | %d小时%02d分钟"), set_temp, set_hour, set_min);
                 lv_bar_set_value(done->bar_71, 100, LV_ANIM_OFF);
             }
             current_group = g_custom_complete;

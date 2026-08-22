@@ -522,7 +522,7 @@ static void color_menu_open(void)
     preheatmenu_create(&ui_manager);
     preheatmenu_t *menu = preheatmenu_get(&ui_manager);
     if (menu) {
-        lv_label_set_text(menu->label_69, "额外上色");
+        lv_label_set_text(menu->label_69, tr("额外上色"));
         lv_obj_t *btns[] = { menu->temp, menu->next };
         if (g_preheat_menu) lv_group_del(g_preheat_menu);
         g_preheat_menu = group_create_for_page(btns, 2);
@@ -596,7 +596,7 @@ void jump_to_color_cookoing(void)
 
     /* 初始化显示 */
     if (cc) {
-        lv_label_set_text_fmt(cc->status_label, "| 额外上色 | %d℃ | 5分钟", set_temp);
+        lv_label_set_text_fmt(cc->status_label, tr("| 额外上色 | %d℃ | 5分钟"), set_temp);
         lv_label_set_text_fmt(cc->time_label, "%02d:%02d:%02d", 0, 5, 0);
         lv_bar_set_range(cc->bar, 0, 100);
         lv_bar_set_value(cc->bar, 3, LV_ANIM_OFF);
@@ -657,7 +657,7 @@ void jump_to_color_complete(void)
     {
         colorcooking_complete_t *cc = colorcooking_complete_get(&ui_manager);
         if (cc) {
-            lv_label_set_text_fmt(cc->status_label, "| 额外上色 | %d℃ | 5分钟", set_temp);
+            lv_label_set_text_fmt(cc->status_label, tr("| 额外上色 | %d℃ | 5分钟"), set_temp);
             lv_bar_set_range(cc->bar, 0, 100);
             lv_bar_set_value(cc->bar, 100, LV_ANIM_OFF);
         }

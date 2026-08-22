@@ -87,12 +87,12 @@ static void somecook_cooking_apply_info(somecook_cooking_t *sc)
     int i = g_somecook_run_idx;
     if (set_hour > 0) {
         lv_obj_clear_flag(sc->activestatus, LV_OBJ_FLAG_HIDDEN);
-        lv_label_set_text_fmt(sc->activestatus, "步骤%s：%s", cn[i], mode_display_name());
-        lv_label_set_text_fmt(sc->label_12, "|                         | %d℃ | %d小时%02d分钟",
+        lv_label_set_text_fmt(sc->activestatus, tr("步骤%s：%s"), cn[i], mode_display_name());
+        lv_label_set_text_fmt(sc->label_12, tr("|                         | %d℃ | %d小时%02d分钟"),
                               set_temp, set_hour, set_min);
     } else {
         lv_obj_add_flag(sc->activestatus, LV_OBJ_FLAG_HIDDEN);
-        lv_label_set_text_fmt(sc->label_12, "| 步骤%s：%s | %d℃ | %02d分钟",
+        lv_label_set_text_fmt(sc->label_12, tr("| 步骤%s：%s | %d℃ | %02d分钟"),
                               cn[i], mode_display_name(), set_temp, set_min);
     }
 }
@@ -119,33 +119,33 @@ static void somecook_cooking_set_state(int state, int from)
     lv_obj_t *bl = lv_obj_get_child(sc->stop, 0);
     switch (state) {
     case SMC_COOKING:
-        lv_label_set_text(sc->cookstatus, "烹饪中...");
-        if (bl) lv_label_set_text(bl, "暂 停");
+        lv_label_set_text(sc->cookstatus, tr("烹饪中..."));
+        if (bl) lv_label_set_text(bl, tr("暂 停"));
         break;
     case SMC_STOP:
-        lv_label_set_text(sc->cookstatus, "暂停中...");
-        if (bl) lv_label_set_text(bl, "开 始");
+        lv_label_set_text(sc->cookstatus, tr("暂停中..."));
+        if (bl) lv_label_set_text(bl, tr("开 始"));
         break;
     case SMC_STOPBACK:
         lv_obj_add_flag(sc->timelabel, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(sc->container_1, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(sc->text1, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(sc->text2, LV_OBJ_FLAG_HIDDEN);
-        lv_label_set_text(sc->text1, "是否结束当前任务");
-        lv_label_set_text(sc->text2, "回到主页");
-        if (bl) lv_label_set_text(bl, "确 定");
-        if (from == SMC_COMPLETE)      lv_label_set_text(sc->cookstatus, "已完成");
-        else if (from == SMC_STOP)     lv_label_set_text(sc->cookstatus, "暂停中...");
-        else                           lv_label_set_text(sc->cookstatus, "烹饪中...");
+        lv_label_set_text(sc->text1, tr("是否结束当前任务"));
+        lv_label_set_text(sc->text2, tr("回到主页"));
+        if (bl) lv_label_set_text(bl, tr("确 定"));
+        if (from == SMC_COMPLETE)      lv_label_set_text(sc->cookstatus, tr("已完成"));
+        else if (from == SMC_STOP)     lv_label_set_text(sc->cookstatus, tr("暂停中..."));
+        else                           lv_label_set_text(sc->cookstatus, tr("烹饪中..."));
         break;
     case SMC_COMPLETE:
         lv_obj_add_flag(sc->stop, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(sc->timelabel, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(sc->text1, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(sc->text2, LV_OBJ_FLAG_HIDDEN);
-        lv_label_set_text(sc->text1, "高温防烫");
-        lv_label_set_text(sc->text2, "请缓慢打开门体！");
-        lv_label_set_text(sc->cookstatus, "已完成");
+        lv_label_set_text(sc->text1, tr("高温防烫"));
+        lv_label_set_text(sc->text2, tr("请缓慢打开门体！"));
+        lv_label_set_text(sc->cookstatus, tr("已完成"));
         lv_bar_set_range(sc->bar_1, 0, 100);
         lv_bar_set_value(sc->bar_1, 100, LV_ANIM_OFF);
         break;

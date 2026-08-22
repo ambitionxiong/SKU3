@@ -48,63 +48,63 @@ static void preheat_apply_mode_ui(lv_obj_t *icon, lv_obj_t *status)
     switch (g_send.cook_mode) {
     case MODE_UPDOWN_BBQ:
         if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(updown_img.png));
-        txt = "| 上下烧烤 |";
+        txt = tr("| 上下烧烤 |");
         break;
     case MODE_TOP_BBQ:
         if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(topicon.png));
-        txt = "| 顶部烧烤 |";
+        txt = tr("| 顶部烧烤 |");
         break;
     case MODE_BOTTOM_BBQ:
         if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(dwbbqicon.png));
-        txt = "| 底部烧烤 |";
+        txt = tr("| 底部烧烤 |");
         break;
     case MODE_HOT_BBQ:
         if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(hotbbqicon.png));
-        txt = "| 热风烧烤 |";
+        txt = tr("| 热风烧烤 |");
         break;
     case MODE_HOTWIND_BBQ:
         if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(hotwindicon.png));
-        txt = "| 热风 |";
+        txt = tr("| 热风 |");
         break;
     case MODE_SAVE_BBQ:
         if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(savewindicon.png));
-        txt = "| 节能热风 |";
+        txt = tr("| 节能热风 |");
         break;
     case MODE_CENTRAL_BBQ:
         if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(centralbbqicon.png));
-        txt = "| 集中烧烤 |";
+        txt = tr("| 集中烧烤 |");
         break;
     case MODE_WINDCHANGE_BBQ:
         if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(windchange.png));
-        txt = "| 热风对流 |";
+        txt = tr("| 热风对流 |");
         break;
     case MODE_AIR:
         if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(airicon.png));
-        txt = "| 空气炸 |";
+        txt = tr("| 空气炸 |");
         break;
     case MODE_PIZZA_2:
         if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(pizza2icon.png));
-        txt = "| 披萨 |";
+        txt = tr("| 披萨 |");
         break;
     case MODE_SLOWCOOK:
         if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(slowcookicon.png));
-        txt = "| 慢煮 |";
+        txt = tr("| 慢煮 |");
         break;
     case MODE_UNFROZEN:
         if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(unfrozenicon.png));
-        txt = "| 解冻 |";
+        txt = tr("| 解冻 |");
         break;
     case MODE_RISING:
         if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(risingicon.png));
-        txt = "| 发酵 |";
+        txt = tr("| 发酵 |");
         break;
     case MODE_CORN:
         if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(cornicon.png));
-        txt = "| 干果 |";
+        txt = tr("| 干果 |");
         break;
     case MODE_HEATCONTAIN:
         if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(heatcontainicon.png));
-        txt = "| 保温 |";
+        txt = tr("| 保温 |");
         break;
     default:
         /* 预热菜单入口（MODE_PREHEAT）:仅按键4入口显示"快速预热",cookmenu 入口保持"| 预热 |" */
