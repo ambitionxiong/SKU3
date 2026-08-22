@@ -72,7 +72,7 @@ void jump_to_frozen_cook(void)
     }
     current_group = g_frozen_cook;
 
-    lv_scr_load_anim(frozencookpage_get(&ui_manager)->obj,
+    lang_scr_load_anim(frozencookpage_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[frozen] jump: special_menu -> frozencookpage\n");
@@ -111,7 +111,7 @@ void frozen_rebuild(page_id_t child)
             lv_group_focus_obj(fp->custom);
     }
     current_group = g_frozen_cook;
-    lv_scr_load_anim(frozencookpage_get(&ui_manager)->obj,
+    lang_scr_load_anim(frozencookpage_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[frozen] back to frozencookpage\n");

@@ -44,7 +44,7 @@ void jump_to_sixmenutz(void)
     }
     current_group = g_sixmenutz;
 
-    lv_scr_load_anim(sixmenutz_get(&ui_manager)->obj,
+    lang_scr_load_anim(sixmenutz_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[six_tz] jump: sixmenutz\n");
@@ -74,7 +74,7 @@ void sixmenutz_rebuild(page_id_t child)
     }
     current_group = g_sixmenutz;
 
-    lv_scr_load_anim(sixmenutz_get(&ui_manager)->obj,
+    lang_scr_load_anim(sixmenutz_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[six_tz] rebuild: sixmenutz\n");
@@ -115,7 +115,7 @@ void jump_to_chickmenutz(void)
     }
     current_group = g_chickmenutz;
 
-    lv_scr_load_anim(chickmenutz_get(&ui_manager)->obj,
+    lang_scr_load_anim(chickmenutz_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[six_tz] jump: chickmenutz\n");
@@ -150,7 +150,7 @@ void chickmenutz_rebuild(page_id_t child)
     }
     current_group = g_chickmenutz;
 
-    lv_scr_load_anim(chickmenutz_get(&ui_manager)->obj,
+    lang_scr_load_anim(chickmenutz_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[six_tz] rebuild: chickmenutz\n");

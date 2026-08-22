@@ -407,7 +407,7 @@ void jump_to_chick6menu(void)
     }
     current_group = g_chick6menu;
 
-    lv_scr_load_anim(chick6menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(chick6menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[six_chicken] jump: chick6menu (fish=%d)\n", s_fish_mode);
@@ -470,7 +470,7 @@ void chick6menu_rebuild(page_id_t child)
     }
     current_group = g_chick6menu;
 
-    lv_scr_load_anim(chick6menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(chick6menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[six_chicken] rebuild: chick6menu (child=%d, fish=%d)\n", (int)child, s_fish_mode);
@@ -547,7 +547,7 @@ void jump_to_chickenmenu(void)
     }
     current_group = g_chickenmenu;
 
-    lv_scr_load_anim(chickenmenu_get(&ui_manager)->obj,
+    lang_scr_load_anim(chickenmenu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[six_chicken] jump: chickenmenu\n");
@@ -628,7 +628,7 @@ void chickenmenu_rebuild(page_id_t child)
     }
     current_group = g_chickenmenu;
 
-    lv_scr_load_anim(chickenmenu_get(&ui_manager)->obj,
+    lang_scr_load_anim(chickenmenu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[six_chicken] rebuild: chickenmenu (child=%d, seafood=%d)\n", (int)child, s_seafood_mode);
@@ -685,7 +685,7 @@ void jump_to_duckmenu(void)
     }
     current_group = g_duckmenu;
 
-    lv_scr_load_anim(duckmenu_get(&ui_manager)->obj,
+    lang_scr_load_anim(duckmenu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[six_chicken] jump: duckmenu\n");
@@ -737,7 +737,7 @@ void duckmenu_rebuild(page_id_t child)
     }
     current_group = g_duckmenu;
 
-    lv_scr_load_anim(duckmenu_get(&ui_manager)->obj,
+    lang_scr_load_anim(duckmenu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[six_chicken] rebuild: duckmenu (child=%d, meatdish=%d, sidedish=%d)\n",
@@ -804,7 +804,7 @@ void jump_to_meatdish_menu(void)
     }
     current_group = g_duckmenu;
 
-    lv_scr_load_anim(duckmenu_get(&ui_manager)->obj,
+    lang_scr_load_anim(duckmenu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[six_chicken] jump: meatdishmenu\n");
@@ -931,7 +931,7 @@ void jump_to_vegetablemenu(void)
     }
     current_group = g_chickenmenu;
 
-    lv_scr_load_anim(vegetablemenu_get(&ui_manager)->obj,
+    lang_scr_load_anim(vegetablemenu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[six_chicken] jump: vegetablemenu\n");
@@ -961,7 +961,7 @@ void vegetablemenu_rebuild(page_id_t child)
     }
     current_group = g_chickenmenu;
 
-    lv_scr_load_anim(vegetablemenu_get(&ui_manager)->obj,
+    lang_scr_load_anim(vegetablemenu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[six_chicken] rebuild: vegetablemenu\n");
@@ -1015,7 +1015,7 @@ void jump_to_sidedish_menu(void)
     }
     current_group = g_duckmenu;
 
-    lv_scr_load_anim(duckmenu_get(&ui_manager)->obj,
+    lang_scr_load_anim(duckmenu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[six_chicken] jump: sidedish menu (fries)\n");
@@ -1066,7 +1066,7 @@ void jump_to_probeneedtip(void)
     }
     current_group = g_probeneedtip;
 
-    lv_scr_load_anim(probeneedtip_get(&ui_manager)->obj,
+    lang_scr_load_anim(probeneedtip_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[six_chicken] jump: probeneedtip\n");
@@ -1178,7 +1178,7 @@ void jump_to_chick_cooking(void)
     cook_timer = lv_timer_create(six_chick_timer_cb, 1000, NULL);
     six_chick_apply_display();
 
-    lv_scr_load_anim(chickencooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(chickencooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[six_chicken] jump: chick cooking (probe target=%d)\n", g_six_probe_temp);

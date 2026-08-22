@@ -156,7 +156,7 @@ void jump_to_sixop3page(const char *name, const char *op1, const char *op2, cons
     }
     current_group = g_sixop3page;
 
-    lv_scr_load_anim(sixop3page_get(&ui_manager)->obj,
+    lang_scr_load_anim(sixop3page_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[sixop3page] jump: %s\n", name ? name : "?");
@@ -177,7 +177,7 @@ void sixop3page_rebuild(page_id_t child)
     }
     current_group = g_sixop3page;
 
-    lv_scr_load_anim(sixop3page_get(&ui_manager)->obj,
+    lang_scr_load_anim(sixop3page_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[sixop3page] rebuild\n");

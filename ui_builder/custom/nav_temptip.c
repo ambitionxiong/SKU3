@@ -54,7 +54,7 @@ void jump_to_temptip(void)
     }
     current_group = g_temptip;
     if (temptip_get(&ui_manager)->obj)
-        lv_scr_load_anim(temptip_get(&ui_manager)->obj,
+        lang_scr_load_anim(temptip_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
     /* 5 秒自动关闭；BACK 可提前返回 */
     temptip_cancel_auto_dismiss();
@@ -78,7 +78,7 @@ void temptip_rebuild(page_id_t child)
     }
     current_group = g_temptip;
     if (temptip_get(&ui_manager)->obj)
-        lv_scr_load_anim(temptip_get(&ui_manager)->obj,
+        lang_scr_load_anim(temptip_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
     printf("[temptip] back to temptip\n");
 }

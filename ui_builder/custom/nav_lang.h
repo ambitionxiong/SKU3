@@ -12,9 +12,14 @@
  * 中文模式：全部早退，零开销零影响。
  * ===================================================================== */
 
-/* 页面重建后调用（page_push/page_pop 末尾 + F8 语言切换时）
+/* 页面重建后调用（所有 lv_scr_load_anim 出口 + 语言切换时）
  * 中文模式直接返回；英文模式：树遍历翻译+切字体 → 调当前页排版函数 */
 void lang_on_page_built(void);
+
+/* lv_scr_load_anim 包装：显示新页面后自动触发 lang_on_page_built
+ * （custom 代码统一调用本函数替代原 LVGL 函数） */
+void lang_scr_load_anim(lv_obj_t *scr, lv_scr_load_anim_t anim_type,
+                        uint32_t time, uint32_t delay, bool auto_del);
 
 /* 遍历当前屏所有 label：文本命中翻译表 → 替换为英文；taiwanpearl 字体 → aktivgrotesk
  * 由 lang_on_page_built 调用；也可单独调用（如动态子界面重建后） */

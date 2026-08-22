@@ -54,16 +54,71 @@ static lang_tune_fn lang_tune_for_page(page_id_t pid)
 
 /* ============ 树遍历双 pass ============ */
 
+/* ============ 模糊匹配：状态条 "| 模式 | 数值℃ | 时间" ============
+ * 根部生成文件里状态条是"数值已填充"的完整文本（如 "| 披萨 | 180℃ | 1小时20分钟"），
+ * 精确匹配翻译表命中不了。这里解析结构：
+ *   取第一个 | 与第二个 | 之间的模式名 → 查表 → 替换
+ *   剩余部分做单位转换：小时→h、分钟→min（℃ 保留）
+ * 返回 1 表示已模糊翻译，0 表示非状态条结构。 */
+static int lang_fuzzy_status(lv_obj_t *obj, const char *txt, char *buf, int buf_len)
+{
+    const char *p1 = strchr(txt, '|');
+    if (!p1) return 0;
+    const char *p2 = strchr(p1 + 1, '|');
+    if (!p2) return 0;
+
+    /* 提取模式名段（去首尾空格） */
+    char mode[64];
+    int mlen = (int)(p2 - p1 - 1);
+    if (mlen <= 0 || mlen >= (int)sizeof(mode)) return 0;
+    int s = 0, e = mlen - 1;
+    while (s <= e && p1[1 + s] == ' ') s++;
+    while (e >= s && p1[1 + e] == ' ') e--;
+    if (e < s) return 0;   /* 空模式名 */
+    memcpy(mode, p1 + 1 + s, (size_t)(e - s + 1));
+    mode[e - s + 1] = '\0';
+
+    /* 模式名查表（tr 查不到说明非状态条） */
+    const char *en_mode = tr(mode);
+    if (en_mode == mode) return 0;
+
+    /* 重组：| 英文模式名 + 尾部（单位转换） */
+    snprintf(buf, (size_t)buf_len, "| %s %s", en_mode, p2);
+
+    /* 尾部单位转换：小时→h、分钟→min（先小时后分钟）
+     * "小时"=6字节→" h "=3字节；"分钟"=6字节→" min"=4字节。
+     * memmove 源从偏移6取（保留尾串），替换后指针前进避免死循环。 */
+    char *bp = buf;
+    while ((bp = strstr(bp, "小时")) != NULL) {
+        *bp = ' '; bp[1] = 'h';
+        memmove(bp + 2, bp + 6, strlen(bp + 6) + 1);
+        bp += 3;
+    }
+    bp = buf;
+    while ((bp = strstr(bp, "分钟")) != NULL) {
+        *bp = ' '; bp[1] = 'm'; bp[2] = 'i'; bp[3] = 'n';
+        memmove(bp + 4, bp + 6, strlen(bp + 6) + 1);
+        bp += 4;
+    }
+    return 1;
+}
+
+
 static void lang_apply_obj(lv_obj_t *obj)
 {
     /* 只处理 label（button 的子 label 由 LV_OBJ_FLAG_CLICKABLE 区分，直接遍历叶子） */
     if (lv_obj_check_type(obj, &lv_label_class)) {
-        /* pass 1: 文本精确匹配翻译表 */
+        /* pass 1: 文本翻译——先精确查表，命中不了再模糊匹配状态条结构 */
         const char *txt = lv_label_get_text(obj);
         if (txt && txt[0]) {
             const char *en = tr(txt);
-            if (en != txt)
+            if (en != txt) {
                 lv_label_set_text(obj, en);
+            } else {
+                char fbuf[128];
+                if (lang_fuzzy_status(obj, txt, fbuf, (int)sizeof(fbuf)))
+                    lv_label_set_text(obj, fbuf);
+            }
         }
         /* pass 2: 字体切换（taiwanpearl → aktivgrotesk，按字号一一映射） */
         const lv_font_t *f = lv_obj_get_style_text_font(obj, 0);
@@ -82,6 +137,14 @@ static void lang_apply_obj(lv_obj_t *obj)
         else if (f == &c_taiwanpearl_regular_24)
             lv_obj_set_style_text_font(obj, &c_aktivgroteskmedium_24, LV_PART_MAIN | 0);
     }
+}
+
+/* lv_scr_load_anim 包装：显示新页面后自动翻译+排版（统一出口，覆盖所有跳转/返回/重建路径） */
+void lang_scr_load_anim(lv_obj_t *scr, lv_scr_load_anim_t anim_type,
+                        uint32_t time, uint32_t delay, bool auto_del)
+{
+    lv_scr_load_anim(scr, anim_type, time, delay, auto_del);
+    lang_on_page_built();
 }
 
 void lang_refresh_screen(void)

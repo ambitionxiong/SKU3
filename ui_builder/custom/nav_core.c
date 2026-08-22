@@ -827,7 +827,6 @@ void page_push(page_id_t id)
         printf("[nav] ERROR: page_stack overflow! depth=%d id=%d\n", depth, id);
     }
     topflag_update_visibility();
-    lang_on_page_built();   /* i18n: 页面跳转后英文模式翻译+排版 */
 }
 
 // ==============================

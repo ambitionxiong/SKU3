@@ -599,7 +599,7 @@ void jump_to_six_cooking(void)
     g_send.iface_status = IFACE_COOKING;
     six_cook_apply_display();
 
-    lv_scr_load_anim(somecook_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(somecook_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[six_cook] jump: cooking (choice=%d)\n", g_rising_choice);
@@ -677,7 +677,7 @@ void six_cooking_rebuild(page_id_t child)
     g_six_paused = 0;
     six_cook_apply_display();
 
-    lv_scr_load_anim(somecook_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(somecook_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[six_cook] rebuild: child=%d\n", (int)child);

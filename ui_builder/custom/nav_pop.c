@@ -119,7 +119,7 @@ void page_pop(void)
                     lv_group_focus_obj(major->cook4_button);
             }
         }
-        lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
+        lang_scr_load_anim(major_menu_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
                          ui_manager.auto_del);
         printf("[nav] back to major_menu\n");
@@ -197,7 +197,7 @@ void page_pop(void)
             g_send.cook_mode = MODE_NONE;
         }
         cookmenu_apply_lang();   /* i18n: 英文模式设置文本+字体 */
-        lv_scr_load_anim(cookmenu_get(&ui_manager)->obj,
+        lang_scr_load_anim(cookmenu_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
                          ui_manager.auto_del);
         printf("[nav] back to cookmenu\n");
@@ -256,7 +256,7 @@ void page_pop(void)
             }
             current_group = g_special_menu;
         }
-        lv_scr_load_anim(special_menu_get(&ui_manager)->obj,
+        lang_scr_load_anim(special_menu_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
                          ui_manager.auto_del);
         g_send.cook_mode = MODE_NONE;
@@ -377,7 +377,7 @@ void page_pop(void)
             }
             current_group = g_updown_bbq_menu;
         }
-        lv_scr_load_anim(updown_bbq_menu_get(&ui_manager)->obj,
+        lang_scr_load_anim(updown_bbq_menu_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
                          ui_manager.auto_del);
         printf("[nav] back to updown_bbq_menu\n");
@@ -429,7 +429,7 @@ void page_pop(void)
                 }
                 current_group = g_updown_bbq_cooking;
             }
-            lv_scr_load_anim(updown_bbq_cooking_get(&ui_manager)->obj,
+            lang_scr_load_anim(updown_bbq_cooking_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0,
                              ui_manager.auto_del);
             printf("[nav] back from setting -> updown_bbq_cooking\n");
@@ -479,7 +479,7 @@ void page_pop(void)
                 }
                 current_group = g_updown_bbq_cooking;
             }
-            lv_scr_load_anim(updown_bbq_cooking_get(&ui_manager)->obj,
+            lang_scr_load_anim(updown_bbq_cooking_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0,
                              ui_manager.auto_del);
             printf("[nav] back from stop_back -> updown_bbq_cooking\n");
@@ -533,7 +533,7 @@ void page_pop(void)
             }
             current_group = g_updown_bbq_stop;
         }
-        lv_scr_load_anim(updown_bbq_stop_get(&ui_manager)->obj,
+        lang_scr_load_anim(updown_bbq_stop_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
                          ui_manager.auto_del);
         printf("[nav] back to updown_bbq_stop\n");
@@ -573,7 +573,7 @@ void page_pop(void)
             }
             current_group = g_updown_bbq_stop_back;
         }
-        lv_scr_load_anim(updown_bbq_stop_back_get(&ui_manager)->obj,
+        lang_scr_load_anim(updown_bbq_stop_back_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
                          ui_manager.auto_del);
         printf("[nav] back to updown_bbq_stop_back\n");
@@ -651,7 +651,7 @@ void page_pop(void)
             }
             current_group = g_updown_bbq_setting;
         }
-        lv_scr_load_anim(updown_bbq_setting_get(&ui_manager)->obj,
+        lang_scr_load_anim(updown_bbq_setting_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
                          ui_manager.auto_del);
         printf("[nav] back to updown_bbq_setting\n");
@@ -681,7 +681,7 @@ void page_pop(void)
                 lv_group_focus_obj(done->little_button);
             }
             current_group = g_updown_bbq_complete;
-            lv_scr_load_anim(updown_bbq_complete_get(&ui_manager)->obj,
+            lang_scr_load_anim(updown_bbq_complete_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             printf("[keepwarm] page_pop complete rebuild: child=%d active=%d sec=%d iface=%d contain=%d timer=%p\n",
                    child, g_keepwarm_active, g_keepwarm_sec, g_send.iface_status,
@@ -731,7 +731,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_4, 100, LV_ANIM_OFF);
             }
             current_group = g_updown_bbq_complete_probe;
-            lv_scr_load_anim(updown_bbq_complete_probe_get(&ui_manager)->obj,
+            lang_scr_load_anim(updown_bbq_complete_probe_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -773,7 +773,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_4, 100, LV_ANIM_OFF);
             }
             current_group = g_hot_bbq_complete_probe;
-            lv_scr_load_anim(hot_bbq_complete_probe_get(&ui_manager)->obj,
+            lang_scr_load_anim(hot_bbq_complete_probe_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -815,7 +815,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_8, 100, LV_ANIM_OFF);
             }
             current_group = g_bottom_bbq_complete_probe;
-            lv_scr_load_anim(bottom_bbq_complete_probe_get(&ui_manager)->obj,
+            lang_scr_load_anim(bottom_bbq_complete_probe_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -857,7 +857,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_12, 100, LV_ANIM_OFF);
             }
             current_group = g_slowcook_complete_probe;
-            lv_scr_load_anim(slowcook_complete_probe_get(&ui_manager)->obj,
+            lang_scr_load_anim(slowcook_complete_probe_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -877,7 +877,7 @@ void page_pop(void)
                 if (ec->start_button) lv_group_focus_obj(ec->start_button);
             }
             current_group = g_extra_color;
-            lv_scr_load_anim(extra_color_get(&ui_manager)->obj,
+            lang_scr_load_anim(extra_color_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -922,7 +922,7 @@ void page_pop(void)
                 lv_anim_start(&a);
             }
             current_group = g_color_cookoing;
-            lv_scr_load_anim(color_cookoing_get(&ui_manager)->obj,
+            lang_scr_load_anim(color_cookoing_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             printf("[nav] back from stop_back -> color_cookoing\n");
             break;
@@ -939,7 +939,7 @@ void page_pop(void)
                 lv_bar_set_value(cc->bar, 100, LV_ANIM_OFF);
             }
             current_group = NULL;
-            lv_scr_load_anim(colorcooking_complete_get(&ui_manager)->obj,
+            lang_scr_load_anim(colorcooking_complete_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -1038,7 +1038,7 @@ void page_pop(void)
             }
             current_group = g_updown_bbq_set;
         }
-        lv_scr_load_anim(updown_bbq_set_get(&ui_manager)->obj,
+        lang_scr_load_anim(updown_bbq_set_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
                          ui_manager.auto_del);
         printf("[nav] back to updown_bbq_set\n");
@@ -1072,7 +1072,7 @@ void page_pop(void)
             }
             current_group = g_color_stop;
         }
-        lv_scr_load_anim(color_stop_get(&ui_manager)->obj,
+        lang_scr_load_anim(color_stop_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
                          ui_manager.auto_del);
         printf("[nav] back to color_stop\n");
@@ -1104,7 +1104,7 @@ void page_pop(void)
             }
             current_group = g_color_stop_back;
         }
-        lv_scr_load_anim(color_stop_back_get(&ui_manager)->obj,
+        lang_scr_load_anim(color_stop_back_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
                          ui_manager.auto_del);
         printf("[nav] back to color_stop_back\n");
@@ -1178,7 +1178,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_9, 100, LV_ANIM_OFF);
             }
             current_group = g_top_bbq_complete;
-            lv_scr_load_anim(top_bbq_complete_get(&ui_manager)->obj,
+            lang_scr_load_anim(top_bbq_complete_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -1252,7 +1252,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_13, 100, LV_ANIM_OFF);
             }
             current_group = g_bottom_bbq_complete;
-            lv_scr_load_anim(bottom_bbq_complete_get(&ui_manager)->obj,
+            lang_scr_load_anim(bottom_bbq_complete_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -1326,7 +1326,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_17, 100, LV_ANIM_OFF);
             }
             current_group = g_hot_bbq_complete;
-            lv_scr_load_anim(hot_bbq_complete_get(&ui_manager)->obj,
+            lang_scr_load_anim(hot_bbq_complete_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -1394,7 +1394,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_21, 100, LV_ANIM_OFF);
             }
             current_group = g_hotwind_bbq_complete;
-            lv_scr_load_anim(hotwind_bbq_complete_get(&ui_manager)->obj,
+            lang_scr_load_anim(hotwind_bbq_complete_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -1462,7 +1462,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_25, 100, LV_ANIM_OFF);
             }
             current_group = g_save_bbq_complete;
-            lv_scr_load_anim(save_bbq_complete_get(&ui_manager)->obj,
+            lang_scr_load_anim(save_bbq_complete_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -1530,7 +1530,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_29, 100, LV_ANIM_OFF);
             }
             current_group = g_central_bbq_complete;
-            lv_scr_load_anim(central_bbq_complete_get(&ui_manager)->obj,
+            lang_scr_load_anim(central_bbq_complete_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -1598,7 +1598,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_33, 100, LV_ANIM_OFF);
             }
             current_group = g_windchange_bbq_complete;
-            lv_scr_load_anim(windchange_bbq_complete_get(&ui_manager)->obj,
+            lang_scr_load_anim(windchange_bbq_complete_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -1669,7 +1669,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_7, 100, LV_ANIM_OFF);
             }
             current_group = g_cookie_complete;
-            lv_scr_load_anim(cookie_complete_get(&ui_manager)->obj,
+            lang_scr_load_anim(cookie_complete_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -1737,7 +1737,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_11, 100, LV_ANIM_OFF);
             }
             current_group = g_west_complete;
-            lv_scr_load_anim(west_complete_get(&ui_manager)->obj,
+            lang_scr_load_anim(west_complete_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -1805,7 +1805,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_15, 100, LV_ANIM_OFF);
             }
             current_group = g_pizza_complete;
-            lv_scr_load_anim(pizza_complete_get(&ui_manager)->obj,
+            lang_scr_load_anim(pizza_complete_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -1873,7 +1873,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_19, 100, LV_ANIM_OFF);
             }
             current_group = g_menu_cook_complete;
-            lv_scr_load_anim(menu_complete_get(&ui_manager)->obj,
+            lang_scr_load_anim(menu_complete_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -1941,7 +1941,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_23, 100, LV_ANIM_OFF);
             }
             current_group = g_air_complete;
-            lv_scr_load_anim(air_complete_get(&ui_manager)->obj,
+            lang_scr_load_anim(air_complete_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -2009,7 +2009,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_27, 100, LV_ANIM_OFF);
             }
             current_group = g_pizza_2_complete;
-            lv_scr_load_anim(pizza_2_complete_get(&ui_manager)->obj,
+            lang_scr_load_anim(pizza_2_complete_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -2077,7 +2077,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_31, 100, LV_ANIM_OFF);
             }
             current_group = g_slowcook_complete;
-            lv_scr_load_anim(slowcook_complete_get(&ui_manager)->obj,
+            lang_scr_load_anim(slowcook_complete_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -2145,7 +2145,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_35, 100, LV_ANIM_OFF);
             }
             current_group = g_unfrozen_complete;
-            lv_scr_load_anim(unfrozen_complete_get(&ui_manager)->obj,
+            lang_scr_load_anim(unfrozen_complete_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -2213,7 +2213,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_39, 100, LV_ANIM_OFF);
             }
             current_group = g_rising_complete;
-            lv_scr_load_anim(rising_complete_get(&ui_manager)->obj,
+            lang_scr_load_anim(rising_complete_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -2281,7 +2281,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_43, 100, LV_ANIM_OFF);
             }
             current_group = g_corn_complete;
-            lv_scr_load_anim(corn_complete_get(&ui_manager)->obj,
+            lang_scr_load_anim(corn_complete_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -2349,7 +2349,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_48, 100, LV_ANIM_OFF);
             }
             current_group = g_heatcontain_complete;
-            lv_scr_load_anim(heatcontain_complete_get(&ui_manager)->obj,
+            lang_scr_load_anim(heatcontain_complete_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -2416,7 +2416,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_51, 100, LV_ANIM_OFF);
             }
             current_group = g_lasagna_complete;
-            lv_scr_load_anim(lasagna_complete_get(&ui_manager)->obj,
+            lang_scr_load_anim(lasagna_complete_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -2479,7 +2479,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_55, 100, LV_ANIM_OFF);
             }
             current_group = g_strudel_complete;
-            lv_scr_load_anim(strudel_complete_get(&ui_manager)->obj,
+            lang_scr_load_anim(strudel_complete_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -2542,7 +2542,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_59, 100, LV_ANIM_OFF);
             }
             current_group = g_bread_complete;
-            lv_scr_load_anim(bread_complete_get(&ui_manager)->obj,
+            lang_scr_load_anim(bread_complete_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -2605,7 +2605,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_63, 100, LV_ANIM_OFF);
             }
             current_group = g_pizza3_complete;
-            lv_scr_load_anim(pizza3_complete_get(&ui_manager)->obj,
+            lang_scr_load_anim(pizza3_complete_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -2668,7 +2668,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_67, 100, LV_ANIM_OFF);
             }
             current_group = g_chip_complete;
-            lv_scr_load_anim(chip_complete_get(&ui_manager)->obj,
+            lang_scr_load_anim(chip_complete_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -2731,7 +2731,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_71, 100, LV_ANIM_OFF);
             }
             current_group = g_custom_complete;
-            lv_scr_load_anim(custom_complete_get(&ui_manager)->obj,
+            lang_scr_load_anim(custom_complete_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -2776,7 +2776,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_1, 100, LV_ANIM_OFF);
             }
             current_group = g_hcs_complete;
-            lv_scr_load_anim(hotcleansave_complete_get(&ui_manager)->obj,
+            lang_scr_load_anim(hotcleansave_complete_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -2814,7 +2814,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_5, 100, LV_ANIM_OFF);
             }
             current_group = g_hcm_complete;
-            lv_scr_load_anim(hotcleanmiddle_complete_get(&ui_manager)->obj,
+            lang_scr_load_anim(hotcleanmiddle_complete_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -2852,7 +2852,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_9, 100, LV_ANIM_OFF);
             }
             current_group = g_hch_complete;
-            lv_scr_load_anim(hotcleanhigh_complete_get(&ui_manager)->obj,
+            lang_scr_load_anim(hotcleanhigh_complete_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -2883,7 +2883,7 @@ void page_pop(void)
                 lv_bar_set_value(done->bar_4, 100, LV_ANIM_OFF);
             }
             current_group = g_wc_complete;
-            lv_scr_load_anim(waterclean_complete_get(&ui_manager)->obj,
+            lang_scr_load_anim(waterclean_complete_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
             break;
         }
@@ -2895,7 +2895,6 @@ void page_pop(void)
         cook_elapsed_saved = 0; cook_bar_saved = 0;
         depth = 2;
         clean_rebuild(0);
-        lang_on_page_built();
         break;
 
     case PAGE_PREHEAT_MENU:
@@ -2955,12 +2954,11 @@ void page_pop(void)
             bind_events();
             major_menu_apply_lang();   /* i18n */
             current_group = g_major_menu;
-            lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
+            lang_scr_load_anim(major_menu_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0,
                              ui_manager.auto_del);
             printf("[nav] pop to major_menu\n");
         }
-        lang_on_page_built();
         break;
 
     case PAGE_MAJOR_MENU_TZ:
@@ -2984,19 +2982,17 @@ void page_pop(void)
         waitmenu_24_create(&ui_manager);
         waitmenu_clock_cache_reset();   /* 强制刷新为真实时间 */
         current_group = NULL;
-        lv_scr_load_anim(waitmenu_24_get(&ui_manager)->obj,
+        lang_scr_load_anim(waitmenu_24_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
                          ui_manager.auto_del);
         waitmenu_apply_clock();   /* 立即刷新为真实时间，不等 500ms 定时器 */
         g_send.iface_status = IFACE_STANDBY;
         printf("[nav] back to waitmenu_24\n");
-        lang_on_page_built();
         break;
 
     default:
         printf("[nav] unknown page to restore: %d, fallback to waitmenu_24\n", prev);
         goto pop_to_waitmenu;
     }
-    lang_on_page_built();   /* i18n: 页面返回后英文模式翻译+排版 */
 }
 

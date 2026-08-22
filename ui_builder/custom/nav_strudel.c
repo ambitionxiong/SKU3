@@ -129,7 +129,7 @@ static void on_strudel_stop_back_sure_click(lv_event_t *e)
     groups_create();
     bind_events();
     current_group = g_major_menu;
-    lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(major_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_SETTING;
@@ -183,7 +183,7 @@ void jump_to_strudel_menu(void)
     }
     current_group = g_strudel_menu;
 
-    lv_scr_load_anim(strudel_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(strudel_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.cook_mode = MODE_FROZEN_BAKE;
@@ -258,7 +258,7 @@ void jump_to_strudel_set(void)
     }
     current_group = g_strudel_set;
 
-    lv_scr_load_anim(strudel_set_get(&ui_manager)->obj,
+    lang_scr_load_anim(strudel_set_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[strudel] jump: menu -> strudel_set\n");
@@ -314,7 +314,7 @@ void jump_to_strudel_cooking(void)
 
     current_group = g_strudel_cooking;
 
-    lv_scr_load_anim(strudel_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(strudel_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_COOKING;
@@ -374,7 +374,7 @@ void jump_to_strudel_setting(void)
     }
     current_group = g_strudel_setting;
 
-    lv_scr_load_anim(strudel_setting_get(&ui_manager)->obj,
+    lang_scr_load_anim(strudel_setting_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     if (g_send.iface_status != IFACE_COMPLETE)
@@ -421,7 +421,7 @@ void jump_to_strudel_stop(void)
     }
     current_group = g_strudel_stop;
 
-    lv_scr_load_anim(strudel_stop_get(&ui_manager)->obj,
+    lang_scr_load_anim(strudel_stop_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_PAUSE;
@@ -483,7 +483,7 @@ void jump_to_strudel_stop_back(void)
     }
     current_group = g_strudel_stop_back;
 
-    lv_scr_load_anim(strudel_stop_back_get(&ui_manager)->obj,
+    lang_scr_load_anim(strudel_stop_back_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[strudel] stop/cooking -> stop_back\n");
@@ -541,7 +541,7 @@ void strudel_resume_cooking(void)
 
     current_group = g_strudel_cooking;
 
-    lv_scr_load_anim(strudel_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(strudel_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     {
@@ -601,7 +601,7 @@ static void on_strudel_setting_sure_click(lv_event_t *e)
 
     current_group = g_strudel_cooking;
 
-    lv_scr_load_anim(strudel_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(strudel_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_COOKING;
@@ -635,7 +635,7 @@ void jump_to_strudel_complete(void)
     }
     current_group = g_strudel_complete;
 
-    lv_scr_load_anim(strudel_complete_get(&ui_manager)->obj,
+    lang_scr_load_anim(strudel_complete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_COMPLETE;
@@ -686,7 +686,7 @@ void strudel_rebuild_menu(page_id_t child)
         if (menu->next) lv_group_focus_obj(menu->next);
     }
     current_group = g_strudel_menu;
-    lv_scr_load_anim(strudel_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(strudel_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[strudel] back to strudel_menu\n");
@@ -760,7 +760,7 @@ void strudel_rebuild_set(page_id_t child)
             lv_group_focus_obj(delay_on ? set->ondelay : set->offdelay);
 
     current_group = g_strudel_set;
-    lv_scr_load_anim(strudel_set_get(&ui_manager)->obj,
+    lang_scr_load_anim(strudel_set_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[strudel] back to strudel_set\n");
@@ -820,7 +820,7 @@ void strudel_rebuild_cooking(page_id_t child)
         }
     }
     current_group = g_strudel_cooking;
-    lv_scr_load_anim(strudel_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(strudel_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[strudel] back to strudel_cooking\n");
@@ -866,7 +866,7 @@ void strudel_rebuild_setting(void)
         lv_group_focus_obj(set->hour);
     }
     current_group = g_strudel_setting;
-    lv_scr_load_anim(strudel_setting_get(&ui_manager)->obj,
+    lang_scr_load_anim(strudel_setting_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[strudel] back to strudel_setting\n");
@@ -902,7 +902,7 @@ void strudel_rebuild_stop(void)
         lv_bar_set_value(stop->bar_53, cook_bar_saved, LV_ANIM_OFF);
     }
     current_group = g_strudel_stop;
-    lv_scr_load_anim(strudel_stop_get(&ui_manager)->obj,
+    lang_scr_load_anim(strudel_stop_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[strudel] back to strudel_stop\n");
@@ -941,7 +941,7 @@ void strudel_rebuild_stop_back(void)
         lv_bar_set_value(back->bar_54, p, LV_ANIM_OFF);
     }
     current_group = g_strudel_stop_back;
-    lv_scr_load_anim(strudel_stop_back_get(&ui_manager)->obj,
+    lang_scr_load_anim(strudel_stop_back_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[strudel] back to strudel_stop_back\n");
@@ -952,7 +952,7 @@ void strudel_rebuild_complete(void)
     edit_clear();
     strudel_complete_create(&ui_manager);
     current_group = g_strudel_complete;
-    lv_scr_load_anim(strudel_complete_get(&ui_manager)->obj,
+    lang_scr_load_anim(strudel_complete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[strudel] back to strudel_complete\n");

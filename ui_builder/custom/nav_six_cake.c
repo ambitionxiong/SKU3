@@ -52,7 +52,7 @@ void jump_to_cake6menu(void)
     }
     current_group = g_cake6menu;
 
-    lv_scr_load_anim(cake6menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(cake6menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[six_cake] jump: cake6menu\n");
@@ -110,7 +110,7 @@ void cake6menu_rebuild(page_id_t child)
     }
     current_group = g_cake6menu;
 
-    lv_scr_load_anim(cake6menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(cake6menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[six_cake] rebuild: cake6menu\n");

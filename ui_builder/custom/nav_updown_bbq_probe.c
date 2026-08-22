@@ -90,7 +90,7 @@ static void on_updown_probe_stop_back_sure_click(lv_event_t *e)
         groups_create();
         bind_events();
         current_group = g_major_menu;
-        lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
+        lang_scr_load_anim(major_menu_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
                          ui_manager.auto_del);
     }
@@ -188,7 +188,7 @@ void jump_to_updown_bbq_menu_probe(void)
     }
     current_group = g_updown_bbq_menu_probe;
 
-    lv_scr_load_anim(updown_bbq_menu_probe_get(&ui_manager)->obj,
+    lang_scr_load_anim(updown_bbq_menu_probe_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.cook_mode = MODE_UPDOWN_BBQ;
@@ -234,7 +234,7 @@ void jump_to_updown_bbq_set_probe(void)
     }
     current_group = g_updown_bbq_set_probe;
 
-    lv_scr_load_anim(updown_bbq_set_probe_get(&ui_manager)->obj,
+    lang_scr_load_anim(updown_bbq_set_probe_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[updown_bbq_probe] jump: set_probe\n");
@@ -286,7 +286,7 @@ void jump_to_updown_bbq_cooking_probe(void)
 
     current_group = g_updown_bbq_cooking_probe;
 
-    lv_scr_load_anim(updown_bbq_cooking_probe_get(&ui_manager)->obj,
+    lang_scr_load_anim(updown_bbq_cooking_probe_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_COOKING;
@@ -329,7 +329,7 @@ void jump_to_updown_bbq_stop_probe(void)
     }
     current_group = g_updown_bbq_stop_probe;
 
-    lv_scr_load_anim(updown_bbq_stop_probe_get(&ui_manager)->obj,
+    lang_scr_load_anim(updown_bbq_stop_probe_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_PAUSE;
@@ -382,7 +382,7 @@ void jump_to_updown_bbq_stop_back_probe(void)
     }
     current_group = g_updown_bbq_stop_back_probe;
 
-    lv_scr_load_anim(updown_bbq_stop_back_probe_get(&ui_manager)->obj,
+    lang_scr_load_anim(updown_bbq_stop_back_probe_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[updown_bbq_probe] jump: stop_back_probe\n");
@@ -413,7 +413,7 @@ void jump_to_updown_bbq_complete_probe(void)
     }
     current_group = g_updown_bbq_complete_probe;
 
-    lv_scr_load_anim(updown_bbq_complete_probe_get(&ui_manager)->obj,
+    lang_scr_load_anim(updown_bbq_complete_probe_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_COMPLETE;
@@ -456,7 +456,7 @@ void updown_bbq_probe_resume_cooking(void)
 
     current_group = g_updown_bbq_cooking_probe;
 
-    lv_scr_load_anim(updown_bbq_cooking_probe_get(&ui_manager)->obj,
+    lang_scr_load_anim(updown_bbq_cooking_probe_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_COOKING;
@@ -513,7 +513,7 @@ void updown_bbq_probe_rebuild_menu(page_id_t child)
         if (menu->next) lv_group_focus_obj(menu->next);
     }
     current_group = g_updown_bbq_menu_probe;
-    lv_scr_load_anim(updown_bbq_menu_probe_get(&ui_manager)->obj,
+    lang_scr_load_anim(updown_bbq_menu_probe_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[updown_bbq_probe] back to updown_bbq_menu_probe\n");
@@ -558,7 +558,7 @@ void updown_bbq_probe_rebuild_set(page_id_t child)
             lv_group_focus_obj(delay_on ? set->ondelay : set->offdelay);
     }
     current_group = g_updown_bbq_set_probe;
-    lv_scr_load_anim(updown_bbq_set_probe_get(&ui_manager)->obj,
+    lang_scr_load_anim(updown_bbq_set_probe_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[updown_bbq_probe] back to updown_bbq_set_probe\n");
@@ -586,7 +586,7 @@ void updown_bbq_probe_rebuild_cooking(page_id_t child)
         lv_bar_set_value(cook->bar_1, bar_val, LV_ANIM_OFF);
     }
     current_group = g_updown_bbq_cooking_probe;
-    lv_scr_load_anim(updown_bbq_cooking_probe_get(&ui_manager)->obj,
+    lang_scr_load_anim(updown_bbq_cooking_probe_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[updown_bbq_probe] back to updown_bbq_cooking_probe\n");
@@ -626,7 +626,7 @@ void updown_bbq_probe_rebuild_setting(void)
                             LV_EVENT_CLICKED, NULL);
     }
     current_group = g_updown_bbq_set_probe;
-    lv_scr_load_anim(updown_bbq_set_probe_get(&ui_manager)->obj,
+    lang_scr_load_anim(updown_bbq_set_probe_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[updown_bbq_probe] back to updown_bbq_set_probe\n");
@@ -653,7 +653,7 @@ void updown_bbq_probe_rebuild_stop(void)
         lv_bar_set_value(stop->bar_2, cook_bar_saved, LV_ANIM_OFF);
     }
     current_group = g_updown_bbq_stop_probe;
-    lv_scr_load_anim(updown_bbq_stop_probe_get(&ui_manager)->obj,
+    lang_scr_load_anim(updown_bbq_stop_probe_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[updown_bbq_probe] back to updown_bbq_stop_probe\n");
@@ -693,7 +693,7 @@ void updown_bbq_probe_rebuild_stop_back(void)
         }
     }
     current_group = g_updown_bbq_stop_back_probe;
-    lv_scr_load_anim(updown_bbq_stop_back_probe_get(&ui_manager)->obj,
+    lang_scr_load_anim(updown_bbq_stop_back_probe_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[updown_bbq_probe] back to updown_bbq_stop_back_probe\n");
@@ -714,7 +714,7 @@ void updown_bbq_probe_rebuild_complete(void)
         }
     }
     current_group = g_updown_bbq_complete_probe;
-    lv_scr_load_anim(updown_bbq_complete_probe_get(&ui_manager)->obj,
+    lang_scr_load_anim(updown_bbq_complete_probe_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[updown_bbq_probe] back to updown_bbq_complete_probe\n");

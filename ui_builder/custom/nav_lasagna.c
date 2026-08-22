@@ -129,7 +129,7 @@ static void on_lasagna_stop_back_sure_click(lv_event_t *e)
     groups_create();
     bind_events();
     current_group = g_major_menu;
-    lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(major_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_SETTING;
@@ -183,7 +183,7 @@ void jump_to_lasagna_menu(void)
     }
     current_group = g_lasagna_menu;
 
-    lv_scr_load_anim(lasagna_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(lasagna_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.cook_mode = MODE_FROZEN_BAKE;
@@ -258,7 +258,7 @@ void jump_to_lasagna_set(void)
     }
     current_group = g_lasagna_set;
 
-    lv_scr_load_anim(lasagna_set_get(&ui_manager)->obj,
+    lang_scr_load_anim(lasagna_set_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[lasagna] jump: menu -> lasagna_set\n");
@@ -314,7 +314,7 @@ void jump_to_lasagna_cooking(void)
 
     current_group = g_lasagna_cooking;
 
-    lv_scr_load_anim(lasagna_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(lasagna_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_COOKING;
@@ -374,7 +374,7 @@ void jump_to_lasagna_setting(void)
     }
     current_group = g_lasagna_setting;
 
-    lv_scr_load_anim(lasagna_setting_get(&ui_manager)->obj,
+    lang_scr_load_anim(lasagna_setting_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     if (g_send.iface_status != IFACE_COMPLETE)
@@ -421,7 +421,7 @@ void jump_to_lasagna_stop(void)
     }
     current_group = g_lasagna_stop;
 
-    lv_scr_load_anim(lasagna_stop_get(&ui_manager)->obj,
+    lang_scr_load_anim(lasagna_stop_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_PAUSE;
@@ -484,7 +484,7 @@ void jump_to_lasagna_stop_back(void)
     }
     current_group = g_lasagna_stop_back;
 
-    lv_scr_load_anim(lasagna_stop_back_get(&ui_manager)->obj,
+    lang_scr_load_anim(lasagna_stop_back_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[lasagna] jump: stop/cooking -> stop_back\n");
@@ -542,7 +542,7 @@ void lasagna_resume_cooking(void)
 
     current_group = g_lasagna_cooking;
 
-    lv_scr_load_anim(lasagna_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(lasagna_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     {
@@ -602,7 +602,7 @@ static void on_lasagna_setting_sure_click(lv_event_t *e)
 
     current_group = g_lasagna_cooking;
 
-    lv_scr_load_anim(lasagna_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(lasagna_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_COOKING;
@@ -636,7 +636,7 @@ void jump_to_lasagna_complete(void)
     }
     current_group = g_lasagna_complete;
 
-    lv_scr_load_anim(lasagna_complete_get(&ui_manager)->obj,
+    lang_scr_load_anim(lasagna_complete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         g_send.iface_status = IFACE_COMPLETE;
@@ -687,7 +687,7 @@ void lasagna_rebuild_menu(page_id_t child)
         if (menu->next) lv_group_focus_obj(menu->next);
     }
     current_group = g_lasagna_menu;
-    lv_scr_load_anim(lasagna_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(lasagna_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[lasagna] back to lasagna_menu\n");
@@ -761,7 +761,7 @@ void lasagna_rebuild_set(page_id_t child)
             lv_group_focus_obj(delay_on ? set->ondelay : set->offdelay);
 
     current_group = g_lasagna_set;
-    lv_scr_load_anim(lasagna_set_get(&ui_manager)->obj,
+    lang_scr_load_anim(lasagna_set_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[lasagna] back to lasagna_set\n");
@@ -821,7 +821,7 @@ void lasagna_rebuild_cooking(page_id_t child)
         }
     }
     current_group = g_lasagna_cooking;
-    lv_scr_load_anim(lasagna_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(lasagna_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[lasagna] back to lasagna_cooking\n");
@@ -867,7 +867,7 @@ void lasagna_rebuild_setting(void)
         lv_group_focus_obj(set->hour);
     }
     current_group = g_lasagna_setting;
-    lv_scr_load_anim(lasagna_setting_get(&ui_manager)->obj,
+    lang_scr_load_anim(lasagna_setting_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[lasagna] back to lasagna_setting\n");
@@ -903,7 +903,7 @@ void lasagna_rebuild_stop(void)
         lv_bar_set_value(stop->bar_49, cook_bar_saved, LV_ANIM_OFF);
     }
     current_group = g_lasagna_stop;
-    lv_scr_load_anim(lasagna_stop_get(&ui_manager)->obj,
+    lang_scr_load_anim(lasagna_stop_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[lasagna] back to lasagna_stop\n");
@@ -949,7 +949,7 @@ void lasagna_rebuild_stop_back(void)
         }
     }
     current_group = g_lasagna_stop_back;
-    lv_scr_load_anim(lasagna_stop_back_get(&ui_manager)->obj,
+    lang_scr_load_anim(lasagna_stop_back_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[lasagna] back to lasagna_stop_back\n");
@@ -960,7 +960,7 @@ void lasagna_rebuild_complete(void)
     edit_clear();
     lasagna_complete_create(&ui_manager);
     current_group = g_lasagna_complete;
-    lv_scr_load_anim(lasagna_complete_get(&ui_manager)->obj,
+    lang_scr_load_anim(lasagna_complete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[lasagna] back to lasagna_complete\n");

@@ -54,7 +54,7 @@ static void on_wc_stop_back_sure_click(lv_event_t *e)
         if (cm->waterclean) lv_group_focus_obj(cm->waterclean);
     }
     current_group = g_clean_menu;
-    lv_scr_load_anim(clean_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(clean_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_SETTING;
@@ -85,7 +85,7 @@ void jump_to_wc_set(void)
     }
     current_group = g_wc_set;
 
-    lv_scr_load_anim(waterclean_set_get(&ui_manager)->obj,
+    lang_scr_load_anim(waterclean_set_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.cook_mode = MODE_WATER_CLEAN;
@@ -137,7 +137,7 @@ void jump_to_wc_cooking(void)
 
     current_group = g_wc_cooking;
 
-    lv_scr_load_anim(waterclean_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(waterclean_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_COOKING;
@@ -182,7 +182,7 @@ void jump_to_wc_stop(void)
     }
     current_group = g_wc_stop;
 
-    lv_scr_load_anim(waterclean_stop_get(&ui_manager)->obj,
+    lang_scr_load_anim(waterclean_stop_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_PAUSE;
@@ -239,7 +239,7 @@ void wc_resume_cooking(void)
 
     current_group = g_wc_cooking;
 
-    lv_scr_load_anim(waterclean_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(waterclean_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     {
@@ -287,7 +287,7 @@ void jump_to_wc_stop_back(void)
     }
     current_group = g_wc_stop_back;
 
-    lv_scr_load_anim(waterclean_stop_back_get(&ui_manager)->obj,
+    lang_scr_load_anim(waterclean_stop_back_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[wc] jump: stop/cooking -> stop_back\n");
@@ -306,7 +306,7 @@ void jump_to_wc_complete(void)
 
     current_group = g_wc_complete;
 
-    lv_scr_load_anim(waterclean_complete_get(&ui_manager)->obj,
+    lang_scr_load_anim(waterclean_complete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_COMPLETE;
@@ -329,7 +329,7 @@ void wc_rebuild_set(page_id_t child)
         if (set->start) lv_group_focus_obj(set->start);
     }
     current_group = g_wc_set;
-    lv_scr_load_anim(waterclean_set_get(&ui_manager)->obj,
+    lang_scr_load_anim(waterclean_set_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[wc] back to wc_set\n");
@@ -386,7 +386,7 @@ void wc_rebuild_cooking(page_id_t child)
         }
     }
     current_group = g_wc_cooking;
-    lv_scr_load_anim(waterclean_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(waterclean_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[wc] back to wc_cooking\n");
@@ -420,7 +420,7 @@ void wc_rebuild_stop(void)
         lv_bar_set_value(stop->bar_3, cook_bar_saved, LV_ANIM_OFF);
     }
     current_group = g_wc_stop;
-    lv_scr_load_anim(waterclean_stop_get(&ui_manager)->obj,
+    lang_scr_load_anim(waterclean_stop_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_PAUSE;
@@ -457,7 +457,7 @@ void wc_rebuild_stop_back(void)
         if (back->sure) lv_group_focus_obj(back->sure);
     }
     current_group = g_wc_stop_back;
-    lv_scr_load_anim(waterclean_stop_back_get(&ui_manager)->obj,
+    lang_scr_load_anim(waterclean_stop_back_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[wc] back to wc_stop_back\n");
@@ -468,7 +468,7 @@ void wc_rebuild_complete(void)
     edit_clear();
     waterclean_complete_create(&ui_manager);
     current_group = g_wc_complete;
-    lv_scr_load_anim(waterclean_complete_get(&ui_manager)->obj,
+    lang_scr_load_anim(waterclean_complete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[wc] back to wc_complete\n");

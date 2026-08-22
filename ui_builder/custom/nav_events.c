@@ -84,7 +84,7 @@ void jump_to_cook4_menu(void)
     }
     current_group = g_cook4_menu;
 
-    lv_scr_load_anim(cook4menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(cook4menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[nav] major_menu -> cook4_menu\n");
@@ -121,7 +121,7 @@ void cook4menu_rebuild(page_id_t child)
     }
     current_group = g_cook4_menu;
 
-    lv_scr_load_anim(cook4menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(cook4menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[nav] back to cook4_menu\n");
@@ -478,7 +478,7 @@ void jump_to_delayset(void)
     }
     current_group = g_delayset;
 
-    lv_scr_load_anim(delayset_get(&ui_manager)->obj,
+    lang_scr_load_anim(delayset_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[nav] jump: updown_bbq_set -> delayset\n");
@@ -789,7 +789,7 @@ void rebuild_delaycooking(void)
     g_send.remaining_ms = 0;
     g_send.cook_flag = 0;
 
-    lv_scr_load_anim(delaycooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(delaycooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[nav] back to delaycooking\n");

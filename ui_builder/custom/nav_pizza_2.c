@@ -170,7 +170,7 @@ static void on_pizza_2_stop_back_sure_click(lv_event_t *e)
     groups_create();
     bind_events();
     current_group = g_major_menu;
-    lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(major_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_SETTING;
@@ -240,7 +240,7 @@ void jump_to_pizza_2_menu(void)
     }
     current_group = g_pizza_2_menu;
 
-    lv_scr_load_anim(pizza_2_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(pizza_2_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         g_send.cook_mode = MODE_PIZZA_2;
@@ -326,7 +326,7 @@ void jump_to_pizza_2_set(void)
     }
     current_group = g_pizza_2_set;
 
-    lv_scr_load_anim(pizza_2_set_get(&ui_manager)->obj,
+    lang_scr_load_anim(pizza_2_set_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[pizza_2] jump: menu -> pizza_2_set\n");
@@ -383,7 +383,7 @@ void jump_to_pizza_2_cooking(void)
 
     current_group = g_pizza_2_cooking;
 
-    lv_scr_load_anim(pizza_2_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(pizza_2_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         g_send.iface_status = IFACE_COOKING;
@@ -459,7 +459,7 @@ void jump_to_pizza_2_setting(void)
     }
     current_group = g_pizza_2_setting;
 
-    lv_scr_load_anim(pizza_2_setting_get(&ui_manager)->obj,
+    lang_scr_load_anim(pizza_2_setting_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         if (g_send.iface_status != IFACE_COMPLETE)
@@ -507,7 +507,7 @@ void jump_to_pizza_2_stop(void)
     }
     current_group = g_pizza_2_stop;
 
-    lv_scr_load_anim(pizza_2_stop_get(&ui_manager)->obj,
+    lang_scr_load_anim(pizza_2_stop_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         g_send.iface_status = IFACE_PAUSE;
@@ -570,7 +570,7 @@ void jump_to_pizza_2_stop_back(void)
     }
     current_group = g_pizza_2_stop_back;
 
-    lv_scr_load_anim(pizza_2_stop_back_get(&ui_manager)->obj,
+    lang_scr_load_anim(pizza_2_stop_back_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[pizza_2] jump: stop/cooking -> stop_back\n");
@@ -629,7 +629,7 @@ void pizza_2_resume_cooking(void)
 
     current_group = g_pizza_2_cooking;
 
-    lv_scr_load_anim(pizza_2_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(pizza_2_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         {
@@ -690,7 +690,7 @@ static void on_pizza_2_setting_sure_click(lv_event_t *e)
 
     current_group = g_pizza_2_cooking;
 
-    lv_scr_load_anim(pizza_2_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(pizza_2_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         g_send.iface_status = IFACE_COOKING;
@@ -728,7 +728,7 @@ void jump_to_pizza_2_complete(void)
     }
     current_group = g_pizza_2_complete;
 
-    lv_scr_load_anim(pizza_2_complete_get(&ui_manager)->obj,
+    lang_scr_load_anim(pizza_2_complete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         g_send.iface_status = IFACE_COMPLETE;
@@ -795,7 +795,7 @@ void pizza_2_rebuild_menu(page_id_t child)
         if (menu->next) lv_group_focus_obj(menu->next);
     }
     current_group = g_pizza_2_menu;
-    lv_scr_load_anim(pizza_2_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(pizza_2_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[pizza_2] back to pizza_2_menu\n");
@@ -881,7 +881,7 @@ void pizza_2_rebuild_set(page_id_t child)
             lv_group_focus_obj(delay_on ? set->ondelay : set->offdelay);
 
     current_group = g_pizza_2_set;
-    lv_scr_load_anim(pizza_2_set_get(&ui_manager)->obj,
+    lang_scr_load_anim(pizza_2_set_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[pizza_2] back to pizza_2_set\n");
@@ -941,7 +941,7 @@ void pizza_2_rebuild_cooking(page_id_t child)
         }
     }
     current_group = g_pizza_2_cooking;
-    lv_scr_load_anim(pizza_2_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(pizza_2_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[pizza_2] back to pizza_2_cooking\n");
@@ -1002,7 +1002,7 @@ void pizza_2_rebuild_setting(void)
         update_pizza_2_dir_icon(set);
     }
     current_group = g_pizza_2_setting;
-    lv_scr_load_anim(pizza_2_setting_get(&ui_manager)->obj,
+    lang_scr_load_anim(pizza_2_setting_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[pizza_2] back to pizza_2_setting\n");
@@ -1038,7 +1038,7 @@ void pizza_2_rebuild_stop(void)
         lv_bar_set_value(stop->bar_25, cook_bar_saved, LV_ANIM_OFF);
     }
     current_group = g_pizza_2_stop;
-    lv_scr_load_anim(pizza_2_stop_get(&ui_manager)->obj,
+    lang_scr_load_anim(pizza_2_stop_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[pizza_2] back to pizza_2_stop\n");
@@ -1083,7 +1083,7 @@ void pizza_2_rebuild_stop_back(void)
         }
     }
     current_group = g_pizza_2_stop_back;
-    lv_scr_load_anim(pizza_2_stop_back_get(&ui_manager)->obj,
+    lang_scr_load_anim(pizza_2_stop_back_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[pizza_2] back to pizza_2_stop_back\n");
@@ -1094,7 +1094,7 @@ void pizza_2_rebuild_complete(void)
     edit_clear();
     pizza_2_complete_create(&ui_manager);
     current_group = g_pizza_2_complete;
-    lv_scr_load_anim(pizza_2_complete_get(&ui_manager)->obj,
+    lang_scr_load_anim(pizza_2_complete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[pizza_2] back to pizza_2_complete\n");

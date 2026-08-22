@@ -116,7 +116,7 @@ void screen_set_back(void)
         waitmenu_24_create(&ui_manager);
         waitmenu_clock_cache_reset();   /* 强制刷新为真实时间 */
         current_group = NULL;
-        lv_scr_load_anim(waitmenu_24_get(&ui_manager)->obj,
+        lang_scr_load_anim(waitmenu_24_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
                          ui_manager.auto_del);
         waitmenu_apply_clock();   /* 立即刷新为真实时间 */

@@ -162,7 +162,7 @@ static void on_preheat_stop_back_sure_click(lv_event_t *e)
     groups_create();
     bind_events();
     current_group = g_major_menu;
-    lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(major_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[nav_preheat] stop_back sure -> major_menu\n");
@@ -232,7 +232,7 @@ void preheat_complete_exit(void)
         groups_create();
         bind_events();
         current_group = g_major_menu;
-        lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
+        lang_scr_load_anim(major_menu_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
                          ui_manager.auto_del);
         printf("[nav_preheat] complete exit -> major_menu\n");
@@ -285,7 +285,7 @@ void jump_to_preheat_menu(void)
         lv_obj_add_event_cb(menu->next, on_preheat_menu_next_click,
                             LV_EVENT_CLICKED, NULL);
 
-    lv_scr_load_anim(preheatmenu_get(&ui_manager)->obj,
+    lang_scr_load_anim(preheatmenu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[nav_preheat] cookmenu -> preheat_menu\n");
@@ -334,7 +334,7 @@ void jump_to_preheat_cooking(void)
     if (cook_timer) lv_timer_del(cook_timer);
     cook_timer = lv_timer_create(cooking_timer_cb, 1000, NULL);
 
-    lv_scr_load_anim(preheatcooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(preheatcooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[nav_preheat] menu -> preheat_cooking\n");
@@ -364,7 +364,7 @@ void jump_to_preheat_stop(void)
     g_send.iface_status = IFACE_PAUSE;
     g_send.remaining_ms = 0;
 
-    lv_scr_load_anim(preheatstop_get(&ui_manager)->obj,
+    lang_scr_load_anim(preheatstop_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[nav_preheat] cooking -> preheat_stop\n");
@@ -403,7 +403,7 @@ void preheat_resume_cooking(void)
     if (cook_timer) lv_timer_del(cook_timer);
     cook_timer = lv_timer_create(cooking_timer_cb, 1000, NULL);
 
-    lv_scr_load_anim(preheatcooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(preheatcooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[nav_preheat] resume: stop -> cooking\n");
@@ -440,7 +440,7 @@ void jump_to_preheat_stop_back(void)
     }
     current_group = g_preheat_stop_back;
 
-    lv_scr_load_anim(preheat_stop_back_get(&ui_manager)->obj,
+    lang_scr_load_anim(preheat_stop_back_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[nav_preheat] cooking/stop/complete -> stop_back\n");
@@ -473,7 +473,7 @@ void preheat_rebuild_stop_back(void)
         }
     }
     current_group = g_preheat_stop_back;
-    lv_scr_load_anim(preheat_stop_back_get(&ui_manager)->obj,
+    lang_scr_load_anim(preheat_stop_back_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[nav_preheat] back to stop_back\n");
@@ -544,7 +544,7 @@ void jump_to_preheat_complete(void)
     g_send.remaining_ms = 0;
     g_send.cook_flag = 0;
 
-    lv_scr_load_anim(preheatcomplete_get(&ui_manager)->obj,
+    lang_scr_load_anim(preheatcomplete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[nav_preheat] cooking -> preheat_complete\n");
@@ -587,7 +587,7 @@ void preheat_rebuild_menu(page_id_t child)
     if (menu && menu->next)
         lv_obj_add_event_cb(menu->next, on_preheat_menu_next_click,
                             LV_EVENT_CLICKED, NULL);
-    lv_scr_load_anim(preheatmenu_get(&ui_manager)->obj,
+    lang_scr_load_anim(preheatmenu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[nav_preheat] back to preheat_menu\n");
@@ -611,7 +611,7 @@ void preheat_rebuild_cooking(void)
         preheat_update_bar(cook->bar_1, cook->bartemp);
     }
     current_group = g_preheat_cooking;
-    lv_scr_load_anim(preheatcooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(preheatcooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[nav_preheat] back to preheat_cooking\n");
@@ -635,7 +635,7 @@ void preheat_rebuild_stop(void)
         preheat_update_bar(stop->bar_2, stop->bartemp);
     }
     current_group = g_preheat_stop;
-    lv_scr_load_anim(preheatstop_get(&ui_manager)->obj,
+    lang_scr_load_anim(preheatstop_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[nav_preheat] back to preheat_stop\n");
@@ -664,7 +664,7 @@ void preheat_rebuild_complete(void)
         }
     }
     current_group = g_preheat_complete;
-    lv_scr_load_anim(preheatcomplete_get(&ui_manager)->obj,
+    lang_scr_load_anim(preheatcomplete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[nav_preheat] back to preheat_complete\n");

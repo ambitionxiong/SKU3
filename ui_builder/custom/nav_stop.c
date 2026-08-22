@@ -68,7 +68,7 @@ void jump_to_updown_bbq_stop(void)
     }
     current_group = g_updown_bbq_stop;
 
-    lv_scr_load_anim(updown_bbq_stop_get(&ui_manager)->obj,
+    lang_scr_load_anim(updown_bbq_stop_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_PAUSE;
@@ -163,7 +163,7 @@ void jump_to_updown_bbq_stop_back(void)
     }
     current_group = g_updown_bbq_stop_back;
 
-    lv_scr_load_anim(updown_bbq_stop_back_get(&ui_manager)->obj,
+    lang_scr_load_anim(updown_bbq_stop_back_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[nav] jump: stop/cooking -> updown_bbq_stop_back\n");
@@ -251,7 +251,7 @@ void stop_resume_cooking(void)
 
     current_group = g_updown_bbq_cooking;
 
-    lv_scr_load_anim(updown_bbq_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(updown_bbq_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     {
@@ -381,7 +381,7 @@ void on_stop_back_sure_click(lv_event_t *e)
     bind_events();
     major_menu_apply_lang();   /* i18n */
     current_group = g_major_menu;
-    lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(major_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[nav] stop_back sure -> major_menu\n");
@@ -431,7 +431,7 @@ void jump_to_color_stop(void)
     }
     current_group = g_color_stop;
 
-    lv_scr_load_anim(color_stop_get(&ui_manager)->obj,
+    lang_scr_load_anim(color_stop_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_PAUSE;
@@ -480,7 +480,7 @@ void jump_to_color_stop_back(void)
     }
     current_group = g_color_stop_back;
 
-    lv_scr_load_anim(color_stop_back_get(&ui_manager)->obj,
+    lang_scr_load_anim(color_stop_back_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[nav] jump: stop/cooking -> color_stop_back\n");
@@ -551,7 +551,7 @@ void color_resume_cooking(void)
 
     current_group = g_color_cookoing;
 
-    lv_scr_load_anim(color_cookoing_get(&ui_manager)->obj,
+    lang_scr_load_anim(color_cookoing_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_COOKING;

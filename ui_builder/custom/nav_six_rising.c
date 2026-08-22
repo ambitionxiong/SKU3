@@ -50,7 +50,7 @@ void jump_to_risingpage(void)
     }
     current_group = g_risingpage;
 
-    lv_scr_load_anim(risingpage_get(&ui_manager)->obj,
+    lang_scr_load_anim(risingpage_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[six_rising] jump: risingpage\n");
@@ -86,7 +86,7 @@ void risingpage_rebuild(page_id_t child)
     }
     current_group = g_risingpage;
 
-    lv_scr_load_anim(risingpage_get(&ui_manager)->obj,
+    lang_scr_load_anim(risingpage_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[six_rising] rebuild: risingpage\n");

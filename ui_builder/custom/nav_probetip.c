@@ -63,7 +63,7 @@ void jump_to_probetip(const char *text)
     }
     current_group = g_probetip;
     if (probetip_get(&ui_manager)->obj)
-        lv_scr_load_anim(probetip_get(&ui_manager)->obj,
+        lang_scr_load_anim(probetip_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
     /* 所有场景统一 3 秒自动关闭 */
     probetip_cancel_auto_dismiss();
@@ -87,7 +87,7 @@ void probetip_rebuild(page_id_t child)
     }
     current_group = g_probetip;
     if (probetip_get(&ui_manager)->obj)
-        lv_scr_load_anim(probetip_get(&ui_manager)->obj,
+        lang_scr_load_anim(probetip_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
     printf("[probetip] back to probetip\n");
 }

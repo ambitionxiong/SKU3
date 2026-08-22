@@ -170,7 +170,7 @@ static void on_unfrozen_stop_back_sure_click(lv_event_t *e)
     groups_create();
     bind_events();
     current_group = g_major_menu;
-    lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(major_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_SETTING;
@@ -240,7 +240,7 @@ void jump_to_unfrozen_menu(void)
     }
     current_group = g_unfrozen_menu;
 
-    lv_scr_load_anim(unfrozen_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(unfrozen_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         g_send.cook_mode = MODE_UNFROZEN;
@@ -326,7 +326,7 @@ void jump_to_unfrozen_set(void)
     }
     current_group = g_unfrozen_set;
 
-    lv_scr_load_anim(unfrozen_set_get(&ui_manager)->obj,
+    lang_scr_load_anim(unfrozen_set_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[unfrozen] jump: menu -> unfrozen_set\n");
@@ -383,7 +383,7 @@ void jump_to_unfrozen_cooking(void)
 
     current_group = g_unfrozen_cooking;
 
-    lv_scr_load_anim(unfrozen_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(unfrozen_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         g_send.iface_status = IFACE_COOKING;
@@ -459,7 +459,7 @@ void jump_to_unfrozen_setting(void)
     }
     current_group = g_unfrozen_setting;
 
-    lv_scr_load_anim(unfrozen_setting_get(&ui_manager)->obj,
+    lang_scr_load_anim(unfrozen_setting_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         if (g_send.iface_status != IFACE_COMPLETE)
@@ -507,7 +507,7 @@ void jump_to_unfrozen_stop(void)
     }
     current_group = g_unfrozen_stop;
 
-    lv_scr_load_anim(unfrozen_stop_get(&ui_manager)->obj,
+    lang_scr_load_anim(unfrozen_stop_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         g_send.iface_status = IFACE_PAUSE;
@@ -570,7 +570,7 @@ void jump_to_unfrozen_stop_back(void)
     }
     current_group = g_unfrozen_stop_back;
 
-    lv_scr_load_anim(unfrozen_stop_back_get(&ui_manager)->obj,
+    lang_scr_load_anim(unfrozen_stop_back_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[unfrozen] jump: stop/cooking -> stop_back\n");
@@ -629,7 +629,7 @@ void unfrozen_resume_cooking(void)
 
     current_group = g_unfrozen_cooking;
 
-    lv_scr_load_anim(unfrozen_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(unfrozen_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         {
@@ -690,7 +690,7 @@ static void on_unfrozen_setting_sure_click(lv_event_t *e)
 
     current_group = g_unfrozen_cooking;
 
-    lv_scr_load_anim(unfrozen_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(unfrozen_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         g_send.iface_status = IFACE_COOKING;
@@ -728,7 +728,7 @@ void jump_to_unfrozen_complete(void)
     }
     current_group = g_unfrozen_complete;
 
-    lv_scr_load_anim(unfrozen_complete_get(&ui_manager)->obj,
+    lang_scr_load_anim(unfrozen_complete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         g_send.iface_status = IFACE_COMPLETE;
@@ -795,7 +795,7 @@ void unfrozen_rebuild_menu(page_id_t child)
         if (menu->next) lv_group_focus_obj(menu->next);
     }
     current_group = g_unfrozen_menu;
-    lv_scr_load_anim(unfrozen_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(unfrozen_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[unfrozen] back to unfrozen_menu\n");
@@ -881,7 +881,7 @@ void unfrozen_rebuild_set(page_id_t child)
             lv_group_focus_obj(delay_on ? set->ondelay : set->offdelay);
 
     current_group = g_unfrozen_set;
-    lv_scr_load_anim(unfrozen_set_get(&ui_manager)->obj,
+    lang_scr_load_anim(unfrozen_set_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[unfrozen] back to unfrozen_set\n");
@@ -941,7 +941,7 @@ void unfrozen_rebuild_cooking(page_id_t child)
         }
     }
     current_group = g_unfrozen_cooking;
-    lv_scr_load_anim(unfrozen_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(unfrozen_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[unfrozen] back to unfrozen_cooking\n");
@@ -1002,7 +1002,7 @@ void unfrozen_rebuild_setting(void)
         update_unfrozen_dir_icon(set);
     }
     current_group = g_unfrozen_setting;
-    lv_scr_load_anim(unfrozen_setting_get(&ui_manager)->obj,
+    lang_scr_load_anim(unfrozen_setting_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[unfrozen] back to unfrozen_setting\n");
@@ -1038,7 +1038,7 @@ void unfrozen_rebuild_stop(void)
         lv_bar_set_value(stop->bar_33, cook_bar_saved, LV_ANIM_OFF);
     }
     current_group = g_unfrozen_stop;
-    lv_scr_load_anim(unfrozen_stop_get(&ui_manager)->obj,
+    lang_scr_load_anim(unfrozen_stop_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[unfrozen] back to unfrozen_stop\n");
@@ -1083,7 +1083,7 @@ void unfrozen_rebuild_stop_back(void)
         }
     }
     current_group = g_unfrozen_stop_back;
-    lv_scr_load_anim(unfrozen_stop_back_get(&ui_manager)->obj,
+    lang_scr_load_anim(unfrozen_stop_back_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[unfrozen] back to unfrozen_stop_back\n");
@@ -1094,7 +1094,7 @@ void unfrozen_rebuild_complete(void)
     edit_clear();
     unfrozen_complete_create(&ui_manager);
     current_group = g_unfrozen_complete;
-    lv_scr_load_anim(unfrozen_complete_get(&ui_manager)->obj,
+    lang_scr_load_anim(unfrozen_complete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[unfrozen] back to unfrozen_complete\n");

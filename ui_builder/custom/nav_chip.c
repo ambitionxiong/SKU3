@@ -129,7 +129,7 @@ static void on_chip_stop_back_sure_click(lv_event_t *e)
     groups_create();
     bind_events();
     current_group = g_major_menu;
-    lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(major_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_SETTING;
@@ -183,7 +183,7 @@ void jump_to_chip_menu(void)
     }
     current_group = g_chip_menu;
 
-    lv_scr_load_anim(chip_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(chip_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.cook_mode = MODE_FROZEN_BAKE;
@@ -258,7 +258,7 @@ void jump_to_chip_set(void)
     }
     current_group = g_chip_set;
 
-    lv_scr_load_anim(chip_set_get(&ui_manager)->obj,
+    lang_scr_load_anim(chip_set_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[chip] jump: menu -> chip_set\n");
@@ -314,7 +314,7 @@ void jump_to_chip_cooking(void)
 
     current_group = g_chip_cooking;
 
-    lv_scr_load_anim(chip_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(chip_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_COOKING;
@@ -374,7 +374,7 @@ void jump_to_chip_setting(void)
     }
     current_group = g_chip_setting;
 
-    lv_scr_load_anim(chip_setting_get(&ui_manager)->obj,
+    lang_scr_load_anim(chip_setting_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     if (g_send.iface_status != IFACE_COMPLETE)
@@ -421,7 +421,7 @@ void jump_to_chip_stop(void)
     }
     current_group = g_chip_stop;
 
-    lv_scr_load_anim(chip_stop_get(&ui_manager)->obj,
+    lang_scr_load_anim(chip_stop_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_PAUSE;
@@ -483,7 +483,7 @@ void jump_to_chip_stop_back(void)
     }
     current_group = g_chip_stop_back;
 
-    lv_scr_load_anim(chip_stop_back_get(&ui_manager)->obj,
+    lang_scr_load_anim(chip_stop_back_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[chip] stop/cooking -> stop_back\n");
@@ -541,7 +541,7 @@ void chip_resume_cooking(void)
 
     current_group = g_chip_cooking;
 
-    lv_scr_load_anim(chip_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(chip_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     {
@@ -601,7 +601,7 @@ static void on_chip_setting_sure_click(lv_event_t *e)
 
     current_group = g_chip_cooking;
 
-    lv_scr_load_anim(chip_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(chip_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_COOKING;
@@ -635,7 +635,7 @@ void jump_to_chip_complete(void)
     }
     current_group = g_chip_complete;
 
-    lv_scr_load_anim(chip_complete_get(&ui_manager)->obj,
+    lang_scr_load_anim(chip_complete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_COMPLETE;
@@ -686,7 +686,7 @@ void chip_rebuild_menu(page_id_t child)
         if (menu->next) lv_group_focus_obj(menu->next);
     }
     current_group = g_chip_menu;
-    lv_scr_load_anim(chip_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(chip_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[chip] back to chip_menu\n");
@@ -760,7 +760,7 @@ void chip_rebuild_set(page_id_t child)
             lv_group_focus_obj(delay_on ? set->ondelay : set->offdelay);
 
     current_group = g_chip_set;
-    lv_scr_load_anim(chip_set_get(&ui_manager)->obj,
+    lang_scr_load_anim(chip_set_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[chip] back to chip_set\n");
@@ -820,7 +820,7 @@ void chip_rebuild_cooking(page_id_t child)
         }
     }
     current_group = g_chip_cooking;
-    lv_scr_load_anim(chip_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(chip_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[chip] back to chip_cooking\n");
@@ -866,7 +866,7 @@ void chip_rebuild_setting(void)
         lv_group_focus_obj(set->hour);
     }
     current_group = g_chip_setting;
-    lv_scr_load_anim(chip_setting_get(&ui_manager)->obj,
+    lang_scr_load_anim(chip_setting_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[chip] back to chip_setting\n");
@@ -902,7 +902,7 @@ void chip_rebuild_stop(void)
         lv_bar_set_value(stop->bar_65, cook_bar_saved, LV_ANIM_OFF);
     }
     current_group = g_chip_stop;
-    lv_scr_load_anim(chip_stop_get(&ui_manager)->obj,
+    lang_scr_load_anim(chip_stop_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[chip] back to chip_stop\n");
@@ -941,7 +941,7 @@ void chip_rebuild_stop_back(void)
         lv_bar_set_value(back->bar_66, p, LV_ANIM_OFF);
     }
     current_group = g_chip_stop_back;
-    lv_scr_load_anim(chip_stop_back_get(&ui_manager)->obj,
+    lang_scr_load_anim(chip_stop_back_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[chip] back to chip_stop_back\n");
@@ -952,7 +952,7 @@ void chip_rebuild_complete(void)
     edit_clear();
     chip_complete_create(&ui_manager);
     current_group = g_chip_complete;
-    lv_scr_load_anim(chip_complete_get(&ui_manager)->obj,
+    lang_scr_load_anim(chip_complete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[chip] back to chip_complete\n");

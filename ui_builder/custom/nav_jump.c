@@ -76,7 +76,7 @@ void jump_to_cookmenu(void)
 
     cookmenu_apply_lang();   /* i18n: 英文模式设置文本+字体 */
 
-    lv_scr_load_anim(cookmenu_get(&ui_manager)->obj,
+    lang_scr_load_anim(cookmenu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
 
@@ -122,7 +122,7 @@ void jump_to_special_menu(void)
 
     current_group = g_special_menu;
 
-    lv_scr_load_anim(special_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(special_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
 
@@ -188,7 +188,7 @@ void jump_to_updown_bbq_menu(void)
         lv_obj_add_event_cb(bbq->next_button, on_updown_next_click,
                             LV_EVENT_CLICKED, NULL);
 
-    lv_scr_load_anim(updown_bbq_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(updown_bbq_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
 
@@ -268,7 +268,7 @@ void jump_to_updown_bbq_set(void)
 
     current_group = g_updown_bbq_set;
 
-    lv_scr_load_anim(updown_bbq_set_get(&ui_manager)->obj,
+    lang_scr_load_anim(updown_bbq_set_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
 
@@ -338,7 +338,7 @@ void jump_to_updown_bbq_cooking(void)
 
     current_group = g_updown_bbq_cooking;
 
-    lv_scr_load_anim(updown_bbq_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(updown_bbq_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
 
@@ -373,7 +373,7 @@ void jump_to_updown_bbq_complete(void)
 
     current_group = g_updown_bbq_complete;
 
-    lv_scr_load_anim(updown_bbq_complete_get(&ui_manager)->obj,
+    lang_scr_load_anim(updown_bbq_complete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
 
@@ -464,7 +464,7 @@ void jump_to_updown_bbq_menu_top(void)
         lv_obj_add_event_cb(menu->next, on_updown_top_next_click,
                             LV_EVENT_CLICKED, NULL);
 
-    lv_scr_load_anim(updown_bbq_menu_top_get(&ui_manager)->obj,
+    lang_scr_load_anim(updown_bbq_menu_top_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[nav] jump: updown_bbq_set -> updown_bbq_menu_top\n");
@@ -511,7 +511,7 @@ void jump_to_updown_bbq_menu_low(void)
         lv_obj_add_event_cb(menu->next, on_updown_low_next_click,
                             LV_EVENT_CLICKED, NULL);
 
-    lv_scr_load_anim(updown_bbq_menu_low_get(&ui_manager)->obj,
+    lang_scr_load_anim(updown_bbq_menu_low_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[nav] jump: updown_bbq_set -> updown_bbq_menu_low\n");
@@ -549,7 +549,7 @@ static void color_menu_open(void)
     }
     current_group = g_preheat_menu;
 
-    lv_scr_load_anim(preheatmenu_get(&ui_manager)->obj,
+    lang_scr_load_anim(preheatmenu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[nav] color_menu open\n");
@@ -629,7 +629,7 @@ void jump_to_color_cookoing(void)
 
     current_group = g_color_cookoing;
 
-    lv_scr_load_anim(color_cookoing_get(&ui_manager)->obj,
+    lang_scr_load_anim(color_cookoing_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
 
@@ -664,7 +664,7 @@ void jump_to_color_complete(void)
     }
     current_group = NULL;
 
-    lv_scr_load_anim(colorcooking_complete_get(&ui_manager)->obj,
+    lang_scr_load_anim(colorcooking_complete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_COMPLETE;
@@ -707,7 +707,7 @@ void color_exit_to_home(void)
         bind_events();
         major_menu_apply_lang();   /* i18n */
         current_group = g_major_menu;
-        lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
+        lang_scr_load_anim(major_menu_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
                          ui_manager.auto_del);
         printf("[color] exit -> major_menu\n");

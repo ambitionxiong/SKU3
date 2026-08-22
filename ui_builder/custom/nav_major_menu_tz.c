@@ -43,7 +43,7 @@ void jump_to_major_menu_tz(void)
     }
     current_group = g_major_menu_tz;
 
-    lv_scr_load_anim(major_menu_tz_get(&ui_manager)->obj,
+    lang_scr_load_anim(major_menu_tz_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_SETTING;
@@ -72,7 +72,7 @@ void major_menu_tz_rebuild(page_id_t child)
             lv_group_focus_obj(tz->special_button);
     }
     current_group = g_major_menu_tz;
-    lv_scr_load_anim(major_menu_tz_get(&ui_manager)->obj,
+    lang_scr_load_anim(major_menu_tz_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[tz] back to major_menu_tz\n");

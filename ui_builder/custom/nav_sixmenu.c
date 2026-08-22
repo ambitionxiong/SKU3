@@ -81,7 +81,7 @@ void jump_to_sixmenu(void)
     }
     current_group = g_sixmenu;
 
-    lv_scr_load_anim(sixmenu_get(&ui_manager)->obj,
+    lang_scr_load_anim(sixmenu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[sixmenu] jump: enter sixmenu\n");
@@ -141,7 +141,7 @@ void sixmenu_rebuild(page_id_t child)
     }
     current_group = g_sixmenu;
 
-    lv_scr_load_anim(sixmenu_get(&ui_manager)->obj,
+    lang_scr_load_anim(sixmenu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[sixmenu] rebuild: child=%d\n", (int)child);
@@ -259,7 +259,7 @@ static void jump_to_meat6menu(void)
     }
     current_group = g_bread6menu;
 
-    lv_scr_load_anim(bread6menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(bread6menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[sixmenu] jump: meat6menu (reuse bread6menu page)\n");
@@ -303,7 +303,7 @@ void jump_to_bread6menu(void)
     }
     current_group = g_bread6menu;
 
-    lv_scr_load_anim(bread6menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(bread6menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[sixmenu] jump: bread6menu\n");
@@ -361,7 +361,7 @@ void bread6menu_rebuild(page_id_t child)
     }
     current_group = g_bread6menu;
 
-    lv_scr_load_anim(bread6menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(bread6menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[sixmenu] rebuild: bread6menu (meat=%d)\n", s_six_meat_mode);
@@ -430,7 +430,7 @@ void jump_to_risingpage(void)
     }
     current_group = g_risingpage;
 
-    lv_scr_load_anim(risingpage_get(&ui_manager)->obj,
+    lang_scr_load_anim(risingpage_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[sixmenu] jump: risingpage\n");
@@ -466,7 +466,7 @@ void risingpage_rebuild(page_id_t child)
     }
     current_group = g_risingpage;
 
-    lv_scr_load_anim(risingpage_get(&ui_manager)->obj,
+    lang_scr_load_anim(risingpage_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[sixmenu] rebuild: risingpage\n");
@@ -559,7 +559,7 @@ void jump_to_descriptionmenu(void)
     }
     current_group = g_descriptionmenu;
 
-    lv_scr_load_anim(descriptionmenu_get(&ui_manager)->obj,
+    lang_scr_load_anim(descriptionmenu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[sixmenu] jump: descriptionmenu (choice=%d)\n", g_rising_choice);
@@ -597,7 +597,7 @@ void descriptionmenu_rebuild(page_id_t child)
     }
     current_group = g_descriptionmenu;
 
-    lv_scr_load_anim(descriptionmenu_get(&ui_manager)->obj,
+    lang_scr_load_anim(descriptionmenu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[sixmenu] rebuild: descriptionmenu\n");

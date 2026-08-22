@@ -60,7 +60,7 @@ void jump_to_hotclean_menu(void)
     }
     current_group = g_hotclean_menu;
 
-    lv_scr_load_anim(hotclean_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(hotclean_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.cook_mode = MODE_HOT_CLEAN;
@@ -90,7 +90,7 @@ void hotclean_rebuild(page_id_t child)
             lv_group_focus_obj(hm->hotcleansave);
     }
     current_group = g_hotclean_menu;
-    lv_scr_load_anim(hotclean_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(hotclean_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[clean] back to hotclean_menu\n");
@@ -115,7 +115,7 @@ void jump_to_clean_menu(void)
     }
     current_group = g_clean_menu;
 
-    lv_scr_load_anim(clean_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(clean_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_SETTING;
@@ -147,7 +147,7 @@ void clean_rebuild(page_id_t child)
             lv_group_focus_obj(cm->waterclean);
     }
     current_group = g_clean_menu;
-    lv_scr_load_anim(clean_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(clean_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_SETTING;

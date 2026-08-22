@@ -165,7 +165,7 @@ static void on_cookie_stop_back_sure_click(lv_event_t *e)
     groups_create();
     bind_events();
     current_group = g_major_menu;
-    lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(major_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_SETTING;
@@ -235,7 +235,7 @@ void jump_to_cookie_menu(void)
     }
     current_group = g_cookie_menu;
 
-    lv_scr_load_anim(cookie_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(cookie_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         g_send.cook_mode = MODE_COOK4;
@@ -308,7 +308,7 @@ void jump_to_cookie_set(void)
     }
     current_group = g_cookie_set;
 
-    lv_scr_load_anim(cookie_set_get(&ui_manager)->obj,
+    lang_scr_load_anim(cookie_set_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[cookie] jump: menu -> cookie_set\n");
@@ -365,7 +365,7 @@ void jump_to_cookie_cooking(void)
 
     current_group = g_cookie_cooking;
 
-    lv_scr_load_anim(cookie_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(cookie_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         g_send.iface_status = IFACE_COOKING;
@@ -435,7 +435,7 @@ void jump_to_cookie_setting(void)
     }
     current_group = g_cookie_setting;
 
-    lv_scr_load_anim(cookie_setting_get(&ui_manager)->obj,
+    lang_scr_load_anim(cookie_setting_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         if (g_send.iface_status != IFACE_COMPLETE)
@@ -483,7 +483,7 @@ void jump_to_cookie_stop(void)
     }
     current_group = g_cookie_stop;
 
-    lv_scr_load_anim(cookie_stop_get(&ui_manager)->obj,
+    lang_scr_load_anim(cookie_stop_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         g_send.iface_status = IFACE_PAUSE;
@@ -546,7 +546,7 @@ void jump_to_cookie_stop_back(void)
     }
     current_group = g_cookie_stop_back;
 
-    lv_scr_load_anim(cookie_stop_back_get(&ui_manager)->obj,
+    lang_scr_load_anim(cookie_stop_back_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[cookie] jump: stop/cooking -> stop_back\n");
@@ -605,7 +605,7 @@ void cookie_resume_cooking(void)
 
     current_group = g_cookie_cooking;
 
-    lv_scr_load_anim(cookie_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(cookie_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         {
@@ -666,7 +666,7 @@ static void on_cookie_setting_sure_click(lv_event_t *e)
 
     current_group = g_cookie_cooking;
 
-    lv_scr_load_anim(cookie_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(cookie_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         g_send.iface_status = IFACE_COOKING;
@@ -704,7 +704,7 @@ void jump_to_cookie_complete(void)
     }
     current_group = g_cookie_complete;
 
-    lv_scr_load_anim(cookie_complete_get(&ui_manager)->obj,
+    lang_scr_load_anim(cookie_complete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         g_send.iface_status = IFACE_COMPLETE;
@@ -773,7 +773,7 @@ void cookie_rebuild_menu(page_id_t child)
         if (menu->next) lv_group_focus_obj(menu->next);
     }
     current_group = g_cookie_menu;
-    lv_scr_load_anim(cookie_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(cookie_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[cookie] back to cookie_menu\n");
@@ -844,7 +844,7 @@ void cookie_rebuild_set(page_id_t child)
             lv_group_focus_obj(delay_on ? set->ondelay : set->offdelay);
 
     current_group = g_cookie_set;
-    lv_scr_load_anim(cookie_set_get(&ui_manager)->obj,
+    lang_scr_load_anim(cookie_set_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[cookie] back to cookie_set\n");
@@ -904,7 +904,7 @@ void cookie_rebuild_cooking(page_id_t child)
         }
     }
     current_group = g_cookie_cooking;
-    lv_scr_load_anim(cookie_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(cookie_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[cookie] back to cookie_cooking\n");
@@ -959,7 +959,7 @@ void cookie_rebuild_setting(void)
         update_cookie_dir_icon(set);
     }
     current_group = g_cookie_setting;
-    lv_scr_load_anim(cookie_setting_get(&ui_manager)->obj,
+    lang_scr_load_anim(cookie_setting_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[cookie] back to cookie_setting\n");
@@ -995,7 +995,7 @@ void cookie_rebuild_stop(void)
         lv_bar_set_value(stop->bar_5, cook_bar_saved, LV_ANIM_OFF);
     }
     current_group = g_cookie_stop;
-    lv_scr_load_anim(cookie_stop_get(&ui_manager)->obj,
+    lang_scr_load_anim(cookie_stop_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[cookie] back to cookie_stop\n");
@@ -1032,7 +1032,7 @@ void cookie_rebuild_stop_back(void)
         }
     }
     current_group = g_cookie_stop_back;
-    lv_scr_load_anim(cookie_stop_back_get(&ui_manager)->obj,
+    lang_scr_load_anim(cookie_stop_back_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[cookie] back to cookie_stop_back\n");
@@ -1043,7 +1043,7 @@ void cookie_rebuild_complete(void)
     edit_clear();
     cookie_complete_create(&ui_manager);
     current_group = g_cookie_complete;
-    lv_scr_load_anim(cookie_complete_get(&ui_manager)->obj,
+    lang_scr_load_anim(cookie_complete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[cookie] back to cookie_complete\n");

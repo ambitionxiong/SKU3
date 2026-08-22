@@ -169,7 +169,7 @@ static void on_top_bbq_stop_back_sure_click(lv_event_t *e)
     groups_create();
     bind_events();
     current_group = g_major_menu;
-    lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(major_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_SETTING;
@@ -239,7 +239,7 @@ void jump_to_top_bbq_menu(void)
     }
     current_group = g_top_bbq_menu;
 
-    lv_scr_load_anim(top_bbq_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(top_bbq_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         g_send.cook_mode = MODE_TOP_BBQ;
@@ -325,7 +325,7 @@ void jump_to_top_bbq_set(void)
     }
     current_group = g_top_bbq_set;
 
-    lv_scr_load_anim(top_bbq_set_get(&ui_manager)->obj,
+    lang_scr_load_anim(top_bbq_set_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[top_bbq] jump: menu -> top_bbq_set\n");
@@ -382,7 +382,7 @@ void jump_to_top_bbq_cooking(void)
 
     current_group = g_top_bbq_cooking;
 
-    lv_scr_load_anim(top_bbq_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(top_bbq_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         g_send.iface_status = IFACE_COOKING;
@@ -455,7 +455,7 @@ void jump_to_top_bbq_setting(void)
     }
     current_group = g_top_bbq_setting;
 
-    lv_scr_load_anim(top_bbq_setting_get(&ui_manager)->obj,
+    lang_scr_load_anim(top_bbq_setting_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         if (g_send.iface_status != IFACE_COMPLETE)
@@ -503,7 +503,7 @@ void jump_to_top_bbq_stop(void)
     }
     current_group = g_top_bbq_stop;
 
-    lv_scr_load_anim(top_bbq_stop_get(&ui_manager)->obj,
+    lang_scr_load_anim(top_bbq_stop_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         g_send.iface_status = IFACE_PAUSE;
@@ -567,7 +567,7 @@ void jump_to_top_bbq_stop_back(void)
     }
     current_group = g_top_bbq_stop_back;
 
-    lv_scr_load_anim(top_bbq_stop_back_get(&ui_manager)->obj,
+    lang_scr_load_anim(top_bbq_stop_back_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[top_bbq] jump: stop/cooking -> stop_back\n");
@@ -626,7 +626,7 @@ void top_bbq_resume_cooking(void)
 
     current_group = g_top_bbq_cooking;
 
-    lv_scr_load_anim(top_bbq_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(top_bbq_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         {
@@ -687,7 +687,7 @@ static void on_top_bbq_setting_sure_click(lv_event_t *e)
 
     current_group = g_top_bbq_cooking;
 
-    lv_scr_load_anim(top_bbq_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(top_bbq_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
         g_send.iface_status = IFACE_COOKING;
@@ -725,7 +725,7 @@ void jump_to_top_bbq_complete(void)
     }
     current_group = g_top_bbq_complete;
 
-    lv_scr_load_anim(top_bbq_complete_get(&ui_manager)->obj,
+    lang_scr_load_anim(top_bbq_complete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_COMPLETE;
@@ -792,7 +792,7 @@ void top_bbq_rebuild_menu(page_id_t child)
         if (menu->next_button) lv_group_focus_obj(menu->next_button);
     }
     current_group = g_top_bbq_menu;
-    lv_scr_load_anim(top_bbq_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(top_bbq_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[top_bbq] back to top_bbq_menu\n");
@@ -878,7 +878,7 @@ void top_bbq_rebuild_set(page_id_t child)
             lv_group_focus_obj(delay_on ? set->ondelay_button : set->offdelay);
 
     current_group = g_top_bbq_set;
-    lv_scr_load_anim(top_bbq_set_get(&ui_manager)->obj,
+    lang_scr_load_anim(top_bbq_set_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[top_bbq] back to top_bbq_set\n");
@@ -938,7 +938,7 @@ void top_bbq_rebuild_cooking(page_id_t child)
         }
     }
     current_group = g_top_bbq_cooking;
-    lv_scr_load_anim(top_bbq_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(top_bbq_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[top_bbq] back to top_bbq_cooking\n");
@@ -993,7 +993,7 @@ void top_bbq_rebuild_setting(void)
         update_top_bbq_dir_icon(set);
     }
     current_group = g_top_bbq_setting;
-    lv_scr_load_anim(top_bbq_setting_get(&ui_manager)->obj,
+    lang_scr_load_anim(top_bbq_setting_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[top_bbq] back to top_bbq_setting\n");
@@ -1029,7 +1029,7 @@ void top_bbq_rebuild_stop(void)
         lv_bar_set_value(stop->bar_7, cook_bar_saved, LV_ANIM_OFF);
     }
     current_group = g_top_bbq_stop;
-    lv_scr_load_anim(top_bbq_stop_get(&ui_manager)->obj,
+    lang_scr_load_anim(top_bbq_stop_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[top_bbq] back to top_bbq_stop\n");
@@ -1068,7 +1068,7 @@ void top_bbq_rebuild_stop_back(void)
         }
     }
     current_group = g_top_bbq_stop_back;
-    lv_scr_load_anim(top_bbq_stop_back_get(&ui_manager)->obj,
+    lang_scr_load_anim(top_bbq_stop_back_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[top_bbq] back to top_bbq_stop_back\n");
@@ -1079,7 +1079,7 @@ void top_bbq_rebuild_complete(void)
     edit_clear();
     top_bbq_complete_create(&ui_manager);
     current_group = g_top_bbq_complete;
-    lv_scr_load_anim(top_bbq_complete_get(&ui_manager)->obj,
+    lang_scr_load_anim(top_bbq_complete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[top_bbq] back to top_bbq_complete\n");

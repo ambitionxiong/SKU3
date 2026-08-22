@@ -233,7 +233,7 @@ void somecook_rebuild(page_id_t child)
     }
     current_group = g_somecook_btns;
 
-    lv_scr_load_anim(somecook_get(&ui_manager)->obj,
+    lang_scr_load_anim(somecook_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[somecook] rebuild: child=%d\n", (int)child);
@@ -318,7 +318,7 @@ void jump_to_stepset(int i)
     }
     current_group = g_stepset;
 
-    lv_scr_load_anim(stepset_get(&ui_manager)->obj,
+    lang_scr_load_anim(stepset_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[somecook] jump: somecook -> stepset (%d)\n", i);

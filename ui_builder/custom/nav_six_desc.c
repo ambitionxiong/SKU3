@@ -134,7 +134,7 @@ void jump_to_descriptionmenu(void)
     }
     current_group = g_descriptionmenu;
 
-    lv_scr_load_anim(descriptionmenu_get(&ui_manager)->obj,
+    lang_scr_load_anim(descriptionmenu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[six_desc] jump: descriptionmenu (choice=%d)\n", g_rising_choice);
@@ -172,7 +172,7 @@ void descriptionmenu_rebuild(page_id_t child)
     }
     current_group = g_descriptionmenu;
 
-    lv_scr_load_anim(descriptionmenu_get(&ui_manager)->obj,
+    lang_scr_load_anim(descriptionmenu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[six_desc] rebuild: descriptionmenu\n");

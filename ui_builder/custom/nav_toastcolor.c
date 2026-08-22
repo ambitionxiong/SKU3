@@ -235,7 +235,7 @@ void jump_to_toastcolor(void)
     }
     current_group = g_toastcolor;
 
-    lv_scr_load_anim(toastcolor_get(&ui_manager)->obj,
+    lang_scr_load_anim(toastcolor_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[toastcolor] jump\n");
@@ -286,7 +286,7 @@ void toastcolor_rebuild(page_id_t child)
     }
     current_group = g_toastcolor;
 
-    lv_scr_load_anim(toastcolor_get(&ui_manager)->obj,
+    lang_scr_load_anim(toastcolor_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[toastcolor] rebuild\n");

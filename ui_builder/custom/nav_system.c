@@ -129,7 +129,7 @@ void nav_init(void)
     bind_events();
     major_menu_apply_lang();   /* i18n */
     current_group = g_major_menu;
-    lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(major_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
 

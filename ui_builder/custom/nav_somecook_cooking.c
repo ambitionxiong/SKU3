@@ -193,7 +193,7 @@ static void somecook_cooking_exit(void)
     groups_create();
     bind_events();
     current_group = g_major_menu;
-    lv_scr_load_anim(major_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(major_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[somecook_cooking] cooking exit -> major_menu\n");
@@ -284,7 +284,7 @@ static void somecook_cooking_start(void)
     cook_timer = lv_timer_create(cooking_timer_cb, 1000, NULL);
     somecook_cooking_update_timer(somecook_cooking_get(&ui_manager));
 
-    lv_scr_load_anim(somecook_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(somecook_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[somecook_cooking] cooking start: step %d mode=%d\n", i, g_send.cook_mode);
@@ -332,7 +332,7 @@ void somecook_cooking_next_step(void)
         current_group = g_somecook_cooking;
         g_send.iface_status = IFACE_COMPLETE;
         somecook_cooking_set_state(SMC_COMPLETE, SMC_COMPLETE);
-        lv_scr_load_anim(somecook_cooking_get(&ui_manager)->obj,
+        lang_scr_load_anim(somecook_cooking_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
                          ui_manager.auto_del);
         printf("[somecook_cooking] all steps done -> complete\n");

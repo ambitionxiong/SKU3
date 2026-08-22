@@ -54,7 +54,7 @@ static void on_hcm_stop_back_sure_click(lv_event_t *e)
         if (cm->waterclean) lv_group_focus_obj(cm->waterclean);
     }
     current_group = g_clean_menu;
-    lv_scr_load_anim(clean_menu_get(&ui_manager)->obj,
+    lang_scr_load_anim(clean_menu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_SETTING;
@@ -85,7 +85,7 @@ void jump_to_hcm_set(void)
     }
     current_group = g_hcm_set;
 
-    lv_scr_load_anim(hotcleanmiddle_set_get(&ui_manager)->obj,
+    lang_scr_load_anim(hotcleanmiddle_set_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.cook_mode = MODE_HOT_CLEAN;
@@ -137,7 +137,7 @@ void jump_to_hcm_cooking(void)
 
     current_group = g_hcm_cooking;
 
-    lv_scr_load_anim(hotcleanmiddle_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(hotcleanmiddle_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_COOKING;
@@ -183,7 +183,7 @@ void jump_to_hcm_stop(void)
     }
     current_group = g_hcm_stop;
 
-    lv_scr_load_anim(hotcleanmiddle_stop_get(&ui_manager)->obj,
+    lang_scr_load_anim(hotcleanmiddle_stop_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_PAUSE;
@@ -240,7 +240,7 @@ void hcm_resume_cooking(void)
 
     current_group = g_hcm_cooking;
 
-    lv_scr_load_anim(hotcleanmiddle_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(hotcleanmiddle_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     {
@@ -295,7 +295,7 @@ void jump_to_hcm_stop_back(void)
     }
     current_group = g_hcm_stop_back;
 
-    lv_scr_load_anim(hotcleanmiddle_stop_back_get(&ui_manager)->obj,
+    lang_scr_load_anim(hotcleanmiddle_stop_back_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[hcs] jump: stop/cooking -> stop_back\n");
@@ -326,7 +326,7 @@ void jump_to_hcm_cooling(void)
     if (cook_timer) lv_timer_del(cook_timer);
     cook_timer = lv_timer_create(cooking_timer_cb, 1000, NULL);
 
-    lv_scr_load_anim(hotcleanmiddle_cooling_get(&ui_manager)->obj,
+    lang_scr_load_anim(hotcleanmiddle_cooling_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_COOKING;
@@ -347,7 +347,7 @@ void jump_to_hcm_complete(void)
 
     current_group = g_hcm_complete;
 
-    lv_scr_load_anim(hotcleanmiddle_complete_get(&ui_manager)->obj,
+    lang_scr_load_anim(hotcleanmiddle_complete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_COMPLETE;
@@ -370,7 +370,7 @@ void hcm_rebuild_set(page_id_t child)
         if (set->start) lv_group_focus_obj(set->start);
     }
     current_group = g_hcm_set;
-    lv_scr_load_anim(hotcleanmiddle_set_get(&ui_manager)->obj,
+    lang_scr_load_anim(hotcleanmiddle_set_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[hcs] back to hcm_set\n");
@@ -427,7 +427,7 @@ void hcm_rebuild_cooking(page_id_t child)
         }
     }
     current_group = g_hcm_cooking;
-    lv_scr_load_anim(hotcleanmiddle_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(hotcleanmiddle_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[hcs] back to hcm_cooking\n");
@@ -461,7 +461,7 @@ void hcm_rebuild_stop(void)
         lv_bar_set_value(stop->bar_3, cook_bar_saved, LV_ANIM_OFF);
     }
     current_group = g_hcm_stop;
-    lv_scr_load_anim(hotcleanmiddle_stop_get(&ui_manager)->obj,
+    lang_scr_load_anim(hotcleanmiddle_stop_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_PAUSE;
@@ -504,7 +504,7 @@ void hcm_rebuild_stop_back(void)
         if (back->sure) lv_group_focus_obj(back->sure);
     }
     current_group = g_hcm_stop_back;
-    lv_scr_load_anim(hotcleanmiddle_stop_back_get(&ui_manager)->obj,
+    lang_scr_load_anim(hotcleanmiddle_stop_back_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[hcs] back to hcm_stop_back\n");
@@ -520,7 +520,7 @@ void hcm_rebuild_cooling(void)
         lv_bar_set_value(cool->bar_4, 100, LV_ANIM_OFF);
     }
     current_group = g_hcm_cooling;
-    lv_scr_load_anim(hotcleanmiddle_cooling_get(&ui_manager)->obj,
+    lang_scr_load_anim(hotcleanmiddle_cooling_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[hcs] back to hcm_cooling\n");
@@ -531,7 +531,7 @@ void hcm_rebuild_complete(void)
     edit_clear();
     hotcleanmiddle_complete_create(&ui_manager);
     current_group = g_hcm_complete;
-    lv_scr_load_anim(hotcleanmiddle_complete_get(&ui_manager)->obj,
+    lang_scr_load_anim(hotcleanmiddle_complete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     printf("[hcs] back to hcm_complete\n");

@@ -102,7 +102,7 @@ void jump_to_updown_bbq_setting(void)
     }
     current_group = g_updown_bbq_setting;
 
-    lv_scr_load_anim(updown_bbq_setting_get(&ui_manager)->obj,
+    lang_scr_load_anim(updown_bbq_setting_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     /* complete 结束态（保温场景从 complete 进入设置页）保持 4，避免完成检测误触发 */
@@ -205,7 +205,7 @@ void on_setting_sure_click(lv_event_t *e)
 
     current_group = g_updown_bbq_cooking;
 
-    lv_scr_load_anim(updown_bbq_cooking_get(&ui_manager)->obj,
+    lang_scr_load_anim(updown_bbq_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_COOKING;
