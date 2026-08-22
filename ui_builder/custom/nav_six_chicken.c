@@ -425,6 +425,12 @@ void jump_to_chickenmenu(void)
         if (s_seafood_mode) {
             if (cm->label_2) lv_label_set_text(cm->label_2, "烤海鲜");
             if (cm->image_2) lv_obj_add_flag(cm->image_2, LV_OBJ_FLAG_HIDDEN);
+            /* 隐藏鸡菜独立标签(烤全鸡/烤鸡翅/炸鸡中翅/炸鸡腿/烤鸡胸肉) */
+            if (cm->label_4) lv_obj_add_flag(cm->label_4, LV_OBJ_FLAG_HIDDEN);
+            if (cm->label_5) lv_obj_add_flag(cm->label_5, LV_OBJ_FLAG_HIDDEN);
+            if (cm->label_6) lv_obj_add_flag(cm->label_6, LV_OBJ_FLAG_HIDDEN);
+            if (cm->label_7) lv_obj_add_flag(cm->label_7, LV_OBJ_FLAG_HIDDEN);
+            if (cm->label_8) lv_obj_add_flag(cm->label_8, LV_OBJ_FLAG_HIDDEN);
             static const char *sn[] = { "烤扇贝", "烤青口贝", "烤生蚝", "烤大虾", "烤鱿鱼" };
             lv_obj_t *dish_btns[] = { cm->wholechicken, cm->grillchickenwing, cm->friedchickenwing, cm->friedchickenleg, cm->grillchickenbreast };
             for (int i = 0; i < 5; i++) {
@@ -482,6 +488,12 @@ void chickenmenu_rebuild(page_id_t child)
         if (s_seafood_mode) {
             if (cm->label_2) lv_label_set_text(cm->label_2, "烤海鲜");
             if (cm->image_2) lv_obj_add_flag(cm->image_2, LV_OBJ_FLAG_HIDDEN);
+            /* 隐藏鸡菜独立标签(烤全鸡/烤鸡翅/炸鸡中翅/炸鸡腿/烤鸡胸肉) */
+            if (cm->label_4) lv_obj_add_flag(cm->label_4, LV_OBJ_FLAG_HIDDEN);
+            if (cm->label_5) lv_obj_add_flag(cm->label_5, LV_OBJ_FLAG_HIDDEN);
+            if (cm->label_6) lv_obj_add_flag(cm->label_6, LV_OBJ_FLAG_HIDDEN);
+            if (cm->label_7) lv_obj_add_flag(cm->label_7, LV_OBJ_FLAG_HIDDEN);
+            if (cm->label_8) lv_obj_add_flag(cm->label_8, LV_OBJ_FLAG_HIDDEN);
             static const char *sn[] = { "烤扇贝", "烤青口贝", "烤生蚝", "烤大虾", "烤鱿鱼" };
             lv_obj_t *dish_btns[] = { cm->wholechicken, cm->grillchickenwing, cm->friedchickenwing, cm->friedchickenleg, cm->grillchickenbreast };
             for (int i = 0; i < 5; i++) {
