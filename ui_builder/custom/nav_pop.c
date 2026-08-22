@@ -17,6 +17,7 @@
  */
 
 #include "nav.h"
+#include "nav_lang.h"
 #include "nav_internal.h"
 
 
@@ -2894,6 +2895,7 @@ void page_pop(void)
         cook_elapsed_saved = 0; cook_bar_saved = 0;
         depth = 2;
         clean_rebuild(0);
+        lang_on_page_built();
         break;
 
     case PAGE_PREHEAT_MENU:
@@ -2958,6 +2960,7 @@ void page_pop(void)
                              ui_manager.auto_del);
             printf("[nav] pop to major_menu\n");
         }
+        lang_on_page_built();
         break;
 
     case PAGE_MAJOR_MENU_TZ:
@@ -2987,11 +2990,13 @@ void page_pop(void)
         waitmenu_apply_clock();   /* 立即刷新为真实时间，不等 500ms 定时器 */
         g_send.iface_status = IFACE_STANDBY;
         printf("[nav] back to waitmenu_24\n");
+        lang_on_page_built();
         break;
 
     default:
         printf("[nav] unknown page to restore: %d, fallback to waitmenu_24\n", prev);
         goto pop_to_waitmenu;
     }
+    lang_on_page_built();   /* i18n: 页面返回后英文模式翻译+排版 */
 }
 

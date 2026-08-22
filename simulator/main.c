@@ -165,7 +165,9 @@ int main(int argc, char **argv)
 		prev_8 = cur_8; prev_9 = cur_9; prev_minus = cur_minus;
 
 		if (cur_lang && !prev_lang) {
-			g_lang_en = !g_lang_en;   /* 只改标志位, 下次进入页面生效 */
+			g_lang_en = !g_lang_en;   /* 语言标志；切后立即刷新当前页（i18n） */
+			extern void lang_on_page_built(void);
+			lang_on_page_built();
 			printf("[sim] lang %s\n", g_lang_en ? "EN" : "CN");
 		}
 		prev_lang = cur_lang;

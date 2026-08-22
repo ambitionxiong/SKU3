@@ -496,40 +496,40 @@ void on_delaycooking_cancel_click(lv_event_t *e)
 const char *mode_display_name(void)
 {
     switch (g_send.cook_mode) {
-    case MODE_UPDOWN_BBQ:     return "上下烧烤";
-    case MODE_TOP_BBQ:        return "顶部烧烤";
-    case MODE_BOTTOM_BBQ:     return "底部烧烤";
-    case MODE_HOT_BBQ:        return "热风烧烤";
-    case MODE_HOTWIND_BBQ:    return "热风";
-    case MODE_SAVE_BBQ:       return "节能热风";
-    case MODE_CENTRAL_BBQ:    return "集中烧烤";
-    case MODE_WINDCHANGE_BBQ: return "热风对流";
-    case MODE_AIR:            return "空气炸";
-    case MODE_PIZZA_2:        return "披萨";
-    case MODE_SLOWCOOK:       return "慢煮";
-    case MODE_UNFROZEN:       return "解冻";
-    case MODE_RISING:         return "发酵";
-    case MODE_CORN:           return "干果";
-    case MODE_HEATCONTAIN:    return "保温";
+    case MODE_UPDOWN_BBQ:     return tr("上下烧烤");
+    case MODE_TOP_BBQ:        return tr("顶部烧烤");
+    case MODE_BOTTOM_BBQ:     return tr("底部烧烤");
+    case MODE_HOT_BBQ:        return tr("热风烧烤");
+    case MODE_HOTWIND_BBQ:    return tr("热风");
+    case MODE_SAVE_BBQ:       return tr("节能热风");
+    case MODE_CENTRAL_BBQ:    return tr("集中烧烤");
+    case MODE_WINDCHANGE_BBQ: return tr("热风对流");
+    case MODE_AIR:            return tr("空气炸");
+    case MODE_PIZZA_2:        return tr("披萨");
+    case MODE_SLOWCOOK:       return tr("慢煮");
+    case MODE_UNFROZEN:       return tr("解冻");
+    case MODE_RISING:         return tr("发酵");
+    case MODE_CORN:           return tr("干果");
+    case MODE_HEATCONTAIN:    return tr("保温");
     case MODE_FROZEN_BAKE:
         switch (g_delay_source_page) {
-        case PAGE_LASAGNA_SET: return "千层面";
-        case PAGE_STRUDEL_SET: return "果馅卷";
-        case PAGE_BREAD_SET:   return "面包";
-        case PAGE_PIZZA3_SET:  return "披萨";
-        case PAGE_CHIP_SET:    return "薯条";
-        case PAGE_CUSTOM_SET:  return "自定义";
-        default:               return "冷冻烘焙";
+        case PAGE_LASAGNA_SET: return tr("千层面");
+        case PAGE_STRUDEL_SET: return tr("果馅卷");
+        case PAGE_BREAD_SET:   return tr("面包");
+        case PAGE_PIZZA3_SET:  return tr("披萨");
+        case PAGE_CHIP_SET:    return tr("薯条");
+        case PAGE_CUSTOM_SET:  return tr("自定义");
+        default:               return tr("冷冻烘焙");
         }
     case MODE_COOK4:
         switch (g_delay_source_page) {
-        case PAGE_COOKIE_SET:    return "曲奇";
-        case PAGE_WEST_SET:      return "西式";
-        case PAGE_PIZZA_SET:     return "披萨";
-        case PAGE_MENU_COOK_SET: return "菜单";
-        default:                 return "上下烧烤";
+        case PAGE_COOKIE_SET:    return tr("曲奇");
+        case PAGE_WEST_SET:      return tr("西式");
+        case PAGE_PIZZA_SET:     return tr("披萨");
+        case PAGE_MENU_COOK_SET: return tr("菜单");
+        default:                 return tr("上下烧烤");
         }
-    default:                  return "上下烧烤";
+    default:                  return tr("上下烧烤");
     }
 }
 // 按 g_send.cook_mode 设置模式图标（与预热页映射一致）
