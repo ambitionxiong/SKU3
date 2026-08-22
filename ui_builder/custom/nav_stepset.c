@@ -122,7 +122,7 @@ void stepset_restore_mode(uint8_t mode)
     lv_roller_set_selected(scr->roller_main, main_sel, LV_ANIM_OFF);
     if (main_sel == 0)
         lv_roller_set_options(scr->roller_mode,
-                              "上下烧烤\n顶部烧烤\n热风烧烤\n热风\n节能热风\n底部烧烤\n集中烧烤\n热风对流",
+                              tr("上下烧烤\n顶部烧烤\n热风烧烤\n热风\n节能热风\n底部烧烤\n集中烧烤\n热风对流"),
                               LV_ROLLER_MODE_NORMAL);
     else if (g_cur_step == 0)
         lv_roller_set_options(scr->roller_mode, tr("空气炸\n慢煮\n解冻\n发酵"), LV_ROLLER_MODE_NORMAL);
@@ -199,7 +199,7 @@ static void stepset_on_main_change(lv_event_t *e)
     uint32_t sel = lv_roller_get_selected(scr->roller_main);
     if (sel == 0) {
         lv_roller_set_options(scr->roller_mode,
-                              "上下烧烤\n顶部烧烤\n热风烧烤\n热风\n节能热风\n底部烧烤\n集中烧烤\n热风对流",
+                              tr("上下烧烤\n顶部烧烤\n热风烧烤\n热风\n节能热风\n底部烧烤\n集中烧烤\n热风对流"),
                               LV_ROLLER_MODE_NORMAL);
     } else {
         if (g_cur_step == 0)
