@@ -17,22 +17,19 @@ int g_six_probe_temp = 80;
 static uint8_t s_meatdish_mode = 0;   /* 1=肉菜模式（复用 duckmenu） */
 static uint8_t s_fish_mode = 0;       /* 0=默认(鸡) 1=鱼/海鲜首页 2=烤鱼子页 */
 static uint8_t s_seafood_mode = 0;    /* 1=烤海鲜模式（复用 chickenmenu） */
+static uint8_t s_fish_home_focus = 0; /* 鱼首页返回焦点: 0=烤鱼(chicken) 1=烤海鲜(duck) */
 
-void six_chick_reset_fish_mode(void) { s_fish_mode = 0; s_seafood_mode = 0; }
+void six_chick_reset_fish_mode(void) { s_fish_mode = 0; s_seafood_mode = 0; s_fish_home_focus = 0; }
 int six_chick_get_fish_mode(void) { return s_fish_mode; }
-/* 烤鱼子页 BACK:原地重绘回鱼/海鲜首页(不弹页,页面共用 PAGE_CHICK6MENU) */
+/* 烤鱼子页 BACK:整页重建回鱼/海鲜首页(不弹页,页面共用 PAGE_CHICK6MENU)
+   注意:必须走 rebuild 重新绑定 mode1 事件,否则子页的直接处理器残留会导致
+   文字是首页、点击却触发子页菜(如"烤海鲜"点出"烤全鱼分量页") */
 void six_chick_fish_go_back(void)
 {
     if (s_fish_mode != 2) return;
     s_fish_mode = 1;
-    chick6menu_t *cm = chick6menu_get(&ui_manager);
-    if (cm) {
-        if (cm->label_1) lv_label_set_text(cm->label_1, "鱼/海鲜");
-        if (cm->chicken) { lv_obj_t *c = lv_obj_get_child(cm->chicken, 0); if (c) lv_label_set_text(c, "烤鱼"); }
-        if (cm->duck)    { lv_obj_t *c = lv_obj_get_child(cm->duck, 0);    if (c) lv_label_set_text(c, "烤海鲜"); }
-        /* 首页焦点回到默认入口"烤鱼"（不保留子页残留焦点） */
-        if (cm->chicken) lv_group_focus_obj(cm->chicken);
-    }
+    s_fish_home_focus = 0;   /* 从烤鱼子页回首页:入口是"烤鱼" */
+    chick6menu_rebuild(PAGE_CHICK6MENU);
 }
 static void on_meatdish_sausage_click(lv_event_t *e);
 static void on_fish_grillfish_click(lv_event_t *e);
@@ -385,9 +382,13 @@ void chick6menu_rebuild(page_id_t child)
             if (cm->chicken) lv_obj_add_event_cb(cm->chicken, on_chick6menu_chicken_click, LV_EVENT_CLICKED, NULL);
             if (cm->duck)    lv_obj_add_event_cb(cm->duck, on_chick6menu_duck_click, LV_EVENT_CLICKED, NULL);
         }
-        /* 焦点恢复 */
-        if (child == PAGE_DUCK6MENU && cm->duck)
-            lv_group_focus_obj(cm->duck);
+        /* 焦点恢复（按 fish 模式/进入的菜） */
+        if (s_fish_mode == 1 && s_fish_home_focus && cm->duck)
+            lv_group_focus_obj(cm->duck);                 /* 鱼首页:从"烤海鲜"返回 */
+        else if (s_fish_mode == 2 && g_six_bread_type == SIX_FISH_WHOLEFISH && cm->duck)
+            lv_group_focus_obj(cm->duck);                 /* 烤鱼子页:从"烤全鱼"返回 */
+        else if (child == PAGE_DUCK6MENU && cm->duck)
+            lv_group_focus_obj(cm->duck);                 /* 鸭菜单返回 */
         else if (cm->chicken)
             lv_group_focus_obj(cm->chicken);
     }
@@ -735,6 +736,7 @@ static void on_fish_seafood_click(lv_event_t *e)
     if (screen_is_loading(lv_scr_act())) return;
     if (s_fish_mode == 1) {
         /* 鱼/海鲜首页 → 烤海鲜 */
+        s_fish_home_focus = 1;   /* 记录从"烤海鲜"进入(返回首页时焦点恢复) */
         s_seafood_mode = 1;
         jump_to_chickenmenu();
     } else if (s_fish_mode == 2) {

@@ -17,6 +17,7 @@ lv_group_t *g_sixmenu = NULL;
 lv_group_t *g_bread6menu = NULL;
 
 static int s_six_meat_mode = 0;   /* 肉菜单复用 bread6menu 页面标记 */
+static int s_six_meat_kind = 0;   /* 肉菜单进入的子类: 0牛肉 1羊肉 2猪肉 3肉菜(返回焦点恢复用) */
 
 static void on_sixmenu_bread_click(lv_event_t *e);
 static void on_sixmenu_cake_click(lv_event_t *e);
@@ -184,31 +185,36 @@ static void meat6menu_apply_labels(bread6menu_t *b6)
     if (b6->croissant)   lv_label_set_text(lv_obj_get_child(b6->croissant, 0), "肉菜");
 }
 
-/* 肉菜单按钮点击：牛肉/羊肉进六选项3页；其余暂留空 */
+/* 肉菜单按钮点击：牛肉/羊肉/猪肉进六选项3页；肉菜进肉菜页 */
 static void on_meat6menu_beef_click(lv_event_t *e)
 {
     (void)e;
+    s_six_meat_kind = 0;
     jump_to_sixop3page("牛肉", "烤牛排", "炸牛排", "烤牛肉", (1 | 4), SIX_OP3_KIND_BEEF);   /* (1|4)=101: 显示 probe1/3, 隐藏 probe2 */
 }
 static void on_meat6menu_mutton_click(lv_event_t *e)
 {
     (void)e;
+    s_six_meat_kind = 1;
     jump_to_sixop3page("羊肉", "烤羊腿", "烤羊排", "烤羊肉串", (1 | 2), SIX_OP3_KIND_MUTTON);   /* (1|2)=011: 显示 probe1/2, 隐藏 probe3 */
 }
 static void on_meat6menu_pork_click(lv_event_t *e)
 {
     (void)e;
+    s_six_meat_kind = 2;
     jump_to_sixop3page("猪肉", "烤猪里脊肉", "烤五花肉", "炸排骨", (1 | 2), SIX_OP3_KIND_PORK);  /* (1|2)=011: 显示 probe1/2, 隐藏 probe3 */
 }
 static void on_meat6menu_meatdish_click(lv_event_t *e)
 {
     (void)e;
+    s_six_meat_kind = 3;
     jump_to_meatdish_menu();
 }
 
 static void jump_to_meat6menu(void)
 {
     s_six_meat_mode = 1;
+    s_six_meat_kind = 0;   /* 新进入默认牛肉 */
     page_push(PAGE_BREAD6MENU);
     lv_obj_clean(lv_scr_act());
     bread6menu_create(&ui_manager);
@@ -311,7 +317,15 @@ void bread6menu_rebuild(page_id_t child)
             if (b6->wheat_bread) lv_obj_add_event_cb(b6->wheat_bread, on_meat6menu_mutton_click, LV_EVENT_CLICKED, NULL);
             if (b6->toast)       lv_obj_add_event_cb(b6->toast,       on_meat6menu_pork_click,   LV_EVENT_CLICKED, NULL);
             if (b6->croissant)   lv_obj_add_event_cb(b6->croissant,   on_meat6menu_meatdish_click, LV_EVENT_CLICKED, NULL);
-            lv_group_focus_obj(b6->breadroll);
+            /* 返回时恢复进入的肉类按钮焦点 */
+            if (s_six_meat_kind == 1 && b6->wheat_bread)
+                lv_group_focus_obj(b6->wheat_bread);   /* 羊肉 */
+            else if (s_six_meat_kind == 2 && b6->toast)
+                lv_group_focus_obj(b6->toast);         /* 猪肉 */
+            else if (s_six_meat_kind == 3 && b6->croissant)
+                lv_group_focus_obj(b6->croissant);     /* 肉菜 */
+            else if (b6->breadroll)
+                lv_group_focus_obj(b6->breadroll);     /* 牛肉 */
         } else {
             if (b6->breadroll)   lv_obj_add_event_cb(b6->breadroll,   on_bread6menu_breadroll_click, LV_EVENT_CLICKED, NULL);
             if (b6->wheat_bread) lv_obj_add_event_cb(b6->wheat_bread, on_bread6menu_wheat_click,     LV_EVENT_CLICKED, NULL);
