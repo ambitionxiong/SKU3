@@ -163,17 +163,19 @@ void stepset_on_focus(lv_event_t *e)
     if (f == scr->roller_main) {
         lv_obj_clear_flag(scr->mainline, LV_OBJ_FLAG_HIDDEN);
     } else if (f == scr->roller_mode) {
-        /* 按选中项汉字个数选线（2/3/4 字 → modeline2/3/4） */
+        /* 按选中项宽度选线（中文按汉字数 2/3/4 → line2/3/4；
+           英文按字符数近似，避免 UTF-8 统计失效导致 line 不显示） */
         char buf[32];
         lv_roller_get_selected_str(scr->roller_mode, buf, sizeof(buf));
-        int n = 0;
+        int n = 0;   /* 显示宽度单位：汉字=2、ASCII=1（英文约半字宽） */
         for (char *p = buf; *p; p++) {
-            if ((unsigned char)*p >= 0x80) n++;
+            if ((unsigned char)*p >= 0x80) n += 2;
+            else n += 1;
         }
-        n /= 3;   /* UTF-8 每汉字 3 字节 */
-        if (n == 2)      lv_obj_clear_flag(scr->modeline2, LV_OBJ_FLAG_HIDDEN);
-        else if (n == 3) lv_obj_clear_flag(scr->modeline3, LV_OBJ_FLAG_HIDDEN);
-        else if (n == 4) lv_obj_clear_flag(scr->modeline4, LV_OBJ_FLAG_HIDDEN);
+        n = n / 2;
+        if (n <= 2)        lv_obj_clear_flag(scr->modeline2, LV_OBJ_FLAG_HIDDEN);
+        else if (n <= 4)   lv_obj_clear_flag(scr->modeline3, LV_OBJ_FLAG_HIDDEN);
+        else               lv_obj_clear_flag(scr->modeline4, LV_OBJ_FLAG_HIDDEN);
     } else if (f == scr->temp) {
         if (set_temp < 100)
             lv_obj_clear_flag(scr->templine2, LV_OBJ_FLAG_HIDDEN);
