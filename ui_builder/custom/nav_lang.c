@@ -29,27 +29,22 @@ extern const lv_font_t c_aktivgroteskmedium_128;
 /* tr() 查表入口（i18n.c 提供，这里做首字节哈希加速可后续优化） */
 extern const char *tr(const char *zh);
 
-/* 排版函数声明（定义于 nav_lang_tune.c 同事编辑区） */
-extern void special_menu_lang_tune(void);
-
-/* ============ 排版微调函数注册表（同事编辑区） ============ */
+/* ============ 排版微调函数注册表（定义于 nav_lang_tune.c 同事编辑区） ============ */
 
 typedef void (*lang_tune_fn)(void);
 
-static void tune_placeholder(void) {}
-
-/* 有排版问题的页面在此注册；未注册页面零成本 */
-static const struct {
+extern const struct {
     page_id_t    page;
     lang_tune_fn fn;
-} s_tune_tab[] = {
-    { PAGE_SPECIAL_MENU, special_menu_lang_tune },
-};
+} s_tune_tab[];
+extern const int s_tune_tab_n;
 
 /* 当前页对应的排版函数（无注册返回占位函数） */
+static void tune_placeholder(void) {}
+
 static lang_tune_fn lang_tune_for_page(page_id_t pid)
 {
-    for (int i = 0; i < (int)(sizeof(s_tune_tab) / sizeof(s_tune_tab[0])); i++)
+    for (int i = 0; i < s_tune_tab_n; i++)
         if (s_tune_tab[i].page == pid)
             return s_tune_tab[i].fn;
     return tune_placeholder;
