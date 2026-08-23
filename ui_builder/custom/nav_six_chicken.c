@@ -203,12 +203,12 @@ int six_chick_probe_temp(int level)
 /* 烤鸡菜名：份量驱动类按份量表；探针菜按探针配置 */
 const char *six_chick_name(void)
 {
-    if (g_six_bread_type == SIX_MEAT_FRIED_STEAK) return "炸牛排";
-    if (g_six_bread_type == SIX_MEAT_GRILL_SKEWER) return "烤羊肉串";
-    if (g_six_bread_type == SIX_MEAT_FRIED_RIB) return "炸排骨";
-    if (g_six_bread_type == SIX_MEAT_SAUSAGE) return "烤香肠";
-    if (g_six_bread_type == SIX_FISH_COD) return "烤鳕鱼";
-    if (g_six_bread_type == SIX_FISH_WHOLEFISH) return "烤全鱼";
+    if (g_six_bread_type == SIX_MEAT_FRIED_STEAK) return tr("炸牛排");
+    if (g_six_bread_type == SIX_MEAT_GRILL_SKEWER) return tr("烤羊肉串");
+    if (g_six_bread_type == SIX_MEAT_FRIED_RIB) return tr("炸排骨");
+    if (g_six_bread_type == SIX_MEAT_SAUSAGE) return tr("烤香肠");
+    if (g_six_bread_type == SIX_FISH_COD) return tr("烤鳕鱼");
+    if (g_six_bread_type == SIX_FISH_WHOLEFISH) return tr("烤全鱼");
     if (six_chick_is_seafood()) {
         const seafood_dish_t *sd = seafood_dish_cfg();
         return sd ? sd->name : "烤海鲜";
@@ -305,15 +305,15 @@ int six_chick_cook_min(int weight_g)
 const char *six_chick_desc(void)
 {
     if (g_six_bread_type == SIX_MEAT_FRIED_STEAK)
-        return "根据个人喜好进行调味。抹上盐和黑胡椒碎，在炸盘内均匀铺开，在表面喷一层薄油\n现在将食物放在第3层\n使用气炸盘和深盘";
+        return tr("根据个人喜好进行调味。抹上盐和黑胡椒碎，在炸盘内均匀铺开，在表面喷一层薄油\n现在将食物放在第3层\n使用气炸盘和深盘");
     if (g_six_bread_type == SIX_MEAT_GRILL_SKEWER)
-        return "刷油，根据个人喜好，撒上盐、烧烤料、孜然。在烤盘内均匀铺开\n现在将食物放在第3层\n使用深盘";
+        return tr("刷油，根据个人喜好，撒上盐、烧烤料、孜然。在烤盘内均匀铺开\n现在将食物放在第3层\n使用深盘");
     if (g_six_bread_type == SIX_MEAT_FRIED_RIB)
-        return "根据个人喜好进行调味。在炸盘内均匀铺开，在表面喷一层薄油\n现在将食物放在第3层\n使用气炸盘和深盘";
+        return tr("根据个人喜好进行调味。在炸盘内均匀铺开，在表面喷一层薄油\n现在将食物放在第3层\n使用气炸盘和深盘");
     if (g_six_bread_type == SIX_MEAT_SAUSAGE)
-        return "均匀分布在深盘中\n现在将食物放在第3层\n使用深盘";
+        return tr("均匀分布在深盘中\n现在将食物放在第3层\n使用深盘");
     if (g_six_bread_type == SIX_FISH_COD || g_six_bread_type == SIX_FISH_WHOLEFISH)
-        return "刷油，抹上盐和胡椒。根据个人喜好，用蒜和香草调味\n现在将食物放在第3层\n使用烤盘";
+        return tr("刷油，抹上盐和胡椒。根据个人喜好，用蒜和香草调味\n现在将食物放在第3层\n使用烤盘");
     if (six_chick_is_seafood()) {
         const seafood_dish_t *sd = seafood_dish_cfg();
         if (sd) return sd->desc;
@@ -322,7 +322,7 @@ const char *six_chick_desc(void)
     if (c) return c->desc;
     const chick_probe_t *p = chick_probe_cfg();
     if (p) return p->desc;
-    return "烹饪说明：\n刷油，并根据个人喜好进行调味。抹上盐和胡椒。放入烤箱，胸脯面朝上\n现在将食物放在第2层\n使用深盘";
+    return tr("烹饪说明：\n刷油，并根据个人喜好进行调味。抹上盐和胡椒。放入烤箱，胸脯面朝上\n现在将食物放在第2层\n使用深盘");
 }
 
 /* 当前六感菜名/说明：烤鸡/鸭走独立名，其余走面包/蛋糕共用表 */
@@ -1028,13 +1028,13 @@ void jump_to_sidedish_menu(void)
 static const char *probeneedtip_dish_name(void)
 {
     switch (g_six_bread_type) {
-    case SIX_CHICK_WHOLE:        return "烤全鸡";
-    case SIX_CHICK_DUCK_WHOLE:   return "烤全鸭";
-    case SIX_MEAT_GRILL_STEAK:   return "烤牛排";
-    case SIX_MEAT_GRILL_BEEF:    return "烤牛肉";
-    case SIX_MEAT_GRILL_LEG:     return "烤羊腿";
-    case SIX_MEAT_GRILL_LAMBS:   return "烤羊排";
-    default:                     return "第六感";
+    case SIX_CHICK_WHOLE:        return tr("烤全鸡");
+    case SIX_CHICK_DUCK_WHOLE:   return tr("烤全鸭");
+    case SIX_MEAT_GRILL_STEAK:   return tr("烤牛排");
+    case SIX_MEAT_GRILL_BEEF:    return tr("烤牛肉");
+    case SIX_MEAT_GRILL_LEG:     return tr("烤羊腿");
+    case SIX_MEAT_GRILL_LAMBS:   return tr("烤羊排");
+    default:                     return tr("第六感");
     }
 }
 
@@ -1199,18 +1199,18 @@ static int six_chick_bar_value(int cur)
 const char *six_chick_degree_text(void)
 {
     const chick_probe_t *p = chick_probe_cfg();
-    if (!p) return "中等色";
-    if (g_six_probe_temp <= p->probe[0]) return "浅色";
-    if (g_six_probe_temp >= p->probe[2]) return "深色";
-    return "中等色";
+    if (!p) return tr("中等色");
+    if (g_six_probe_temp <= p->probe[0]) return tr("浅色");
+    if (g_six_probe_temp >= p->probe[2]) return tr("深色");
+    return tr("中等色");
 }
 const char *six_chick_degree_short(void)
 {
     const chick_probe_t *p = chick_probe_cfg();
-    if (!p) return "中等";
-    if (g_six_probe_temp <= p->probe[0]) return "浅";
-    if (g_six_probe_temp >= p->probe[2]) return "深";
-    return "中等";
+    if (!p) return tr("中等");
+    if (g_six_probe_temp <= p->probe[0]) return tr("浅");
+    if (g_six_probe_temp >= p->probe[2]) return tr("深");
+    return tr("中等");
 }
 
 /* 烹饪页显示刷新 */
@@ -1226,7 +1226,7 @@ static void six_chick_apply_display(void)
 
     /* status:菜名+烤色程度（浅色/中等色/深色） */
     if (ck->status)
-        lv_label_set_text_fmt(ck->status, "| %s | %s |", six_chick_name(), six_chick_degree_text());
+        lv_label_set_text_fmt(ck->status, tr("| %s | %s |"), six_chick_name(), six_chick_degree_text());
 
     /* cookstatus:烹饪中/暂停中/已完成（遮罩确认态不改 cookstatus） */
     if (ck->cookstatus) {

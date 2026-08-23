@@ -31,7 +31,7 @@ static void descriptionmenu_layout(descriptionmenu_t *dm)
             lv_label_set_text_fmt(dm->summary, tr("小结：\n烧烤程度：%s\n"), six_chick_degree_short());
         } else if (six_chick_is_degree_time()) {
             int d = toastcolor_degree_value();
-            const char *dt = (d == 1) ? "浅" : (d == 3) ? "深" : "中等";
+            const char *dt = (d == 1) ? tr("浅") : (d == 3) ? tr("深") : tr("中等");
             lv_obj_clear_flag(dm->summary, LV_OBJ_FLAG_HIDDEN);
             lv_label_set_text_fmt(dm->summary, tr("小结：\n烧烤程度：%s\n"), dt);
         } else if (six_chick_is_kind()) {

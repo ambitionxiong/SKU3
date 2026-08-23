@@ -87,13 +87,13 @@ static void somecook_cooking_apply_info(somecook_cooking_t *sc)
     int i = g_somecook_run_idx;
     if (set_hour > 0) {
         lv_obj_clear_flag(sc->activestatus, LV_OBJ_FLAG_HIDDEN);
-        lv_label_set_text_fmt(sc->activestatus, tr("步骤%s：%s"), cn[i], mode_display_name());
+        lv_label_set_text_fmt(sc->activestatus, tr("步骤%s：%s"), tr(cn[i]), mode_display_name());
         lv_label_set_text_fmt(sc->label_12, tr("|                         | %d℃ | %d小时%02d分钟"),
                               set_temp, set_hour, set_min);
     } else {
         lv_obj_add_flag(sc->activestatus, LV_OBJ_FLAG_HIDDEN);
         lv_label_set_text_fmt(sc->label_12, tr("| 步骤%s：%s | %d℃ | %02d分钟"),
-                              cn[i], mode_display_name(), set_temp, set_min);
+                              tr(cn[i]), mode_display_name(), set_temp, set_min);
     }
 }
 

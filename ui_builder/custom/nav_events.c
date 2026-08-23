@@ -304,8 +304,8 @@ static int delayset_enter_min = 0;
 void delayset_refresh_display(delayset_t *ds)
 {
     if (!ds) return;
-    lv_label_set_text_fmt(ds->hour, "%02d", delay_hour);
-    lv_label_set_text_fmt(ds->min, "%02d", delay_min);
+    ds->hour, "%02d", delay_hour);
+    ds->min, "%02d", delay_min);
     const char *day;
     if (delayset_enter_hour >= 0 &&
         (delay_hour < delayset_enter_hour ||
@@ -368,8 +368,8 @@ void updown_set_apply_delay_label(updown_bbq_set_t *set)
         lv_obj_set_style_text_font(lbl, &c_taiwanpearl_regular_24,
                                    LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_label_set_long_mode(lbl, LV_LABEL_LONG_SCROLL_CIRCULAR);
-        lv_label_set_text_fmt(lbl, "%s%02d:%02d开始",
-                              delay_hour >= 24 ? "明天" : "今天",
+        lbl, "%s%02d:%02d开始",
+                              delay_hour >= 24 ? tr("明天") : tr("今天"),
                               delay_hour % 24, delay_min);
         lv_obj_set_width(lbl, 110);
     }
@@ -588,8 +588,8 @@ void mode_set_apply_delay_label(lv_obj_t *ondelay_btn)
         lv_obj_set_style_text_font(lbl, &c_taiwanpearl_regular_24,
                                    LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_label_set_long_mode(lbl, LV_LABEL_LONG_SCROLL_CIRCULAR);
-        lv_label_set_text_fmt(lbl, "%s%02d:%02d开始",
-                              delay_hour >= 24 ? "明天" : "今天",
+        lbl, "%s%02d:%02d开始",
+                              delay_hour >= 24 ? tr("明天") : tr("今天"),
                               delay_hour % 24, delay_min);
         lv_obj_set_width(lbl, 110);
     }
@@ -733,25 +733,25 @@ void rebuild_delaycooking(void)
         if (g_delay_source_page == PAGE_DESCRIPTIONMENU) {
             /* 六感:status 显示菜+信息,icon 用 sixicon(与运行页一致) */
             if (six_chick_is_probe())
-                lv_label_set_text_fmt(dc->status, "| %s | %s |",
+                dc->status, "| %s | %s |",
                                       six_chick_name(), six_chick_degree_text());   /* 探针菜:菜名+烤色程度 */
             else if (six_chick_is_degree_time()) {
                 int d = toastcolor_degree_value();
                 if (d < 1 || d > 3) d = 2;
                 const char *dt = (d == 1) ? "浅色" : (d == 3) ? "深色" : "中等色";
-                lv_label_set_text_fmt(dc->status, "| %s | %s | %d分钟 |",
+                dc->status, "| %s | %s | %d分钟 |",
                                       six_chick_name(), dt, six_chick_degree_min(d));   /* 烤羊肉串:菜名+程度+时间 */
             } else if (six_chick_is_kind()) {
                 int w = toastcolor_weight_value();
                 if (w < 0) w = 800;
-                lv_label_set_text_fmt(dc->status, "| %s | %dg | %d分钟 |",
+                dc->status, "| %s | %dg | %d分钟 |",
                                       six_chick_name(), w, six_chick_cook_min(w));   /* 烤鸡翅类:菜名+克重+时间 */
             } else if (six_chick_is_seafood()) {
                 const seafood_dish_t *sd = seafood_dish_cfg();
-                lv_label_set_text_fmt(dc->status, "| %s | %d分钟", six_chick_name(),
+                dc->status, "| %s | %d分钟", six_chick_name(),
                                       sd ? sd->cook_min : 18);   /* 烤海鲜:菜名+固定时间 */
             } else
-                lv_label_set_text_fmt(dc->status, "| %s | %d分钟", six_bread_name(), six_bread_cook_min());
+                dc->status, "| %s | %d分钟", six_bread_name(), six_bread_cook_min());
             lv_img_set_src(dc->icon, LVGL_IMAGE_PATH(sixicon.png));
             lv_obj_set_pos(dc->icon, 163, 161);
         } else if (g_delay_source_page == PAGE_UPDOWN_BBQ_SET_PROBE ||
@@ -759,23 +759,23 @@ void rebuild_delaycooking(void)
             g_delay_source_page == PAGE_BOTTOM_BBQ_SET_PROBE ||
             g_delay_source_page == PAGE_SLOWCOOK_SET_PROBE) {
             /* 探针来源：与探针烹饪页一致的格式（温度 + 探针目标温） */
-            lv_label_set_text_fmt(dc->status, "| %s | %d℃ | %d℃",
+            dc->status, "| %s | %d℃ | %d℃",
                                   mode_display_name(), set_temp, probe_target_temp);
         } else if (g_send.cook_mode == MODE_UPDOWN_BBQ)
             set_status_label_min(dc->status, set_temp_up, set_temp_down, set_hour, set_min);
         else {
             if (set_hour == 0)
-                lv_label_set_text_fmt(dc->status, "| %s | %d℃ | %02d分钟",
+                dc->status, "| %s | %d℃ | %02d分钟",
                                       mode_display_name(), set_temp, set_min);
             else
-                lv_label_set_text_fmt(dc->status, "| %s | %d℃ | %d小时%02d分钟",
+                dc->status, "| %s | %d℃ | %d小时%02d分钟",
                                       mode_display_name(), set_temp, set_hour, set_min);
         }
         if (g_delay_source_page != PAGE_DESCRIPTIONMENU)
             mode_apply_icon(dc->icon);   /* 六感已单独设 sixicon */
         lv_label_set_text(dc->label_14, tr("预约中..."));
-        lv_label_set_text_fmt(dc->tip2, "%s%02d:%02d",
-                              delay_hour >= 24 ? "明天" : "今天",
+        dc->tip2, "%s%02d:%02d",
+                              delay_hour >= 24 ? tr("明天") : tr("今天"),
                               delay_hour % 24, delay_min);
     }
     current_group = g_delaycooking;

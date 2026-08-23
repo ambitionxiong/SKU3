@@ -503,7 +503,7 @@ static void descriptionmenu_layout(descriptionmenu_t *dm)
 
     /* 烹饪时间 + 烹饪说明按当前菜填充 */
     if (dm->cooktime) {
-        lv_label_set_text_fmt(dm->cooktime, "预计烹饪时间：%d分钟", six_bread_cook_min());
+        lv_label_set_text_fmt(dm->cooktime, tr("预计烹饪时间：%d分钟"), six_bread_cook_min());
     }
     if (dm->cookdescriptin) {
         lv_label_set_text(dm->cookdescriptin, six_bread_desc());

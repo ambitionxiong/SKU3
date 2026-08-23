@@ -40,20 +40,20 @@ static void somecook_refresh(void)
             clear_focus_states(e_btns, 2);
             nset++;
             /* 容器内容文本 */
-            const char *name = "未知";
+            const char *name = tr("未知");
             switch (g_steps[i].mode) {
-            case MODE_HOTWIND_BBQ:    name = "热风"; break;
-            case MODE_SAVE_BBQ:       name = "节能热风"; break;
-            case MODE_UPDOWN_BBQ:     name = "上下烧烤"; break;
-            case MODE_BOTTOM_BBQ:     name = "底部烧烤"; break;
-            case MODE_HOT_BBQ:        name = "热风烧烤"; break;
-            case MODE_CENTRAL_BBQ:    name = "集中烧烤"; break;
-            case MODE_WINDCHANGE_BBQ: name = "热风对流"; break;
-            case MODE_TOP_BBQ:        name = "顶部烧烤"; break;
-            case MODE_AIR:            name = "空气炸"; break;
-            case MODE_RISING:         name = "发酵"; break;
-            case MODE_SLOWCOOK:       name = "慢煮"; break;
-            case MODE_UNFROZEN:       name = "解冻"; break;
+            case MODE_HOTWIND_BBQ:    name = tr("热风"); break;
+            case MODE_SAVE_BBQ:       name = tr("节能热风"); break;
+            case MODE_UPDOWN_BBQ:     name = tr("上下烧烤"); break;
+            case MODE_BOTTOM_BBQ:     name = tr("底部烧烤"); break;
+            case MODE_HOT_BBQ:        name = tr("热风烧烤"); break;
+            case MODE_CENTRAL_BBQ:    name = tr("集中烧烤"); break;
+            case MODE_WINDCHANGE_BBQ: name = tr("热风对流"); break;
+            case MODE_TOP_BBQ:        name = tr("顶部烧烤"); break;
+            case MODE_AIR:            name = tr("空气炸"); break;
+            case MODE_RISING:         name = tr("发酵"); break;
+            case MODE_SLOWCOOK:       name = tr("慢煮"); break;
+            case MODE_UNFROZEN:       name = tr("解冻"); break;
             default: break;
             }
             if (mode_lb[i]) lv_label_set_text_fmt(mode_lb[i], tr("模式: %s"), name);

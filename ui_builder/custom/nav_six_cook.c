@@ -108,8 +108,8 @@ static uint8_t six_bread_type_safe(void)
     return (g_six_bread_type <= SIX_CAKE_MUFFIN) ? g_six_bread_type : SIX_BREAD_ROLL;
 }
 const six_bread_cfg_t *six_bread_cfg(void) { return &s_bread_cfg[six_bread_type_safe()]; }
-const char *six_bread_name(void)     { return six_bread_cfg()->name; }
-const char *six_bread_desc(void)     { return six_bread_cfg()->cook_desc; }
+const char *six_bread_name(void)     { return tr(six_bread_cfg()->name); }
+const char *six_bread_desc(void)     { return tr(six_bread_cfg()->cook_desc); }
 int six_bread_cook_min(void)         { return six_bread_cfg()->cook_min; }
 int six_bread_has_color(void)  { return (six_chick_is_kind() || six_chick_is_seafood()) ? 0 : six_bread_cfg()->has_color; }   /* 烤鸡翅类/海鲜:无烤色 */
 int six_bread_has_rising(void) { return (six_chick_is_kind() || six_chick_is_seafood()) ? 0 : six_bread_cfg()->has_rising; }  /* 烤鸡翅类/海鲜:无发酵 */
