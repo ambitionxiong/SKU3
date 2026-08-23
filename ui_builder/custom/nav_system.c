@@ -205,12 +205,20 @@ void waitmenu_apply_clock(void)
     if (t.wday != lw_wday || t.year != lw_year || t.month != lw_month || t.day != lw_day) {
         lw_wday = t.wday;
         lw_year = t.year; lw_month = t.month; lw_day = t.day;
-        static const char *week_cn[] = {"星期日", "星期一", "星期二",
-                                        "星期三", "星期四", "星期五", "星期六"};
+        const char *wday_str = "";
+        switch (t.wday) {
+        case 0: wday_str = tr("星期日"); break;
+        case 1: wday_str = tr("星期一"); break;
+        case 2: wday_str = tr("星期二"); break;
+        case 3: wday_str = tr("星期三"); break;
+        case 4: wday_str = tr("星期四"); break;
+        case 5: wday_str = tr("星期五"); break;
+        case 6: wday_str = tr("星期六"); break;
+        default: break;
+        }
         char buf[32];
-        snprintf(buf, sizeof(buf), "%s, %d年%d月%d日",
-                 (t.wday >= 0 && t.wday <= 6) ? week_cn[t.wday] : "",
-                 t.year, t.month, t.day);
+        snprintf(buf, sizeof(buf), tr("%s, %d年%d月%d日"),
+                 wday_str, t.year, t.month, t.day);
         if (wait->week_label) lv_label_set_text(wait->week_label, buf);
     }
 }
