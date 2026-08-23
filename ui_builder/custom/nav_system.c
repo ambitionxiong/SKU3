@@ -216,9 +216,25 @@ void waitmenu_apply_clock(void)
         case 6: wday_str = tr("星期六"); break;
         default: break;
         }
-        char buf[32];
-        snprintf(buf, sizeof(buf), tr("%s, %d年%d月%d日"),
-                 wday_str, t.year, t.month, t.day);
+        char buf[40];
+        if (is_english()) {
+            /* 英文日期格式：Sunday, June 1st, 2025 */
+            static const char *mon_en[] = {"January", "February", "March", "April",
+                                           "May", "June", "July", "August",
+                                           "September", "October", "November", "December"};
+            int d = t.day, m = t.month;
+            const char *suf = "th";
+            if (d % 10 == 1 && d != 11) suf = "st";
+            else if (d % 10 == 2 && d != 12) suf = "nd";
+            else if (d % 10 == 3 && d != 13) suf = "rd";
+            snprintf(buf, sizeof(buf), "%s, %s %d%s, %d",
+                     wday_str,
+                     (m >= 1 && m <= 12) ? mon_en[m - 1] : "",
+                     d, suf, t.year);
+        } else {
+            snprintf(buf, sizeof(buf), tr("%s, %d年%d月%d日"),
+                     wday_str, t.year, t.month, t.day);
+        }
         if (wait->week_label) lv_label_set_text(wait->week_label, buf);
     }
 }
