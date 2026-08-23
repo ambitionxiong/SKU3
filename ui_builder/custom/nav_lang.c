@@ -29,6 +29,9 @@ extern const lv_font_t c_aktivgroteskmedium_128;
 /* tr() 查表入口（i18n.c 提供，这里做首字节哈希加速可后续优化） */
 extern const char *tr(const char *zh);
 
+/* 排版函数声明（定义于 nav_lang_tune.c 同事编辑区） */
+extern void special_menu_lang_tune(void);
+
 /* ============ 排版微调函数注册表（同事编辑区） ============ */
 
 typedef void (*lang_tune_fn)(void);
@@ -40,7 +43,7 @@ static const struct {
     page_id_t    page;
     lang_tune_fn fn;
 } s_tune_tab[] = {
-    /* 示例：{ PAGE_AIR_MENU, air_menu_lang_tune }, */
+    { PAGE_SPECIAL_MENU, special_menu_lang_tune },
 };
 
 /* 当前页对应的排版函数（无注册返回占位函数） */
