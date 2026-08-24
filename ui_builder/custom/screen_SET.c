@@ -8,6 +8,7 @@
 #include "screen_SET.h"
 #include "aic_ui.h"
 #include "ui_util.h"
+#include "i18n.h"
 
 
 

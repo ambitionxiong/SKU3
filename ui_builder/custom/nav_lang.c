@@ -141,8 +141,9 @@ static int lang_fuzzy_status(lv_obj_t *obj, const char *txt, char *buf, int buf_
 }
 
 
-static void lang_apply_obj(lv_obj_t *obj)
+static lv_obj_tree_walk_res_t lang_apply_obj(lv_obj_t *obj, void *user_data)
 {
+    (void)user_data;
     /* roller 选项翻译：逐行查表替换（树遍历能看到当前选中项，但需覆盖全部选项） */
     if (lv_obj_check_type(obj, &lv_roller_class)) {
         const char *opts = lv_roller_get_options(obj);
@@ -168,7 +169,7 @@ static void lang_apply_obj(lv_obj_t *obj)
                 lv_roller_set_selected(obj, sel, LV_ANIM_OFF);
             }
         }
-        return;
+        return LV_OBJ_TREE_WALK_NEXT;
     }
 
     /* 只处理 label（button 的子 label 由 LV_OBJ_FLAG_CLICKABLE 区分，直接遍历叶子） */
@@ -194,7 +195,7 @@ static void lang_apply_obj(lv_obj_t *obj)
         for (const char *q = tp; q && *q; q++) {
             if ((unsigned char)*q >= 0xE4 && (unsigned char)*q <= 0xE9) { has_cjk = true; break; }
         }
-        if (has_cjk) return;
+        return LV_OBJ_TREE_WALK_NEXT;
         if (f == &c_taiwanpearl_regular_128)
             lv_obj_set_style_text_font(obj, &c_aktivgroteskmedium_128, LV_PART_MAIN | 0);
         else if (f == &c_taiwanpearl_regular_72)
@@ -210,6 +211,7 @@ static void lang_apply_obj(lv_obj_t *obj)
         else if (f == &c_taiwanpearl_regular_24)
             lv_obj_set_style_text_font(obj, &c_aktivgroteskmedium_24, LV_PART_MAIN | 0);
     }
+    return LV_OBJ_TREE_WALK_NEXT;
 }
 
 /* lv_scr_load_anim 包装：显示新页面后自动翻译+排版（统一出口，覆盖所有跳转/返回/重建路径） */

@@ -89,7 +89,7 @@ void textpage_create(ui_manager_t *ui)
 
     // Init scr->label_1
     scr->label_1 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_1, "24");
+    lv_label_set_text(scr->label_1, "24↑↓°");
     lv_label_set_long_mode(scr->label_1, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->label_1, 41, 173);
     lv_obj_set_size(scr->label_1, 142, 32);
@@ -101,7 +101,7 @@ void textpage_create(ui_manager_t *ui)
 
     // Init scr->label_2
     scr->label_2 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_2, "30");
+    lv_label_set_text(scr->label_2, "30↑↓°");
     lv_label_set_long_mode(scr->label_2, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->label_2, 208, 173);
     lv_obj_set_size(scr->label_2, 142, 32);
@@ -113,7 +113,7 @@ void textpage_create(ui_manager_t *ui)
 
     // Init scr->label_5
     scr->label_5 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_5, "36");
+    lv_label_set_text(scr->label_5, "36↑↓°");
     lv_label_set_long_mode(scr->label_5, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->label_5, 363, 173);
     lv_obj_set_size(scr->label_5, 142, 32);
@@ -125,7 +125,7 @@ void textpage_create(ui_manager_t *ui)
 
     // Init scr->label_6
     scr->label_6 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_6, "48");
+    lv_label_set_text(scr->label_6, "48↑↓°");
     lv_label_set_long_mode(scr->label_6, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->label_6, 517, 171);
     lv_obj_set_size(scr->label_6, 142, 32);
@@ -137,7 +137,7 @@ void textpage_create(ui_manager_t *ui)
 
     // Init scr->label_7
     scr->label_7 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_7, "60");
+    lv_label_set_text(scr->label_7, "60↑↓°");
     lv_label_set_long_mode(scr->label_7, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->label_7, 702, 173);
     lv_obj_set_size(scr->label_7, 142, 32);
@@ -149,7 +149,7 @@ void textpage_create(ui_manager_t *ui)
 
     // Init scr->label_8
     scr->label_8 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_8, "72");
+    lv_label_set_text(scr->label_8, "72↑↓°");
     lv_label_set_long_mode(scr->label_8, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->label_8, 846, 173);
     lv_obj_set_size(scr->label_8, 142, 61);
@@ -161,7 +161,7 @@ void textpage_create(ui_manager_t *ui)
 
     // Init scr->label_9
     scr->label_9 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_9, "128");
+    lv_label_set_text(scr->label_9, "128↑↓°");
     lv_label_set_long_mode(scr->label_9, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->label_9, 79, 270);
     lv_obj_set_size(scr->label_9, 142, 121);
