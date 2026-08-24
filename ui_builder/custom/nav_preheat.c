@@ -34,7 +34,7 @@ static void preheat_update_bar(lv_obj_t *bar, lv_obj_t *bartemp)
         uint16_t cavity = get_cavity_temp();
         int disp = cavity > set_temp ? set_temp : cavity;
         lv_label_set_text_fmt(bartemp, tr("%d℃"), disp);
-        int bx = 122 + (637 * p) / 100 - 80;
+        int bx = 122 + (637 * p) / 100 - 80 + lang_dyn_dx();
         lv_obj_set_pos(bartemp, bx, 323);
     }
 }

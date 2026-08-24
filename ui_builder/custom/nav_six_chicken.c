@@ -1281,7 +1281,7 @@ static void six_chick_apply_display(void)
         lv_bar_set_value(ck->bar_2, p, LV_ANIM_OFF);
         if (ck->bartemp) {
             lv_label_set_text_fmt(ck->bartemp, tr("%d℃"), cur);
-            int bx = 122 + (637 * p) / 100 - 80;
+            int bx = 122 + (637 * p) / 100 - 80 + lang_dyn_dx();
             lv_obj_set_pos(ck->bartemp, bx, 323);
         }
     }

@@ -36,6 +36,7 @@ typedef void (*lang_tune_fn)(void);
 extern const struct {
     page_id_t    page;
     lang_tune_fn fn;
+    int dx, dy;
 } s_tune_tab[];
 extern const int s_tune_tab_n;
 
@@ -48,6 +49,27 @@ static lang_tune_fn lang_tune_for_page(page_id_t pid)
         if (s_tune_tab[i].page == pid)
             return s_tune_tab[i].fn;
     return tune_placeholder;
+}
+
+/* 当前页定时器重写对象的整体平移偏移（注册表 dx/dy；中文模式或未注册返回 0） */
+int lang_dyn_dx(void)
+{
+    if (!is_english() || depth <= 0) return 0;
+    page_id_t pid = page_stack[depth - 1];
+    for (int i = 0; i < s_tune_tab_n; i++)
+        if (s_tune_tab[i].page == pid)
+            return s_tune_tab[i].dx;
+    return 0;
+}
+
+int lang_dyn_dy(void)
+{
+    if (!is_english() || depth <= 0) return 0;
+    page_id_t pid = page_stack[depth - 1];
+    for (int i = 0; i < s_tune_tab_n; i++)
+        if (s_tune_tab[i].page == pid)
+            return s_tune_tab[i].dy;
+    return 0;
 }
 
 

@@ -25,4 +25,9 @@ void lang_scr_load_anim(lv_obj_t *scr, lv_scr_load_anim_t anim_type,
  * 由 lang_on_page_built 调用；也可单独调用（如动态子界面重建后） */
 void lang_refresh_screen(void);
 
+/* 当前页定时器重写对象（bartemp 等）的整体平移偏移（注册表 dx/dy，同事编辑）
+ * 中文模式或未注册页返回 0——业务代码动态 set_pos 公式加此偏移 */
+int lang_dyn_dx(void);
+int lang_dyn_dy(void);
+
 #endif

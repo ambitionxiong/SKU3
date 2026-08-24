@@ -31,15 +31,31 @@ def clean_txt(t):
     return t
 
 def collect_dynamic_objs():
-    """扫描 custom 代码运行时 lv_obj_set_pos 的对象名集合（动态定位对象，
-    tune 函数不设置其 pos，防止显示时把业务代码动态位置重置回生成初始值）"""
+    """扫描 custom 代码中「定时器回调内」lv_obj_set_pos 的对象名集合。
+    定时器每秒重写位置的对象的 pos 不可由 tune 设置（1秒后被覆盖）——
+    其余动态对象(显示路径一次性 set_pos) tune 在其后执行可覆盖，不锁。
+    定时器回调名来自 lv_timer_create(xxx, ...) 注册的函数。"""
+    timers = set()
+    for fn in glob.glob(f"{ROOT}/ui_builder/custom/*.c"):
+        if fn.endswith('nav_lang_tune.c') or fn.endswith('nav_lang.c'):
+            continue
+        src = open(fn, encoding='utf-8', errors='replace').read()
+        for m in re.finditer(r'lv_timer_create\((\w+)\s*,', src):
+            timers.add(m.group(1))
     dyn = set()
     for fn in glob.glob(f"{ROOT}/ui_builder/custom/*.c"):
         if fn.endswith('nav_lang_tune.c') or fn.endswith('nav_lang.c'):
             continue
         src = open(fn, encoding='utf-8', errors='replace').read()
-        for m in re.finditer(r'lv_obj_set_pos\((\w+)->(\w+)\s*,', src):
-            dyn.add(m.group(2))
+        func = "?"
+        for line in src.split('\n'):
+            m = re.match(r'\s*(?:static\s+)?(?:void|int|bool|uint8_t|const\s+char\s*\*|char\s*\*)\s+(\w+)\s*\(', line)
+            if m:
+                func = m.group(1)
+            if func in timers:
+                m2 = re.match(r'lv_obj_set_pos\(\w+->(\w+)\s*,', line.strip())
+                if m2:
+                    dyn.add(m2.group(1))
     return dyn
 
 DYNAMIC = collect_dynamic_objs()
@@ -139,7 +155,7 @@ def gen_function(base, pages):
             desc.append(f"bg: {o['bg']}")
         dynamic = o['name'] in DYNAMIC
         if dynamic:
-            desc.append(f"动态定位(勿改)")
+            desc.append(f"定时器每秒重写位置(tune改无效, 用注册表dx偏移)")
         L.append(f"    /* {o['name']}: {' | '.join(desc)} */")
         if o['pos'] and not dynamic:
             L.append(f"    lv_obj_set_pos(pg->{o['name']}, {o['pos'][0]}, {o['pos'][1]});")
@@ -188,11 +204,12 @@ for base in sorted(MAPPING):
 
 out.append("\n\n".join(funcs))
 
-out.append("/* ============ 排版微调函数注册表（页面 → 函数） ============ */")
-out.append("const struct { page_id_t page; lang_tune_fn fn; } s_tune_tab[] = {")
+out.append("/* ============ 排版微调函数注册表（页面 → 函数 → 动态偏移 dx/dy） ============")
+out.append("/* dx/dy: 定时器重写对象(如 bartemp)的整体平移偏移，中文模式/0 = 零影响 */")
+out.append("const struct { page_id_t page; lang_tune_fn fn; int dx, dy; } s_tune_tab[] = {")
 for base in sorted(MAPPING):
     for p in sorted(MAPPING[base]):
-        out.append(f"    {{ {p}, {base}_lang_tune }},")
+        out.append(f"    {{ {p}, {base}_lang_tune, 0, 0 }},")
 out.append("};")
 out.append("const int s_tune_tab_n = (int)(sizeof(s_tune_tab) / sizeof(s_tune_tab[0]));")
 out.append("")
