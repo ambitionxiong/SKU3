@@ -66,10 +66,28 @@ static const struct { page_id_t page; lang_tune_fn fn; } s_tune_tab[] = {
 5. 重新编译运行 → 重进页看效果
 ```
 
-### 3.3 动态标签排版（烹饪中/状态条等每秒刷新的）
+### 3.3 动态标签排版（状态切换对象 / 定时器重写对象）
 
 **放心**：`lv_label_set_text()` 每秒重写的是文本，**不会动**你设好的坐标/字号（对象样式独立）。
-所以动态标签的排版同样在 tune 函数里设一次即可，不会被打回。
+
+**注意**：部分对象的位置由业务代码按状态驱动，tune 里不能直接写死一个固定值（会破坏另一种状态）：
+
+| 对象类型 | 例子 | 调整方式 |
+|---------|------|---------|
+| 静态对象 | 按钮/标题/背景/screen_SET | tune 里直接 `lv_obj_set_pos` ✓ |
+| **状态切换对象** | set 页 min + 单位标签（`set_hour` 有无小时，312↔395 两组坐标）、icon（模式相关） | **tune 里写判断**（执行时状态变量已是显示值）：<br>```c
+if (set_hour == 0) {
+    lv_obj_set_pos(pg->min, 312 + 8, 254);
+    lv_obj_set_pos(pg->label_306, 365 + 8, 269);
+} else {
+    lv_obj_set_pos(pg->min, 395 + 8, 254);
+    lv_obj_set_pos(pg->label_306, 448 + 8, 269);
+}
+// icon 按模式: if (g_send.cook_mode == MODE_UNFROZEN) ...
+``` |
+| **定时器重写对象** | bartemp（进度条跟随，每秒按进度重写位置） | tune 判断无效（1 秒后被覆盖）——用注册表 `dx/dy` 整体偏移：<br>`{ PAGE_PREHEAT_STOP_BACK, preheat_stop_back_lang_tune, 8, 0 }` |
+
+**tune 函数文件头有完整示例模板**（nav_lang_tune.c 顶部注释）。
 
 ## 4. 字体
 
@@ -91,6 +109,8 @@ static const struct { page_id_t page; lang_tune_fn fn; } s_tune_tab[] = {
 | 切英文后当前页没变 | 需要重进页面 | 切英文后退出再进入目标页（或按 Tab 重进菜单） |
 | 格式串翻译错乱 | 占位符数量/顺序不一致 | 检查 i18n.c 该条目 `%d`/`%s` 与中文版一致 |
 | 某些按钮文字仍是中文 | 文本写在根部生成文件 | 树遍历会自动覆盖；若没覆盖，确认页面重建触发（走 page_push/pop） |
+| set 页分钟位置不随小时切换 | tune 里写了固定坐标覆盖了业务状态位置 | 改为判断写法（见 3.3），或删掉该对象的 set_pos 用注册表 dx |
+| 动态标签位置改了 1 秒后被打回 | 定时器每秒按进度重写（bartemp） | 用注册表 dx/dy 偏移，tune 直接改无效 |
 
 ## 6. 别做的事
 
