@@ -264,7 +264,7 @@ void jump_to_bottom_bbq_cooking_probe(void)
         cook_start_probe = get_probe_temp();
 
         lv_label_set_text_fmt(cook->status, tr("| 底部烧烤 | %d℃ | %d℃"), set_temp, probe_target_temp);
-        {int tp = get_probe_temp(); if (tp > probe_target_temp) tp = probe_target_temp; lv_label_set_text_fmt(cook->temp, "%d℃", tp);}
+        {int tp = get_probe_temp(); if (tp > probe_target_temp) tp = probe_target_temp; lv_label_set_text_fmt(cook->temp, tr("%d℃"), tp);}
 
         lv_bar_set_range(cook->bar_5, 0, 100);
         lv_bar_set_value(cook->bar_5, 3, LV_ANIM_OFF);
@@ -313,7 +313,7 @@ void jump_to_bottom_bbq_stop_probe(void)
                             LV_EVENT_CLICKED, NULL);
 
         lv_label_set_text_fmt(stop->label_68, tr("| 底部烧烤 | %d℃ | %d℃"), set_temp, probe_target_temp);
-        {int tp = probe_temp; if (tp > probe_target_temp) tp = probe_target_temp; lv_label_set_text_fmt(stop->temp, "%d℃", tp);}
+        {int tp = probe_temp; if (tp > probe_target_temp) tp = probe_target_temp; lv_label_set_text_fmt(stop->temp, tr("%d℃"), tp);}
 
         lv_bar_set_range(stop->bar_6, 0, 100);
         if (cook_bar_saved > 100) cook_bar_saved = 100;
@@ -435,7 +435,7 @@ void bottom_bbq_probe_resume_cooking(void)
                             LV_EVENT_CLICKED, NULL);
 
         lv_label_set_text_fmt(cook->status, tr("| 底部烧烤 | %d℃ | %d℃"), set_temp, probe_target_temp);
-        {int tp = get_probe_temp(); if (tp > probe_target_temp) tp = probe_target_temp; lv_label_set_text_fmt(cook->temp, "%d℃", tp);}
+        {int tp = get_probe_temp(); if (tp > probe_target_temp) tp = probe_target_temp; lv_label_set_text_fmt(cook->temp, tr("%d℃"), tp);}
 
         lv_bar_set_range(cook->bar_5, 0, 100);
         if (cook_bar_saved > 100) cook_bar_saved = 100;
@@ -575,7 +575,7 @@ void bottom_bbq_probe_rebuild_cooking(page_id_t child)
                             LV_EVENT_CLICKED, NULL);
 
         lv_label_set_text_fmt(cook->status, tr("| 底部烧烤 | %d℃ | %d℃"), set_temp, probe_target_temp);
-        {int tp = get_probe_temp(); if (tp > probe_target_temp) tp = probe_target_temp; lv_label_set_text_fmt(cook->temp, "%d℃", tp);}
+        {int tp = get_probe_temp(); if (tp > probe_target_temp) tp = probe_target_temp; lv_label_set_text_fmt(cook->temp, tr("%d℃"), tp);}
 
         lv_bar_set_range(cook->bar_5, 0, 100);
         int bar_val = probe_progress(get_probe_temp());
@@ -603,7 +603,7 @@ void bottom_bbq_probe_rebuild_stop(void)
                             LV_EVENT_CLICKED, NULL);
 
         lv_label_set_text_fmt(stop->label_68, tr("| 底部烧烤 | %d℃ | %d℃"), set_temp, probe_target_temp);
-        {int tp = get_probe_temp(); if (tp > probe_target_temp) tp = probe_target_temp; lv_label_set_text_fmt(stop->temp, "%d℃", tp);}
+        {int tp = get_probe_temp(); if (tp > probe_target_temp) tp = probe_target_temp; lv_label_set_text_fmt(stop->temp, tr("%d℃"), tp);}
 
         lv_bar_set_range(stop->bar_6, 0, 100);
         if (cook_bar_saved > 100) cook_bar_saved = 100;

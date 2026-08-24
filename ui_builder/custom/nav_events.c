@@ -733,7 +733,7 @@ void rebuild_delaycooking(void)
         if (g_delay_source_page == PAGE_DESCRIPTIONMENU) {
             /* 六感:status 显示菜+信息,icon 用 sixicon(与运行页一致) */
             if (six_chick_is_probe())
-                lv_label_set_text_fmt(dc->status, "| %s | %s |",
+                lv_label_set_text_fmt(dc->status, tr("| %s | %s |"),
                                       six_chick_name(), six_chick_degree_text());   /* 探针菜:菜名+烤色程度 */
             else if (six_chick_is_degree_time()) {
                 int d = toastcolor_degree_value();
@@ -759,7 +759,7 @@ void rebuild_delaycooking(void)
             g_delay_source_page == PAGE_BOTTOM_BBQ_SET_PROBE ||
             g_delay_source_page == PAGE_SLOWCOOK_SET_PROBE) {
             /* 探针来源：与探针烹饪页一致的格式（温度 + 探针目标温） */
-            lv_label_set_text_fmt(dc->status, "| %s | %d℃ | %d℃",
+            lv_label_set_text_fmt(dc->status, tr("| %s | %d℃ | %d℃"),
                                   mode_display_name(), set_temp, probe_target_temp);
         } else if (g_send.cook_mode == MODE_UPDOWN_BBQ)
             set_status_label_min(dc->status, set_temp_up, set_temp_down, set_hour, set_min);

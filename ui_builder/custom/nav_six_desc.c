@@ -41,7 +41,7 @@ static void descriptionmenu_layout(descriptionmenu_t *dm)
             lv_label_set_text_fmt(dm->summary, tr("小结：\n份量/种类：%dg\n"), w);
         } else if (six_bread_has_rising()) {
             lv_label_set_text(dm->summary, g_rising_choice == 1 ?
-                              "小结：\n有发酵阶段\n" : "小结：\n没有发酵阶段\n");
+                              tr("小结：\n有发酵阶段\n") : tr("小结：\n没有发酵阶段\n"));
         } else {
             lv_obj_add_flag(dm->summary, LV_OBJ_FLAG_HIDDEN);
         }

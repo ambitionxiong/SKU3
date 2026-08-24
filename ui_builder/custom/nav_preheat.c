@@ -33,7 +33,7 @@ static void preheat_update_bar(lv_obj_t *bar, lv_obj_t *bartemp)
     if (bartemp) {
         uint16_t cavity = get_cavity_temp();
         int disp = cavity > set_temp ? set_temp : cavity;
-        lv_label_set_text_fmt(bartemp, "%d℃", disp);
+        lv_label_set_text_fmt(bartemp, tr("%d℃"), disp);
         int bx = 122 + (637 * p) / 100 - 80;
         lv_obj_set_pos(bartemp, bx, 323);
     }
@@ -318,7 +318,7 @@ void jump_to_preheat_cooking(void)
         lv_obj_add_event_cb(cook->stop, on_preheat_cooking_stop_click,
                             LV_EVENT_CLICKED, NULL);
 
-        lv_label_set_text_fmt(cook->temp, "%d℃", set_temp);
+        lv_label_set_text_fmt(cook->temp, tr("%d℃"), set_temp);
         lv_label_set_text(cook->name, tr("预热中..."));
         preheat_apply_mode_ui(cook->icon, cook->status);
         preheat_update_bar(cook->bar_1, cook->bartemp);
@@ -356,7 +356,7 @@ void jump_to_preheat_stop(void)
         lv_obj_add_event_cb(stop->start, on_preheat_stop_start_click,
                             LV_EVENT_CLICKED, NULL);
 
-        lv_label_set_text_fmt(stop->temp, "%d℃", set_temp);
+        lv_label_set_text_fmt(stop->temp, tr("%d℃"), set_temp);
         preheat_apply_mode_ui(stop->icon, stop->status);
         preheat_update_bar(stop->bar_2, stop->bartemp);
     }
@@ -391,7 +391,7 @@ void preheat_resume_cooking(void)
         lv_obj_add_event_cb(cook->stop, on_preheat_cooking_stop_click,
                             LV_EVENT_CLICKED, NULL);
 
-        lv_label_set_text_fmt(cook->temp, "%d℃", set_temp);
+        lv_label_set_text_fmt(cook->temp, tr("%d℃"), set_temp);
         lv_label_set_text(cook->name, tr("预热中..."));
         preheat_apply_mode_ui(cook->icon, cook->status);
         preheat_update_bar(cook->bar_1, cook->bartemp);
@@ -533,7 +533,7 @@ void jump_to_preheat_complete(void)
             lv_label_set_text(cook->name, tr("预热完成"));
             preheat_apply_mode_ui(cook->icon, cook->status);
             if (cook->bartemp) {
-                lv_label_set_text_fmt(cook->bartemp, "%d℃", set_temp);
+                lv_label_set_text_fmt(cook->bartemp, tr("%d℃"), set_temp);
                 lv_obj_set_pos(cook->bartemp, 679, 323);
             }
             preheat_complete_update_ui(cook);
@@ -605,7 +605,7 @@ void preheat_rebuild_cooking(void)
         lv_obj_add_event_cb(cook->stop, on_preheat_cooking_stop_click,
                             LV_EVENT_CLICKED, NULL);
 
-        lv_label_set_text_fmt(cook->temp, "%d℃", set_temp);
+        lv_label_set_text_fmt(cook->temp, tr("%d℃"), set_temp);
         lv_label_set_text(cook->name, tr("预热中..."));
         preheat_apply_mode_ui(cook->icon, cook->status);
         preheat_update_bar(cook->bar_1, cook->bartemp);
@@ -630,7 +630,7 @@ void preheat_rebuild_stop(void)
         lv_obj_add_event_cb(stop->start, on_preheat_stop_start_click,
                             LV_EVENT_CLICKED, NULL);
 
-        lv_label_set_text_fmt(stop->temp, "%d℃", set_temp);
+        lv_label_set_text_fmt(stop->temp, tr("%d℃"), set_temp);
         preheat_apply_mode_ui(stop->icon, stop->status);
         preheat_update_bar(stop->bar_2, stop->bartemp);
     }
@@ -657,7 +657,7 @@ void preheat_rebuild_complete(void)
             lv_label_set_text(cook->name, tr("预热完成"));
             preheat_apply_mode_ui(cook->icon, cook->status);
             if (cook->bartemp) {
-                lv_label_set_text_fmt(cook->bartemp, "%d℃", set_temp);
+                lv_label_set_text_fmt(cook->bartemp, tr("%d℃"), set_temp);
                 lv_obj_set_pos(cook->bartemp, 679, 323);
             }
             preheat_complete_update_ui(cook);

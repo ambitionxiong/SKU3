@@ -499,7 +499,7 @@ static void descriptionmenu_layout(descriptionmenu_t *dm)
     /* 摘要文本按是否发酵选择 */
     if (dm->summary)
         lv_label_set_text(dm->summary, g_rising_choice == 1 ?
-                          "小结：\n有发酵阶段\n" : "小结：\n没有发酵阶段\n");
+                          tr("小结：\n有发酵阶段\n") : tr("小结：\n没有发酵阶段\n"));
 
     /* 烹饪时间 + 烹饪说明按当前菜填充 */
     if (dm->cooktime) {

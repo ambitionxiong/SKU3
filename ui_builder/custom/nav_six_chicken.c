@@ -1243,7 +1243,7 @@ static void six_chick_apply_display(void)
         } else {
             lv_obj_clear_flag(ck->stop, LV_OBJ_FLAG_HIDDEN);
             if (bl) lv_label_set_text(bl, s_chick_overlay ? tr("确 定") :
-                                             s_chick_paused  ? "开 始" : "暂 停");
+                                             s_chick_paused  ? tr("开 始") : tr("暂 停"));
         }
     }
 
@@ -1259,7 +1259,7 @@ static void six_chick_apply_display(void)
         if (show_tip) {
             lv_obj_clear_flag(ck->text1, LV_OBJ_FLAG_HIDDEN);
             lv_label_set_text(ck->text1, (s_chick_done && !s_chick_overlay) ?
-                              "高温防烫" : "是否结束当前任务");
+                              tr("高温防烫") : tr("是否结束当前任务"));
         } else {
             lv_obj_add_flag(ck->text1, LV_OBJ_FLAG_HIDDEN);
         }
@@ -1268,7 +1268,7 @@ static void six_chick_apply_display(void)
         if (show_tip) {
             lv_obj_clear_flag(ck->text2, LV_OBJ_FLAG_HIDDEN);
             lv_label_set_text(ck->text2, (s_chick_done && !s_chick_overlay) ?
-                              "请缓慢打开门体！" : "回到主页");
+                              tr("请缓慢打开门体！") : tr("回到主页"));
         } else {
             lv_obj_add_flag(ck->text2, LV_OBJ_FLAG_HIDDEN);
         }
@@ -1280,7 +1280,7 @@ static void six_chick_apply_display(void)
         lv_bar_set_range(ck->bar_2, 0, 100);
         lv_bar_set_value(ck->bar_2, p, LV_ANIM_OFF);
         if (ck->bartemp) {
-            lv_label_set_text_fmt(ck->bartemp, "%d℃", cur);
+            lv_label_set_text_fmt(ck->bartemp, tr("%d℃"), cur);
             int bx = 122 + (637 * p) / 100 - 80;
             lv_obj_set_pos(ck->bartemp, bx, 323);
         }

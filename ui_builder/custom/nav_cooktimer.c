@@ -275,7 +275,7 @@ void cooking_timer_cb(lv_timer_t *timer)
                 lv_bar_set_value(back->bar_1, p, LV_ANIM_OFF);
                 if (back->bartemp) {
                     int disp = cavity > set_temp ? set_temp : cavity;
-                    lv_label_set_text_fmt(back->bartemp, "%d℃", disp);
+                    lv_label_set_text_fmt(back->bartemp, tr("%d℃"), disp);
                     int bx = 122 + (637 * p) / 100 - 80;
                     lv_obj_set_pos(back->bartemp, bx, 323);
                 }
@@ -642,7 +642,7 @@ void cooking_timer_cb(lv_timer_t *timer)
             if (p < 3) p = 3;
             lv_bar_set_value(cook->bar_1, p, LV_ANIM_OFF);
             int display = probe > probe_target_temp ? probe_target_temp : probe;
-            lv_label_set_text_fmt(cook->temp, "%d℃", display);
+            lv_label_set_text_fmt(cook->temp, tr("%d℃"), display);
             lv_obj_invalidate(lv_scr_act());
         }
             if (probe >= probe_target_temp && probe_target_temp >= 30 && probe >= cook_start_probe && cook_timer) {
@@ -663,7 +663,7 @@ void cooking_timer_cb(lv_timer_t *timer)
             if (p > 100) p = 100; if (p < 3) p = 3;
             lv_bar_set_value(cook->bar_1, p, LV_ANIM_OFF);
             int display = probe > probe_target_temp ? probe_target_temp : probe;
-            lv_label_set_text_fmt(cook->temp, "%d℃", display);
+            lv_label_set_text_fmt(cook->temp, tr("%d℃"), display);
             lv_obj_invalidate(lv_scr_act());
         }
         if (probe >= probe_target_temp && probe_target_temp >= 30 && probe >= cook_start_probe && cook_timer) {
@@ -682,7 +682,7 @@ void cooking_timer_cb(lv_timer_t *timer)
             if (p > 100) p = 100; if (p < 3) p = 3;
             lv_bar_set_value(cook->bar_5, p, LV_ANIM_OFF);
             int display = probe > probe_target_temp ? probe_target_temp : probe;
-            lv_label_set_text_fmt(cook->temp, "%d℃", display);
+            lv_label_set_text_fmt(cook->temp, tr("%d℃"), display);
             lv_obj_invalidate(lv_scr_act());
         }
         if (probe >= probe_target_temp && probe_target_temp >= 30 && probe >= cook_start_probe && cook_timer) {
@@ -701,7 +701,7 @@ void cooking_timer_cb(lv_timer_t *timer)
             if (p > 100) p = 100; if (p < 3) p = 3;
             lv_bar_set_value(cook->bar_9, p, LV_ANIM_OFF);
             int display = probe > probe_target_temp ? probe_target_temp : probe;
-            lv_label_set_text_fmt(cook->temp, "%d℃", display);
+            lv_label_set_text_fmt(cook->temp, tr("%d℃"), display);
             lv_obj_invalidate(lv_scr_act());
         }
         if (probe >= probe_target_temp && probe_target_temp >= 30 && probe >= cook_start_probe && cook_timer) {
@@ -734,7 +734,7 @@ void cooking_timer_cb(lv_timer_t *timer)
             lv_bar_set_value(cook->bar_1, p, LV_ANIM_OFF);
             if (cook->bartemp) {
                 int disp = cavity > set_temp ? set_temp : cavity;
-                lv_label_set_text_fmt(cook->bartemp, "%d℃", disp);
+                lv_label_set_text_fmt(cook->bartemp, tr("%d℃"), disp);
                 int bx = 122 + (637 * p) / 100 - 80;
                 lv_obj_set_pos(cook->bartemp, bx, 323);
             }
@@ -758,7 +758,7 @@ void cooking_timer_cb(lv_timer_t *timer)
             lv_bar_set_value(back->bar_1, p, LV_ANIM_OFF);
             if (back->bartemp) {
                 int disp = cavity > set_temp ? set_temp : cavity;
-                lv_label_set_text_fmt(back->bartemp, "%d℃", disp);
+                lv_label_set_text_fmt(back->bartemp, tr("%d℃"), disp);
                 int bx = 122 + (637 * p) / 100 - 80;
                 lv_obj_set_pos(back->bartemp, bx, 323);
             }

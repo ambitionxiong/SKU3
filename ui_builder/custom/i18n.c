@@ -508,6 +508,7 @@ const char *tr(const char *zh)
         for (int i = 0; i < s_table_n; i++)
             if (s_table[i].zh[0] == zh[0] && strcmp(s_table[i].zh, zh) == 0)
                 return tr_celsius(s_table[i].en);
+        return tr_celsius(zh);   /* 英文模式未命中: ℃ 仍统一转 °C（如动态格式串 "%d℃"） */
     }
     return zh;   /* 非英文或未查到的中文,原样返回 */
 }
