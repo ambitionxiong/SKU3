@@ -282,37 +282,37 @@ void jump_to_hotwind_bbq_set(void)
     if (set_hour == 0) {
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->label_221, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312 + lang_dyn_dx(), 254 + lang_dyn_dy());
-        lv_obj_set_pos(set->label_222, 365 + lang_dyn_dx(), 269 + lang_dyn_dy());
+        lv_obj_set_pos(set->min, 312, 254);
+        lv_obj_set_pos(set->label_222, 365, 269);
     } else {
         lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->label_221, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395 + lang_dyn_dx(), 254 + lang_dyn_dy());
-        lv_obj_set_pos(set->label_222, 448 + lang_dyn_dx(), 269 + lang_dyn_dy());
+        lv_obj_set_pos(set->min, 395, 254);
+        lv_obj_set_pos(set->label_222, 448, 269);
     }
 
         apply_toggle_state(set->offpreheat, set->onpreheat, preheat_on);
     if (set_hour == 0) {
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->label_221, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312 + lang_dyn_dx(), 254 + lang_dyn_dy());
-        lv_obj_set_pos(set->label_222, 365 + lang_dyn_dx(), 269 + lang_dyn_dy());
+        lv_obj_set_pos(set->min, 312, 254);
+        lv_obj_set_pos(set->label_222, 365, 269);
     } else {
         lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->label_221, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395 + lang_dyn_dx(), 254 + lang_dyn_dy());
-        lv_obj_set_pos(set->label_222, 448 + lang_dyn_dx(), 269 + lang_dyn_dy());
+        lv_obj_set_pos(set->min, 395, 254);
+        lv_obj_set_pos(set->label_222, 448, 269);
     }
         apply_toggle_state(set->offdelay, set->ondelay, delay_on);
         mode_set_apply_delay_label(set->ondelay);
     if (set_hour == 0) {
         lv_obj_add_flag(set->label_221, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312 + lang_dyn_dx(), 254 + lang_dyn_dy());
-        lv_obj_set_pos(set->label_222, 365 + lang_dyn_dx(), 269 + lang_dyn_dy());
+        lv_obj_set_pos(set->min, 312, 254);
+        lv_obj_set_pos(set->label_222, 365, 269);
     } else {
         lv_obj_clear_flag(set->label_221, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395 + lang_dyn_dx(), 254 + lang_dyn_dy());
-        lv_obj_set_pos(set->label_222, 448 + lang_dyn_dx(), 269 + lang_dyn_dy());
+        lv_obj_set_pos(set->min, 395, 254);
+        lv_obj_set_pos(set->label_222, 448, 269);
     }
         apply_toggle_state(set->offcontain, set->oncontain, contain_on);
 
@@ -829,39 +829,39 @@ void hotwind_bbq_rebuild_set(page_id_t child)
     if (set_hour == 0) {
         lv_obj_add_flag(set->label_221, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312 + lang_dyn_dx(), 254 + lang_dyn_dy());
-        lv_obj_set_pos(set->label_222, 365 + lang_dyn_dx(), 269 + lang_dyn_dy());
+        lv_obj_set_pos(set->min, 312, 254);
+        lv_obj_set_pos(set->label_222, 365, 269);
     } else {
         lv_obj_clear_flag(set->label_221, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395 + lang_dyn_dx(), 254 + lang_dyn_dy());
-        lv_obj_set_pos(set->label_222, 448 + lang_dyn_dx(), 269 + lang_dyn_dy());
+        lv_obj_set_pos(set->min, 395, 254);
+        lv_obj_set_pos(set->label_222, 448, 269);
     }
 
         apply_toggle_state(set->offpreheat, set->onpreheat, preheat_on);
     if (set_hour == 0) {
         lv_obj_add_flag(set->label_221, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312 + lang_dyn_dx(), 254 + lang_dyn_dy());
-        lv_obj_set_pos(set->label_222, 365 + lang_dyn_dx(), 269 + lang_dyn_dy());
+        lv_obj_set_pos(set->min, 312, 254);
+        lv_obj_set_pos(set->label_222, 365, 269);
     } else {
         lv_obj_clear_flag(set->label_221, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395 + lang_dyn_dx(), 254 + lang_dyn_dy());
-        lv_obj_set_pos(set->label_222, 448 + lang_dyn_dx(), 269 + lang_dyn_dy());
+        lv_obj_set_pos(set->min, 395, 254);
+        lv_obj_set_pos(set->label_222, 448, 269);
     }
         apply_toggle_state(set->offdelay, set->ondelay, delay_on);
         mode_set_apply_delay_label(set->ondelay);
     if (set_hour == 0) {
         lv_obj_add_flag(set->label_221, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312 + lang_dyn_dx(), 254 + lang_dyn_dy());
-        lv_obj_set_pos(set->label_222, 365 + lang_dyn_dx(), 269 + lang_dyn_dy());
+        lv_obj_set_pos(set->min, 312, 254);
+        lv_obj_set_pos(set->label_222, 365, 269);
     } else {
         lv_obj_clear_flag(set->label_221, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395 + lang_dyn_dx(), 254 + lang_dyn_dy());
-        lv_obj_set_pos(set->label_222, 448 + lang_dyn_dx(), 269 + lang_dyn_dy());
+        lv_obj_set_pos(set->min, 395, 254);
+        lv_obj_set_pos(set->label_222, 448, 269);
     }
         apply_toggle_state(set->offcontain, set->oncontain, contain_on);
 

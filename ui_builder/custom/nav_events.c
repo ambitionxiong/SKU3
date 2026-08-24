@@ -753,7 +753,7 @@ void rebuild_delaycooking(void)
             } else
                 lv_label_set_text_fmt(dc->status, tr("| %s | %d分钟"), six_bread_name(), six_bread_cook_min());
             lv_img_set_src(dc->icon, LVGL_IMAGE_PATH(sixicon.png));
-            lv_obj_set_pos(dc->icon, 163 + lang_dyn_dx(), 161 + lang_dyn_dy());
+            lv_obj_set_pos(dc->icon, 163, 161);
         } else if (g_delay_source_page == PAGE_UPDOWN_BBQ_SET_PROBE ||
             g_delay_source_page == PAGE_HOT_BBQ_SET_PROBE ||
             g_delay_source_page == PAGE_BOTTOM_BBQ_SET_PROBE ||

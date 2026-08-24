@@ -233,13 +233,13 @@ void jump_to_updown_bbq_set(void)
         if (set_hour == 0) {
             lv_obj_add_flag(set->hour_label, LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(set->shi_label, LV_OBJ_FLAG_HIDDEN);
-            lv_obj_set_pos(set->min_label, 312 + lang_dyn_dx(), 254 + lang_dyn_dy());
-            lv_obj_set_pos(set->fen_label, 365 + lang_dyn_dx(), 269 + lang_dyn_dy());
+            lv_obj_set_pos(set->min_label, 312, 254);
+            lv_obj_set_pos(set->fen_label, 365, 269);
         } else {
             lv_obj_clear_flag(set->hour_label, LV_OBJ_FLAG_HIDDEN);
             lv_obj_clear_flag(set->shi_label, LV_OBJ_FLAG_HIDDEN);
-            lv_obj_set_pos(set->min_label, 395 + lang_dyn_dx(), 254 + lang_dyn_dy());
-            lv_obj_set_pos(set->fen_label, 448 + lang_dyn_dx(), 269 + lang_dyn_dy());
+            lv_obj_set_pos(set->min_label, 395, 254);
+            lv_obj_set_pos(set->fen_label, 448, 269);
         }
 
         /* 按钮状态重置（跟随变量） */

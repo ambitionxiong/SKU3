@@ -145,7 +145,7 @@ void jump_to_updown_bbq_stop_back(void)
                 } else
                     lv_label_set_text_fmt(back->statu_label, tr("| %s | %d分钟"), six_bread_name(), six_bread_cook_min());
                 lv_img_set_src(back->image_7, LVGL_IMAGE_PATH(sixicon.png));
-                lv_obj_set_pos(back->image_7, 163 + lang_dyn_dx(), 161 + lang_dyn_dy());
+                lv_obj_set_pos(back->image_7, 163, 161);
             }
             lv_label_set_text(back->label_11, g_delay_cancel_btn ? tr("回到上一页") : tr("回到主页"));
             lv_obj_add_flag(back->bar_2, LV_OBJ_FLAG_HIDDEN);

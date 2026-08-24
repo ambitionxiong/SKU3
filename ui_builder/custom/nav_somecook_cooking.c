@@ -267,9 +267,9 @@ static void somecook_cooking_start(void)
         mode_apply_icon(sc->icon);
         /* 解冻段 icon 位置与其他模式不同（对齐普通解冻 149） */
         if (g_send.cook_mode == MODE_UNFROZEN)
-            lv_obj_set_pos(sc->icon, 149 + lang_dyn_dx(), 161 + lang_dyn_dy());
+            lv_obj_set_pos(sc->icon, 149, 161);
         else
-            lv_obj_set_pos(sc->icon, 115 + lang_dyn_dx(), 161 + lang_dyn_dy());
+            lv_obj_set_pos(sc->icon, 115, 161);
         somecook_cooking_apply_info(sc);
         somecook_cooking_set_state(SMC_COOKING, SMC_COOKING);
     }
@@ -324,9 +324,9 @@ void somecook_cooking_next_step(void)
             mode_apply_icon(sc->icon);
             /* 解冻段 icon 位置与其他模式不同（对齐普通解冻 149） */
             if (g_send.cook_mode == MODE_UNFROZEN)
-                lv_obj_set_pos(sc->icon, 149 + lang_dyn_dx(), 161 + lang_dyn_dy());
+                lv_obj_set_pos(sc->icon, 149, 161);
             else
-                lv_obj_set_pos(sc->icon, 115 + lang_dyn_dx(), 161 + lang_dyn_dy());
+                lv_obj_set_pos(sc->icon, 115, 161);
             somecook_cooking_apply_info(sc);
         }
         current_group = g_somecook_cooking;

@@ -226,26 +226,26 @@ void jump_to_chip_set(void)
     if (set_hour == 0) {
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->label_818, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312 + lang_dyn_dx(), 254 + lang_dyn_dy());
-        lv_obj_set_pos(set->label_819, 365 + lang_dyn_dx(), 269 + lang_dyn_dy());
+        lv_obj_set_pos(set->min, 312, 254);
+        lv_obj_set_pos(set->label_819, 365, 269);
     } else {
         lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->label_818, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395 + lang_dyn_dx(), 254 + lang_dyn_dy());
-        lv_obj_set_pos(set->label_819, 448 + lang_dyn_dx(), 269 + lang_dyn_dy());
+        lv_obj_set_pos(set->min, 395, 254);
+        lv_obj_set_pos(set->label_819, 448, 269);
     }
 
         apply_toggle_state(set->offcontain, set->oncontain, contain_on);
     if (set_hour == 0) {
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->label_818, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312 + lang_dyn_dx(), 254 + lang_dyn_dy());
-        lv_obj_set_pos(set->label_819, 365 + lang_dyn_dx(), 269 + lang_dyn_dy());
+        lv_obj_set_pos(set->min, 312, 254);
+        lv_obj_set_pos(set->label_819, 365, 269);
     } else {
         lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->label_818, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395 + lang_dyn_dx(), 254 + lang_dyn_dy());
-        lv_obj_set_pos(set->label_819, 448 + lang_dyn_dx(), 269 + lang_dyn_dy());
+        lv_obj_set_pos(set->min, 395, 254);
+        lv_obj_set_pos(set->label_819, 448, 269);
     }
 
 
@@ -723,26 +723,26 @@ void chip_rebuild_set(page_id_t child)
     if (set_hour == 0) {
         lv_obj_add_flag(set->label_818, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312 + lang_dyn_dx(), 254 + lang_dyn_dy());
-        lv_obj_set_pos(set->label_819, 365 + lang_dyn_dx(), 269 + lang_dyn_dy());
+        lv_obj_set_pos(set->min, 312, 254);
+        lv_obj_set_pos(set->label_819, 365, 269);
     } else {
         lv_obj_clear_flag(set->label_818, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395 + lang_dyn_dx(), 254 + lang_dyn_dy());
-        lv_obj_set_pos(set->label_819, 448 + lang_dyn_dx(), 269 + lang_dyn_dy());
+        lv_obj_set_pos(set->min, 395, 254);
+        lv_obj_set_pos(set->label_819, 448, 269);
     }
 
         apply_toggle_state(set->offcontain, set->oncontain, contain_on);
     if (set_hour == 0) {
         lv_obj_add_flag(set->label_818, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312 + lang_dyn_dx(), 254 + lang_dyn_dy());
-        lv_obj_set_pos(set->label_819, 365 + lang_dyn_dx(), 269 + lang_dyn_dy());
+        lv_obj_set_pos(set->min, 312, 254);
+        lv_obj_set_pos(set->label_819, 365, 269);
     } else {
         lv_obj_clear_flag(set->label_818, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395 + lang_dyn_dx(), 254 + lang_dyn_dy());
-        lv_obj_set_pos(set->label_819, 448 + lang_dyn_dx(), 269 + lang_dyn_dy());
+        lv_obj_set_pos(set->min, 395, 254);
+        lv_obj_set_pos(set->label_819, 448, 269);
     }
 
 

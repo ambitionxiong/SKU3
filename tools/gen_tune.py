@@ -78,6 +78,86 @@ def collect_dynamic_objs():
 
 DYNAMIC = collect_dynamic_objs()
 
+def extract_biz_layout():
+    """解析业务代码中锁定对象的默认位置/判断结构（按函数作用域）。
+    返回: {(base页面, obj名): {'cond': 状态条件或None, 'coords': [(x,y)...], 'else_coords': [...]}}
+    变量归属: 函数内 'XXX_t *var = XXX_get(&ui_manager)' 声明 → var 属于 XXX 页面。
+    if (set_hour==0 / g_send.cook_mode==MODE_*) 块内的 set_pos 记两组坐标；
+    其余(单值)记 coords。bartemp 由定时器驱动不在此生成。"""
+    def split_funcs(lines):
+        """按函数定义切分，返回 [(函数体行范围, [声明, 行号])]"""
+        funcs = []
+        i = 0
+        while i < len(lines):
+            m = re.match(r'\s*(?:static\s+)?(?:void|int|bool|uint8_t|const\s+char\s*\*|char\s*\*)\s+(\w+)\s*\(', lines[i])
+            if not m or lines[i].strip().startswith('//'):
+                i += 1
+                continue
+            depth = 0
+            j = i
+            started = False
+            while j < len(lines):
+                depth += lines[j].count('{') - lines[j].count('}')
+                if '{' in lines[j]:
+                    started = True
+                if started and depth == 0:
+                    j += 1
+                    break
+                j += 1
+            funcs.append((i, j))   # 函数体 [i, j)
+            i = j
+        return funcs
+
+    result = {}
+    for fn in glob.glob(f"{ROOT}/ui_builder/custom/*.c"):
+        if 'screen_SET' in fn or fn.endswith('nav_lang_tune.c') or fn.endswith('nav_lang.c') or fn.endswith('i18n.c'):
+            continue
+        lines = open(fn, encoding='utf-8', errors='replace').read().split('\n')
+        for f0, f1 in split_funcs(lines):
+            var_type = {}
+            for i in range(f0, f1):
+                m = re.match(r'\s*(\w+)_t \*(\w+) = \w+_get\(&ui_manager\)', lines[i])
+                if m:
+                    var_type[m.group(2)] = m.group(1)
+            cond = None
+            in_else = False
+            for lineno in range(f0, f1):
+                line = lines[lineno]
+                m = re.match(r'\s*if\s*\(\s*(set_hour\s*==\s*0|g_send\.cook_mode\s*==\s*MODE_\w+)\s*\)\s*\{?\s*$', line)
+                if m:
+                    cond = m.group(1).strip()
+                    in_else = False
+                    continue
+                if cond and re.match(r'\s*(?:\}\s*)?else\s*\{?\s*$', line):
+                    in_else = True
+                    continue
+                if cond and in_else and re.match(r'\s*\}\s*$', line):
+                    cond = None
+                    in_else = False
+                    continue
+                mm = re.match(r'\s*lv_obj_set_pos\((\w+)->(\w+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)', line)
+                if mm and mm.group(1) in var_type:
+                    base, obj, x, y = var_type[mm.group(1)], mm.group(2), mm.group(3), mm.group(4)
+                    if obj == 'bartemp':
+                        continue
+                    e = result.setdefault((base, obj), {'cond': '', 'coords': [], 'else_coords': [], 'conflict': False})
+                    if cond and not in_else:
+                        if e['cond'] != '' and e['cond'] != cond:
+                            e['conflict'] = True
+                        e['coords'].append((x, y))
+                        e['cond'] = cond
+                    elif cond and in_else:
+                        e['else_coords'].append((x, y))
+                    else:
+                        if e['cond'] != '':
+                            e['conflict'] = True   # 单值场景与条件场景混合
+                        if e['cond'] == '':
+                            e['cond'] = None
+                        e['coords'].append((x, y))
+    return result
+
+BIZ = extract_biz_layout()
+
 def extract_block_data(fn):
     """解析生成文件，返回 [{name, type, pos, size, font, align, img, bg, txt}]（按成员）"""
     if not os.path.exists(fn):
@@ -172,10 +252,32 @@ def gen_function(base, pages):
         if o['bg']:
             desc.append(f"bg: {o['bg']}")
         dynamic = o['name'] in DYNAMIC
-        if dynamic:
-            desc.append(f"动态定位(需微调见下方模板)")
+        biz = BIZ.get((base, o['name']))
+        if dynamic and o['name'] == 'bartemp':
+            desc.append(f"定时器每秒重写位置(tune无效, 用注册表dx/dy)")
+        elif dynamic and biz and biz['cond'] and biz['else_coords'] and not biz['conflict']:
+            desc.append(f"状态切换(默认业务值, 直接改数字)")
+        elif dynamic and biz and not biz['conflict'] and (biz['coords'] or biz['else_coords']):
+            desc.append(f"动态定位(默认业务值, 直接改数字)")
+        elif dynamic:
+            desc.append(f"动态定位(需微调见文件头模板)")
         L.append(f"    /* {o['name']}: {' | '.join(desc)} */")
-        if o['pos'] and not dynamic:
+        if dynamic and o['name'] != 'bartemp':
+            if biz and biz['cond'] and biz['else_coords'] and not biz['conflict']:
+                for (x, y) in biz['coords']:
+                    L.append(f"    if ({biz['cond']})")
+                    L.append(f"        lv_obj_set_pos(pg->{o['name']}, {x}, {y});")
+                    break
+                for (x, y) in biz['else_coords']:
+                    L.append(f"    else")
+                    L.append(f"        lv_obj_set_pos(pg->{o['name']}, {x}, {y});")
+                    break
+            elif biz and not biz['conflict'] and biz['coords']:
+                x, y = biz['coords'][0]
+                L.append(f"    lv_obj_set_pos(pg->{o['name']}, {x}, {y});")
+            else:
+                L.append(f"    /* 位置由业务动态控制, 微调按文件头模板 */")
+        elif o['pos'] and not dynamic:
             L.append(f"    lv_obj_set_pos(pg->{o['name']}, {o['pos'][0]}, {o['pos'][1]});")
         if o['size']:
             L.append(f"    lv_obj_set_size(pg->{o['name']}, {o['size'][0]}, {o['size'][1]});")
