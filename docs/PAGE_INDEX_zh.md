@@ -73,7 +73,11 @@
 | 烤鸡/鸭 | 烹饪 | PAGE_CHICKENCOOKING | chickencooking_lang_tune |
 | 烤色/重量 | 选择页 | PAGE_TOASTCOLOR | toastcolor_lang_tune |
 | 六感选项 | 选择页 | PAGE_SIXOP3PAGE | sixop3page_lang_tune |
-| 六感烹饪 | 烹饪（与多段共用结构）| PAGE_SIX_COOKING | somecook_cooking_lang_tune |
+| 第六感烹饪 | 烹饪（与多段共用结构）| PAGE_SIX_COOKING | **six_cooking_lang_tune** |
+| 多段烹饪 | 烹饪（与六感共用结构）| PAGE_SOMECOOK_COOKING | somecook_cooking_lang_tune |
+| 额外上色 | 设置页（复用预热菜单结构）| PAGE_COLOR_MENU | **color_menu_lang_tune** |
+| 预热 | 菜单（与额外上色共用结构）| PAGE_PREHEAT_MENU | preheatmenu_lang_tune |
+| 预约烹饪 | 预约（29 模式共用）| PAGE_DELAYCOOKING | **delaycooking_lang_tune** |
 
 ## 四、多段烹饪 / 预热 / 清洁 / 系统
 

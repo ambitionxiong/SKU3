@@ -130,7 +130,24 @@ else
 tune 里只留注释 `位置由业务动态控制, 微调按文件头模板`——需要微调时按文件头模板手写判断
 （判断 `g_send.cook_mode == MODE_UNFROZEN` 等）。
 
-### 4.3 定时器重写对象（bartemp——只能用注册表 dx/dy）
+### 4.3 复用页面与多入口页面（重要）
+
+| 类型 | 页面 | tune 结构 |
+|------|------|----------|
+| **1 结构 2 PAGE（已拆）** | somecook_cooking（第六感烹饪页/多段烹饪页）、preheatmenu（预热菜单页/额外上色设置页）| 公共 `xxx_common()` + 每页独立函数：`six_cooking_lang_tune`（第六感烹饪页）、`somecook_cooking_lang_tune`（多段烹饪页）、`preheatmenu_lang_tune`（预热菜单页）、`color_menu_lang_tune`（额外上色设置页）——**各页差异改对应函数里的数字，公共布局改 common** |
+| **同 PAGE 多入口** | delaycooking（29 个模式共用的预约烹饪页）、descriptionmenu（六感蛋糕/鸡/面包菜谱说明页）、duckmenu（鸡/肉/配菜菜单）| 1 个函数全局生效；**按入口模式分别微调**用业务状态判断（文件头有模板）：<br>```c
+switch (g_send.cook_mode) {                    // delaycooking: 当前预约模式
+case MODE_PIZZA: lv_obj_set_pos(pg->icon, 180, 161); break;   // 披萨预约
+case MODE_AIR:   lv_obj_set_pos(pg->icon, 163, 161); break;   // 空气炸预约
+default:         lv_obj_set_pos(pg->icon, 115, 161); break;   // 其他模式共用
+}
+// descriptionmenu/duckmenu 用 g_six_bread_type 区分六感子类
+``` |
+| **同 PAGE 双业务场景** | image_7（六感 stop_back 复用上下烧烤结构）| PAGE 无法区分，保持业务分支注释（按 six_chick_is_* 手写）|
+
+**tune 函数文件头有完整示例模板**（nav_lang_tune.c 顶部注释）。
+
+### 4.4 定时器重写对象（bartemp——只能用注册表 dx/dy）
 
 bartemp（进度条温度指示）每秒按进度重写位置，tune 里改了 1 秒后被覆盖，**判断也无效**。
 调整方式：**文件末尾注册表改 dx/dy**（该页 bartemp 整体平移）：

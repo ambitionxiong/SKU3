@@ -486,7 +486,8 @@
   "PAGE_PIZZA_2_COMPLETE"
  ],
  "preheatmenu": [
-  "PAGE_PREHEAT_MENU"
+  "PAGE_PREHEAT_MENU",
+  "PAGE_COLOR_MENU"
  ],
  "preheatcooking": [
   "PAGE_PREHEAT_COOKING"
@@ -800,5 +801,8 @@
  ],
  "somecook": [
   "PAGE_SOMECOOK"
+ ],
+ "delaycooking": [
+  "PAGE_DELAYCOOKING"
  ]
 }

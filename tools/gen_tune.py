@@ -140,20 +140,23 @@ def extract_biz_layout():
                     base, obj, x, y = var_type[mm.group(1)], mm.group(2), mm.group(3), mm.group(4)
                     if obj == 'bartemp':
                         continue
-                    e = result.setdefault((base, obj), {'cond': '', 'coords': [], 'else_coords': [], 'conflict': False})
+                    e = result.setdefault((base, obj), {'cond': '', 'coords': [], 'else_coords': [], 'conflict': False, 'sources': set(), 'by_source': {}})
+                    src = fn.split('/')[-1].replace('.c', '')
+                    e['sources'].add(src)
+                    se = e['by_source'].setdefault(src, {'cond': '', 'coords': [], 'else_coords': [], 'conflict': False})
                     if cond and not in_else:
-                        if e['cond'] != '' and e['cond'] != cond:
-                            e['conflict'] = True
-                        e['coords'].append((x, y))
-                        e['cond'] = cond
+                        if se['cond'] is not None and se['cond'] != '' and se['cond'] != cond:
+                            se['conflict'] = True
+                        se['coords'].append((x, y))
+                        se['cond'] = cond
                     elif cond and in_else:
-                        e['else_coords'].append((x, y))
+                        se['else_coords'].append((x, y))
                     else:
-                        if e['cond'] != '':
-                            e['conflict'] = True   # 单值场景与条件场景混合
-                        if e['cond'] == '':
-                            e['cond'] = None
-                        e['coords'].append((x, y))
+                        if se['cond'] is not None and se['cond'] != '':
+                            se['conflict'] = True
+                        if se['cond'] == '':
+                            se['cond'] = None
+                        se['coords'].append((x, y))
     return result
 
 BIZ = extract_biz_layout()
@@ -161,6 +164,35 @@ BIZ = extract_biz_layout()
 # 场景条件对象：业务 set_pos 只在特定分支执行（如 image_7 仅六感 stop_back 设 163，
 # 普通场景保持生成值 115）——BIZ 解析到的"单值"不代表全部场景，tune 不生成
 SCENE_COND = {'image_7'}
+
+# 业务文件 → 所属 PAGE（多 PAGE 页面差异对象按此归属）
+FILE_PAGE = {
+    'nav_six_cook': 'PAGE_SIX_COOKING',
+    'nav_somecook_cooking': 'PAGE_SOMECOOK_COOKING',
+}
+
+# PAGE 含义注释（生成到函数头）
+PAGE_MEANING = {
+    'PAGE_SIX_COOKING': '第六感烹饪页',
+    'PAGE_SOMECOOK_COOKING': '多段烹饪页',
+    'PAGE_PREHEAT_MENU': '预热菜单页',
+    'PAGE_COLOR_MENU': '额外上色设置页（复用预热菜单结构）',
+    'PAGE_DELAYCOOKING': '预约烹饪页',
+}
+
+def page_to_fname(page):
+    """PAGE_SIX_COOKING → six_cooking（函数名前缀）"""
+    return page.lower().replace('page_', '')
+
+def biz_page(biz_entry):
+    """BIZ 条目归属 PAGE（sources → FILE_PAGE 映射，多个来源返回 None）"""
+    if not biz_entry:
+        return None
+    pages = set()
+    for s in biz_entry.get('sources', set()):
+        if s in FILE_PAGE:
+            pages.add(FILE_PAGE[s])
+    return pages.pop() if len(pages) == 1 else None
 
 def extract_block_data(fn):
     """解析生成文件，返回 [{name, type, pos, size, font, align, img, bg, txt}]（按成员）"""
@@ -209,33 +241,13 @@ TYPE_CN = {
 }
 
 def gen_function(base, pages):
-    fname = f"{base}_lang_tune"
-    L = []
-    L.append(f"/* {'='*78}")
-    L.append(f" * {base} 英文布局基准（对应 {', '.join(sorted(pages))}）")
-    L.append(f" * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）")
-    L.append(f" * {'='*78} */")
-    L.append(f"void {fname}(void)")
-    L.append(f"{{")
-    if len(pages) == 1:
-        L.append(f"    if (depth <= 0 || page_stack[depth - 1] != {sorted(pages)[0]}) return;")
-    else:
-        L.append(f"    if (depth <= 0) return;")
-        cond = " && ".join(f"page_stack[depth - 1] != {p}" for p in sorted(pages))
-        L.append(f"    if ({cond}) return;")
-    L.append(f"    {base}_t *pg = {base}_get(&ui_manager);")
-    L.append(f"    if (!pg) return;")
-    L.append(f"")
+    pages = sorted(pages)
     objs = extract_block_data(f"{ROOT}/ui_builder/{base}.c") or extract_block_data(f"{ROOT}/ui_builder/custom/{base}.c")
     objbg = extract_obj_bg(f"{ROOT}/ui_builder/{base}.c") or extract_obj_bg(f"{ROOT}/ui_builder/custom/{base}.c")
-    if objbg and (objbg['bg'] or objbg['color'] or objbg['opa']):
-        parts = []
-        if objbg['bg']: parts.append(f"背景图 {objbg['bg']}")
-        if objbg['color']: parts.append(f"底色 {objbg['color']}")
-        if objbg['opa']: parts.append(f"opa {objbg['opa']}")
-        L.append(f"    /* 页面背景: {' | '.join(parts)}（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */")
-        L.append(f"")
-    for o in objs:
+    multi = len(pages) > 1
+
+    def obj_lines(o, page=None, se=None):
+        """单个对象的生成行。page/se 指定时为该页差异对象（se=来源数据）；否则公共"""
         desc = []
         if o['type'] in TYPE_CN:
             desc.append(TYPE_CN[o['type']])
@@ -257,17 +269,43 @@ def gen_function(base, pages):
             desc.append(f"bg: {o['bg']}")
         dynamic = o['name'] in DYNAMIC
         biz = BIZ.get((base, o['name']))
+        if page is not None:
+            # 差异对象（该页专属，数据来自 by_source[来源文件]）
+            eb = se if se is not None else biz
+            if eb and eb['cond'] and eb['else_coords'] and not eb['conflict']:
+                desc.append(f"状态切换(默认业务值, 直接改数字)")
+                L = [f"    /* {o['name']}: {' | '.join(desc)} */"]
+                for (x, y) in eb['coords']:
+                    L.append(f"    if ({eb['cond']})")
+                    L.append(f"        lv_obj_set_pos(pg->{o['name']}, {x}, {y});")
+                    break
+                for (x, y) in eb['else_coords']:
+                    L.append(f"    else")
+                    L.append(f"        lv_obj_set_pos(pg->{o['name']}, {x}, {y});")
+                    break
+            elif eb and not eb['conflict'] and eb['coords']:
+                x, y = eb['coords'][0]
+                desc.append(f"动态定位(默认业务值, 直接改数字)")
+                L = [f"    /* {o['name']}: {' | '.join(desc)} */"]
+                L.append(f"    lv_obj_set_pos(pg->{o['name']}, {x}, {y});")
+            else:
+                desc.append(f"动态定位(需微调见文件头模板)")
+                L = [f"    /* {o['name']}: {' | '.join(desc)} */"]
+                L.append(f"    /* 位置由业务动态控制, 微调按文件头模板 */")
+            return L
+        # 公共部分
         if dynamic and o['name'] == 'bartemp':
             desc.append(f"定时器每秒重写位置(tune无效, 用注册表dx/dy)")
         elif dynamic and o['name'] in SCENE_COND:
             desc.append(f"场景条件定位(业务分支设置, tune不设)")
-        elif dynamic and biz and biz['cond'] and biz['else_coords'] and not biz['conflict']:
-            desc.append(f"状态切换(默认业务值, 直接改数字)")
-        elif dynamic and biz and not biz['conflict'] and (biz['coords'] or biz['else_coords']):
-            desc.append(f"动态定位(默认业务值, 直接改数字)")
+        elif dynamic and biz and not biz['conflict']:
+            if biz['cond'] and biz['else_coords']:
+                desc.append(f"状态切换(默认业务值, 直接改数字)")
+            else:
+                desc.append(f"动态定位(默认业务值, 直接改数字)")
         elif dynamic:
             desc.append(f"动态定位(需微调见文件头模板)")
-        L.append(f"    /* {o['name']}: {' | '.join(desc)} */")
+        L = [f"    /* {o['name']}: {' | '.join(desc)} */"]
         if dynamic and o['name'] != 'bartemp':
             if o['name'] in SCENE_COND:
                 L.append(f"    /* 位置由业务场景分支控制, 微调按文件头模板 */")
@@ -293,9 +331,94 @@ def gen_function(base, pages):
             L.append(f"    lv_obj_align(pg->{o['name']}, {o['align'][0]}, {o['align'][1]}, {o['align'][2]});")
         if not (o['pos'] or o['size'] or o['align']):
             L.append(f"    /* (无位置/尺寸设置) */")
+        return L
+
+    def bg_lines(indent="    "):
+        L = []
+        if objbg and (objbg['bg'] or objbg['color'] or objbg['opa']):
+            parts = []
+            if objbg['bg']: parts.append(f"背景图 {objbg['bg']}")
+            if objbg['color']: parts.append(f"底色 {objbg['color']}")
+            if objbg['opa']: parts.append(f"opa {objbg['opa']}")
+            L.append(f"{indent}/* 页面背景: {' | '.join(parts)}（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */")
+            L.append(f"")
+        return L
+
+    # 差异对象：按 BIZ 来源文件归属唯一 PAGE（conflict 对象也能按来源拆）
+    diff_obj = {}
+    for o in objs:
+        if o['name'] not in DYNAMIC or o['name'] == 'bartemp' or o['name'] in SCENE_COND:
+            continue
+        biz = BIZ.get((base, o['name']))
+        if not biz:
+            continue
+        for src, se in biz.get('by_source', {}).items():
+            p = FILE_PAGE.get(src)
+            if p and p in pages:
+                diff_obj.setdefault(p, []).append((o, se))
+    diff_ids = set(id(o) for grp in diff_obj.values() for o, _ in grp)
+
+    L = []
+    if not multi:
+        # ===== 单 PAGE：一个函数 =====
+        fname = f"{base}_lang_tune"
+        L.append(f"/* {'='*78}")
+        L.append(f" * {base} 英文布局基准（对应 {pages[0]} {PAGE_MEANING.get(pages[0], '')}）")
+        L.append(f" * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）")
+        L.append(f" * {'='*78} */")
+        L.append(f"void {fname}(void)")
+        L.append(f"{{")
+        L.append(f"    if (depth <= 0 || page_stack[depth - 1] != {pages[0]}) return;")
+        L.append(f"    {base}_t *pg = {base}_get(&ui_manager);")
+        L.append(f"    if (!pg) return;")
+        L.append(f"")
+        L.extend(bg_lines())
+        for o in objs:
+            L.extend(obj_lines(o))
+            L.append(f"")
+        L.append(f"}}")
+        L.append(f"")
+        return '\n'.join(L), len(objs)
+
+    # ===== 多 PAGE：common + 每 PAGE 独立函数 =====
+    common_objs = [o for o in objs if id(o) not in diff_ids]
+    L.append(f"/* {'='*78}")
+    L.append(f" * {base} 公共布局（复用结构，以下页面共用：{', '.join(f'{p}({PAGE_MEANING.get(p, chr(39) + chr(39))})' for p in pages)}）")
+    L.append(f" * 公共部分在此统一调整；各页差异见下方独立函数")
+    L.append(f" * {'='*78} */")
+    L.append(f"static void {base}_common(void)")
+    L.append(f"{{")
+    L.append(f"    {base}_t *pg = {base}_get(&ui_manager);")
+    L.append(f"    if (!pg) return;")
+    L.append(f"")
+    L.extend(bg_lines())
+    for o in common_objs:
+        L.extend(obj_lines(o))
         L.append(f"")
     L.append(f"}}")
     L.append(f"")
+    for p in pages:
+        fname = f"{page_to_fname(p)}_lang_tune"
+        L.append(f"/* {'='*78}")
+        L.append(f" * {fname}（对应 {p} {PAGE_MEANING.get(p, '')}）")
+        L.append(f" * 公共布局调 {base}_common()，本页差异直接改下方数字")
+        L.append(f" * {'='*78} */")
+        L.append(f"void {fname}(void)")
+        L.append(f"{{")
+        L.append(f"    if (depth <= 0 || page_stack[depth - 1] != {p}) return;")
+        L.append(f"    {base}_t *pg = {base}_get(&ui_manager);")
+        L.append(f"    if (!pg) return;")
+        L.append(f"")
+        L.append(f"    {base}_common();")
+        L.append(f"")
+        if p in diff_obj:
+            for o, se in diff_obj[p]:
+                L.extend(obj_lines(o, page=p, se=se))
+                L.append(f"")
+        else:
+            L.append(f"    /* 本页无差异对象 */")
+        L.append(f"}}")
+        L.append(f"")
     return '\n'.join(L), len(objs)
 
 out = []
@@ -326,6 +449,25 @@ out.append(" *         lv_obj_set_pos(pg->label_306, 448 + 8, 269);")
 out.append(" *     }")
 out.append(" *     // icon 按模式： if (g_send.cook_mode == MODE_UNFROZEN) ...")
 out.append(" *")
+out.append(" * 同 PAGE 多入口页面按入口模式微调（一个函数服务多入口，用业务状态区分）：")
+out.append(" *   delaycooking_lang_tune   预约烹饪页（29 个模式共用）→ g_send.cook_mode")
+out.append(" *   descriptionmenu_lang_tune 菜谱说明页（六感蛋糕/鸡/面包等）→ g_six_bread_type")
+out.append(" *   duckmenu_lang_tune        鸡鸭配菜菜单（鸡/肉/配菜）→ g_six_bread_type")
+out.append(" *")
+out.append(" *     // 例：delaycooking 只给披萨/空气炸单独调，其余共用")
+out.append(" *     switch (g_send.cook_mode) {")
+out.append(" *     case MODE_PIZZA: lv_obj_set_pos(pg->icon, 180, 161); break;   // 披萨预约")
+out.append(" *     case MODE_AIR:   lv_obj_set_pos(pg->icon, 163, 161); break;   // 空气炸预约")
+out.append(" *     default:         lv_obj_set_pos(pg->icon, 115, 161); break;   // 其他模式")
+out.append(" *     }")
+out.append(" *")
+out.append(" * 复用页面（1 个结构服务 2 个 PAGE）已拆成 公共 common + 每页独立函数：")
+out.append(" *   somecook_cooking_common + six_cooking_lang_tune(第六感烹饪页) /")
+out.append(" *     somecook_cooking_lang_tune(多段烹饪页)")
+out.append(" *   preheatmenu_common + preheatmenu_lang_tune(预热菜单页) /")
+out.append(" *     color_menu_lang_tune(额外上色设置页)")
+out.append(" *   → 各页差异直接改对应函数里的数字；公共布局改 common。")
+out.append(" *")
 out.append(" *   bartemp（进度条跟随，定时器每秒重写）：判断无效，只能用")
 out.append(" *   注册表 dx/dy 整体偏移（见文件末尾注册表）。")
 out.append(" *")
@@ -354,8 +496,12 @@ out.append("/* ============ 排版微调函数注册表（页面 → 函数 → 
 out.append("/* dx/dy: 定时器重写对象(如 bartemp)的整体平移偏移，中文模式/0 = 零影响 */")
 out.append("const struct { page_id_t page; lang_tune_fn fn; int dx, dy; } s_tune_tab[] = {")
 for base in sorted(MAPPING):
-    for p in sorted(MAPPING[base]):
-        out.append(f"    {{ {p}, {base}_lang_tune, 0, 0 }},")
+    pages = sorted(MAPPING[base])
+    for p in pages:
+        if len(pages) > 1:
+            out.append(f"    {{ {p}, {page_to_fname(p)}_lang_tune, 0, 0 }},   /* {PAGE_MEANING.get(p, '')} */")
+        else:
+            out.append(f"    {{ {p}, {base}_lang_tune, 0, 0 }},   /* {PAGE_MEANING.get(p, '')} */")
 out.append("};")
 out.append("const int s_tune_tab_n = (int)(sizeof(s_tune_tab) / sizeof(s_tune_tab[0]));")
 out.append("")

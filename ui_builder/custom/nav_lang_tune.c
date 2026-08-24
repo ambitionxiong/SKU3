@@ -25,6 +25,25 @@
  *     }
  *     // icon 按模式： if (g_send.cook_mode == MODE_UNFROZEN) ...
  *
+ * 同 PAGE 多入口页面按入口模式微调（一个函数服务多入口，用业务状态区分）：
+ *   delaycooking_lang_tune   预约烹饪页（29 个模式共用）→ g_send.cook_mode
+ *   descriptionmenu_lang_tune 菜谱说明页（六感蛋糕/鸡/面包等）→ g_six_bread_type
+ *   duckmenu_lang_tune        鸡鸭配菜菜单（鸡/肉/配菜）→ g_six_bread_type
+ *
+ *     // 例：delaycooking 只给披萨/空气炸单独调，其余共用
+ *     switch (g_send.cook_mode) {
+ *     case MODE_PIZZA: lv_obj_set_pos(pg->icon, 180, 161); break;   // 披萨预约
+ *     case MODE_AIR:   lv_obj_set_pos(pg->icon, 163, 161); break;   // 空气炸预约
+ *     default:         lv_obj_set_pos(pg->icon, 115, 161); break;   // 其他模式
+ *     }
+ *
+ * 复用页面（1 个结构服务 2 个 PAGE）已拆成 公共 common + 每页独立函数：
+ *   somecook_cooking_common + six_cooking_lang_tune(第六感烹饪页) /
+ *     somecook_cooking_lang_tune(多段烹饪页)
+ *   preheatmenu_common + preheatmenu_lang_tune(预热菜单页) /
+ *     color_menu_lang_tune(额外上色设置页)
+ *   → 各页差异直接改对应函数里的数字；公共布局改 common。
+ *
  *   bartemp（进度条跟随，定时器每秒重写）：判断无效，只能用
  *   注册表 dx/dy 整体偏移（见文件末尾注册表）。
  *
@@ -39,7 +58,7 @@
 typedef void (*lang_tune_fn)(void);
 
 /* ==============================================================================
- * air_complete 英文布局基准（对应 PAGE_AIR_COMPLETE）
+ * air_complete 英文布局基准（对应 PAGE_AIR_COMPLETE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void air_complete_lang_tune(void)
@@ -79,7 +98,7 @@ void air_complete_lang_tune(void)
 
 
 /* ==============================================================================
- * air_cooking 英文布局基准（对应 PAGE_AIR_COOKING）
+ * air_cooking 英文布局基准（对应 PAGE_AIR_COOKING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void air_cooking_lang_tune(void)
@@ -124,7 +143,7 @@ void air_cooking_lang_tune(void)
 
 
 /* ==============================================================================
- * air_menu 英文布局基准（对应 PAGE_AIR_MENU）
+ * air_menu 英文布局基准（对应 PAGE_AIR_MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void air_menu_lang_tune(void)
@@ -201,7 +220,7 @@ void air_menu_lang_tune(void)
 
 
 /* ==============================================================================
- * air_set 英文布局基准（对应 PAGE_AIR_SET）
+ * air_set 英文布局基准（对应 PAGE_AIR_SET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void air_set_lang_tune(void)
@@ -232,22 +251,16 @@ void air_set_lang_tune(void)
     lv_obj_set_pos(pg->hour, 307, 254);
     lv_obj_set_size(pg->hour, 62, 53);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->min, 312, 254);
-    else
-        lv_obj_set_pos(pg->min, 395, 254);
+    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->min, 58, 53);
 
     /* label_305: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_305, 368, 270);
     lv_obj_set_size(pg->label_305, 30, 32);
 
-    /* label_306: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->label_306, 365, 269);
-    else
-        lv_obj_set_pos(pg->label_306, 448, 269);
+    /* label_306: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->label_306, 64, 32);
 
     /* image_141: 图片 | (164,376) | img: place_1.png */
@@ -321,7 +334,7 @@ void air_set_lang_tune(void)
 
 
 /* ==============================================================================
- * air_setting 英文布局基准（对应 PAGE_AIR_SETTING）
+ * air_setting 英文布局基准（对应 PAGE_AIR_SETTING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void air_setting_lang_tune(void)
@@ -399,7 +412,7 @@ void air_setting_lang_tune(void)
 
 
 /* ==============================================================================
- * air_stop 英文布局基准（对应 PAGE_AIR_STOP）
+ * air_stop 英文布局基准（对应 PAGE_AIR_STOP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void air_stop_lang_tune(void)
@@ -444,7 +457,7 @@ void air_stop_lang_tune(void)
 
 
 /* ==============================================================================
- * air_stop_back 英文布局基准（对应 PAGE_AIR_STOP_BACK）
+ * air_stop_back 英文布局基准（对应 PAGE_AIR_STOP_BACK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void air_stop_back_lang_tune(void)
@@ -497,7 +510,7 @@ void air_stop_back_lang_tune(void)
 
 
 /* ==============================================================================
- * bottom_bbq_complete 英文布局基准（对应 PAGE_BOTTOM_BBQ_COMPLETE）
+ * bottom_bbq_complete 英文布局基准（对应 PAGE_BOTTOM_BBQ_COMPLETE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void bottom_bbq_complete_lang_tune(void)
@@ -537,7 +550,7 @@ void bottom_bbq_complete_lang_tune(void)
 
 
 /* ==============================================================================
- * bottom_bbq_complete_probe 英文布局基准（对应 PAGE_BOTTOM_BBQ_COMPLETE_PROBE）
+ * bottom_bbq_complete_probe 英文布局基准（对应 PAGE_BOTTOM_BBQ_COMPLETE_PROBE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void bottom_bbq_complete_probe_lang_tune(void)
@@ -578,7 +591,7 @@ void bottom_bbq_complete_probe_lang_tune(void)
 
 
 /* ==============================================================================
- * bottom_bbq_cooking 英文布局基准（对应 PAGE_BOTTOM_BBQ_COOKING）
+ * bottom_bbq_cooking 英文布局基准（对应 PAGE_BOTTOM_BBQ_COOKING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void bottom_bbq_cooking_lang_tune(void)
@@ -623,7 +636,7 @@ void bottom_bbq_cooking_lang_tune(void)
 
 
 /* ==============================================================================
- * bottom_bbq_cooking_probe 英文布局基准（对应 PAGE_BOTTOM_BBQ_COOKING_PROBE）
+ * bottom_bbq_cooking_probe 英文布局基准（对应 PAGE_BOTTOM_BBQ_COOKING_PROBE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void bottom_bbq_cooking_probe_lang_tune(void)
@@ -667,7 +680,7 @@ void bottom_bbq_cooking_probe_lang_tune(void)
 
 
 /* ==============================================================================
- * bottom_bbq_menu 英文布局基准（对应 PAGE_BOTTOM_BBQ_MENU）
+ * bottom_bbq_menu 英文布局基准（对应 PAGE_BOTTOM_BBQ_MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void bottom_bbq_menu_lang_tune(void)
@@ -744,7 +757,7 @@ void bottom_bbq_menu_lang_tune(void)
 
 
 /* ==============================================================================
- * bottom_bbq_menu_probe 英文布局基准（对应 PAGE_BOTTOM_BBQ_MENU_PROBE）
+ * bottom_bbq_menu_probe 英文布局基准（对应 PAGE_BOTTOM_BBQ_MENU_PROBE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void bottom_bbq_menu_probe_lang_tune(void)
@@ -810,7 +823,7 @@ void bottom_bbq_menu_probe_lang_tune(void)
 
 
 /* ==============================================================================
- * bottom_bbq_set 英文布局基准（对应 PAGE_BOTTOM_BBQ_SET）
+ * bottom_bbq_set 英文布局基准（对应 PAGE_BOTTOM_BBQ_SET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void bottom_bbq_set_lang_tune(void)
@@ -841,22 +854,16 @@ void bottom_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->hour, 307, 254);
     lv_obj_set_size(pg->hour, 62, 53);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->min, 312, 254);
-    else
-        lv_obj_set_pos(pg->min, 395, 254);
+    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->min, 58, 53);
 
     /* label_125: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_125, 368, 270);
     lv_obj_set_size(pg->label_125, 30, 32);
 
-    /* label_126: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->label_126, 365, 269);
-    else
-        lv_obj_set_pos(pg->label_126, 448, 269);
+    /* label_126: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->label_126, 64, 32);
 
     /* image_62: 图片 | (164,376) | img: place_1.png */
@@ -930,7 +937,7 @@ void bottom_bbq_set_lang_tune(void)
 
 
 /* ==============================================================================
- * bottom_bbq_set_probe 英文布局基准（对应 PAGE_BOTTOM_BBQ_SET_PROBE）
+ * bottom_bbq_set_probe 英文布局基准（对应 PAGE_BOTTOM_BBQ_SET_PROBE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void bottom_bbq_set_probe_lang_tune(void)
@@ -1007,7 +1014,7 @@ void bottom_bbq_set_probe_lang_tune(void)
 
 
 /* ==============================================================================
- * bottom_bbq_setting 英文布局基准（对应 PAGE_BOTTOM_BBQ_SETTING）
+ * bottom_bbq_setting 英文布局基准（对应 PAGE_BOTTOM_BBQ_SETTING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void bottom_bbq_setting_lang_tune(void)
@@ -1085,7 +1092,7 @@ void bottom_bbq_setting_lang_tune(void)
 
 
 /* ==============================================================================
- * bottom_bbq_stop 英文布局基准（对应 PAGE_BOTTOM_BBQ_STOP）
+ * bottom_bbq_stop 英文布局基准（对应 PAGE_BOTTOM_BBQ_STOP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void bottom_bbq_stop_lang_tune(void)
@@ -1130,7 +1137,7 @@ void bottom_bbq_stop_lang_tune(void)
 
 
 /* ==============================================================================
- * bottom_bbq_stop_back 英文布局基准（对应 PAGE_BOTTOM_BBQ_STOP_BACK）
+ * bottom_bbq_stop_back 英文布局基准（对应 PAGE_BOTTOM_BBQ_STOP_BACK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void bottom_bbq_stop_back_lang_tune(void)
@@ -1183,7 +1190,7 @@ void bottom_bbq_stop_back_lang_tune(void)
 
 
 /* ==============================================================================
- * bottom_bbq_stop_back_probe 英文布局基准（对应 PAGE_BOTTOM_BBQ_STOP_BACK_PROBE）
+ * bottom_bbq_stop_back_probe 英文布局基准（对应 PAGE_BOTTOM_BBQ_STOP_BACK_PROBE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void bottom_bbq_stop_back_probe_lang_tune(void)
@@ -1232,7 +1239,7 @@ void bottom_bbq_stop_back_probe_lang_tune(void)
 
 
 /* ==============================================================================
- * bottom_bbq_stop_probe 英文布局基准（对应 PAGE_BOTTOM_BBQ_STOP_PROBE）
+ * bottom_bbq_stop_probe 英文布局基准（对应 PAGE_BOTTOM_BBQ_STOP_PROBE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void bottom_bbq_stop_probe_lang_tune(void)
@@ -1276,7 +1283,7 @@ void bottom_bbq_stop_probe_lang_tune(void)
 
 
 /* ==============================================================================
- * bread6menu 英文布局基准（对应 PAGE_BREAD6MENU）
+ * bread6menu 英文布局基准（对应 PAGE_BREAD6MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void bread6menu_lang_tune(void)
@@ -1311,7 +1318,7 @@ void bread6menu_lang_tune(void)
 
 
 /* ==============================================================================
- * bread_complete 英文布局基准（对应 PAGE_BREAD_COMPLETE）
+ * bread_complete 英文布局基准（对应 PAGE_BREAD_COMPLETE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void bread_complete_lang_tune(void)
@@ -1351,7 +1358,7 @@ void bread_complete_lang_tune(void)
 
 
 /* ==============================================================================
- * bread_cooking 英文布局基准（对应 PAGE_BREAD_COOKING）
+ * bread_cooking 英文布局基准（对应 PAGE_BREAD_COOKING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void bread_cooking_lang_tune(void)
@@ -1396,7 +1403,7 @@ void bread_cooking_lang_tune(void)
 
 
 /* ==============================================================================
- * bread_menu 英文布局基准（对应 PAGE_BREAD_MENU）
+ * bread_menu 英文布局基准（对应 PAGE_BREAD_MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void bread_menu_lang_tune(void)
@@ -1452,7 +1459,7 @@ void bread_menu_lang_tune(void)
 
 
 /* ==============================================================================
- * bread_set 英文布局基准（对应 PAGE_BREAD_SET）
+ * bread_set 英文布局基准（对应 PAGE_BREAD_SET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void bread_set_lang_tune(void)
@@ -1483,22 +1490,16 @@ void bread_set_lang_tune(void)
     lv_obj_set_pos(pg->hour, 307, 254);
     lv_obj_set_size(pg->hour, 62, 53);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->min, 312, 254);
-    else
-        lv_obj_set_pos(pg->min, 395, 254);
+    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->min, 58, 53);
 
     /* label_736: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_736, 368, 270);
     lv_obj_set_size(pg->label_736, 30, 32);
 
-    /* label_737: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->label_737, 365, 269);
-    else
-        lv_obj_set_pos(pg->label_737, 448, 269);
+    /* label_737: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->label_737, 64, 32);
 
     /* image_343: 图片 | (164,376) | img: place_1.png */
@@ -1560,7 +1561,7 @@ void bread_set_lang_tune(void)
 
 
 /* ==============================================================================
- * bread_setting 英文布局基准（对应 PAGE_BREAD_SETTING）
+ * bread_setting 英文布局基准（对应 PAGE_BREAD_SETTING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void bread_setting_lang_tune(void)
@@ -1616,7 +1617,7 @@ void bread_setting_lang_tune(void)
 
 
 /* ==============================================================================
- * bread_stop 英文布局基准（对应 PAGE_BREAD_STOP）
+ * bread_stop 英文布局基准（对应 PAGE_BREAD_STOP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void bread_stop_lang_tune(void)
@@ -1661,7 +1662,7 @@ void bread_stop_lang_tune(void)
 
 
 /* ==============================================================================
- * bread_stop_back 英文布局基准（对应 PAGE_BREAD_STOP_BACK）
+ * bread_stop_back 英文布局基准（对应 PAGE_BREAD_STOP_BACK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void bread_stop_back_lang_tune(void)
@@ -1714,7 +1715,7 @@ void bread_stop_back_lang_tune(void)
 
 
 /* ==============================================================================
- * cake6menu 英文布局基准（对应 PAGE_CAKE6MENU）
+ * cake6menu 英文布局基准（对应 PAGE_CAKE6MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void cake6menu_lang_tune(void)
@@ -1777,7 +1778,7 @@ void cake6menu_lang_tune(void)
 
 
 /* ==============================================================================
- * central_bbq_complete 英文布局基准（对应 PAGE_CENTRAL_BBQ_COMPLETE）
+ * central_bbq_complete 英文布局基准（对应 PAGE_CENTRAL_BBQ_COMPLETE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void central_bbq_complete_lang_tune(void)
@@ -1817,7 +1818,7 @@ void central_bbq_complete_lang_tune(void)
 
 
 /* ==============================================================================
- * central_bbq_cooking 英文布局基准（对应 PAGE_CENTRAL_BBQ_COOKING）
+ * central_bbq_cooking 英文布局基准（对应 PAGE_CENTRAL_BBQ_COOKING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void central_bbq_cooking_lang_tune(void)
@@ -1862,7 +1863,7 @@ void central_bbq_cooking_lang_tune(void)
 
 
 /* ==============================================================================
- * central_bbq_menu 英文布局基准（对应 PAGE_CENTRAL_BBQ_MENU）
+ * central_bbq_menu 英文布局基准（对应 PAGE_CENTRAL_BBQ_MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void central_bbq_menu_lang_tune(void)
@@ -1939,7 +1940,7 @@ void central_bbq_menu_lang_tune(void)
 
 
 /* ==============================================================================
- * central_bbq_set 英文布局基准（对应 PAGE_CENTRAL_BBQ_SET）
+ * central_bbq_set 英文布局基准（对应 PAGE_CENTRAL_BBQ_SET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void central_bbq_set_lang_tune(void)
@@ -1970,22 +1971,16 @@ void central_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->hour, 307, 254);
     lv_obj_set_size(pg->hour, 62, 53);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->min, 312, 254);
-    else
-        lv_obj_set_pos(pg->min, 395, 254);
+    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->min, 58, 53);
 
     /* label_297: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_297, 368, 270);
     lv_obj_set_size(pg->label_297, 30, 32);
 
-    /* label_298: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->label_298, 365, 269);
-    else
-        lv_obj_set_pos(pg->label_298, 448, 269);
+    /* label_298: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->label_298, 64, 32);
 
     /* image_136: 图片 | (164,376) | img: place_1.png */
@@ -2059,7 +2054,7 @@ void central_bbq_set_lang_tune(void)
 
 
 /* ==============================================================================
- * central_bbq_setting 英文布局基准（对应 PAGE_CENTRAL_BBQ_SETTING）
+ * central_bbq_setting 英文布局基准（对应 PAGE_CENTRAL_BBQ_SETTING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void central_bbq_setting_lang_tune(void)
@@ -2137,7 +2132,7 @@ void central_bbq_setting_lang_tune(void)
 
 
 /* ==============================================================================
- * central_bbq_stop 英文布局基准（对应 PAGE_CENTRAL_BBQ_STOP）
+ * central_bbq_stop 英文布局基准（对应 PAGE_CENTRAL_BBQ_STOP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void central_bbq_stop_lang_tune(void)
@@ -2182,7 +2177,7 @@ void central_bbq_stop_lang_tune(void)
 
 
 /* ==============================================================================
- * central_bbq_stop_back 英文布局基准（对应 PAGE_CENTRAL_BBQ_STOP_BACK）
+ * central_bbq_stop_back 英文布局基准（对应 PAGE_CENTRAL_BBQ_STOP_BACK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void central_bbq_stop_back_lang_tune(void)
@@ -2235,7 +2230,7 @@ void central_bbq_stop_back_lang_tune(void)
 
 
 /* ==============================================================================
- * chick6menu 英文布局基准（对应 PAGE_CHICK6MENU）
+ * chick6menu 英文布局基准（对应 PAGE_CHICK6MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void chick6menu_lang_tune(void)
@@ -2262,7 +2257,7 @@ void chick6menu_lang_tune(void)
 
 
 /* ==============================================================================
- * chickencooking 英文布局基准（对应 PAGE_CHICKENCOOKING）
+ * chickencooking 英文布局基准（对应 PAGE_CHICKENCOOKING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void chickencooking_lang_tune(void)
@@ -2314,7 +2309,7 @@ void chickencooking_lang_tune(void)
 
 
 /* ==============================================================================
- * chickenmenu 英文布局基准（对应 PAGE_CHICKENMENU）
+ * chickenmenu 英文布局基准（对应 PAGE_CHICKENMENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void chickenmenu_lang_tune(void)
@@ -2376,7 +2371,7 @@ void chickenmenu_lang_tune(void)
 
 
 /* ==============================================================================
- * chickmenutz 英文布局基准（对应 PAGE_CHICKMENUTZ）
+ * chickmenutz 英文布局基准（对应 PAGE_CHICKMENUTZ ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void chickmenutz_lang_tune(void)
@@ -2417,7 +2412,7 @@ void chickmenutz_lang_tune(void)
 
 
 /* ==============================================================================
- * chip_complete 英文布局基准（对应 PAGE_CHIP_COMPLETE）
+ * chip_complete 英文布局基准（对应 PAGE_CHIP_COMPLETE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void chip_complete_lang_tune(void)
@@ -2457,7 +2452,7 @@ void chip_complete_lang_tune(void)
 
 
 /* ==============================================================================
- * chip_cooking 英文布局基准（对应 PAGE_CHIP_COOKING）
+ * chip_cooking 英文布局基准（对应 PAGE_CHIP_COOKING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void chip_cooking_lang_tune(void)
@@ -2502,7 +2497,7 @@ void chip_cooking_lang_tune(void)
 
 
 /* ==============================================================================
- * chip_menu 英文布局基准（对应 PAGE_CHIP_MENU）
+ * chip_menu 英文布局基准（对应 PAGE_CHIP_MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void chip_menu_lang_tune(void)
@@ -2558,7 +2553,7 @@ void chip_menu_lang_tune(void)
 
 
 /* ==============================================================================
- * chip_set 英文布局基准（对应 PAGE_CHIP_SET）
+ * chip_set 英文布局基准（对应 PAGE_CHIP_SET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void chip_set_lang_tune(void)
@@ -2589,22 +2584,16 @@ void chip_set_lang_tune(void)
     lv_obj_set_pos(pg->hour, 307, 254);
     lv_obj_set_size(pg->hour, 62, 53);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->min, 312, 254);
-    else
-        lv_obj_set_pos(pg->min, 395, 254);
+    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->min, 58, 53);
 
     /* label_818: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_818, 368, 270);
     lv_obj_set_size(pg->label_818, 30, 32);
 
-    /* label_819: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->label_819, 365, 269);
-    else
-        lv_obj_set_pos(pg->label_819, 448, 269);
+    /* label_819: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->label_819, 64, 32);
 
     /* image_375: 图片 | (164,376) | img: place_1.png */
@@ -2666,7 +2655,7 @@ void chip_set_lang_tune(void)
 
 
 /* ==============================================================================
- * chip_setting 英文布局基准（对应 PAGE_CHIP_SETTING）
+ * chip_setting 英文布局基准（对应 PAGE_CHIP_SETTING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void chip_setting_lang_tune(void)
@@ -2722,7 +2711,7 @@ void chip_setting_lang_tune(void)
 
 
 /* ==============================================================================
- * chip_stop 英文布局基准（对应 PAGE_CHIP_STOP）
+ * chip_stop 英文布局基准（对应 PAGE_CHIP_STOP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void chip_stop_lang_tune(void)
@@ -2767,7 +2756,7 @@ void chip_stop_lang_tune(void)
 
 
 /* ==============================================================================
- * chip_stop_back 英文布局基准（对应 PAGE_CHIP_STOP_BACK）
+ * chip_stop_back 英文布局基准（对应 PAGE_CHIP_STOP_BACK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void chip_stop_back_lang_tune(void)
@@ -2820,7 +2809,7 @@ void chip_stop_back_lang_tune(void)
 
 
 /* ==============================================================================
- * clean_menu 英文布局基准（对应 PAGE_CLEAN_MENU）
+ * clean_menu 英文布局基准（对应 PAGE_CLEAN_MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void clean_menu_lang_tune(void)
@@ -2850,7 +2839,7 @@ void clean_menu_lang_tune(void)
 
 
 /* ==============================================================================
- * color_cookoing 英文布局基准（对应 PAGE_COLOR_COOKING）
+ * color_cookoing 英文布局基准（对应 PAGE_COLOR_COOKING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void color_cookoing_lang_tune(void)
@@ -2891,7 +2880,7 @@ void color_cookoing_lang_tune(void)
 
 
 /* ==============================================================================
- * color_stop 英文布局基准（对应 PAGE_COLOR_STOP）
+ * color_stop 英文布局基准（对应 PAGE_COLOR_STOP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void color_stop_lang_tune(void)
@@ -2932,7 +2921,7 @@ void color_stop_lang_tune(void)
 
 
 /* ==============================================================================
- * color_stop_back 英文布局基准（对应 PAGE_COLOR_STOP_BACK）
+ * color_stop_back 英文布局基准（对应 PAGE_COLOR_STOP_BACK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void color_stop_back_lang_tune(void)
@@ -2981,7 +2970,7 @@ void color_stop_back_lang_tune(void)
 
 
 /* ==============================================================================
- * colorcooking_complete 英文布局基准（对应 PAGE_COLOR_COOKING_COMPLETE）
+ * colorcooking_complete 英文布局基准（对应 PAGE_COLOR_COOKING_COMPLETE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void colorcooking_complete_lang_tune(void)
@@ -3017,7 +3006,7 @@ void colorcooking_complete_lang_tune(void)
 
 
 /* ==============================================================================
- * cook4menu 英文布局基准（对应 PAGE_COOK4_MENU）
+ * cook4menu 英文布局基准（对应 PAGE_COOK4_MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void cook4menu_lang_tune(void)
@@ -3080,7 +3069,7 @@ void cook4menu_lang_tune(void)
 
 
 /* ==============================================================================
- * cook_menu_tz 英文布局基准（对应 PAGE_COOK_MENU_TZ）
+ * cook_menu_tz 英文布局基准（对应 PAGE_COOK_MENU_TZ ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void cook_menu_tz_lang_tune(void)
@@ -3126,7 +3115,7 @@ void cook_menu_tz_lang_tune(void)
 
 
 /* ==============================================================================
- * cookie_complete 英文布局基准（对应 PAGE_COOKIE_COMPLETE）
+ * cookie_complete 英文布局基准（对应 PAGE_COOKIE_COMPLETE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void cookie_complete_lang_tune(void)
@@ -3166,7 +3155,7 @@ void cookie_complete_lang_tune(void)
 
 
 /* ==============================================================================
- * cookie_cooking 英文布局基准（对应 PAGE_COOKIE_COOKING）
+ * cookie_cooking 英文布局基准（对应 PAGE_COOKIE_COOKING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void cookie_cooking_lang_tune(void)
@@ -3211,7 +3200,7 @@ void cookie_cooking_lang_tune(void)
 
 
 /* ==============================================================================
- * cookie_menu 英文布局基准（对应 PAGE_COOKIE_MENU）
+ * cookie_menu 英文布局基准（对应 PAGE_COOKIE_MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void cookie_menu_lang_tune(void)
@@ -3288,7 +3277,7 @@ void cookie_menu_lang_tune(void)
 
 
 /* ==============================================================================
- * cookie_set 英文布局基准（对应 PAGE_COOKIE_SET）
+ * cookie_set 英文布局基准（对应 PAGE_COOKIE_SET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void cookie_set_lang_tune(void)
@@ -3319,22 +3308,16 @@ void cookie_set_lang_tune(void)
     lv_obj_set_pos(pg->hour, 307, 254);
     lv_obj_set_size(pg->hour, 62, 53);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->min, 312, 254);
-    else
-        lv_obj_set_pos(pg->min, 395, 254);
+    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->min, 58, 53);
 
     /* label_104: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_104, 368, 270);
     lv_obj_set_size(pg->label_104, 30, 32);
 
-    /* label_105: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->label_105, 365, 269);
-    else
-        lv_obj_set_pos(pg->label_105, 448, 269);
+    /* label_105: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->label_105, 64, 32);
 
     /* image_57: 图片 | (164,376) | img: place_1.png */
@@ -3396,7 +3379,7 @@ void cookie_set_lang_tune(void)
 
 
 /* ==============================================================================
- * cookie_setting 英文布局基准（对应 PAGE_COOKIE_SETTING）
+ * cookie_setting 英文布局基准（对应 PAGE_COOKIE_SETTING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void cookie_setting_lang_tune(void)
@@ -3474,7 +3457,7 @@ void cookie_setting_lang_tune(void)
 
 
 /* ==============================================================================
- * cookie_stop 英文布局基准（对应 PAGE_COOKIE_STOP）
+ * cookie_stop 英文布局基准（对应 PAGE_COOKIE_STOP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void cookie_stop_lang_tune(void)
@@ -3519,7 +3502,7 @@ void cookie_stop_lang_tune(void)
 
 
 /* ==============================================================================
- * cookie_stop_back 英文布局基准（对应 PAGE_COOKIE_STOP_BACK）
+ * cookie_stop_back 英文布局基准（对应 PAGE_COOKIE_STOP_BACK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void cookie_stop_back_lang_tune(void)
@@ -3572,7 +3555,7 @@ void cookie_stop_back_lang_tune(void)
 
 
 /* ==============================================================================
- * cookmenu 英文布局基准（对应 PAGE_COOKMENU）
+ * cookmenu 英文布局基准（对应 PAGE_COOKMENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void cookmenu_lang_tune(void)
@@ -3666,7 +3649,7 @@ void cookmenu_lang_tune(void)
 
 
 /* ==============================================================================
- * corn_complete 英文布局基准（对应 PAGE_CORN_COMPLETE）
+ * corn_complete 英文布局基准（对应 PAGE_CORN_COMPLETE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void corn_complete_lang_tune(void)
@@ -3706,7 +3689,7 @@ void corn_complete_lang_tune(void)
 
 
 /* ==============================================================================
- * corn_cooking 英文布局基准（对应 PAGE_CORN_COOKING）
+ * corn_cooking 英文布局基准（对应 PAGE_CORN_COOKING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void corn_cooking_lang_tune(void)
@@ -3751,7 +3734,7 @@ void corn_cooking_lang_tune(void)
 
 
 /* ==============================================================================
- * corn_menu 英文布局基准（对应 PAGE_CORN_MENU）
+ * corn_menu 英文布局基准（对应 PAGE_CORN_MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void corn_menu_lang_tune(void)
@@ -3828,7 +3811,7 @@ void corn_menu_lang_tune(void)
 
 
 /* ==============================================================================
- * corn_set 英文布局基准（对应 PAGE_CORN_SET）
+ * corn_set 英文布局基准（对应 PAGE_CORN_SET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void corn_set_lang_tune(void)
@@ -3859,22 +3842,16 @@ void corn_set_lang_tune(void)
     lv_obj_set_pos(pg->hour, 307, 254);
     lv_obj_set_size(pg->hour, 62, 53);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->min, 312, 254);
-    else
-        lv_obj_set_pos(pg->min, 395, 254);
+    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->min, 58, 53);
 
     /* label_550: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_550, 368, 270);
     lv_obj_set_size(pg->label_550, 30, 32);
 
-    /* label_551: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->label_551, 365, 269);
-    else
-        lv_obj_set_pos(pg->label_551, 448, 269);
+    /* label_551: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->label_551, 64, 32);
 
     /* image_246: 图片 | (164,376) | img: place_1.png */
@@ -3948,7 +3925,7 @@ void corn_set_lang_tune(void)
 
 
 /* ==============================================================================
- * corn_setting 英文布局基准（对应 PAGE_CORN_SETTING）
+ * corn_setting 英文布局基准（对应 PAGE_CORN_SETTING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void corn_setting_lang_tune(void)
@@ -4026,7 +4003,7 @@ void corn_setting_lang_tune(void)
 
 
 /* ==============================================================================
- * corn_stop 英文布局基准（对应 PAGE_CORN_STOP）
+ * corn_stop 英文布局基准（对应 PAGE_CORN_STOP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void corn_stop_lang_tune(void)
@@ -4071,7 +4048,7 @@ void corn_stop_lang_tune(void)
 
 
 /* ==============================================================================
- * corn_stop_back 英文布局基准（对应 PAGE_CORN_STOP_BACK）
+ * corn_stop_back 英文布局基准（对应 PAGE_CORN_STOP_BACK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void corn_stop_back_lang_tune(void)
@@ -4124,7 +4101,7 @@ void corn_stop_back_lang_tune(void)
 
 
 /* ==============================================================================
- * custom_complete 英文布局基准（对应 PAGE_CUSTOM_COMPLETE）
+ * custom_complete 英文布局基准（对应 PAGE_CUSTOM_COMPLETE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void custom_complete_lang_tune(void)
@@ -4164,7 +4141,7 @@ void custom_complete_lang_tune(void)
 
 
 /* ==============================================================================
- * custom_cooking 英文布局基准（对应 PAGE_CUSTOM_COOKING）
+ * custom_cooking 英文布局基准（对应 PAGE_CUSTOM_COOKING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void custom_cooking_lang_tune(void)
@@ -4209,7 +4186,7 @@ void custom_cooking_lang_tune(void)
 
 
 /* ==============================================================================
- * custom_menu 英文布局基准（对应 PAGE_CUSTOM_MENU）
+ * custom_menu 英文布局基准（对应 PAGE_CUSTOM_MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void custom_menu_lang_tune(void)
@@ -4265,7 +4242,7 @@ void custom_menu_lang_tune(void)
 
 
 /* ==============================================================================
- * custom_set 英文布局基准（对应 PAGE_CUSTOM_SET）
+ * custom_set 英文布局基准（对应 PAGE_CUSTOM_SET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void custom_set_lang_tune(void)
@@ -4296,22 +4273,16 @@ void custom_set_lang_tune(void)
     lv_obj_set_pos(pg->hour, 307, 254);
     lv_obj_set_size(pg->hour, 62, 53);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->min, 312, 254);
-    else
-        lv_obj_set_pos(pg->min, 395, 254);
+    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->min, 58, 53);
 
     /* label_859: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_859, 368, 270);
     lv_obj_set_size(pg->label_859, 30, 32);
 
-    /* label_860: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->label_860, 365, 269);
-    else
-        lv_obj_set_pos(pg->label_860, 448, 269);
+    /* label_860: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->label_860, 64, 32);
 
     /* image_391: 图片 | (164,376) | img: place_1.png */
@@ -4373,7 +4344,7 @@ void custom_set_lang_tune(void)
 
 
 /* ==============================================================================
- * custom_setting 英文布局基准（对应 PAGE_CUSTOM_SETTING）
+ * custom_setting 英文布局基准（对应 PAGE_CUSTOM_SETTING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void custom_setting_lang_tune(void)
@@ -4429,7 +4400,7 @@ void custom_setting_lang_tune(void)
 
 
 /* ==============================================================================
- * custom_stop 英文布局基准（对应 PAGE_CUSTOM_STOP）
+ * custom_stop 英文布局基准（对应 PAGE_CUSTOM_STOP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void custom_stop_lang_tune(void)
@@ -4474,7 +4445,7 @@ void custom_stop_lang_tune(void)
 
 
 /* ==============================================================================
- * custom_stop_back 英文布局基准（对应 PAGE_CUSTOM_STOP_BACK）
+ * custom_stop_back 英文布局基准（对应 PAGE_CUSTOM_STOP_BACK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void custom_stop_back_lang_tune(void)
@@ -4527,7 +4498,49 @@ void custom_stop_back_lang_tune(void)
 
 
 /* ==============================================================================
- * delayset 英文布局基准（对应 PAGE_DELAYSET）
+ * delaycooking 英文布局基准（对应 PAGE_DELAYCOOKING 预约烹饪页）
+ * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
+ * ============================================================================== */
+void delaycooking_lang_tune(void)
+{
+    if (depth <= 0 || page_stack[depth - 1] != PAGE_DELAYCOOKING) return;
+    delaycooking_t *pg = delaycooking_get(&ui_manager);
+    if (!pg) return;
+
+    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+
+    /* status: 标签 | "| 上下烧烤 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
+    lv_obj_set_pos(pg->status, 274, 232);
+    lv_obj_set_size(pg->status, 490, 39);
+
+    /* icon: 图片 | (115,161) | img: updown_img.png | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
+
+    /* label_14: 标签 | "预约中..." | (273,157) | 235x60 | font taiwanpearl_regular_60 */
+    lv_obj_set_pos(pg->label_14, 273, 157);
+    lv_obj_set_size(pg->label_14, 235, 60);
+
+    /* cancel: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
+    lv_obj_set_pos(pg->cancel, 959, 295);
+    lv_obj_set_size(pg->cancel, 129, 83);
+
+    /* tip1: 标签 | "预约程序将在" | (907,158) | 230x34 | font taiwanpearl_regular_30 */
+    lv_obj_set_pos(pg->tip1, 907, 158);
+    lv_obj_set_size(pg->tip1, 230, 34);
+
+    /* tip2: 标签 | "今明天12:00" | (907,194) | 230x34 | font taiwanpearl_regular_30 */
+    lv_obj_set_pos(pg->tip2, 907, 194);
+    lv_obj_set_size(pg->tip2, 230, 34);
+
+    /* tip3: 标签 | "开始" | (907,230) | 230x34 | font taiwanpearl_regular_30 */
+    lv_obj_set_pos(pg->tip3, 907, 230);
+    lv_obj_set_size(pg->tip3, 230, 34);
+
+}
+
+
+/* ==============================================================================
+ * delayset 英文布局基准（对应 PAGE_DELAYSET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void delayset_lang_tune(void)
@@ -4578,7 +4591,7 @@ void delayset_lang_tune(void)
 
 
 /* ==============================================================================
- * descriptionmenu 英文布局基准（对应 PAGE_DESCRIPTIONMENU）
+ * descriptionmenu 英文布局基准（对应 PAGE_DESCRIPTIONMENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void descriptionmenu_lang_tune(void)
@@ -4621,7 +4634,7 @@ void descriptionmenu_lang_tune(void)
 
 
 /* ==============================================================================
- * duckmenu 英文布局基准（对应 PAGE_DUCK6MENU）
+ * duckmenu 英文布局基准（对应 PAGE_DUCK6MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void duckmenu_lang_tune(void)
@@ -4651,7 +4664,7 @@ void duckmenu_lang_tune(void)
 
 
 /* ==============================================================================
- * extra_color 英文布局基准（对应 PAGE_EXTRA_COLOR）
+ * extra_color 英文布局基准（对应 PAGE_EXTRA_COLOR ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void extra_color_lang_tune(void)
@@ -4692,7 +4705,7 @@ void extra_color_lang_tune(void)
 
 
 /* ==============================================================================
- * frozencookpage 英文布局基准（对应 PAGE_FROZEN_COOK）
+ * frozencookpage 英文布局基准（对应 PAGE_FROZEN_COOK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void frozencookpage_lang_tune(void)
@@ -4738,7 +4751,7 @@ void frozencookpage_lang_tune(void)
 
 
 /* ==============================================================================
- * heatcontain_complete 英文布局基准（对应 PAGE_HEATCONTAIN_COMPLETE）
+ * heatcontain_complete 英文布局基准（对应 PAGE_HEATCONTAIN_COMPLETE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void heatcontain_complete_lang_tune(void)
@@ -4778,7 +4791,7 @@ void heatcontain_complete_lang_tune(void)
 
 
 /* ==============================================================================
- * heatcontain_cooking 英文布局基准（对应 PAGE_HEATCONTAIN_COOKING）
+ * heatcontain_cooking 英文布局基准（对应 PAGE_HEATCONTAIN_COOKING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void heatcontain_cooking_lang_tune(void)
@@ -4823,7 +4836,7 @@ void heatcontain_cooking_lang_tune(void)
 
 
 /* ==============================================================================
- * heatcontain_menu 英文布局基准（对应 PAGE_HEATCONTAIN_MENU）
+ * heatcontain_menu 英文布局基准（对应 PAGE_HEATCONTAIN_MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void heatcontain_menu_lang_tune(void)
@@ -4900,7 +4913,7 @@ void heatcontain_menu_lang_tune(void)
 
 
 /* ==============================================================================
- * heatcontain_set 英文布局基准（对应 PAGE_HEATCONTAIN_SET）
+ * heatcontain_set 英文布局基准（对应 PAGE_HEATCONTAIN_SET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void heatcontain_set_lang_tune(void)
@@ -4931,22 +4944,16 @@ void heatcontain_set_lang_tune(void)
     lv_obj_set_pos(pg->hour, 307, 254);
     lv_obj_set_size(pg->hour, 62, 53);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->min, 312, 254);
-    else
-        lv_obj_set_pos(pg->min, 395, 254);
+    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->min, 58, 53);
 
     /* label_599: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_599, 368, 270);
     lv_obj_set_size(pg->label_599, 30, 32);
 
-    /* label_600: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->label_600, 365, 269);
-    else
-        lv_obj_set_pos(pg->label_600, 448, 269);
+    /* label_600: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->label_600, 64, 32);
 
     /* image_267: 图片 | (164,376) | img: place_1.png */
@@ -5020,7 +5027,7 @@ void heatcontain_set_lang_tune(void)
 
 
 /* ==============================================================================
- * heatcontain_setting 英文布局基准（对应 PAGE_HEATCONTAIN_SETTING）
+ * heatcontain_setting 英文布局基准（对应 PAGE_HEATCONTAIN_SETTING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void heatcontain_setting_lang_tune(void)
@@ -5098,7 +5105,7 @@ void heatcontain_setting_lang_tune(void)
 
 
 /* ==============================================================================
- * heatcontain_stop 英文布局基准（对应 PAGE_HEATCONTAIN_STOP）
+ * heatcontain_stop 英文布局基准（对应 PAGE_HEATCONTAIN_STOP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void heatcontain_stop_lang_tune(void)
@@ -5143,7 +5150,7 @@ void heatcontain_stop_lang_tune(void)
 
 
 /* ==============================================================================
- * heatcontain_stop_back 英文布局基准（对应 PAGE_HEATCONTAIN_STOP_BACK）
+ * heatcontain_stop_back 英文布局基准（对应 PAGE_HEATCONTAIN_STOP_BACK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void heatcontain_stop_back_lang_tune(void)
@@ -5196,7 +5203,7 @@ void heatcontain_stop_back_lang_tune(void)
 
 
 /* ==============================================================================
- * hot_bbq_complete 英文布局基准（对应 PAGE_HOT_BBQ_COMPLETE）
+ * hot_bbq_complete 英文布局基准（对应 PAGE_HOT_BBQ_COMPLETE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hot_bbq_complete_lang_tune(void)
@@ -5236,7 +5243,7 @@ void hot_bbq_complete_lang_tune(void)
 
 
 /* ==============================================================================
- * hot_bbq_complete_probe 英文布局基准（对应 PAGE_HOT_BBQ_COMPLETE_PROBE）
+ * hot_bbq_complete_probe 英文布局基准（对应 PAGE_HOT_BBQ_COMPLETE_PROBE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hot_bbq_complete_probe_lang_tune(void)
@@ -5277,7 +5284,7 @@ void hot_bbq_complete_probe_lang_tune(void)
 
 
 /* ==============================================================================
- * hot_bbq_cooking 英文布局基准（对应 PAGE_HOT_BBQ_COOKING）
+ * hot_bbq_cooking 英文布局基准（对应 PAGE_HOT_BBQ_COOKING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hot_bbq_cooking_lang_tune(void)
@@ -5322,7 +5329,7 @@ void hot_bbq_cooking_lang_tune(void)
 
 
 /* ==============================================================================
- * hot_bbq_cooking_probe 英文布局基准（对应 PAGE_HOT_BBQ_COOKING_PROBE）
+ * hot_bbq_cooking_probe 英文布局基准（对应 PAGE_HOT_BBQ_COOKING_PROBE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hot_bbq_cooking_probe_lang_tune(void)
@@ -5366,7 +5373,7 @@ void hot_bbq_cooking_probe_lang_tune(void)
 
 
 /* ==============================================================================
- * hot_bbq_menu 英文布局基准（对应 PAGE_HOT_BBQ_MENU）
+ * hot_bbq_menu 英文布局基准（对应 PAGE_HOT_BBQ_MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hot_bbq_menu_lang_tune(void)
@@ -5443,7 +5450,7 @@ void hot_bbq_menu_lang_tune(void)
 
 
 /* ==============================================================================
- * hot_bbq_menu_probe 英文布局基准（对应 PAGE_HOT_BBQ_MENU_PROBE）
+ * hot_bbq_menu_probe 英文布局基准（对应 PAGE_HOT_BBQ_MENU_PROBE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hot_bbq_menu_probe_lang_tune(void)
@@ -5509,7 +5516,7 @@ void hot_bbq_menu_probe_lang_tune(void)
 
 
 /* ==============================================================================
- * hot_bbq_set 英文布局基准（对应 PAGE_HOT_BBQ_SET）
+ * hot_bbq_set 英文布局基准（对应 PAGE_HOT_BBQ_SET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hot_bbq_set_lang_tune(void)
@@ -5540,22 +5547,16 @@ void hot_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->hour, 307, 254);
     lv_obj_set_size(pg->hour, 62, 53);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->min, 312, 254);
-    else
-        lv_obj_set_pos(pg->min, 395, 254);
+    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->min, 58, 53);
 
     /* label_173: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_173, 368, 270);
     lv_obj_set_size(pg->label_173, 30, 32);
 
-    /* label_174: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->label_174, 365, 269);
-    else
-        lv_obj_set_pos(pg->label_174, 448, 269);
+    /* label_174: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->label_174, 64, 32);
 
     /* image_83: 图片 | (164,376) | img: place_1.png */
@@ -5629,7 +5630,7 @@ void hot_bbq_set_lang_tune(void)
 
 
 /* ==============================================================================
- * hot_bbq_set_probe 英文布局基准（对应 PAGE_HOT_BBQ_SET_PROBE）
+ * hot_bbq_set_probe 英文布局基准（对应 PAGE_HOT_BBQ_SET_PROBE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hot_bbq_set_probe_lang_tune(void)
@@ -5706,7 +5707,7 @@ void hot_bbq_set_probe_lang_tune(void)
 
 
 /* ==============================================================================
- * hot_bbq_setting 英文布局基准（对应 PAGE_HOT_BBQ_SETTING）
+ * hot_bbq_setting 英文布局基准（对应 PAGE_HOT_BBQ_SETTING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hot_bbq_setting_lang_tune(void)
@@ -5784,7 +5785,7 @@ void hot_bbq_setting_lang_tune(void)
 
 
 /* ==============================================================================
- * hot_bbq_stop 英文布局基准（对应 PAGE_HOT_BBQ_STOP）
+ * hot_bbq_stop 英文布局基准（对应 PAGE_HOT_BBQ_STOP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hot_bbq_stop_lang_tune(void)
@@ -5829,7 +5830,7 @@ void hot_bbq_stop_lang_tune(void)
 
 
 /* ==============================================================================
- * hot_bbq_stop_back 英文布局基准（对应 PAGE_HOT_BBQ_STOP_BACK）
+ * hot_bbq_stop_back 英文布局基准（对应 PAGE_HOT_BBQ_STOP_BACK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hot_bbq_stop_back_lang_tune(void)
@@ -5882,7 +5883,7 @@ void hot_bbq_stop_back_lang_tune(void)
 
 
 /* ==============================================================================
- * hot_bbq_stop_back_probe 英文布局基准（对应 PAGE_HOT_BBQ_STOP_BACK_PROBE）
+ * hot_bbq_stop_back_probe 英文布局基准（对应 PAGE_HOT_BBQ_STOP_BACK_PROBE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hot_bbq_stop_back_probe_lang_tune(void)
@@ -5931,7 +5932,7 @@ void hot_bbq_stop_back_probe_lang_tune(void)
 
 
 /* ==============================================================================
- * hot_bbq_stop_probe 英文布局基准（对应 PAGE_HOT_BBQ_STOP_PROBE）
+ * hot_bbq_stop_probe 英文布局基准（对应 PAGE_HOT_BBQ_STOP_PROBE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hot_bbq_stop_probe_lang_tune(void)
@@ -5975,7 +5976,7 @@ void hot_bbq_stop_probe_lang_tune(void)
 
 
 /* ==============================================================================
- * hotclean_menu 英文布局基准（对应 PAGE_HOTCLEAN_MENU）
+ * hotclean_menu 英文布局基准（对应 PAGE_HOTCLEAN_MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hotclean_menu_lang_tune(void)
@@ -6006,7 +6007,7 @@ void hotclean_menu_lang_tune(void)
 
 
 /* ==============================================================================
- * hotcleanhigh_complete 英文布局基准（对应 PAGE_HOTCLEANHIGH_COMPLETE）
+ * hotcleanhigh_complete 英文布局基准（对应 PAGE_HOTCLEANHIGH_COMPLETE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hotcleanhigh_complete_lang_tune(void)
@@ -6042,7 +6043,7 @@ void hotcleanhigh_complete_lang_tune(void)
 
 
 /* ==============================================================================
- * hotcleanhigh_cooking 英文布局基准（对应 PAGE_HOTCLEANHIGH_COOKING）
+ * hotcleanhigh_cooking 英文布局基准（对应 PAGE_HOTCLEANHIGH_COOKING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hotcleanhigh_cooking_lang_tune(void)
@@ -6087,7 +6088,7 @@ void hotcleanhigh_cooking_lang_tune(void)
 
 
 /* ==============================================================================
- * hotcleanhigh_cooling 英文布局基准（对应 PAGE_HOTCLEANHIGH_COOLING）
+ * hotcleanhigh_cooling 英文布局基准（对应 PAGE_HOTCLEANHIGH_COOLING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hotcleanhigh_cooling_lang_tune(void)
@@ -6127,7 +6128,7 @@ void hotcleanhigh_cooling_lang_tune(void)
 
 
 /* ==============================================================================
- * hotcleanhigh_set 英文布局基准（对应 PAGE_HOTCLEANHIGH_SET）
+ * hotcleanhigh_set 英文布局基准（对应 PAGE_HOTCLEANHIGH_SET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hotcleanhigh_set_lang_tune(void)
@@ -6161,7 +6162,7 @@ void hotcleanhigh_set_lang_tune(void)
 
 
 /* ==============================================================================
- * hotcleanhigh_stop 英文布局基准（对应 PAGE_HOTCLEANHIGH_STOP）
+ * hotcleanhigh_stop 英文布局基准（对应 PAGE_HOTCLEANHIGH_STOP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hotcleanhigh_stop_lang_tune(void)
@@ -6206,7 +6207,7 @@ void hotcleanhigh_stop_lang_tune(void)
 
 
 /* ==============================================================================
- * hotcleanhigh_stop_back 英文布局基准（对应 PAGE_HOTCLEANHIGH_STOP_BACK）
+ * hotcleanhigh_stop_back 英文布局基准（对应 PAGE_HOTCLEANHIGH_STOP_BACK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hotcleanhigh_stop_back_lang_tune(void)
@@ -6259,7 +6260,7 @@ void hotcleanhigh_stop_back_lang_tune(void)
 
 
 /* ==============================================================================
- * hotcleanmiddle_complete 英文布局基准（对应 PAGE_HOTCLEANMIDDLE_COMPLETE）
+ * hotcleanmiddle_complete 英文布局基准（对应 PAGE_HOTCLEANMIDDLE_COMPLETE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hotcleanmiddle_complete_lang_tune(void)
@@ -6295,7 +6296,7 @@ void hotcleanmiddle_complete_lang_tune(void)
 
 
 /* ==============================================================================
- * hotcleanmiddle_cooking 英文布局基准（对应 PAGE_HOTCLEANMIDDLE_COOKING）
+ * hotcleanmiddle_cooking 英文布局基准（对应 PAGE_HOTCLEANMIDDLE_COOKING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hotcleanmiddle_cooking_lang_tune(void)
@@ -6340,7 +6341,7 @@ void hotcleanmiddle_cooking_lang_tune(void)
 
 
 /* ==============================================================================
- * hotcleanmiddle_cooling 英文布局基准（对应 PAGE_HOTCLEANMIDDLE_COOLING）
+ * hotcleanmiddle_cooling 英文布局基准（对应 PAGE_HOTCLEANMIDDLE_COOLING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hotcleanmiddle_cooling_lang_tune(void)
@@ -6380,7 +6381,7 @@ void hotcleanmiddle_cooling_lang_tune(void)
 
 
 /* ==============================================================================
- * hotcleanmiddle_set 英文布局基准（对应 PAGE_HOTCLEANMIDDLE_SET）
+ * hotcleanmiddle_set 英文布局基准（对应 PAGE_HOTCLEANMIDDLE_SET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hotcleanmiddle_set_lang_tune(void)
@@ -6414,7 +6415,7 @@ void hotcleanmiddle_set_lang_tune(void)
 
 
 /* ==============================================================================
- * hotcleanmiddle_stop 英文布局基准（对应 PAGE_HOTCLEANMIDDLE_STOP）
+ * hotcleanmiddle_stop 英文布局基准（对应 PAGE_HOTCLEANMIDDLE_STOP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hotcleanmiddle_stop_lang_tune(void)
@@ -6459,7 +6460,7 @@ void hotcleanmiddle_stop_lang_tune(void)
 
 
 /* ==============================================================================
- * hotcleanmiddle_stop_back 英文布局基准（对应 PAGE_HOTCLEANMIDDLE_STOP_BACK）
+ * hotcleanmiddle_stop_back 英文布局基准（对应 PAGE_HOTCLEANMIDDLE_STOP_BACK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hotcleanmiddle_stop_back_lang_tune(void)
@@ -6512,7 +6513,7 @@ void hotcleanmiddle_stop_back_lang_tune(void)
 
 
 /* ==============================================================================
- * hotcleansave_complete 英文布局基准（对应 PAGE_HOTCLEANSAVE_COMPLETE）
+ * hotcleansave_complete 英文布局基准（对应 PAGE_HOTCLEANSAVE_COMPLETE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hotcleansave_complete_lang_tune(void)
@@ -6548,7 +6549,7 @@ void hotcleansave_complete_lang_tune(void)
 
 
 /* ==============================================================================
- * hotcleansave_cooking 英文布局基准（对应 PAGE_HOTCLEANSAVE_COOKING）
+ * hotcleansave_cooking 英文布局基准（对应 PAGE_HOTCLEANSAVE_COOKING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hotcleansave_cooking_lang_tune(void)
@@ -6593,7 +6594,7 @@ void hotcleansave_cooking_lang_tune(void)
 
 
 /* ==============================================================================
- * hotcleansave_cooling 英文布局基准（对应 PAGE_HOTCLEANSAVE_COOLING）
+ * hotcleansave_cooling 英文布局基准（对应 PAGE_HOTCLEANSAVE_COOLING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hotcleansave_cooling_lang_tune(void)
@@ -6633,7 +6634,7 @@ void hotcleansave_cooling_lang_tune(void)
 
 
 /* ==============================================================================
- * hotcleansave_set 英文布局基准（对应 PAGE_HOTCLEANSAVE_SET）
+ * hotcleansave_set 英文布局基准（对应 PAGE_HOTCLEANSAVE_SET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hotcleansave_set_lang_tune(void)
@@ -6667,7 +6668,7 @@ void hotcleansave_set_lang_tune(void)
 
 
 /* ==============================================================================
- * hotcleansave_stop 英文布局基准（对应 PAGE_HOTCLEANSAVE_STOP）
+ * hotcleansave_stop 英文布局基准（对应 PAGE_HOTCLEANSAVE_STOP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hotcleansave_stop_lang_tune(void)
@@ -6712,7 +6713,7 @@ void hotcleansave_stop_lang_tune(void)
 
 
 /* ==============================================================================
- * hotcleansave_stop_back 英文布局基准（对应 PAGE_HOTCLEANSAVE_STOP_BACK）
+ * hotcleansave_stop_back 英文布局基准（对应 PAGE_HOTCLEANSAVE_STOP_BACK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hotcleansave_stop_back_lang_tune(void)
@@ -6765,7 +6766,7 @@ void hotcleansave_stop_back_lang_tune(void)
 
 
 /* ==============================================================================
- * hotwind_bbq_complete 英文布局基准（对应 PAGE_HOTWIND_BBQ_COMPLETE）
+ * hotwind_bbq_complete 英文布局基准（对应 PAGE_HOTWIND_BBQ_COMPLETE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hotwind_bbq_complete_lang_tune(void)
@@ -6805,7 +6806,7 @@ void hotwind_bbq_complete_lang_tune(void)
 
 
 /* ==============================================================================
- * hotwind_bbq_cooking 英文布局基准（对应 PAGE_HOTWIND_BBQ_COOKING）
+ * hotwind_bbq_cooking 英文布局基准（对应 PAGE_HOTWIND_BBQ_COOKING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hotwind_bbq_cooking_lang_tune(void)
@@ -6850,7 +6851,7 @@ void hotwind_bbq_cooking_lang_tune(void)
 
 
 /* ==============================================================================
- * hotwind_bbq_menu 英文布局基准（对应 PAGE_HOTWIND_BBQ_MENU）
+ * hotwind_bbq_menu 英文布局基准（对应 PAGE_HOTWIND_BBQ_MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hotwind_bbq_menu_lang_tune(void)
@@ -6927,7 +6928,7 @@ void hotwind_bbq_menu_lang_tune(void)
 
 
 /* ==============================================================================
- * hotwind_bbq_set 英文布局基准（对应 PAGE_HOTWIND_BBQ_SET）
+ * hotwind_bbq_set 英文布局基准（对应 PAGE_HOTWIND_BBQ_SET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hotwind_bbq_set_lang_tune(void)
@@ -6958,22 +6959,16 @@ void hotwind_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->hour, 307, 254);
     lv_obj_set_size(pg->hour, 62, 53);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->min, 312, 254);
-    else
-        lv_obj_set_pos(pg->min, 395, 254);
+    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->min, 58, 53);
 
     /* label_221: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_221, 368, 270);
     lv_obj_set_size(pg->label_221, 30, 32);
 
-    /* label_222: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->label_222, 365, 269);
-    else
-        lv_obj_set_pos(pg->label_222, 448, 269);
+    /* label_222: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->label_222, 64, 32);
 
     /* image_104: 图片 | (164,376) | img: place_1.png */
@@ -7047,7 +7042,7 @@ void hotwind_bbq_set_lang_tune(void)
 
 
 /* ==============================================================================
- * hotwind_bbq_setting 英文布局基准（对应 PAGE_HOTWIND_BBQ_SETTING）
+ * hotwind_bbq_setting 英文布局基准（对应 PAGE_HOTWIND_BBQ_SETTING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hotwind_bbq_setting_lang_tune(void)
@@ -7125,7 +7120,7 @@ void hotwind_bbq_setting_lang_tune(void)
 
 
 /* ==============================================================================
- * hotwind_bbq_stop 英文布局基准（对应 PAGE_HOTWIND_BBQ_STOP）
+ * hotwind_bbq_stop 英文布局基准（对应 PAGE_HOTWIND_BBQ_STOP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hotwind_bbq_stop_lang_tune(void)
@@ -7170,7 +7165,7 @@ void hotwind_bbq_stop_lang_tune(void)
 
 
 /* ==============================================================================
- * hotwind_bbq_stop_back 英文布局基准（对应 PAGE_HOTWIND_BBQ_STOP_BACK）
+ * hotwind_bbq_stop_back 英文布局基准（对应 PAGE_HOTWIND_BBQ_STOP_BACK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void hotwind_bbq_stop_back_lang_tune(void)
@@ -7223,7 +7218,7 @@ void hotwind_bbq_stop_back_lang_tune(void)
 
 
 /* ==============================================================================
- * lasagna_complete 英文布局基准（对应 PAGE_LASAGNA_COMPLETE）
+ * lasagna_complete 英文布局基准（对应 PAGE_LASAGNA_COMPLETE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void lasagna_complete_lang_tune(void)
@@ -7263,7 +7258,7 @@ void lasagna_complete_lang_tune(void)
 
 
 /* ==============================================================================
- * lasagna_cooking 英文布局基准（对应 PAGE_LASAGNA_COOKING）
+ * lasagna_cooking 英文布局基准（对应 PAGE_LASAGNA_COOKING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void lasagna_cooking_lang_tune(void)
@@ -7308,7 +7303,7 @@ void lasagna_cooking_lang_tune(void)
 
 
 /* ==============================================================================
- * lasagna_menu 英文布局基准（对应 PAGE_LASAGNA_MENU）
+ * lasagna_menu 英文布局基准（对应 PAGE_LASAGNA_MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void lasagna_menu_lang_tune(void)
@@ -7364,7 +7359,7 @@ void lasagna_menu_lang_tune(void)
 
 
 /* ==============================================================================
- * lasagna_set 英文布局基准（对应 PAGE_LASAGNA_SET）
+ * lasagna_set 英文布局基准（对应 PAGE_LASAGNA_SET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void lasagna_set_lang_tune(void)
@@ -7395,22 +7390,16 @@ void lasagna_set_lang_tune(void)
     lv_obj_set_pos(pg->hour, 307, 254);
     lv_obj_set_size(pg->hour, 62, 53);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->min, 312, 254);
-    else
-        lv_obj_set_pos(pg->min, 395, 254);
+    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->min, 58, 53);
 
     /* label_648: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_648, 368, 270);
     lv_obj_set_size(pg->label_648, 30, 32);
 
-    /* label_649: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->label_649, 365, 269);
-    else
-        lv_obj_set_pos(pg->label_649, 448, 269);
+    /* label_649: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->label_649, 64, 32);
 
     /* image_287: 图片 | (164,376) | img: place_1.png */
@@ -7472,7 +7461,7 @@ void lasagna_set_lang_tune(void)
 
 
 /* ==============================================================================
- * lasagna_setting 英文布局基准（对应 PAGE_LASAGNA_SETTING）
+ * lasagna_setting 英文布局基准（对应 PAGE_LASAGNA_SETTING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void lasagna_setting_lang_tune(void)
@@ -7528,7 +7517,7 @@ void lasagna_setting_lang_tune(void)
 
 
 /* ==============================================================================
- * lasagna_stop 英文布局基准（对应 PAGE_LASAGNA_STOP）
+ * lasagna_stop 英文布局基准（对应 PAGE_LASAGNA_STOP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void lasagna_stop_lang_tune(void)
@@ -7573,7 +7562,7 @@ void lasagna_stop_lang_tune(void)
 
 
 /* ==============================================================================
- * lasagna_stop_back 英文布局基准（对应 PAGE_LASAGNA_STOP_BACK）
+ * lasagna_stop_back 英文布局基准（对应 PAGE_LASAGNA_STOP_BACK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void lasagna_stop_back_lang_tune(void)
@@ -7626,7 +7615,7 @@ void lasagna_stop_back_lang_tune(void)
 
 
 /* ==============================================================================
- * major_menu 英文布局基准（对应 PAGE_MAJOR_MENU）
+ * major_menu 英文布局基准（对应 PAGE_MAJOR_MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void major_menu_lang_tune(void)
@@ -7672,7 +7661,7 @@ void major_menu_lang_tune(void)
 
 
 /* ==============================================================================
- * major_menu_tz 英文布局基准（对应 PAGE_MAJOR_MENU_TZ）
+ * major_menu_tz 英文布局基准（对应 PAGE_MAJOR_MENU_TZ ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void major_menu_tz_lang_tune(void)
@@ -7713,7 +7702,7 @@ void major_menu_tz_lang_tune(void)
 
 
 /* ==============================================================================
- * menu_complete 英文布局基准（对应 PAGE_MENU_COOK_COMPLETE）
+ * menu_complete 英文布局基准（对应 PAGE_MENU_COOK_COMPLETE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void menu_complete_lang_tune(void)
@@ -7753,7 +7742,7 @@ void menu_complete_lang_tune(void)
 
 
 /* ==============================================================================
- * menu_cooking 英文布局基准（对应 PAGE_MENU_COOK_COOKING）
+ * menu_cooking 英文布局基准（对应 PAGE_MENU_COOK_COOKING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void menu_cooking_lang_tune(void)
@@ -7798,7 +7787,7 @@ void menu_cooking_lang_tune(void)
 
 
 /* ==============================================================================
- * menu_menu 英文布局基准（对应 PAGE_MENU_COOK_MENU）
+ * menu_menu 英文布局基准（对应 PAGE_MENU_COOK_MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void menu_menu_lang_tune(void)
@@ -7875,7 +7864,7 @@ void menu_menu_lang_tune(void)
 
 
 /* ==============================================================================
- * menu_set 英文布局基准（对应 PAGE_MENU_COOK_SET）
+ * menu_set 英文布局基准（对应 PAGE_MENU_COOK_SET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void menu_set_lang_tune(void)
@@ -7906,22 +7895,16 @@ void menu_set_lang_tune(void)
     lv_obj_set_pos(pg->hour, 307, 254);
     lv_obj_set_size(pg->hour, 62, 53);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->min, 312, 254);
-    else
-        lv_obj_set_pos(pg->min, 395, 254);
+    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->min, 58, 53);
 
     /* label_257: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_257, 368, 270);
     lv_obj_set_size(pg->label_257, 30, 32);
 
-    /* label_258: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->label_258, 365, 269);
-    else
-        lv_obj_set_pos(pg->label_258, 448, 269);
+    /* label_258: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->label_258, 64, 32);
 
     /* image_120: 图片 | (164,376) | img: place_1.png */
@@ -7983,7 +7966,7 @@ void menu_set_lang_tune(void)
 
 
 /* ==============================================================================
- * menu_setting 英文布局基准（对应 PAGE_MENU_COOK_SETTING）
+ * menu_setting 英文布局基准（对应 PAGE_MENU_COOK_SETTING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void menu_setting_lang_tune(void)
@@ -8061,7 +8044,7 @@ void menu_setting_lang_tune(void)
 
 
 /* ==============================================================================
- * menu_stop 英文布局基准（对应 PAGE_MENU_COOK_STOP）
+ * menu_stop 英文布局基准（对应 PAGE_MENU_COOK_STOP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void menu_stop_lang_tune(void)
@@ -8106,7 +8089,7 @@ void menu_stop_lang_tune(void)
 
 
 /* ==============================================================================
- * menu_stop_back 英文布局基准（对应 PAGE_MENU_COOK_STOP_BACK）
+ * menu_stop_back 英文布局基准（对应 PAGE_MENU_COOK_STOP_BACK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void menu_stop_back_lang_tune(void)
@@ -8159,7 +8142,7 @@ void menu_stop_back_lang_tune(void)
 
 
 /* ==============================================================================
- * pizza3_complete 英文布局基准（对应 PAGE_PIZZA3_COMPLETE）
+ * pizza3_complete 英文布局基准（对应 PAGE_PIZZA3_COMPLETE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void pizza3_complete_lang_tune(void)
@@ -8199,7 +8182,7 @@ void pizza3_complete_lang_tune(void)
 
 
 /* ==============================================================================
- * pizza3_cooking 英文布局基准（对应 PAGE_PIZZA3_COOKING）
+ * pizza3_cooking 英文布局基准（对应 PAGE_PIZZA3_COOKING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void pizza3_cooking_lang_tune(void)
@@ -8244,7 +8227,7 @@ void pizza3_cooking_lang_tune(void)
 
 
 /* ==============================================================================
- * pizza3_menu 英文布局基准（对应 PAGE_PIZZA3_MENU）
+ * pizza3_menu 英文布局基准（对应 PAGE_PIZZA3_MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void pizza3_menu_lang_tune(void)
@@ -8300,7 +8283,7 @@ void pizza3_menu_lang_tune(void)
 
 
 /* ==============================================================================
- * pizza3_set 英文布局基准（对应 PAGE_PIZZA3_SET）
+ * pizza3_set 英文布局基准（对应 PAGE_PIZZA3_SET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void pizza3_set_lang_tune(void)
@@ -8331,22 +8314,16 @@ void pizza3_set_lang_tune(void)
     lv_obj_set_pos(pg->hour, 307, 254);
     lv_obj_set_size(pg->hour, 62, 53);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->min, 312, 254);
-    else
-        lv_obj_set_pos(pg->min, 395, 254);
+    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->min, 58, 53);
 
     /* label_777: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_777, 368, 270);
     lv_obj_set_size(pg->label_777, 30, 32);
 
-    /* label_778: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->label_778, 365, 269);
-    else
-        lv_obj_set_pos(pg->label_778, 448, 269);
+    /* label_778: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->label_778, 64, 32);
 
     /* image_359: 图片 | (164,376) | img: place_1.png */
@@ -8408,7 +8385,7 @@ void pizza3_set_lang_tune(void)
 
 
 /* ==============================================================================
- * pizza3_setting 英文布局基准（对应 PAGE_PIZZA3_SETTING）
+ * pizza3_setting 英文布局基准（对应 PAGE_PIZZA3_SETTING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void pizza3_setting_lang_tune(void)
@@ -8464,7 +8441,7 @@ void pizza3_setting_lang_tune(void)
 
 
 /* ==============================================================================
- * pizza3_stop 英文布局基准（对应 PAGE_PIZZA3_STOP）
+ * pizza3_stop 英文布局基准（对应 PAGE_PIZZA3_STOP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void pizza3_stop_lang_tune(void)
@@ -8509,7 +8486,7 @@ void pizza3_stop_lang_tune(void)
 
 
 /* ==============================================================================
- * pizza3_stop_back 英文布局基准（对应 PAGE_PIZZA3_STOP_BACK）
+ * pizza3_stop_back 英文布局基准（对应 PAGE_PIZZA3_STOP_BACK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void pizza3_stop_back_lang_tune(void)
@@ -8562,7 +8539,7 @@ void pizza3_stop_back_lang_tune(void)
 
 
 /* ==============================================================================
- * pizza_2_complete 英文布局基准（对应 PAGE_PIZZA_2_COMPLETE）
+ * pizza_2_complete 英文布局基准（对应 PAGE_PIZZA_2_COMPLETE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void pizza_2_complete_lang_tune(void)
@@ -8602,7 +8579,7 @@ void pizza_2_complete_lang_tune(void)
 
 
 /* ==============================================================================
- * pizza_2_cooking 英文布局基准（对应 PAGE_PIZZA_2_COOKING）
+ * pizza_2_cooking 英文布局基准（对应 PAGE_PIZZA_2_COOKING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void pizza_2_cooking_lang_tune(void)
@@ -8647,7 +8624,7 @@ void pizza_2_cooking_lang_tune(void)
 
 
 /* ==============================================================================
- * pizza_2_menu 英文布局基准（对应 PAGE_PIZZA_2_MENU）
+ * pizza_2_menu 英文布局基准（对应 PAGE_PIZZA_2_MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void pizza_2_menu_lang_tune(void)
@@ -8724,7 +8701,7 @@ void pizza_2_menu_lang_tune(void)
 
 
 /* ==============================================================================
- * pizza_2_set 英文布局基准（对应 PAGE_PIZZA_2_SET）
+ * pizza_2_set 英文布局基准（对应 PAGE_PIZZA_2_SET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void pizza_2_set_lang_tune(void)
@@ -8755,22 +8732,16 @@ void pizza_2_set_lang_tune(void)
     lv_obj_set_pos(pg->hour, 307, 254);
     lv_obj_set_size(pg->hour, 62, 53);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->min, 312, 254);
-    else
-        lv_obj_set_pos(pg->min, 395, 254);
+    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->min, 58, 53);
 
     /* label_354: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_354, 368, 270);
     lv_obj_set_size(pg->label_354, 30, 32);
 
-    /* label_355: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->label_355, 365, 269);
-    else
-        lv_obj_set_pos(pg->label_355, 448, 269);
+    /* label_355: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->label_355, 64, 32);
 
     /* image_162: 图片 | (164,376) | img: place_1.png */
@@ -8844,7 +8815,7 @@ void pizza_2_set_lang_tune(void)
 
 
 /* ==============================================================================
- * pizza_2_setting 英文布局基准（对应 PAGE_PIZZA_2_SETTING）
+ * pizza_2_setting 英文布局基准（对应 PAGE_PIZZA_2_SETTING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void pizza_2_setting_lang_tune(void)
@@ -8922,7 +8893,7 @@ void pizza_2_setting_lang_tune(void)
 
 
 /* ==============================================================================
- * pizza_2_stop 英文布局基准（对应 PAGE_PIZZA_2_STOP）
+ * pizza_2_stop 英文布局基准（对应 PAGE_PIZZA_2_STOP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void pizza_2_stop_lang_tune(void)
@@ -8967,7 +8938,7 @@ void pizza_2_stop_lang_tune(void)
 
 
 /* ==============================================================================
- * pizza_2_stop_back 英文布局基准（对应 PAGE_PIZZA_2_STOP_BACK）
+ * pizza_2_stop_back 英文布局基准（对应 PAGE_PIZZA_2_STOP_BACK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void pizza_2_stop_back_lang_tune(void)
@@ -9020,7 +8991,7 @@ void pizza_2_stop_back_lang_tune(void)
 
 
 /* ==============================================================================
- * pizza_complete 英文布局基准（对应 PAGE_PIZZA_COMPLETE）
+ * pizza_complete 英文布局基准（对应 PAGE_PIZZA_COMPLETE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void pizza_complete_lang_tune(void)
@@ -9060,7 +9031,7 @@ void pizza_complete_lang_tune(void)
 
 
 /* ==============================================================================
- * pizza_cooking 英文布局基准（对应 PAGE_PIZZA_COOKING）
+ * pizza_cooking 英文布局基准（对应 PAGE_PIZZA_COOKING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void pizza_cooking_lang_tune(void)
@@ -9105,7 +9076,7 @@ void pizza_cooking_lang_tune(void)
 
 
 /* ==============================================================================
- * pizza_menu 英文布局基准（对应 PAGE_PIZZA_MENU）
+ * pizza_menu 英文布局基准（对应 PAGE_PIZZA_MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void pizza_menu_lang_tune(void)
@@ -9182,7 +9153,7 @@ void pizza_menu_lang_tune(void)
 
 
 /* ==============================================================================
- * pizza_set 英文布局基准（对应 PAGE_PIZZA_SET）
+ * pizza_set 英文布局基准（对应 PAGE_PIZZA_SET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void pizza_set_lang_tune(void)
@@ -9213,22 +9184,16 @@ void pizza_set_lang_tune(void)
     lv_obj_set_pos(pg->hour, 307, 254);
     lv_obj_set_size(pg->hour, 62, 53);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->min, 312, 254);
-    else
-        lv_obj_set_pos(pg->min, 395, 254);
+    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->min, 58, 53);
 
     /* label_209: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_209, 368, 270);
     lv_obj_set_size(pg->label_209, 30, 32);
 
-    /* label_210: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->label_210, 365, 269);
-    else
-        lv_obj_set_pos(pg->label_210, 448, 269);
+    /* label_210: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->label_210, 64, 32);
 
     /* image_99: 图片 | (164,376) | img: place_1.png */
@@ -9290,7 +9255,7 @@ void pizza_set_lang_tune(void)
 
 
 /* ==============================================================================
- * pizza_setting 英文布局基准（对应 PAGE_PIZZA_SETTING）
+ * pizza_setting 英文布局基准（对应 PAGE_PIZZA_SETTING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void pizza_setting_lang_tune(void)
@@ -9368,7 +9333,7 @@ void pizza_setting_lang_tune(void)
 
 
 /* ==============================================================================
- * pizza_stop 英文布局基准（对应 PAGE_PIZZA_STOP）
+ * pizza_stop 英文布局基准（对应 PAGE_PIZZA_STOP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void pizza_stop_lang_tune(void)
@@ -9413,7 +9378,7 @@ void pizza_stop_lang_tune(void)
 
 
 /* ==============================================================================
- * pizza_stop_back 英文布局基准（对应 PAGE_PIZZA_STOP_BACK）
+ * pizza_stop_back 英文布局基准（对应 PAGE_PIZZA_STOP_BACK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void pizza_stop_back_lang_tune(void)
@@ -9466,7 +9431,7 @@ void pizza_stop_back_lang_tune(void)
 
 
 /* ==============================================================================
- * preheat_stop_back 英文布局基准（对应 PAGE_PREHEAT_STOP_BACK）
+ * preheat_stop_back 英文布局基准（对应 PAGE_PREHEAT_STOP_BACK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void preheat_stop_back_lang_tune(void)
@@ -9518,7 +9483,7 @@ void preheat_stop_back_lang_tune(void)
 
 
 /* ==============================================================================
- * preheatcomplete 英文布局基准（对应 PAGE_PREHEAT_COMPLETE）
+ * preheatcomplete 英文布局基准（对应 PAGE_PREHEAT_COMPLETE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void preheatcomplete_lang_tune(void)
@@ -9566,7 +9531,7 @@ void preheatcomplete_lang_tune(void)
 
 
 /* ==============================================================================
- * preheatcooking 英文布局基准（对应 PAGE_PREHEAT_COOKING）
+ * preheatcooking 英文布局基准（对应 PAGE_PREHEAT_COOKING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void preheatcooking_lang_tune(void)
@@ -9610,12 +9575,11 @@ void preheatcooking_lang_tune(void)
 
 
 /* ==============================================================================
- * preheatmenu 英文布局基准（对应 PAGE_PREHEAT_MENU）
- * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
+ * preheatmenu 公共布局（复用结构，以下页面共用：PAGE_COLOR_MENU(额外上色设置页（复用预热菜单结构）), PAGE_PREHEAT_MENU(预热菜单页)）
+ * 公共部分在此统一调整；各页差异见下方独立函数
  * ============================================================================== */
-void preheatmenu_lang_tune(void)
+static void preheatmenu_common(void)
 {
-    if (depth <= 0 || page_stack[depth - 1] != PAGE_PREHEAT_MENU) return;
     preheatmenu_t *pg = preheatmenu_get(&ui_manager);
     if (!pg) return;
 
@@ -9656,9 +9620,39 @@ void preheatmenu_lang_tune(void)
 
 }
 
+/* ==============================================================================
+ * color_menu_lang_tune（对应 PAGE_COLOR_MENU 额外上色设置页（复用预热菜单结构））
+ * 公共布局调 preheatmenu_common()，本页差异直接改下方数字
+ * ============================================================================== */
+void color_menu_lang_tune(void)
+{
+    if (depth <= 0 || page_stack[depth - 1] != PAGE_COLOR_MENU) return;
+    preheatmenu_t *pg = preheatmenu_get(&ui_manager);
+    if (!pg) return;
+
+    preheatmenu_common();
+
+    /* 本页无差异对象 */
+}
 
 /* ==============================================================================
- * preheatstop 英文布局基准（对应 PAGE_PREHEAT_STOP）
+ * preheat_menu_lang_tune（对应 PAGE_PREHEAT_MENU 预热菜单页）
+ * 公共布局调 preheatmenu_common()，本页差异直接改下方数字
+ * ============================================================================== */
+void preheat_menu_lang_tune(void)
+{
+    if (depth <= 0 || page_stack[depth - 1] != PAGE_PREHEAT_MENU) return;
+    preheatmenu_t *pg = preheatmenu_get(&ui_manager);
+    if (!pg) return;
+
+    preheatmenu_common();
+
+    /* 本页无差异对象 */
+}
+
+
+/* ==============================================================================
+ * preheatstop 英文布局基准（对应 PAGE_PREHEAT_STOP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void preheatstop_lang_tune(void)
@@ -9702,7 +9696,7 @@ void preheatstop_lang_tune(void)
 
 
 /* ==============================================================================
- * probeneedtip 英文布局基准（对应 PAGE_PROBENEEDTIP）
+ * probeneedtip 英文布局基准（对应 PAGE_PROBENEEDTIP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void probeneedtip_lang_tune(void)
@@ -9729,7 +9723,7 @@ void probeneedtip_lang_tune(void)
 
 
 /* ==============================================================================
- * probetip 英文布局基准（对应 PAGE_PROBETIP）
+ * probetip 英文布局基准（对应 PAGE_PROBETIP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void probetip_lang_tune(void)
@@ -9748,7 +9742,7 @@ void probetip_lang_tune(void)
 
 
 /* ==============================================================================
- * rising_complete 英文布局基准（对应 PAGE_RISING_COMPLETE）
+ * rising_complete 英文布局基准（对应 PAGE_RISING_COMPLETE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void rising_complete_lang_tune(void)
@@ -9788,7 +9782,7 @@ void rising_complete_lang_tune(void)
 
 
 /* ==============================================================================
- * rising_cooking 英文布局基准（对应 PAGE_RISING_COOKING）
+ * rising_cooking 英文布局基准（对应 PAGE_RISING_COOKING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void rising_cooking_lang_tune(void)
@@ -9833,7 +9827,7 @@ void rising_cooking_lang_tune(void)
 
 
 /* ==============================================================================
- * rising_menu 英文布局基准（对应 PAGE_RISING_MENU）
+ * rising_menu 英文布局基准（对应 PAGE_RISING_MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void rising_menu_lang_tune(void)
@@ -9910,7 +9904,7 @@ void rising_menu_lang_tune(void)
 
 
 /* ==============================================================================
- * rising_set 英文布局基准（对应 PAGE_RISING_SET）
+ * rising_set 英文布局基准（对应 PAGE_RISING_SET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void rising_set_lang_tune(void)
@@ -9941,22 +9935,16 @@ void rising_set_lang_tune(void)
     lv_obj_set_pos(pg->hour, 307, 254);
     lv_obj_set_size(pg->hour, 62, 53);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->min, 312, 254);
-    else
-        lv_obj_set_pos(pg->min, 395, 254);
+    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->min, 58, 53);
 
     /* label_501: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_501, 368, 270);
     lv_obj_set_size(pg->label_501, 30, 32);
 
-    /* label_502: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->label_502, 365, 269);
-    else
-        lv_obj_set_pos(pg->label_502, 448, 269);
+    /* label_502: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->label_502, 64, 32);
 
     /* image_225: 图片 | (164,376) | img: place_1.png */
@@ -10030,7 +10018,7 @@ void rising_set_lang_tune(void)
 
 
 /* ==============================================================================
- * rising_setting 英文布局基准（对应 PAGE_RISING_SETTING）
+ * rising_setting 英文布局基准（对应 PAGE_RISING_SETTING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void rising_setting_lang_tune(void)
@@ -10108,7 +10096,7 @@ void rising_setting_lang_tune(void)
 
 
 /* ==============================================================================
- * rising_stop 英文布局基准（对应 PAGE_RISING_STOP）
+ * rising_stop 英文布局基准（对应 PAGE_RISING_STOP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void rising_stop_lang_tune(void)
@@ -10153,7 +10141,7 @@ void rising_stop_lang_tune(void)
 
 
 /* ==============================================================================
- * rising_stop_back 英文布局基准（对应 PAGE_RISING_STOP_BACK）
+ * rising_stop_back 英文布局基准（对应 PAGE_RISING_STOP_BACK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void rising_stop_back_lang_tune(void)
@@ -10206,7 +10194,7 @@ void rising_stop_back_lang_tune(void)
 
 
 /* ==============================================================================
- * risingpage 英文布局基准（对应 PAGE_RISINGPAGE）
+ * risingpage 英文布局基准（对应 PAGE_RISINGPAGE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void risingpage_lang_tune(void)
@@ -10240,7 +10228,7 @@ void risingpage_lang_tune(void)
 
 
 /* ==============================================================================
- * save_bbq_complete 英文布局基准（对应 PAGE_SAVE_BBQ_COMPLETE）
+ * save_bbq_complete 英文布局基准（对应 PAGE_SAVE_BBQ_COMPLETE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void save_bbq_complete_lang_tune(void)
@@ -10280,7 +10268,7 @@ void save_bbq_complete_lang_tune(void)
 
 
 /* ==============================================================================
- * save_bbq_cooking 英文布局基准（对应 PAGE_SAVE_BBQ_COOKING）
+ * save_bbq_cooking 英文布局基准（对应 PAGE_SAVE_BBQ_COOKING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void save_bbq_cooking_lang_tune(void)
@@ -10325,7 +10313,7 @@ void save_bbq_cooking_lang_tune(void)
 
 
 /* ==============================================================================
- * save_bbq_menu 英文布局基准（对应 PAGE_SAVE_BBQ_MENU）
+ * save_bbq_menu 英文布局基准（对应 PAGE_SAVE_BBQ_MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void save_bbq_menu_lang_tune(void)
@@ -10402,7 +10390,7 @@ void save_bbq_menu_lang_tune(void)
 
 
 /* ==============================================================================
- * save_bbq_set 英文布局基准（对应 PAGE_SAVE_BBQ_SET）
+ * save_bbq_set 英文布局基准（对应 PAGE_SAVE_BBQ_SET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void save_bbq_set_lang_tune(void)
@@ -10433,22 +10421,16 @@ void save_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->hour, 307, 254);
     lv_obj_set_size(pg->hour, 62, 53);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->min, 312, 254);
-    else
-        lv_obj_set_pos(pg->min, 395, 254);
+    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->min, 58, 53);
 
     /* label_259: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_259, 368, 270);
     lv_obj_set_size(pg->label_259, 30, 32);
 
-    /* label_260: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->label_260, 365, 269);
-    else
-        lv_obj_set_pos(pg->label_260, 448, 269);
+    /* label_260: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->label_260, 64, 32);
 
     /* image_120: 图片 | (164,376) | img: place_1.png */
@@ -10522,7 +10504,7 @@ void save_bbq_set_lang_tune(void)
 
 
 /* ==============================================================================
- * save_bbq_setting 英文布局基准（对应 PAGE_SAVE_BBQ_SETTING）
+ * save_bbq_setting 英文布局基准（对应 PAGE_SAVE_BBQ_SETTING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void save_bbq_setting_lang_tune(void)
@@ -10600,7 +10582,7 @@ void save_bbq_setting_lang_tune(void)
 
 
 /* ==============================================================================
- * save_bbq_stop 英文布局基准（对应 PAGE_SAVE_BBQ_STOP）
+ * save_bbq_stop 英文布局基准（对应 PAGE_SAVE_BBQ_STOP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void save_bbq_stop_lang_tune(void)
@@ -10645,7 +10627,7 @@ void save_bbq_stop_lang_tune(void)
 
 
 /* ==============================================================================
- * save_bbq_stop_back 英文布局基准（对应 PAGE_SAVE_BBQ_STOP_BACK）
+ * save_bbq_stop_back 英文布局基准（对应 PAGE_SAVE_BBQ_STOP_BACK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void save_bbq_stop_back_lang_tune(void)
@@ -10698,7 +10680,7 @@ void save_bbq_stop_back_lang_tune(void)
 
 
 /* ==============================================================================
- * screen_SET 英文布局基准（对应 PAGE_SCREEN_SET）
+ * screen_SET 英文布局基准（对应 PAGE_SCREEN_SET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void screen_SET_lang_tune(void)
@@ -10822,7 +10804,7 @@ void screen_SET_lang_tune(void)
 
 
 /* ==============================================================================
- * sixmenu 英文布局基准（对应 PAGE_SIXMENU）
+ * sixmenu 英文布局基准（对应 PAGE_SIXMENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void sixmenu_lang_tune(void)
@@ -10880,7 +10862,7 @@ void sixmenu_lang_tune(void)
 
 
 /* ==============================================================================
- * sixmenutz 英文布局基准（对应 PAGE_SIXMENUTZ）
+ * sixmenutz 英文布局基准（对应 PAGE_SIXMENUTZ ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void sixmenutz_lang_tune(void)
@@ -10918,7 +10900,7 @@ void sixmenutz_lang_tune(void)
 
 
 /* ==============================================================================
- * sixop3page 英文布局基准（对应 PAGE_SIXOP3PAGE）
+ * sixop3page 英文布局基准（对应 PAGE_SIXOP3PAGE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void sixop3page_lang_tune(void)
@@ -10970,7 +10952,7 @@ void sixop3page_lang_tune(void)
 
 
 /* ==============================================================================
- * slowcook_complete 英文布局基准（对应 PAGE_SLOWCOOK_COMPLETE）
+ * slowcook_complete 英文布局基准（对应 PAGE_SLOWCOOK_COMPLETE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void slowcook_complete_lang_tune(void)
@@ -11010,7 +10992,7 @@ void slowcook_complete_lang_tune(void)
 
 
 /* ==============================================================================
- * slowcook_complete_probe 英文布局基准（对应 PAGE_SLOWCOOK_COMPLETE_PROBE）
+ * slowcook_complete_probe 英文布局基准（对应 PAGE_SLOWCOOK_COMPLETE_PROBE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void slowcook_complete_probe_lang_tune(void)
@@ -11051,7 +11033,7 @@ void slowcook_complete_probe_lang_tune(void)
 
 
 /* ==============================================================================
- * slowcook_cooking 英文布局基准（对应 PAGE_SLOWCOOK_COOKING）
+ * slowcook_cooking 英文布局基准（对应 PAGE_SLOWCOOK_COOKING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void slowcook_cooking_lang_tune(void)
@@ -11096,7 +11078,7 @@ void slowcook_cooking_lang_tune(void)
 
 
 /* ==============================================================================
- * slowcook_cooking_probe 英文布局基准（对应 PAGE_SLOWCOOK_COOKING_PROBE）
+ * slowcook_cooking_probe 英文布局基准（对应 PAGE_SLOWCOOK_COOKING_PROBE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void slowcook_cooking_probe_lang_tune(void)
@@ -11140,7 +11122,7 @@ void slowcook_cooking_probe_lang_tune(void)
 
 
 /* ==============================================================================
- * slowcook_menu 英文布局基准（对应 PAGE_SLOWCOOK_MENU）
+ * slowcook_menu 英文布局基准（对应 PAGE_SLOWCOOK_MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void slowcook_menu_lang_tune(void)
@@ -11217,7 +11199,7 @@ void slowcook_menu_lang_tune(void)
 
 
 /* ==============================================================================
- * slowcook_menu_probe 英文布局基准（对应 PAGE_SLOWCOOK_MENU_PROBE）
+ * slowcook_menu_probe 英文布局基准（对应 PAGE_SLOWCOOK_MENU_PROBE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void slowcook_menu_probe_lang_tune(void)
@@ -11283,7 +11265,7 @@ void slowcook_menu_probe_lang_tune(void)
 
 
 /* ==============================================================================
- * slowcook_set 英文布局基准（对应 PAGE_SLOWCOOK_SET）
+ * slowcook_set 英文布局基准（对应 PAGE_SLOWCOOK_SET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void slowcook_set_lang_tune(void)
@@ -11314,22 +11296,16 @@ void slowcook_set_lang_tune(void)
     lv_obj_set_pos(pg->hour, 307, 254);
     lv_obj_set_size(pg->hour, 62, 53);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->min, 312, 254);
-    else
-        lv_obj_set_pos(pg->min, 395, 254);
+    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->min, 58, 53);
 
     /* label_403: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_403, 368, 270);
     lv_obj_set_size(pg->label_403, 30, 32);
 
-    /* label_404: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->label_404, 365, 269);
-    else
-        lv_obj_set_pos(pg->label_404, 448, 269);
+    /* label_404: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->label_404, 64, 32);
 
     /* image_183: 图片 | (164,376) | img: place_1.png */
@@ -11403,7 +11379,7 @@ void slowcook_set_lang_tune(void)
 
 
 /* ==============================================================================
- * slowcook_set_probe 英文布局基准（对应 PAGE_SLOWCOOK_SET_PROBE）
+ * slowcook_set_probe 英文布局基准（对应 PAGE_SLOWCOOK_SET_PROBE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void slowcook_set_probe_lang_tune(void)
@@ -11480,7 +11456,7 @@ void slowcook_set_probe_lang_tune(void)
 
 
 /* ==============================================================================
- * slowcook_setting 英文布局基准（对应 PAGE_SLOWCOOK_SETTING）
+ * slowcook_setting 英文布局基准（对应 PAGE_SLOWCOOK_SETTING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void slowcook_setting_lang_tune(void)
@@ -11558,7 +11534,7 @@ void slowcook_setting_lang_tune(void)
 
 
 /* ==============================================================================
- * slowcook_stop 英文布局基准（对应 PAGE_SLOWCOOK_STOP）
+ * slowcook_stop 英文布局基准（对应 PAGE_SLOWCOOK_STOP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void slowcook_stop_lang_tune(void)
@@ -11603,7 +11579,7 @@ void slowcook_stop_lang_tune(void)
 
 
 /* ==============================================================================
- * slowcook_stop_back 英文布局基准（对应 PAGE_SLOWCOOK_STOP_BACK）
+ * slowcook_stop_back 英文布局基准（对应 PAGE_SLOWCOOK_STOP_BACK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void slowcook_stop_back_lang_tune(void)
@@ -11656,7 +11632,7 @@ void slowcook_stop_back_lang_tune(void)
 
 
 /* ==============================================================================
- * slowcook_stop_back_probe 英文布局基准（对应 PAGE_SLOWCOOK_STOP_BACK_PROBE）
+ * slowcook_stop_back_probe 英文布局基准（对应 PAGE_SLOWCOOK_STOP_BACK_PROBE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void slowcook_stop_back_probe_lang_tune(void)
@@ -11705,7 +11681,7 @@ void slowcook_stop_back_probe_lang_tune(void)
 
 
 /* ==============================================================================
- * slowcook_stop_probe 英文布局基准（对应 PAGE_SLOWCOOK_STOP_PROBE）
+ * slowcook_stop_probe 英文布局基准（对应 PAGE_SLOWCOOK_STOP_PROBE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void slowcook_stop_probe_lang_tune(void)
@@ -11749,7 +11725,7 @@ void slowcook_stop_probe_lang_tune(void)
 
 
 /* ==============================================================================
- * somecook 英文布局基准（对应 PAGE_SOMECOOK）
+ * somecook 英文布局基准（对应 PAGE_SOMECOOK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void somecook_lang_tune(void)
@@ -11775,9 +11751,9 @@ void somecook_lang_tune(void)
     /* image_1: 图片 | (184,138) | img: steptext.png */
     lv_obj_set_pos(pg->image_1, 184, 138);
 
-    /* label_1: 标签 | "菜单" | (24,24) | 58x22 | font taiwanpearl_regular_24 */
+    /* label_1: 标签 | "多段烹饪" | (24,24) | 103x22 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_1, 24, 24);
-    lv_obj_set_size(pg->label_1, 58, 22);
+    lv_obj_set_size(pg->label_1, 103, 22);
 
     /* plus1: 图片 | (201,262) | img: plus.png */
     lv_obj_set_pos(pg->plus1, 201, 262);
@@ -11872,13 +11848,11 @@ void somecook_lang_tune(void)
 
 
 /* ==============================================================================
- * somecook_cooking 英文布局基准（对应 PAGE_SIX_COOKING, PAGE_SOMECOOK_COOKING）
- * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
+ * somecook_cooking 公共布局（复用结构，以下页面共用：PAGE_SIX_COOKING(第六感烹饪页), PAGE_SOMECOOK_COOKING(多段烹饪页)）
+ * 公共部分在此统一调整；各页差异见下方独立函数
  * ============================================================================== */
-void somecook_cooking_lang_tune(void)
+static void somecook_cooking_common(void)
 {
-    if (depth <= 0) return;
-    if (page_stack[depth - 1] != PAGE_SIX_COOKING && page_stack[depth - 1] != PAGE_SOMECOOK_COOKING) return;
     somecook_cooking_t *pg = somecook_cooking_get(&ui_manager);
     if (!pg) return;
 
@@ -11898,9 +11872,6 @@ void somecook_cooking_lang_tune(void)
     /* bar_1: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_1, 122, 326);
     lv_obj_set_size(pg->bar_1, 637, 20);
-
-    /* icon: 图片 | (115,161) | img: updown_img.png | 动态定位(需微调见文件头模板) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
 
     /* cookstatus: 标签 | "烹饪中..." | (273,157) | 262x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->cookstatus, 273, 157);
@@ -11928,9 +11899,46 @@ void somecook_cooking_lang_tune(void)
 
 }
 
+/* ==============================================================================
+ * six_cooking_lang_tune（对应 PAGE_SIX_COOKING 第六感烹饪页）
+ * 公共布局调 somecook_cooking_common()，本页差异直接改下方数字
+ * ============================================================================== */
+void six_cooking_lang_tune(void)
+{
+    if (depth <= 0 || page_stack[depth - 1] != PAGE_SIX_COOKING) return;
+    somecook_cooking_t *pg = somecook_cooking_get(&ui_manager);
+    if (!pg) return;
+
+    somecook_cooking_common();
+
+    /* icon: 图片 | (115,161) | img: updown_img.png | 动态定位(默认业务值, 直接改数字) */
+    lv_obj_set_pos(pg->icon, 163, 161);
+
+}
 
 /* ==============================================================================
- * special_menu 英文布局基准（对应 PAGE_SPECIAL_MENU）
+ * somecook_cooking_lang_tune（对应 PAGE_SOMECOOK_COOKING 多段烹饪页）
+ * 公共布局调 somecook_cooking_common()，本页差异直接改下方数字
+ * ============================================================================== */
+void somecook_cooking_lang_tune(void)
+{
+    if (depth <= 0 || page_stack[depth - 1] != PAGE_SOMECOOK_COOKING) return;
+    somecook_cooking_t *pg = somecook_cooking_get(&ui_manager);
+    if (!pg) return;
+
+    somecook_cooking_common();
+
+    /* icon: 图片 | (115,161) | img: updown_img.png | 状态切换(默认业务值, 直接改数字) */
+    if (g_send.cook_mode == MODE_UNFROZEN)
+        lv_obj_set_pos(pg->icon, 149, 161);
+    else
+        lv_obj_set_pos(pg->icon, 115, 161);
+
+}
+
+
+/* ==============================================================================
+ * special_menu 英文布局基准（对应 PAGE_SPECIAL_MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void special_menu_lang_tune(void)
@@ -12024,7 +12032,7 @@ void special_menu_lang_tune(void)
 
 
 /* ==============================================================================
- * special_menu_tz 英文布局基准（对应 PAGE_SPECIAL_MENU_TZ）
+ * special_menu_tz 英文布局基准（对应 PAGE_SPECIAL_MENU_TZ ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void special_menu_tz_lang_tune(void)
@@ -12054,7 +12062,7 @@ void special_menu_tz_lang_tune(void)
 
 
 /* ==============================================================================
- * stepset 英文布局基准（对应 PAGE_STEPSET）
+ * stepset 英文布局基准（对应 PAGE_STEPSET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void stepset_lang_tune(void)
@@ -12144,7 +12152,7 @@ void stepset_lang_tune(void)
 
 
 /* ==============================================================================
- * strudel_complete 英文布局基准（对应 PAGE_STRUDEL_COMPLETE）
+ * strudel_complete 英文布局基准（对应 PAGE_STRUDEL_COMPLETE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void strudel_complete_lang_tune(void)
@@ -12184,7 +12192,7 @@ void strudel_complete_lang_tune(void)
 
 
 /* ==============================================================================
- * strudel_cooking 英文布局基准（对应 PAGE_STRUDEL_COOKING）
+ * strudel_cooking 英文布局基准（对应 PAGE_STRUDEL_COOKING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void strudel_cooking_lang_tune(void)
@@ -12229,7 +12237,7 @@ void strudel_cooking_lang_tune(void)
 
 
 /* ==============================================================================
- * strudel_menu 英文布局基准（对应 PAGE_STRUDEL_MENU）
+ * strudel_menu 英文布局基准（对应 PAGE_STRUDEL_MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void strudel_menu_lang_tune(void)
@@ -12285,7 +12293,7 @@ void strudel_menu_lang_tune(void)
 
 
 /* ==============================================================================
- * strudel_set 英文布局基准（对应 PAGE_STRUDEL_SET）
+ * strudel_set 英文布局基准（对应 PAGE_STRUDEL_SET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void strudel_set_lang_tune(void)
@@ -12316,22 +12324,16 @@ void strudel_set_lang_tune(void)
     lv_obj_set_pos(pg->hour, 307, 254);
     lv_obj_set_size(pg->hour, 62, 53);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->min, 312, 254);
-    else
-        lv_obj_set_pos(pg->min, 395, 254);
+    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->min, 58, 53);
 
     /* label_695: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_695, 368, 270);
     lv_obj_set_size(pg->label_695, 30, 32);
 
-    /* label_696: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->label_696, 365, 269);
-    else
-        lv_obj_set_pos(pg->label_696, 448, 269);
+    /* label_696: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->label_696, 64, 32);
 
     /* image_327: 图片 | (164,376) | img: place_1.png */
@@ -12393,7 +12395,7 @@ void strudel_set_lang_tune(void)
 
 
 /* ==============================================================================
- * strudel_setting 英文布局基准（对应 PAGE_STRUDEL_SETTING）
+ * strudel_setting 英文布局基准（对应 PAGE_STRUDEL_SETTING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void strudel_setting_lang_tune(void)
@@ -12449,7 +12451,7 @@ void strudel_setting_lang_tune(void)
 
 
 /* ==============================================================================
- * strudel_stop 英文布局基准（对应 PAGE_STRUDEL_STOP）
+ * strudel_stop 英文布局基准（对应 PAGE_STRUDEL_STOP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void strudel_stop_lang_tune(void)
@@ -12494,7 +12496,7 @@ void strudel_stop_lang_tune(void)
 
 
 /* ==============================================================================
- * strudel_stop_back 英文布局基准（对应 PAGE_STRUDEL_STOP_BACK）
+ * strudel_stop_back 英文布局基准（对应 PAGE_STRUDEL_STOP_BACK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void strudel_stop_back_lang_tune(void)
@@ -12547,7 +12549,7 @@ void strudel_stop_back_lang_tune(void)
 
 
 /* ==============================================================================
- * temptip 英文布局基准（对应 PAGE_TEMPTIP）
+ * temptip 英文布局基准（对应 PAGE_TEMPTIP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void temptip_lang_tune(void)
@@ -12578,7 +12580,7 @@ void temptip_lang_tune(void)
 
 
 /* ==============================================================================
- * toastcolor 英文布局基准（对应 PAGE_TOASTCOLOR）
+ * toastcolor 英文布局基准（对应 PAGE_TOASTCOLOR ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void toastcolor_lang_tune(void)
@@ -12639,7 +12641,7 @@ void toastcolor_lang_tune(void)
 
 
 /* ==============================================================================
- * top_bbq_complete 英文布局基准（对应 PAGE_TOP_BBQ_COMPLETE）
+ * top_bbq_complete 英文布局基准（对应 PAGE_TOP_BBQ_COMPLETE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void top_bbq_complete_lang_tune(void)
@@ -12679,7 +12681,7 @@ void top_bbq_complete_lang_tune(void)
 
 
 /* ==============================================================================
- * top_bbq_cooking 英文布局基准（对应 PAGE_TOP_BBQ_COOKING）
+ * top_bbq_cooking 英文布局基准（对应 PAGE_TOP_BBQ_COOKING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void top_bbq_cooking_lang_tune(void)
@@ -12724,7 +12726,7 @@ void top_bbq_cooking_lang_tune(void)
 
 
 /* ==============================================================================
- * top_bbq_menu 英文布局基准（对应 PAGE_TOP_BBQ_MENU）
+ * top_bbq_menu 英文布局基准（对应 PAGE_TOP_BBQ_MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void top_bbq_menu_lang_tune(void)
@@ -12801,7 +12803,7 @@ void top_bbq_menu_lang_tune(void)
 
 
 /* ==============================================================================
- * top_bbq_set 英文布局基准（对应 PAGE_TOP_BBQ_SET）
+ * top_bbq_set 英文布局基准（对应 PAGE_TOP_BBQ_SET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void top_bbq_set_lang_tune(void)
@@ -12832,22 +12834,16 @@ void top_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->hour, 307, 254);
     lv_obj_set_size(pg->hour, 62, 53);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->min, 312, 254);
-    else
-        lv_obj_set_pos(pg->min, 395, 254);
+    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->min, 58, 53);
 
     /* label_58: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_58, 368, 270);
     lv_obj_set_size(pg->label_58, 30, 32);
 
-    /* label_59: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->label_59, 365, 269);
-    else
-        lv_obj_set_pos(pg->label_59, 448, 269);
+    /* label_59: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->label_59, 64, 32);
 
     /* image_35: 图片 | (164,376) | img: place_1.png */
@@ -12921,7 +12917,7 @@ void top_bbq_set_lang_tune(void)
 
 
 /* ==============================================================================
- * top_bbq_setting 英文布局基准（对应 PAGE_TOP_BBQ_SETTING）
+ * top_bbq_setting 英文布局基准（对应 PAGE_TOP_BBQ_SETTING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void top_bbq_setting_lang_tune(void)
@@ -12999,7 +12995,7 @@ void top_bbq_setting_lang_tune(void)
 
 
 /* ==============================================================================
- * top_bbq_stop 英文布局基准（对应 PAGE_TOP_BBQ_STOP）
+ * top_bbq_stop 英文布局基准（对应 PAGE_TOP_BBQ_STOP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void top_bbq_stop_lang_tune(void)
@@ -13044,7 +13040,7 @@ void top_bbq_stop_lang_tune(void)
 
 
 /* ==============================================================================
- * top_bbq_stop_back 英文布局基准（对应 PAGE_TOP_BBQ_STOP_BACK）
+ * top_bbq_stop_back 英文布局基准（对应 PAGE_TOP_BBQ_STOP_BACK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void top_bbq_stop_back_lang_tune(void)
@@ -13097,7 +13093,7 @@ void top_bbq_stop_back_lang_tune(void)
 
 
 /* ==============================================================================
- * unfrozen_complete 英文布局基准（对应 PAGE_UNFROZEN_COMPLETE）
+ * unfrozen_complete 英文布局基准（对应 PAGE_UNFROZEN_COMPLETE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void unfrozen_complete_lang_tune(void)
@@ -13137,7 +13133,7 @@ void unfrozen_complete_lang_tune(void)
 
 
 /* ==============================================================================
- * unfrozen_cooking 英文布局基准（对应 PAGE_UNFROZEN_COOKING）
+ * unfrozen_cooking 英文布局基准（对应 PAGE_UNFROZEN_COOKING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void unfrozen_cooking_lang_tune(void)
@@ -13182,7 +13178,7 @@ void unfrozen_cooking_lang_tune(void)
 
 
 /* ==============================================================================
- * unfrozen_menu 英文布局基准（对应 PAGE_UNFROZEN_MENU）
+ * unfrozen_menu 英文布局基准（对应 PAGE_UNFROZEN_MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void unfrozen_menu_lang_tune(void)
@@ -13259,7 +13255,7 @@ void unfrozen_menu_lang_tune(void)
 
 
 /* ==============================================================================
- * unfrozen_set 英文布局基准（对应 PAGE_UNFROZEN_SET）
+ * unfrozen_set 英文布局基准（对应 PAGE_UNFROZEN_SET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void unfrozen_set_lang_tune(void)
@@ -13290,22 +13286,16 @@ void unfrozen_set_lang_tune(void)
     lv_obj_set_pos(pg->hour, 307, 254);
     lv_obj_set_size(pg->hour, 62, 53);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->min, 312, 254);
-    else
-        lv_obj_set_pos(pg->min, 395, 254);
+    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->min, 58, 53);
 
     /* label_452: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_452, 368, 270);
     lv_obj_set_size(pg->label_452, 30, 32);
 
-    /* label_453: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->label_453, 365, 269);
-    else
-        lv_obj_set_pos(pg->label_453, 448, 269);
+    /* label_453: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->label_453, 64, 32);
 
     /* image_204: 图片 | (164,376) | img: place_1.png */
@@ -13379,7 +13369,7 @@ void unfrozen_set_lang_tune(void)
 
 
 /* ==============================================================================
- * unfrozen_setting 英文布局基准（对应 PAGE_UNFROZEN_SETTING）
+ * unfrozen_setting 英文布局基准（对应 PAGE_UNFROZEN_SETTING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void unfrozen_setting_lang_tune(void)
@@ -13457,7 +13447,7 @@ void unfrozen_setting_lang_tune(void)
 
 
 /* ==============================================================================
- * unfrozen_stop 英文布局基准（对应 PAGE_UNFROZEN_STOP）
+ * unfrozen_stop 英文布局基准（对应 PAGE_UNFROZEN_STOP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void unfrozen_stop_lang_tune(void)
@@ -13502,7 +13492,7 @@ void unfrozen_stop_lang_tune(void)
 
 
 /* ==============================================================================
- * unfrozen_stop_back 英文布局基准（对应 PAGE_UNFROZEN_STOP_BACK）
+ * unfrozen_stop_back 英文布局基准（对应 PAGE_UNFROZEN_STOP_BACK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void unfrozen_stop_back_lang_tune(void)
@@ -13555,7 +13545,7 @@ void unfrozen_stop_back_lang_tune(void)
 
 
 /* ==============================================================================
- * updown_bbq_complete 英文布局基准（对应 PAGE_UPDOWN_BBQ_COMPLETE）
+ * updown_bbq_complete 英文布局基准（对应 PAGE_UPDOWN_BBQ_COMPLETE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void updown_bbq_complete_lang_tune(void)
@@ -13595,7 +13585,7 @@ void updown_bbq_complete_lang_tune(void)
 
 
 /* ==============================================================================
- * updown_bbq_complete_probe 英文布局基准（对应 PAGE_UPDOWN_BBQ_COMPLETE_PROBE）
+ * updown_bbq_complete_probe 英文布局基准（对应 PAGE_UPDOWN_BBQ_COMPLETE_PROBE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void updown_bbq_complete_probe_lang_tune(void)
@@ -13631,7 +13621,7 @@ void updown_bbq_complete_probe_lang_tune(void)
 
 
 /* ==============================================================================
- * updown_bbq_cooking 英文布局基准（对应 PAGE_UPDOWN_BBQ_COOKING）
+ * updown_bbq_cooking 英文布局基准（对应 PAGE_UPDOWN_BBQ_COOKING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void updown_bbq_cooking_lang_tune(void)
@@ -13676,7 +13666,7 @@ void updown_bbq_cooking_lang_tune(void)
 
 
 /* ==============================================================================
- * updown_bbq_cooking_probe 英文布局基准（对应 PAGE_UPDOWN_BBQ_COOKING_PROBE）
+ * updown_bbq_cooking_probe 英文布局基准（对应 PAGE_UPDOWN_BBQ_COOKING_PROBE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void updown_bbq_cooking_probe_lang_tune(void)
@@ -13720,7 +13710,7 @@ void updown_bbq_cooking_probe_lang_tune(void)
 
 
 /* ==============================================================================
- * updown_bbq_menu 英文布局基准（对应 PAGE_UPDOWN_BBQ_MENU）
+ * updown_bbq_menu 英文布局基准（对应 PAGE_UPDOWN_BBQ_MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void updown_bbq_menu_lang_tune(void)
@@ -13797,7 +13787,7 @@ void updown_bbq_menu_lang_tune(void)
 
 
 /* ==============================================================================
- * updown_bbq_menu_low 英文布局基准（对应 PAGE_UPDOWN_BBQ_MENU_LOW）
+ * updown_bbq_menu_low 英文布局基准（对应 PAGE_UPDOWN_BBQ_MENU_LOW ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void updown_bbq_menu_low_lang_tune(void)
@@ -13853,7 +13843,7 @@ void updown_bbq_menu_low_lang_tune(void)
 
 
 /* ==============================================================================
- * updown_bbq_menu_probe 英文布局基准（对应 PAGE_UPDOWN_BBQ_MENU_PROBE）
+ * updown_bbq_menu_probe 英文布局基准（对应 PAGE_UPDOWN_BBQ_MENU_PROBE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void updown_bbq_menu_probe_lang_tune(void)
@@ -13919,7 +13909,7 @@ void updown_bbq_menu_probe_lang_tune(void)
 
 
 /* ==============================================================================
- * updown_bbq_menu_top 英文布局基准（对应 PAGE_UPDOWN_BBQ_MENU_TOP）
+ * updown_bbq_menu_top 英文布局基准（对应 PAGE_UPDOWN_BBQ_MENU_TOP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void updown_bbq_menu_top_lang_tune(void)
@@ -13975,7 +13965,7 @@ void updown_bbq_menu_top_lang_tune(void)
 
 
 /* ==============================================================================
- * updown_bbq_set 英文布局基准（对应 PAGE_UPDOWN_BBQ_SET）
+ * updown_bbq_set 英文布局基准（对应 PAGE_UPDOWN_BBQ_SET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void updown_bbq_set_lang_tune(void)
@@ -14006,22 +13996,16 @@ void updown_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->hour_label, 307, 254);
     lv_obj_set_size(pg->hour_label, 62, 53);
 
-    /* min_label: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->min_label, 312, 254);
-    else
-        lv_obj_set_pos(pg->min_label, 395, 254);
+    /* min_label: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->min_label, 58, 53);
 
     /* shi_label: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->shi_label, 368, 270);
     lv_obj_set_size(pg->shi_label, 30, 32);
 
-    /* fen_label: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->fen_label, 365, 269);
-    else
-        lv_obj_set_pos(pg->fen_label, 448, 269);
+    /* fen_label: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->fen_label, 64, 32);
 
     /* place_img: 图片 | (164,376) | img: place_1.png */
@@ -14139,7 +14123,7 @@ void updown_bbq_set_lang_tune(void)
 
 
 /* ==============================================================================
- * updown_bbq_set_probe 英文布局基准（对应 PAGE_UPDOWN_BBQ_SET_PROBE）
+ * updown_bbq_set_probe 英文布局基准（对应 PAGE_UPDOWN_BBQ_SET_PROBE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void updown_bbq_set_probe_lang_tune(void)
@@ -14224,7 +14208,7 @@ void updown_bbq_set_probe_lang_tune(void)
 
 
 /* ==============================================================================
- * updown_bbq_setting 英文布局基准（对应 PAGE_UPDOWN_BBQ_SETTING）
+ * updown_bbq_setting 英文布局基准（对应 PAGE_UPDOWN_BBQ_SETTING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void updown_bbq_setting_lang_tune(void)
@@ -14336,7 +14320,7 @@ void updown_bbq_setting_lang_tune(void)
 
 
 /* ==============================================================================
- * updown_bbq_stop 英文布局基准（对应 PAGE_UPDOWN_BBQ_STOP）
+ * updown_bbq_stop 英文布局基准（对应 PAGE_UPDOWN_BBQ_STOP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void updown_bbq_stop_lang_tune(void)
@@ -14381,7 +14365,7 @@ void updown_bbq_stop_lang_tune(void)
 
 
 /* ==============================================================================
- * updown_bbq_stop_back 英文布局基准（对应 PAGE_UPDOWN_BBQ_STOP_BACK）
+ * updown_bbq_stop_back 英文布局基准（对应 PAGE_UPDOWN_BBQ_STOP_BACK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void updown_bbq_stop_back_lang_tune(void)
@@ -14434,7 +14418,7 @@ void updown_bbq_stop_back_lang_tune(void)
 
 
 /* ==============================================================================
- * updown_bbq_stop_back_probe 英文布局基准（对应 PAGE_UPDOWN_BBQ_STOP_BACK_PROBE）
+ * updown_bbq_stop_back_probe 英文布局基准（对应 PAGE_UPDOWN_BBQ_STOP_BACK_PROBE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void updown_bbq_stop_back_probe_lang_tune(void)
@@ -14483,7 +14467,7 @@ void updown_bbq_stop_back_probe_lang_tune(void)
 
 
 /* ==============================================================================
- * updown_bbq_stop_probe 英文布局基准（对应 PAGE_UPDOWN_BBQ_STOP_PROBE）
+ * updown_bbq_stop_probe 英文布局基准（对应 PAGE_UPDOWN_BBQ_STOP_PROBE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void updown_bbq_stop_probe_lang_tune(void)
@@ -14527,7 +14511,7 @@ void updown_bbq_stop_probe_lang_tune(void)
 
 
 /* ==============================================================================
- * vegetablemenu 英文布局基准（对应 PAGE_VEGETABLEMENU）
+ * vegetablemenu 英文布局基准（对应 PAGE_VEGETABLEMENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void vegetablemenu_lang_tune(void)
@@ -14574,7 +14558,7 @@ void vegetablemenu_lang_tune(void)
 
 
 /* ==============================================================================
- * waitmenu_24 英文布局基准（对应 PAGE_WAITMENU_24）
+ * waitmenu_24 英文布局基准（对应 PAGE_WAITMENU_24 ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void waitmenu_24_lang_tune(void)
@@ -14601,7 +14585,7 @@ void waitmenu_24_lang_tune(void)
 
 
 /* ==============================================================================
- * waterclean_complete 英文布局基准（对应 PAGE_WATER_CLEAN_COMPLETE）
+ * waterclean_complete 英文布局基准（对应 PAGE_WATER_CLEAN_COMPLETE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void waterclean_complete_lang_tune(void)
@@ -14637,7 +14621,7 @@ void waterclean_complete_lang_tune(void)
 
 
 /* ==============================================================================
- * waterclean_cooking 英文布局基准（对应 PAGE_WATER_CLEAN_COOKING）
+ * waterclean_cooking 英文布局基准（对应 PAGE_WATER_CLEAN_COOKING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void waterclean_cooking_lang_tune(void)
@@ -14678,7 +14662,7 @@ void waterclean_cooking_lang_tune(void)
 
 
 /* ==============================================================================
- * waterclean_set 英文布局基准（对应 PAGE_WATER_CLEAN_SET）
+ * waterclean_set 英文布局基准（对应 PAGE_WATER_CLEAN_SET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void waterclean_set_lang_tune(void)
@@ -14703,7 +14687,7 @@ void waterclean_set_lang_tune(void)
 
 
 /* ==============================================================================
- * waterclean_stop 英文布局基准（对应 PAGE_WATER_CLEAN_STOP）
+ * waterclean_stop 英文布局基准（对应 PAGE_WATER_CLEAN_STOP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void waterclean_stop_lang_tune(void)
@@ -14744,7 +14728,7 @@ void waterclean_stop_lang_tune(void)
 
 
 /* ==============================================================================
- * waterclean_stop_back 英文布局基准（对应 PAGE_WATER_CLEAN_STOP_BACK）
+ * waterclean_stop_back 英文布局基准（对应 PAGE_WATER_CLEAN_STOP_BACK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void waterclean_stop_back_lang_tune(void)
@@ -14793,7 +14777,7 @@ void waterclean_stop_back_lang_tune(void)
 
 
 /* ==============================================================================
- * west_complete 英文布局基准（对应 PAGE_WEST_COMPLETE）
+ * west_complete 英文布局基准（对应 PAGE_WEST_COMPLETE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void west_complete_lang_tune(void)
@@ -14833,7 +14817,7 @@ void west_complete_lang_tune(void)
 
 
 /* ==============================================================================
- * west_cooking 英文布局基准（对应 PAGE_WEST_COOKING）
+ * west_cooking 英文布局基准（对应 PAGE_WEST_COOKING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void west_cooking_lang_tune(void)
@@ -14878,7 +14862,7 @@ void west_cooking_lang_tune(void)
 
 
 /* ==============================================================================
- * west_menu 英文布局基准（对应 PAGE_WEST_MENU）
+ * west_menu 英文布局基准（对应 PAGE_WEST_MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void west_menu_lang_tune(void)
@@ -14955,7 +14939,7 @@ void west_menu_lang_tune(void)
 
 
 /* ==============================================================================
- * west_set 英文布局基准（对应 PAGE_WEST_SET）
+ * west_set 英文布局基准（对应 PAGE_WEST_SET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void west_set_lang_tune(void)
@@ -14986,22 +14970,16 @@ void west_set_lang_tune(void)
     lv_obj_set_pos(pg->hour, 307, 254);
     lv_obj_set_size(pg->hour, 62, 53);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->min, 312, 254);
-    else
-        lv_obj_set_pos(pg->min, 395, 254);
+    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->min, 58, 53);
 
     /* label_160: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_160, 368, 270);
     lv_obj_set_size(pg->label_160, 30, 32);
 
-    /* label_161: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->label_161, 365, 269);
-    else
-        lv_obj_set_pos(pg->label_161, 448, 269);
+    /* label_161: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->label_161, 64, 32);
 
     /* image_78: 图片 | (164,376) | img: place_1.png */
@@ -15063,7 +15041,7 @@ void west_set_lang_tune(void)
 
 
 /* ==============================================================================
- * west_setting 英文布局基准（对应 PAGE_WEST_SETTING）
+ * west_setting 英文布局基准（对应 PAGE_WEST_SETTING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void west_setting_lang_tune(void)
@@ -15141,7 +15119,7 @@ void west_setting_lang_tune(void)
 
 
 /* ==============================================================================
- * west_stop 英文布局基准（对应 PAGE_WEST_STOP）
+ * west_stop 英文布局基准（对应 PAGE_WEST_STOP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void west_stop_lang_tune(void)
@@ -15186,7 +15164,7 @@ void west_stop_lang_tune(void)
 
 
 /* ==============================================================================
- * west_stop_back 英文布局基准（对应 PAGE_WEST_STOP_BACK）
+ * west_stop_back 英文布局基准（对应 PAGE_WEST_STOP_BACK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void west_stop_back_lang_tune(void)
@@ -15239,7 +15217,7 @@ void west_stop_back_lang_tune(void)
 
 
 /* ==============================================================================
- * windchange_bbq_complete 英文布局基准（对应 PAGE_WINDCHANGE_BBQ_COMPLETE）
+ * windchange_bbq_complete 英文布局基准（对应 PAGE_WINDCHANGE_BBQ_COMPLETE ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void windchange_bbq_complete_lang_tune(void)
@@ -15279,7 +15257,7 @@ void windchange_bbq_complete_lang_tune(void)
 
 
 /* ==============================================================================
- * windchange_bbq_cooking 英文布局基准（对应 PAGE_WINDCHANGE_BBQ_COOKING）
+ * windchange_bbq_cooking 英文布局基准（对应 PAGE_WINDCHANGE_BBQ_COOKING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void windchange_bbq_cooking_lang_tune(void)
@@ -15324,7 +15302,7 @@ void windchange_bbq_cooking_lang_tune(void)
 
 
 /* ==============================================================================
- * windchange_bbq_menu 英文布局基准（对应 PAGE_WINDCHANGE_BBQ_MENU）
+ * windchange_bbq_menu 英文布局基准（对应 PAGE_WINDCHANGE_BBQ_MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void windchange_bbq_menu_lang_tune(void)
@@ -15401,7 +15379,7 @@ void windchange_bbq_menu_lang_tune(void)
 
 
 /* ==============================================================================
- * windchange_bbq_set 英文布局基准（对应 PAGE_WINDCHANGE_BBQ_SET）
+ * windchange_bbq_set 英文布局基准（对应 PAGE_WINDCHANGE_BBQ_SET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void windchange_bbq_set_lang_tune(void)
@@ -15432,22 +15410,16 @@ void windchange_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->hour, 307, 254);
     lv_obj_set_size(pg->hour, 62, 53);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->min, 312, 254);
-    else
-        lv_obj_set_pos(pg->min, 395, 254);
+    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->min, 58, 53);
 
     /* label_335: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_335, 368, 270);
     lv_obj_set_size(pg->label_335, 30, 32);
 
-    /* label_336: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 状态切换(默认业务值, 直接改数字) */
-    if (set_hour == 0)
-        lv_obj_set_pos(pg->label_336, 365, 269);
-    else
-        lv_obj_set_pos(pg->label_336, 448, 269);
+    /* label_336: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+    /* 位置由业务动态控制, 微调按文件头模板 */
     lv_obj_set_size(pg->label_336, 64, 32);
 
     /* image_152: 图片 | (164,376) | img: place_1.png */
@@ -15521,7 +15493,7 @@ void windchange_bbq_set_lang_tune(void)
 
 
 /* ==============================================================================
- * windchange_bbq_setting 英文布局基准（对应 PAGE_WINDCHANGE_BBQ_SETTING）
+ * windchange_bbq_setting 英文布局基准（对应 PAGE_WINDCHANGE_BBQ_SETTING ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void windchange_bbq_setting_lang_tune(void)
@@ -15599,7 +15571,7 @@ void windchange_bbq_setting_lang_tune(void)
 
 
 /* ==============================================================================
- * windchange_bbq_stop 英文布局基准（对应 PAGE_WINDCHANGE_BBQ_STOP）
+ * windchange_bbq_stop 英文布局基准（对应 PAGE_WINDCHANGE_BBQ_STOP ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void windchange_bbq_stop_lang_tune(void)
@@ -15644,7 +15616,7 @@ void windchange_bbq_stop_lang_tune(void)
 
 
 /* ==============================================================================
- * windchange_bbq_stop_back 英文布局基准（对应 PAGE_WINDCHANGE_BBQ_STOP_BACK）
+ * windchange_bbq_stop_back 英文布局基准（对应 PAGE_WINDCHANGE_BBQ_STOP_BACK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
 void windchange_bbq_stop_back_lang_tune(void)
@@ -15698,273 +15670,275 @@ void windchange_bbq_stop_back_lang_tune(void)
 /* ============ 排版微调函数注册表（页面 → 函数 → 动态偏移 dx/dy） ============
 /* dx/dy: 定时器重写对象(如 bartemp)的整体平移偏移，中文模式/0 = 零影响 */
 const struct { page_id_t page; lang_tune_fn fn; int dx, dy; } s_tune_tab[] = {
-    { PAGE_AIR_COMPLETE, air_complete_lang_tune, 0, 0 },
-    { PAGE_AIR_COOKING, air_cooking_lang_tune, 0, 0 },
-    { PAGE_AIR_MENU, air_menu_lang_tune, 0, 0 },
-    { PAGE_AIR_SET, air_set_lang_tune, 0, 0 },
-    { PAGE_AIR_SETTING, air_setting_lang_tune, 0, 0 },
-    { PAGE_AIR_STOP, air_stop_lang_tune, 0, 0 },
-    { PAGE_AIR_STOP_BACK, air_stop_back_lang_tune, 0, 0 },
-    { PAGE_BOTTOM_BBQ_COMPLETE, bottom_bbq_complete_lang_tune, 0, 0 },
-    { PAGE_BOTTOM_BBQ_COMPLETE_PROBE, bottom_bbq_complete_probe_lang_tune, 0, 0 },
-    { PAGE_BOTTOM_BBQ_COOKING, bottom_bbq_cooking_lang_tune, 0, 0 },
-    { PAGE_BOTTOM_BBQ_COOKING_PROBE, bottom_bbq_cooking_probe_lang_tune, 0, 0 },
-    { PAGE_BOTTOM_BBQ_MENU, bottom_bbq_menu_lang_tune, 0, 0 },
-    { PAGE_BOTTOM_BBQ_MENU_PROBE, bottom_bbq_menu_probe_lang_tune, 0, 0 },
-    { PAGE_BOTTOM_BBQ_SET, bottom_bbq_set_lang_tune, 0, 0 },
-    { PAGE_BOTTOM_BBQ_SET_PROBE, bottom_bbq_set_probe_lang_tune, 0, 0 },
-    { PAGE_BOTTOM_BBQ_SETTING, bottom_bbq_setting_lang_tune, 0, 0 },
-    { PAGE_BOTTOM_BBQ_STOP, bottom_bbq_stop_lang_tune, 0, 0 },
-    { PAGE_BOTTOM_BBQ_STOP_BACK, bottom_bbq_stop_back_lang_tune, 0, 0 },
-    { PAGE_BOTTOM_BBQ_STOP_BACK_PROBE, bottom_bbq_stop_back_probe_lang_tune, 0, 0 },
-    { PAGE_BOTTOM_BBQ_STOP_PROBE, bottom_bbq_stop_probe_lang_tune, 0, 0 },
-    { PAGE_BREAD6MENU, bread6menu_lang_tune, 0, 0 },
-    { PAGE_BREAD_COMPLETE, bread_complete_lang_tune, 0, 0 },
-    { PAGE_BREAD_COOKING, bread_cooking_lang_tune, 0, 0 },
-    { PAGE_BREAD_MENU, bread_menu_lang_tune, 0, 0 },
-    { PAGE_BREAD_SET, bread_set_lang_tune, 0, 0 },
-    { PAGE_BREAD_SETTING, bread_setting_lang_tune, 0, 0 },
-    { PAGE_BREAD_STOP, bread_stop_lang_tune, 0, 0 },
-    { PAGE_BREAD_STOP_BACK, bread_stop_back_lang_tune, 0, 0 },
-    { PAGE_CAKE6MENU, cake6menu_lang_tune, 0, 0 },
-    { PAGE_CENTRAL_BBQ_COMPLETE, central_bbq_complete_lang_tune, 0, 0 },
-    { PAGE_CENTRAL_BBQ_COOKING, central_bbq_cooking_lang_tune, 0, 0 },
-    { PAGE_CENTRAL_BBQ_MENU, central_bbq_menu_lang_tune, 0, 0 },
-    { PAGE_CENTRAL_BBQ_SET, central_bbq_set_lang_tune, 0, 0 },
-    { PAGE_CENTRAL_BBQ_SETTING, central_bbq_setting_lang_tune, 0, 0 },
-    { PAGE_CENTRAL_BBQ_STOP, central_bbq_stop_lang_tune, 0, 0 },
-    { PAGE_CENTRAL_BBQ_STOP_BACK, central_bbq_stop_back_lang_tune, 0, 0 },
-    { PAGE_CHICK6MENU, chick6menu_lang_tune, 0, 0 },
-    { PAGE_CHICKENCOOKING, chickencooking_lang_tune, 0, 0 },
-    { PAGE_CHICKENMENU, chickenmenu_lang_tune, 0, 0 },
-    { PAGE_CHICKMENUTZ, chickmenutz_lang_tune, 0, 0 },
-    { PAGE_CHIP_COMPLETE, chip_complete_lang_tune, 0, 0 },
-    { PAGE_CHIP_COOKING, chip_cooking_lang_tune, 0, 0 },
-    { PAGE_CHIP_MENU, chip_menu_lang_tune, 0, 0 },
-    { PAGE_CHIP_SET, chip_set_lang_tune, 0, 0 },
-    { PAGE_CHIP_SETTING, chip_setting_lang_tune, 0, 0 },
-    { PAGE_CHIP_STOP, chip_stop_lang_tune, 0, 0 },
-    { PAGE_CHIP_STOP_BACK, chip_stop_back_lang_tune, 0, 0 },
-    { PAGE_CLEAN_MENU, clean_menu_lang_tune, 0, 0 },
-    { PAGE_COLOR_COOKING, color_cookoing_lang_tune, 0, 0 },
-    { PAGE_COLOR_STOP, color_stop_lang_tune, 0, 0 },
-    { PAGE_COLOR_STOP_BACK, color_stop_back_lang_tune, 0, 0 },
-    { PAGE_COLOR_COOKING_COMPLETE, colorcooking_complete_lang_tune, 0, 0 },
-    { PAGE_COOK4_MENU, cook4menu_lang_tune, 0, 0 },
-    { PAGE_COOK_MENU_TZ, cook_menu_tz_lang_tune, 0, 0 },
-    { PAGE_COOKIE_COMPLETE, cookie_complete_lang_tune, 0, 0 },
-    { PAGE_COOKIE_COOKING, cookie_cooking_lang_tune, 0, 0 },
-    { PAGE_COOKIE_MENU, cookie_menu_lang_tune, 0, 0 },
-    { PAGE_COOKIE_SET, cookie_set_lang_tune, 0, 0 },
-    { PAGE_COOKIE_SETTING, cookie_setting_lang_tune, 0, 0 },
-    { PAGE_COOKIE_STOP, cookie_stop_lang_tune, 0, 0 },
-    { PAGE_COOKIE_STOP_BACK, cookie_stop_back_lang_tune, 0, 0 },
-    { PAGE_COOKMENU, cookmenu_lang_tune, 0, 0 },
-    { PAGE_CORN_COMPLETE, corn_complete_lang_tune, 0, 0 },
-    { PAGE_CORN_COOKING, corn_cooking_lang_tune, 0, 0 },
-    { PAGE_CORN_MENU, corn_menu_lang_tune, 0, 0 },
-    { PAGE_CORN_SET, corn_set_lang_tune, 0, 0 },
-    { PAGE_CORN_SETTING, corn_setting_lang_tune, 0, 0 },
-    { PAGE_CORN_STOP, corn_stop_lang_tune, 0, 0 },
-    { PAGE_CORN_STOP_BACK, corn_stop_back_lang_tune, 0, 0 },
-    { PAGE_CUSTOM_COMPLETE, custom_complete_lang_tune, 0, 0 },
-    { PAGE_CUSTOM_COOKING, custom_cooking_lang_tune, 0, 0 },
-    { PAGE_CUSTOM_MENU, custom_menu_lang_tune, 0, 0 },
-    { PAGE_CUSTOM_SET, custom_set_lang_tune, 0, 0 },
-    { PAGE_CUSTOM_SETTING, custom_setting_lang_tune, 0, 0 },
-    { PAGE_CUSTOM_STOP, custom_stop_lang_tune, 0, 0 },
-    { PAGE_CUSTOM_STOP_BACK, custom_stop_back_lang_tune, 0, 0 },
-    { PAGE_DELAYSET, delayset_lang_tune, 0, 0 },
-    { PAGE_DESCRIPTIONMENU, descriptionmenu_lang_tune, 0, 0 },
-    { PAGE_DUCK6MENU, duckmenu_lang_tune, 0, 0 },
-    { PAGE_EXTRA_COLOR, extra_color_lang_tune, 0, 0 },
-    { PAGE_FROZEN_COOK, frozencookpage_lang_tune, 0, 0 },
-    { PAGE_HEATCONTAIN_COMPLETE, heatcontain_complete_lang_tune, 0, 0 },
-    { PAGE_HEATCONTAIN_COOKING, heatcontain_cooking_lang_tune, 0, 0 },
-    { PAGE_HEATCONTAIN_MENU, heatcontain_menu_lang_tune, 0, 0 },
-    { PAGE_HEATCONTAIN_SET, heatcontain_set_lang_tune, 0, 0 },
-    { PAGE_HEATCONTAIN_SETTING, heatcontain_setting_lang_tune, 0, 0 },
-    { PAGE_HEATCONTAIN_STOP, heatcontain_stop_lang_tune, 0, 0 },
-    { PAGE_HEATCONTAIN_STOP_BACK, heatcontain_stop_back_lang_tune, 0, 0 },
-    { PAGE_HOT_BBQ_COMPLETE, hot_bbq_complete_lang_tune, 0, 0 },
-    { PAGE_HOT_BBQ_COMPLETE_PROBE, hot_bbq_complete_probe_lang_tune, 0, 0 },
-    { PAGE_HOT_BBQ_COOKING, hot_bbq_cooking_lang_tune, 0, 0 },
-    { PAGE_HOT_BBQ_COOKING_PROBE, hot_bbq_cooking_probe_lang_tune, 0, 0 },
-    { PAGE_HOT_BBQ_MENU, hot_bbq_menu_lang_tune, 0, 0 },
-    { PAGE_HOT_BBQ_MENU_PROBE, hot_bbq_menu_probe_lang_tune, 0, 0 },
-    { PAGE_HOT_BBQ_SET, hot_bbq_set_lang_tune, 0, 0 },
-    { PAGE_HOT_BBQ_SET_PROBE, hot_bbq_set_probe_lang_tune, 0, 0 },
-    { PAGE_HOT_BBQ_SETTING, hot_bbq_setting_lang_tune, 0, 0 },
-    { PAGE_HOT_BBQ_STOP, hot_bbq_stop_lang_tune, 0, 0 },
-    { PAGE_HOT_BBQ_STOP_BACK, hot_bbq_stop_back_lang_tune, 0, 0 },
-    { PAGE_HOT_BBQ_STOP_BACK_PROBE, hot_bbq_stop_back_probe_lang_tune, 0, 0 },
-    { PAGE_HOT_BBQ_STOP_PROBE, hot_bbq_stop_probe_lang_tune, 0, 0 },
-    { PAGE_HOTCLEAN_MENU, hotclean_menu_lang_tune, 0, 0 },
-    { PAGE_HOTCLEANHIGH_COMPLETE, hotcleanhigh_complete_lang_tune, 0, 0 },
-    { PAGE_HOTCLEANHIGH_COOKING, hotcleanhigh_cooking_lang_tune, 0, 0 },
-    { PAGE_HOTCLEANHIGH_COOLING, hotcleanhigh_cooling_lang_tune, 0, 0 },
-    { PAGE_HOTCLEANHIGH_SET, hotcleanhigh_set_lang_tune, 0, 0 },
-    { PAGE_HOTCLEANHIGH_STOP, hotcleanhigh_stop_lang_tune, 0, 0 },
-    { PAGE_HOTCLEANHIGH_STOP_BACK, hotcleanhigh_stop_back_lang_tune, 0, 0 },
-    { PAGE_HOTCLEANMIDDLE_COMPLETE, hotcleanmiddle_complete_lang_tune, 0, 0 },
-    { PAGE_HOTCLEANMIDDLE_COOKING, hotcleanmiddle_cooking_lang_tune, 0, 0 },
-    { PAGE_HOTCLEANMIDDLE_COOLING, hotcleanmiddle_cooling_lang_tune, 0, 0 },
-    { PAGE_HOTCLEANMIDDLE_SET, hotcleanmiddle_set_lang_tune, 0, 0 },
-    { PAGE_HOTCLEANMIDDLE_STOP, hotcleanmiddle_stop_lang_tune, 0, 0 },
-    { PAGE_HOTCLEANMIDDLE_STOP_BACK, hotcleanmiddle_stop_back_lang_tune, 0, 0 },
-    { PAGE_HOTCLEANSAVE_COMPLETE, hotcleansave_complete_lang_tune, 0, 0 },
-    { PAGE_HOTCLEANSAVE_COOKING, hotcleansave_cooking_lang_tune, 0, 0 },
-    { PAGE_HOTCLEANSAVE_COOLING, hotcleansave_cooling_lang_tune, 0, 0 },
-    { PAGE_HOTCLEANSAVE_SET, hotcleansave_set_lang_tune, 0, 0 },
-    { PAGE_HOTCLEANSAVE_STOP, hotcleansave_stop_lang_tune, 0, 0 },
-    { PAGE_HOTCLEANSAVE_STOP_BACK, hotcleansave_stop_back_lang_tune, 0, 0 },
-    { PAGE_HOTWIND_BBQ_COMPLETE, hotwind_bbq_complete_lang_tune, 0, 0 },
-    { PAGE_HOTWIND_BBQ_COOKING, hotwind_bbq_cooking_lang_tune, 0, 0 },
-    { PAGE_HOTWIND_BBQ_MENU, hotwind_bbq_menu_lang_tune, 0, 0 },
-    { PAGE_HOTWIND_BBQ_SET, hotwind_bbq_set_lang_tune, 0, 0 },
-    { PAGE_HOTWIND_BBQ_SETTING, hotwind_bbq_setting_lang_tune, 0, 0 },
-    { PAGE_HOTWIND_BBQ_STOP, hotwind_bbq_stop_lang_tune, 0, 0 },
-    { PAGE_HOTWIND_BBQ_STOP_BACK, hotwind_bbq_stop_back_lang_tune, 0, 0 },
-    { PAGE_LASAGNA_COMPLETE, lasagna_complete_lang_tune, 0, 0 },
-    { PAGE_LASAGNA_COOKING, lasagna_cooking_lang_tune, 0, 0 },
-    { PAGE_LASAGNA_MENU, lasagna_menu_lang_tune, 0, 0 },
-    { PAGE_LASAGNA_SET, lasagna_set_lang_tune, 0, 0 },
-    { PAGE_LASAGNA_SETTING, lasagna_setting_lang_tune, 0, 0 },
-    { PAGE_LASAGNA_STOP, lasagna_stop_lang_tune, 0, 0 },
-    { PAGE_LASAGNA_STOP_BACK, lasagna_stop_back_lang_tune, 0, 0 },
-    { PAGE_MAJOR_MENU, major_menu_lang_tune, 0, 0 },
-    { PAGE_MAJOR_MENU_TZ, major_menu_tz_lang_tune, 0, 0 },
-    { PAGE_MENU_COOK_COMPLETE, menu_complete_lang_tune, 0, 0 },
-    { PAGE_MENU_COOK_COOKING, menu_cooking_lang_tune, 0, 0 },
-    { PAGE_MENU_COOK_MENU, menu_menu_lang_tune, 0, 0 },
-    { PAGE_MENU_COOK_SET, menu_set_lang_tune, 0, 0 },
-    { PAGE_MENU_COOK_SETTING, menu_setting_lang_tune, 0, 0 },
-    { PAGE_MENU_COOK_STOP, menu_stop_lang_tune, 0, 0 },
-    { PAGE_MENU_COOK_STOP_BACK, menu_stop_back_lang_tune, 0, 0 },
-    { PAGE_PIZZA3_COMPLETE, pizza3_complete_lang_tune, 0, 0 },
-    { PAGE_PIZZA3_COOKING, pizza3_cooking_lang_tune, 0, 0 },
-    { PAGE_PIZZA3_MENU, pizza3_menu_lang_tune, 0, 0 },
-    { PAGE_PIZZA3_SET, pizza3_set_lang_tune, 0, 0 },
-    { PAGE_PIZZA3_SETTING, pizza3_setting_lang_tune, 0, 0 },
-    { PAGE_PIZZA3_STOP, pizza3_stop_lang_tune, 0, 0 },
-    { PAGE_PIZZA3_STOP_BACK, pizza3_stop_back_lang_tune, 0, 0 },
-    { PAGE_PIZZA_2_COMPLETE, pizza_2_complete_lang_tune, 0, 0 },
-    { PAGE_PIZZA_2_COOKING, pizza_2_cooking_lang_tune, 0, 0 },
-    { PAGE_PIZZA_2_MENU, pizza_2_menu_lang_tune, 0, 0 },
-    { PAGE_PIZZA_2_SET, pizza_2_set_lang_tune, 0, 0 },
-    { PAGE_PIZZA_2_SETTING, pizza_2_setting_lang_tune, 0, 0 },
-    { PAGE_PIZZA_2_STOP, pizza_2_stop_lang_tune, 0, 0 },
-    { PAGE_PIZZA_2_STOP_BACK, pizza_2_stop_back_lang_tune, 0, 0 },
-    { PAGE_PIZZA_COMPLETE, pizza_complete_lang_tune, 0, 0 },
-    { PAGE_PIZZA_COOKING, pizza_cooking_lang_tune, 0, 0 },
-    { PAGE_PIZZA_MENU, pizza_menu_lang_tune, 0, 0 },
-    { PAGE_PIZZA_SET, pizza_set_lang_tune, 0, 0 },
-    { PAGE_PIZZA_SETTING, pizza_setting_lang_tune, 0, 0 },
-    { PAGE_PIZZA_STOP, pizza_stop_lang_tune, 0, 0 },
-    { PAGE_PIZZA_STOP_BACK, pizza_stop_back_lang_tune, 0, 0 },
-    { PAGE_PREHEAT_STOP_BACK, preheat_stop_back_lang_tune, 0, 0 },
-    { PAGE_PREHEAT_COMPLETE, preheatcomplete_lang_tune, 0, 0 },
-    { PAGE_PREHEAT_COOKING, preheatcooking_lang_tune, 0, 0 },
-    { PAGE_PREHEAT_MENU, preheatmenu_lang_tune, 0, 0 },
-    { PAGE_PREHEAT_STOP, preheatstop_lang_tune, 0, 0 },
-    { PAGE_PROBENEEDTIP, probeneedtip_lang_tune, 0, 0 },
-    { PAGE_PROBETIP, probetip_lang_tune, 0, 0 },
-    { PAGE_RISING_COMPLETE, rising_complete_lang_tune, 0, 0 },
-    { PAGE_RISING_COOKING, rising_cooking_lang_tune, 0, 0 },
-    { PAGE_RISING_MENU, rising_menu_lang_tune, 0, 0 },
-    { PAGE_RISING_SET, rising_set_lang_tune, 0, 0 },
-    { PAGE_RISING_SETTING, rising_setting_lang_tune, 0, 0 },
-    { PAGE_RISING_STOP, rising_stop_lang_tune, 0, 0 },
-    { PAGE_RISING_STOP_BACK, rising_stop_back_lang_tune, 0, 0 },
-    { PAGE_RISINGPAGE, risingpage_lang_tune, 0, 0 },
-    { PAGE_SAVE_BBQ_COMPLETE, save_bbq_complete_lang_tune, 0, 0 },
-    { PAGE_SAVE_BBQ_COOKING, save_bbq_cooking_lang_tune, 0, 0 },
-    { PAGE_SAVE_BBQ_MENU, save_bbq_menu_lang_tune, 0, 0 },
-    { PAGE_SAVE_BBQ_SET, save_bbq_set_lang_tune, 0, 0 },
-    { PAGE_SAVE_BBQ_SETTING, save_bbq_setting_lang_tune, 0, 0 },
-    { PAGE_SAVE_BBQ_STOP, save_bbq_stop_lang_tune, 0, 0 },
-    { PAGE_SAVE_BBQ_STOP_BACK, save_bbq_stop_back_lang_tune, 0, 0 },
-    { PAGE_SCREEN_SET, screen_SET_lang_tune, 0, 0 },
-    { PAGE_SIXMENU, sixmenu_lang_tune, 0, 0 },
-    { PAGE_SIXMENUTZ, sixmenutz_lang_tune, 0, 0 },
-    { PAGE_SIXOP3PAGE, sixop3page_lang_tune, 0, 0 },
-    { PAGE_SLOWCOOK_COMPLETE, slowcook_complete_lang_tune, 0, 0 },
-    { PAGE_SLOWCOOK_COMPLETE_PROBE, slowcook_complete_probe_lang_tune, 0, 0 },
-    { PAGE_SLOWCOOK_COOKING, slowcook_cooking_lang_tune, 0, 0 },
-    { PAGE_SLOWCOOK_COOKING_PROBE, slowcook_cooking_probe_lang_tune, 0, 0 },
-    { PAGE_SLOWCOOK_MENU, slowcook_menu_lang_tune, 0, 0 },
-    { PAGE_SLOWCOOK_MENU_PROBE, slowcook_menu_probe_lang_tune, 0, 0 },
-    { PAGE_SLOWCOOK_SET, slowcook_set_lang_tune, 0, 0 },
-    { PAGE_SLOWCOOK_SET_PROBE, slowcook_set_probe_lang_tune, 0, 0 },
-    { PAGE_SLOWCOOK_SETTING, slowcook_setting_lang_tune, 0, 0 },
-    { PAGE_SLOWCOOK_STOP, slowcook_stop_lang_tune, 0, 0 },
-    { PAGE_SLOWCOOK_STOP_BACK, slowcook_stop_back_lang_tune, 0, 0 },
-    { PAGE_SLOWCOOK_STOP_BACK_PROBE, slowcook_stop_back_probe_lang_tune, 0, 0 },
-    { PAGE_SLOWCOOK_STOP_PROBE, slowcook_stop_probe_lang_tune, 0, 0 },
-    { PAGE_SOMECOOK, somecook_lang_tune, 0, 0 },
-    { PAGE_SIX_COOKING, somecook_cooking_lang_tune, 0, 0 },
-    { PAGE_SOMECOOK_COOKING, somecook_cooking_lang_tune, 0, 0 },
-    { PAGE_SPECIAL_MENU, special_menu_lang_tune, 0, 0 },
-    { PAGE_SPECIAL_MENU_TZ, special_menu_tz_lang_tune, 0, 0 },
-    { PAGE_STEPSET, stepset_lang_tune, 0, 0 },
-    { PAGE_STRUDEL_COMPLETE, strudel_complete_lang_tune, 0, 0 },
-    { PAGE_STRUDEL_COOKING, strudel_cooking_lang_tune, 0, 0 },
-    { PAGE_STRUDEL_MENU, strudel_menu_lang_tune, 0, 0 },
-    { PAGE_STRUDEL_SET, strudel_set_lang_tune, 0, 0 },
-    { PAGE_STRUDEL_SETTING, strudel_setting_lang_tune, 0, 0 },
-    { PAGE_STRUDEL_STOP, strudel_stop_lang_tune, 0, 0 },
-    { PAGE_STRUDEL_STOP_BACK, strudel_stop_back_lang_tune, 0, 0 },
-    { PAGE_TEMPTIP, temptip_lang_tune, 0, 0 },
-    { PAGE_TOASTCOLOR, toastcolor_lang_tune, 0, 0 },
-    { PAGE_TOP_BBQ_COMPLETE, top_bbq_complete_lang_tune, 0, 0 },
-    { PAGE_TOP_BBQ_COOKING, top_bbq_cooking_lang_tune, 0, 0 },
-    { PAGE_TOP_BBQ_MENU, top_bbq_menu_lang_tune, 0, 0 },
-    { PAGE_TOP_BBQ_SET, top_bbq_set_lang_tune, 0, 0 },
-    { PAGE_TOP_BBQ_SETTING, top_bbq_setting_lang_tune, 0, 0 },
-    { PAGE_TOP_BBQ_STOP, top_bbq_stop_lang_tune, 0, 0 },
-    { PAGE_TOP_BBQ_STOP_BACK, top_bbq_stop_back_lang_tune, 0, 0 },
-    { PAGE_UNFROZEN_COMPLETE, unfrozen_complete_lang_tune, 0, 0 },
-    { PAGE_UNFROZEN_COOKING, unfrozen_cooking_lang_tune, 0, 0 },
-    { PAGE_UNFROZEN_MENU, unfrozen_menu_lang_tune, 0, 0 },
-    { PAGE_UNFROZEN_SET, unfrozen_set_lang_tune, 0, 0 },
-    { PAGE_UNFROZEN_SETTING, unfrozen_setting_lang_tune, 0, 0 },
-    { PAGE_UNFROZEN_STOP, unfrozen_stop_lang_tune, 0, 0 },
-    { PAGE_UNFROZEN_STOP_BACK, unfrozen_stop_back_lang_tune, 0, 0 },
-    { PAGE_UPDOWN_BBQ_COMPLETE, updown_bbq_complete_lang_tune, 0, 0 },
-    { PAGE_UPDOWN_BBQ_COMPLETE_PROBE, updown_bbq_complete_probe_lang_tune, 0, 0 },
-    { PAGE_UPDOWN_BBQ_COOKING, updown_bbq_cooking_lang_tune, 0, 0 },
-    { PAGE_UPDOWN_BBQ_COOKING_PROBE, updown_bbq_cooking_probe_lang_tune, 0, 0 },
-    { PAGE_UPDOWN_BBQ_MENU, updown_bbq_menu_lang_tune, 0, 0 },
-    { PAGE_UPDOWN_BBQ_MENU_LOW, updown_bbq_menu_low_lang_tune, 0, 0 },
-    { PAGE_UPDOWN_BBQ_MENU_PROBE, updown_bbq_menu_probe_lang_tune, 0, 0 },
-    { PAGE_UPDOWN_BBQ_MENU_TOP, updown_bbq_menu_top_lang_tune, 0, 0 },
-    { PAGE_UPDOWN_BBQ_SET, updown_bbq_set_lang_tune, 0, 0 },
-    { PAGE_UPDOWN_BBQ_SET_PROBE, updown_bbq_set_probe_lang_tune, 0, 0 },
-    { PAGE_UPDOWN_BBQ_SETTING, updown_bbq_setting_lang_tune, 0, 0 },
-    { PAGE_UPDOWN_BBQ_STOP, updown_bbq_stop_lang_tune, 0, 0 },
-    { PAGE_UPDOWN_BBQ_STOP_BACK, updown_bbq_stop_back_lang_tune, 0, 0 },
-    { PAGE_UPDOWN_BBQ_STOP_BACK_PROBE, updown_bbq_stop_back_probe_lang_tune, 0, 0 },
-    { PAGE_UPDOWN_BBQ_STOP_PROBE, updown_bbq_stop_probe_lang_tune, 0, 0 },
-    { PAGE_VEGETABLEMENU, vegetablemenu_lang_tune, 0, 0 },
-    { PAGE_WAITMENU_24, waitmenu_24_lang_tune, 0, 0 },
-    { PAGE_WATER_CLEAN_COMPLETE, waterclean_complete_lang_tune, 0, 0 },
-    { PAGE_WATER_CLEAN_COOKING, waterclean_cooking_lang_tune, 0, 0 },
-    { PAGE_WATER_CLEAN_SET, waterclean_set_lang_tune, 0, 0 },
-    { PAGE_WATER_CLEAN_STOP, waterclean_stop_lang_tune, 0, 0 },
-    { PAGE_WATER_CLEAN_STOP_BACK, waterclean_stop_back_lang_tune, 0, 0 },
-    { PAGE_WEST_COMPLETE, west_complete_lang_tune, 0, 0 },
-    { PAGE_WEST_COOKING, west_cooking_lang_tune, 0, 0 },
-    { PAGE_WEST_MENU, west_menu_lang_tune, 0, 0 },
-    { PAGE_WEST_SET, west_set_lang_tune, 0, 0 },
-    { PAGE_WEST_SETTING, west_setting_lang_tune, 0, 0 },
-    { PAGE_WEST_STOP, west_stop_lang_tune, 0, 0 },
-    { PAGE_WEST_STOP_BACK, west_stop_back_lang_tune, 0, 0 },
-    { PAGE_WINDCHANGE_BBQ_COMPLETE, windchange_bbq_complete_lang_tune, 0, 0 },
-    { PAGE_WINDCHANGE_BBQ_COOKING, windchange_bbq_cooking_lang_tune, 0, 0 },
-    { PAGE_WINDCHANGE_BBQ_MENU, windchange_bbq_menu_lang_tune, 0, 0 },
-    { PAGE_WINDCHANGE_BBQ_SET, windchange_bbq_set_lang_tune, 0, 0 },
-    { PAGE_WINDCHANGE_BBQ_SETTING, windchange_bbq_setting_lang_tune, 0, 0 },
-    { PAGE_WINDCHANGE_BBQ_STOP, windchange_bbq_stop_lang_tune, 0, 0 },
-    { PAGE_WINDCHANGE_BBQ_STOP_BACK, windchange_bbq_stop_back_lang_tune, 0, 0 },
+    { PAGE_AIR_COMPLETE, air_complete_lang_tune, 0, 0 },   /*  */
+    { PAGE_AIR_COOKING, air_cooking_lang_tune, 0, 0 },   /*  */
+    { PAGE_AIR_MENU, air_menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_AIR_SET, air_set_lang_tune, 0, 0 },   /*  */
+    { PAGE_AIR_SETTING, air_setting_lang_tune, 0, 0 },   /*  */
+    { PAGE_AIR_STOP, air_stop_lang_tune, 0, 0 },   /*  */
+    { PAGE_AIR_STOP_BACK, air_stop_back_lang_tune, 0, 0 },   /*  */
+    { PAGE_BOTTOM_BBQ_COMPLETE, bottom_bbq_complete_lang_tune, 0, 0 },   /*  */
+    { PAGE_BOTTOM_BBQ_COMPLETE_PROBE, bottom_bbq_complete_probe_lang_tune, 0, 0 },   /*  */
+    { PAGE_BOTTOM_BBQ_COOKING, bottom_bbq_cooking_lang_tune, 0, 0 },   /*  */
+    { PAGE_BOTTOM_BBQ_COOKING_PROBE, bottom_bbq_cooking_probe_lang_tune, 0, 0 },   /*  */
+    { PAGE_BOTTOM_BBQ_MENU, bottom_bbq_menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_BOTTOM_BBQ_MENU_PROBE, bottom_bbq_menu_probe_lang_tune, 0, 0 },   /*  */
+    { PAGE_BOTTOM_BBQ_SET, bottom_bbq_set_lang_tune, 0, 0 },   /*  */
+    { PAGE_BOTTOM_BBQ_SET_PROBE, bottom_bbq_set_probe_lang_tune, 0, 0 },   /*  */
+    { PAGE_BOTTOM_BBQ_SETTING, bottom_bbq_setting_lang_tune, 0, 0 },   /*  */
+    { PAGE_BOTTOM_BBQ_STOP, bottom_bbq_stop_lang_tune, 0, 0 },   /*  */
+    { PAGE_BOTTOM_BBQ_STOP_BACK, bottom_bbq_stop_back_lang_tune, 0, 0 },   /*  */
+    { PAGE_BOTTOM_BBQ_STOP_BACK_PROBE, bottom_bbq_stop_back_probe_lang_tune, 0, 0 },   /*  */
+    { PAGE_BOTTOM_BBQ_STOP_PROBE, bottom_bbq_stop_probe_lang_tune, 0, 0 },   /*  */
+    { PAGE_BREAD6MENU, bread6menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_BREAD_COMPLETE, bread_complete_lang_tune, 0, 0 },   /*  */
+    { PAGE_BREAD_COOKING, bread_cooking_lang_tune, 0, 0 },   /*  */
+    { PAGE_BREAD_MENU, bread_menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_BREAD_SET, bread_set_lang_tune, 0, 0 },   /*  */
+    { PAGE_BREAD_SETTING, bread_setting_lang_tune, 0, 0 },   /*  */
+    { PAGE_BREAD_STOP, bread_stop_lang_tune, 0, 0 },   /*  */
+    { PAGE_BREAD_STOP_BACK, bread_stop_back_lang_tune, 0, 0 },   /*  */
+    { PAGE_CAKE6MENU, cake6menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_CENTRAL_BBQ_COMPLETE, central_bbq_complete_lang_tune, 0, 0 },   /*  */
+    { PAGE_CENTRAL_BBQ_COOKING, central_bbq_cooking_lang_tune, 0, 0 },   /*  */
+    { PAGE_CENTRAL_BBQ_MENU, central_bbq_menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_CENTRAL_BBQ_SET, central_bbq_set_lang_tune, 0, 0 },   /*  */
+    { PAGE_CENTRAL_BBQ_SETTING, central_bbq_setting_lang_tune, 0, 0 },   /*  */
+    { PAGE_CENTRAL_BBQ_STOP, central_bbq_stop_lang_tune, 0, 0 },   /*  */
+    { PAGE_CENTRAL_BBQ_STOP_BACK, central_bbq_stop_back_lang_tune, 0, 0 },   /*  */
+    { PAGE_CHICK6MENU, chick6menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_CHICKENCOOKING, chickencooking_lang_tune, 0, 0 },   /*  */
+    { PAGE_CHICKENMENU, chickenmenu_lang_tune, 0, 0 },   /*  */
+    { PAGE_CHICKMENUTZ, chickmenutz_lang_tune, 0, 0 },   /*  */
+    { PAGE_CHIP_COMPLETE, chip_complete_lang_tune, 0, 0 },   /*  */
+    { PAGE_CHIP_COOKING, chip_cooking_lang_tune, 0, 0 },   /*  */
+    { PAGE_CHIP_MENU, chip_menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_CHIP_SET, chip_set_lang_tune, 0, 0 },   /*  */
+    { PAGE_CHIP_SETTING, chip_setting_lang_tune, 0, 0 },   /*  */
+    { PAGE_CHIP_STOP, chip_stop_lang_tune, 0, 0 },   /*  */
+    { PAGE_CHIP_STOP_BACK, chip_stop_back_lang_tune, 0, 0 },   /*  */
+    { PAGE_CLEAN_MENU, clean_menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_COLOR_COOKING, color_cookoing_lang_tune, 0, 0 },   /*  */
+    { PAGE_COLOR_STOP, color_stop_lang_tune, 0, 0 },   /*  */
+    { PAGE_COLOR_STOP_BACK, color_stop_back_lang_tune, 0, 0 },   /*  */
+    { PAGE_COLOR_COOKING_COMPLETE, colorcooking_complete_lang_tune, 0, 0 },   /*  */
+    { PAGE_COOK4_MENU, cook4menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_COOK_MENU_TZ, cook_menu_tz_lang_tune, 0, 0 },   /*  */
+    { PAGE_COOKIE_COMPLETE, cookie_complete_lang_tune, 0, 0 },   /*  */
+    { PAGE_COOKIE_COOKING, cookie_cooking_lang_tune, 0, 0 },   /*  */
+    { PAGE_COOKIE_MENU, cookie_menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_COOKIE_SET, cookie_set_lang_tune, 0, 0 },   /*  */
+    { PAGE_COOKIE_SETTING, cookie_setting_lang_tune, 0, 0 },   /*  */
+    { PAGE_COOKIE_STOP, cookie_stop_lang_tune, 0, 0 },   /*  */
+    { PAGE_COOKIE_STOP_BACK, cookie_stop_back_lang_tune, 0, 0 },   /*  */
+    { PAGE_COOKMENU, cookmenu_lang_tune, 0, 0 },   /*  */
+    { PAGE_CORN_COMPLETE, corn_complete_lang_tune, 0, 0 },   /*  */
+    { PAGE_CORN_COOKING, corn_cooking_lang_tune, 0, 0 },   /*  */
+    { PAGE_CORN_MENU, corn_menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_CORN_SET, corn_set_lang_tune, 0, 0 },   /*  */
+    { PAGE_CORN_SETTING, corn_setting_lang_tune, 0, 0 },   /*  */
+    { PAGE_CORN_STOP, corn_stop_lang_tune, 0, 0 },   /*  */
+    { PAGE_CORN_STOP_BACK, corn_stop_back_lang_tune, 0, 0 },   /*  */
+    { PAGE_CUSTOM_COMPLETE, custom_complete_lang_tune, 0, 0 },   /*  */
+    { PAGE_CUSTOM_COOKING, custom_cooking_lang_tune, 0, 0 },   /*  */
+    { PAGE_CUSTOM_MENU, custom_menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_CUSTOM_SET, custom_set_lang_tune, 0, 0 },   /*  */
+    { PAGE_CUSTOM_SETTING, custom_setting_lang_tune, 0, 0 },   /*  */
+    { PAGE_CUSTOM_STOP, custom_stop_lang_tune, 0, 0 },   /*  */
+    { PAGE_CUSTOM_STOP_BACK, custom_stop_back_lang_tune, 0, 0 },   /*  */
+    { PAGE_DELAYCOOKING, delaycooking_lang_tune, 0, 0 },   /* 预约烹饪页 */
+    { PAGE_DELAYSET, delayset_lang_tune, 0, 0 },   /*  */
+    { PAGE_DESCRIPTIONMENU, descriptionmenu_lang_tune, 0, 0 },   /*  */
+    { PAGE_DUCK6MENU, duckmenu_lang_tune, 0, 0 },   /*  */
+    { PAGE_EXTRA_COLOR, extra_color_lang_tune, 0, 0 },   /*  */
+    { PAGE_FROZEN_COOK, frozencookpage_lang_tune, 0, 0 },   /*  */
+    { PAGE_HEATCONTAIN_COMPLETE, heatcontain_complete_lang_tune, 0, 0 },   /*  */
+    { PAGE_HEATCONTAIN_COOKING, heatcontain_cooking_lang_tune, 0, 0 },   /*  */
+    { PAGE_HEATCONTAIN_MENU, heatcontain_menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_HEATCONTAIN_SET, heatcontain_set_lang_tune, 0, 0 },   /*  */
+    { PAGE_HEATCONTAIN_SETTING, heatcontain_setting_lang_tune, 0, 0 },   /*  */
+    { PAGE_HEATCONTAIN_STOP, heatcontain_stop_lang_tune, 0, 0 },   /*  */
+    { PAGE_HEATCONTAIN_STOP_BACK, heatcontain_stop_back_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOT_BBQ_COMPLETE, hot_bbq_complete_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOT_BBQ_COMPLETE_PROBE, hot_bbq_complete_probe_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOT_BBQ_COOKING, hot_bbq_cooking_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOT_BBQ_COOKING_PROBE, hot_bbq_cooking_probe_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOT_BBQ_MENU, hot_bbq_menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOT_BBQ_MENU_PROBE, hot_bbq_menu_probe_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOT_BBQ_SET, hot_bbq_set_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOT_BBQ_SET_PROBE, hot_bbq_set_probe_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOT_BBQ_SETTING, hot_bbq_setting_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOT_BBQ_STOP, hot_bbq_stop_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOT_BBQ_STOP_BACK, hot_bbq_stop_back_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOT_BBQ_STOP_BACK_PROBE, hot_bbq_stop_back_probe_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOT_BBQ_STOP_PROBE, hot_bbq_stop_probe_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOTCLEAN_MENU, hotclean_menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOTCLEANHIGH_COMPLETE, hotcleanhigh_complete_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOTCLEANHIGH_COOKING, hotcleanhigh_cooking_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOTCLEANHIGH_COOLING, hotcleanhigh_cooling_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOTCLEANHIGH_SET, hotcleanhigh_set_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOTCLEANHIGH_STOP, hotcleanhigh_stop_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOTCLEANHIGH_STOP_BACK, hotcleanhigh_stop_back_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOTCLEANMIDDLE_COMPLETE, hotcleanmiddle_complete_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOTCLEANMIDDLE_COOKING, hotcleanmiddle_cooking_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOTCLEANMIDDLE_COOLING, hotcleanmiddle_cooling_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOTCLEANMIDDLE_SET, hotcleanmiddle_set_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOTCLEANMIDDLE_STOP, hotcleanmiddle_stop_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOTCLEANMIDDLE_STOP_BACK, hotcleanmiddle_stop_back_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOTCLEANSAVE_COMPLETE, hotcleansave_complete_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOTCLEANSAVE_COOKING, hotcleansave_cooking_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOTCLEANSAVE_COOLING, hotcleansave_cooling_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOTCLEANSAVE_SET, hotcleansave_set_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOTCLEANSAVE_STOP, hotcleansave_stop_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOTCLEANSAVE_STOP_BACK, hotcleansave_stop_back_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOTWIND_BBQ_COMPLETE, hotwind_bbq_complete_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOTWIND_BBQ_COOKING, hotwind_bbq_cooking_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOTWIND_BBQ_MENU, hotwind_bbq_menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOTWIND_BBQ_SET, hotwind_bbq_set_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOTWIND_BBQ_SETTING, hotwind_bbq_setting_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOTWIND_BBQ_STOP, hotwind_bbq_stop_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOTWIND_BBQ_STOP_BACK, hotwind_bbq_stop_back_lang_tune, 0, 0 },   /*  */
+    { PAGE_LASAGNA_COMPLETE, lasagna_complete_lang_tune, 0, 0 },   /*  */
+    { PAGE_LASAGNA_COOKING, lasagna_cooking_lang_tune, 0, 0 },   /*  */
+    { PAGE_LASAGNA_MENU, lasagna_menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_LASAGNA_SET, lasagna_set_lang_tune, 0, 0 },   /*  */
+    { PAGE_LASAGNA_SETTING, lasagna_setting_lang_tune, 0, 0 },   /*  */
+    { PAGE_LASAGNA_STOP, lasagna_stop_lang_tune, 0, 0 },   /*  */
+    { PAGE_LASAGNA_STOP_BACK, lasagna_stop_back_lang_tune, 0, 0 },   /*  */
+    { PAGE_MAJOR_MENU, major_menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_MAJOR_MENU_TZ, major_menu_tz_lang_tune, 0, 0 },   /*  */
+    { PAGE_MENU_COOK_COMPLETE, menu_complete_lang_tune, 0, 0 },   /*  */
+    { PAGE_MENU_COOK_COOKING, menu_cooking_lang_tune, 0, 0 },   /*  */
+    { PAGE_MENU_COOK_MENU, menu_menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_MENU_COOK_SET, menu_set_lang_tune, 0, 0 },   /*  */
+    { PAGE_MENU_COOK_SETTING, menu_setting_lang_tune, 0, 0 },   /*  */
+    { PAGE_MENU_COOK_STOP, menu_stop_lang_tune, 0, 0 },   /*  */
+    { PAGE_MENU_COOK_STOP_BACK, menu_stop_back_lang_tune, 0, 0 },   /*  */
+    { PAGE_PIZZA3_COMPLETE, pizza3_complete_lang_tune, 0, 0 },   /*  */
+    { PAGE_PIZZA3_COOKING, pizza3_cooking_lang_tune, 0, 0 },   /*  */
+    { PAGE_PIZZA3_MENU, pizza3_menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_PIZZA3_SET, pizza3_set_lang_tune, 0, 0 },   /*  */
+    { PAGE_PIZZA3_SETTING, pizza3_setting_lang_tune, 0, 0 },   /*  */
+    { PAGE_PIZZA3_STOP, pizza3_stop_lang_tune, 0, 0 },   /*  */
+    { PAGE_PIZZA3_STOP_BACK, pizza3_stop_back_lang_tune, 0, 0 },   /*  */
+    { PAGE_PIZZA_2_COMPLETE, pizza_2_complete_lang_tune, 0, 0 },   /*  */
+    { PAGE_PIZZA_2_COOKING, pizza_2_cooking_lang_tune, 0, 0 },   /*  */
+    { PAGE_PIZZA_2_MENU, pizza_2_menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_PIZZA_2_SET, pizza_2_set_lang_tune, 0, 0 },   /*  */
+    { PAGE_PIZZA_2_SETTING, pizza_2_setting_lang_tune, 0, 0 },   /*  */
+    { PAGE_PIZZA_2_STOP, pizza_2_stop_lang_tune, 0, 0 },   /*  */
+    { PAGE_PIZZA_2_STOP_BACK, pizza_2_stop_back_lang_tune, 0, 0 },   /*  */
+    { PAGE_PIZZA_COMPLETE, pizza_complete_lang_tune, 0, 0 },   /*  */
+    { PAGE_PIZZA_COOKING, pizza_cooking_lang_tune, 0, 0 },   /*  */
+    { PAGE_PIZZA_MENU, pizza_menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_PIZZA_SET, pizza_set_lang_tune, 0, 0 },   /*  */
+    { PAGE_PIZZA_SETTING, pizza_setting_lang_tune, 0, 0 },   /*  */
+    { PAGE_PIZZA_STOP, pizza_stop_lang_tune, 0, 0 },   /*  */
+    { PAGE_PIZZA_STOP_BACK, pizza_stop_back_lang_tune, 0, 0 },   /*  */
+    { PAGE_PREHEAT_STOP_BACK, preheat_stop_back_lang_tune, 0, 0 },   /*  */
+    { PAGE_PREHEAT_COMPLETE, preheatcomplete_lang_tune, 0, 0 },   /*  */
+    { PAGE_PREHEAT_COOKING, preheatcooking_lang_tune, 0, 0 },   /*  */
+    { PAGE_COLOR_MENU, color_menu_lang_tune, 0, 0 },   /* 额外上色设置页（复用预热菜单结构） */
+    { PAGE_PREHEAT_MENU, preheat_menu_lang_tune, 0, 0 },   /* 预热菜单页 */
+    { PAGE_PREHEAT_STOP, preheatstop_lang_tune, 0, 0 },   /*  */
+    { PAGE_PROBENEEDTIP, probeneedtip_lang_tune, 0, 0 },   /*  */
+    { PAGE_PROBETIP, probetip_lang_tune, 0, 0 },   /*  */
+    { PAGE_RISING_COMPLETE, rising_complete_lang_tune, 0, 0 },   /*  */
+    { PAGE_RISING_COOKING, rising_cooking_lang_tune, 0, 0 },   /*  */
+    { PAGE_RISING_MENU, rising_menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_RISING_SET, rising_set_lang_tune, 0, 0 },   /*  */
+    { PAGE_RISING_SETTING, rising_setting_lang_tune, 0, 0 },   /*  */
+    { PAGE_RISING_STOP, rising_stop_lang_tune, 0, 0 },   /*  */
+    { PAGE_RISING_STOP_BACK, rising_stop_back_lang_tune, 0, 0 },   /*  */
+    { PAGE_RISINGPAGE, risingpage_lang_tune, 0, 0 },   /*  */
+    { PAGE_SAVE_BBQ_COMPLETE, save_bbq_complete_lang_tune, 0, 0 },   /*  */
+    { PAGE_SAVE_BBQ_COOKING, save_bbq_cooking_lang_tune, 0, 0 },   /*  */
+    { PAGE_SAVE_BBQ_MENU, save_bbq_menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_SAVE_BBQ_SET, save_bbq_set_lang_tune, 0, 0 },   /*  */
+    { PAGE_SAVE_BBQ_SETTING, save_bbq_setting_lang_tune, 0, 0 },   /*  */
+    { PAGE_SAVE_BBQ_STOP, save_bbq_stop_lang_tune, 0, 0 },   /*  */
+    { PAGE_SAVE_BBQ_STOP_BACK, save_bbq_stop_back_lang_tune, 0, 0 },   /*  */
+    { PAGE_SCREEN_SET, screen_SET_lang_tune, 0, 0 },   /*  */
+    { PAGE_SIXMENU, sixmenu_lang_tune, 0, 0 },   /*  */
+    { PAGE_SIXMENUTZ, sixmenutz_lang_tune, 0, 0 },   /*  */
+    { PAGE_SIXOP3PAGE, sixop3page_lang_tune, 0, 0 },   /*  */
+    { PAGE_SLOWCOOK_COMPLETE, slowcook_complete_lang_tune, 0, 0 },   /*  */
+    { PAGE_SLOWCOOK_COMPLETE_PROBE, slowcook_complete_probe_lang_tune, 0, 0 },   /*  */
+    { PAGE_SLOWCOOK_COOKING, slowcook_cooking_lang_tune, 0, 0 },   /*  */
+    { PAGE_SLOWCOOK_COOKING_PROBE, slowcook_cooking_probe_lang_tune, 0, 0 },   /*  */
+    { PAGE_SLOWCOOK_MENU, slowcook_menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_SLOWCOOK_MENU_PROBE, slowcook_menu_probe_lang_tune, 0, 0 },   /*  */
+    { PAGE_SLOWCOOK_SET, slowcook_set_lang_tune, 0, 0 },   /*  */
+    { PAGE_SLOWCOOK_SET_PROBE, slowcook_set_probe_lang_tune, 0, 0 },   /*  */
+    { PAGE_SLOWCOOK_SETTING, slowcook_setting_lang_tune, 0, 0 },   /*  */
+    { PAGE_SLOWCOOK_STOP, slowcook_stop_lang_tune, 0, 0 },   /*  */
+    { PAGE_SLOWCOOK_STOP_BACK, slowcook_stop_back_lang_tune, 0, 0 },   /*  */
+    { PAGE_SLOWCOOK_STOP_BACK_PROBE, slowcook_stop_back_probe_lang_tune, 0, 0 },   /*  */
+    { PAGE_SLOWCOOK_STOP_PROBE, slowcook_stop_probe_lang_tune, 0, 0 },   /*  */
+    { PAGE_SOMECOOK, somecook_lang_tune, 0, 0 },   /*  */
+    { PAGE_SIX_COOKING, six_cooking_lang_tune, 0, 0 },   /* 第六感烹饪页 */
+    { PAGE_SOMECOOK_COOKING, somecook_cooking_lang_tune, 0, 0 },   /* 多段烹饪页 */
+    { PAGE_SPECIAL_MENU, special_menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_SPECIAL_MENU_TZ, special_menu_tz_lang_tune, 0, 0 },   /*  */
+    { PAGE_STEPSET, stepset_lang_tune, 0, 0 },   /*  */
+    { PAGE_STRUDEL_COMPLETE, strudel_complete_lang_tune, 0, 0 },   /*  */
+    { PAGE_STRUDEL_COOKING, strudel_cooking_lang_tune, 0, 0 },   /*  */
+    { PAGE_STRUDEL_MENU, strudel_menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_STRUDEL_SET, strudel_set_lang_tune, 0, 0 },   /*  */
+    { PAGE_STRUDEL_SETTING, strudel_setting_lang_tune, 0, 0 },   /*  */
+    { PAGE_STRUDEL_STOP, strudel_stop_lang_tune, 0, 0 },   /*  */
+    { PAGE_STRUDEL_STOP_BACK, strudel_stop_back_lang_tune, 0, 0 },   /*  */
+    { PAGE_TEMPTIP, temptip_lang_tune, 0, 0 },   /*  */
+    { PAGE_TOASTCOLOR, toastcolor_lang_tune, 0, 0 },   /*  */
+    { PAGE_TOP_BBQ_COMPLETE, top_bbq_complete_lang_tune, 0, 0 },   /*  */
+    { PAGE_TOP_BBQ_COOKING, top_bbq_cooking_lang_tune, 0, 0 },   /*  */
+    { PAGE_TOP_BBQ_MENU, top_bbq_menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_TOP_BBQ_SET, top_bbq_set_lang_tune, 0, 0 },   /*  */
+    { PAGE_TOP_BBQ_SETTING, top_bbq_setting_lang_tune, 0, 0 },   /*  */
+    { PAGE_TOP_BBQ_STOP, top_bbq_stop_lang_tune, 0, 0 },   /*  */
+    { PAGE_TOP_BBQ_STOP_BACK, top_bbq_stop_back_lang_tune, 0, 0 },   /*  */
+    { PAGE_UNFROZEN_COMPLETE, unfrozen_complete_lang_tune, 0, 0 },   /*  */
+    { PAGE_UNFROZEN_COOKING, unfrozen_cooking_lang_tune, 0, 0 },   /*  */
+    { PAGE_UNFROZEN_MENU, unfrozen_menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_UNFROZEN_SET, unfrozen_set_lang_tune, 0, 0 },   /*  */
+    { PAGE_UNFROZEN_SETTING, unfrozen_setting_lang_tune, 0, 0 },   /*  */
+    { PAGE_UNFROZEN_STOP, unfrozen_stop_lang_tune, 0, 0 },   /*  */
+    { PAGE_UNFROZEN_STOP_BACK, unfrozen_stop_back_lang_tune, 0, 0 },   /*  */
+    { PAGE_UPDOWN_BBQ_COMPLETE, updown_bbq_complete_lang_tune, 0, 0 },   /*  */
+    { PAGE_UPDOWN_BBQ_COMPLETE_PROBE, updown_bbq_complete_probe_lang_tune, 0, 0 },   /*  */
+    { PAGE_UPDOWN_BBQ_COOKING, updown_bbq_cooking_lang_tune, 0, 0 },   /*  */
+    { PAGE_UPDOWN_BBQ_COOKING_PROBE, updown_bbq_cooking_probe_lang_tune, 0, 0 },   /*  */
+    { PAGE_UPDOWN_BBQ_MENU, updown_bbq_menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_UPDOWN_BBQ_MENU_LOW, updown_bbq_menu_low_lang_tune, 0, 0 },   /*  */
+    { PAGE_UPDOWN_BBQ_MENU_PROBE, updown_bbq_menu_probe_lang_tune, 0, 0 },   /*  */
+    { PAGE_UPDOWN_BBQ_MENU_TOP, updown_bbq_menu_top_lang_tune, 0, 0 },   /*  */
+    { PAGE_UPDOWN_BBQ_SET, updown_bbq_set_lang_tune, 0, 0 },   /*  */
+    { PAGE_UPDOWN_BBQ_SET_PROBE, updown_bbq_set_probe_lang_tune, 0, 0 },   /*  */
+    { PAGE_UPDOWN_BBQ_SETTING, updown_bbq_setting_lang_tune, 0, 0 },   /*  */
+    { PAGE_UPDOWN_BBQ_STOP, updown_bbq_stop_lang_tune, 0, 0 },   /*  */
+    { PAGE_UPDOWN_BBQ_STOP_BACK, updown_bbq_stop_back_lang_tune, 0, 0 },   /*  */
+    { PAGE_UPDOWN_BBQ_STOP_BACK_PROBE, updown_bbq_stop_back_probe_lang_tune, 0, 0 },   /*  */
+    { PAGE_UPDOWN_BBQ_STOP_PROBE, updown_bbq_stop_probe_lang_tune, 0, 0 },   /*  */
+    { PAGE_VEGETABLEMENU, vegetablemenu_lang_tune, 0, 0 },   /*  */
+    { PAGE_WAITMENU_24, waitmenu_24_lang_tune, 0, 0 },   /*  */
+    { PAGE_WATER_CLEAN_COMPLETE, waterclean_complete_lang_tune, 0, 0 },   /*  */
+    { PAGE_WATER_CLEAN_COOKING, waterclean_cooking_lang_tune, 0, 0 },   /*  */
+    { PAGE_WATER_CLEAN_SET, waterclean_set_lang_tune, 0, 0 },   /*  */
+    { PAGE_WATER_CLEAN_STOP, waterclean_stop_lang_tune, 0, 0 },   /*  */
+    { PAGE_WATER_CLEAN_STOP_BACK, waterclean_stop_back_lang_tune, 0, 0 },   /*  */
+    { PAGE_WEST_COMPLETE, west_complete_lang_tune, 0, 0 },   /*  */
+    { PAGE_WEST_COOKING, west_cooking_lang_tune, 0, 0 },   /*  */
+    { PAGE_WEST_MENU, west_menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_WEST_SET, west_set_lang_tune, 0, 0 },   /*  */
+    { PAGE_WEST_SETTING, west_setting_lang_tune, 0, 0 },   /*  */
+    { PAGE_WEST_STOP, west_stop_lang_tune, 0, 0 },   /*  */
+    { PAGE_WEST_STOP_BACK, west_stop_back_lang_tune, 0, 0 },   /*  */
+    { PAGE_WINDCHANGE_BBQ_COMPLETE, windchange_bbq_complete_lang_tune, 0, 0 },   /*  */
+    { PAGE_WINDCHANGE_BBQ_COOKING, windchange_bbq_cooking_lang_tune, 0, 0 },   /*  */
+    { PAGE_WINDCHANGE_BBQ_MENU, windchange_bbq_menu_lang_tune, 0, 0 },   /*  */
+    { PAGE_WINDCHANGE_BBQ_SET, windchange_bbq_set_lang_tune, 0, 0 },   /*  */
+    { PAGE_WINDCHANGE_BBQ_SETTING, windchange_bbq_setting_lang_tune, 0, 0 },   /*  */
+    { PAGE_WINDCHANGE_BBQ_STOP, windchange_bbq_stop_lang_tune, 0, 0 },   /*  */
+    { PAGE_WINDCHANGE_BBQ_STOP_BACK, windchange_bbq_stop_back_lang_tune, 0, 0 },   /*  */
 };
 const int s_tune_tab_n = (int)(sizeof(s_tune_tab) / sizeof(s_tune_tab[0]));
