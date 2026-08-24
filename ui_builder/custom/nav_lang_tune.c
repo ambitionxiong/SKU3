@@ -2,13 +2,14 @@
  * 英文排版调整层：同事编辑区（nav_lang_tune.c）— 全页面布局基准
  *
  * 每个函数对应一个页面，内含该页面全部对象的布局基准数据：
- *   坐标 (x,y) / 尺寸 WxH / 字号 font / 对齐 align（值来自生成文件中文布局）
+ *   坐标 (x,y) / 尺寸 WxH / 字号 font / 对齐 align / 图片源 img / 背景图 bg
+ *   （值来自生成文件中文布局；img/bg 仅注释，不动图资源）
  *
  * 使用：改数值即可调整英文版布局（仅英文模式执行，中文模式零影响）
  *   lv_obj_set_pos(pg->xxx, 新x, 新y)      —— 移动
  *   lv_obj_set_size(pg->xxx, 新w, 新h)     —— 改尺寸
  *   字号：英文文本建议 aktivgroteskmedium_XX（树遍历已自动映射）
- *         本文件不含字体设置；含 ℃/°↑↓ 等符号的文本请用 taiwanpearl）
+ *   换图：注释里的 img:/bg: 是当前图名，需换图自行处理（本文件不改图）
  *
  * 注册表在文件末尾：页面 → 函数 一一对应；新增页面照格式加一行
  * 详见 docs/I18N_GUIDE_zh.md
@@ -29,7 +30,7 @@ void air_complete_lang_tune(void)
     air_complete_t *pg = air_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* image_153: 图片 | (115,320) */
+    /* image_153: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_153, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -44,14 +45,14 @@ void air_complete_lang_tune(void)
     lv_obj_set_pos(pg->label_337, 273, 157);
     lv_obj_set_size(pg->label_337, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_155: 图片 | (115,161) */
+    /* image_155: 图片 | (115,161) | img: airicon.png */
     lv_obj_set_pos(pg->image_155, 115, 161);
 
-    /* image_6: 图片 | (902,160) */
+    /* image_6: 图片 | (902,160) | img: tips.png */
     lv_obj_set_pos(pg->image_6, 902, 160);
 
 }
@@ -75,11 +76,11 @@ void air_cooking_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_142: 图片 | (115,320) */
+    /* image_142: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_142, 115, 320);
 
     /* bar_20: 进度条 | (122,326) | 637x20 */
@@ -90,11 +91,11 @@ void air_cooking_lang_tune(void)
     lv_obj_set_pos(pg->label_318, 273, 157);
     lv_obj_set_size(pg->label_318, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_143: 图片 | (115,161) */
+    /* image_143: 图片 | (115,161) | img: airicon.png */
     lv_obj_set_pos(pg->image_143, 115, 161);
 
 }
@@ -110,14 +111,14 @@ void air_menu_lang_tune(void)
     air_menu_t *pg = air_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 */
+    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
     lv_obj_set_size(pg->next, 138, 70);
 
-    /* image_135: 图片 | (24,118) */
+    /* image_135: 图片 | (24,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_135, 24, 118);
 
-    /* image_136: 图片 | (645,118) */
+    /* image_136: 图片 | (645,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_136, 645, 118);
 
     /* label_289: 标签 | (300,137) | 64x32 | font taiwanpearl_regular_30 */
@@ -160,16 +161,16 @@ void air_menu_lang_tune(void)
     lv_obj_set_pos(pg->label_298, 996, 39);
     lv_obj_set_size(pg->label_298, 117, 32);
 
-    /* templine3: 图片 | (252,328) */
+    /* templine3: 图片 | (252,328) | img: underline.png */
     lv_obj_set_pos(pg->templine3, 252, 328);
 
-    /* templine2: 图片 | (289,328) */
+    /* templine2: 图片 | (289,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->templine2, 289, 328);
 
-    /* hourline: 图片 | (790,328) */
+    /* hourline: 图片 | (790,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->hourline, 790, 328);
 
-    /* minline: 图片 | (993,328) */
+    /* minline: 图片 | (993,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->minline, 993, 328);
 
 }
@@ -217,14 +218,14 @@ void air_set_lang_tune(void)
     lv_obj_set_pos(pg->label_306, 448, 269);
     lv_obj_set_size(pg->label_306, 64, 32);
 
-    /* image_141: 图片 | (164,376) */
+    /* image_141: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_141, 164, 376);
 
     /* label_307: 标签 | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_307, 232, 385);
     lv_obj_set_size(pg->label_307, 148, 32);
 
-    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
@@ -244,15 +245,15 @@ void air_set_lang_tune(void)
     lv_obj_set_pos(pg->label_311, 831, 381);
     lv_obj_set_size(pg->label_311, 130, 32);
 
-    /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offpreheat, 983, 144);
     lv_obj_set_size(pg->offpreheat, 135, 53);
 
-    /* offdelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* offdelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 260);
     lv_obj_set_size(pg->offdelay, 135, 53);
 
-    /* offcontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 */
+    /* offcontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offcontain, 983, 372);
     lv_obj_set_size(pg->offcontain, 135, 53);
 
@@ -264,15 +265,15 @@ void air_set_lang_tune(void)
     lv_obj_set_pos(pg->label_313, 1010, 39);
     lv_obj_set_size(pg->label_313, 85, 36);
 
-    /* onpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* onpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->onpreheat, 983, 144);
     lv_obj_set_size(pg->onpreheat, 135, 53);
 
-    /* ondelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* ondelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->ondelay, 983, 260);
     lv_obj_set_size(pg->ondelay, 135, 53);
 
-    /* oncontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 */
+    /* oncontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 372);
     lv_obj_set_size(pg->oncontain, 135, 53);
 
@@ -305,7 +306,7 @@ void air_setting_lang_tune(void)
     lv_obj_set_pos(pg->container_15, 0, 0);
     lv_obj_set_size(pg->container_15, 1280, 480);
 
-    /* image_144: 图片 | (115,115) */
+    /* image_144: 图片 | (115,115) | img: settingbk.png */
     lv_obj_set_pos(pg->image_144, 115, 115);
 
     /* label_320: 标签 | (242,136) | 73x30 | font taiwanpearl_regular_30 */
@@ -324,10 +325,10 @@ void air_setting_lang_tune(void)
     lv_obj_set_pos(pg->icon3, 300, 229);
     lv_obj_set_size(pg->icon3, 37, 30);
 
-    /* templine2: 图片 | (236,269) */
+    /* templine2: 图片 | (236,269) | img: settingline3_87x4.png */
     lv_obj_set_pos(pg->templine2, 236, 269);
 
-    /* templine3: 图片 | (223,269) */
+    /* templine3: 图片 | (223,269) | img: settingline2.png */
     lv_obj_set_pos(pg->templine3, 223, 269);
 
     /* hour: 标签 | (374,213) | 102x46 | font taiwanpearl_regular_48 */
@@ -346,17 +347,17 @@ void air_setting_lang_tune(void)
     lv_obj_set_pos(pg->label_327, 612, 229);
     lv_obj_set_size(pg->label_327, 37, 30);
 
-    /* hourline: 图片 | (398,269) */
+    /* hourline: 图片 | (398,269) | img: settingline3.png */
     lv_obj_set_pos(pg->hourline, 398, 269);
 
-    /* minline: 图片 | (560,269) */
+    /* minline: 图片 | (560,269) | img: settingline3.png */
     lv_obj_set_pos(pg->minline, 560, 269);
 
     /* icon2: 标签 | (288,229) | 37x30 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->icon2, 288, 229);
     lv_obj_set_size(pg->icon2, 37, 30);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -381,11 +382,11 @@ void air_stop_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_149: 图片 | (115,320) */
+    /* image_149: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_149, 115, 320);
 
     /* bar_21: 进度条 | (122,326) | 637x20 */
@@ -396,11 +397,11 @@ void air_stop_lang_tune(void)
     lv_obj_set_pos(pg->label_331, 273, 157);
     lv_obj_set_size(pg->label_331, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_150: 图片 | (115,161) */
+    /* image_150: 图片 | (115,161) | img: airicon.png */
     lv_obj_set_pos(pg->image_150, 115, 161);
 
 }
@@ -416,14 +417,14 @@ void air_stop_back_lang_tune(void)
     air_stop_back_t *pg = air_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* image_151: 图片 | (115,161) */
+    /* image_151: 图片 | (115,161) | img: airicon.png */
     lv_obj_set_pos(pg->image_151, 115, 161);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_152: 图片 | (115,320) */
+    /* image_152: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_152, 115, 320);
 
     /* bar_22: 进度条 | (122,326) | 637x20 */
@@ -434,7 +435,7 @@ void air_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_333, 273, 157);
     lv_obj_set_size(pg->label_333, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
@@ -450,7 +451,7 @@ void air_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_335, 895, 198);
     lv_obj_set_size(pg->label_335, 252, 36);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -467,7 +468,7 @@ void bottom_bbq_complete_lang_tune(void)
     bottom_bbq_complete_t *pg = bottom_bbq_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* image_74: 图片 | (115,320) */
+    /* image_74: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_74, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -482,14 +483,14 @@ void bottom_bbq_complete_lang_tune(void)
     lv_obj_set_pos(pg->label_156, 273, 157);
     lv_obj_set_size(pg->label_156, 235, 60);
 
-    /* button_43: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* button_43: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->button_43, 609, 170);
     lv_obj_set_size(pg->button_43, 50, 43);
 
-    /* image_76: 图片 | (115,161) */
+    /* image_76: 图片 | (115,161) | img: dwbbqicon.png */
     lv_obj_set_pos(pg->image_76, 115, 161);
 
-    /* image_2: 图片 | (902,160) */
+    /* image_2: 图片 | (902,160) | img: tips.png */
     lv_obj_set_pos(pg->image_2, 902, 160);
 
 }
@@ -505,7 +506,7 @@ void bottom_bbq_complete_probe_lang_tune(void)
     bottom_bbq_complete_probe_t *pg = bottom_bbq_complete_probe_get(&ui_manager);
     if (!pg) return;
 
-    /* image_31: 图片 | (115,320) */
+    /* image_31: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_31, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -516,7 +517,7 @@ void bottom_bbq_complete_probe_lang_tune(void)
     lv_obj_set_pos(pg->bar_8, 122, 326);
     lv_obj_set_size(pg->bar_8, 637, 20);
 
-    /* image_32: 图片 | (115,161) */
+    /* image_32: 图片 | (115,161) | img: dwbbqicon.png */
     lv_obj_set_pos(pg->image_32, 115, 161);
 
     /* label_76: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
@@ -552,11 +553,11 @@ void bottom_bbq_cooking_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_63: 图片 | (115,320) */
+    /* image_63: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_63, 115, 320);
 
     /* bar_10: 进度条 | (122,326) | 637x20 */
@@ -567,11 +568,11 @@ void bottom_bbq_cooking_lang_tune(void)
     lv_obj_set_pos(pg->label_137, 273, 157);
     lv_obj_set_size(pg->label_137, 235, 60);
 
-    /* littlebutton: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* littlebutton: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->littlebutton, 609, 170);
     lv_obj_set_size(pg->littlebutton, 50, 43);
 
-    /* image_64: 图片 | (115,161) */
+    /* image_64: 图片 | (115,161) | img: dwbbqicon.png */
     lv_obj_set_pos(pg->image_64, 115, 161);
 
 }
@@ -595,25 +596,25 @@ void bottom_bbq_cooking_probe_lang_tune(void)
     lv_obj_set_pos(pg->temp, 919, 156);
     lv_obj_set_size(pg->temp, 134, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_23: 图片 | (115,320) */
+    /* image_23: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_23, 115, 320);
 
     /* bar_5: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_5, 122, 326);
     lv_obj_set_size(pg->bar_5, 637, 20);
 
-    /* image_24: 图片 | (115,161) */
+    /* image_24: 图片 | (115,161) | img: dwbbqicon.png */
     lv_obj_set_pos(pg->image_24, 115, 161);
 
     /* label_67: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_67, 273, 157);
     lv_obj_set_size(pg->label_67, 235, 60);
 
-    /* image_25: 图片 | (1068,180) */
+    /* image_25: 图片 | (1068,180) | img: probeicon.png */
     lv_obj_set_pos(pg->image_25, 1068, 180);
 
 }
@@ -629,14 +630,14 @@ void bottom_bbq_menu_lang_tune(void)
     bottom_bbq_menu_t *pg = bottom_bbq_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 */
+    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
     lv_obj_set_size(pg->next, 138, 70);
 
-    /* image_56: 图片 | (24,118) */
+    /* image_56: 图片 | (24,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_56, 24, 118);
 
-    /* image_57: 图片 | (645,118) */
+    /* image_57: 图片 | (645,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_57, 645, 118);
 
     /* label_109: 标签 | (300,137) | 64x32 | font taiwanpearl_regular_30 */
@@ -679,16 +680,16 @@ void bottom_bbq_menu_lang_tune(void)
     lv_obj_set_pos(pg->label_118, 996, 39);
     lv_obj_set_size(pg->label_118, 117, 32);
 
-    /* templine3: 图片 | (252,328) */
+    /* templine3: 图片 | (252,328) | img: underline.png */
     lv_obj_set_pos(pg->templine3, 252, 328);
 
-    /* templine2: 图片 | (289,328) */
+    /* templine2: 图片 | (289,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->templine2, 289, 328);
 
-    /* hourline: 图片 | (790,328) */
+    /* hourline: 图片 | (790,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->hourline, 790, 328);
 
-    /* minline: 图片 | (993,328) */
+    /* minline: 图片 | (993,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->minline, 993, 328);
 
 }
@@ -704,14 +705,14 @@ void bottom_bbq_menu_probe_lang_tune(void)
     bottom_bbq_menu_probe_t *pg = bottom_bbq_menu_probe_get(&ui_manager);
     if (!pg) return;
 
-    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 */
+    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
     lv_obj_set_size(pg->next, 138, 70);
 
-    /* image_17: 图片 | (24,118) */
+    /* image_17: 图片 | (24,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_17, 24, 118);
 
-    /* image_18: 图片 | (645,118) */
+    /* image_18: 图片 | (645,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_18, 645, 118);
 
     /* label_46: 标签 | (300,137) | 64x32 | font taiwanpearl_regular_30 */
@@ -738,10 +739,10 @@ void bottom_bbq_menu_probe_lang_tune(void)
     lv_obj_set_pos(pg->label_51, 996, 39);
     lv_obj_set_size(pg->label_51, 117, 32);
 
-    /* templine3: 图片 | (252,328) */
+    /* templine3: 图片 | (252,328) | img: underline.png */
     lv_obj_set_pos(pg->templine3, 252, 328);
 
-    /* templine2: 图片 | (289,328) */
+    /* templine2: 图片 | (289,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->templine2, 289, 328);
 
     /* probetemp: 标签 | (853,249) | 120x72 | font taiwanpearl_regular_72 */
@@ -752,7 +753,7 @@ void bottom_bbq_menu_probe_lang_tune(void)
     lv_obj_set_pos(pg->label_53, 973, 281);
     lv_obj_set_size(pg->label_53, 38, 32);
 
-    /* probetempline: 图片 | (891,328) */
+    /* probetempline: 图片 | (891,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->probetempline, 891, 328);
 
 }
@@ -800,14 +801,14 @@ void bottom_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->label_126, 448, 269);
     lv_obj_set_size(pg->label_126, 64, 32);
 
-    /* image_62: 图片 | (164,376) */
+    /* image_62: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_62, 164, 376);
 
     /* label_127: 标签 | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_127, 232, 385);
     lv_obj_set_size(pg->label_127, 148, 32);
 
-    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
@@ -827,15 +828,15 @@ void bottom_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->label_131, 831, 381);
     lv_obj_set_size(pg->label_131, 130, 32);
 
-    /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offpreheat, 983, 144);
     lv_obj_set_size(pg->offpreheat, 135, 53);
 
-    /* offdelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* offdelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 260);
     lv_obj_set_size(pg->offdelay, 135, 53);
 
-    /* offcontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 */
+    /* offcontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offcontain, 983, 372);
     lv_obj_set_size(pg->offcontain, 135, 53);
 
@@ -847,15 +848,15 @@ void bottom_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->label_133, 1010, 39);
     lv_obj_set_size(pg->label_133, 85, 36);
 
-    /* onpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* onpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->onpreheat, 983, 144);
     lv_obj_set_size(pg->onpreheat, 135, 53);
 
-    /* ondelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* ondelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->ondelay, 983, 260);
     lv_obj_set_size(pg->ondelay, 135, 53);
 
-    /* oncontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 */
+    /* oncontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 372);
     lv_obj_set_size(pg->oncontain, 135, 53);
 
@@ -896,14 +897,14 @@ void bottom_bbq_set_probe_lang_tune(void)
     lv_obj_set_pos(pg->label_57, 141, 270);
     lv_obj_set_size(pg->label_57, 175, 32);
 
-    /* image_22: 图片 | (164,376) */
+    /* image_22: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_22, 164, 376);
 
     /* label_58: 标签 | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_58, 232, 385);
     lv_obj_set_size(pg->label_58, 148, 32);
 
-    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
@@ -931,14 +932,14 @@ void bottom_bbq_set_probe_lang_tune(void)
     lv_obj_set_pos(pg->icon3, 396, 157);
     lv_obj_set_size(pg->icon3, 32, 30);
 
-    /* image_4: 图片 | (839,154) */
+    /* image_4: 图片 | (839,154) | img: delaytext.png */
     lv_obj_set_pos(pg->image_4, 839, 154);
 
-    /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 144);
     lv_obj_set_size(pg->offdelay, 135, 53);
 
-    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->ondelay, 983, 144);
     lv_obj_set_size(pg->ondelay, 135, 53);
 
@@ -963,7 +964,7 @@ void bottom_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->container_6, 0, 0);
     lv_obj_set_size(pg->container_6, 1280, 480);
 
-    /* image_66: 图片 | (115,115) */
+    /* image_66: 图片 | (115,115) | img: settingbk.png */
     lv_obj_set_pos(pg->image_66, 115, 115);
 
     /* label_139: 标签 | (242,136) | 73x30 | font taiwanpearl_regular_30 */
@@ -982,10 +983,10 @@ void bottom_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->icon3, 300, 229);
     lv_obj_set_size(pg->icon3, 37, 30);
 
-    /* templine2: 图片 | (236,269) */
+    /* templine2: 图片 | (236,269) | img: settingline3_87x4.png */
     lv_obj_set_pos(pg->templine2, 236, 269);
 
-    /* templine3: 图片 | (223,269) */
+    /* templine3: 图片 | (223,269) | img: settingline2.png */
     lv_obj_set_pos(pg->templine3, 223, 269);
 
     /* hour: 标签 | (374,213) | 102x46 | font taiwanpearl_regular_48 */
@@ -1004,17 +1005,17 @@ void bottom_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->label_146, 612, 229);
     lv_obj_set_size(pg->label_146, 37, 30);
 
-    /* hourline: 图片 | (398,269) */
+    /* hourline: 图片 | (398,269) | img: settingline3.png */
     lv_obj_set_pos(pg->hourline, 398, 269);
 
-    /* minline: 图片 | (560,269) */
+    /* minline: 图片 | (560,269) | img: settingline3.png */
     lv_obj_set_pos(pg->minline, 560, 269);
 
     /* icon2: 标签 | (288,229) | 37x30 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->icon2, 288, 229);
     lv_obj_set_size(pg->icon2, 37, 30);
 
-    /* surebutton: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* surebutton: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->surebutton, 959, 295);
     lv_obj_set_size(pg->surebutton, 129, 83);
 
@@ -1039,11 +1040,11 @@ void bottom_bbq_stop_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_70: 图片 | (115,320) */
+    /* image_70: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_70, 115, 320);
 
     /* bar_11: 进度条 | (122,326) | 637x20 */
@@ -1054,11 +1055,11 @@ void bottom_bbq_stop_lang_tune(void)
     lv_obj_set_pos(pg->label_150, 273, 157);
     lv_obj_set_size(pg->label_150, 235, 60);
 
-    /* littlebutton: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* littlebutton: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->littlebutton, 609, 170);
     lv_obj_set_size(pg->littlebutton, 50, 43);
 
-    /* image_71: 图片 | (115,161) */
+    /* image_71: 图片 | (115,161) | img: dwbbqicon.png */
     lv_obj_set_pos(pg->image_71, 115, 161);
 
 }
@@ -1074,14 +1075,14 @@ void bottom_bbq_stop_back_lang_tune(void)
     bottom_bbq_stop_back_t *pg = bottom_bbq_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* image_72: 图片 | (115,161) */
+    /* image_72: 图片 | (115,161) | img: dwbbqicon.png */
     lv_obj_set_pos(pg->image_72, 115, 161);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_73: 图片 | (115,320) */
+    /* image_73: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_73, 115, 320);
 
     /* bar_12: 进度条 | (122,326) | 637x20 */
@@ -1092,7 +1093,7 @@ void bottom_bbq_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_152, 273, 157);
     lv_obj_set_size(pg->label_152, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
@@ -1108,7 +1109,7 @@ void bottom_bbq_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_154, 895, 198);
     lv_obj_set_size(pg->label_154, 252, 36);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -1129,14 +1130,14 @@ void bottom_bbq_stop_back_probe_lang_tune(void)
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_29: 图片 | (115,320) */
+    /* image_29: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_29, 115, 320);
 
     /* bar_7: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_7, 122, 326);
     lv_obj_set_size(pg->bar_7, 637, 20);
 
-    /* image_30: 图片 | (115,161) */
+    /* image_30: 图片 | (115,161) | img: dwbbqicon.png */
     lv_obj_set_pos(pg->image_30, 115, 161);
 
     /* label_72: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
@@ -1155,7 +1156,7 @@ void bottom_bbq_stop_back_probe_lang_tune(void)
     lv_obj_set_pos(pg->label_74, 895, 198);
     lv_obj_set_size(pg->label_74, 252, 36);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -1180,25 +1181,25 @@ void bottom_bbq_stop_probe_lang_tune(void)
     lv_obj_set_pos(pg->temp, 919, 156);
     lv_obj_set_size(pg->temp, 134, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_26: 图片 | (115,320) */
+    /* image_26: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_26, 115, 320);
 
     /* bar_6: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_6, 122, 326);
     lv_obj_set_size(pg->bar_6, 637, 20);
 
-    /* image_27: 图片 | (115,161) */
+    /* image_27: 图片 | (115,161) | img: dwbbqicon.png */
     lv_obj_set_pos(pg->image_27, 115, 161);
 
     /* label_70: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_70, 273, 157);
     lv_obj_set_size(pg->label_70, 235, 60);
 
-    /* image_28: 图片 | (1068,180) */
+    /* image_28: 图片 | (1068,180) | img: probeicon.png */
     lv_obj_set_pos(pg->image_28, 1068, 180);
 
 }
@@ -1218,19 +1219,19 @@ void bread6menu_lang_tune(void)
     lv_obj_set_pos(pg->label_11, 24, 24);
     lv_obj_set_size(pg->label_11, 144, 32);
 
-    /* breadroll: 按钮 | (5,65) | 340x406 | font taiwanpearl_regular_30 */
+    /* breadroll: 按钮 | (5,65) | 340x406 | font taiwanpearl_regular_30 | bg: div4bg30.png */
     lv_obj_set_pos(pg->breadroll, 5, 65);
     lv_obj_set_size(pg->breadroll, 340, 406);
 
-    /* wheat_bread: 按钮 | (315,65) | 340x406 | font taiwanpearl_regular_30 */
+    /* wheat_bread: 按钮 | (315,65) | 340x406 | font taiwanpearl_regular_30 | bg: div4bg30.png */
     lv_obj_set_pos(pg->wheat_bread, 315, 65);
     lv_obj_set_size(pg->wheat_bread, 340, 406);
 
-    /* toast: 按钮 | (625,65) | 340x406 | font taiwanpearl_regular_30 */
+    /* toast: 按钮 | (625,65) | 340x406 | font taiwanpearl_regular_30 | bg: div4bg30.png */
     lv_obj_set_pos(pg->toast, 625, 65);
     lv_obj_set_size(pg->toast, 340, 406);
 
-    /* croissant: 按钮 | (936,65) | 340x406 | font taiwanpearl_regular_30 */
+    /* croissant: 按钮 | (936,65) | 340x406 | font taiwanpearl_regular_30 | bg: div4bg30.png */
     lv_obj_set_pos(pg->croissant, 936, 65);
     lv_obj_set_size(pg->croissant, 340, 406);
 
@@ -1247,7 +1248,7 @@ void bread_complete_lang_tune(void)
     bread_complete_t *pg = bread_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* image_353: 图片 | (115,320) */
+    /* image_353: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_353, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -1262,14 +1263,14 @@ void bread_complete_lang_tune(void)
     lv_obj_set_pos(pg->label_763, 273, 157);
     lv_obj_set_size(pg->label_763, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_355: 图片 | (115,161) */
+    /* image_355: 图片 | (115,161) | img: breadicon_1.png */
     lv_obj_set_pos(pg->image_355, 115, 161);
 
-    /* image_14: 图片 | (902,160) */
+    /* image_14: 图片 | (902,160) | img: tips.png */
     lv_obj_set_pos(pg->image_14, 902, 160);
 
 }
@@ -1293,11 +1294,11 @@ void bread_cooking_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_344: 图片 | (115,320) */
+    /* image_344: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_344, 115, 320);
 
     /* bar_56: 进度条 | (122,326) | 637x20 */
@@ -1308,11 +1309,11 @@ void bread_cooking_lang_tune(void)
     lv_obj_set_pos(pg->label_748, 273, 157);
     lv_obj_set_size(pg->label_748, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_345: 图片 | (115,161) */
+    /* image_345: 图片 | (115,161) | img: breadicon_1.png */
     lv_obj_set_pos(pg->image_345, 115, 161);
 
 }
@@ -1328,11 +1329,11 @@ void bread_menu_lang_tune(void)
     bread_menu_t *pg = bread_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 */
+    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
     lv_obj_set_size(pg->next, 138, 70);
 
-    /* image_340: 图片 | (24,117) */
+    /* image_340: 图片 | (24,117) | img: div1bg.png */
     lv_obj_set_pos(pg->image_340, 24, 117);
 
     /* label_723: 标签 | (578,139) | 125x32 | font taiwanpearl_regular_30 */
@@ -1363,10 +1364,10 @@ void bread_menu_lang_tune(void)
     lv_obj_set_pos(pg->label_729, 996, 39);
     lv_obj_set_size(pg->label_729, 117, 32);
 
-    /* hourline: 图片 | (480,327) */
+    /* hourline: 图片 | (480,327) | img: underline_120x4.png */
     lv_obj_set_pos(pg->hourline, 480, 327);
 
-    /* minline: 图片 | (680,327) */
+    /* minline: 图片 | (680,327) | img: underline_120x4.png */
     lv_obj_set_pos(pg->minline, 680, 327);
 
 }
@@ -1414,14 +1415,14 @@ void bread_set_lang_tune(void)
     lv_obj_set_pos(pg->label_737, 448, 269);
     lv_obj_set_size(pg->label_737, 64, 32);
 
-    /* image_343: 图片 | (164,376) */
+    /* image_343: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_343, 164, 376);
 
     /* label_738: 标签 | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_738, 232, 385);
     lv_obj_set_size(pg->label_738, 148, 32);
 
-    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
@@ -1437,11 +1438,11 @@ void bread_set_lang_tune(void)
     lv_obj_set_pos(pg->label_741, 831, 270);
     lv_obj_set_size(pg->label_741, 130, 32);
 
-    /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 144);
     lv_obj_set_size(pg->offdelay, 135, 53);
 
-    /* offcontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* offcontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offcontain, 983, 260);
     lv_obj_set_size(pg->offcontain, 135, 53);
 
@@ -1453,11 +1454,11 @@ void bread_set_lang_tune(void)
     lv_obj_set_pos(pg->label_743, 1010, 39);
     lv_obj_set_size(pg->label_743, 85, 36);
 
-    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->ondelay, 983, 144);
     lv_obj_set_size(pg->ondelay, 135, 53);
 
-    /* oncontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* oncontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 260);
     lv_obj_set_size(pg->oncontain, 135, 53);
 
@@ -1490,7 +1491,7 @@ void bread_setting_lang_tune(void)
     lv_obj_set_pos(pg->container_33, 0, 0);
     lv_obj_set_size(pg->container_33, 1280, 480);
 
-    /* image_346: 图片 | (115,115) */
+    /* image_346: 图片 | (115,115) | img: settingbk.png */
     lv_obj_set_pos(pg->image_346, 115, 115);
 
     /* label_750: 标签 | (373,136) | 135x30 | font taiwanpearl_regular_30 */
@@ -1505,7 +1506,7 @@ void bread_setting_lang_tune(void)
     lv_obj_set_pos(pg->label_752, 340, 228);
     lv_obj_set_size(pg->label_752, 37, 30);
 
-    /* hourline: 图片 | (291,269) */
+    /* hourline: 图片 | (291,269) | img: settingline3.png */
     lv_obj_set_pos(pg->hourline, 291, 269);
 
     /* min: 标签 | (483,212) | 102x46 | font taiwanpearl_regular_48 */
@@ -1516,10 +1517,10 @@ void bread_setting_lang_tune(void)
     lv_obj_set_pos(pg->label_754, 558, 229);
     lv_obj_set_size(pg->label_754, 37, 30);
 
-    /* minline: 图片 | (508,269) */
+    /* minline: 图片 | (508,269) | img: settingline3.png */
     lv_obj_set_pos(pg->minline, 508, 269);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -1544,11 +1545,11 @@ void bread_stop_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_349: 图片 | (115,320) */
+    /* image_349: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_349, 115, 320);
 
     /* bar_57: 进度条 | (122,326) | 637x20 */
@@ -1559,11 +1560,11 @@ void bread_stop_lang_tune(void)
     lv_obj_set_pos(pg->label_757, 273, 157);
     lv_obj_set_size(pg->label_757, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_350: 图片 | (115,161) */
+    /* image_350: 图片 | (115,161) | img: breadicon_1.png */
     lv_obj_set_pos(pg->image_350, 115, 161);
 
 }
@@ -1579,14 +1580,14 @@ void bread_stop_back_lang_tune(void)
     bread_stop_back_t *pg = bread_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* image_351: 图片 | (115,161) */
+    /* image_351: 图片 | (115,161) | img: breadicon_1.png */
     lv_obj_set_pos(pg->image_351, 115, 161);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_352: 图片 | (115,320) */
+    /* image_352: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_352, 115, 320);
 
     /* bar_58: 进度条 | (122,326) | 637x20 */
@@ -1597,7 +1598,7 @@ void bread_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_759, 273, 157);
     lv_obj_set_size(pg->label_759, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
@@ -1613,7 +1614,7 @@ void bread_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_761, 895, 198);
     lv_obj_set_size(pg->label_761, 252, 36);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -1634,47 +1635,47 @@ void cake6menu_lang_tune(void)
     lv_obj_set_pos(pg->label_1, 24, 24);
     lv_obj_set_size(pg->label_1, 144, 32);
 
-    /* swissroll: 按钮 | (22,79) | 203x378 | font taiwanpearl_regular_30 */
+    /* swissroll: 按钮 | (22,79) | 203x378 | font taiwanpearl_regular_30 | bg: div11_1_30.png */
     lv_obj_set_pos(pg->swissroll, 22, 79);
     lv_obj_set_size(pg->swissroll, 203, 378);
 
-    /* strudel: 按钮 | (228,77) | 205x191 | font taiwanpearl_regular_30 */
+    /* strudel: 按钮 | (228,77) | 205x191 | font taiwanpearl_regular_30 | bg: div11_2_30.png */
     lv_obj_set_pos(pg->strudel, 228, 77);
     lv_obj_set_size(pg->strudel, 205, 191);
 
-    /* muffin: 按钮 | (228,270) | 205x191 | font taiwanpearl_regular_30 */
+    /* muffin: 按钮 | (228,270) | 205x191 | font taiwanpearl_regular_30 | bg: div11_2_30.png */
     lv_obj_set_pos(pg->muffin, 228, 270);
     lv_obj_set_size(pg->muffin, 205, 191);
 
-    /* madeleine: 按钮 | (435,77) | 205x191 | font taiwanpearl_regular_30 */
+    /* madeleine: 按钮 | (435,77) | 205x191 | font taiwanpearl_regular_30 | bg: div11_2_30.png */
     lv_obj_set_pos(pg->madeleine, 435, 77);
     lv_obj_set_size(pg->madeleine, 205, 191);
 
-    /* spongecake: 按钮 | (642,77) | 205x191 | font taiwanpearl_regular_30 */
+    /* spongecake: 按钮 | (642,77) | 205x191 | font taiwanpearl_regular_30 | bg: div11_2_30.png */
     lv_obj_set_pos(pg->spongecake, 642, 77);
     lv_obj_set_size(pg->spongecake, 205, 191);
 
-    /* cupcake: 按钮 | (849,77) | 205x191 | font taiwanpearl_regular_30 */
+    /* cupcake: 按钮 | (849,77) | 205x191 | font taiwanpearl_regular_30 | bg: div11_2_30.png */
     lv_obj_set_pos(pg->cupcake, 849, 77);
     lv_obj_set_size(pg->cupcake, 205, 191);
 
-    /* chocolatecake: 按钮 | (1056,77) | 205x191 | font taiwanpearl_regular_30 */
+    /* chocolatecake: 按钮 | (1056,77) | 205x191 | font taiwanpearl_regular_30 | bg: div11_2_30.png */
     lv_obj_set_pos(pg->chocolatecake, 1056, 77);
     lv_obj_set_size(pg->chocolatecake, 205, 191);
 
-    /* creampuff: 按钮 | (435,270) | 205x191 | font taiwanpearl_regular_30 */
+    /* creampuff: 按钮 | (435,270) | 205x191 | font taiwanpearl_regular_30 | bg: div11_2_30.png */
     lv_obj_set_pos(pg->creampuff, 435, 270);
     lv_obj_set_size(pg->creampuff, 205, 191);
 
-    /* eggtart: 按钮 | (642,270) | 205x191 | font taiwanpearl_regular_30 */
+    /* eggtart: 按钮 | (642,270) | 205x191 | font taiwanpearl_regular_30 | bg: div11_2_30.png */
     lv_obj_set_pos(pg->eggtart, 642, 270);
     lv_obj_set_size(pg->eggtart, 205, 191);
 
-    /* millefeuille: 按钮 | (849,270) | 205x191 | font taiwanpearl_regular_30 */
+    /* millefeuille: 按钮 | (849,270) | 205x191 | font taiwanpearl_regular_30 | bg: div11_2_30.png */
     lv_obj_set_pos(pg->millefeuille, 849, 270);
     lv_obj_set_size(pg->millefeuille, 205, 191);
 
-    /* cookies: 按钮 | (1056,270) | 205x191 | font taiwanpearl_regular_30 */
+    /* cookies: 按钮 | (1056,270) | 205x191 | font taiwanpearl_regular_30 | bg: div11_2_30.png */
     lv_obj_set_pos(pg->cookies, 1056, 270);
     lv_obj_set_size(pg->cookies, 205, 191);
 
@@ -1691,7 +1692,7 @@ void central_bbq_complete_lang_tune(void)
     central_bbq_complete_t *pg = central_bbq_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* image_143: 图片 | (115,320) */
+    /* image_143: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_143, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -1706,14 +1707,14 @@ void central_bbq_complete_lang_tune(void)
     lv_obj_set_pos(pg->label_318, 273, 157);
     lv_obj_set_size(pg->label_318, 235, 60);
 
-    /* button_104: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* button_104: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->button_104, 609, 170);
     lv_obj_set_size(pg->button_104, 50, 43);
 
-    /* image_145: 图片 | (115,161) */
+    /* image_145: 图片 | (115,161) | img: centralbbqicon.png */
     lv_obj_set_pos(pg->image_145, 115, 161);
 
-    /* image_5: 图片 | (902,160) */
+    /* image_5: 图片 | (902,160) | img: tips.png */
     lv_obj_set_pos(pg->image_5, 902, 160);
 
 }
@@ -1737,11 +1738,11 @@ void central_bbq_cooking_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_137: 图片 | (115,320) */
+    /* image_137: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_137, 115, 320);
 
     /* bar_26: 进度条 | (122,326) | 637x20 */
@@ -1752,11 +1753,11 @@ void central_bbq_cooking_lang_tune(void)
     lv_obj_set_pos(pg->label_309, 273, 157);
     lv_obj_set_size(pg->label_309, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_138: 图片 | (115,161) */
+    /* image_138: 图片 | (115,161) | img: centralbbqicon.png */
     lv_obj_set_pos(pg->image_138, 115, 161);
 
 }
@@ -1772,14 +1773,14 @@ void central_bbq_menu_lang_tune(void)
     central_bbq_menu_t *pg = central_bbq_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 */
+    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
     lv_obj_set_size(pg->next, 138, 70);
 
-    /* image_130: 图片 | (24,118) */
+    /* image_130: 图片 | (24,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_130, 24, 118);
 
-    /* image_131: 图片 | (645,118) */
+    /* image_131: 图片 | (645,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_131, 645, 118);
 
     /* label_281: 标签 | (300,137) | 64x32 | font taiwanpearl_regular_30 */
@@ -1822,16 +1823,16 @@ void central_bbq_menu_lang_tune(void)
     lv_obj_set_pos(pg->label_290, 996, 39);
     lv_obj_set_size(pg->label_290, 117, 32);
 
-    /* templine3: 图片 | (252,328) */
+    /* templine3: 图片 | (252,328) | img: underline.png */
     lv_obj_set_pos(pg->templine3, 252, 328);
 
-    /* templine2: 图片 | (289,328) */
+    /* templine2: 图片 | (289,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->templine2, 289, 328);
 
-    /* hourline: 图片 | (790,328) */
+    /* hourline: 图片 | (790,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->hourline, 790, 328);
 
-    /* minline: 图片 | (993,328) */
+    /* minline: 图片 | (993,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->minline, 993, 328);
 
 }
@@ -1879,14 +1880,14 @@ void central_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->label_298, 448, 269);
     lv_obj_set_size(pg->label_298, 64, 32);
 
-    /* image_136: 图片 | (164,376) */
+    /* image_136: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_136, 164, 376);
 
     /* label_299: 标签 | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_299, 232, 385);
     lv_obj_set_size(pg->label_299, 148, 32);
 
-    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
@@ -1906,15 +1907,15 @@ void central_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->label_303, 831, 381);
     lv_obj_set_size(pg->label_303, 130, 32);
 
-    /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offpreheat, 983, 144);
     lv_obj_set_size(pg->offpreheat, 135, 53);
 
-    /* offdelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* offdelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 260);
     lv_obj_set_size(pg->offdelay, 135, 53);
 
-    /* offcontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 */
+    /* offcontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offcontain, 983, 372);
     lv_obj_set_size(pg->offcontain, 135, 53);
 
@@ -1926,15 +1927,15 @@ void central_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->label_305, 1010, 39);
     lv_obj_set_size(pg->label_305, 85, 36);
 
-    /* onpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* onpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->onpreheat, 983, 144);
     lv_obj_set_size(pg->onpreheat, 135, 53);
 
-    /* ondelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* ondelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->ondelay, 983, 260);
     lv_obj_set_size(pg->ondelay, 135, 53);
 
-    /* oncontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 */
+    /* oncontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 372);
     lv_obj_set_size(pg->oncontain, 135, 53);
 
@@ -1967,7 +1968,7 @@ void central_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->container_3, 0, 0);
     lv_obj_set_size(pg->container_3, 1280, 480);
 
-    /* image_11: 图片 | (115,115) */
+    /* image_11: 图片 | (115,115) | img: settingbk.png */
     lv_obj_set_pos(pg->image_11, 115, 115);
 
     /* label_22: 标签 | (242,136) | 73x30 | font taiwanpearl_regular_30 */
@@ -1986,10 +1987,10 @@ void central_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->icon3, 300, 229);
     lv_obj_set_size(pg->icon3, 37, 30);
 
-    /* templine2: 图片 | (236,269) */
+    /* templine2: 图片 | (236,269) | img: settingline3_87x4.png */
     lv_obj_set_pos(pg->templine2, 236, 269);
 
-    /* templine3: 图片 | (223,269) */
+    /* templine3: 图片 | (223,269) | img: settingline2.png */
     lv_obj_set_pos(pg->templine3, 223, 269);
 
     /* hour: 标签 | (374,213) | 102x46 | font taiwanpearl_regular_48 */
@@ -2008,17 +2009,17 @@ void central_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->label_29, 612, 229);
     lv_obj_set_size(pg->label_29, 37, 30);
 
-    /* hourline: 图片 | (398,269) */
+    /* hourline: 图片 | (398,269) | img: settingline3.png */
     lv_obj_set_pos(pg->hourline, 398, 269);
 
-    /* minline: 图片 | (560,269) */
+    /* minline: 图片 | (560,269) | img: settingline3.png */
     lv_obj_set_pos(pg->minline, 560, 269);
 
     /* icon2: 标签 | (288,229) | 37x30 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->icon2, 288, 229);
     lv_obj_set_size(pg->icon2, 37, 30);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -2043,11 +2044,11 @@ void central_bbq_stop_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_139: 图片 | (115,320) */
+    /* image_139: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_139, 115, 320);
 
     /* bar_27: 进度条 | (122,326) | 637x20 */
@@ -2058,11 +2059,11 @@ void central_bbq_stop_lang_tune(void)
     lv_obj_set_pos(pg->label_312, 273, 157);
     lv_obj_set_size(pg->label_312, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_140: 图片 | (115,161) */
+    /* image_140: 图片 | (115,161) | img: centralbbqicon.png */
     lv_obj_set_pos(pg->image_140, 115, 161);
 
 }
@@ -2078,14 +2079,14 @@ void central_bbq_stop_back_lang_tune(void)
     central_bbq_stop_back_t *pg = central_bbq_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* image_141: 图片 | (115,161) */
+    /* image_141: 图片 | (115,161) | img: centralbbqicon.png */
     lv_obj_set_pos(pg->image_141, 115, 161);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_142: 图片 | (115,320) */
+    /* image_142: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_142, 115, 320);
 
     /* bar_28: 进度条 | (122,326) | 637x20 */
@@ -2096,7 +2097,7 @@ void central_bbq_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_314, 273, 157);
     lv_obj_set_size(pg->label_314, 235, 60);
 
-    /* button_102: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* button_102: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->button_102, 609, 170);
     lv_obj_set_size(pg->button_102, 50, 43);
 
@@ -2112,7 +2113,7 @@ void central_bbq_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_316, 895, 198);
     lv_obj_set_size(pg->label_316, 252, 36);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -2133,11 +2134,11 @@ void chick6menu_lang_tune(void)
     lv_obj_set_pos(pg->label_1, 24, 24);
     lv_obj_set_size(pg->label_1, 118, 25);
 
-    /* chicken: 按钮 | (12,75) | 638x387 | font taiwanpearl_regular_30 */
+    /* chicken: 按钮 | (12,75) | 638x387 | font taiwanpearl_regular_30 | bg: div230bg.png */
     lv_obj_set_pos(pg->chicken, 12, 75);
     lv_obj_set_size(pg->chicken, 638, 387);
 
-    /* duck: 按钮 | (633,74) | 637x389 | font taiwanpearl_regular_30 */
+    /* duck: 按钮 | (633,74) | 637x389 | font taiwanpearl_regular_30 | bg: div230bg.png */
     lv_obj_set_pos(pg->duck, 633, 74);
     lv_obj_set_size(pg->duck, 637, 389);
 
@@ -2158,7 +2159,7 @@ void chickencooking_lang_tune(void)
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_10: 图片 | (115,320) */
+    /* image_10: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_10, 115, 320);
 
     /* bar_2: 进度条 | (122,326) | 637x20 */
@@ -2169,7 +2170,7 @@ void chickencooking_lang_tune(void)
     lv_obj_set_pos(pg->cookstatus, 273, 157);
     lv_obj_set_size(pg->cookstatus, 235, 60);
 
-    /* icon: 图片 | (163,161) */
+    /* icon: 图片 | (163,161) | img: sixicon.png */
     lv_obj_set_pos(pg->icon, 163, 161);
 
     /* bartemp: 标签 | (125,323) | 66x24 | font taiwanpearl_regular_24 */
@@ -2188,7 +2189,7 @@ void chickencooking_lang_tune(void)
     lv_obj_set_pos(pg->text1, 895, 160);
     lv_obj_set_size(pg->text1, 252, 36);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
@@ -2209,23 +2210,23 @@ void chickenmenu_lang_tune(void)
     lv_obj_set_pos(pg->label_2, 24, 24);
     lv_obj_set_size(pg->label_2, 97, 25);
 
-    /* wholechicken: 按钮 | (19,75) | 248x387 | font taiwanpearl_regular_30 */
+    /* wholechicken: 按钮 | (19,75) | 248x387 | font taiwanpearl_regular_30 | bg: updown80bk.png */
     lv_obj_set_pos(pg->wholechicken, 19, 75);
     lv_obj_set_size(pg->wholechicken, 248, 387);
 
-    /* grillchickenwing: 按钮 | (267,75) | 248x387 | font taiwanpearl_regular_30 */
+    /* grillchickenwing: 按钮 | (267,75) | 248x387 | font taiwanpearl_regular_30 | bg: updown80bk.png */
     lv_obj_set_pos(pg->grillchickenwing, 267, 75);
     lv_obj_set_size(pg->grillchickenwing, 248, 387);
 
-    /* friedchickenwing: 按钮 | (516,75) | 248x387 | font taiwanpearl_regular_30 */
+    /* friedchickenwing: 按钮 | (516,75) | 248x387 | font taiwanpearl_regular_30 | bg: updown80bk.png */
     lv_obj_set_pos(pg->friedchickenwing, 516, 75);
     lv_obj_set_size(pg->friedchickenwing, 248, 387);
 
-    /* friedchickenleg: 按钮 | (764,75) | 248x387 | font taiwanpearl_regular_30 */
+    /* friedchickenleg: 按钮 | (764,75) | 248x387 | font taiwanpearl_regular_30 | bg: updown80bk.png */
     lv_obj_set_pos(pg->friedchickenleg, 764, 75);
     lv_obj_set_size(pg->friedchickenleg, 248, 387);
 
-    /* grillchickenbreast: 按钮 | (1012,75) | 248x387 | font taiwanpearl_regular_30 */
+    /* grillchickenbreast: 按钮 | (1012,75) | 248x387 | font taiwanpearl_regular_30 | bg: updown80bk.png */
     lv_obj_set_pos(pg->grillchickenbreast, 1012, 75);
     lv_obj_set_size(pg->grillchickenbreast, 248, 387);
 
@@ -2249,7 +2250,7 @@ void chickenmenu_lang_tune(void)
     lv_obj_set_pos(pg->label_8, 1060, 274);
     lv_obj_set_size(pg->label_8, 158, 32);
 
-    /* image_2: 图片 | (111,213) */
+    /* image_2: 图片 | (111,213) | img: probeiconbig.png */
     lv_obj_set_pos(pg->image_2, 111, 213);
 
 }
@@ -2265,7 +2266,7 @@ void chickmenutz_lang_tune(void)
     chickmenutz_t *pg = chickmenutz_get(&ui_manager);
     if (!pg) return;
 
-    /* wholechicken: 按钮 | (12,75) | 638x387 | font montserratmedium_16 */
+    /* wholechicken: 按钮 | (12,75) | 638x387 | font montserratmedium_16 | bg: div2bk30.png */
     lv_obj_set_pos(pg->wholechicken, 12, 75);
     lv_obj_set_size(pg->wholechicken, 638, 387);
 
@@ -2277,14 +2278,14 @@ void chickmenutz_lang_tune(void)
     lv_obj_set_pos(pg->label_5, 265, 274);
     lv_obj_set_size(pg->label_5, 131, 32);
 
-    /* image_1: 图片 | (296,213) */
+    /* image_1: 图片 | (296,213) | img: probeiconbig.png */
     lv_obj_set_pos(pg->image_1, 296, 213);
 
-    /* wholeduck: 按钮 | (633,74) | 638x387 | font montserratmedium_16 */
+    /* wholeduck: 按钮 | (633,74) | 638x387 | font montserratmedium_16 | bg: div2bk30.png */
     lv_obj_set_pos(pg->wholeduck, 633, 74);
     lv_obj_set_size(pg->wholeduck, 638, 387);
 
-    /* image_2: 图片 | (917,213) */
+    /* image_2: 图片 | (917,213) | img: probeiconbig.png */
     lv_obj_set_pos(pg->image_2, 917, 213);
 
     /* label_6: 标签 | (886,274) | 131x32 | font taiwanpearl_regular_30 */
@@ -2304,7 +2305,7 @@ void chip_complete_lang_tune(void)
     chip_complete_t *pg = chip_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* image_385: 图片 | (115,320) */
+    /* image_385: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_385, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -2319,14 +2320,14 @@ void chip_complete_lang_tune(void)
     lv_obj_set_pos(pg->label_845, 273, 157);
     lv_obj_set_size(pg->label_845, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_387: 图片 | (115,161) */
+    /* image_387: 图片 | (115,161) | img: chipicon.png */
     lv_obj_set_pos(pg->image_387, 115, 161);
 
-    /* image_16: 图片 | (902,160) */
+    /* image_16: 图片 | (902,160) | img: tips.png */
     lv_obj_set_pos(pg->image_16, 902, 160);
 
 }
@@ -2350,11 +2351,11 @@ void chip_cooking_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_376: 图片 | (115,320) */
+    /* image_376: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_376, 115, 320);
 
     /* bar_64: 进度条 | (122,326) | 637x20 */
@@ -2365,11 +2366,11 @@ void chip_cooking_lang_tune(void)
     lv_obj_set_pos(pg->label_830, 273, 157);
     lv_obj_set_size(pg->label_830, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_377: 图片 | (115,161) */
+    /* image_377: 图片 | (115,161) | img: chipicon.png */
     lv_obj_set_pos(pg->image_377, 115, 161);
 
 }
@@ -2385,11 +2386,11 @@ void chip_menu_lang_tune(void)
     chip_menu_t *pg = chip_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 */
+    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
     lv_obj_set_size(pg->next, 138, 70);
 
-    /* image_372: 图片 | (24,117) */
+    /* image_372: 图片 | (24,117) | img: div1bg.png */
     lv_obj_set_pos(pg->image_372, 24, 117);
 
     /* label_805: 标签 | (578,139) | 125x32 | font taiwanpearl_regular_30 */
@@ -2420,10 +2421,10 @@ void chip_menu_lang_tune(void)
     lv_obj_set_pos(pg->label_811, 996, 39);
     lv_obj_set_size(pg->label_811, 117, 32);
 
-    /* hourline: 图片 | (480,327) */
+    /* hourline: 图片 | (480,327) | img: underline_120x4.png */
     lv_obj_set_pos(pg->hourline, 480, 327);
 
-    /* minline: 图片 | (680,327) */
+    /* minline: 图片 | (680,327) | img: underline_120x4.png */
     lv_obj_set_pos(pg->minline, 680, 327);
 
 }
@@ -2471,14 +2472,14 @@ void chip_set_lang_tune(void)
     lv_obj_set_pos(pg->label_819, 448, 269);
     lv_obj_set_size(pg->label_819, 64, 32);
 
-    /* image_375: 图片 | (164,376) */
+    /* image_375: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_375, 164, 376);
 
     /* label_820: 标签 | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_820, 232, 385);
     lv_obj_set_size(pg->label_820, 148, 32);
 
-    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
@@ -2494,11 +2495,11 @@ void chip_set_lang_tune(void)
     lv_obj_set_pos(pg->label_823, 831, 270);
     lv_obj_set_size(pg->label_823, 130, 32);
 
-    /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 144);
     lv_obj_set_size(pg->offdelay, 135, 53);
 
-    /* offcontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* offcontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offcontain, 983, 260);
     lv_obj_set_size(pg->offcontain, 135, 53);
 
@@ -2510,11 +2511,11 @@ void chip_set_lang_tune(void)
     lv_obj_set_pos(pg->label_825, 1010, 39);
     lv_obj_set_size(pg->label_825, 85, 36);
 
-    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->ondelay, 983, 144);
     lv_obj_set_size(pg->ondelay, 135, 53);
 
-    /* oncontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* oncontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 260);
     lv_obj_set_size(pg->oncontain, 135, 53);
 
@@ -2547,7 +2548,7 @@ void chip_setting_lang_tune(void)
     lv_obj_set_pos(pg->container_37, 0, 0);
     lv_obj_set_size(pg->container_37, 1280, 480);
 
-    /* image_378: 图片 | (115,115) */
+    /* image_378: 图片 | (115,115) | img: settingbk.png */
     lv_obj_set_pos(pg->image_378, 115, 115);
 
     /* label_832: 标签 | (373,136) | 135x30 | font taiwanpearl_regular_30 */
@@ -2562,7 +2563,7 @@ void chip_setting_lang_tune(void)
     lv_obj_set_pos(pg->label_834, 340, 228);
     lv_obj_set_size(pg->label_834, 37, 30);
 
-    /* hourline: 图片 | (291,269) */
+    /* hourline: 图片 | (291,269) | img: settingline3.png */
     lv_obj_set_pos(pg->hourline, 291, 269);
 
     /* min: 标签 | (483,212) | 102x46 | font taiwanpearl_regular_48 */
@@ -2573,10 +2574,10 @@ void chip_setting_lang_tune(void)
     lv_obj_set_pos(pg->label_836, 558, 229);
     lv_obj_set_size(pg->label_836, 37, 30);
 
-    /* minline: 图片 | (508,269) */
+    /* minline: 图片 | (508,269) | img: settingline3.png */
     lv_obj_set_pos(pg->minline, 508, 269);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -2601,11 +2602,11 @@ void chip_stop_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_381: 图片 | (115,320) */
+    /* image_381: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_381, 115, 320);
 
     /* bar_65: 进度条 | (122,326) | 637x20 */
@@ -2616,11 +2617,11 @@ void chip_stop_lang_tune(void)
     lv_obj_set_pos(pg->label_839, 273, 157);
     lv_obj_set_size(pg->label_839, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_382: 图片 | (115,161) */
+    /* image_382: 图片 | (115,161) | img: chipicon.png */
     lv_obj_set_pos(pg->image_382, 115, 161);
 
 }
@@ -2636,14 +2637,14 @@ void chip_stop_back_lang_tune(void)
     chip_stop_back_t *pg = chip_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* image_383: 图片 | (115,161) */
+    /* image_383: 图片 | (115,161) | img: chipicon.png */
     lv_obj_set_pos(pg->image_383, 115, 161);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_384: 图片 | (115,320) */
+    /* image_384: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_384, 115, 320);
 
     /* bar_66: 进度条 | (122,326) | 637x20 */
@@ -2654,7 +2655,7 @@ void chip_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_841, 273, 157);
     lv_obj_set_size(pg->label_841, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
@@ -2670,7 +2671,7 @@ void chip_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_843, 895, 198);
     lv_obj_set_size(pg->label_843, 252, 36);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -2691,15 +2692,15 @@ void clean_menu_lang_tune(void)
     lv_obj_set_pos(pg->label_1, 24, 24);
     lv_obj_set_size(pg->label_1, 97, 25);
 
-    /* waterclean: 按钮 | (12,75) | 638x387 | font montserratmedium_16 */
+    /* waterclean: 按钮 | (12,75) | 638x387 | font montserratmedium_16 | bg: div230bg.png */
     lv_obj_set_pos(pg->waterclean, 12, 75);
     lv_obj_set_size(pg->waterclean, 638, 387);
 
-    /* button_2: 按钮 | (633,74) | 637x389 | font montserratmedium_16 */
+    /* button_2: 按钮 | (633,74) | 637x389 | font montserratmedium_16 | bg: div230bg.png */
     lv_obj_set_pos(pg->button_2, 633, 74);
     lv_obj_set_size(pg->button_2, 637, 389);
 
-    /* image_1: 图片 | (254,187) */
+    /* image_1: 图片 | (254,187) | img: clearfrt.png */
     lv_obj_set_pos(pg->image_1, 254, 187);
 
 }
@@ -2723,18 +2724,18 @@ void color_cookoing_lang_tune(void)
     lv_obj_set_pos(pg->time_label, 907, 157);
     lv_obj_set_size(pg->time_label, 235, 60);
 
-    /* stop_button: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop_button: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop_button, 959, 295);
     lv_obj_set_size(pg->stop_button, 129, 83);
 
-    /* barbk_img: 图片 | (115,320) */
+    /* barbk_img: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->barbk_img, 115, 320);
 
     /* bar: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar, 122, 326);
     lv_obj_set_size(pg->bar, 637, 20);
 
-    /* color_img: 图片 | (95,163) */
+    /* color_img: 图片 | (95,163) | img: color.png */
     lv_obj_set_pos(pg->color_img, 95, 163);
 
     /* cooking_label: 标签 | (273,157) | 255x60 | font taiwanpearl_regular_60 */
@@ -2762,18 +2763,18 @@ void color_stop_lang_tune(void)
     lv_obj_set_pos(pg->time_label, 907, 157);
     lv_obj_set_size(pg->time_label, 235, 60);
 
-    /* button_6: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* button_6: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->button_6, 959, 295);
     lv_obj_set_size(pg->button_6, 129, 83);
 
-    /* image_11: 图片 | (115,320) */
+    /* image_11: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_11, 115, 320);
 
     /* bar_3: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_3, 122, 326);
     lv_obj_set_size(pg->bar_3, 637, 20);
 
-    /* image_12: 图片 | (95,163) */
+    /* image_12: 图片 | (95,163) | img: color.png */
     lv_obj_set_pos(pg->image_12, 95, 163);
 
     /* label_15: 标签 | (273,157) | 255x60 | font taiwanpearl_regular_60 */
@@ -2797,14 +2798,14 @@ void color_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_17, 274, 232);
     lv_obj_set_size(pg->label_17, 490, 39);
 
-    /* image_14: 图片 | (115,320) */
+    /* image_14: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_14, 115, 320);
 
     /* bar_4: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_4, 122, 326);
     lv_obj_set_size(pg->bar_4, 637, 20);
 
-    /* image_15: 图片 | (95,163) */
+    /* image_15: 图片 | (95,163) | img: color.png */
     lv_obj_set_pos(pg->image_15, 95, 163);
 
     /* label_19: 标签 | (273,157) | 255x60 | font taiwanpearl_regular_60 */
@@ -2823,7 +2824,7 @@ void color_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_21, 895, 198);
     lv_obj_set_size(pg->label_21, 252, 36);
 
-    /* button_7: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* button_7: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->button_7, 959, 295);
     lv_obj_set_size(pg->button_7, 129, 83);
 
@@ -2840,7 +2841,7 @@ void colorcooking_complete_lang_tune(void)
     colorcooking_complete_t *pg = colorcooking_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* barbk_img: 图片 | (115,320) */
+    /* barbk_img: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->barbk_img, 115, 320);
 
     /* status_label: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -2855,10 +2856,10 @@ void colorcooking_complete_lang_tune(void)
     lv_obj_set_pos(pg->complete_label, 273, 157);
     lv_obj_set_size(pg->complete_label, 235, 60);
 
-    /* color_img: 图片 | (95,163) */
+    /* color_img: 图片 | (95,163) | img: color.png */
     lv_obj_set_pos(pg->color_img, 95, 163);
 
-    /* image_3: 图片 | (845,160) */
+    /* image_3: 图片 | (845,160) | img: hotcare.png */
     lv_obj_set_pos(pg->image_3, 845, 160);
 
 }
@@ -2878,32 +2879,32 @@ void cook4menu_lang_tune(void)
     lv_obj_set_pos(pg->label_83, 24, 24);
     lv_obj_set_size(pg->label_83, 144, 32);
 
-    /* cookie: 按钮 | (5,65) | 340x406 | font montserratmedium_16 */
+    /* cookie: 按钮 | (5,65) | 340x406 | font montserratmedium_16 | bg: div4bg30.png */
     lv_obj_set_pos(pg->cookie, 5, 65);
     lv_obj_set_size(pg->cookie, 340, 406);
 
-    /* west: 按钮 | (315,65) | 340x406 | font montserratmedium_16 */
+    /* west: 按钮 | (315,65) | 340x406 | font montserratmedium_16 | bg: div4bg30.png */
     lv_obj_set_pos(pg->west, 315, 65);
     lv_obj_set_size(pg->west, 340, 406);
 
-    /* piza: 按钮 | (625,65) | 340x406 | font montserratmedium_16 */
+    /* piza: 按钮 | (625,65) | 340x406 | font montserratmedium_16 | bg: div4bg30.png */
     lv_obj_set_pos(pg->piza, 625, 65);
     lv_obj_set_size(pg->piza, 340, 406);
 
-    /* menu: 按钮 | (936,65) | 340x406 | font montserratmedium_16 */
+    /* menu: 按钮 | (936,65) | 340x406 | font montserratmedium_16 | bg: div4bg30.png */
     lv_obj_set_pos(pg->menu, 936, 65);
     lv_obj_set_size(pg->menu, 340, 406);
 
-    /* image_47: 图片 | (125,187) */
+    /* image_47: 图片 | (125,187) | img: cookieimg.png */
     lv_obj_set_pos(pg->image_47, 125, 187);
 
-    /* image_48: 图片 | (433,186) */
+    /* image_48: 图片 | (433,186) | img: westimg.png */
     lv_obj_set_pos(pg->image_48, 433, 186);
 
-    /* image_49: 图片 | (745,186) */
+    /* image_49: 图片 | (745,186) | img: pizaimg.png */
     lv_obj_set_pos(pg->image_49, 745, 186);
 
-    /* image_50: 图片 | (1056,187) */
+    /* image_50: 图片 | (1056,187) | img: menuimgg.png */
     lv_obj_set_pos(pg->image_50, 1056, 187);
 
     /* label_84: 标签 | (145,290) | 100x32 | font taiwanpearl_regular_30 */
@@ -2935,19 +2936,19 @@ void cook_menu_tz_lang_tune(void)
     cook_menu_tz_t *pg = cook_menu_tz_get(&ui_manager);
     if (!pg) return;
 
-    /* hot_bbq_button: 按钮 | (421,60) | 439x417 | font montserratmedium_16 */
+    /* hot_bbq_button: 按钮 | (421,60) | 439x417 | font montserratmedium_16 | bg: div3bk30.png */
     lv_obj_set_pos(pg->hot_bbq_button, 421, 60);
     lv_obj_set_size(pg->hot_bbq_button, 439, 417);
 
-    /* updown_button: 按钮 | (7,60) | 439x417 | font montserratmedium_16 */
+    /* updown_button: 按钮 | (7,60) | 439x417 | font montserratmedium_16 | bg: div3bk30.png */
     lv_obj_set_pos(pg->updown_button, 7, 60);
     lv_obj_set_size(pg->updown_button, 439, 417);
 
-    /* bottom_button: 按钮 | (835,60) | 439x417 | font montserratmedium_16 */
+    /* bottom_button: 按钮 | (835,60) | 439x417 | font montserratmedium_16 | bg: div3bk30.png */
     lv_obj_set_pos(pg->bottom_button, 835, 60);
     lv_obj_set_size(pg->bottom_button, 439, 417);
 
-    /* major_img: 图片 | (175,188) */
+    /* major_img: 图片 | (175,188) | img: pengrentzimg.png */
     lv_obj_set_pos(pg->major_img, 175, 188);
 
     /* cook_label: 标签 | (24,24) | 96x22 | font taiwanpearl_regular_24 */
@@ -2979,7 +2980,7 @@ void cookie_complete_lang_tune(void)
     cookie_complete_t *pg = cookie_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* image_69: 图片 | (115,320) */
+    /* image_69: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_69, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -2994,14 +2995,14 @@ void cookie_complete_lang_tune(void)
     lv_obj_set_pos(pg->label_143, 273, 157);
     lv_obj_set_size(pg->label_143, 235, 60);
 
-    /* image_70: 图片 | (845,160) */
+    /* image_70: 图片 | (845,160) | img: hotcare.png */
     lv_obj_set_pos(pg->image_70, 845, 160);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_71: 图片 | (115,161) */
+    /* image_71: 图片 | (115,161) | img: cookieicon.png */
     lv_obj_set_pos(pg->image_71, 115, 161);
 
 }
@@ -3025,11 +3026,11 @@ void cookie_cooking_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_58: 图片 | (115,320) */
+    /* image_58: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_58, 115, 320);
 
     /* bar_4: 进度条 | (122,326) | 637x20 */
@@ -3040,11 +3041,11 @@ void cookie_cooking_lang_tune(void)
     lv_obj_set_pos(pg->label_124, 273, 157);
     lv_obj_set_size(pg->label_124, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_59: 图片 | (115,161) */
+    /* image_59: 图片 | (115,161) | img: cookieicon.png */
     lv_obj_set_pos(pg->image_59, 115, 161);
 
 }
@@ -3060,14 +3061,14 @@ void cookie_menu_lang_tune(void)
     cookie_menu_t *pg = cookie_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 */
+    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
     lv_obj_set_size(pg->next, 138, 70);
 
-    /* image_51: 图片 | (24,118) */
+    /* image_51: 图片 | (24,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_51, 24, 118);
 
-    /* image_52: 图片 | (645,118) */
+    /* image_52: 图片 | (645,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_52, 645, 118);
 
     /* label_88: 标签 | (300,137) | 64x32 | font taiwanpearl_regular_30 */
@@ -3110,16 +3111,16 @@ void cookie_menu_lang_tune(void)
     lv_obj_set_pos(pg->label_97, 996, 39);
     lv_obj_set_size(pg->label_97, 117, 32);
 
-    /* line3: 图片 | (252,328) */
+    /* line3: 图片 | (252,328) | img: underline.png */
     lv_obj_set_pos(pg->line3, 252, 328);
 
-    /* line2: 图片 | (289,328) */
+    /* line2: 图片 | (289,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->line2, 289, 328);
 
-    /* hourline: 图片 | (790,328) */
+    /* hourline: 图片 | (790,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->hourline, 790, 328);
 
-    /* minline: 图片 | (993,328) */
+    /* minline: 图片 | (993,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->minline, 993, 328);
 
 }
@@ -3167,14 +3168,14 @@ void cookie_set_lang_tune(void)
     lv_obj_set_pos(pg->label_105, 448, 269);
     lv_obj_set_size(pg->label_105, 64, 32);
 
-    /* image_57: 图片 | (164,376) */
+    /* image_57: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_57, 164, 376);
 
     /* label_106: 标签 | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_106, 232, 385);
     lv_obj_set_size(pg->label_106, 148, 32);
 
-    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
@@ -3190,11 +3191,11 @@ void cookie_set_lang_tune(void)
     lv_obj_set_pos(pg->label_110, 831, 270);
     lv_obj_set_size(pg->label_110, 130, 32);
 
-    /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 144);
     lv_obj_set_size(pg->offdelay, 135, 53);
 
-    /* offcontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* offcontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offcontain, 983, 260);
     lv_obj_set_size(pg->offcontain, 135, 53);
 
@@ -3206,11 +3207,11 @@ void cookie_set_lang_tune(void)
     lv_obj_set_pos(pg->label_112, 1010, 39);
     lv_obj_set_size(pg->label_112, 85, 36);
 
-    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->ondelay, 983, 144);
     lv_obj_set_size(pg->ondelay, 135, 53);
 
-    /* oncontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* oncontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 260);
     lv_obj_set_size(pg->oncontain, 135, 53);
 
@@ -3243,7 +3244,7 @@ void cookie_setting_lang_tune(void)
     lv_obj_set_pos(pg->container_7, 0, 0);
     lv_obj_set_size(pg->container_7, 1280, 480);
 
-    /* image_60: 图片 | (115,115) */
+    /* image_60: 图片 | (115,115) | img: settingbk.png */
     lv_obj_set_pos(pg->image_60, 115, 115);
 
     /* label_126: 标签 | (242,136) | 73x30 | font taiwanpearl_regular_30 */
@@ -3262,10 +3263,10 @@ void cookie_setting_lang_tune(void)
     lv_obj_set_pos(pg->icon3, 300, 229);
     lv_obj_set_size(pg->icon3, 37, 30);
 
-    /* templine2: 图片 | (236,269) */
+    /* templine2: 图片 | (236,269) | img: settingline3_87x4.png */
     lv_obj_set_pos(pg->templine2, 236, 269);
 
-    /* templine3: 图片 | (223,269) */
+    /* templine3: 图片 | (223,269) | img: settingline2.png */
     lv_obj_set_pos(pg->templine3, 223, 269);
 
     /* hour: 标签 | (374,213) | 102x46 | font taiwanpearl_regular_48 */
@@ -3284,17 +3285,17 @@ void cookie_setting_lang_tune(void)
     lv_obj_set_pos(pg->label_133, 612, 229);
     lv_obj_set_size(pg->label_133, 37, 30);
 
-    /* hourline: 图片 | (398,269) */
+    /* hourline: 图片 | (398,269) | img: settingline3.png */
     lv_obj_set_pos(pg->hourline, 398, 269);
 
-    /* minline: 图片 | (560,269) */
+    /* minline: 图片 | (560,269) | img: settingline3.png */
     lv_obj_set_pos(pg->minline, 560, 269);
 
     /* icon2: 标签 | (288,229) | 37x30 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->icon2, 288, 229);
     lv_obj_set_size(pg->icon2, 37, 30);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -3319,11 +3320,11 @@ void cookie_stop_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_65: 图片 | (115,320) */
+    /* image_65: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_65, 115, 320);
 
     /* bar_5: 进度条 | (122,326) | 637x20 */
@@ -3334,11 +3335,11 @@ void cookie_stop_lang_tune(void)
     lv_obj_set_pos(pg->label_137, 273, 157);
     lv_obj_set_size(pg->label_137, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_66: 图片 | (115,161) */
+    /* image_66: 图片 | (115,161) | img: cookieicon.png */
     lv_obj_set_pos(pg->image_66, 115, 161);
 
 }
@@ -3354,14 +3355,14 @@ void cookie_stop_back_lang_tune(void)
     cookie_stop_back_t *pg = cookie_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* image_67: 图片 | (115,161) */
+    /* image_67: 图片 | (115,161) | img: cookieicon.png */
     lv_obj_set_pos(pg->image_67, 115, 161);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_68: 图片 | (115,320) */
+    /* image_68: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_68, 115, 320);
 
     /* bar_6: 进度条 | (122,326) | 637x20 */
@@ -3372,7 +3373,7 @@ void cookie_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_139, 273, 157);
     lv_obj_set_size(pg->label_139, 235, 60);
 
-    /* button_29: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* button_29: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->button_29, 609, 170);
     lv_obj_set_size(pg->button_29, 50, 43);
 
@@ -3388,7 +3389,7 @@ void cookie_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_141, 895, 198);
     lv_obj_set_size(pg->label_141, 252, 36);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -3405,43 +3406,43 @@ void cookmenu_lang_tune(void)
     cookmenu_t *pg = cookmenu_get(&ui_manager);
     if (!pg) return;
 
-    /* top_bbq_button: 按钮 | (267,75) | 248x193 | font montserratmedium_16 */
+    /* top_bbq_button: 按钮 | (267,75) | 248x193 | font montserratmedium_16 | bg: bottombk.png */
     lv_obj_set_pos(pg->top_bbq_button, 267, 75);
     lv_obj_set_size(pg->top_bbq_button, 248, 193);
 
-    /* hot_bbq_button: 按钮 | (516,76) | 248x193 | font montserratmedium_16 */
+    /* hot_bbq_button: 按钮 | (516,76) | 248x193 | font montserratmedium_16 | bg: bottombk.png */
     lv_obj_set_pos(pg->hot_bbq_button, 516, 76);
     lv_obj_set_size(pg->hot_bbq_button, 248, 193);
 
-    /* hot_wind_button: 按钮 | (764,76) | 248x193 | font montserratmedium_16 */
+    /* hot_wind_button: 按钮 | (764,76) | 248x193 | font montserratmedium_16 | bg: bottombk.png */
     lv_obj_set_pos(pg->hot_wind_button, 764, 76);
     lv_obj_set_size(pg->hot_wind_button, 248, 193);
 
-    /* save_button: 按钮 | (1012,76) | 248x193 | font montserratmedium_16 */
+    /* save_button: 按钮 | (1012,76) | 248x193 | font montserratmedium_16 | bg: bottombk.png */
     lv_obj_set_pos(pg->save_button, 1012, 76);
     lv_obj_set_size(pg->save_button, 248, 193);
 
-    /* bottom_button: 按钮 | (266,268) | 248x193 | font montserratmedium_16 */
+    /* bottom_button: 按钮 | (266,268) | 248x193 | font montserratmedium_16 | bg: bottombk.png */
     lv_obj_set_pos(pg->bottom_button, 266, 268);
     lv_obj_set_size(pg->bottom_button, 248, 193);
 
-    /* central_button: 按钮 | (516,268) | 248x193 | font montserratmedium_16 */
+    /* central_button: 按钮 | (516,268) | 248x193 | font montserratmedium_16 | bg: bottombk.png */
     lv_obj_set_pos(pg->central_button, 516, 268);
     lv_obj_set_size(pg->central_button, 248, 193);
 
-    /* windchange_buttonn: 按钮 | (764,268) | 248x193 | font montserratmedium_16 */
+    /* windchange_buttonn: 按钮 | (764,268) | 248x193 | font montserratmedium_16 | bg: bottombk.png */
     lv_obj_set_pos(pg->windchange_buttonn, 764, 268);
     lv_obj_set_size(pg->windchange_buttonn, 248, 193);
 
-    /* preheater_button: 按钮 | (1012,268) | 248x193 | font montserratmedium_16 */
+    /* preheater_button: 按钮 | (1012,268) | 248x193 | font montserratmedium_16 | bg: bottombk.png */
     lv_obj_set_pos(pg->preheater_button, 1012, 268);
     lv_obj_set_size(pg->preheater_button, 248, 193);
 
-    /* up_down_button: 按钮 | (21,75) | 244x386 | font montserratmedium_16 */
+    /* up_down_button: 按钮 | (21,75) | 244x386 | font montserratmedium_16 | bg: updown80bk.png */
     lv_obj_set_pos(pg->up_down_button, 21, 75);
     lv_obj_set_size(pg->up_down_button, 244, 386);
 
-    /* mainimg_1: 图片 | (95,111) */
+    /* mainimg_1: 图片 | (95,111) | img: cookmenuicon.png */
     lv_obj_set_pos(pg->mainimg_1, 95, 111);
 
     /* hot_wind_labal: 标签 | (857,213) | 63x32 | font taiwanpearl_regular_30 */
@@ -3497,7 +3498,7 @@ void corn_complete_lang_tune(void)
     corn_complete_t *pg = corn_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* image_258: 图片 | (115,320) */
+    /* image_258: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_258, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -3512,14 +3513,14 @@ void corn_complete_lang_tune(void)
     lv_obj_set_pos(pg->label_582, 273, 157);
     lv_obj_set_size(pg->label_582, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_260: 图片 | (143,161) */
+    /* image_260: 图片 | (143,161) | img: cornicon.png */
     lv_obj_set_pos(pg->image_260, 143, 161);
 
-    /* image_10: 图片 | (902,160) */
+    /* image_10: 图片 | (902,160) | img: tips.png */
     lv_obj_set_pos(pg->image_10, 902, 160);
 
 }
@@ -3543,11 +3544,11 @@ void corn_cooking_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_247: 图片 | (115,320) */
+    /* image_247: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_247, 115, 320);
 
     /* bar_40: 进度条 | (122,326) | 637x20 */
@@ -3558,11 +3559,11 @@ void corn_cooking_lang_tune(void)
     lv_obj_set_pos(pg->label_563, 273, 157);
     lv_obj_set_size(pg->label_563, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_248: 图片 | (143,161) */
+    /* image_248: 图片 | (143,161) | img: cornicon.png */
     lv_obj_set_pos(pg->image_248, 143, 161);
 
 }
@@ -3578,14 +3579,14 @@ void corn_menu_lang_tune(void)
     corn_menu_t *pg = corn_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 */
+    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
     lv_obj_set_size(pg->next, 138, 70);
 
-    /* image_240: 图片 | (24,118) */
+    /* image_240: 图片 | (24,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_240, 24, 118);
 
-    /* image_241: 图片 | (645,118) */
+    /* image_241: 图片 | (645,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_241, 645, 118);
 
     /* label_534: 标签 | (300,137) | 64x32 | font taiwanpearl_regular_30 */
@@ -3628,16 +3629,16 @@ void corn_menu_lang_tune(void)
     lv_obj_set_pos(pg->label_543, 996, 39);
     lv_obj_set_size(pg->label_543, 117, 32);
 
-    /* templine3: 图片 | (252,328) */
+    /* templine3: 图片 | (252,328) | img: underline.png */
     lv_obj_set_pos(pg->templine3, 252, 328);
 
-    /* templine2: 图片 | (289,328) */
+    /* templine2: 图片 | (289,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->templine2, 289, 328);
 
-    /* hourline: 图片 | (790,328) */
+    /* hourline: 图片 | (790,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->hourline, 790, 328);
 
-    /* minline: 图片 | (993,328) */
+    /* minline: 图片 | (993,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->minline, 993, 328);
 
 }
@@ -3685,14 +3686,14 @@ void corn_set_lang_tune(void)
     lv_obj_set_pos(pg->label_551, 448, 269);
     lv_obj_set_size(pg->label_551, 64, 32);
 
-    /* image_246: 图片 | (164,376) */
+    /* image_246: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_246, 164, 376);
 
     /* label_552: 标签 | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_552, 232, 385);
     lv_obj_set_size(pg->label_552, 148, 32);
 
-    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
@@ -3712,15 +3713,15 @@ void corn_set_lang_tune(void)
     lv_obj_set_pos(pg->label_556, 831, 381);
     lv_obj_set_size(pg->label_556, 130, 32);
 
-    /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offpreheat, 983, 144);
     lv_obj_set_size(pg->offpreheat, 135, 53);
 
-    /* offdelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* offdelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 260);
     lv_obj_set_size(pg->offdelay, 135, 53);
 
-    /* offcontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 */
+    /* offcontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offcontain, 983, 372);
     lv_obj_set_size(pg->offcontain, 135, 53);
 
@@ -3732,15 +3733,15 @@ void corn_set_lang_tune(void)
     lv_obj_set_pos(pg->label_558, 1010, 39);
     lv_obj_set_size(pg->label_558, 85, 36);
 
-    /* onpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* onpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->onpreheat, 983, 144);
     lv_obj_set_size(pg->onpreheat, 135, 53);
 
-    /* ondelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* ondelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->ondelay, 983, 260);
     lv_obj_set_size(pg->ondelay, 135, 53);
 
-    /* oncontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 */
+    /* oncontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 372);
     lv_obj_set_size(pg->oncontain, 135, 53);
 
@@ -3773,7 +3774,7 @@ void corn_setting_lang_tune(void)
     lv_obj_set_pos(pg->container_25, 0, 0);
     lv_obj_set_size(pg->container_25, 1280, 480);
 
-    /* image_249: 图片 | (115,115) */
+    /* image_249: 图片 | (115,115) | img: settingbk.png */
     lv_obj_set_pos(pg->image_249, 115, 115);
 
     /* label_565: 标签 | (242,136) | 73x30 | font taiwanpearl_regular_30 */
@@ -3792,10 +3793,10 @@ void corn_setting_lang_tune(void)
     lv_obj_set_pos(pg->icon3, 300, 229);
     lv_obj_set_size(pg->icon3, 37, 30);
 
-    /* templine2: 图片 | (236,269) */
+    /* templine2: 图片 | (236,269) | img: settingline3_87x4.png */
     lv_obj_set_pos(pg->templine2, 236, 269);
 
-    /* templine3: 图片 | (223,269) */
+    /* templine3: 图片 | (223,269) | img: settingline2.png */
     lv_obj_set_pos(pg->templine3, 223, 269);
 
     /* hour: 标签 | (374,213) | 102x46 | font taiwanpearl_regular_48 */
@@ -3814,17 +3815,17 @@ void corn_setting_lang_tune(void)
     lv_obj_set_pos(pg->label_572, 612, 229);
     lv_obj_set_size(pg->label_572, 37, 30);
 
-    /* hourline: 图片 | (398,269) */
+    /* hourline: 图片 | (398,269) | img: settingline3.png */
     lv_obj_set_pos(pg->hourline, 398, 269);
 
-    /* minline: 图片 | (560,269) */
+    /* minline: 图片 | (560,269) | img: settingline3.png */
     lv_obj_set_pos(pg->minline, 560, 269);
 
     /* icon2: 标签 | (288,229) | 37x30 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->icon2, 288, 229);
     lv_obj_set_size(pg->icon2, 37, 30);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -3849,11 +3850,11 @@ void corn_stop_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_254: 图片 | (115,320) */
+    /* image_254: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_254, 115, 320);
 
     /* bar_41: 进度条 | (122,326) | 637x20 */
@@ -3864,11 +3865,11 @@ void corn_stop_lang_tune(void)
     lv_obj_set_pos(pg->label_576, 273, 157);
     lv_obj_set_size(pg->label_576, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_255: 图片 | (143,161) */
+    /* image_255: 图片 | (143,161) | img: cornicon.png */
     lv_obj_set_pos(pg->image_255, 143, 161);
 
 }
@@ -3884,14 +3885,14 @@ void corn_stop_back_lang_tune(void)
     corn_stop_back_t *pg = corn_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* image_256: 图片 | (143,161) */
+    /* image_256: 图片 | (143,161) | img: cornicon.png */
     lv_obj_set_pos(pg->image_256, 143, 161);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_257: 图片 | (115,320) */
+    /* image_257: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_257, 115, 320);
 
     /* bar_42: 进度条 | (122,326) | 637x20 */
@@ -3902,7 +3903,7 @@ void corn_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_578, 273, 157);
     lv_obj_set_size(pg->label_578, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
@@ -3918,7 +3919,7 @@ void corn_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_580, 895, 198);
     lv_obj_set_size(pg->label_580, 252, 36);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -3935,7 +3936,7 @@ void custom_complete_lang_tune(void)
     custom_complete_t *pg = custom_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* image_401: 图片 | (115,320) */
+    /* image_401: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_401, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -3950,14 +3951,14 @@ void custom_complete_lang_tune(void)
     lv_obj_set_pos(pg->label_886, 273, 157);
     lv_obj_set_size(pg->label_886, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_403: 图片 | (115,161) */
+    /* image_403: 图片 | (115,161) | img: customicon.png */
     lv_obj_set_pos(pg->image_403, 115, 161);
 
-    /* image_17: 图片 | (902,160) */
+    /* image_17: 图片 | (902,160) | img: tips.png */
     lv_obj_set_pos(pg->image_17, 902, 160);
 
 }
@@ -3981,11 +3982,11 @@ void custom_cooking_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_392: 图片 | (115,320) */
+    /* image_392: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_392, 115, 320);
 
     /* bar_68: 进度条 | (122,326) | 637x20 */
@@ -3996,11 +3997,11 @@ void custom_cooking_lang_tune(void)
     lv_obj_set_pos(pg->label_871, 273, 157);
     lv_obj_set_size(pg->label_871, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_393: 图片 | (115,161) */
+    /* image_393: 图片 | (115,161) | img: customicon.png */
     lv_obj_set_pos(pg->image_393, 115, 161);
 
 }
@@ -4016,11 +4017,11 @@ void custom_menu_lang_tune(void)
     custom_menu_t *pg = custom_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 */
+    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
     lv_obj_set_size(pg->next, 138, 70);
 
-    /* image_388: 图片 | (24,117) */
+    /* image_388: 图片 | (24,117) | img: div1bg.png */
     lv_obj_set_pos(pg->image_388, 24, 117);
 
     /* label_846: 标签 | (578,139) | 125x32 | font taiwanpearl_regular_30 */
@@ -4051,10 +4052,10 @@ void custom_menu_lang_tune(void)
     lv_obj_set_pos(pg->label_852, 996, 39);
     lv_obj_set_size(pg->label_852, 117, 32);
 
-    /* hourline: 图片 | (480,327) */
+    /* hourline: 图片 | (480,327) | img: underline_120x4.png */
     lv_obj_set_pos(pg->hourline, 480, 327);
 
-    /* minline: 图片 | (680,327) */
+    /* minline: 图片 | (680,327) | img: underline_120x4.png */
     lv_obj_set_pos(pg->minline, 680, 327);
 
 }
@@ -4102,14 +4103,14 @@ void custom_set_lang_tune(void)
     lv_obj_set_pos(pg->label_860, 448, 269);
     lv_obj_set_size(pg->label_860, 64, 32);
 
-    /* image_391: 图片 | (164,376) */
+    /* image_391: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_391, 164, 376);
 
     /* label_861: 标签 | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_861, 232, 385);
     lv_obj_set_size(pg->label_861, 148, 32);
 
-    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
@@ -4125,11 +4126,11 @@ void custom_set_lang_tune(void)
     lv_obj_set_pos(pg->label_864, 831, 270);
     lv_obj_set_size(pg->label_864, 130, 32);
 
-    /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 144);
     lv_obj_set_size(pg->offdelay, 135, 53);
 
-    /* offcontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* offcontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offcontain, 983, 260);
     lv_obj_set_size(pg->offcontain, 135, 53);
 
@@ -4141,11 +4142,11 @@ void custom_set_lang_tune(void)
     lv_obj_set_pos(pg->label_866, 1010, 39);
     lv_obj_set_size(pg->label_866, 85, 36);
 
-    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->ondelay, 983, 144);
     lv_obj_set_size(pg->ondelay, 135, 53);
 
-    /* oncontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* oncontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 260);
     lv_obj_set_size(pg->oncontain, 135, 53);
 
@@ -4178,7 +4179,7 @@ void custom_setting_lang_tune(void)
     lv_obj_set_pos(pg->container_39, 0, 0);
     lv_obj_set_size(pg->container_39, 1280, 480);
 
-    /* image_394: 图片 | (115,115) */
+    /* image_394: 图片 | (115,115) | img: settingbk.png */
     lv_obj_set_pos(pg->image_394, 115, 115);
 
     /* label_873: 标签 | (373,136) | 135x30 | font taiwanpearl_regular_30 */
@@ -4193,7 +4194,7 @@ void custom_setting_lang_tune(void)
     lv_obj_set_pos(pg->label_875, 340, 228);
     lv_obj_set_size(pg->label_875, 37, 30);
 
-    /* hourline: 图片 | (291,269) */
+    /* hourline: 图片 | (291,269) | img: settingline3.png */
     lv_obj_set_pos(pg->hourline, 291, 269);
 
     /* min: 标签 | (483,212) | 102x46 | font taiwanpearl_regular_48 */
@@ -4204,10 +4205,10 @@ void custom_setting_lang_tune(void)
     lv_obj_set_pos(pg->label_877, 558, 229);
     lv_obj_set_size(pg->label_877, 37, 30);
 
-    /* minline: 图片 | (508,269) */
+    /* minline: 图片 | (508,269) | img: settingline3.png */
     lv_obj_set_pos(pg->minline, 508, 269);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -4232,11 +4233,11 @@ void custom_stop_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_397: 图片 | (115,320) */
+    /* image_397: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_397, 115, 320);
 
     /* bar_69: 进度条 | (122,326) | 637x20 */
@@ -4247,11 +4248,11 @@ void custom_stop_lang_tune(void)
     lv_obj_set_pos(pg->label_880, 273, 157);
     lv_obj_set_size(pg->label_880, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_398: 图片 | (115,161) */
+    /* image_398: 图片 | (115,161) | img: customicon.png */
     lv_obj_set_pos(pg->image_398, 115, 161);
 
 }
@@ -4267,14 +4268,14 @@ void custom_stop_back_lang_tune(void)
     custom_stop_back_t *pg = custom_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* image_399: 图片 | (115,161) */
+    /* image_399: 图片 | (115,161) | img: customicon.png */
     lv_obj_set_pos(pg->image_399, 115, 161);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_400: 图片 | (115,320) */
+    /* image_400: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_400, 115, 320);
 
     /* bar_70: 进度条 | (122,326) | 637x20 */
@@ -4285,7 +4286,7 @@ void custom_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_882, 273, 157);
     lv_obj_set_size(pg->label_882, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
@@ -4301,7 +4302,7 @@ void custom_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_884, 895, 198);
     lv_obj_set_size(pg->label_884, 252, 36);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -4318,7 +4319,7 @@ void delayset_lang_tune(void)
     delayset_t *pg = delayset_get(&ui_manager);
     if (!pg) return;
 
-    /* image_6: 图片 | (24,119) */
+    /* image_6: 图片 | (24,119) | img: div1bg.png */
     lv_obj_set_pos(pg->image_6, 24, 119);
 
     /* day: 标签 | (327,265) | 126x48 | font taiwanpearl_regular_48 */
@@ -4341,13 +4342,13 @@ void delayset_lang_tune(void)
     lv_obj_set_pos(pg->label_10, 622, 248);
     lv_obj_set_size(pg->label_10, 37, 73);
 
-    /* startline: 图片 | (842,325) */
+    /* startline: 图片 | (842,325) | img: underline_95x4.png */
     lv_obj_set_pos(pg->startline, 842, 325);
 
-    /* image_9: 图片 | (537,325) */
+    /* image_9: 图片 | (537,325) | img: underline_76x4.png */
     lv_obj_set_pos(pg->image_9, 537, 325);
 
-    /* image_10: 图片 | (668,325) */
+    /* image_10: 图片 | (668,325) | img: underline_76x4.png */
     lv_obj_set_pos(pg->image_10, 668, 325);
 
     /* name: 标签 | (24,24) | 144x32 | font taiwanpearl_regular_24 */
@@ -4371,11 +4372,11 @@ void descriptionmenu_lang_tune(void)
     lv_obj_set_pos(pg->label_19, 24, 24);
     lv_obj_set_size(pg->label_19, 144, 32);
 
-    /* start: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->start, 983, 22);
     lv_obj_set_size(pg->start, 135, 71);
 
-    /* container_1: 容器 | (24,119) | 1233x339 */
+    /* container_1: 容器 | (24,119) | 1233x339 | bg: div1bg.png */
     lv_obj_set_pos(pg->container_1, 24, 119);
     lv_obj_set_size(pg->container_1, 1233, 339);
 
@@ -4391,7 +4392,7 @@ void descriptionmenu_lang_tune(void)
     lv_obj_set_pos(pg->cooktime, 0, 0);
     lv_obj_set_size(pg->cooktime, 628, 30);
 
-    /* delay: 按钮 | (983,364) | 135x71 | font taiwanpearl_regular_36 */
+    /* delay: 按钮 | (983,364) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->delay, 983, 364);
     lv_obj_set_size(pg->delay, 135, 71);
 
@@ -4408,7 +4409,7 @@ void duckmenu_lang_tune(void)
     duckmenu_t *pg = duckmenu_get(&ui_manager);
     if (!pg) return;
 
-    /* wholeduck: 按钮 | (18,68) | 624x400 | font taiwanpearl_regular_30 */
+    /* wholeduck: 按钮 | (18,68) | 624x400 | font taiwanpearl_regular_30 | bg: div2bk30.png */
     lv_obj_set_pos(pg->wholeduck, 18, 68);
     lv_obj_set_size(pg->wholeduck, 624, 400);
 
@@ -4420,7 +4421,7 @@ void duckmenu_lang_tune(void)
     lv_obj_set_pos(pg->label_2, 265, 274);
     lv_obj_set_size(pg->label_2, 131, 32);
 
-    /* image_2: 图片 | (296,213) */
+    /* image_2: 图片 | (296,213) | img: probeiconbig.png */
     lv_obj_set_pos(pg->image_2, 296, 213);
 
 }
@@ -4444,18 +4445,18 @@ void extra_color_lang_tune(void)
     lv_obj_set_pos(pg->time_label, 907, 157);
     lv_obj_set_size(pg->time_label, 235, 60);
 
-    /* start_button: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start_button: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start_button, 959, 295);
     lv_obj_set_size(pg->start_button, 129, 83);
 
-    /* barbk_img: 图片 | (115,320) */
+    /* barbk_img: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->barbk_img, 115, 320);
 
     /* bar: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar, 122, 326);
     lv_obj_set_size(pg->bar, 637, 20);
 
-    /* color_img: 图片 | (95,163) */
+    /* color_img: 图片 | (95,163) | img: color.png */
     lv_obj_set_pos(pg->color_img, 95, 163);
 
     /* color_label: 标签 | (273,157) | 255x60 | font taiwanpearl_regular_60 */
@@ -4479,31 +4480,31 @@ void frozencookpage_lang_tune(void)
     lv_obj_set_pos(pg->label_631, 24, 24);
     lv_obj_set_size(pg->label_631, 97, 25);
 
-    /* Lasagna: 按钮 | (8,62) | 437x221 | font montserratmedium_16 */
+    /* Lasagna: 按钮 | (8,62) | 437x221 | font montserratmedium_16 | bg: div6bg80.png */
     lv_obj_set_pos(pg->Lasagna, 8, 62);
     lv_obj_set_size(pg->Lasagna, 437, 221);
 
-    /* Strudel: 按钮 | (422,62) | 437x221 | font montserratmedium_16 */
+    /* Strudel: 按钮 | (422,62) | 437x221 | font montserratmedium_16 | bg: div6bg80.png */
     lv_obj_set_pos(pg->Strudel, 422, 62);
     lv_obj_set_size(pg->Strudel, 437, 221);
 
-    /* bread: 按钮 | (836,62) | 437x221 | font montserratmedium_16 */
+    /* bread: 按钮 | (836,62) | 437x221 | font montserratmedium_16 | bg: div6bg80.png */
     lv_obj_set_pos(pg->bread, 836, 62);
     lv_obj_set_size(pg->bread, 437, 221);
 
-    /* pizza3: 按钮 | (8,255) | 437x221 | font montserratmedium_16 */
+    /* pizza3: 按钮 | (8,255) | 437x221 | font montserratmedium_16 | bg: div6bg80.png */
     lv_obj_set_pos(pg->pizza3, 8, 255);
     lv_obj_set_size(pg->pizza3, 437, 221);
 
-    /* chip: 按钮 | (421,255) | 437x221 | font montserratmedium_16 */
+    /* chip: 按钮 | (421,255) | 437x221 | font montserratmedium_16 | bg: div6bg80.png */
     lv_obj_set_pos(pg->chip, 421, 255);
     lv_obj_set_size(pg->chip, 437, 221);
 
-    /* custom: 按钮 | (836,255) | 437x221 | font montserratmedium_16 */
+    /* custom: 按钮 | (836,255) | 437x221 | font montserratmedium_16 | bg: div6bg80.png */
     lv_obj_set_pos(pg->custom, 836, 255);
     lv_obj_set_size(pg->custom, 437, 221);
 
-    /* image_279: 图片 | (177,111) */
+    /* image_279: 图片 | (177,111) | img: frozencookfr.png */
     lv_obj_set_pos(pg->image_279, 177, 111);
 
 }
@@ -4519,7 +4520,7 @@ void heatcontain_complete_lang_tune(void)
     heatcontain_complete_t *pg = heatcontain_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* image_314: 图片 | (115,320) */
+    /* image_314: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_314, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -4534,14 +4535,14 @@ void heatcontain_complete_lang_tune(void)
     lv_obj_set_pos(pg->label_672, 273, 157);
     lv_obj_set_size(pg->label_672, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_316: 图片 | (90,161) */
+    /* image_316: 图片 | (90,161) | img: heatcontainicon.png */
     lv_obj_set_pos(pg->image_316, 90, 161);
 
-    /* image_11: 图片 | (902,160) */
+    /* image_11: 图片 | (902,160) | img: tips.png */
     lv_obj_set_pos(pg->image_11, 902, 160);
 
 }
@@ -4565,11 +4566,11 @@ void heatcontain_cooking_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_268: 图片 | (115,320) */
+    /* image_268: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_268, 115, 320);
 
     /* bar_44: 进度条 | (122,326) | 637x20 */
@@ -4580,11 +4581,11 @@ void heatcontain_cooking_lang_tune(void)
     lv_obj_set_pos(pg->label_612, 273, 157);
     lv_obj_set_size(pg->label_612, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_269: 图片 | (90,161) */
+    /* image_269: 图片 | (90,161) | img: heatcontainicon.png */
     lv_obj_set_pos(pg->image_269, 90, 161);
 
 }
@@ -4600,14 +4601,14 @@ void heatcontain_menu_lang_tune(void)
     heatcontain_menu_t *pg = heatcontain_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 */
+    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
     lv_obj_set_size(pg->next, 138, 70);
 
-    /* image_261: 图片 | (24,118) */
+    /* image_261: 图片 | (24,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_261, 24, 118);
 
-    /* image_262: 图片 | (645,118) */
+    /* image_262: 图片 | (645,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_262, 645, 118);
 
     /* label_583: 标签 | (300,137) | 64x32 | font taiwanpearl_regular_30 */
@@ -4650,16 +4651,16 @@ void heatcontain_menu_lang_tune(void)
     lv_obj_set_pos(pg->label_592, 996, 39);
     lv_obj_set_size(pg->label_592, 117, 32);
 
-    /* templine3: 图片 | (252,328) */
+    /* templine3: 图片 | (252,328) | img: underline.png */
     lv_obj_set_pos(pg->templine3, 252, 328);
 
-    /* templine2: 图片 | (289,328) */
+    /* templine2: 图片 | (289,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->templine2, 289, 328);
 
-    /* hourline: 图片 | (790,328) */
+    /* hourline: 图片 | (790,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->hourline, 790, 328);
 
-    /* minline: 图片 | (993,328) */
+    /* minline: 图片 | (993,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->minline, 993, 328);
 
 }
@@ -4707,14 +4708,14 @@ void heatcontain_set_lang_tune(void)
     lv_obj_set_pos(pg->label_600, 448, 269);
     lv_obj_set_size(pg->label_600, 64, 32);
 
-    /* image_267: 图片 | (164,376) */
+    /* image_267: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_267, 164, 376);
 
     /* label_601: 标签 | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_601, 232, 385);
     lv_obj_set_size(pg->label_601, 148, 32);
 
-    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
@@ -4734,15 +4735,15 @@ void heatcontain_set_lang_tune(void)
     lv_obj_set_pos(pg->label_605, 831, 381);
     lv_obj_set_size(pg->label_605, 130, 32);
 
-    /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offpreheat, 983, 144);
     lv_obj_set_size(pg->offpreheat, 135, 53);
 
-    /* offdelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* offdelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 260);
     lv_obj_set_size(pg->offdelay, 135, 53);
 
-    /* offcontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 */
+    /* offcontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offcontain, 983, 372);
     lv_obj_set_size(pg->offcontain, 135, 53);
 
@@ -4754,15 +4755,15 @@ void heatcontain_set_lang_tune(void)
     lv_obj_set_pos(pg->label_607, 1010, 39);
     lv_obj_set_size(pg->label_607, 85, 36);
 
-    /* onpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* onpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->onpreheat, 983, 144);
     lv_obj_set_size(pg->onpreheat, 135, 53);
 
-    /* ondelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* ondelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->ondelay, 983, 260);
     lv_obj_set_size(pg->ondelay, 135, 53);
 
-    /* oncontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 */
+    /* oncontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 372);
     lv_obj_set_size(pg->oncontain, 135, 53);
 
@@ -4795,7 +4796,7 @@ void heatcontain_setting_lang_tune(void)
     lv_obj_set_pos(pg->container_27, 0, 0);
     lv_obj_set_size(pg->container_27, 1280, 480);
 
-    /* image_270: 图片 | (115,115) */
+    /* image_270: 图片 | (115,115) | img: settingbk.png */
     lv_obj_set_pos(pg->image_270, 115, 115);
 
     /* label_614: 标签 | (242,136) | 73x30 | font taiwanpearl_regular_30 */
@@ -4814,10 +4815,10 @@ void heatcontain_setting_lang_tune(void)
     lv_obj_set_pos(pg->icon3, 300, 229);
     lv_obj_set_size(pg->icon3, 37, 30);
 
-    /* templine2: 图片 | (236,269) */
+    /* templine2: 图片 | (236,269) | img: settingline3_87x4.png */
     lv_obj_set_pos(pg->templine2, 236, 269);
 
-    /* templine3: 图片 | (223,269) */
+    /* templine3: 图片 | (223,269) | img: settingline2.png */
     lv_obj_set_pos(pg->templine3, 223, 269);
 
     /* hour: 标签 | (374,213) | 102x46 | font taiwanpearl_regular_48 */
@@ -4836,17 +4837,17 @@ void heatcontain_setting_lang_tune(void)
     lv_obj_set_pos(pg->label_621, 612, 229);
     lv_obj_set_size(pg->label_621, 37, 30);
 
-    /* hourline: 图片 | (398,269) */
+    /* hourline: 图片 | (398,269) | img: settingline3.png */
     lv_obj_set_pos(pg->hourline, 398, 269);
 
-    /* minline: 图片 | (560,269) */
+    /* minline: 图片 | (560,269) | img: settingline3.png */
     lv_obj_set_pos(pg->minline, 560, 269);
 
     /* icon2: 标签 | (288,229) | 37x30 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->icon2, 288, 229);
     lv_obj_set_size(pg->icon2, 37, 30);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -4871,11 +4872,11 @@ void heatcontain_stop_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_275: 图片 | (115,320) */
+    /* image_275: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_275, 115, 320);
 
     /* bar_45: 进度条 | (122,326) | 637x20 */
@@ -4886,11 +4887,11 @@ void heatcontain_stop_lang_tune(void)
     lv_obj_set_pos(pg->label_625, 273, 157);
     lv_obj_set_size(pg->label_625, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_276: 图片 | (90,161) */
+    /* image_276: 图片 | (90,161) | img: heatcontainicon.png */
     lv_obj_set_pos(pg->image_276, 90, 161);
 
 }
@@ -4906,14 +4907,14 @@ void heatcontain_stop_back_lang_tune(void)
     heatcontain_stop_back_t *pg = heatcontain_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* image_277: 图片 | (90,161) */
+    /* image_277: 图片 | (90,161) | img: heatcontainicon.png */
     lv_obj_set_pos(pg->image_277, 90, 161);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_278: 图片 | (115,320) */
+    /* image_278: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_278, 115, 320);
 
     /* bar_46: 进度条 | (122,326) | 637x20 */
@@ -4924,7 +4925,7 @@ void heatcontain_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_627, 273, 157);
     lv_obj_set_size(pg->label_627, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
@@ -4940,7 +4941,7 @@ void heatcontain_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_629, 895, 198);
     lv_obj_set_size(pg->label_629, 252, 36);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -4957,7 +4958,7 @@ void hot_bbq_complete_lang_tune(void)
     hot_bbq_complete_t *pg = hot_bbq_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* image_95: 图片 | (115,320) */
+    /* image_95: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_95, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -4972,14 +4973,14 @@ void hot_bbq_complete_lang_tune(void)
     lv_obj_set_pos(pg->label_204, 273, 157);
     lv_obj_set_size(pg->label_204, 235, 60);
 
-    /* button_59: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* button_59: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->button_59, 609, 170);
     lv_obj_set_size(pg->button_59, 50, 43);
 
-    /* image_97: 图片 | (115,161) */
+    /* image_97: 图片 | (115,161) | img: hotbbqicon.png */
     lv_obj_set_pos(pg->image_97, 115, 161);
 
-    /* image_3: 图片 | (902,160) */
+    /* image_3: 图片 | (902,160) | img: tips.png */
     lv_obj_set_pos(pg->image_3, 902, 160);
 
 }
@@ -4995,7 +4996,7 @@ void hot_bbq_complete_probe_lang_tune(void)
     hot_bbq_complete_probe_t *pg = hot_bbq_complete_probe_get(&ui_manager);
     if (!pg) return;
 
-    /* image_15: 图片 | (115,320) */
+    /* image_15: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_15, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -5006,7 +5007,7 @@ void hot_bbq_complete_probe_lang_tune(void)
     lv_obj_set_pos(pg->bar_4, 122, 326);
     lv_obj_set_size(pg->bar_4, 637, 20);
 
-    /* image_16: 图片 | (115,161) */
+    /* image_16: 图片 | (115,161) | img: hotbbqicon.png */
     lv_obj_set_pos(pg->image_16, 115, 161);
 
     /* label_43: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
@@ -5042,11 +5043,11 @@ void hot_bbq_cooking_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_84: 图片 | (115,320) */
+    /* image_84: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_84, 115, 320);
 
     /* bar_14: 进度条 | (122,326) | 637x20 */
@@ -5057,11 +5058,11 @@ void hot_bbq_cooking_lang_tune(void)
     lv_obj_set_pos(pg->label_185, 273, 157);
     lv_obj_set_size(pg->label_185, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_85: 图片 | (115,161) */
+    /* image_85: 图片 | (115,161) | img: hotbbqicon.png */
     lv_obj_set_pos(pg->image_85, 115, 161);
 
 }
@@ -5085,25 +5086,25 @@ void hot_bbq_cooking_probe_lang_tune(void)
     lv_obj_set_pos(pg->temp, 919, 156);
     lv_obj_set_size(pg->temp, 134, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_7: 图片 | (115,320) */
+    /* image_7: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_7, 115, 320);
 
     /* bar_1: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_1, 122, 326);
     lv_obj_set_size(pg->bar_1, 637, 20);
 
-    /* image_8: 图片 | (115,161) */
+    /* image_8: 图片 | (115,161) | img: hotbbqicon.png */
     lv_obj_set_pos(pg->image_8, 115, 161);
 
     /* label_34: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_34, 273, 157);
     lv_obj_set_size(pg->label_34, 235, 60);
 
-    /* image_9: 图片 | (1068,180) */
+    /* image_9: 图片 | (1068,180) | img: probeicon.png */
     lv_obj_set_pos(pg->image_9, 1068, 180);
 
 }
@@ -5119,14 +5120,14 @@ void hot_bbq_menu_lang_tune(void)
     hot_bbq_menu_t *pg = hot_bbq_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 */
+    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
     lv_obj_set_size(pg->next, 138, 70);
 
-    /* image_77: 图片 | (24,118) */
+    /* image_77: 图片 | (24,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_77, 24, 118);
 
-    /* image_78: 图片 | (645,118) */
+    /* image_78: 图片 | (645,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_78, 645, 118);
 
     /* label_157: 标签 | (300,137) | 64x32 | font taiwanpearl_regular_30 */
@@ -5169,16 +5170,16 @@ void hot_bbq_menu_lang_tune(void)
     lv_obj_set_pos(pg->label_166, 996, 39);
     lv_obj_set_size(pg->label_166, 117, 32);
 
-    /* templine3: 图片 | (252,328) */
+    /* templine3: 图片 | (252,328) | img: underline.png */
     lv_obj_set_pos(pg->templine3, 252, 328);
 
-    /* templine2: 图片 | (289,328) */
+    /* templine2: 图片 | (289,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->templine2, 289, 328);
 
-    /* hourline: 图片 | (790,328) */
+    /* hourline: 图片 | (790,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->hourline, 790, 328);
 
-    /* minline: 图片 | (993,328) */
+    /* minline: 图片 | (993,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->minline, 993, 328);
 
 }
@@ -5194,14 +5195,14 @@ void hot_bbq_menu_probe_lang_tune(void)
     hot_bbq_menu_probe_t *pg = hot_bbq_menu_probe_get(&ui_manager);
     if (!pg) return;
 
-    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 */
+    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
     lv_obj_set_size(pg->next, 138, 70);
 
-    /* image_1: 图片 | (24,118) */
+    /* image_1: 图片 | (24,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_1, 24, 118);
 
-    /* image_2: 图片 | (645,118) */
+    /* image_2: 图片 | (645,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_2, 645, 118);
 
     /* label_1: 标签 | (300,137) | 64x32 | font taiwanpearl_regular_30 */
@@ -5228,10 +5229,10 @@ void hot_bbq_menu_probe_lang_tune(void)
     lv_obj_set_pos(pg->label_6, 996, 39);
     lv_obj_set_size(pg->label_6, 117, 32);
 
-    /* templine3: 图片 | (252,328) */
+    /* templine3: 图片 | (252,328) | img: underline.png */
     lv_obj_set_pos(pg->templine3, 252, 328);
 
-    /* templine2: 图片 | (289,328) */
+    /* templine2: 图片 | (289,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->templine2, 289, 328);
 
     /* probetemp: 标签 | (853,249) | 120x72 | font taiwanpearl_regular_72 */
@@ -5242,7 +5243,7 @@ void hot_bbq_menu_probe_lang_tune(void)
     lv_obj_set_pos(pg->label_8, 973, 281);
     lv_obj_set_size(pg->label_8, 38, 32);
 
-    /* probetempline: 图片 | (891,328) */
+    /* probetempline: 图片 | (891,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->probetempline, 891, 328);
 
 }
@@ -5290,14 +5291,14 @@ void hot_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->label_174, 448, 269);
     lv_obj_set_size(pg->label_174, 64, 32);
 
-    /* image_83: 图片 | (164,376) */
+    /* image_83: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_83, 164, 376);
 
     /* label_175: 标签 | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_175, 232, 385);
     lv_obj_set_size(pg->label_175, 148, 32);
 
-    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
@@ -5317,15 +5318,15 @@ void hot_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->label_179, 831, 381);
     lv_obj_set_size(pg->label_179, 130, 32);
 
-    /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offpreheat, 983, 144);
     lv_obj_set_size(pg->offpreheat, 135, 53);
 
-    /* offdelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* offdelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 260);
     lv_obj_set_size(pg->offdelay, 135, 53);
 
-    /* offcontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 */
+    /* offcontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offcontain, 983, 372);
     lv_obj_set_size(pg->offcontain, 135, 53);
 
@@ -5337,15 +5338,15 @@ void hot_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->label_181, 1010, 39);
     lv_obj_set_size(pg->label_181, 85, 36);
 
-    /* onpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* onpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->onpreheat, 983, 144);
     lv_obj_set_size(pg->onpreheat, 135, 53);
 
-    /* ondelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* ondelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->ondelay, 983, 260);
     lv_obj_set_size(pg->ondelay, 135, 53);
 
-    /* oncontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 */
+    /* oncontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 372);
     lv_obj_set_size(pg->oncontain, 135, 53);
 
@@ -5386,14 +5387,14 @@ void hot_bbq_set_probe_lang_tune(void)
     lv_obj_set_pos(pg->label_12, 141, 270);
     lv_obj_set_size(pg->label_12, 175, 32);
 
-    /* image_6: 图片 | (164,376) */
+    /* image_6: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_6, 164, 376);
 
     /* label_13: 标签 | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_13, 232, 385);
     lv_obj_set_size(pg->label_13, 148, 32);
 
-    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
@@ -5421,15 +5422,15 @@ void hot_bbq_set_probe_lang_tune(void)
     lv_obj_set_pos(pg->icon3, 396, 157);
     lv_obj_set_size(pg->icon3, 32, 30);
 
-    /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 144);
     lv_obj_set_size(pg->offdelay, 135, 53);
 
-    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->ondelay, 983, 144);
     lv_obj_set_size(pg->ondelay, 135, 53);
 
-    /* image_3: 图片 | (839,154) */
+    /* image_3: 图片 | (839,154) | img: delaytext.png */
     lv_obj_set_pos(pg->image_3, 839, 154);
 
 }
@@ -5453,7 +5454,7 @@ void hot_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->container_8, 0, 0);
     lv_obj_set_size(pg->container_8, 1280, 480);
 
-    /* image_86: 图片 | (115,115) */
+    /* image_86: 图片 | (115,115) | img: settingbk.png */
     lv_obj_set_pos(pg->image_86, 115, 115);
 
     /* label_187: 标签 | (242,136) | 73x30 | font taiwanpearl_regular_30 */
@@ -5472,10 +5473,10 @@ void hot_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->icon3, 300, 229);
     lv_obj_set_size(pg->icon3, 37, 30);
 
-    /* templine2: 图片 | (236,269) */
+    /* templine2: 图片 | (236,269) | img: settingline3_87x4.png */
     lv_obj_set_pos(pg->templine2, 236, 269);
 
-    /* templine3: 图片 | (223,269) */
+    /* templine3: 图片 | (223,269) | img: settingline2.png */
     lv_obj_set_pos(pg->templine3, 223, 269);
 
     /* hour: 标签 | (374,213) | 102x46 | font taiwanpearl_regular_48 */
@@ -5494,17 +5495,17 @@ void hot_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->label_194, 612, 229);
     lv_obj_set_size(pg->label_194, 37, 30);
 
-    /* hourline: 图片 | (398,269) */
+    /* hourline: 图片 | (398,269) | img: settingline3.png */
     lv_obj_set_pos(pg->hourline, 398, 269);
 
-    /* minline: 图片 | (560,269) */
+    /* minline: 图片 | (560,269) | img: settingline3.png */
     lv_obj_set_pos(pg->minline, 560, 269);
 
     /* icon2: 标签 | (288,229) | 37x30 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->icon2, 288, 229);
     lv_obj_set_size(pg->icon2, 37, 30);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -5529,11 +5530,11 @@ void hot_bbq_stop_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_91: 图片 | (115,320) */
+    /* image_91: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_91, 115, 320);
 
     /* bar_15: 进度条 | (122,326) | 637x20 */
@@ -5544,11 +5545,11 @@ void hot_bbq_stop_lang_tune(void)
     lv_obj_set_pos(pg->label_198, 273, 157);
     lv_obj_set_size(pg->label_198, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_92: 图片 | (115,161) */
+    /* image_92: 图片 | (115,161) | img: hotbbqicon.png */
     lv_obj_set_pos(pg->image_92, 115, 161);
 
 }
@@ -5564,14 +5565,14 @@ void hot_bbq_stop_back_lang_tune(void)
     hot_bbq_stop_back_t *pg = hot_bbq_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* image_93: 图片 | (115,161) */
+    /* image_93: 图片 | (115,161) | img: hotbbqicon.png */
     lv_obj_set_pos(pg->image_93, 115, 161);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_94: 图片 | (115,320) */
+    /* image_94: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_94, 115, 320);
 
     /* bar_16: 进度条 | (122,326) | 637x20 */
@@ -5582,7 +5583,7 @@ void hot_bbq_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_200, 273, 157);
     lv_obj_set_size(pg->label_200, 235, 60);
 
-    /* button_57: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* button_57: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->button_57, 609, 170);
     lv_obj_set_size(pg->button_57, 50, 43);
 
@@ -5598,7 +5599,7 @@ void hot_bbq_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_202, 895, 198);
     lv_obj_set_size(pg->label_202, 252, 36);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -5619,14 +5620,14 @@ void hot_bbq_stop_back_probe_lang_tune(void)
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_13: 图片 | (115,320) */
+    /* image_13: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_13, 115, 320);
 
     /* bar_3: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_3, 122, 326);
     lv_obj_set_size(pg->bar_3, 637, 20);
 
-    /* image_14: 图片 | (115,161) */
+    /* image_14: 图片 | (115,161) | img: hotbbqicon.png */
     lv_obj_set_pos(pg->image_14, 115, 161);
 
     /* label_39: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
@@ -5645,7 +5646,7 @@ void hot_bbq_stop_back_probe_lang_tune(void)
     lv_obj_set_pos(pg->label_41, 895, 198);
     lv_obj_set_size(pg->label_41, 252, 36);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -5670,25 +5671,25 @@ void hot_bbq_stop_probe_lang_tune(void)
     lv_obj_set_pos(pg->temp, 919, 156);
     lv_obj_set_size(pg->temp, 134, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_10: 图片 | (115,320) */
+    /* image_10: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_10, 115, 320);
 
     /* bar_2: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_2, 122, 326);
     lv_obj_set_size(pg->bar_2, 637, 20);
 
-    /* image_11: 图片 | (115,161) */
+    /* image_11: 图片 | (115,161) | img: hotbbqicon.png */
     lv_obj_set_pos(pg->image_11, 115, 161);
 
     /* label_37: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_37, 273, 157);
     lv_obj_set_size(pg->label_37, 235, 60);
 
-    /* image_12: 图片 | (1068,180) */
+    /* image_12: 图片 | (1068,180) | img: probeicon.png */
     lv_obj_set_pos(pg->image_12, 1068, 180);
 
 }
@@ -5704,15 +5705,15 @@ void hotclean_menu_lang_tune(void)
     hotclean_menu_t *pg = hotclean_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* hotclean_middle: 按钮 | (421,60) | 439x417 | font taiwanpearl_regular_30 */
+    /* hotclean_middle: 按钮 | (421,60) | 439x417 | font taiwanpearl_regular_30 | bg: div3bk30.png */
     lv_obj_set_pos(pg->hotclean_middle, 421, 60);
     lv_obj_set_size(pg->hotclean_middle, 439, 417);
 
-    /* hotcleansave: 按钮 | (7,60) | 439x417 | font taiwanpearl_regular_30 */
+    /* hotcleansave: 按钮 | (7,60) | 439x417 | font taiwanpearl_regular_30 | bg: div3bk30.png */
     lv_obj_set_pos(pg->hotcleansave, 7, 60);
     lv_obj_set_size(pg->hotcleansave, 439, 417);
 
-    /* hotclean_high: 按钮 | (835,60) | 439x417 | font taiwanpearl_regular_30 */
+    /* hotclean_high: 按钮 | (835,60) | 439x417 | font taiwanpearl_regular_30 | bg: div3bk30.png */
     lv_obj_set_pos(pg->hotclean_high, 835, 60);
     lv_obj_set_size(pg->hotclean_high, 439, 417);
 
@@ -5733,7 +5734,7 @@ void hotcleanhigh_complete_lang_tune(void)
     hotcleanhigh_complete_t *pg = hotcleanhigh_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* image_23: 图片 | (115,320) */
+    /* image_23: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_23, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -5744,14 +5745,14 @@ void hotcleanhigh_complete_lang_tune(void)
     lv_obj_set_pos(pg->bar_9, 122, 326);
     lv_obj_set_size(pg->bar_9, 637, 20);
 
-    /* image_24: 图片 | (115,161) */
+    /* image_24: 图片 | (115,161) | img: hotcleanhighicon.png */
     lv_obj_set_pos(pg->image_24, 115, 161);
 
     /* label_28: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_28, 273, 157);
     lv_obj_set_size(pg->label_28, 235, 60);
 
-    /* image_25: 图片 | (902,160) */
+    /* image_25: 图片 | (902,160) | img: tips.png */
     lv_obj_set_pos(pg->image_25, 902, 160);
 
 }
@@ -5775,25 +5776,25 @@ void hotcleanhigh_cooking_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_16: 图片 | (115,320) */
+    /* image_16: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_16, 115, 320);
 
     /* bar_6: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_6, 122, 326);
     lv_obj_set_size(pg->bar_6, 637, 20);
 
-    /* image_17: 图片 | (115,161) */
+    /* image_17: 图片 | (115,161) | img: hotcleanhighicon.png */
     lv_obj_set_pos(pg->image_17, 115, 161);
 
     /* label_21: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_21, 273, 157);
     lv_obj_set_size(pg->label_21, 235, 60);
 
-    /* button_9: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* button_9: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: lockicon.png */
     lv_obj_set_pos(pg->button_9, 609, 170);
     lv_obj_set_size(pg->button_9, 50, 43);
 
@@ -5810,7 +5811,7 @@ void hotcleanhigh_cooling_lang_tune(void)
     hotcleanhigh_cooling_t *pg = hotcleanhigh_cooling_get(&ui_manager);
     if (!pg) return;
 
-    /* image_20: 图片 | (115,320) */
+    /* image_20: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_20, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -5821,17 +5822,17 @@ void hotcleanhigh_cooling_lang_tune(void)
     lv_obj_set_pos(pg->bar_8, 122, 326);
     lv_obj_set_size(pg->bar_8, 637, 20);
 
-    /* image_21: 图片 | (115,161) */
+    /* image_21: 图片 | (115,161) | img: hotcleanhighicon.png */
     lv_obj_set_pos(pg->image_21, 115, 161);
 
     /* label_26: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_26, 273, 157);
     lv_obj_set_size(pg->label_26, 235, 60);
 
-    /* image_22: 图片 | (902,160) */
+    /* image_22: 图片 | (902,160) | img: hotcleantips.png */
     lv_obj_set_pos(pg->image_22, 902, 160);
 
-    /* button_12: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* button_12: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: lockicon.png */
     lv_obj_set_pos(pg->button_12, 609, 170);
     lv_obj_set_size(pg->button_12, 50, 43);
 
@@ -5848,11 +5849,11 @@ void hotcleanhigh_set_lang_tune(void)
     hotcleanhigh_set_t *pg = hotcleanhigh_set_get(&ui_manager);
     if (!pg) return;
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_15: 图片 | (117,159) */
+    /* image_15: 图片 | (117,159) | img: hotcleanhighicon.png */
     lv_obj_set_pos(pg->image_15, 117, 159);
 
     /* label_16: 标签 | (276,157) | 512x60 | font taiwanpearl_regular_60 */
@@ -5888,25 +5889,25 @@ void hotcleanhigh_stop_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_18: 图片 | (115,320) */
+    /* image_18: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_18, 115, 320);
 
     /* bar_7: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_7, 122, 326);
     lv_obj_set_size(pg->bar_7, 637, 20);
 
-    /* image_19: 图片 | (115,161) */
+    /* image_19: 图片 | (115,161) | img: hotcleanhighicon.png */
     lv_obj_set_pos(pg->image_19, 115, 161);
 
     /* label_24: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_24, 273, 157);
     lv_obj_set_size(pg->label_24, 235, 60);
 
-    /* button_11: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* button_11: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: lockicon.png */
     lv_obj_set_pos(pg->button_11, 609, 170);
     lv_obj_set_size(pg->button_11, 50, 43);
 
@@ -5927,21 +5928,21 @@ void hotcleanhigh_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_5: 图片 | (115,320) */
+    /* image_5: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_5, 115, 320);
 
     /* bar_3: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_3, 122, 326);
     lv_obj_set_size(pg->bar_3, 637, 20);
 
-    /* image_6: 图片 | (115,161) */
+    /* image_6: 图片 | (115,161) | img: hotcleanhighicon.png */
     lv_obj_set_pos(pg->image_6, 115, 161);
 
     /* label_16: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_16, 273, 157);
     lv_obj_set_size(pg->label_16, 235, 60);
 
-    /* button_5: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* button_5: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: lockicon.png */
     lv_obj_set_pos(pg->button_5, 609, 170);
     lv_obj_set_size(pg->button_5, 50, 43);
 
@@ -5949,7 +5950,7 @@ void hotcleanhigh_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->container_3, 0, 0);
     lv_obj_set_size(pg->container_3, 1280, 480);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -5974,7 +5975,7 @@ void hotcleanmiddle_complete_lang_tune(void)
     hotcleanmiddle_complete_t *pg = hotcleanmiddle_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* image_12: 图片 | (115,320) */
+    /* image_12: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_12, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -5985,14 +5986,14 @@ void hotcleanmiddle_complete_lang_tune(void)
     lv_obj_set_pos(pg->bar_5, 122, 326);
     lv_obj_set_size(pg->bar_5, 637, 20);
 
-    /* image_13: 图片 | (115,161) */
+    /* image_13: 图片 | (115,161) | img: hotcleanmiddleicon.png */
     lv_obj_set_pos(pg->image_13, 115, 161);
 
     /* label_15: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_15, 273, 157);
     lv_obj_set_size(pg->label_15, 235, 60);
 
-    /* image_14: 图片 | (902,160) */
+    /* image_14: 图片 | (902,160) | img: tips.png */
     lv_obj_set_pos(pg->image_14, 902, 160);
 
 }
@@ -6016,25 +6017,25 @@ void hotcleanmiddle_cooking_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_5: 图片 | (115,320) */
+    /* image_5: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_5, 115, 320);
 
     /* bar_2: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_2, 122, 326);
     lv_obj_set_size(pg->bar_2, 637, 20);
 
-    /* image_6: 图片 | (115,161) */
+    /* image_6: 图片 | (115,161) | img: hotcleanmiddleicon.png */
     lv_obj_set_pos(pg->image_6, 115, 161);
 
     /* label_8: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_8, 273, 157);
     lv_obj_set_size(pg->label_8, 235, 60);
 
-    /* button_3: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* button_3: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: lockicon.png */
     lv_obj_set_pos(pg->button_3, 609, 170);
     lv_obj_set_size(pg->button_3, 50, 43);
 
@@ -6051,7 +6052,7 @@ void hotcleanmiddle_cooling_lang_tune(void)
     hotcleanmiddle_cooling_t *pg = hotcleanmiddle_cooling_get(&ui_manager);
     if (!pg) return;
 
-    /* image_9: 图片 | (115,320) */
+    /* image_9: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_9, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -6062,17 +6063,17 @@ void hotcleanmiddle_cooling_lang_tune(void)
     lv_obj_set_pos(pg->bar_4, 122, 326);
     lv_obj_set_size(pg->bar_4, 637, 20);
 
-    /* image_10: 图片 | (115,161) */
+    /* image_10: 图片 | (115,161) | img: hotcleanmiddleicon.png */
     lv_obj_set_pos(pg->image_10, 115, 161);
 
     /* label_13: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_13, 273, 157);
     lv_obj_set_size(pg->label_13, 235, 60);
 
-    /* image_11: 图片 | (902,160) */
+    /* image_11: 图片 | (902,160) | img: hotcleantips.png */
     lv_obj_set_pos(pg->image_11, 902, 160);
 
-    /* button_6: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* button_6: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: lockicon.png */
     lv_obj_set_pos(pg->button_6, 609, 170);
     lv_obj_set_size(pg->button_6, 50, 43);
 
@@ -6089,11 +6090,11 @@ void hotcleanmiddle_set_lang_tune(void)
     hotcleanmiddle_set_t *pg = hotcleanmiddle_set_get(&ui_manager);
     if (!pg) return;
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_4: 图片 | (117,159) */
+    /* image_4: 图片 | (117,159) | img: hotcleanmiddleicon.png */
     lv_obj_set_pos(pg->image_4, 117, 159);
 
     /* label_3: 标签 | (276,157) | 512x60 | font taiwanpearl_regular_60 */
@@ -6129,25 +6130,25 @@ void hotcleanmiddle_stop_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_7: 图片 | (115,320) */
+    /* image_7: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_7, 115, 320);
 
     /* bar_3: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_3, 122, 326);
     lv_obj_set_size(pg->bar_3, 637, 20);
 
-    /* image_8: 图片 | (115,161) */
+    /* image_8: 图片 | (115,161) | img: hotcleanmiddleicon.png */
     lv_obj_set_pos(pg->image_8, 115, 161);
 
     /* label_11: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_11, 273, 157);
     lv_obj_set_size(pg->label_11, 235, 60);
 
-    /* button_5: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* button_5: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: lockicon.png */
     lv_obj_set_pos(pg->button_5, 609, 170);
     lv_obj_set_size(pg->button_5, 50, 43);
 
@@ -6168,21 +6169,21 @@ void hotcleanmiddle_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_3: 图片 | (115,320) */
+    /* image_3: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_3, 115, 320);
 
     /* bar_2: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_2, 122, 326);
     lv_obj_set_size(pg->bar_2, 637, 20);
 
-    /* image_4: 图片 | (115,161) */
+    /* image_4: 图片 | (115,161) | img: hotcleanmiddleicon.png */
     lv_obj_set_pos(pg->image_4, 115, 161);
 
     /* label_11: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_11, 273, 157);
     lv_obj_set_size(pg->label_11, 235, 60);
 
-    /* button_3: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* button_3: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: lockicon.png */
     lv_obj_set_pos(pg->button_3, 609, 170);
     lv_obj_set_size(pg->button_3, 50, 43);
 
@@ -6190,7 +6191,7 @@ void hotcleanmiddle_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->container_2, 0, 0);
     lv_obj_set_size(pg->container_2, 1280, 480);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -6215,7 +6216,7 @@ void hotcleansave_complete_lang_tune(void)
     hotcleansave_complete_t *pg = hotcleansave_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* image_1: 图片 | (115,320) */
+    /* image_1: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_1, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -6226,14 +6227,14 @@ void hotcleansave_complete_lang_tune(void)
     lv_obj_set_pos(pg->bar_1, 122, 326);
     lv_obj_set_size(pg->bar_1, 637, 20);
 
-    /* image_2: 图片 | (115,161) */
+    /* image_2: 图片 | (115,161) | img: hotcleansaveicon.png */
     lv_obj_set_pos(pg->image_2, 115, 161);
 
     /* label_2: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_2, 273, 157);
     lv_obj_set_size(pg->label_2, 235, 60);
 
-    /* image_3: 图片 | (902,160) */
+    /* image_3: 图片 | (902,160) | img: tips.png */
     lv_obj_set_pos(pg->image_3, 902, 160);
 
 }
@@ -6257,25 +6258,25 @@ void hotcleansave_cooking_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_2: 图片 | (115,320) */
+    /* image_2: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_2, 115, 320);
 
     /* bar_1: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_1, 122, 326);
     lv_obj_set_size(pg->bar_1, 637, 20);
 
-    /* image_3: 图片 | (115,161) */
+    /* image_3: 图片 | (115,161) | img: hotcleansaveicon.png */
     lv_obj_set_pos(pg->image_3, 115, 161);
 
     /* label_8: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_8, 273, 157);
     lv_obj_set_size(pg->label_8, 235, 60);
 
-    /* button_7: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* button_7: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: lockicon.png */
     lv_obj_set_pos(pg->button_7, 609, 170);
     lv_obj_set_size(pg->button_7, 50, 43);
 
@@ -6292,7 +6293,7 @@ void hotcleansave_cooling_lang_tune(void)
     hotcleansave_cooling_t *pg = hotcleansave_cooling_get(&ui_manager);
     if (!pg) return;
 
-    /* image_6: 图片 | (115,320) */
+    /* image_6: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_6, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -6303,17 +6304,17 @@ void hotcleansave_cooling_lang_tune(void)
     lv_obj_set_pos(pg->bar_3, 122, 326);
     lv_obj_set_size(pg->bar_3, 637, 20);
 
-    /* image_7: 图片 | (115,161) */
+    /* image_7: 图片 | (115,161) | img: hotcleansaveicon.png */
     lv_obj_set_pos(pg->image_7, 115, 161);
 
     /* label_13: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_13, 273, 157);
     lv_obj_set_size(pg->label_13, 235, 60);
 
-    /* image_8: 图片 | (902,160) */
+    /* image_8: 图片 | (902,160) | img: hotcleantips.png */
     lv_obj_set_pos(pg->image_8, 902, 160);
 
-    /* button_9: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* button_9: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: lockicon.png */
     lv_obj_set_pos(pg->button_9, 609, 170);
     lv_obj_set_size(pg->button_9, 50, 43);
 
@@ -6330,11 +6331,11 @@ void hotcleansave_set_lang_tune(void)
     hotcleansave_set_t *pg = hotcleansave_set_get(&ui_manager);
     if (!pg) return;
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_9: 图片 | (117,159) */
+    /* image_9: 图片 | (117,159) | img: hotcleansaveicon.png */
     lv_obj_set_pos(pg->image_9, 117, 159);
 
     /* label_14: 标签 | (276,157) | 512x60 | font taiwanpearl_regular_60 */
@@ -6370,25 +6371,25 @@ void hotcleansave_stop_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_4: 图片 | (115,320) */
+    /* image_4: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_4, 115, 320);
 
     /* bar_2: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_2, 122, 326);
     lv_obj_set_size(pg->bar_2, 637, 20);
 
-    /* image_5: 图片 | (115,161) */
+    /* image_5: 图片 | (115,161) | img: hotcleansaveicon.png */
     lv_obj_set_pos(pg->image_5, 115, 161);
 
     /* label_11: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_11, 273, 157);
     lv_obj_set_size(pg->label_11, 235, 60);
 
-    /* button_8: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* button_8: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: lockicon.png */
     lv_obj_set_pos(pg->button_8, 609, 170);
     lv_obj_set_size(pg->button_8, 50, 43);
 
@@ -6409,21 +6410,21 @@ void hotcleansave_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_7: 图片 | (115,320) */
+    /* image_7: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_7, 115, 320);
 
     /* bar_4: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_4, 122, 326);
     lv_obj_set_size(pg->bar_4, 637, 20);
 
-    /* image_8: 图片 | (115,161) */
+    /* image_8: 图片 | (115,161) | img: hotcleansaveicon.png */
     lv_obj_set_pos(pg->image_8, 115, 161);
 
     /* label_21: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_21, 273, 157);
     lv_obj_set_size(pg->label_21, 235, 60);
 
-    /* button_7: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* button_7: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: lockicon.png */
     lv_obj_set_pos(pg->button_7, 609, 170);
     lv_obj_set_size(pg->button_7, 50, 43);
 
@@ -6431,7 +6432,7 @@ void hotcleansave_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->container_4, 0, 0);
     lv_obj_set_size(pg->container_4, 1280, 480);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -6456,7 +6457,7 @@ void hotwind_bbq_complete_lang_tune(void)
     hotwind_bbq_complete_t *pg = hotwind_bbq_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* image_111: 图片 | (115,320) */
+    /* image_111: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_111, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -6471,14 +6472,14 @@ void hotwind_bbq_complete_lang_tune(void)
     lv_obj_set_pos(pg->label_242, 273, 157);
     lv_obj_set_size(pg->label_242, 235, 60);
 
-    /* image_112: 图片 | (845,160) */
+    /* image_112: 图片 | (845,160) | img: hotcare.png */
     lv_obj_set_pos(pg->image_112, 845, 160);
 
-    /* button_74: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* button_74: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->button_74, 609, 170);
     lv_obj_set_size(pg->button_74, 50, 43);
 
-    /* image_113: 图片 | (115,161) */
+    /* image_113: 图片 | (115,161) | img: hotwindicon.png */
     lv_obj_set_pos(pg->image_113, 115, 161);
 
 }
@@ -6502,11 +6503,11 @@ void hotwind_bbq_cooking_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_105: 图片 | (115,320) */
+    /* image_105: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_105, 115, 320);
 
     /* bar_18: 进度条 | (122,326) | 637x20 */
@@ -6517,11 +6518,11 @@ void hotwind_bbq_cooking_lang_tune(void)
     lv_obj_set_pos(pg->label_233, 273, 157);
     lv_obj_set_size(pg->label_233, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_106: 图片 | (115,161) */
+    /* image_106: 图片 | (115,161) | img: hotwindicon.png */
     lv_obj_set_pos(pg->image_106, 115, 161);
 
 }
@@ -6537,14 +6538,14 @@ void hotwind_bbq_menu_lang_tune(void)
     hotwind_bbq_menu_t *pg = hotwind_bbq_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 */
+    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
     lv_obj_set_size(pg->next, 138, 70);
 
-    /* image_98: 图片 | (24,118) */
+    /* image_98: 图片 | (24,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_98, 24, 118);
 
-    /* image_99: 图片 | (645,118) */
+    /* image_99: 图片 | (645,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_99, 645, 118);
 
     /* label_205: 标签 | (300,137) | 64x32 | font taiwanpearl_regular_30 */
@@ -6587,16 +6588,16 @@ void hotwind_bbq_menu_lang_tune(void)
     lv_obj_set_pos(pg->label_214, 996, 39);
     lv_obj_set_size(pg->label_214, 117, 32);
 
-    /* templine3: 图片 | (252,328) */
+    /* templine3: 图片 | (252,328) | img: underline.png */
     lv_obj_set_pos(pg->templine3, 252, 328);
 
-    /* templine2: 图片 | (289,328) */
+    /* templine2: 图片 | (289,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->templine2, 289, 328);
 
-    /* hourline: 图片 | (790,328) */
+    /* hourline: 图片 | (790,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->hourline, 790, 328);
 
-    /* minline: 图片 | (993,328) */
+    /* minline: 图片 | (993,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->minline, 993, 328);
 
 }
@@ -6644,14 +6645,14 @@ void hotwind_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->label_222, 448, 269);
     lv_obj_set_size(pg->label_222, 64, 32);
 
-    /* image_104: 图片 | (164,376) */
+    /* image_104: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_104, 164, 376);
 
     /* label_223: 标签 | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_223, 232, 385);
     lv_obj_set_size(pg->label_223, 148, 32);
 
-    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
@@ -6671,15 +6672,15 @@ void hotwind_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->label_227, 831, 381);
     lv_obj_set_size(pg->label_227, 130, 32);
 
-    /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offpreheat, 983, 144);
     lv_obj_set_size(pg->offpreheat, 135, 53);
 
-    /* offdelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* offdelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 260);
     lv_obj_set_size(pg->offdelay, 135, 53);
 
-    /* offcontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 */
+    /* offcontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offcontain, 983, 372);
     lv_obj_set_size(pg->offcontain, 135, 53);
 
@@ -6691,15 +6692,15 @@ void hotwind_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->label_229, 1010, 39);
     lv_obj_set_size(pg->label_229, 85, 36);
 
-    /* onpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* onpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->onpreheat, 983, 144);
     lv_obj_set_size(pg->onpreheat, 135, 53);
 
-    /* ondelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* ondelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->ondelay, 983, 260);
     lv_obj_set_size(pg->ondelay, 135, 53);
 
-    /* oncontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 */
+    /* oncontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 372);
     lv_obj_set_size(pg->oncontain, 135, 53);
 
@@ -6732,7 +6733,7 @@ void hotwind_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->container_1, 0, 0);
     lv_obj_set_size(pg->container_1, 1280, 480);
 
-    /* image_1: 图片 | (115,115) */
+    /* image_1: 图片 | (115,115) | img: settingbk.png */
     lv_obj_set_pos(pg->image_1, 115, 115);
 
     /* label_2: 标签 | (242,136) | 73x30 | font taiwanpearl_regular_30 */
@@ -6751,10 +6752,10 @@ void hotwind_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->icon3, 300, 229);
     lv_obj_set_size(pg->icon3, 37, 30);
 
-    /* templine2: 图片 | (236,269) */
+    /* templine2: 图片 | (236,269) | img: settingline3_87x4.png */
     lv_obj_set_pos(pg->templine2, 236, 269);
 
-    /* templine3: 图片 | (223,269) */
+    /* templine3: 图片 | (223,269) | img: settingline2.png */
     lv_obj_set_pos(pg->templine3, 223, 269);
 
     /* hour: 标签 | (374,213) | 102x46 | font taiwanpearl_regular_48 */
@@ -6773,17 +6774,17 @@ void hotwind_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->label_9, 612, 229);
     lv_obj_set_size(pg->label_9, 37, 30);
 
-    /* hourline: 图片 | (398,269) */
+    /* hourline: 图片 | (398,269) | img: settingline3.png */
     lv_obj_set_pos(pg->hourline, 398, 269);
 
-    /* minline: 图片 | (560,269) */
+    /* minline: 图片 | (560,269) | img: settingline3.png */
     lv_obj_set_pos(pg->minline, 560, 269);
 
     /* icon2: 标签 | (288,229) | 37x30 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->icon2, 288, 229);
     lv_obj_set_size(pg->icon2, 37, 30);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -6808,11 +6809,11 @@ void hotwind_bbq_stop_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_107: 图片 | (115,320) */
+    /* image_107: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_107, 115, 320);
 
     /* bar_19: 进度条 | (122,326) | 637x20 */
@@ -6823,11 +6824,11 @@ void hotwind_bbq_stop_lang_tune(void)
     lv_obj_set_pos(pg->label_236, 273, 157);
     lv_obj_set_size(pg->label_236, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_108: 图片 | (115,161) */
+    /* image_108: 图片 | (115,161) | img: hotwindicon.png */
     lv_obj_set_pos(pg->image_108, 115, 161);
 
 }
@@ -6843,14 +6844,14 @@ void hotwind_bbq_stop_back_lang_tune(void)
     hotwind_bbq_stop_back_t *pg = hotwind_bbq_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* image_109: 图片 | (115,161) */
+    /* image_109: 图片 | (115,161) | img: hotwindicon.png */
     lv_obj_set_pos(pg->image_109, 115, 161);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_110: 图片 | (115,320) */
+    /* image_110: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_110, 115, 320);
 
     /* bar_20: 进度条 | (122,326) | 637x20 */
@@ -6861,7 +6862,7 @@ void hotwind_bbq_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_238, 273, 157);
     lv_obj_set_size(pg->label_238, 235, 60);
 
-    /* button_72: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* button_72: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->button_72, 609, 170);
     lv_obj_set_size(pg->button_72, 50, 43);
 
@@ -6877,7 +6878,7 @@ void hotwind_bbq_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_240, 895, 198);
     lv_obj_set_size(pg->label_240, 252, 36);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -6894,7 +6895,7 @@ void lasagna_complete_lang_tune(void)
     lasagna_complete_t *pg = lasagna_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* image_321: 图片 | (115,320) */
+    /* image_321: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_321, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -6909,14 +6910,14 @@ void lasagna_complete_lang_tune(void)
     lv_obj_set_pos(pg->label_681, 273, 157);
     lv_obj_set_size(pg->label_681, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_323: 图片 | (115,161) */
+    /* image_323: 图片 | (115,161) | img: lasagnaicon.png */
     lv_obj_set_pos(pg->image_323, 115, 161);
 
-    /* image_12: 图片 | (902,160) */
+    /* image_12: 图片 | (902,160) | img: tips.png */
     lv_obj_set_pos(pg->image_12, 902, 160);
 
 }
@@ -6940,11 +6941,11 @@ void lasagna_cooking_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_288: 图片 | (115,320) */
+    /* image_288: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_288, 115, 320);
 
     /* bar_47: 进度条 | (122,326) | 637x20 */
@@ -6955,11 +6956,11 @@ void lasagna_cooking_lang_tune(void)
     lv_obj_set_pos(pg->label_660, 273, 157);
     lv_obj_set_size(pg->label_660, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_289: 图片 | (115,161) */
+    /* image_289: 图片 | (115,161) | img: lasagnaicon.png */
     lv_obj_set_pos(pg->image_289, 115, 161);
 
 }
@@ -6975,11 +6976,11 @@ void lasagna_menu_lang_tune(void)
     lasagna_menu_t *pg = lasagna_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 */
+    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
     lv_obj_set_size(pg->next, 138, 70);
 
-    /* image_282: 图片 | (24,117) */
+    /* image_282: 图片 | (24,117) | img: div1bg.png */
     lv_obj_set_pos(pg->image_282, 24, 117);
 
     /* label_635: 标签 | (578,139) | 125x32 | font taiwanpearl_regular_30 */
@@ -7010,10 +7011,10 @@ void lasagna_menu_lang_tune(void)
     lv_obj_set_pos(pg->label_641, 996, 39);
     lv_obj_set_size(pg->label_641, 117, 32);
 
-    /* hourline: 图片 | (480,327) */
+    /* hourline: 图片 | (480,327) | img: underline_120x4.png */
     lv_obj_set_pos(pg->hourline, 480, 327);
 
-    /* minline: 图片 | (680,327) */
+    /* minline: 图片 | (680,327) | img: underline_120x4.png */
     lv_obj_set_pos(pg->minline, 680, 327);
 
 }
@@ -7061,14 +7062,14 @@ void lasagna_set_lang_tune(void)
     lv_obj_set_pos(pg->label_649, 448, 269);
     lv_obj_set_size(pg->label_649, 64, 32);
 
-    /* image_287: 图片 | (164,376) */
+    /* image_287: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_287, 164, 376);
 
     /* label_650: 标签 | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_650, 232, 385);
     lv_obj_set_size(pg->label_650, 148, 32);
 
-    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
@@ -7084,11 +7085,11 @@ void lasagna_set_lang_tune(void)
     lv_obj_set_pos(pg->label_653, 831, 270);
     lv_obj_set_size(pg->label_653, 130, 32);
 
-    /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 144);
     lv_obj_set_size(pg->offdelay, 135, 53);
 
-    /* offcontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* offcontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offcontain, 983, 260);
     lv_obj_set_size(pg->offcontain, 135, 53);
 
@@ -7100,11 +7101,11 @@ void lasagna_set_lang_tune(void)
     lv_obj_set_pos(pg->label_655, 1010, 39);
     lv_obj_set_size(pg->label_655, 85, 36);
 
-    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->ondelay, 983, 144);
     lv_obj_set_size(pg->ondelay, 135, 53);
 
-    /* oncontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* oncontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 260);
     lv_obj_set_size(pg->oncontain, 135, 53);
 
@@ -7137,7 +7138,7 @@ void lasagna_setting_lang_tune(void)
     lv_obj_set_pos(pg->container_29, 0, 0);
     lv_obj_set_size(pg->container_29, 1280, 480);
 
-    /* image_313: 图片 | (115,115) */
+    /* image_313: 图片 | (115,115) | img: settingbk.png */
     lv_obj_set_pos(pg->image_313, 115, 115);
 
     /* label_663: 标签 | (373,136) | 135x30 | font taiwanpearl_regular_30 */
@@ -7152,7 +7153,7 @@ void lasagna_setting_lang_tune(void)
     lv_obj_set_pos(pg->label_668, 340, 228);
     lv_obj_set_size(pg->label_668, 37, 30);
 
-    /* hourline: 图片 | (291,269) */
+    /* hourline: 图片 | (291,269) | img: settingline3.png */
     lv_obj_set_pos(pg->hourline, 291, 269);
 
     /* min: 标签 | (483,212) | 102x46 | font taiwanpearl_regular_48 */
@@ -7163,10 +7164,10 @@ void lasagna_setting_lang_tune(void)
     lv_obj_set_pos(pg->label_669, 558, 229);
     lv_obj_set_size(pg->label_669, 37, 30);
 
-    /* minline: 图片 | (508,269) */
+    /* minline: 图片 | (508,269) | img: settingline3.png */
     lv_obj_set_pos(pg->minline, 508, 269);
 
-    /* button_200: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* button_200: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->button_200, 959, 295);
     lv_obj_set_size(pg->button_200, 129, 83);
 
@@ -7191,11 +7192,11 @@ void lasagna_stop_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_317: 图片 | (115,320) */
+    /* image_317: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_317, 115, 320);
 
     /* bar_49: 进度条 | (122,326) | 637x20 */
@@ -7206,11 +7207,11 @@ void lasagna_stop_lang_tune(void)
     lv_obj_set_pos(pg->label_675, 273, 157);
     lv_obj_set_size(pg->label_675, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_318: 图片 | (115,161) */
+    /* image_318: 图片 | (115,161) | img: lasagnaicon.png */
     lv_obj_set_pos(pg->image_318, 115, 161);
 
 }
@@ -7226,14 +7227,14 @@ void lasagna_stop_back_lang_tune(void)
     lasagna_stop_back_t *pg = lasagna_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* image_319: 图片 | (115,161) */
+    /* image_319: 图片 | (115,161) | img: lasagnaicon.png */
     lv_obj_set_pos(pg->image_319, 115, 161);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_320: 图片 | (115,320) */
+    /* image_320: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_320, 115, 320);
 
     /* bar_50: 进度条 | (122,326) | 637x20 */
@@ -7244,7 +7245,7 @@ void lasagna_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_677, 273, 157);
     lv_obj_set_size(pg->label_677, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
@@ -7260,7 +7261,7 @@ void lasagna_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_679, 895, 198);
     lv_obj_set_size(pg->label_679, 252, 36);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -7277,19 +7278,19 @@ void major_menu_lang_tune(void)
     major_menu_t *pg = major_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* cook4_button: 按钮 | (421,60) | 439x417 | font montserratmedium_16 */
+    /* cook4_button: 按钮 | (421,60) | 439x417 | font montserratmedium_16 | bg: div3bk30.png */
     lv_obj_set_pos(pg->cook4_button, 421, 60);
     lv_obj_set_size(pg->cook4_button, 439, 417);
 
-    /* cook_button: 按钮 | (7,60) | 439x417 | font montserratmedium_16 */
+    /* cook_button: 按钮 | (7,60) | 439x417 | font montserratmedium_16 | bg: div3bk30.png */
     lv_obj_set_pos(pg->cook_button, 7, 60);
     lv_obj_set_size(pg->cook_button, 439, 417);
 
-    /* special_button: 按钮 | (835,60) | 439x417 | font montserratmedium_16 */
+    /* special_button: 按钮 | (835,60) | 439x417 | font montserratmedium_16 | bg: div3bk30.png */
     lv_obj_set_pos(pg->special_button, 835, 60);
     lv_obj_set_size(pg->special_button, 439, 417);
 
-    /* major_img: 图片 | (196,187) */
+    /* major_img: 图片 | (196,187) | img: menuimg.png */
     lv_obj_set_pos(pg->major_img, 196, 187);
 
     /* menu_label: 标签 | (24,24) | 58x22 | font taiwanpearl_regular_24 */
@@ -7321,11 +7322,11 @@ void major_menu_tz_lang_tune(void)
     major_menu_tz_t *pg = major_menu_tz_get(&ui_manager);
     if (!pg) return;
 
-    /* cook_button: 按钮 | (9,73) | 642x390 | font montserratmedium_16 */
+    /* cook_button: 按钮 | (9,73) | 642x390 | font montserratmedium_16 | bg: div2bk30.png */
     lv_obj_set_pos(pg->cook_button, 9, 73);
     lv_obj_set_size(pg->cook_button, 642, 390);
 
-    /* special_button: 按钮 | (630,73) | 642x390 | font montserratmedium_16 */
+    /* special_button: 按钮 | (630,73) | 642x390 | font montserratmedium_16 | bg: div2bk30.png */
     lv_obj_set_pos(pg->special_button, 630, 73);
     lv_obj_set_size(pg->special_button, 642, 390);
 
@@ -7333,10 +7334,10 @@ void major_menu_tz_lang_tune(void)
     lv_obj_set_pos(pg->menu_label, 24, 24);
     lv_obj_set_size(pg->menu_label, 48, 32);
 
-    /* tz_img: 图片 | (96,24) */
+    /* tz_img: 图片 | (96,24) | img: tanzhen.png */
     lv_obj_set_pos(pg->tz_img, 96, 24);
 
-    /* major_img: 图片 | (300,185) */
+    /* major_img: 图片 | (300,185) | img: menutzimg.png */
     lv_obj_set_pos(pg->major_img, 300, 185);
 
     /* cook_label: 标签 | (270,291) | 120x28 | font taiwanpearl_regular_30 */
@@ -7360,7 +7361,7 @@ void menu_complete_lang_tune(void)
     menu_complete_t *pg = menu_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* image_132: 图片 | (115,320) */
+    /* image_132: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_132, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -7375,14 +7376,14 @@ void menu_complete_lang_tune(void)
     lv_obj_set_pos(pg->label_288, 273, 157);
     lv_obj_set_size(pg->label_288, 235, 60);
 
-    /* image_133: 图片 | (845,160) */
+    /* image_133: 图片 | (845,160) | img: hotcare.png */
     lv_obj_set_pos(pg->image_133, 845, 160);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_134: 图片 | (115,161) */
+    /* image_134: 图片 | (115,161) | img: menuicon.png */
     lv_obj_set_pos(pg->image_134, 115, 161);
 
 }
@@ -7406,11 +7407,11 @@ void menu_cooking_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_121: 图片 | (115,320) */
+    /* image_121: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_121, 115, 320);
 
     /* bar_16: 进度条 | (122,326) | 637x20 */
@@ -7421,11 +7422,11 @@ void menu_cooking_lang_tune(void)
     lv_obj_set_pos(pg->label_269, 273, 157);
     lv_obj_set_size(pg->label_269, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_122: 图片 | (115,161) */
+    /* image_122: 图片 | (115,161) | img: menuicon.png */
     lv_obj_set_pos(pg->image_122, 115, 161);
 
 }
@@ -7441,14 +7442,14 @@ void menu_menu_lang_tune(void)
     menu_menu_t *pg = menu_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 */
+    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
     lv_obj_set_size(pg->next, 138, 70);
 
-    /* image_114: 图片 | (24,118) */
+    /* image_114: 图片 | (24,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_114, 24, 118);
 
-    /* image_115: 图片 | (645,118) */
+    /* image_115: 图片 | (645,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_115, 645, 118);
 
     /* label_241: 标签 | (300,137) | 64x32 | font taiwanpearl_regular_30 */
@@ -7491,16 +7492,16 @@ void menu_menu_lang_tune(void)
     lv_obj_set_pos(pg->label_250, 996, 39);
     lv_obj_set_size(pg->label_250, 117, 32);
 
-    /* templine3: 图片 | (252,328) */
+    /* templine3: 图片 | (252,328) | img: underline.png */
     lv_obj_set_pos(pg->templine3, 252, 328);
 
-    /* templine2: 图片 | (289,328) */
+    /* templine2: 图片 | (289,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->templine2, 289, 328);
 
-    /* hourline: 图片 | (790,328) */
+    /* hourline: 图片 | (790,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->hourline, 790, 328);
 
-    /* minline: 图片 | (993,328) */
+    /* minline: 图片 | (993,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->minline, 993, 328);
 
 }
@@ -7548,14 +7549,14 @@ void menu_set_lang_tune(void)
     lv_obj_set_pos(pg->label_258, 448, 269);
     lv_obj_set_size(pg->label_258, 64, 32);
 
-    /* image_120: 图片 | (164,376) */
+    /* image_120: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_120, 164, 376);
 
     /* label_259: 标签 | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_259, 232, 385);
     lv_obj_set_size(pg->label_259, 148, 32);
 
-    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
@@ -7571,11 +7572,11 @@ void menu_set_lang_tune(void)
     lv_obj_set_pos(pg->label_262, 831, 270);
     lv_obj_set_size(pg->label_262, 130, 32);
 
-    /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 144);
     lv_obj_set_size(pg->offdelay, 135, 53);
 
-    /* offcontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* offcontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offcontain, 983, 260);
     lv_obj_set_size(pg->offcontain, 135, 53);
 
@@ -7587,11 +7588,11 @@ void menu_set_lang_tune(void)
     lv_obj_set_pos(pg->label_264, 1010, 39);
     lv_obj_set_size(pg->label_264, 85, 36);
 
-    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->ondelay, 983, 144);
     lv_obj_set_size(pg->ondelay, 135, 53);
 
-    /* oncontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* oncontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 260);
     lv_obj_set_size(pg->oncontain, 135, 53);
 
@@ -7624,7 +7625,7 @@ void menu_setting_lang_tune(void)
     lv_obj_set_pos(pg->container_13, 0, 0);
     lv_obj_set_size(pg->container_13, 1280, 480);
 
-    /* image_123: 图片 | (115,115) */
+    /* image_123: 图片 | (115,115) | img: settingbk.png */
     lv_obj_set_pos(pg->image_123, 115, 115);
 
     /* label_271: 标签 | (242,136) | 73x30 | font taiwanpearl_regular_30 */
@@ -7643,10 +7644,10 @@ void menu_setting_lang_tune(void)
     lv_obj_set_pos(pg->icon3, 300, 229);
     lv_obj_set_size(pg->icon3, 37, 30);
 
-    /* templine2: 图片 | (236,269) */
+    /* templine2: 图片 | (236,269) | img: settingline3_87x4.png */
     lv_obj_set_pos(pg->templine2, 236, 269);
 
-    /* templine3: 图片 | (223,269) */
+    /* templine3: 图片 | (223,269) | img: settingline2.png */
     lv_obj_set_pos(pg->templine3, 223, 269);
 
     /* hour: 标签 | (374,213) | 102x46 | font taiwanpearl_regular_48 */
@@ -7665,17 +7666,17 @@ void menu_setting_lang_tune(void)
     lv_obj_set_pos(pg->label_278, 612, 229);
     lv_obj_set_size(pg->label_278, 37, 30);
 
-    /* hourline: 图片 | (398,269) */
+    /* hourline: 图片 | (398,269) | img: settingline3.png */
     lv_obj_set_pos(pg->hourline, 398, 269);
 
-    /* minline: 图片 | (560,269) */
+    /* minline: 图片 | (560,269) | img: settingline3.png */
     lv_obj_set_pos(pg->minline, 560, 269);
 
     /* icon2: 标签 | (288,229) | 37x30 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->icon2, 288, 229);
     lv_obj_set_size(pg->icon2, 37, 30);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -7700,11 +7701,11 @@ void menu_stop_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_128: 图片 | (115,320) */
+    /* image_128: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_128, 115, 320);
 
     /* bar_17: 进度条 | (122,326) | 637x20 */
@@ -7715,11 +7716,11 @@ void menu_stop_lang_tune(void)
     lv_obj_set_pos(pg->label_282, 273, 157);
     lv_obj_set_size(pg->label_282, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_129: 图片 | (115,161) */
+    /* image_129: 图片 | (115,161) | img: menuicon.png */
     lv_obj_set_pos(pg->image_129, 115, 161);
 
 }
@@ -7735,14 +7736,14 @@ void menu_stop_back_lang_tune(void)
     menu_stop_back_t *pg = menu_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* image_130: 图片 | (115,161) */
+    /* image_130: 图片 | (115,161) | img: menuicon.png */
     lv_obj_set_pos(pg->image_130, 115, 161);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_131: 图片 | (115,320) */
+    /* image_131: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_131, 115, 320);
 
     /* bar_18: 进度条 | (122,326) | 637x20 */
@@ -7753,7 +7754,7 @@ void menu_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_284, 273, 157);
     lv_obj_set_size(pg->label_284, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
@@ -7769,7 +7770,7 @@ void menu_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_286, 895, 198);
     lv_obj_set_size(pg->label_286, 252, 36);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -7786,7 +7787,7 @@ void pizza3_complete_lang_tune(void)
     pizza3_complete_t *pg = pizza3_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* image_369: 图片 | (115,320) */
+    /* image_369: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_369, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -7801,14 +7802,14 @@ void pizza3_complete_lang_tune(void)
     lv_obj_set_pos(pg->label_804, 273, 157);
     lv_obj_set_size(pg->label_804, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_371: 图片 | (115,161) */
+    /* image_371: 图片 | (115,161) | img: pizza3icon.png */
     lv_obj_set_pos(pg->image_371, 115, 161);
 
-    /* image_15: 图片 | (902,160) */
+    /* image_15: 图片 | (902,160) | img: tips.png */
     lv_obj_set_pos(pg->image_15, 902, 160);
 
 }
@@ -7832,11 +7833,11 @@ void pizza3_cooking_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_360: 图片 | (115,320) */
+    /* image_360: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_360, 115, 320);
 
     /* bar_60: 进度条 | (122,326) | 637x20 */
@@ -7847,11 +7848,11 @@ void pizza3_cooking_lang_tune(void)
     lv_obj_set_pos(pg->label_789, 273, 157);
     lv_obj_set_size(pg->label_789, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_361: 图片 | (115,161) */
+    /* image_361: 图片 | (115,161) | img: pizza3icon.png */
     lv_obj_set_pos(pg->image_361, 115, 161);
 
 }
@@ -7867,11 +7868,11 @@ void pizza3_menu_lang_tune(void)
     pizza3_menu_t *pg = pizza3_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 */
+    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
     lv_obj_set_size(pg->next, 138, 70);
 
-    /* image_356: 图片 | (24,117) */
+    /* image_356: 图片 | (24,117) | img: div1bg.png */
     lv_obj_set_pos(pg->image_356, 24, 117);
 
     /* label_764: 标签 | (578,139) | 125x32 | font taiwanpearl_regular_30 */
@@ -7902,10 +7903,10 @@ void pizza3_menu_lang_tune(void)
     lv_obj_set_pos(pg->label_770, 996, 39);
     lv_obj_set_size(pg->label_770, 117, 32);
 
-    /* hourline: 图片 | (480,327) */
+    /* hourline: 图片 | (480,327) | img: underline_120x4.png */
     lv_obj_set_pos(pg->hourline, 480, 327);
 
-    /* minline: 图片 | (680,327) */
+    /* minline: 图片 | (680,327) | img: underline_120x4.png */
     lv_obj_set_pos(pg->minline, 680, 327);
 
 }
@@ -7953,14 +7954,14 @@ void pizza3_set_lang_tune(void)
     lv_obj_set_pos(pg->label_778, 448, 269);
     lv_obj_set_size(pg->label_778, 64, 32);
 
-    /* image_359: 图片 | (164,376) */
+    /* image_359: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_359, 164, 376);
 
     /* label_779: 标签 | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_779, 232, 385);
     lv_obj_set_size(pg->label_779, 148, 32);
 
-    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
@@ -7976,11 +7977,11 @@ void pizza3_set_lang_tune(void)
     lv_obj_set_pos(pg->label_782, 831, 270);
     lv_obj_set_size(pg->label_782, 130, 32);
 
-    /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 144);
     lv_obj_set_size(pg->offdelay, 135, 53);
 
-    /* offcontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* offcontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offcontain, 983, 260);
     lv_obj_set_size(pg->offcontain, 135, 53);
 
@@ -7992,11 +7993,11 @@ void pizza3_set_lang_tune(void)
     lv_obj_set_pos(pg->label_784, 1010, 39);
     lv_obj_set_size(pg->label_784, 85, 36);
 
-    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->ondelay, 983, 144);
     lv_obj_set_size(pg->ondelay, 135, 53);
 
-    /* oncontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* oncontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 260);
     lv_obj_set_size(pg->oncontain, 135, 53);
 
@@ -8029,7 +8030,7 @@ void pizza3_setting_lang_tune(void)
     lv_obj_set_pos(pg->container_35, 0, 0);
     lv_obj_set_size(pg->container_35, 1280, 480);
 
-    /* image_362: 图片 | (115,115) */
+    /* image_362: 图片 | (115,115) | img: settingbk.png */
     lv_obj_set_pos(pg->image_362, 115, 115);
 
     /* label_791: 标签 | (373,136) | 135x30 | font taiwanpearl_regular_30 */
@@ -8044,7 +8045,7 @@ void pizza3_setting_lang_tune(void)
     lv_obj_set_pos(pg->label_793, 340, 228);
     lv_obj_set_size(pg->label_793, 37, 30);
 
-    /* hourline: 图片 | (291,269) */
+    /* hourline: 图片 | (291,269) | img: settingline3.png */
     lv_obj_set_pos(pg->hourline, 291, 269);
 
     /* min: 标签 | (483,212) | 102x46 | font taiwanpearl_regular_48 */
@@ -8055,10 +8056,10 @@ void pizza3_setting_lang_tune(void)
     lv_obj_set_pos(pg->label_795, 558, 229);
     lv_obj_set_size(pg->label_795, 37, 30);
 
-    /* minline: 图片 | (508,269) */
+    /* minline: 图片 | (508,269) | img: settingline3.png */
     lv_obj_set_pos(pg->minline, 508, 269);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -8083,11 +8084,11 @@ void pizza3_stop_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_365: 图片 | (115,320) */
+    /* image_365: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_365, 115, 320);
 
     /* bar_61: 进度条 | (122,326) | 637x20 */
@@ -8098,11 +8099,11 @@ void pizza3_stop_lang_tune(void)
     lv_obj_set_pos(pg->label_798, 273, 157);
     lv_obj_set_size(pg->label_798, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_366: 图片 | (115,161) */
+    /* image_366: 图片 | (115,161) | img: pizza3icon.png */
     lv_obj_set_pos(pg->image_366, 115, 161);
 
 }
@@ -8118,14 +8119,14 @@ void pizza3_stop_back_lang_tune(void)
     pizza3_stop_back_t *pg = pizza3_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* image_367: 图片 | (115,161) */
+    /* image_367: 图片 | (115,161) | img: pizza3icon.png */
     lv_obj_set_pos(pg->image_367, 115, 161);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_368: 图片 | (115,320) */
+    /* image_368: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_368, 115, 320);
 
     /* bar_62: 进度条 | (122,326) | 637x20 */
@@ -8136,7 +8137,7 @@ void pizza3_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_800, 273, 157);
     lv_obj_set_size(pg->label_800, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
@@ -8152,7 +8153,7 @@ void pizza3_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_802, 895, 198);
     lv_obj_set_size(pg->label_802, 252, 36);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -8169,7 +8170,7 @@ void pizza_2_complete_lang_tune(void)
     pizza_2_complete_t *pg = pizza_2_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* image_174: 图片 | (115,320) */
+    /* image_174: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_174, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -8184,14 +8185,14 @@ void pizza_2_complete_lang_tune(void)
     lv_obj_set_pos(pg->label_386, 273, 157);
     lv_obj_set_size(pg->label_386, 235, 60);
 
-    /* image_175: 图片 | (845,160) */
+    /* image_175: 图片 | (845,160) | img: hotcare.png */
     lv_obj_set_pos(pg->image_175, 845, 160);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_176: 图片 | (140,161) */
+    /* image_176: 图片 | (140,161) | img: pizza2icon.png */
     lv_obj_set_pos(pg->image_176, 140, 161);
 
 }
@@ -8215,11 +8216,11 @@ void pizza_2_cooking_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_163: 图片 | (115,320) */
+    /* image_163: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_163, 115, 320);
 
     /* bar_24: 进度条 | (122,326) | 637x20 */
@@ -8230,11 +8231,11 @@ void pizza_2_cooking_lang_tune(void)
     lv_obj_set_pos(pg->label_367, 273, 157);
     lv_obj_set_size(pg->label_367, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_164: 图片 | (140,161) */
+    /* image_164: 图片 | (140,161) | img: pizza2icon.png */
     lv_obj_set_pos(pg->image_164, 140, 161);
 
 }
@@ -8250,14 +8251,14 @@ void pizza_2_menu_lang_tune(void)
     pizza_2_menu_t *pg = pizza_2_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 */
+    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
     lv_obj_set_size(pg->next, 138, 70);
 
-    /* image_156: 图片 | (24,118) */
+    /* image_156: 图片 | (24,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_156, 24, 118);
 
-    /* image_157: 图片 | (645,118) */
+    /* image_157: 图片 | (645,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_157, 645, 118);
 
     /* label_338: 标签 | (300,137) | 64x32 | font taiwanpearl_regular_30 */
@@ -8300,16 +8301,16 @@ void pizza_2_menu_lang_tune(void)
     lv_obj_set_pos(pg->label_347, 996, 39);
     lv_obj_set_size(pg->label_347, 117, 32);
 
-    /* templine3: 图片 | (252,328) */
+    /* templine3: 图片 | (252,328) | img: underline.png */
     lv_obj_set_pos(pg->templine3, 252, 328);
 
-    /* templine2: 图片 | (289,328) */
+    /* templine2: 图片 | (289,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->templine2, 289, 328);
 
-    /* hourline: 图片 | (790,328) */
+    /* hourline: 图片 | (790,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->hourline, 790, 328);
 
-    /* minline: 图片 | (993,328) */
+    /* minline: 图片 | (993,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->minline, 993, 328);
 
 }
@@ -8357,14 +8358,14 @@ void pizza_2_set_lang_tune(void)
     lv_obj_set_pos(pg->label_355, 448, 269);
     lv_obj_set_size(pg->label_355, 64, 32);
 
-    /* image_162: 图片 | (164,376) */
+    /* image_162: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_162, 164, 376);
 
     /* label_356: 标签 | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_356, 232, 385);
     lv_obj_set_size(pg->label_356, 148, 32);
 
-    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
@@ -8384,15 +8385,15 @@ void pizza_2_set_lang_tune(void)
     lv_obj_set_pos(pg->label_360, 831, 381);
     lv_obj_set_size(pg->label_360, 130, 32);
 
-    /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offpreheat, 983, 144);
     lv_obj_set_size(pg->offpreheat, 135, 53);
 
-    /* offdelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* offdelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 260);
     lv_obj_set_size(pg->offdelay, 135, 53);
 
-    /* offcontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 */
+    /* offcontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offcontain, 983, 372);
     lv_obj_set_size(pg->offcontain, 135, 53);
 
@@ -8404,15 +8405,15 @@ void pizza_2_set_lang_tune(void)
     lv_obj_set_pos(pg->label_362, 1010, 39);
     lv_obj_set_size(pg->label_362, 85, 36);
 
-    /* onpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* onpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->onpreheat, 983, 144);
     lv_obj_set_size(pg->onpreheat, 135, 53);
 
-    /* ondelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* ondelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->ondelay, 983, 260);
     lv_obj_set_size(pg->ondelay, 135, 53);
 
-    /* oncontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 */
+    /* oncontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 372);
     lv_obj_set_size(pg->oncontain, 135, 53);
 
@@ -8445,7 +8446,7 @@ void pizza_2_setting_lang_tune(void)
     lv_obj_set_pos(pg->container_17, 0, 0);
     lv_obj_set_size(pg->container_17, 1280, 480);
 
-    /* image_165: 图片 | (115,115) */
+    /* image_165: 图片 | (115,115) | img: settingbk.png */
     lv_obj_set_pos(pg->image_165, 115, 115);
 
     /* label_369: 标签 | (242,136) | 73x30 | font taiwanpearl_regular_30 */
@@ -8464,10 +8465,10 @@ void pizza_2_setting_lang_tune(void)
     lv_obj_set_pos(pg->icon3, 300, 229);
     lv_obj_set_size(pg->icon3, 37, 30);
 
-    /* templine2: 图片 | (236,269) */
+    /* templine2: 图片 | (236,269) | img: settingline3_87x4.png */
     lv_obj_set_pos(pg->templine2, 236, 269);
 
-    /* templine3: 图片 | (223,269) */
+    /* templine3: 图片 | (223,269) | img: settingline2.png */
     lv_obj_set_pos(pg->templine3, 223, 269);
 
     /* hour: 标签 | (374,213) | 102x46 | font taiwanpearl_regular_48 */
@@ -8486,17 +8487,17 @@ void pizza_2_setting_lang_tune(void)
     lv_obj_set_pos(pg->label_376, 612, 229);
     lv_obj_set_size(pg->label_376, 37, 30);
 
-    /* hourline: 图片 | (398,269) */
+    /* hourline: 图片 | (398,269) | img: settingline3.png */
     lv_obj_set_pos(pg->hourline, 398, 269);
 
-    /* minline: 图片 | (560,269) */
+    /* minline: 图片 | (560,269) | img: settingline3.png */
     lv_obj_set_pos(pg->minline, 560, 269);
 
     /* icon2: 标签 | (288,229) | 37x30 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->icon2, 288, 229);
     lv_obj_set_size(pg->icon2, 37, 30);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -8521,11 +8522,11 @@ void pizza_2_stop_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_170: 图片 | (115,320) */
+    /* image_170: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_170, 115, 320);
 
     /* bar_25: 进度条 | (122,326) | 637x20 */
@@ -8536,11 +8537,11 @@ void pizza_2_stop_lang_tune(void)
     lv_obj_set_pos(pg->label_380, 273, 157);
     lv_obj_set_size(pg->label_380, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_171: 图片 | (140,161) */
+    /* image_171: 图片 | (140,161) | img: pizza2icon.png */
     lv_obj_set_pos(pg->image_171, 140, 161);
 
 }
@@ -8556,14 +8557,14 @@ void pizza_2_stop_back_lang_tune(void)
     pizza_2_stop_back_t *pg = pizza_2_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* image_172: 图片 | (140,161) */
+    /* image_172: 图片 | (140,161) | img: pizza2icon.png */
     lv_obj_set_pos(pg->image_172, 140, 161);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_173: 图片 | (115,320) */
+    /* image_173: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_173, 115, 320);
 
     /* bar_26: 进度条 | (122,326) | 637x20 */
@@ -8574,7 +8575,7 @@ void pizza_2_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_382, 273, 157);
     lv_obj_set_size(pg->label_382, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
@@ -8590,7 +8591,7 @@ void pizza_2_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_384, 895, 198);
     lv_obj_set_size(pg->label_384, 252, 36);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -8607,7 +8608,7 @@ void pizza_complete_lang_tune(void)
     pizza_complete_t *pg = pizza_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* image_111: 图片 | (115,320) */
+    /* image_111: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_111, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -8622,14 +8623,14 @@ void pizza_complete_lang_tune(void)
     lv_obj_set_pos(pg->label_240, 273, 157);
     lv_obj_set_size(pg->label_240, 235, 60);
 
-    /* image_112: 图片 | (845,160) */
+    /* image_112: 图片 | (845,160) | img: hotcare.png */
     lv_obj_set_pos(pg->image_112, 845, 160);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_113: 图片 | (115,161) */
+    /* image_113: 图片 | (115,161) | img: pizzaicon.png */
     lv_obj_set_pos(pg->image_113, 115, 161);
 
 }
@@ -8653,11 +8654,11 @@ void pizza_cooking_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_100: 图片 | (115,320) */
+    /* image_100: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_100, 115, 320);
 
     /* bar_12: 进度条 | (122,326) | 637x20 */
@@ -8668,11 +8669,11 @@ void pizza_cooking_lang_tune(void)
     lv_obj_set_pos(pg->label_221, 273, 157);
     lv_obj_set_size(pg->label_221, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_101: 图片 | (115,161) */
+    /* image_101: 图片 | (115,161) | img: pizzaicon.png */
     lv_obj_set_pos(pg->image_101, 115, 161);
 
 }
@@ -8688,14 +8689,14 @@ void pizza_menu_lang_tune(void)
     pizza_menu_t *pg = pizza_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 */
+    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
     lv_obj_set_size(pg->next, 138, 70);
 
-    /* image_93: 图片 | (24,118) */
+    /* image_93: 图片 | (24,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_93, 24, 118);
 
-    /* image_94: 图片 | (645,118) */
+    /* image_94: 图片 | (645,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_94, 645, 118);
 
     /* label_193: 标签 | (300,137) | 64x32 | font taiwanpearl_regular_30 */
@@ -8738,16 +8739,16 @@ void pizza_menu_lang_tune(void)
     lv_obj_set_pos(pg->label_202, 996, 39);
     lv_obj_set_size(pg->label_202, 117, 32);
 
-    /* templine3: 图片 | (252,328) */
+    /* templine3: 图片 | (252,328) | img: underline.png */
     lv_obj_set_pos(pg->templine3, 252, 328);
 
-    /* templine2: 图片 | (289,328) */
+    /* templine2: 图片 | (289,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->templine2, 289, 328);
 
-    /* hourline: 图片 | (790,328) */
+    /* hourline: 图片 | (790,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->hourline, 790, 328);
 
-    /* minline: 图片 | (993,328) */
+    /* minline: 图片 | (993,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->minline, 993, 328);
 
 }
@@ -8795,14 +8796,14 @@ void pizza_set_lang_tune(void)
     lv_obj_set_pos(pg->label_210, 448, 269);
     lv_obj_set_size(pg->label_210, 64, 32);
 
-    /* image_99: 图片 | (164,376) */
+    /* image_99: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_99, 164, 376);
 
     /* label_211: 标签 | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_211, 232, 385);
     lv_obj_set_size(pg->label_211, 148, 32);
 
-    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
@@ -8818,11 +8819,11 @@ void pizza_set_lang_tune(void)
     lv_obj_set_pos(pg->label_214, 831, 270);
     lv_obj_set_size(pg->label_214, 130, 32);
 
-    /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 144);
     lv_obj_set_size(pg->offdelay, 135, 53);
 
-    /* offcontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* offcontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offcontain, 983, 260);
     lv_obj_set_size(pg->offcontain, 135, 53);
 
@@ -8834,11 +8835,11 @@ void pizza_set_lang_tune(void)
     lv_obj_set_pos(pg->label_216, 1010, 39);
     lv_obj_set_size(pg->label_216, 85, 36);
 
-    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->ondelay, 983, 144);
     lv_obj_set_size(pg->ondelay, 135, 53);
 
-    /* oncontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* oncontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 260);
     lv_obj_set_size(pg->oncontain, 135, 53);
 
@@ -8871,7 +8872,7 @@ void pizza_setting_lang_tune(void)
     lv_obj_set_pos(pg->container_11, 0, 0);
     lv_obj_set_size(pg->container_11, 1280, 480);
 
-    /* image_102: 图片 | (115,115) */
+    /* image_102: 图片 | (115,115) | img: settingbk.png */
     lv_obj_set_pos(pg->image_102, 115, 115);
 
     /* label_223: 标签 | (242,136) | 73x30 | font taiwanpearl_regular_30 */
@@ -8890,10 +8891,10 @@ void pizza_setting_lang_tune(void)
     lv_obj_set_pos(pg->icon3, 300, 229);
     lv_obj_set_size(pg->icon3, 37, 30);
 
-    /* templine2: 图片 | (236,269) */
+    /* templine2: 图片 | (236,269) | img: settingline3_87x4.png */
     lv_obj_set_pos(pg->templine2, 236, 269);
 
-    /* templine3: 图片 | (223,269) */
+    /* templine3: 图片 | (223,269) | img: settingline2.png */
     lv_obj_set_pos(pg->templine3, 223, 269);
 
     /* hour: 标签 | (374,213) | 102x46 | font taiwanpearl_regular_48 */
@@ -8912,17 +8913,17 @@ void pizza_setting_lang_tune(void)
     lv_obj_set_pos(pg->label_230, 612, 229);
     lv_obj_set_size(pg->label_230, 37, 30);
 
-    /* hourline: 图片 | (398,269) */
+    /* hourline: 图片 | (398,269) | img: settingline3.png */
     lv_obj_set_pos(pg->hourline, 398, 269);
 
-    /* minline: 图片 | (560,269) */
+    /* minline: 图片 | (560,269) | img: settingline3.png */
     lv_obj_set_pos(pg->minline, 560, 269);
 
     /* icon2: 标签 | (288,229) | 37x30 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->icon2, 288, 229);
     lv_obj_set_size(pg->icon2, 37, 30);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -8947,11 +8948,11 @@ void pizza_stop_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_107: 图片 | (115,320) */
+    /* image_107: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_107, 115, 320);
 
     /* bar_13: 进度条 | (122,326) | 637x20 */
@@ -8962,11 +8963,11 @@ void pizza_stop_lang_tune(void)
     lv_obj_set_pos(pg->label_234, 273, 157);
     lv_obj_set_size(pg->label_234, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_108: 图片 | (115,161) */
+    /* image_108: 图片 | (115,161) | img: pizzaicon.png */
     lv_obj_set_pos(pg->image_108, 115, 161);
 
 }
@@ -8982,14 +8983,14 @@ void pizza_stop_back_lang_tune(void)
     pizza_stop_back_t *pg = pizza_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* image_109: 图片 | (115,161) */
+    /* image_109: 图片 | (115,161) | img: pizzaicon.png */
     lv_obj_set_pos(pg->image_109, 115, 161);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_110: 图片 | (115,320) */
+    /* image_110: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_110, 115, 320);
 
     /* bar_14: 进度条 | (122,326) | 637x20 */
@@ -9000,7 +9001,7 @@ void pizza_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_236, 273, 157);
     lv_obj_set_size(pg->label_236, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
@@ -9016,7 +9017,7 @@ void pizza_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_238, 895, 198);
     lv_obj_set_size(pg->label_238, 252, 36);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -9037,7 +9038,7 @@ void preheat_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_3: 图片 | (115,320) */
+    /* image_3: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_3, 115, 320);
 
     /* bar_1: 进度条 | (122,326) | 637x20 */
@@ -9048,7 +9049,7 @@ void preheat_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->name, 273, 157);
     lv_obj_set_size(pg->name, 255, 60);
 
-    /* icon: 图片 | (115,161) */
+    /* icon: 图片 | (115,161) | img: preheaticon.png */
     lv_obj_set_pos(pg->icon, 115, 161);
 
     /* bartemp: 标签 | (125,323) | 66x24 | font taiwanpearl_regular_24 */
@@ -9067,7 +9068,7 @@ void preheat_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->tip1, 895, 160);
     lv_obj_set_size(pg->tip1, 252, 36);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -9084,7 +9085,7 @@ void preheatcomplete_lang_tune(void)
     preheatcomplete_t *pg = preheatcomplete_get(&ui_manager);
     if (!pg) return;
 
-    /* image_43: 图片 | (115,320) */
+    /* image_43: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_43, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -9099,7 +9100,7 @@ void preheatcomplete_lang_tune(void)
     lv_obj_set_pos(pg->name, 273, 157);
     lv_obj_set_size(pg->name, 246, 60);
 
-    /* icon: 图片 | (115,161) */
+    /* icon: 图片 | (115,161) | img: preheaticon.png */
     lv_obj_set_pos(pg->icon, 115, 161);
 
     /* tip1: 标签 | (932,161) | 180x29 | font taiwanpearl_regular_30 */
@@ -9110,7 +9111,7 @@ void preheatcomplete_lang_tune(void)
     lv_obj_set_pos(pg->tip2, 917, 197);
     lv_obj_set_size(pg->tip2, 210, 29);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -9139,11 +9140,11 @@ void preheatcooking_lang_tune(void)
     lv_obj_set_pos(pg->temp, 940, 157);
     lv_obj_set_size(pg->temp, 159, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_39: 图片 | (115,320) */
+    /* image_39: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_39, 115, 320);
 
     /* bar_1: 进度条 | (122,326) | 637x20 */
@@ -9154,7 +9155,7 @@ void preheatcooking_lang_tune(void)
     lv_obj_set_pos(pg->name, 273, 157);
     lv_obj_set_size(pg->name, 235, 60);
 
-    /* icon: 图片 | (115,161) */
+    /* icon: 图片 | (115,161) | img: preheaticon.png */
     lv_obj_set_pos(pg->icon, 115, 161);
 
     /* bartemp: 标签 | (125,323) | 66x24 | font taiwanpearl_regular_24 */
@@ -9174,11 +9175,11 @@ void preheatmenu_lang_tune(void)
     preheatmenu_t *pg = preheatmenu_get(&ui_manager);
     if (!pg) return;
 
-    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 */
+    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
     lv_obj_set_size(pg->next, 138, 70);
 
-    /* image_33: 图片 | (24,118) */
+    /* image_33: 图片 | (24,118) | img: preheatbg.png */
     lv_obj_set_pos(pg->image_33, 24, 118);
 
     /* label_61: 标签 | (608,139) | 64x32 | font taiwanpearl_regular_30 */
@@ -9201,10 +9202,10 @@ void preheatmenu_lang_tune(void)
     lv_obj_set_pos(pg->label_70, 996, 39);
     lv_obj_set_size(pg->label_70, 117, 32);
 
-    /* line3: 图片 | (562,327) */
+    /* line3: 图片 | (562,327) | img: underline.png */
     lv_obj_set_pos(pg->line3, 562, 327);
 
-    /* line2: 图片 | (599,327) */
+    /* line2: 图片 | (599,327) | img: underline_120x4.png */
     lv_obj_set_pos(pg->line2, 599, 327);
 
 }
@@ -9228,11 +9229,11 @@ void preheatstop_lang_tune(void)
     lv_obj_set_pos(pg->temp, 940, 157);
     lv_obj_set_size(pg->temp, 159, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_41: 图片 | (115,320) */
+    /* image_41: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_41, 115, 320);
 
     /* bar_2: 进度条 | (122,326) | 637x20 */
@@ -9243,7 +9244,7 @@ void preheatstop_lang_tune(void)
     lv_obj_set_pos(pg->name, 273, 157);
     lv_obj_set_size(pg->name, 235, 60);
 
-    /* icon: 图片 | (115,161) */
+    /* icon: 图片 | (115,161) | img: preheaticon.png */
     lv_obj_set_pos(pg->icon, 115, 161);
 
     /* bartemp: 标签 | (125,323) | 66x24 | font taiwanpearl_regular_24 */
@@ -9263,7 +9264,7 @@ void probeneedtip_lang_tune(void)
     probeneedtip_t *pg = probeneedtip_get(&ui_manager);
     if (!pg) return;
 
-    /* button_20: 按钮 | (19,113) | 1243x347 | font taiwanpearl_regular_48 */
+    /* button_20: 按钮 | (19,113) | 1243x347 | font taiwanpearl_regular_48 | bg: div1bg.png */
     lv_obj_set_pos(pg->button_20, 19, 113);
     lv_obj_set_size(pg->button_20, 1243, 347);
 
@@ -9271,7 +9272,7 @@ void probeneedtip_lang_tune(void)
     lv_obj_set_pos(pg->name, 24, 24);
     lv_obj_set_size(pg->name, 97, 25);
 
-    /* sure: 按钮 | (986,21) | 135x71 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (986,21) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 986, 21);
     lv_obj_set_size(pg->sure, 135, 71);
 
@@ -9288,7 +9289,7 @@ void probetip_lang_tune(void)
     probetip_t *pg = probetip_get(&ui_manager);
     if (!pg) return;
 
-    /* button_1: 按钮 | (19,113) | 1243x347 | font taiwanpearl_regular_48 */
+    /* button_1: 按钮 | (19,113) | 1243x347 | font taiwanpearl_regular_48 | bg: div1bg.png */
     lv_obj_set_pos(pg->button_1, 19, 113);
     lv_obj_set_size(pg->button_1, 1243, 347);
 
@@ -9305,7 +9306,7 @@ void rising_complete_lang_tune(void)
     rising_complete_t *pg = rising_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* image_237: 图片 | (115,320) */
+    /* image_237: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_237, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -9320,14 +9321,14 @@ void rising_complete_lang_tune(void)
     lv_obj_set_pos(pg->label_533, 273, 157);
     lv_obj_set_size(pg->label_533, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_239: 图片 | (115,161) */
+    /* image_239: 图片 | (115,161) | img: risingicon.png */
     lv_obj_set_pos(pg->image_239, 115, 161);
 
-    /* image_9: 图片 | (902,160) */
+    /* image_9: 图片 | (902,160) | img: tips.png */
     lv_obj_set_pos(pg->image_9, 902, 160);
 
 }
@@ -9351,11 +9352,11 @@ void rising_cooking_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_226: 图片 | (115,320) */
+    /* image_226: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_226, 115, 320);
 
     /* bar_36: 进度条 | (122,326) | 637x20 */
@@ -9366,11 +9367,11 @@ void rising_cooking_lang_tune(void)
     lv_obj_set_pos(pg->label_514, 273, 157);
     lv_obj_set_size(pg->label_514, 235, 60);
 
-    /* liitle: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* liitle: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->liitle, 609, 170);
     lv_obj_set_size(pg->liitle, 50, 43);
 
-    /* image_227: 图片 | (115,161) */
+    /* image_227: 图片 | (115,161) | img: risingicon.png */
     lv_obj_set_pos(pg->image_227, 115, 161);
 
 }
@@ -9386,14 +9387,14 @@ void rising_menu_lang_tune(void)
     rising_menu_t *pg = rising_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 */
+    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
     lv_obj_set_size(pg->next, 138, 70);
 
-    /* image_219: 图片 | (24,118) */
+    /* image_219: 图片 | (24,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_219, 24, 118);
 
-    /* image_220: 图片 | (645,118) */
+    /* image_220: 图片 | (645,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_220, 645, 118);
 
     /* label_485: 标签 | (300,137) | 64x32 | font taiwanpearl_regular_30 */
@@ -9436,16 +9437,16 @@ void rising_menu_lang_tune(void)
     lv_obj_set_pos(pg->label_494, 996, 39);
     lv_obj_set_size(pg->label_494, 117, 32);
 
-    /* templine3: 图片 | (252,328) */
+    /* templine3: 图片 | (252,328) | img: underline.png */
     lv_obj_set_pos(pg->templine3, 252, 328);
 
-    /* templine2: 图片 | (289,328) */
+    /* templine2: 图片 | (289,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->templine2, 289, 328);
 
-    /* hourline: 图片 | (790,328) */
+    /* hourline: 图片 | (790,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->hourline, 790, 328);
 
-    /* minline: 图片 | (993,328) */
+    /* minline: 图片 | (993,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->minline, 993, 328);
 
 }
@@ -9493,14 +9494,14 @@ void rising_set_lang_tune(void)
     lv_obj_set_pos(pg->label_502, 448, 269);
     lv_obj_set_size(pg->label_502, 64, 32);
 
-    /* image_225: 图片 | (164,376) */
+    /* image_225: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_225, 164, 376);
 
     /* label_503: 标签 | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_503, 232, 385);
     lv_obj_set_size(pg->label_503, 148, 32);
 
-    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
@@ -9520,15 +9521,15 @@ void rising_set_lang_tune(void)
     lv_obj_set_pos(pg->label_507, 831, 381);
     lv_obj_set_size(pg->label_507, 130, 32);
 
-    /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offpreheat, 983, 144);
     lv_obj_set_size(pg->offpreheat, 135, 53);
 
-    /* offdelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* offdelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 260);
     lv_obj_set_size(pg->offdelay, 135, 53);
 
-    /* offcontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 */
+    /* offcontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offcontain, 983, 372);
     lv_obj_set_size(pg->offcontain, 135, 53);
 
@@ -9540,15 +9541,15 @@ void rising_set_lang_tune(void)
     lv_obj_set_pos(pg->label_509, 1010, 39);
     lv_obj_set_size(pg->label_509, 85, 36);
 
-    /* onpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* onpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->onpreheat, 983, 144);
     lv_obj_set_size(pg->onpreheat, 135, 53);
 
-    /* ondelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* ondelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->ondelay, 983, 260);
     lv_obj_set_size(pg->ondelay, 135, 53);
 
-    /* oncontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 */
+    /* oncontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 372);
     lv_obj_set_size(pg->oncontain, 135, 53);
 
@@ -9581,7 +9582,7 @@ void rising_setting_lang_tune(void)
     lv_obj_set_pos(pg->container_23, 0, 0);
     lv_obj_set_size(pg->container_23, 1280, 480);
 
-    /* image_228: 图片 | (115,115) */
+    /* image_228: 图片 | (115,115) | img: settingbk.png */
     lv_obj_set_pos(pg->image_228, 115, 115);
 
     /* label_516: 标签 | (242,136) | 73x30 | font taiwanpearl_regular_30 */
@@ -9600,10 +9601,10 @@ void rising_setting_lang_tune(void)
     lv_obj_set_pos(pg->icon3, 300, 229);
     lv_obj_set_size(pg->icon3, 37, 30);
 
-    /* templine2: 图片 | (236,269) */
+    /* templine2: 图片 | (236,269) | img: settingline3_87x4.png */
     lv_obj_set_pos(pg->templine2, 236, 269);
 
-    /* templine3: 图片 | (223,269) */
+    /* templine3: 图片 | (223,269) | img: settingline2.png */
     lv_obj_set_pos(pg->templine3, 223, 269);
 
     /* hour: 标签 | (374,213) | 102x46 | font taiwanpearl_regular_48 */
@@ -9622,17 +9623,17 @@ void rising_setting_lang_tune(void)
     lv_obj_set_pos(pg->label_523, 612, 229);
     lv_obj_set_size(pg->label_523, 37, 30);
 
-    /* hourline: 图片 | (398,269) */
+    /* hourline: 图片 | (398,269) | img: settingline3.png */
     lv_obj_set_pos(pg->hourline, 398, 269);
 
-    /* minline: 图片 | (560,269) */
+    /* minline: 图片 | (560,269) | img: settingline3.png */
     lv_obj_set_pos(pg->minline, 560, 269);
 
     /* icon2: 标签 | (288,229) | 37x30 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->icon2, 288, 229);
     lv_obj_set_size(pg->icon2, 37, 30);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -9657,11 +9658,11 @@ void rising_stop_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_233: 图片 | (115,320) */
+    /* image_233: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_233, 115, 320);
 
     /* bar_37: 进度条 | (122,326) | 637x20 */
@@ -9672,11 +9673,11 @@ void rising_stop_lang_tune(void)
     lv_obj_set_pos(pg->label_527, 273, 157);
     lv_obj_set_size(pg->label_527, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_234: 图片 | (115,161) */
+    /* image_234: 图片 | (115,161) | img: risingicon.png */
     lv_obj_set_pos(pg->image_234, 115, 161);
 
 }
@@ -9692,14 +9693,14 @@ void rising_stop_back_lang_tune(void)
     rising_stop_back_t *pg = rising_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* image_235: 图片 | (115,161) */
+    /* image_235: 图片 | (115,161) | img: risingicon.png */
     lv_obj_set_pos(pg->image_235, 115, 161);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_236: 图片 | (115,320) */
+    /* image_236: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_236, 115, 320);
 
     /* bar_38: 进度条 | (122,326) | 637x20 */
@@ -9710,7 +9711,7 @@ void rising_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_529, 273, 157);
     lv_obj_set_size(pg->label_529, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
@@ -9726,7 +9727,7 @@ void rising_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_531, 895, 198);
     lv_obj_set_size(pg->label_531, 252, 36);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -9743,18 +9744,18 @@ void risingpage_lang_tune(void)
     risingpage_t *pg = risingpage_get(&ui_manager);
     if (!pg) return;
 
-    /* image_6: 图片 | (24,119) */
+    /* image_6: 图片 | (24,119) | img: div1bg.png */
     lv_obj_set_pos(pg->image_6, 24, 119);
 
     /* label_16: 标签 | (406,259) | 469x51 | font taiwanpearl_regular_48 */
     lv_obj_set_pos(pg->label_16, 406, 259);
     lv_obj_set_size(pg->label_16, 469, 51);
 
-    /* yes: 按钮 | (885,247) | 129x83 | font taiwanpearl_regular_36 */
+    /* yes: 按钮 | (885,247) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->yes, 885, 247);
     lv_obj_set_size(pg->yes, 129, 83);
 
-    /* no: 按钮 | (268,247) | 129x83 | font taiwanpearl_regular_36 */
+    /* no: 按钮 | (268,247) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->no, 268, 247);
     lv_obj_set_size(pg->no, 129, 83);
 
@@ -9775,7 +9776,7 @@ void save_bbq_complete_lang_tune(void)
     save_bbq_complete_t *pg = save_bbq_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* image_127: 图片 | (115,320) */
+    /* image_127: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_127, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -9790,14 +9791,14 @@ void save_bbq_complete_lang_tune(void)
     lv_obj_set_pos(pg->label_280, 273, 157);
     lv_obj_set_size(pg->label_280, 235, 60);
 
-    /* button_89: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* button_89: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->button_89, 609, 170);
     lv_obj_set_size(pg->button_89, 50, 43);
 
-    /* image_129: 图片 | (115,161) */
+    /* image_129: 图片 | (115,161) | img: savewindicon.png */
     lv_obj_set_pos(pg->image_129, 115, 161);
 
-    /* image_4: 图片 | (902,160) */
+    /* image_4: 图片 | (902,160) | img: tips.png */
     lv_obj_set_pos(pg->image_4, 902, 160);
 
 }
@@ -9821,11 +9822,11 @@ void save_bbq_cooking_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_121: 图片 | (115,320) */
+    /* image_121: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_121, 115, 320);
 
     /* bar_22: 进度条 | (122,326) | 637x20 */
@@ -9836,11 +9837,11 @@ void save_bbq_cooking_lang_tune(void)
     lv_obj_set_pos(pg->label_271, 273, 157);
     lv_obj_set_size(pg->label_271, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_122: 图片 | (115,161) */
+    /* image_122: 图片 | (115,161) | img: savewindicon.png */
     lv_obj_set_pos(pg->image_122, 115, 161);
 
 }
@@ -9856,14 +9857,14 @@ void save_bbq_menu_lang_tune(void)
     save_bbq_menu_t *pg = save_bbq_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 */
+    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
     lv_obj_set_size(pg->next, 138, 70);
 
-    /* image_114: 图片 | (24,118) */
+    /* image_114: 图片 | (24,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_114, 24, 118);
 
-    /* image_115: 图片 | (645,118) */
+    /* image_115: 图片 | (645,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_115, 645, 118);
 
     /* label_243: 标签 | (300,137) | 64x32 | font taiwanpearl_regular_30 */
@@ -9906,16 +9907,16 @@ void save_bbq_menu_lang_tune(void)
     lv_obj_set_pos(pg->label_252, 996, 39);
     lv_obj_set_size(pg->label_252, 117, 32);
 
-    /* line3: 图片 | (252,328) */
+    /* line3: 图片 | (252,328) | img: underline.png */
     lv_obj_set_pos(pg->line3, 252, 328);
 
-    /* line2: 图片 | (289,328) */
+    /* line2: 图片 | (289,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->line2, 289, 328);
 
-    /* hourline: 图片 | (790,328) */
+    /* hourline: 图片 | (790,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->hourline, 790, 328);
 
-    /* minline: 图片 | (993,328) */
+    /* minline: 图片 | (993,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->minline, 993, 328);
 
 }
@@ -9963,14 +9964,14 @@ void save_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->label_260, 448, 269);
     lv_obj_set_size(pg->label_260, 64, 32);
 
-    /* image_120: 图片 | (164,376) */
+    /* image_120: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_120, 164, 376);
 
     /* label_261: 标签 | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_261, 232, 385);
     lv_obj_set_size(pg->label_261, 148, 32);
 
-    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
@@ -9990,15 +9991,15 @@ void save_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->label_265, 831, 381);
     lv_obj_set_size(pg->label_265, 130, 32);
 
-    /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offpreheat, 983, 144);
     lv_obj_set_size(pg->offpreheat, 135, 53);
 
-    /* offdelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* offdelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 260);
     lv_obj_set_size(pg->offdelay, 135, 53);
 
-    /* offcontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 */
+    /* offcontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offcontain, 983, 372);
     lv_obj_set_size(pg->offcontain, 135, 53);
 
@@ -10010,15 +10011,15 @@ void save_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->label_267, 1010, 39);
     lv_obj_set_size(pg->label_267, 85, 36);
 
-    /* onpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* onpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->onpreheat, 983, 144);
     lv_obj_set_size(pg->onpreheat, 135, 53);
 
-    /* ondelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* ondelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->ondelay, 983, 260);
     lv_obj_set_size(pg->ondelay, 135, 53);
 
-    /* oncontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 */
+    /* oncontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 372);
     lv_obj_set_size(pg->oncontain, 135, 53);
 
@@ -10051,7 +10052,7 @@ void save_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->container_2, 0, 0);
     lv_obj_set_size(pg->container_2, 1280, 480);
 
-    /* image_6: 图片 | (115,115) */
+    /* image_6: 图片 | (115,115) | img: settingbk.png */
     lv_obj_set_pos(pg->image_6, 115, 115);
 
     /* label_12: 标签 | (242,136) | 73x30 | font taiwanpearl_regular_30 */
@@ -10070,10 +10071,10 @@ void save_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->icon3, 300, 229);
     lv_obj_set_size(pg->icon3, 37, 30);
 
-    /* templine2: 图片 | (236,269) */
+    /* templine2: 图片 | (236,269) | img: settingline3_87x4.png */
     lv_obj_set_pos(pg->templine2, 236, 269);
 
-    /* templine3: 图片 | (223,269) */
+    /* templine3: 图片 | (223,269) | img: settingline2.png */
     lv_obj_set_pos(pg->templine3, 223, 269);
 
     /* hour: 标签 | (374,213) | 102x46 | font taiwanpearl_regular_48 */
@@ -10092,17 +10093,17 @@ void save_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->label_19, 612, 229);
     lv_obj_set_size(pg->label_19, 37, 30);
 
-    /* hourline: 图片 | (398,269) */
+    /* hourline: 图片 | (398,269) | img: settingline3.png */
     lv_obj_set_pos(pg->hourline, 398, 269);
 
-    /* minline: 图片 | (560,269) */
+    /* minline: 图片 | (560,269) | img: settingline3.png */
     lv_obj_set_pos(pg->minline, 560, 269);
 
     /* icon2: 标签 | (288,229) | 37x30 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->icon2, 288, 229);
     lv_obj_set_size(pg->icon2, 37, 30);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -10127,11 +10128,11 @@ void save_bbq_stop_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_123: 图片 | (115,320) */
+    /* image_123: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_123, 115, 320);
 
     /* bar_23: 进度条 | (122,326) | 637x20 */
@@ -10142,11 +10143,11 @@ void save_bbq_stop_lang_tune(void)
     lv_obj_set_pos(pg->label_274, 273, 157);
     lv_obj_set_size(pg->label_274, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_124: 图片 | (115,161) */
+    /* image_124: 图片 | (115,161) | img: savewindicon.png */
     lv_obj_set_pos(pg->image_124, 115, 161);
 
 }
@@ -10162,14 +10163,14 @@ void save_bbq_stop_back_lang_tune(void)
     save_bbq_stop_back_t *pg = save_bbq_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* image_125: 图片 | (115,161) */
+    /* image_125: 图片 | (115,161) | img: savewindicon.png */
     lv_obj_set_pos(pg->image_125, 115, 161);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_126: 图片 | (115,320) */
+    /* image_126: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_126, 115, 320);
 
     /* bar_24: 进度条 | (122,326) | 637x20 */
@@ -10180,7 +10181,7 @@ void save_bbq_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_276, 273, 157);
     lv_obj_set_size(pg->label_276, 235, 60);
 
-    /* button_87: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* button_87: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->button_87, 609, 170);
     lv_obj_set_size(pg->button_87, 50, 43);
 
@@ -10196,7 +10197,7 @@ void save_bbq_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_278, 895, 198);
     lv_obj_set_size(pg->label_278, 252, 36);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -10221,74 +10222,74 @@ void screen_SET_lang_tune(void)
     lv_obj_set_pos(pg->Time_Lb, 1197, 24);
     lv_obj_set_size(pg->Time_Lb, 70, 32);
 
-    /* SET_bg_Img: 图片 | (24,80) */
+    /* SET_bg_Img: 图片 | (24,80) | img: set_bg_IMG.png */
     lv_obj_set_pos(pg->SET_bg_Img, 24, 80);
 
-    /* DSQ_Btn: 按钮 | (34,95) | 282x67 | font montserratmedium_16 */
+    /* DSQ_Btn: 按钮 | (34,95) | 282x67 | font montserratmedium_16 | bg: set_select_icon.png */
     lv_obj_set_pos(pg->DSQ_Btn, 34, 95);
     lv_obj_set_size(pg->DSQ_Btn, 282, 67);
 
-    /* TS_Btn: 按钮 | (34,189) | 282x67 | font montserratmedium_16 */
+    /* TS_Btn: 按钮 | (34,189) | 282x67 | font montserratmedium_16 | bg: set_select_icon.png */
     lv_obj_set_pos(pg->TS_Btn, 34, 189);
     lv_obj_set_size(pg->TS_Btn, 282, 67);
 
-    /* ZDBW_Btn: 按钮 | (34,283) | 282x67 | font montserratmedium_16 */
+    /* ZDBW_Btn: 按钮 | (34,283) | 282x67 | font montserratmedium_16 | bg: set_select_icon.png */
     lv_obj_set_pos(pg->ZDBW_Btn, 34, 283);
     lv_obj_set_size(pg->ZDBW_Btn, 282, 67);
 
-    /* TFLQYX_Btn: 按钮 | (34,377) | 282x67 | font montserratmedium_16 */
+    /* TFLQYX_Btn: 按钮 | (34,377) | 282x67 | font montserratmedium_16 | bg: set_select_icon.png */
     lv_obj_set_pos(pg->TFLQYX_Btn, 34, 377);
     lv_obj_set_size(pg->TFLQYX_Btn, 282, 67);
 
-    /* Six_Btn: 按钮 | (345,95) | 282x67 | font montserratmedium_16 */
+    /* Six_Btn: 按钮 | (345,95) | 282x67 | font montserratmedium_16 | bg: set_select_icon.png */
     lv_obj_set_pos(pg->Six_Btn, 345, 95);
     lv_obj_set_size(pg->Six_Btn, 282, 67);
 
-    /* LDG_Btn: 按钮 | (345,189) | 282x67 | font montserratmedium_16 */
+    /* LDG_Btn: 按钮 | (345,189) | 282x67 | font montserratmedium_16 | bg: set_select_icon.png */
     lv_obj_set_pos(pg->LDG_Btn, 345, 189);
     lv_obj_set_size(pg->LDG_Btn, 282, 67);
 
-    /* WDDW_Btn: 按钮 | (345,283) | 282x67 | font montserratmedium_16 */
+    /* WDDW_Btn: 按钮 | (345,283) | 282x67 | font montserratmedium_16 | bg: set_select_icon.png */
     lv_obj_set_pos(pg->WDDW_Btn, 345, 283);
     lv_obj_set_size(pg->WDDW_Btn, 282, 67);
 
-    /* SYSZ_Btn: 按钮 | (345,377) | 282x67 | font montserratmedium_16 */
+    /* SYSZ_Btn: 按钮 | (345,377) | 282x67 | font montserratmedium_16 | bg: set_select_icon.png */
     lv_obj_set_pos(pg->SYSZ_Btn, 345, 377);
     lv_obj_set_size(pg->SYSZ_Btn, 282, 67);
 
-    /* LDXS_Btn: 按钮 | (656,95) | 282x67 | font montserratmedium_16 */
+    /* LDXS_Btn: 按钮 | (656,95) | 282x67 | font montserratmedium_16 | bg: set_select_icon.png */
     lv_obj_set_pos(pg->LDXS_Btn, 656, 95);
     lv_obj_set_size(pg->LDXS_Btn, 282, 67);
 
-    /* Time_Btn: 按钮 | (656,189) | 282x67 | font montserratmedium_16 */
+    /* Time_Btn: 按钮 | (656,189) | 282x67 | font montserratmedium_16 | bg: set_select_icon.png */
     lv_obj_set_pos(pg->Time_Btn, 656, 189);
     lv_obj_set_size(pg->Time_Btn, 282, 67);
 
-    /* DJ_Time_Btn: 按钮 | (656,283) | 282x67 | font montserratmedium_16 */
+    /* DJ_Time_Btn: 按钮 | (656,283) | 282x67 | font montserratmedium_16 | bg: set_select_icon.png */
     lv_obj_set_pos(pg->DJ_Time_Btn, 656, 283);
     lv_obj_set_size(pg->DJ_Time_Btn, 282, 67);
 
-    /* YY_Btn: 按钮 | (656,377) | 282x67 | font montserratmedium_16 */
+    /* YY_Btn: 按钮 | (656,377) | 282x67 | font montserratmedium_16 | bg: set_select_icon.png */
     lv_obj_set_pos(pg->YY_Btn, 656, 377);
     lv_obj_set_size(pg->YY_Btn, 282, 67);
 
-    /* Power_Btn: 按钮 | (966,95) | 282x67 | font montserratmedium_16 */
+    /* Power_Btn: 按钮 | (966,95) | 282x67 | font montserratmedium_16 | bg: set_select_icon.png */
     lv_obj_set_pos(pg->Power_Btn, 966, 95);
     lv_obj_set_size(pg->Power_Btn, 282, 67);
 
-    /* Demo_Btn: 按钮 | (966,189) | 282x67 | font montserratmedium_16 */
+    /* Demo_Btn: 按钮 | (966,189) | 282x67 | font montserratmedium_16 | bg: set_select_icon.png */
     lv_obj_set_pos(pg->Demo_Btn, 966, 189);
     lv_obj_set_size(pg->Demo_Btn, 282, 67);
 
-    /* RESET_Btn: 按钮 | (966,283) | 282x67 | font montserratmedium_16 */
+    /* RESET_Btn: 按钮 | (966,283) | 282x67 | font montserratmedium_16 | bg: set_select_icon.png */
     lv_obj_set_pos(pg->RESET_Btn, 966, 283);
     lv_obj_set_size(pg->RESET_Btn, 282, 67);
 
-    /* GYJQ_Btn: 按钮 | (966,377) | 282x67 | font montserratmedium_16 */
+    /* GYJQ_Btn: 按钮 | (966,377) | 282x67 | font montserratmedium_16 | bg: set_select_icon.png */
     lv_obj_set_pos(pg->GYJQ_Btn, 966, 377);
     lv_obj_set_size(pg->GYJQ_Btn, 282, 67);
 
-    /* TXT_Img: 图片 | (48,112) */
+    /* TXT_Img: 图片 | (48,112) | img: set_bg_txt.png */
     lv_obj_set_pos(pg->TXT_Img, 48, 112);
 
     /* TS_Lb: 标签 | (215,210) | 65x30 | font taiwanpearl_regular_24 */
@@ -10319,7 +10320,7 @@ void screen_SET_lang_tune(void)
     lv_obj_set_pos(pg->Demo_Lb, 1154, 210);
     lv_obj_set_size(pg->Demo_Lb, 55, 30);
 
-    /* CountDown_icon_Img: 图片 | (626,25) */
+    /* CountDown_icon_Img: 图片 | (626,25) | img: CountDown_icon.png */
     lv_obj_set_pos(pg->CountDown_icon_Img, 626, 25);
 
 }
@@ -10335,43 +10336,43 @@ void sixmenu_lang_tune(void)
     sixmenu_t *pg = sixmenu_get(&ui_manager);
     if (!pg) return;
 
-    /* bread: 按钮 | (21,75) | 244x386 | font montserratmedium_16 */
+    /* bread: 按钮 | (21,75) | 244x386 | font montserratmedium_16 | bg: updown80bk.png */
     lv_obj_set_pos(pg->bread, 21, 75);
     lv_obj_set_size(pg->bread, 244, 386);
 
-    /* cake: 按钮 | (267,76) | 248x193 | font montserratmedium_16 */
+    /* cake: 按钮 | (267,76) | 248x193 | font montserratmedium_16 | bg: bottombk.png */
     lv_obj_set_pos(pg->cake, 267, 76);
     lv_obj_set_size(pg->cake, 248, 193);
 
-    /* chick: 按钮 | (516,76) | 248x193 | font montserratmedium_16 */
+    /* chick: 按钮 | (516,76) | 248x193 | font montserratmedium_16 | bg: bottombk.png */
     lv_obj_set_pos(pg->chick, 516, 76);
     lv_obj_set_size(pg->chick, 248, 193);
 
-    /* meat: 按钮 | (764,76) | 248x193 | font montserratmedium_16 */
+    /* meat: 按钮 | (764,76) | 248x193 | font montserratmedium_16 | bg: bottombk.png */
     lv_obj_set_pos(pg->meat, 764, 76);
     lv_obj_set_size(pg->meat, 248, 193);
 
-    /* fish: 按钮 | (1012,76) | 248x193 | font montserratmedium_16 */
+    /* fish: 按钮 | (1012,76) | 248x193 | font montserratmedium_16 | bg: bottombk.png */
     lv_obj_set_pos(pg->fish, 1012, 76);
     lv_obj_set_size(pg->fish, 248, 193);
 
-    /* vegetable: 按钮 | (266,268) | 248x193 | font montserratmedium_16 */
+    /* vegetable: 按钮 | (266,268) | 248x193 | font montserratmedium_16 | bg: bottombk.png */
     lv_obj_set_pos(pg->vegetable, 266, 268);
     lv_obj_set_size(pg->vegetable, 248, 193);
 
-    /* pizza6: 按钮 | (516,268) | 248x193 | font montserratmedium_16 */
+    /* pizza6: 按钮 | (516,268) | 248x193 | font montserratmedium_16 | bg: bottombk.png */
     lv_obj_set_pos(pg->pizza6, 516, 268);
     lv_obj_set_size(pg->pizza6, 248, 193);
 
-    /* pasta: 按钮 | (764,268) | 248x193 | font montserratmedium_16 */
+    /* pasta: 按钮 | (764,268) | 248x193 | font montserratmedium_16 | bg: bottombk.png */
     lv_obj_set_pos(pg->pasta, 764, 268);
     lv_obj_set_size(pg->pasta, 248, 193);
 
-    /* snack: 按钮 | (1012,268) | 248x193 | font montserratmedium_16 */
+    /* snack: 按钮 | (1012,268) | 248x193 | font montserratmedium_16 | bg: bottombk.png */
     lv_obj_set_pos(pg->snack, 1012, 268);
     lv_obj_set_size(pg->snack, 248, 193);
 
-    /* image_1: 图片 | (81,115) */
+    /* image_1: 图片 | (81,115) | img: six.png */
     lv_obj_set_pos(pg->image_1, 81, 115);
 
     /* label_9: 标签 | (24,24) | 97x25 | font taiwanpearl_regular_24 */
@@ -10395,15 +10396,15 @@ void sixmenutz_lang_tune(void)
     lv_obj_set_pos(pg->label_7, 24, 24);
     lv_obj_set_size(pg->label_7, 97, 25);
 
-    /* chick: 按钮 | (12,75) | 638x387 | font montserratmedium_16 */
+    /* chick: 按钮 | (12,75) | 638x387 | font montserratmedium_16 | bg: div230bg.png */
     lv_obj_set_pos(pg->chick, 12, 75);
     lv_obj_set_size(pg->chick, 638, 387);
 
-    /* meat: 按钮 | (633,74) | 637x389 | font montserratmedium_16 */
+    /* meat: 按钮 | (633,74) | 637x389 | font montserratmedium_16 | bg: div230bg.png */
     lv_obj_set_pos(pg->meat, 633, 74);
     lv_obj_set_size(pg->meat, 637, 389);
 
-    /* image_3: 图片 | (267,192) */
+    /* image_3: 图片 | (267,192) | img: sixtz.png */
     lv_obj_set_pos(pg->image_3, 267, 192);
 
     /* label_8: 标签 | (265,288) | 131x32 | font taiwanpearl_regular_30 */
@@ -10427,15 +10428,15 @@ void sixop3page_lang_tune(void)
     sixop3page_t *pg = sixop3page_get(&ui_manager);
     if (!pg) return;
 
-    /* bt2: 按钮 | (421,60) | 439x417 | font montserratmedium_16 */
+    /* bt2: 按钮 | (421,60) | 439x417 | font montserratmedium_16 | bg: div3bk30.png */
     lv_obj_set_pos(pg->bt2, 421, 60);
     lv_obj_set_size(pg->bt2, 439, 417);
 
-    /* bt1: 按钮 | (7,60) | 439x417 | font montserratmedium_16 */
+    /* bt1: 按钮 | (7,60) | 439x417 | font montserratmedium_16 | bg: div3bk30.png */
     lv_obj_set_pos(pg->bt1, 7, 60);
     lv_obj_set_size(pg->bt1, 439, 417);
 
-    /* bt3: 按钮 | (835,60) | 439x417 | font montserratmedium_16 */
+    /* bt3: 按钮 | (835,60) | 439x417 | font montserratmedium_16 | bg: div3bk30.png */
     lv_obj_set_pos(pg->bt3, 835, 60);
     lv_obj_set_size(pg->bt3, 439, 417);
 
@@ -10455,13 +10456,13 @@ void sixop3page_lang_tune(void)
     lv_obj_set_pos(pg->op3, 981, 274);
     lv_obj_set_size(pg->op3, 147, 30);
 
-    /* probe1: 图片 | (192,213) */
+    /* probe1: 图片 | (192,213) | img: probeiconbig.png */
     lv_obj_set_pos(pg->probe1, 192, 213);
 
-    /* probe2: 图片 | (606,213) */
+    /* probe2: 图片 | (606,213) | img: probeiconbig.png */
     lv_obj_set_pos(pg->probe2, 606, 213);
 
-    /* probe3: 图片 | (1020,213) */
+    /* probe3: 图片 | (1020,213) | img: probeiconbig.png */
     lv_obj_set_pos(pg->probe3, 1020, 213);
 
 }
@@ -10477,7 +10478,7 @@ void slowcook_complete_lang_tune(void)
     slowcook_complete_t *pg = slowcook_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* image_195: 图片 | (115,320) */
+    /* image_195: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_195, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -10492,14 +10493,14 @@ void slowcook_complete_lang_tune(void)
     lv_obj_set_pos(pg->label_435, 273, 157);
     lv_obj_set_size(pg->label_435, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_197: 图片 | (115,161) */
+    /* image_197: 图片 | (115,161) | img: slowcookicon.png */
     lv_obj_set_pos(pg->image_197, 115, 161);
 
-    /* image_7: 图片 | (902,160) */
+    /* image_7: 图片 | (902,160) | img: tips.png */
     lv_obj_set_pos(pg->image_7, 902, 160);
 
 }
@@ -10515,7 +10516,7 @@ void slowcook_complete_probe_lang_tune(void)
     slowcook_complete_probe_t *pg = slowcook_complete_probe_get(&ui_manager);
     if (!pg) return;
 
-    /* image_47: 图片 | (115,320) */
+    /* image_47: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_47, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -10526,7 +10527,7 @@ void slowcook_complete_probe_lang_tune(void)
     lv_obj_set_pos(pg->bar_12, 122, 326);
     lv_obj_set_size(pg->bar_12, 637, 20);
 
-    /* image_48: 图片 | (115,161) */
+    /* image_48: 图片 | (115,161) | img: slowcookicon.png */
     lv_obj_set_pos(pg->image_48, 115, 161);
 
     /* label_109: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
@@ -10562,11 +10563,11 @@ void slowcook_cooking_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_184: 图片 | (115,320) */
+    /* image_184: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_184, 115, 320);
 
     /* bar_28: 进度条 | (122,326) | 637x20 */
@@ -10577,11 +10578,11 @@ void slowcook_cooking_lang_tune(void)
     lv_obj_set_pos(pg->label_416, 273, 157);
     lv_obj_set_size(pg->label_416, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_185: 图片 | (115,161) */
+    /* image_185: 图片 | (115,161) | img: slowcookicon.png */
     lv_obj_set_pos(pg->image_185, 115, 161);
 
 }
@@ -10605,25 +10606,25 @@ void slowcook_cooking_probe_lang_tune(void)
     lv_obj_set_pos(pg->temp, 919, 156);
     lv_obj_set_size(pg->temp, 134, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_39: 图片 | (115,320) */
+    /* image_39: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_39, 115, 320);
 
     /* bar_9: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_9, 122, 326);
     lv_obj_set_size(pg->bar_9, 637, 20);
 
-    /* image_40: 图片 | (115,161) */
+    /* image_40: 图片 | (115,161) | img: slowcookicon.png */
     lv_obj_set_pos(pg->image_40, 115, 161);
 
     /* label_100: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_100, 273, 157);
     lv_obj_set_size(pg->label_100, 235, 60);
 
-    /* image_41: 图片 | (1068,180) */
+    /* image_41: 图片 | (1068,180) | img: probeicon.png */
     lv_obj_set_pos(pg->image_41, 1068, 180);
 
 }
@@ -10639,14 +10640,14 @@ void slowcook_menu_lang_tune(void)
     slowcook_menu_t *pg = slowcook_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 */
+    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
     lv_obj_set_size(pg->next, 138, 70);
 
-    /* image_177: 图片 | (24,118) */
+    /* image_177: 图片 | (24,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_177, 24, 118);
 
-    /* image_178: 图片 | (645,118) */
+    /* image_178: 图片 | (645,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_178, 645, 118);
 
     /* label_387: 标签 | (300,137) | 64x32 | font taiwanpearl_regular_30 */
@@ -10689,16 +10690,16 @@ void slowcook_menu_lang_tune(void)
     lv_obj_set_pos(pg->label_396, 996, 39);
     lv_obj_set_size(pg->label_396, 117, 32);
 
-    /* templine3: 图片 | (252,328) */
+    /* templine3: 图片 | (252,328) | img: underline.png */
     lv_obj_set_pos(pg->templine3, 252, 328);
 
-    /* templine2: 图片 | (289,328) */
+    /* templine2: 图片 | (289,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->templine2, 289, 328);
 
-    /* hourline: 图片 | (790,328) */
+    /* hourline: 图片 | (790,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->hourline, 790, 328);
 
-    /* minline: 图片 | (993,328) */
+    /* minline: 图片 | (993,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->minline, 993, 328);
 
 }
@@ -10714,14 +10715,14 @@ void slowcook_menu_probe_lang_tune(void)
     slowcook_menu_probe_t *pg = slowcook_menu_probe_get(&ui_manager);
     if (!pg) return;
 
-    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 */
+    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
     lv_obj_set_size(pg->next, 138, 70);
 
-    /* image_33: 图片 | (24,118) */
+    /* image_33: 图片 | (24,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_33, 24, 118);
 
-    /* image_34: 图片 | (645,118) */
+    /* image_34: 图片 | (645,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_34, 645, 118);
 
     /* label_79: 标签 | (300,137) | 64x32 | font taiwanpearl_regular_30 */
@@ -10748,10 +10749,10 @@ void slowcook_menu_probe_lang_tune(void)
     lv_obj_set_pos(pg->label_84, 996, 39);
     lv_obj_set_size(pg->label_84, 117, 32);
 
-    /* templine3: 图片 | (252,328) */
+    /* templine3: 图片 | (252,328) | img: underline.png */
     lv_obj_set_pos(pg->templine3, 252, 328);
 
-    /* templine2: 图片 | (289,328) */
+    /* templine2: 图片 | (289,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->templine2, 289, 328);
 
     /* probetemp: 标签 | (853,249) | 120x72 | font taiwanpearl_regular_72 */
@@ -10762,7 +10763,7 @@ void slowcook_menu_probe_lang_tune(void)
     lv_obj_set_pos(pg->label_86, 973, 281);
     lv_obj_set_size(pg->label_86, 38, 32);
 
-    /* probetempline: 图片 | (891,328) */
+    /* probetempline: 图片 | (891,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->probetempline, 891, 328);
 
 }
@@ -10810,14 +10811,14 @@ void slowcook_set_lang_tune(void)
     lv_obj_set_pos(pg->label_404, 448, 269);
     lv_obj_set_size(pg->label_404, 64, 32);
 
-    /* image_183: 图片 | (164,376) */
+    /* image_183: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_183, 164, 376);
 
     /* label_405: 标签 | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_405, 232, 385);
     lv_obj_set_size(pg->label_405, 148, 32);
 
-    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
@@ -10837,15 +10838,15 @@ void slowcook_set_lang_tune(void)
     lv_obj_set_pos(pg->label_409, 831, 381);
     lv_obj_set_size(pg->label_409, 130, 32);
 
-    /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offpreheat, 983, 144);
     lv_obj_set_size(pg->offpreheat, 135, 53);
 
-    /* offdelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* offdelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 260);
     lv_obj_set_size(pg->offdelay, 135, 53);
 
-    /* offcontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 */
+    /* offcontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offcontain, 983, 372);
     lv_obj_set_size(pg->offcontain, 135, 53);
 
@@ -10857,15 +10858,15 @@ void slowcook_set_lang_tune(void)
     lv_obj_set_pos(pg->label_411, 1010, 39);
     lv_obj_set_size(pg->label_411, 85, 36);
 
-    /* onpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* onpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->onpreheat, 983, 144);
     lv_obj_set_size(pg->onpreheat, 135, 53);
 
-    /* ondelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* ondelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->ondelay, 983, 260);
     lv_obj_set_size(pg->ondelay, 135, 53);
 
-    /* oncontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 */
+    /* oncontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 372);
     lv_obj_set_size(pg->oncontain, 135, 53);
 
@@ -10906,14 +10907,14 @@ void slowcook_set_probe_lang_tune(void)
     lv_obj_set_pos(pg->label_90, 141, 270);
     lv_obj_set_size(pg->label_90, 175, 32);
 
-    /* image_38: 图片 | (164,376) */
+    /* image_38: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_38, 164, 376);
 
     /* label_91: 标签 | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_91, 232, 385);
     lv_obj_set_size(pg->label_91, 148, 32);
 
-    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
@@ -10941,14 +10942,14 @@ void slowcook_set_probe_lang_tune(void)
     lv_obj_set_pos(pg->icon3, 396, 157);
     lv_obj_set_size(pg->icon3, 32, 30);
 
-    /* image_5: 图片 | (839,154) */
+    /* image_5: 图片 | (839,154) | img: delaytext.png */
     lv_obj_set_pos(pg->image_5, 839, 154);
 
-    /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 144);
     lv_obj_set_size(pg->offdelay, 135, 53);
 
-    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->ondelay, 983, 144);
     lv_obj_set_size(pg->ondelay, 135, 53);
 
@@ -10973,7 +10974,7 @@ void slowcook_setting_lang_tune(void)
     lv_obj_set_pos(pg->container_19, 0, 0);
     lv_obj_set_size(pg->container_19, 1280, 480);
 
-    /* image_186: 图片 | (115,115) */
+    /* image_186: 图片 | (115,115) | img: settingbk.png */
     lv_obj_set_pos(pg->image_186, 115, 115);
 
     /* label_418: 标签 | (242,136) | 73x30 | font taiwanpearl_regular_30 */
@@ -10992,10 +10993,10 @@ void slowcook_setting_lang_tune(void)
     lv_obj_set_pos(pg->icon3, 300, 229);
     lv_obj_set_size(pg->icon3, 37, 30);
 
-    /* templine2: 图片 | (236,269) */
+    /* templine2: 图片 | (236,269) | img: settingline3_87x4.png */
     lv_obj_set_pos(pg->templine2, 236, 269);
 
-    /* templine3: 图片 | (223,269) */
+    /* templine3: 图片 | (223,269) | img: settingline2.png */
     lv_obj_set_pos(pg->templine3, 223, 269);
 
     /* hour: 标签 | (374,213) | 102x46 | font taiwanpearl_regular_48 */
@@ -11014,17 +11015,17 @@ void slowcook_setting_lang_tune(void)
     lv_obj_set_pos(pg->label_425, 612, 229);
     lv_obj_set_size(pg->label_425, 37, 30);
 
-    /* houeline: 图片 | (398,269) */
+    /* houeline: 图片 | (398,269) | img: settingline3.png */
     lv_obj_set_pos(pg->houeline, 398, 269);
 
-    /* minline: 图片 | (560,269) */
+    /* minline: 图片 | (560,269) | img: settingline3.png */
     lv_obj_set_pos(pg->minline, 560, 269);
 
     /* icon2: 标签 | (288,229) | 37x30 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->icon2, 288, 229);
     lv_obj_set_size(pg->icon2, 37, 30);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -11049,11 +11050,11 @@ void slowcook_stop_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_191: 图片 | (115,320) */
+    /* image_191: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_191, 115, 320);
 
     /* bar_29: 进度条 | (122,326) | 637x20 */
@@ -11064,11 +11065,11 @@ void slowcook_stop_lang_tune(void)
     lv_obj_set_pos(pg->label_429, 273, 157);
     lv_obj_set_size(pg->label_429, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_192: 图片 | (115,161) */
+    /* image_192: 图片 | (115,161) | img: slowcookicon.png */
     lv_obj_set_pos(pg->image_192, 115, 161);
 
 }
@@ -11084,14 +11085,14 @@ void slowcook_stop_back_lang_tune(void)
     slowcook_stop_back_t *pg = slowcook_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* image_193: 图片 | (115,161) */
+    /* image_193: 图片 | (115,161) | img: slowcookicon.png */
     lv_obj_set_pos(pg->image_193, 115, 161);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_194: 图片 | (115,320) */
+    /* image_194: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_194, 115, 320);
 
     /* bar_30: 进度条 | (122,326) | 637x20 */
@@ -11102,7 +11103,7 @@ void slowcook_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_431, 273, 157);
     lv_obj_set_size(pg->label_431, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
@@ -11118,7 +11119,7 @@ void slowcook_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_433, 895, 198);
     lv_obj_set_size(pg->label_433, 252, 36);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -11139,14 +11140,14 @@ void slowcook_stop_back_probe_lang_tune(void)
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_45: 图片 | (115,320) */
+    /* image_45: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_45, 115, 320);
 
     /* bar_11: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_11, 122, 326);
     lv_obj_set_size(pg->bar_11, 637, 20);
 
-    /* image_46: 图片 | (115,161) */
+    /* image_46: 图片 | (115,161) | img: slowcookicon.png */
     lv_obj_set_pos(pg->image_46, 115, 161);
 
     /* label_105: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
@@ -11165,7 +11166,7 @@ void slowcook_stop_back_probe_lang_tune(void)
     lv_obj_set_pos(pg->label_107, 895, 198);
     lv_obj_set_size(pg->label_107, 252, 36);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -11190,25 +11191,25 @@ void slowcook_stop_probe_lang_tune(void)
     lv_obj_set_pos(pg->temp, 919, 156);
     lv_obj_set_size(pg->temp, 134, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_42: 图片 | (115,320) */
+    /* image_42: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_42, 115, 320);
 
     /* bar_10: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_10, 122, 326);
     lv_obj_set_size(pg->bar_10, 637, 20);
 
-    /* image_43: 图片 | (115,161) */
+    /* image_43: 图片 | (115,161) | img: slowcookicon.png */
     lv_obj_set_pos(pg->image_43, 115, 161);
 
     /* label_103: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_103, 273, 157);
     lv_obj_set_size(pg->label_103, 235, 60);
 
-    /* image_44: 图片 | (1068,180) */
+    /* image_44: 图片 | (1068,180) | img: probeicon.png */
     lv_obj_set_pos(pg->image_44, 1068, 180);
 
 }
@@ -11224,32 +11225,32 @@ void somecook_lang_tune(void)
     somecook_t *pg = somecook_get(&ui_manager);
     if (!pg) return;
 
-    /* step3button: 按钮 | (845,110) | 418x355 | font montserratmedium_16 */
+    /* step3button: 按钮 | (845,110) | 418x355 | font montserratmedium_16 | bg: stepbg30.png */
     lv_obj_set_pos(pg->step3button, 845, 110);
     lv_obj_set_size(pg->step3button, 418, 355);
 
-    /* step2button: 按钮 | (431,110) | 418x355 | font montserratmedium_16 */
+    /* step2button: 按钮 | (431,110) | 418x355 | font montserratmedium_16 | bg: stepbg30.png */
     lv_obj_set_pos(pg->step2button, 431, 110);
     lv_obj_set_size(pg->step2button, 418, 355);
 
-    /* step1button: 按钮 | (17,110) | 418x355 | font montserratmedium_16 */
+    /* step1button: 按钮 | (17,110) | 418x355 | font montserratmedium_16 | bg: stepbg30.png */
     lv_obj_set_pos(pg->step1button, 17, 110);
     lv_obj_set_size(pg->step1button, 418, 355);
 
-    /* image_1: 图片 | (184,138) */
+    /* image_1: 图片 | (184,138) | img: steptext.png */
     lv_obj_set_pos(pg->image_1, 184, 138);
 
     /* label_1: 标签 | (24,24) | 58x22 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_1, 24, 24);
     lv_obj_set_size(pg->label_1, 58, 22);
 
-    /* plus1: 图片 | (201,262) */
+    /* plus1: 图片 | (201,262) | img: plus.png */
     lv_obj_set_pos(pg->plus1, 201, 262);
 
-    /* plus2: 图片 | (615,262) */
+    /* plus2: 图片 | (615,262) | img: plus.png */
     lv_obj_set_pos(pg->plus2, 615, 262);
 
-    /* plus3: 图片 | (1029,262) */
+    /* plus3: 图片 | (1029,262) | img: plus.png */
     lv_obj_set_pos(pg->plus3, 1029, 262);
 
     /* step1: 容器 | (23,113) | 406x351 */
@@ -11268,11 +11269,11 @@ void somecook_lang_tune(void)
     lv_obj_set_pos(pg->timestatus, 26, 168);
     lv_obj_set_size(pg->timestatus, 270, 27);
 
-    /* edit: 按钮 | (276,270) | 115x58 | font taiwanpearl_regular_30 */
+    /* edit: 按钮 | (276,270) | 115x58 | font taiwanpearl_regular_30 | bg: editedbg.png */
     lv_obj_set_pos(pg->edit, 276, 270);
     lv_obj_set_size(pg->edit, 115, 58);
 
-    /* delete: 按钮 | (18,270) | 115x58 | font taiwanpearl_regular_30 */
+    /* delete: 按钮 | (18,270) | 115x58 | font taiwanpearl_regular_30 | bg: editedbg.png */
     lv_obj_set_pos(pg->delete, 18, 270);
     lv_obj_set_size(pg->delete, 115, 58);
 
@@ -11292,11 +11293,11 @@ void somecook_lang_tune(void)
     lv_obj_set_pos(pg->timestatus2, 26, 168);
     lv_obj_set_size(pg->timestatus2, 270, 27);
 
-    /* edit2: 按钮 | (276,270) | 115x58 | font taiwanpearl_regular_30 */
+    /* edit2: 按钮 | (276,270) | 115x58 | font taiwanpearl_regular_30 | bg: editedbg.png */
     lv_obj_set_pos(pg->edit2, 276, 270);
     lv_obj_set_size(pg->edit2, 115, 58);
 
-    /* delete2: 按钮 | (18,270) | 115x58 | font taiwanpearl_regular_30 */
+    /* delete2: 按钮 | (18,270) | 115x58 | font taiwanpearl_regular_30 | bg: editedbg.png */
     lv_obj_set_pos(pg->delete2, 18, 270);
     lv_obj_set_size(pg->delete2, 115, 58);
 
@@ -11316,15 +11317,15 @@ void somecook_lang_tune(void)
     lv_obj_set_pos(pg->timestatus3, 26, 168);
     lv_obj_set_size(pg->timestatus3, 270, 27);
 
-    /* edit3: 按钮 | (276,270) | 115x58 | font taiwanpearl_regular_30 */
+    /* edit3: 按钮 | (276,270) | 115x58 | font taiwanpearl_regular_30 | bg: editedbg.png */
     lv_obj_set_pos(pg->edit3, 276, 270);
     lv_obj_set_size(pg->edit3, 115, 58);
 
-    /* delete3: 按钮 | (18,270) | 115x58 | font taiwanpearl_regular_30 */
+    /* delete3: 按钮 | (18,270) | 115x58 | font taiwanpearl_regular_30 | bg: editedbg.png */
     lv_obj_set_pos(pg->delete3, 18, 270);
     lv_obj_set_size(pg->delete3, 115, 58);
 
-    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
@@ -11354,14 +11355,14 @@ void somecook_cooking_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* image_10: 图片 | (115,320) */
+    /* image_10: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_10, 115, 320);
 
     /* bar_1: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_1, 122, 326);
     lv_obj_set_size(pg->bar_1, 637, 20);
 
-    /* icon: 图片 | (115,161) */
+    /* icon: 图片 | (115,161) | img: updown_img.png */
     lv_obj_set_pos(pg->icon, 115, 161);
 
     /* cookstatus: 标签 | (273,157) | 262x60 | font taiwanpearl_regular_60 */
@@ -11376,7 +11377,7 @@ void somecook_cooking_lang_tune(void)
     lv_obj_set_pos(pg->container_1, 0, 0);
     lv_obj_set_size(pg->container_1, 1280, 480);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
@@ -11401,39 +11402,39 @@ void special_menu_lang_tune(void)
     special_menu_t *pg = special_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* rising_button: 按钮 | (266,268) | 248x193 | font montserratmedium_16 */
+    /* rising_button: 按钮 | (266,268) | 248x193 | font montserratmedium_16 | bg: bottombk.png */
     lv_obj_set_pos(pg->rising_button, 266, 268);
     lv_obj_set_size(pg->rising_button, 248, 193);
 
-    /* corn_button: 按钮 | (516,268) | 248x193 | font montserratmedium_16 */
+    /* corn_button: 按钮 | (516,268) | 248x193 | font montserratmedium_16 | bg: bottombk.png */
     lv_obj_set_pos(pg->corn_button, 516, 268);
     lv_obj_set_size(pg->corn_button, 248, 193);
 
-    /* heat_contain_button: 按钮 | (764,268) | 248x193 | font montserratmedium_16 */
+    /* heat_contain_button: 按钮 | (764,268) | 248x193 | font montserratmedium_16 | bg: bottombk.png */
     lv_obj_set_pos(pg->heat_contain_button, 764, 268);
     lv_obj_set_size(pg->heat_contain_button, 248, 193);
 
-    /* some_cook_button: 按钮 | (1012,267) | 248x193 | font montserratmedium_16 */
+    /* some_cook_button: 按钮 | (1012,267) | 248x193 | font montserratmedium_16 | bg: bottombk.png */
     lv_obj_set_pos(pg->some_cook_button, 1012, 267);
     lv_obj_set_size(pg->some_cook_button, 248, 193);
 
-    /* unfrozen_button: 按钮 | (1012,76) | 248x193 | font montserratmedium_16 */
+    /* unfrozen_button: 按钮 | (1012,76) | 248x193 | font montserratmedium_16 | bg: bottombk.png */
     lv_obj_set_pos(pg->unfrozen_button, 1012, 76);
     lv_obj_set_size(pg->unfrozen_button, 248, 193);
 
-    /* slow_cook_button: 按钮 | (764,76) | 248x193 | font montserratmedium_16 */
+    /* slow_cook_button: 按钮 | (764,76) | 248x193 | font montserratmedium_16 | bg: bottombk.png */
     lv_obj_set_pos(pg->slow_cook_button, 764, 76);
     lv_obj_set_size(pg->slow_cook_button, 248, 193);
 
-    /* frozen_cook_button: 按钮 | (516,76) | 248x193 | font montserratmedium_16 */
+    /* frozen_cook_button: 按钮 | (516,76) | 248x193 | font montserratmedium_16 | bg: bottombk.png */
     lv_obj_set_pos(pg->frozen_cook_button, 516, 76);
     lv_obj_set_size(pg->frozen_cook_button, 248, 193);
 
-    /* piza_button: 按钮 | (267,75) | 248x193 | font montserratmedium_16 */
+    /* piza_button: 按钮 | (267,75) | 248x193 | font montserratmedium_16 | bg: bottombk.png */
     lv_obj_set_pos(pg->piza_button, 267, 75);
     lv_obj_set_size(pg->piza_button, 248, 193);
 
-    /* air_button: 按钮 | (21,75) | 244x386 | font montserratmedium_16 */
+    /* air_button: 按钮 | (21,75) | 244x386 | font montserratmedium_16 | bg: updown80bk.png */
     lv_obj_set_pos(pg->air_button, 21, 75);
     lv_obj_set_size(pg->air_button, 244, 386);
 
@@ -11477,7 +11478,7 @@ void special_menu_lang_tune(void)
     lv_obj_set_pos(pg->piza_label, 329, 212);
     lv_obj_set_size(pg->piza_label, 126, 32);
 
-    /* major_img: 图片 | (94,110) */
+    /* major_img: 图片 | (94,110) | img: teshuimg.png */
     lv_obj_set_pos(pg->major_img, 94, 110);
 
 }
@@ -11493,7 +11494,7 @@ void special_menu_tz_lang_tune(void)
     special_menu_tz_t *pg = special_menu_tz_get(&ui_manager);
     if (!pg) return;
 
-    /* slowcook_button: 按钮 | (18,68) | 624x400 | font montserratmedium_16 */
+    /* slowcook_button: 按钮 | (18,68) | 624x400 | font montserratmedium_16 | bg: div2bk30.png */
     lv_obj_set_pos(pg->slowcook_button, 18, 68);
     lv_obj_set_size(pg->slowcook_button, 624, 400);
 
@@ -11501,7 +11502,7 @@ void special_menu_tz_lang_tune(void)
     lv_obj_set_pos(pg->special_label, 24, 24);
     lv_obj_set_size(pg->special_label, 97, 25);
 
-    /* major_img: 图片 | (278,188) */
+    /* major_img: 图片 | (278,188) | img: manzhu.png */
     lv_obj_set_pos(pg->major_img, 278, 188);
 
     /* slowcook_label: 标签 | (265,291) | 131x32 | font taiwanpearl_regular_30 */
@@ -11529,11 +11530,11 @@ void stepset_lang_tune(void)
     lv_obj_set_pos(pg->roller_main, 63, 248);
     lv_obj_set_size(pg->roller_main, 229, 176);
 
-    /* next: 按钮 | (969,20) | 138x70 | font taiwanpearl_regular_36 */
+    /* next: 按钮 | (969,20) | 138x70 | font taiwanpearl_regular_36 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 969, 20);
     lv_obj_set_size(pg->next, 138, 70);
 
-    /* image_1: 图片 | (272,196) */
+    /* image_1: 图片 | (272,196) | img: modebg.png */
     lv_obj_set_pos(pg->image_1, 272, 196);
 
     /* label_1: 标签 | (24,24) | 144x32 | font taiwanpearl_regular_24 */
@@ -11568,28 +11569,28 @@ void stepset_lang_tune(void)
     lv_obj_set_pos(pg->label_9, 1133, 319);
     lv_obj_set_size(pg->label_9, 27, 24);
 
-    /* mainline: 图片 | (110,361) */
+    /* mainline: 图片 | (110,361) | img: underline_135x4.png */
     lv_obj_set_pos(pg->mainline, 110, 361);
 
-    /* modeline4: 图片 | (420,361) */
+    /* modeline4: 图片 | (420,361) | img: underline_135x4.png */
     lv_obj_set_pos(pg->modeline4, 420, 361);
 
-    /* modeline2: 图片 | (451,361) */
+    /* modeline2: 图片 | (451,361) | img: underline_73x4.png */
     lv_obj_set_pos(pg->modeline2, 451, 361);
 
-    /* modeline3: 图片 | (433,361) */
+    /* modeline3: 图片 | (433,361) | img: underline_108x4.png */
     lv_obj_set_pos(pg->modeline3, 433, 361);
 
-    /* templine3: 图片 | (739,361) */
+    /* templine3: 图片 | (739,361) | img: underline_114x4.png */
     lv_obj_set_pos(pg->templine3, 739, 361);
 
-    /* templine2: 图片 | (767,361) */
+    /* templine2: 图片 | (767,361) | img: underline_85x4.png */
     lv_obj_set_pos(pg->templine2, 767, 361);
 
-    /* hourline: 图片 | (942,361) */
+    /* hourline: 图片 | (942,361) | img: underline_84x4.png */
     lv_obj_set_pos(pg->hourline, 942, 361);
 
-    /* minline: 图片 | (1076,361) */
+    /* minline: 图片 | (1076,361) | img: underline_84x4.png */
     lv_obj_set_pos(pg->minline, 1076, 361);
 
     /* label_10: 标签 | (984,39) | 111x39 | font taiwanpearl_regular_36 */
@@ -11609,7 +11610,7 @@ void strudel_complete_lang_tune(void)
     strudel_complete_t *pg = strudel_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* image_337: 图片 | (115,320) */
+    /* image_337: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_337, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -11624,14 +11625,14 @@ void strudel_complete_lang_tune(void)
     lv_obj_set_pos(pg->label_722, 273, 157);
     lv_obj_set_size(pg->label_722, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_339: 图片 | (115,161) */
+    /* image_339: 图片 | (115,161) | img: strudelicon.png */
     lv_obj_set_pos(pg->image_339, 115, 161);
 
-    /* image_13: 图片 | (902,160) */
+    /* image_13: 图片 | (902,160) | img: tips.png */
     lv_obj_set_pos(pg->image_13, 902, 160);
 
 }
@@ -11655,11 +11656,11 @@ void strudel_cooking_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_328: 图片 | (115,320) */
+    /* image_328: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_328, 115, 320);
 
     /* bar_52: 进度条 | (122,326) | 637x20 */
@@ -11670,11 +11671,11 @@ void strudel_cooking_lang_tune(void)
     lv_obj_set_pos(pg->label_707, 273, 157);
     lv_obj_set_size(pg->label_707, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_329: 图片 | (115,161) */
+    /* image_329: 图片 | (115,161) | img: strudelicon.png */
     lv_obj_set_pos(pg->image_329, 115, 161);
 
 }
@@ -11690,11 +11691,11 @@ void strudel_menu_lang_tune(void)
     strudel_menu_t *pg = strudel_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 */
+    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
     lv_obj_set_size(pg->next, 138, 70);
 
-    /* image_324: 图片 | (24,117) */
+    /* image_324: 图片 | (24,117) | img: div1bg.png */
     lv_obj_set_pos(pg->image_324, 24, 117);
 
     /* label_682: 标签 | (578,139) | 125x32 | font taiwanpearl_regular_30 */
@@ -11725,10 +11726,10 @@ void strudel_menu_lang_tune(void)
     lv_obj_set_pos(pg->label_688, 996, 39);
     lv_obj_set_size(pg->label_688, 117, 32);
 
-    /* hourline: 图片 | (480,327) */
+    /* hourline: 图片 | (480,327) | img: underline_120x4.png */
     lv_obj_set_pos(pg->hourline, 480, 327);
 
-    /* minline: 图片 | (680,327) */
+    /* minline: 图片 | (680,327) | img: underline_120x4.png */
     lv_obj_set_pos(pg->minline, 680, 327);
 
 }
@@ -11776,14 +11777,14 @@ void strudel_set_lang_tune(void)
     lv_obj_set_pos(pg->label_696, 448, 269);
     lv_obj_set_size(pg->label_696, 64, 32);
 
-    /* image_327: 图片 | (164,376) */
+    /* image_327: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_327, 164, 376);
 
     /* label_697: 标签 | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_697, 232, 385);
     lv_obj_set_size(pg->label_697, 148, 32);
 
-    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
@@ -11799,11 +11800,11 @@ void strudel_set_lang_tune(void)
     lv_obj_set_pos(pg->label_700, 831, 270);
     lv_obj_set_size(pg->label_700, 130, 32);
 
-    /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 144);
     lv_obj_set_size(pg->offdelay, 135, 53);
 
-    /* offcontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* offcontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offcontain, 983, 260);
     lv_obj_set_size(pg->offcontain, 135, 53);
 
@@ -11815,11 +11816,11 @@ void strudel_set_lang_tune(void)
     lv_obj_set_pos(pg->label_702, 1010, 39);
     lv_obj_set_size(pg->label_702, 85, 36);
 
-    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->ondelay, 983, 144);
     lv_obj_set_size(pg->ondelay, 135, 53);
 
-    /* oncontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* oncontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 260);
     lv_obj_set_size(pg->oncontain, 135, 53);
 
@@ -11852,7 +11853,7 @@ void strudel_setting_lang_tune(void)
     lv_obj_set_pos(pg->container_31, 0, 0);
     lv_obj_set_size(pg->container_31, 1280, 480);
 
-    /* image_330: 图片 | (115,115) */
+    /* image_330: 图片 | (115,115) | img: settingbk.png */
     lv_obj_set_pos(pg->image_330, 115, 115);
 
     /* label_709: 标签 | (373,136) | 135x30 | font taiwanpearl_regular_30 */
@@ -11867,7 +11868,7 @@ void strudel_setting_lang_tune(void)
     lv_obj_set_pos(pg->label_711, 340, 228);
     lv_obj_set_size(pg->label_711, 37, 30);
 
-    /* hourline: 图片 | (291,269) */
+    /* hourline: 图片 | (291,269) | img: settingline3.png */
     lv_obj_set_pos(pg->hourline, 291, 269);
 
     /* min: 标签 | (483,212) | 102x46 | font taiwanpearl_regular_48 */
@@ -11878,10 +11879,10 @@ void strudel_setting_lang_tune(void)
     lv_obj_set_pos(pg->label_713, 558, 229);
     lv_obj_set_size(pg->label_713, 37, 30);
 
-    /* minline: 图片 | (508,269) */
+    /* minline: 图片 | (508,269) | img: settingline3.png */
     lv_obj_set_pos(pg->minline, 508, 269);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -11906,11 +11907,11 @@ void strudel_stop_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_333: 图片 | (115,320) */
+    /* image_333: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_333, 115, 320);
 
     /* bar_53: 进度条 | (122,326) | 637x20 */
@@ -11921,11 +11922,11 @@ void strudel_stop_lang_tune(void)
     lv_obj_set_pos(pg->label_716, 273, 157);
     lv_obj_set_size(pg->label_716, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_334: 图片 | (115,161) */
+    /* image_334: 图片 | (115,161) | img: strudelicon.png */
     lv_obj_set_pos(pg->image_334, 115, 161);
 
 }
@@ -11941,14 +11942,14 @@ void strudel_stop_back_lang_tune(void)
     strudel_stop_back_t *pg = strudel_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* image_335: 图片 | (115,161) */
+    /* image_335: 图片 | (115,161) | img: strudelicon.png */
     lv_obj_set_pos(pg->image_335, 115, 161);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_336: 图片 | (115,320) */
+    /* image_336: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_336, 115, 320);
 
     /* bar_54: 进度条 | (122,326) | 637x20 */
@@ -11959,7 +11960,7 @@ void strudel_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_718, 273, 157);
     lv_obj_set_size(pg->label_718, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
@@ -11975,7 +11976,7 @@ void strudel_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_720, 895, 198);
     lv_obj_set_size(pg->label_720, 252, 36);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -11992,7 +11993,7 @@ void temptip_lang_tune(void)
     temptip_t *pg = temptip_get(&ui_manager);
     if (!pg) return;
 
-    /* button_1: 按钮 | (19,113) | 1243x347 | font taiwanpearl_regular_48 */
+    /* button_1: 按钮 | (19,113) | 1243x347 | font taiwanpearl_regular_48 | bg: div1bg.png */
     lv_obj_set_pos(pg->button_1, 19, 113);
     lv_obj_set_size(pg->button_1, 1243, 347);
 
@@ -12021,7 +12022,7 @@ void toastcolor_lang_tune(void)
     toastcolor_t *pg = toastcolor_get(&ui_manager);
     if (!pg) return;
 
-    /* image_9: 图片 | (24,119) */
+    /* image_9: 图片 | (24,119) | img: div1bg.png */
     lv_obj_set_pos(pg->image_9, 24, 119);
 
     /* label_23: 标签 | (529,139) | 216x36 | font taiwanpearl_regular_30 */
@@ -12032,7 +12033,7 @@ void toastcolor_lang_tune(void)
     lv_obj_set_pos(pg->label_24, 24, 24);
     lv_obj_set_size(pg->label_24, 144, 32);
 
-    /* next: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 */
+    /* next: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->next, 983, 22);
     lv_obj_set_size(pg->next, 135, 71);
 
@@ -12040,7 +12041,7 @@ void toastcolor_lang_tune(void)
     lv_obj_set_pos(pg->degree, 590, 248);
     lv_obj_set_size(pg->degree, 100, 77);
 
-    /* line: 图片 | (606,328) */
+    /* line: 图片 | (606,328) | img: settingline3_73x4.png */
     lv_obj_set_pos(pg->line, 606, 328);
 
     /* weight: 标签 | (519,248) | 167x77 | font taiwanpearl_regular_72 */
@@ -12051,20 +12052,20 @@ void toastcolor_lang_tune(void)
     lv_obj_set_pos(pg->weighticon, 685, 280);
     lv_obj_set_size(pg->weighticon, 37, 42);
 
-    /* weightline3: 图片 | (569,328) */
+    /* weightline3: 图片 | (569,328) | img: settingline3_141x4.png */
     lv_obj_set_pos(pg->weightline3, 569, 328);
 
-    /* weightline4: 图片 | (530,328) */
+    /* weightline4: 图片 | (530,328) | img: settingline3_179x4.png */
     lv_obj_set_pos(pg->weightline4, 530, 328);
 
     /* Maturity: 标签 | (531,248) | 218x77 | font taiwanpearl_regular_72 */
     lv_obj_set_pos(pg->Maturity, 531, 248);
     lv_obj_set_size(pg->Maturity, 218, 77);
 
-    /* maturityline3: 图片 | (537,328) */
+    /* maturityline3: 图片 | (537,328) | img: settingline3_211x4.png */
     lv_obj_set_pos(pg->maturityline3, 537, 328);
 
-    /* maturityline2: 图片 | (572,328) */
+    /* maturityline2: 图片 | (572,328) | img: settingline3_139x4.png */
     lv_obj_set_pos(pg->maturityline2, 572, 328);
 
 }
@@ -12080,7 +12081,7 @@ void top_bbq_complete_lang_tune(void)
     top_bbq_complete_t *pg = top_bbq_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* image_52: 图片 | (115,320) */
+    /* image_52: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_52, 115, 320);
 
     /* label_107: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -12095,14 +12096,14 @@ void top_bbq_complete_lang_tune(void)
     lv_obj_set_pos(pg->label_108, 273, 157);
     lv_obj_set_size(pg->label_108, 235, 60);
 
-    /* button_27: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* button_27: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->button_27, 609, 170);
     lv_obj_set_size(pg->button_27, 50, 43);
 
-    /* image_55: 图片 | (115,161) */
+    /* image_55: 图片 | (115,161) | img: topicon.png */
     lv_obj_set_pos(pg->image_55, 115, 161);
 
-    /* image_1: 图片 | (902,160) */
+    /* image_1: 图片 | (902,160) | img: tips.png */
     lv_obj_set_pos(pg->image_1, 902, 160);
 
 }
@@ -12126,11 +12127,11 @@ void top_bbq_cooking_lang_tune(void)
     lv_obj_set_pos(pg->label_80, 907, 157);
     lv_obj_set_size(pg->label_80, 235, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_36: 图片 | (115,320) */
+    /* image_36: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_36, 115, 320);
 
     /* bar_6: 进度条 | (122,326) | 637x20 */
@@ -12141,11 +12142,11 @@ void top_bbq_cooking_lang_tune(void)
     lv_obj_set_pos(pg->label_81, 273, 157);
     lv_obj_set_size(pg->label_81, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* up_img: 图片 | (115,161) */
+    /* up_img: 图片 | (115,161) | img: topicon.png */
     lv_obj_set_pos(pg->up_img, 115, 161);
 
 }
@@ -12161,14 +12162,14 @@ void top_bbq_menu_lang_tune(void)
     top_bbq_menu_t *pg = top_bbq_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* next_button: 按钮 | (981,22) | 138x70 | font montserratmedium_16 */
+    /* next_button: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next_button, 981, 22);
     lv_obj_set_size(pg->next_button, 138, 70);
 
-    /* image_28: 图片 | (24,118) */
+    /* image_28: 图片 | (24,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_28, 24, 118);
 
-    /* image_29: 图片 | (645,118) */
+    /* image_29: 图片 | (645,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_29, 645, 118);
 
     /* label_42: 标签 | (300,137) | 64x32 | font taiwanpearl_regular_30 */
@@ -12211,16 +12212,16 @@ void top_bbq_menu_lang_tune(void)
     lv_obj_set_pos(pg->label_51, 996, 39);
     lv_obj_set_size(pg->label_51, 117, 32);
 
-    /* templine_long: 图片 | (252,328) */
+    /* templine_long: 图片 | (252,328) | img: underline.png */
     lv_obj_set_pos(pg->templine_long, 252, 328);
 
-    /* templine_short: 图片 | (289,328) */
+    /* templine_short: 图片 | (289,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->templine_short, 289, 328);
 
-    /* hourline: 图片 | (790,328) */
+    /* hourline: 图片 | (790,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->hourline, 790, 328);
 
-    /* minline: 图片 | (993,328) */
+    /* minline: 图片 | (993,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->minline, 993, 328);
 
 }
@@ -12268,14 +12269,14 @@ void top_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->label_59, 448, 269);
     lv_obj_set_size(pg->label_59, 64, 32);
 
-    /* image_35: 图片 | (164,376) */
+    /* image_35: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_35, 164, 376);
 
     /* label_60: 标签 | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_60, 232, 385);
     lv_obj_set_size(pg->label_60, 148, 32);
 
-    /* sure_button: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 */
+    /* sure_button: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure_button, 983, 22);
     lv_obj_set_size(pg->sure_button, 135, 71);
 
@@ -12295,15 +12296,15 @@ void top_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->label_64, 831, 381);
     lv_obj_set_size(pg->label_64, 130, 32);
 
-    /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offpreheat, 983, 144);
     lv_obj_set_size(pg->offpreheat, 135, 53);
 
-    /* offdelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* offdelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 260);
     lv_obj_set_size(pg->offdelay, 135, 53);
 
-    /* offcontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 */
+    /* offcontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offcontain, 983, 372);
     lv_obj_set_size(pg->offcontain, 135, 53);
 
@@ -12315,15 +12316,15 @@ void top_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->label_71, 1010, 39);
     lv_obj_set_size(pg->label_71, 85, 36);
 
-    /* onpreheat_button: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* onpreheat_button: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->onpreheat_button, 983, 144);
     lv_obj_set_size(pg->onpreheat_button, 135, 53);
 
-    /* ondelay_button: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* ondelay_button: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->ondelay_button, 983, 260);
     lv_obj_set_size(pg->ondelay_button, 135, 53);
 
-    /* oncontain_button: 按钮 | (983,372) | 135x53 | font montserratmedium_16 */
+    /* oncontain_button: 按钮 | (983,372) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain_button, 983, 372);
     lv_obj_set_size(pg->oncontain_button, 135, 53);
 
@@ -12356,7 +12357,7 @@ void top_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->container_4, 0, 0);
     lv_obj_set_size(pg->container_4, 1280, 480);
 
-    /* image_38: 图片 | (115,115) */
+    /* image_38: 图片 | (115,115) | img: settingbk.png */
     lv_obj_set_pos(pg->image_38, 115, 115);
 
     /* label_83: 标签 | (242,136) | 73x30 | font taiwanpearl_regular_30 */
@@ -12375,10 +12376,10 @@ void top_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->icon3, 300, 229);
     lv_obj_set_size(pg->icon3, 37, 30);
 
-    /* line2: 图片 | (236,269) */
+    /* line2: 图片 | (236,269) | img: settingline3_87x4.png */
     lv_obj_set_pos(pg->line2, 236, 269);
 
-    /* line3: 图片 | (223,269) */
+    /* line3: 图片 | (223,269) | img: settingline2.png */
     lv_obj_set_pos(pg->line3, 223, 269);
 
     /* hour: 标签 | (374,213) | 102x46 | font taiwanpearl_regular_48 */
@@ -12397,17 +12398,17 @@ void top_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->label_94, 612, 229);
     lv_obj_set_size(pg->label_94, 37, 30);
 
-    /* hourline: 图片 | (398,269) */
+    /* hourline: 图片 | (398,269) | img: settingline3.png */
     lv_obj_set_pos(pg->hourline, 398, 269);
 
-    /* minline: 图片 | (560,269) */
+    /* minline: 图片 | (560,269) | img: settingline3.png */
     lv_obj_set_pos(pg->minline, 560, 269);
 
     /* icon2: 标签 | (288,229) | 37x30 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->icon2, 288, 229);
     lv_obj_set_size(pg->icon2, 37, 30);
 
-    /* surebutton: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* surebutton: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->surebutton, 959, 295);
     lv_obj_set_size(pg->surebutton, 129, 83);
 
@@ -12432,11 +12433,11 @@ void top_bbq_stop_lang_tune(void)
     lv_obj_set_pos(pg->time_label, 907, 157);
     lv_obj_set_size(pg->time_label, 235, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_45: 图片 | (115,320) */
+    /* image_45: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_45, 115, 320);
 
     /* bar_7: 进度条 | (122,326) | 637x20 */
@@ -12447,11 +12448,11 @@ void top_bbq_stop_lang_tune(void)
     lv_obj_set_pos(pg->label_102, 273, 157);
     lv_obj_set_size(pg->label_102, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_48: 图片 | (115,161) */
+    /* image_48: 图片 | (115,161) | img: topicon.png */
     lv_obj_set_pos(pg->image_48, 115, 161);
 
 }
@@ -12467,14 +12468,14 @@ void top_bbq_stop_back_lang_tune(void)
     top_bbq_stop_back_t *pg = top_bbq_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* up: 图片 | (115,161) */
+    /* up: 图片 | (115,161) | img: topicon.png */
     lv_obj_set_pos(pg->up, 115, 161);
 
     /* statu: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->statu, 274, 232);
     lv_obj_set_size(pg->statu, 490, 39);
 
-    /* image_49: 图片 | (115,320) */
+    /* image_49: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_49, 115, 320);
 
     /* bar_8: 进度条 | (122,326) | 637x20 */
@@ -12485,7 +12486,7 @@ void top_bbq_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_104, 273, 157);
     lv_obj_set_size(pg->label_104, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
@@ -12501,7 +12502,7 @@ void top_bbq_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_106, 895, 198);
     lv_obj_set_size(pg->label_106, 252, 36);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -12518,7 +12519,7 @@ void unfrozen_complete_lang_tune(void)
     unfrozen_complete_t *pg = unfrozen_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* image_216: 图片 | (115,320) */
+    /* image_216: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_216, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -12533,14 +12534,14 @@ void unfrozen_complete_lang_tune(void)
     lv_obj_set_pos(pg->label_484, 273, 157);
     lv_obj_set_size(pg->label_484, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_218: 图片 | (149,161) */
+    /* image_218: 图片 | (149,161) | img: unfrozenicon.png */
     lv_obj_set_pos(pg->image_218, 149, 161);
 
-    /* image_8: 图片 | (902,160) */
+    /* image_8: 图片 | (902,160) | img: tips.png */
     lv_obj_set_pos(pg->image_8, 902, 160);
 
 }
@@ -12564,11 +12565,11 @@ void unfrozen_cooking_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_205: 图片 | (115,320) */
+    /* image_205: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_205, 115, 320);
 
     /* bar_32: 进度条 | (122,326) | 637x20 */
@@ -12579,11 +12580,11 @@ void unfrozen_cooking_lang_tune(void)
     lv_obj_set_pos(pg->label_465, 273, 157);
     lv_obj_set_size(pg->label_465, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_206: 图片 | (149,161) */
+    /* image_206: 图片 | (149,161) | img: unfrozenicon.png */
     lv_obj_set_pos(pg->image_206, 149, 161);
 
 }
@@ -12599,14 +12600,14 @@ void unfrozen_menu_lang_tune(void)
     unfrozen_menu_t *pg = unfrozen_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 */
+    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
     lv_obj_set_size(pg->next, 138, 70);
 
-    /* image_198: 图片 | (24,118) */
+    /* image_198: 图片 | (24,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_198, 24, 118);
 
-    /* image_199: 图片 | (645,118) */
+    /* image_199: 图片 | (645,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_199, 645, 118);
 
     /* label_436: 标签 | (300,137) | 64x32 | font taiwanpearl_regular_30 */
@@ -12649,16 +12650,16 @@ void unfrozen_menu_lang_tune(void)
     lv_obj_set_pos(pg->label_445, 996, 39);
     lv_obj_set_size(pg->label_445, 117, 32);
 
-    /* templine3: 图片 | (252,328) */
+    /* templine3: 图片 | (252,328) | img: underline.png */
     lv_obj_set_pos(pg->templine3, 252, 328);
 
-    /* templine2: 图片 | (289,328) */
+    /* templine2: 图片 | (289,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->templine2, 289, 328);
 
-    /* hourline: 图片 | (790,328) */
+    /* hourline: 图片 | (790,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->hourline, 790, 328);
 
-    /* minline: 图片 | (993,328) */
+    /* minline: 图片 | (993,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->minline, 993, 328);
 
 }
@@ -12706,14 +12707,14 @@ void unfrozen_set_lang_tune(void)
     lv_obj_set_pos(pg->label_453, 448, 269);
     lv_obj_set_size(pg->label_453, 64, 32);
 
-    /* image_204: 图片 | (164,376) */
+    /* image_204: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_204, 164, 376);
 
     /* label_454: 标签 | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_454, 232, 385);
     lv_obj_set_size(pg->label_454, 148, 32);
 
-    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
@@ -12733,15 +12734,15 @@ void unfrozen_set_lang_tune(void)
     lv_obj_set_pos(pg->label_458, 831, 381);
     lv_obj_set_size(pg->label_458, 130, 32);
 
-    /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offpreheat, 983, 144);
     lv_obj_set_size(pg->offpreheat, 135, 53);
 
-    /* offdelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* offdelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 260);
     lv_obj_set_size(pg->offdelay, 135, 53);
 
-    /* offcontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 */
+    /* offcontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offcontain, 983, 372);
     lv_obj_set_size(pg->offcontain, 135, 53);
 
@@ -12753,15 +12754,15 @@ void unfrozen_set_lang_tune(void)
     lv_obj_set_pos(pg->label_460, 1010, 39);
     lv_obj_set_size(pg->label_460, 85, 36);
 
-    /* onpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* onpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->onpreheat, 983, 144);
     lv_obj_set_size(pg->onpreheat, 135, 53);
 
-    /* ondelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* ondelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->ondelay, 983, 260);
     lv_obj_set_size(pg->ondelay, 135, 53);
 
-    /* oncontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 */
+    /* oncontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 372);
     lv_obj_set_size(pg->oncontain, 135, 53);
 
@@ -12794,7 +12795,7 @@ void unfrozen_setting_lang_tune(void)
     lv_obj_set_pos(pg->container_21, 0, 0);
     lv_obj_set_size(pg->container_21, 1280, 480);
 
-    /* image_207: 图片 | (115,115) */
+    /* image_207: 图片 | (115,115) | img: settingbk.png */
     lv_obj_set_pos(pg->image_207, 115, 115);
 
     /* label_467: 标签 | (242,136) | 73x30 | font taiwanpearl_regular_30 */
@@ -12813,10 +12814,10 @@ void unfrozen_setting_lang_tune(void)
     lv_obj_set_pos(pg->icon3, 300, 229);
     lv_obj_set_size(pg->icon3, 37, 30);
 
-    /* templine2: 图片 | (236,269) */
+    /* templine2: 图片 | (236,269) | img: settingline3_87x4.png */
     lv_obj_set_pos(pg->templine2, 236, 269);
 
-    /* templine3: 图片 | (223,269) */
+    /* templine3: 图片 | (223,269) | img: settingline2.png */
     lv_obj_set_pos(pg->templine3, 223, 269);
 
     /* hour: 标签 | (374,213) | 102x46 | font taiwanpearl_regular_48 */
@@ -12835,17 +12836,17 @@ void unfrozen_setting_lang_tune(void)
     lv_obj_set_pos(pg->label_474, 612, 229);
     lv_obj_set_size(pg->label_474, 37, 30);
 
-    /* hourline: 图片 | (398,269) */
+    /* hourline: 图片 | (398,269) | img: settingline3.png */
     lv_obj_set_pos(pg->hourline, 398, 269);
 
-    /* minline: 图片 | (560,269) */
+    /* minline: 图片 | (560,269) | img: settingline3.png */
     lv_obj_set_pos(pg->minline, 560, 269);
 
     /* icon2: 标签 | (288,229) | 37x30 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->icon2, 288, 229);
     lv_obj_set_size(pg->icon2, 37, 30);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -12870,11 +12871,11 @@ void unfrozen_stop_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_212: 图片 | (115,320) */
+    /* image_212: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_212, 115, 320);
 
     /* bar_33: 进度条 | (122,326) | 637x20 */
@@ -12885,11 +12886,11 @@ void unfrozen_stop_lang_tune(void)
     lv_obj_set_pos(pg->label_478, 273, 157);
     lv_obj_set_size(pg->label_478, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_213: 图片 | (149,161) */
+    /* image_213: 图片 | (149,161) | img: unfrozenicon.png */
     lv_obj_set_pos(pg->image_213, 149, 161);
 
 }
@@ -12905,14 +12906,14 @@ void unfrozen_stop_back_lang_tune(void)
     unfrozen_stop_back_t *pg = unfrozen_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* image_214: 图片 | (149,161) */
+    /* image_214: 图片 | (149,161) | img: unfrozenicon.png */
     lv_obj_set_pos(pg->image_214, 149, 161);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_215: 图片 | (115,320) */
+    /* image_215: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_215, 115, 320);
 
     /* bar_34: 进度条 | (122,326) | 637x20 */
@@ -12923,7 +12924,7 @@ void unfrozen_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_480, 273, 157);
     lv_obj_set_size(pg->label_480, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
@@ -12939,7 +12940,7 @@ void unfrozen_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_482, 895, 198);
     lv_obj_set_size(pg->label_482, 252, 36);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -12956,7 +12957,7 @@ void updown_bbq_complete_lang_tune(void)
     updown_bbq_complete_t *pg = updown_bbq_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* barbk_img: 图片 | (115,320) */
+    /* barbk_img: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->barbk_img, 115, 320);
 
     /* statu_label: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -12967,17 +12968,17 @@ void updown_bbq_complete_lang_tune(void)
     lv_obj_set_pos(pg->bar_3, 122, 326);
     lv_obj_set_size(pg->bar_3, 637, 20);
 
-    /* updown_img: 图片 | (115,161) */
+    /* updown_img: 图片 | (115,161) | img: updown_img.png */
     lv_obj_set_pos(pg->updown_img, 115, 161);
 
     /* complete_label: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->complete_label, 273, 157);
     lv_obj_set_size(pg->complete_label, 235, 60);
 
-    /* image_26: 图片 | (845,160) */
+    /* image_26: 图片 | (845,160) | img: hotcare.png */
     lv_obj_set_pos(pg->image_26, 845, 160);
 
-    /* little_button: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little_button: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little_button, 609, 170);
     lv_obj_set_size(pg->little_button, 50, 43);
 
@@ -12994,7 +12995,7 @@ void updown_bbq_complete_probe_lang_tune(void)
     updown_bbq_complete_probe_t *pg = updown_bbq_complete_probe_get(&ui_manager);
     if (!pg) return;
 
-    /* image_30: 图片 | (115,320) */
+    /* image_30: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_30, 115, 320);
 
     /* label_74: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -13005,14 +13006,14 @@ void updown_bbq_complete_probe_lang_tune(void)
     lv_obj_set_pos(pg->bar_4, 122, 326);
     lv_obj_set_size(pg->bar_4, 637, 20);
 
-    /* image_31: 图片 | (115,161) */
+    /* image_31: 图片 | (115,161) | img: updown_img.png */
     lv_obj_set_pos(pg->image_31, 115, 161);
 
     /* label_75: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_75, 273, 157);
     lv_obj_set_size(pg->label_75, 235, 60);
 
-    /* image_2: 图片 | (845,160) */
+    /* image_2: 图片 | (845,160) | img: hotcare.png */
     lv_obj_set_pos(pg->image_2, 845, 160);
 
 }
@@ -13036,25 +13037,25 @@ void updown_bbq_cooking_lang_tune(void)
     lv_obj_set_pos(pg->time_label, 907, 157);
     lv_obj_set_size(pg->time_label, 235, 60);
 
-    /* stop_button: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop_button: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop_button, 959, 295);
     lv_obj_set_size(pg->stop_button, 129, 83);
 
-    /* barbk_img: 图片 | (115,320) */
+    /* barbk_img: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->barbk_img, 115, 320);
 
     /* bar: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar, 122, 326);
     lv_obj_set_size(pg->bar, 637, 20);
 
-    /* updown_img: 图片 | (115,161) */
+    /* updown_img: 图片 | (115,161) | img: updown_img.png */
     lv_obj_set_pos(pg->updown_img, 115, 161);
 
     /* label_10: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_10, 273, 157);
     lv_obj_set_size(pg->label_10, 235, 60);
 
-    /* little_button: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little_button: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little_button, 609, 170);
     lv_obj_set_size(pg->little_button, 50, 43);
 
@@ -13079,25 +13080,25 @@ void updown_bbq_cooking_probe_lang_tune(void)
     lv_obj_set_pos(pg->temp, 919, 156);
     lv_obj_set_size(pg->temp, 134, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_22: 图片 | (115,320) */
+    /* image_22: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_22, 115, 320);
 
     /* bar_1: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_1, 122, 326);
     lv_obj_set_size(pg->bar_1, 637, 20);
 
-    /* image_23: 图片 | (115,161) */
+    /* image_23: 图片 | (115,161) | img: updown_img.png */
     lv_obj_set_pos(pg->image_23, 115, 161);
 
     /* label_66: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_66, 273, 157);
     lv_obj_set_size(pg->label_66, 235, 60);
 
-    /* image_24: 图片 | (1068,180) */
+    /* image_24: 图片 | (1068,180) | img: probeicon.png */
     lv_obj_set_pos(pg->image_24, 1068, 180);
 
 }
@@ -13113,14 +13114,14 @@ void updown_bbq_menu_lang_tune(void)
     updown_bbq_menu_t *pg = updown_bbq_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* next_button: 按钮 | (981,22) | 138x70 | font montserratmedium_16 */
+    /* next_button: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next_button, 981, 22);
     lv_obj_set_size(pg->next_button, 138, 70);
 
-    /* bk1_img: 图片 | (24,118) */
+    /* bk1_img: 图片 | (24,118) | img: div2bk.png */
     lv_obj_set_pos(pg->bk1_img, 24, 118);
 
-    /* bk2_img: 图片 | (645,118) */
+    /* bk2_img: 图片 | (645,118) | img: div2bk.png */
     lv_obj_set_pos(pg->bk2_img, 645, 118);
 
     /* label_1: 标签 | (300,137) | 60x32 | font taiwanpearl_regular_30 */
@@ -13163,16 +13164,16 @@ void updown_bbq_menu_lang_tune(void)
     lv_obj_set_pos(pg->next_label, 996, 39);
     lv_obj_set_size(pg->next_label, 108, 32);
 
-    /* temeline_long: 图片 | (252,328) */
+    /* temeline_long: 图片 | (252,328) | img: underline.png */
     lv_obj_set_pos(pg->temeline_long, 252, 328);
 
-    /* templine_short: 图片 | (289,328) */
+    /* templine_short: 图片 | (289,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->templine_short, 289, 328);
 
-    /* hourline: 图片 | (790,328) */
+    /* hourline: 图片 | (790,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->hourline, 790, 328);
 
-    /* minline: 图片 | (993,328) */
+    /* minline: 图片 | (993,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->minline, 993, 328);
 
 }
@@ -13188,10 +13189,10 @@ void updown_bbq_menu_low_lang_tune(void)
     updown_bbq_menu_low_t *pg = updown_bbq_menu_low_get(&ui_manager);
     if (!pg) return;
 
-    /* image_30: 图片 | (24,118) */
+    /* image_30: 图片 | (24,118) | img: preheatbg.png */
     lv_obj_set_pos(pg->image_30, 24, 118);
 
-    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 */
+    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
     lv_obj_set_size(pg->next, 138, 70);
 
@@ -13223,10 +13224,10 @@ void updown_bbq_menu_low_lang_tune(void)
     lv_obj_set_pos(pg->dir3, 531, 280);
     lv_obj_set_size(pg->dir3, 31, 41);
 
-    /* line3: 图片 | (538,327) */
+    /* line3: 图片 | (538,327) | img: underline_181x4.png */
     lv_obj_set_pos(pg->line3, 538, 327);
 
-    /* line2: 图片 | (573,327) */
+    /* line2: 图片 | (573,327) | img: underline_146x4.png */
     lv_obj_set_pos(pg->line2, 573, 327);
 
 }
@@ -13242,14 +13243,14 @@ void updown_bbq_menu_probe_lang_tune(void)
     updown_bbq_menu_probe_t *pg = updown_bbq_menu_probe_get(&ui_manager);
     if (!pg) return;
 
-    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 */
+    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
     lv_obj_set_size(pg->next, 138, 70);
 
-    /* image_3: 图片 | (24,118) */
+    /* image_3: 图片 | (24,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_3, 24, 118);
 
-    /* image_4: 图片 | (645,118) */
+    /* image_4: 图片 | (645,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_4, 645, 118);
 
     /* label_4: 标签 | (300,137) | 64x32 | font taiwanpearl_regular_30 */
@@ -13276,10 +13277,10 @@ void updown_bbq_menu_probe_lang_tune(void)
     lv_obj_set_pos(pg->label_13, 996, 39);
     lv_obj_set_size(pg->label_13, 117, 32);
 
-    /* templine3: 图片 | (252,328) */
+    /* templine3: 图片 | (252,328) | img: underline.png */
     lv_obj_set_pos(pg->templine3, 252, 328);
 
-    /* templine2: 图片 | (289,328) */
+    /* templine2: 图片 | (289,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->templine2, 289, 328);
 
     /* probetemp: 标签 | (853,249) | 120x72 | font taiwanpearl_regular_72 */
@@ -13290,7 +13291,7 @@ void updown_bbq_menu_probe_lang_tune(void)
     lv_obj_set_pos(pg->label_15, 973, 281);
     lv_obj_set_size(pg->label_15, 38, 32);
 
-    /* probeline2: 图片 | (891,328) */
+    /* probeline2: 图片 | (891,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->probeline2, 891, 328);
 
 }
@@ -13306,10 +13307,10 @@ void updown_bbq_menu_top_lang_tune(void)
     updown_bbq_menu_top_t *pg = updown_bbq_menu_top_get(&ui_manager);
     if (!pg) return;
 
-    /* image_21: 图片 | (24,118) */
+    /* image_21: 图片 | (24,118) | img: preheatbg.png */
     lv_obj_set_pos(pg->image_21, 24, 118);
 
-    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 */
+    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
     lv_obj_set_size(pg->next, 138, 70);
 
@@ -13333,10 +13334,10 @@ void updown_bbq_menu_top_lang_tune(void)
     lv_obj_set_pos(pg->label_3, 682, 280);
     lv_obj_set_size(pg->label_3, 38, 32);
 
-    /* line2: 图片 | (573,327) */
+    /* line2: 图片 | (573,327) | img: underline_146x4.png */
     lv_obj_set_pos(pg->line2, 573, 327);
 
-    /* line3: 图片 | (538,327) */
+    /* line3: 图片 | (538,327) | img: underline_181x4.png */
     lv_obj_set_pos(pg->line3, 538, 327);
 
     /* dir3: 标签 | (531,280) | 31x41 | font taiwanpearl_regular_36 */
@@ -13392,14 +13393,14 @@ void updown_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->fen_label, 448, 269);
     lv_obj_set_size(pg->fen_label, 64, 32);
 
-    /* place_img: 图片 | (164,376) */
+    /* place_img: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->place_img, 164, 376);
 
     /* place_label: 标签 | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->place_label, 232, 385);
     lv_obj_set_size(pg->place_label, 148, 32);
 
-    /* sure_button: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 */
+    /* sure_button: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure_button, 983, 22);
     lv_obj_set_size(pg->sure_button, 135, 71);
 
@@ -13415,11 +13416,11 @@ void updown_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->chi_label, 930, 270);
     lv_obj_set_size(pg->chi_label, 26, 32);
 
-    /* downtemp_button: 按钮 | (476,140) | 170x61 | font montserratmedium_16 */
+    /* downtemp_button: 按钮 | (476,140) | 170x61 | font montserratmedium_16 | bg: tembk.png */
     lv_obj_set_pos(pg->downtemp_button, 476, 140);
     lv_obj_set_size(pg->downtemp_button, 170, 61);
 
-    /* uptemp_button: 按钮 | (308,140) | 170x61 | font montserratmedium_16 */
+    /* uptemp_button: 按钮 | (308,140) | 170x61 | font montserratmedium_16 | bg: tembk.png */
     lv_obj_set_pos(pg->uptemp_button, 308, 140);
     lv_obj_set_size(pg->uptemp_button, 170, 61);
 
@@ -13427,15 +13428,15 @@ void updown_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->contain_label, 841, 381);
     lv_obj_set_size(pg->contain_label, 120, 32);
 
-    /* preheat_button: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* preheat_button: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->preheat_button, 983, 144);
     lv_obj_set_size(pg->preheat_button, 135, 53);
 
-    /* delay_button: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* delay_button: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->delay_button, 983, 260);
     lv_obj_set_size(pg->delay_button, 135, 53);
 
-    /* contain_button: 按钮 | (983,372) | 135x53 | font montserratmedium_16 */
+    /* contain_button: 按钮 | (983,372) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->contain_button, 983, 372);
     lv_obj_set_size(pg->contain_button, 135, 53);
 
@@ -13467,15 +13468,15 @@ void updown_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->sure_label, 1010, 39);
     lv_obj_set_size(pg->sure_label, 80, 36);
 
-    /* preheat_on_button: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* preheat_on_button: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->preheat_on_button, 983, 144);
     lv_obj_set_size(pg->preheat_on_button, 135, 53);
 
-    /* delay_on_button: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* delay_on_button: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: switchbg30.png */
     lv_obj_set_pos(pg->delay_on_button, 983, 260);
     lv_obj_set_size(pg->delay_on_button, 135, 53);
 
-    /* contain_on_button: 按钮 | (983,372) | 135x53 | font montserratmedium_16 */
+    /* contain_on_button: 按钮 | (983,372) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->contain_on_button, 983, 372);
     lv_obj_set_size(pg->contain_on_button, 135, 53);
 
@@ -13532,14 +13533,14 @@ void updown_bbq_set_probe_lang_tune(void)
     lv_obj_set_pos(pg->label_22, 141, 270);
     lv_obj_set_size(pg->label_22, 175, 32);
 
-    /* image_11: 图片 | (164,376) */
+    /* image_11: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_11, 164, 376);
 
     /* label_27: 标签 | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_27, 232, 385);
     lv_obj_set_size(pg->label_27, 148, 32);
 
-    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
@@ -13563,15 +13564,15 @@ void updown_bbq_set_probe_lang_tune(void)
     lv_obj_set_pos(pg->label_2, 840, 154);
     lv_obj_set_size(pg->label_2, 26, 32);
 
-    /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 144);
     lv_obj_set_size(pg->offdelay, 135, 53);
 
-    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->ondelay, 983, 144);
     lv_obj_set_size(pg->ondelay, 135, 53);
 
-    /* image_2: 图片 | (839,154) */
+    /* image_2: 图片 | (839,154) | img: delaytext.png */
     lv_obj_set_pos(pg->image_2, 839, 154);
 
     /* temp: 标签 | (315,141) | 83x53 | font taiwanpearl_regular_48 */
@@ -13607,7 +13608,7 @@ void updown_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->container_3, 0, 0);
     lv_obj_set_size(pg->container_3, 1280, 480);
 
-    /* settingbk_img: 图片 | (115,115) */
+    /* settingbk_img: 图片 | (115,115) | img: settingbk.png */
     lv_obj_set_pos(pg->settingbk_img, 115, 115);
 
     /* temp_label: 标签 | (255,136) | 73x30 | font taiwanpearl_regular_30 */
@@ -13630,7 +13631,7 @@ void updown_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->tempup_label, 161, 213);
     lv_obj_set_size(pg->tempup_label, 102, 46);
 
-    /* longup_templine_img: 图片 | (149,269) */
+    /* longup_templine_img: 图片 | (149,269) | img: settingline1.png */
     lv_obj_set_pos(pg->longup_templine_img, 149, 269);
 
     /* tempdown_label: 标签 | (311,213) | 102x46 | font taiwanpearl_regular_48 */
@@ -13645,7 +13646,7 @@ void updown_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->icon3_label2, 398, 229);
     lv_obj_set_size(pg->icon3_label2, 37, 30);
 
-    /* longdown_templine_img: 图片 | (299,269) */
+    /* longdown_templine_img: 图片 | (299,269) | img: settingline1.png */
     lv_obj_set_pos(pg->longdown_templine_img, 299, 269);
 
     /* hour_label: 标签 | (450,213) | 102x46 | font taiwanpearl_regular_48 */
@@ -13664,10 +13665,10 @@ void updown_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->fen_label, 674, 229);
     lv_obj_set_size(pg->fen_label, 37, 30);
 
-    /* hourline_img: 图片 | (473,269) */
+    /* hourline_img: 图片 | (473,269) | img: settingline3.png */
     lv_obj_set_pos(pg->hourline_img, 473, 269);
 
-    /* minline_label: 图片 | (622,269) */
+    /* minline_label: 图片 | (622,269) | img: settingline3.png */
     lv_obj_set_pos(pg->minline_label, 622, 269);
 
     /* icon2_label1: 标签 | (236,229) | 37x30 | font taiwanpearl_regular_30 */
@@ -13678,10 +13679,10 @@ void updown_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->dirup2_label, 161, 229);
     lv_obj_set_size(pg->dirup2_label, 37, 30);
 
-    /* shortup_templine_img: 图片 | (156,269) */
+    /* shortup_templine_img: 图片 | (156,269) | img: settingline2.png */
     lv_obj_set_pos(pg->shortup_templine_img, 156, 269);
 
-    /* shordown_templine_img: 图片 | (306,269) */
+    /* shordown_templine_img: 图片 | (306,269) | img: settingline2.png */
     lv_obj_set_pos(pg->shordown_templine_img, 306, 269);
 
     /* dirdown2_label: 标签 | (311,229) | 37x30 | font taiwanpearl_regular_30 */
@@ -13692,7 +13693,7 @@ void updown_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->icon2_label2, 386, 229);
     lv_obj_set_size(pg->icon2_label2, 37, 30);
 
-    /* sure_button: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure_button: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure_button, 959, 295);
     lv_obj_set_size(pg->sure_button, 129, 83);
 
@@ -13717,25 +13718,25 @@ void updown_bbq_stop_lang_tune(void)
     lv_obj_set_pos(pg->time_label, 907, 157);
     lv_obj_set_size(pg->time_label, 235, 60);
 
-    /* start_button: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start_button: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start_button, 959, 295);
     lv_obj_set_size(pg->start_button, 129, 83);
 
-    /* image_2: 图片 | (115,320) */
+    /* image_2: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_2, 115, 320);
 
     /* bar_1: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_1, 122, 326);
     lv_obj_set_size(pg->bar_1, 637, 20);
 
-    /* image_3: 图片 | (115,161) */
+    /* image_3: 图片 | (115,161) | img: updown_img.png */
     lv_obj_set_pos(pg->image_3, 115, 161);
 
     /* label_4: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_4, 273, 157);
     lv_obj_set_size(pg->label_4, 235, 60);
 
-    /* little_button: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little_button: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little_button, 609, 170);
     lv_obj_set_size(pg->little_button, 50, 43);
 
@@ -13756,21 +13757,21 @@ void updown_bbq_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->statu_label, 274, 232);
     lv_obj_set_size(pg->statu_label, 490, 39);
 
-    /* image_6: 图片 | (115,320) */
+    /* image_6: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_6, 115, 320);
 
     /* bar_2: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_2, 122, 326);
     lv_obj_set_size(pg->bar_2, 637, 20);
 
-    /* image_7: 图片 | (115,161) */
+    /* image_7: 图片 | (115,161) | img: updown_img.png */
     lv_obj_set_pos(pg->image_7, 115, 161);
 
     /* label_8: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_8, 273, 157);
     lv_obj_set_size(pg->label_8, 235, 60);
 
-    /* littal_button: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* littal_button: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->littal_button, 609, 170);
     lv_obj_set_size(pg->littal_button, 50, 43);
 
@@ -13786,7 +13787,7 @@ void updown_bbq_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_11, 895, 198);
     lv_obj_set_size(pg->label_11, 252, 36);
 
-    /* sure_button: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure_button: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure_button, 959, 295);
     lv_obj_set_size(pg->sure_button, 129, 83);
 
@@ -13807,14 +13808,14 @@ void updown_bbq_stop_back_probe_lang_tune(void)
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_28: 图片 | (115,320) */
+    /* image_28: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_28, 115, 320);
 
     /* bar_3: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_3, 122, 326);
     lv_obj_set_size(pg->bar_3, 637, 20);
 
-    /* image_29: 图片 | (115,161) */
+    /* image_29: 图片 | (115,161) | img: updown_img.png */
     lv_obj_set_pos(pg->image_29, 115, 161);
 
     /* label_71: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
@@ -13833,7 +13834,7 @@ void updown_bbq_stop_back_probe_lang_tune(void)
     lv_obj_set_pos(pg->label_73, 895, 198);
     lv_obj_set_size(pg->label_73, 252, 36);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -13858,25 +13859,25 @@ void updown_bbq_stop_probe_lang_tune(void)
     lv_obj_set_pos(pg->temp, 919, 156);
     lv_obj_set_size(pg->temp, 134, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_25: 图片 | (115,320) */
+    /* image_25: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_25, 115, 320);
 
     /* bar_2: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_2, 122, 326);
     lv_obj_set_size(pg->bar_2, 637, 20);
 
-    /* image_26: 图片 | (115,161) */
+    /* image_26: 图片 | (115,161) | img: updown_img.png */
     lv_obj_set_pos(pg->image_26, 115, 161);
 
     /* label_69: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_69, 273, 157);
     lv_obj_set_size(pg->label_69, 235, 60);
 
-    /* image_27: 图片 | (1068,180) */
+    /* image_27: 图片 | (1068,180) | img: probeicon.png */
     lv_obj_set_pos(pg->image_27, 1068, 180);
 
 }
@@ -13892,11 +13893,11 @@ void vegetablemenu_lang_tune(void)
     vegetablemenu_t *pg = vegetablemenu_get(&ui_manager);
     if (!pg) return;
 
-    /* bt1: 按钮 | (18,76) | 313x386 | font taiwanpearl_regular_30 */
+    /* bt1: 按钮 | (18,76) | 313x386 | font taiwanpearl_regular_30 | bg: div7_1_30.png */
     lv_obj_set_pos(pg->bt1, 18, 76);
     lv_obj_set_size(pg->bt1, 313, 386);
 
-    /* button_11: 按钮 | (330,76) | 310x193 | font taiwanpearl_regular_30 */
+    /* button_11: 按钮 | (330,76) | 310x193 | font taiwanpearl_regular_30 | bg: div7_2_30.png */
     lv_obj_set_pos(pg->button_11, 330, 76);
     lv_obj_set_size(pg->button_11, 310, 193);
 
@@ -13904,23 +13905,23 @@ void vegetablemenu_lang_tune(void)
     lv_obj_set_pos(pg->label_7, 24, 24);
     lv_obj_set_size(pg->label_7, 97, 25);
 
-    /* button_15: 按钮 | (640,76) | 310x193 | font taiwanpearl_regular_30 */
+    /* button_15: 按钮 | (640,76) | 310x193 | font taiwanpearl_regular_30 | bg: div7_2_30.png */
     lv_obj_set_pos(pg->button_15, 640, 76);
     lv_obj_set_size(pg->button_15, 310, 193);
 
-    /* button_16: 按钮 | (950,76) | 310x193 | font taiwanpearl_regular_30 */
+    /* button_16: 按钮 | (950,76) | 310x193 | font taiwanpearl_regular_30 | bg: div7_2_30.png */
     lv_obj_set_pos(pg->button_16, 950, 76);
     lv_obj_set_size(pg->button_16, 310, 193);
 
-    /* button_17: 按钮 | (330,269) | 310x193 | font taiwanpearl_regular_30 */
+    /* button_17: 按钮 | (330,269) | 310x193 | font taiwanpearl_regular_30 | bg: div7_2_30.png */
     lv_obj_set_pos(pg->button_17, 330, 269);
     lv_obj_set_size(pg->button_17, 310, 193);
 
-    /* button_18: 按钮 | (640,269) | 310x193 | font taiwanpearl_regular_30 */
+    /* button_18: 按钮 | (640,269) | 310x193 | font taiwanpearl_regular_30 | bg: div7_2_30.png */
     lv_obj_set_pos(pg->button_18, 640, 269);
     lv_obj_set_size(pg->button_18, 310, 193);
 
-    /* button_19: 按钮 | (950,269) | 310x193 | font taiwanpearl_regular_30 */
+    /* button_19: 按钮 | (950,269) | 310x193 | font taiwanpearl_regular_30 | bg: div7_2_30.png */
     lv_obj_set_pos(pg->button_19, 950, 269);
     lv_obj_set_size(pg->button_19, 310, 193);
 
@@ -13962,7 +13963,7 @@ void waterclean_complete_lang_tune(void)
     waterclean_complete_t *pg = waterclean_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* image_9: 图片 | (115,320) */
+    /* image_9: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_9, 115, 320);
 
     /* label_12: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -13973,14 +13974,14 @@ void waterclean_complete_lang_tune(void)
     lv_obj_set_pos(pg->bar_4, 122, 326);
     lv_obj_set_size(pg->bar_4, 637, 20);
 
-    /* image_10: 图片 | (167,161) */
+    /* image_10: 图片 | (167,161) | img: watercleanicon.png */
     lv_obj_set_pos(pg->image_10, 167, 161);
 
     /* label_13: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_13, 273, 157);
     lv_obj_set_size(pg->label_13, 235, 60);
 
-    /* image_12: 图片 | (902,160) */
+    /* image_12: 图片 | (902,160) | img: tips.png */
     lv_obj_set_pos(pg->image_12, 902, 160);
 
 }
@@ -14004,18 +14005,18 @@ void waterclean_cooking_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_5: 图片 | (115,320) */
+    /* image_5: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_5, 115, 320);
 
     /* bar_2: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_2, 122, 326);
     lv_obj_set_size(pg->bar_2, 637, 20);
 
-    /* image_6: 图片 | (167,161) */
+    /* image_6: 图片 | (167,161) | img: watercleanicon.png */
     lv_obj_set_pos(pg->image_6, 167, 161);
 
     /* label_8: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
@@ -14035,14 +14036,14 @@ void waterclean_set_lang_tune(void)
     waterclean_set_t *pg = waterclean_set_get(&ui_manager);
     if (!pg) return;
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_1: 图片 | (117,155) */
+    /* image_1: 图片 | (117,155) | img: waterbg.png */
     lv_obj_set_pos(pg->image_1, 117, 155);
 
-    /* image_2: 图片 | (167,161) */
+    /* image_2: 图片 | (167,161) | img: watercleanicon.png */
     lv_obj_set_pos(pg->image_2, 167, 161);
 
 }
@@ -14066,18 +14067,18 @@ void waterclean_stop_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_7: 图片 | (115,320) */
+    /* image_7: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_7, 115, 320);
 
     /* bar_3: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_3, 122, 326);
     lv_obj_set_size(pg->bar_3, 637, 20);
 
-    /* image_8: 图片 | (167,161) */
+    /* image_8: 图片 | (167,161) | img: watercleanicon.png */
     lv_obj_set_pos(pg->image_8, 167, 161);
 
     /* label_11: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
@@ -14101,14 +14102,14 @@ void waterclean_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_1: 图片 | (115,320) */
+    /* image_1: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_1, 115, 320);
 
     /* bar_1: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_1, 122, 326);
     lv_obj_set_size(pg->bar_1, 637, 20);
 
-    /* image_2: 图片 | (167,161) */
+    /* image_2: 图片 | (167,161) | img: watercleanicon.png */
     lv_obj_set_pos(pg->image_2, 167, 161);
 
     /* label_6: 标签 | (273,157) | 235x60 | font taiwanpearl_regular_60 */
@@ -14127,7 +14128,7 @@ void waterclean_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_7, 895, 160);
     lv_obj_set_size(pg->label_7, 252, 36);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -14144,7 +14145,7 @@ void west_complete_lang_tune(void)
     west_complete_t *pg = west_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* image_90: 图片 | (115,320) */
+    /* image_90: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_90, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -14159,14 +14160,14 @@ void west_complete_lang_tune(void)
     lv_obj_set_pos(pg->label_192, 273, 157);
     lv_obj_set_size(pg->label_192, 235, 60);
 
-    /* image_91: 图片 | (845,160) */
+    /* image_91: 图片 | (845,160) | img: hotcare.png */
     lv_obj_set_pos(pg->image_91, 845, 160);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_92: 图片 | (115,161) */
+    /* image_92: 图片 | (115,161) | img: westicon.png */
     lv_obj_set_pos(pg->image_92, 115, 161);
 
 }
@@ -14190,11 +14191,11 @@ void west_cooking_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_79: 图片 | (115,320) */
+    /* image_79: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_79, 115, 320);
 
     /* bar_8: 进度条 | (122,326) | 637x20 */
@@ -14205,11 +14206,11 @@ void west_cooking_lang_tune(void)
     lv_obj_set_pos(pg->label_173, 273, 157);
     lv_obj_set_size(pg->label_173, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_80: 图片 | (115,161) */
+    /* image_80: 图片 | (115,161) | img: westicon.png */
     lv_obj_set_pos(pg->image_80, 115, 161);
 
 }
@@ -14225,14 +14226,14 @@ void west_menu_lang_tune(void)
     west_menu_t *pg = west_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 */
+    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
     lv_obj_set_size(pg->next, 138, 70);
 
-    /* image_72: 图片 | (24,118) */
+    /* image_72: 图片 | (24,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_72, 24, 118);
 
-    /* image_73: 图片 | (645,118) */
+    /* image_73: 图片 | (645,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_73, 645, 118);
 
     /* label_144: 标签 | (300,137) | 64x32 | font taiwanpearl_regular_30 */
@@ -14275,16 +14276,16 @@ void west_menu_lang_tune(void)
     lv_obj_set_pos(pg->label_153, 996, 39);
     lv_obj_set_size(pg->label_153, 117, 32);
 
-    /* templine3: 图片 | (252,328) */
+    /* templine3: 图片 | (252,328) | img: underline.png */
     lv_obj_set_pos(pg->templine3, 252, 328);
 
-    /* templine2: 图片 | (289,328) */
+    /* templine2: 图片 | (289,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->templine2, 289, 328);
 
-    /* hourline: 图片 | (790,328) */
+    /* hourline: 图片 | (790,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->hourline, 790, 328);
 
-    /* minline: 图片 | (993,328) */
+    /* minline: 图片 | (993,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->minline, 993, 328);
 
 }
@@ -14332,14 +14333,14 @@ void west_set_lang_tune(void)
     lv_obj_set_pos(pg->label_161, 448, 269);
     lv_obj_set_size(pg->label_161, 64, 32);
 
-    /* image_78: 图片 | (164,376) */
+    /* image_78: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_78, 164, 376);
 
     /* label_162: 标签 | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_162, 232, 385);
     lv_obj_set_size(pg->label_162, 148, 32);
 
-    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
@@ -14355,11 +14356,11 @@ void west_set_lang_tune(void)
     lv_obj_set_pos(pg->label_166, 831, 270);
     lv_obj_set_size(pg->label_166, 130, 32);
 
-    /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 144);
     lv_obj_set_size(pg->offdelay, 135, 53);
 
-    /* offcontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* offcontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offcontain, 983, 260);
     lv_obj_set_size(pg->offcontain, 135, 53);
 
@@ -14371,11 +14372,11 @@ void west_set_lang_tune(void)
     lv_obj_set_pos(pg->label_168, 1010, 39);
     lv_obj_set_size(pg->label_168, 85, 36);
 
-    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->ondelay, 983, 144);
     lv_obj_set_size(pg->ondelay, 135, 53);
 
-    /* oncontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* oncontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 260);
     lv_obj_set_size(pg->oncontain, 135, 53);
 
@@ -14408,7 +14409,7 @@ void west_setting_lang_tune(void)
     lv_obj_set_pos(pg->container_9, 0, 0);
     lv_obj_set_size(pg->container_9, 1280, 480);
 
-    /* image_81: 图片 | (115,115) */
+    /* image_81: 图片 | (115,115) | img: settingbk.png */
     lv_obj_set_pos(pg->image_81, 115, 115);
 
     /* label_175: 标签 | (242,136) | 73x30 | font taiwanpearl_regular_30 */
@@ -14427,10 +14428,10 @@ void west_setting_lang_tune(void)
     lv_obj_set_pos(pg->icon3, 300, 229);
     lv_obj_set_size(pg->icon3, 37, 30);
 
-    /* templine2: 图片 | (236,269) */
+    /* templine2: 图片 | (236,269) | img: settingline3_87x4.png */
     lv_obj_set_pos(pg->templine2, 236, 269);
 
-    /* templine3: 图片 | (223,269) */
+    /* templine3: 图片 | (223,269) | img: settingline2.png */
     lv_obj_set_pos(pg->templine3, 223, 269);
 
     /* hour: 标签 | (374,213) | 102x46 | font taiwanpearl_regular_48 */
@@ -14449,17 +14450,17 @@ void west_setting_lang_tune(void)
     lv_obj_set_pos(pg->label_182, 612, 229);
     lv_obj_set_size(pg->label_182, 37, 30);
 
-    /* hourline: 图片 | (398,269) */
+    /* hourline: 图片 | (398,269) | img: settingline3.png */
     lv_obj_set_pos(pg->hourline, 398, 269);
 
-    /* minline: 图片 | (560,269) */
+    /* minline: 图片 | (560,269) | img: settingline3.png */
     lv_obj_set_pos(pg->minline, 560, 269);
 
     /* icon2: 标签 | (288,229) | 37x30 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->icon2, 288, 229);
     lv_obj_set_size(pg->icon2, 37, 30);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -14484,11 +14485,11 @@ void west_stop_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_86: 图片 | (115,320) */
+    /* image_86: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_86, 115, 320);
 
     /* bar_9: 进度条 | (122,326) | 637x20 */
@@ -14499,11 +14500,11 @@ void west_stop_lang_tune(void)
     lv_obj_set_pos(pg->label_186, 273, 157);
     lv_obj_set_size(pg->label_186, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_87: 图片 | (115,161) */
+    /* image_87: 图片 | (115,161) | img: westicon.png */
     lv_obj_set_pos(pg->image_87, 115, 161);
 
 }
@@ -14519,14 +14520,14 @@ void west_stop_back_lang_tune(void)
     west_stop_back_t *pg = west_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* image_88: 图片 | (115,161) */
+    /* image_88: 图片 | (115,161) | img: westicon.png */
     lv_obj_set_pos(pg->image_88, 115, 161);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_89: 图片 | (115,320) */
+    /* image_89: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_89, 115, 320);
 
     /* bar_10: 进度条 | (122,326) | 637x20 */
@@ -14537,7 +14538,7 @@ void west_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_188, 273, 157);
     lv_obj_set_size(pg->label_188, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
@@ -14553,7 +14554,7 @@ void west_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_190, 895, 198);
     lv_obj_set_size(pg->label_190, 252, 36);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -14570,7 +14571,7 @@ void windchange_bbq_complete_lang_tune(void)
     windchange_bbq_complete_t *pg = windchange_bbq_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* image_159: 图片 | (115,320) */
+    /* image_159: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_159, 115, 320);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
@@ -14585,14 +14586,14 @@ void windchange_bbq_complete_lang_tune(void)
     lv_obj_set_pos(pg->label_356, 273, 157);
     lv_obj_set_size(pg->label_356, 235, 60);
 
-    /* image_160: 图片 | (845,160) */
+    /* image_160: 图片 | (845,160) | img: hotcare.png */
     lv_obj_set_pos(pg->image_160, 845, 160);
 
-    /* button_119: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* button_119: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->button_119, 609, 170);
     lv_obj_set_size(pg->button_119, 50, 43);
 
-    /* image_161: 图片 | (115,161) */
+    /* image_161: 图片 | (115,161) | img: windchange.png */
     lv_obj_set_pos(pg->image_161, 115, 161);
 
 }
@@ -14616,11 +14617,11 @@ void windchange_bbq_cooking_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_153: 图片 | (115,320) */
+    /* image_153: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_153, 115, 320);
 
     /* bar_30: 进度条 | (122,326) | 637x20 */
@@ -14631,11 +14632,11 @@ void windchange_bbq_cooking_lang_tune(void)
     lv_obj_set_pos(pg->label_347, 273, 157);
     lv_obj_set_size(pg->label_347, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_154: 图片 | (115,161) */
+    /* image_154: 图片 | (115,161) | img: windchange.png */
     lv_obj_set_pos(pg->image_154, 115, 161);
 
 }
@@ -14651,14 +14652,14 @@ void windchange_bbq_menu_lang_tune(void)
     windchange_bbq_menu_t *pg = windchange_bbq_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 */
+    /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
     lv_obj_set_size(pg->next, 138, 70);
 
-    /* image_146: 图片 | (24,118) */
+    /* image_146: 图片 | (24,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_146, 24, 118);
 
-    /* image_147: 图片 | (645,118) */
+    /* image_147: 图片 | (645,118) | img: div2bk.png */
     lv_obj_set_pos(pg->image_147, 645, 118);
 
     /* label_319: 标签 | (300,137) | 64x32 | font taiwanpearl_regular_30 */
@@ -14701,16 +14702,16 @@ void windchange_bbq_menu_lang_tune(void)
     lv_obj_set_pos(pg->label_328, 996, 39);
     lv_obj_set_size(pg->label_328, 117, 32);
 
-    /* templine3: 图片 | (252,328) */
+    /* templine3: 图片 | (252,328) | img: underline.png */
     lv_obj_set_pos(pg->templine3, 252, 328);
 
-    /* templine2: 图片 | (289,328) */
+    /* templine2: 图片 | (289,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->templine2, 289, 328);
 
-    /* hourline: 图片 | (790,328) */
+    /* hourline: 图片 | (790,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->hourline, 790, 328);
 
-    /* minline: 图片 | (993,328) */
+    /* minline: 图片 | (993,328) | img: underline_120x4.png */
     lv_obj_set_pos(pg->minline, 993, 328);
 
 }
@@ -14758,14 +14759,14 @@ void windchange_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->label_336, 448, 269);
     lv_obj_set_size(pg->label_336, 64, 32);
 
-    /* image_152: 图片 | (164,376) */
+    /* image_152: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_152, 164, 376);
 
     /* label_337: 标签 | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_337, 232, 385);
     lv_obj_set_size(pg->label_337, 148, 32);
 
-    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
@@ -14785,15 +14786,15 @@ void windchange_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->label_341, 831, 381);
     lv_obj_set_size(pg->label_341, 130, 32);
 
-    /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offpreheat, 983, 144);
     lv_obj_set_size(pg->offpreheat, 135, 53);
 
-    /* offdelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* offdelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 260);
     lv_obj_set_size(pg->offdelay, 135, 53);
 
-    /* offcontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 */
+    /* offcontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offcontain, 983, 372);
     lv_obj_set_size(pg->offcontain, 135, 53);
 
@@ -14805,15 +14806,15 @@ void windchange_bbq_set_lang_tune(void)
     lv_obj_set_pos(pg->label_343, 1010, 39);
     lv_obj_set_size(pg->label_343, 85, 36);
 
-    /* onpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 */
+    /* onpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->onpreheat, 983, 144);
     lv_obj_set_size(pg->onpreheat, 135, 53);
 
-    /* ondelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 */
+    /* ondelay: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->ondelay, 983, 260);
     lv_obj_set_size(pg->ondelay, 135, 53);
 
-    /* oncontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 */
+    /* oncontain: 按钮 | (983,372) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 372);
     lv_obj_set_size(pg->oncontain, 135, 53);
 
@@ -14846,7 +14847,7 @@ void windchange_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->container_4, 0, 0);
     lv_obj_set_size(pg->container_4, 1280, 480);
 
-    /* image_16: 图片 | (115,115) */
+    /* image_16: 图片 | (115,115) | img: settingbk.png */
     lv_obj_set_pos(pg->image_16, 115, 115);
 
     /* label_32: 标签 | (242,136) | 73x30 | font taiwanpearl_regular_30 */
@@ -14865,10 +14866,10 @@ void windchange_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->icon3, 300, 229);
     lv_obj_set_size(pg->icon3, 37, 30);
 
-    /* templine2: 图片 | (236,269) */
+    /* templine2: 图片 | (236,269) | img: settingline3_87x4.png */
     lv_obj_set_pos(pg->templine2, 236, 269);
 
-    /* templine3: 图片 | (223,269) */
+    /* templine3: 图片 | (223,269) | img: settingline2.png */
     lv_obj_set_pos(pg->templine3, 223, 269);
 
     /* hour: 标签 | (374,213) | 102x46 | font taiwanpearl_regular_48 */
@@ -14887,17 +14888,17 @@ void windchange_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->label_39, 612, 229);
     lv_obj_set_size(pg->label_39, 37, 30);
 
-    /* hourline: 图片 | (398,269) */
+    /* hourline: 图片 | (398,269) | img: settingline3.png */
     lv_obj_set_pos(pg->hourline, 398, 269);
 
-    /* minline: 图片 | (560,269) */
+    /* minline: 图片 | (560,269) | img: settingline3.png */
     lv_obj_set_pos(pg->minline, 560, 269);
 
     /* icon2: 标签 | (288,229) | 37x30 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->icon2, 288, 229);
     lv_obj_set_size(pg->icon2, 37, 30);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
@@ -14922,11 +14923,11 @@ void windchange_bbq_stop_lang_tune(void)
     lv_obj_set_pos(pg->timelabel, 907, 157);
     lv_obj_set_size(pg->timelabel, 235, 60);
 
-    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_155: 图片 | (115,320) */
+    /* image_155: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_155, 115, 320);
 
     /* bar_31: 进度条 | (122,326) | 637x20 */
@@ -14937,11 +14938,11 @@ void windchange_bbq_stop_lang_tune(void)
     lv_obj_set_pos(pg->label_350, 273, 157);
     lv_obj_set_size(pg->label_350, 235, 60);
 
-    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little, 609, 170);
     lv_obj_set_size(pg->little, 50, 43);
 
-    /* image_156: 图片 | (115,161) */
+    /* image_156: 图片 | (115,161) | img: windchange.png */
     lv_obj_set_pos(pg->image_156, 115, 161);
 
 }
@@ -14957,14 +14958,14 @@ void windchange_bbq_stop_back_lang_tune(void)
     windchange_bbq_stop_back_t *pg = windchange_bbq_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* image_157: 图片 | (115,161) */
+    /* image_157: 图片 | (115,161) | img: windchange.png */
     lv_obj_set_pos(pg->image_157, 115, 161);
 
     /* status: 标签 | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_158: 图片 | (115,320) */
+    /* image_158: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_158, 115, 320);
 
     /* bar_32: 进度条 | (122,326) | 637x20 */
@@ -14975,7 +14976,7 @@ void windchange_bbq_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_352, 273, 157);
     lv_obj_set_size(pg->label_352, 235, 60);
 
-    /* button_117: 按钮 | (609,170) | 50x43 | font montserratmedium_16 */
+    /* button_117: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->button_117, 609, 170);
     lv_obj_set_size(pg->button_117, 50, 43);
 
@@ -14991,7 +14992,7 @@ void windchange_bbq_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->label_354, 895, 198);
     lv_obj_set_size(pg->label_354, 252, 36);
 
-    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 */
+    /* sure: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->sure, 959, 295);
     lv_obj_set_size(pg->sure, 129, 83);
 
