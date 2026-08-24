@@ -189,7 +189,7 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "土司", "Toast" },
         { "均匀分布在深盘中\n现在将食物放在第3层\n使用深盘", "Arrange evenly in a deep tray\nPlace food on rack 3\nUse a deep tray" },
         { "型号", "Model" },
-        { "增加蒸汽：开/关/低/中/高", "Added Steam：ON/OFF/Low/Mid /High" },
+        { "增加蒸汽：开/关/低/中/高", "Added Steam: ON/OFF/Low/Mid/High" },
         { "声音", "Sound" },
         { "声音设置", "Sound Settings" },
         { "多段烹饪", "Multi Stage Cooking" },
@@ -485,13 +485,29 @@ int is_english(void)
     return g_lang_en;
 }
 
+/* ℃(U+2103, UTF-8 E2 84 83, 3字节) → °C(C2 B0 43, 3字节)：等长替换，英文模式统一输出 */
+static const char *tr_celsius(const char *en)
+{
+    if (!strstr(en, "\xE2\x84\x83")) return en;
+    static char tbuf[256];   /* 最长英文表值 194 字节，256 安全 */
+    size_t len = strlen(en);
+    if (len >= sizeof(tbuf)) return en;
+    memcpy(tbuf, en, len + 1);
+    char *p = tbuf;
+    while ((p = strstr(p, "\xE2\x84\x83")) != NULL) {
+        p[0] = (char)0xC2; p[1] = (char)0xB0; p[2] = 'C';
+        p += 3;
+    }
+    return tbuf;
+}
+
 const char *tr(const char *zh)
 {
     if (!zh) return zh;
     if (is_english()) {
         for (int i = 0; i < s_table_n; i++)
             if (s_table[i].zh[0] == zh[0] && strcmp(s_table[i].zh, zh) == 0)
-                return s_table[i].en;
+                return tr_celsius(s_table[i].en);
     }
     return zh;   /* 非英文或未查到的中文,原样返回 */
 }

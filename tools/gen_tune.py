@@ -3,7 +3,7 @@
 """生成 nav_lang_tune.c：全页面英文排版基准
 数据来自生成文件（中文布局原值）：pos/size/font/align 调用 + 标签文本/图片源/背景图 注释
 用法: python3 gen_tune.py <项目根> <映射json> <输出文件>"""
-import re, sys, json, os
+import re, sys, json, os, glob
 
 ROOT = sys.argv[1]
 MAPPING = json.load(open(sys.argv[2]))
@@ -29,6 +29,20 @@ def clean_txt(t):
     if len(t) > 34:
         t = t[:34] + '…'
     return t
+
+def collect_dynamic_objs():
+    """扫描 custom 代码运行时 lv_obj_set_pos 的对象名集合（动态定位对象，
+    tune 函数不设置其 pos，防止显示时把业务代码动态位置重置回生成初始值）"""
+    dyn = set()
+    for fn in glob.glob(f"{ROOT}/ui_builder/custom/*.c"):
+        if fn.endswith('nav_lang_tune.c') or fn.endswith('nav_lang.c'):
+            continue
+        src = open(fn, encoding='utf-8', errors='replace').read()
+        for m in re.finditer(r'lv_obj_set_pos\((\w+)->(\w+)\s*,', src):
+            dyn.add(m.group(2))
+    return dyn
+
+DYNAMIC = collect_dynamic_objs()
 
 def extract_block_data(fn):
     """解析生成文件，返回 [{name, type, pos, size, font, align, img, bg, txt}]（按成员）"""
@@ -123,12 +137,15 @@ def gen_function(base, pages):
             desc.append(f"img: {o['img']}")
         if o['bg']:
             desc.append(f"bg: {o['bg']}")
+        dynamic = o['name'] in DYNAMIC
+        if dynamic:
+            desc.append(f"动态定位(勿改)")
         L.append(f"    /* {o['name']}: {' | '.join(desc)} */")
-        if o['pos']:
+        if o['pos'] and not dynamic:
             L.append(f"    lv_obj_set_pos(pg->{o['name']}, {o['pos'][0]}, {o['pos'][1]});")
         if o['size']:
             L.append(f"    lv_obj_set_size(pg->{o['name']}, {o['size'][0]}, {o['size'][1]});")
-        if o['align']:
+        if o['align'] and not dynamic:
             L.append(f"    lv_obj_align(pg->{o['name']}, {o['align'][0]}, {o['align'][1]}, {o['align'][2]});")
         if not (o['pos'] or o['size'] or o['align']):
             L.append(f"    /* (无位置/尺寸设置) */")

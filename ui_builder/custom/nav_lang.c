@@ -109,6 +109,12 @@ static int lang_fuzzy_status(lv_obj_t *obj, const char *txt, char *buf, int buf_
         memmove(bp + 4, bp + 6, strlen(bp + 6) + 1);
         bp += 4;
     }
+    /* ℃→°C（等长替换，与 tr() 输出一致） */
+    bp = buf;
+    while ((bp = strstr(bp, "\xE2\x84\x83")) != NULL) {
+        bp[0] = (char)0xC2; bp[1] = (char)0xB0; bp[2] = 'C';
+        bp += 3;
+    }
     return 1;
 }
 
@@ -158,14 +164,15 @@ static void lang_apply_obj(lv_obj_t *obj)
             }
         }
         /* pass 2: 字体切换（taiwanpearl → aktivgrotesk，按字号一一映射）
-         * 仅当文本全为 ASCII 才切换——aktivgrotesk 只含 0x20-0x7E，
-         * 含 ℃/°↑↓/中文等符号的文本保留 taiwanpearl（全字形）避免方块 */
+         * 英文模式: 不含中文(CJK)的文本全部切换 aktivgrotesk（含 °↑↓，℃ 已替换为 °C）；
+         * 未翻译中文残留(CJK, UTF-8 首字节 E4-E9)不切，保持 taiwanpearl 防方块 */
         const lv_font_t *f = lv_obj_get_style_text_font(obj, 0);
         const char *tp = lv_label_get_text(obj);
-        bool ascii_only = true;
-        for (const char *q = tp; q && *q; q++)
-            if ((unsigned char)*q > 0x7E) { ascii_only = false; break; }
-        if (!ascii_only) return;
+        bool has_cjk = false;
+        for (const char *q = tp; q && *q; q++) {
+            if ((unsigned char)*q >= 0xE4 && (unsigned char)*q <= 0xE9) { has_cjk = true; break; }
+        }
+        if (has_cjk) return;
         if (f == &c_taiwanpearl_regular_128)
             lv_obj_set_style_text_font(obj, &c_aktivgroteskmedium_128, LV_PART_MAIN | 0);
         else if (f == &c_taiwanpearl_regular_72)
