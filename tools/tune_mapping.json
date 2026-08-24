@@ -1,0 +1,804 @@
+{
+ "air_menu": [
+  "PAGE_AIR_MENU"
+ ],
+ "air_set": [
+  "PAGE_AIR_SET"
+ ],
+ "air_cooking": [
+  "PAGE_AIR_COOKING"
+ ],
+ "air_setting": [
+  "PAGE_AIR_SETTING"
+ ],
+ "air_stop": [
+  "PAGE_AIR_STOP"
+ ],
+ "air_stop_back": [
+  "PAGE_AIR_STOP_BACK"
+ ],
+ "air_complete": [
+  "PAGE_AIR_COMPLETE"
+ ],
+ "bottom_bbq_menu": [
+  "PAGE_BOTTOM_BBQ_MENU"
+ ],
+ "bottom_bbq_set": [
+  "PAGE_BOTTOM_BBQ_SET"
+ ],
+ "bottom_bbq_cooking": [
+  "PAGE_BOTTOM_BBQ_COOKING"
+ ],
+ "bottom_bbq_setting": [
+  "PAGE_BOTTOM_BBQ_SETTING"
+ ],
+ "bottom_bbq_stop": [
+  "PAGE_BOTTOM_BBQ_STOP"
+ ],
+ "bottom_bbq_stop_back": [
+  "PAGE_BOTTOM_BBQ_STOP_BACK"
+ ],
+ "bottom_bbq_complete": [
+  "PAGE_BOTTOM_BBQ_COMPLETE"
+ ],
+ "waitmenu_24": [
+  "PAGE_WAITMENU_24"
+ ],
+ "bottom_bbq_menu_probe": [
+  "PAGE_BOTTOM_BBQ_MENU_PROBE"
+ ],
+ "bottom_bbq_set_probe": [
+  "PAGE_BOTTOM_BBQ_SET_PROBE"
+ ],
+ "bottom_bbq_cooking_probe": [
+  "PAGE_BOTTOM_BBQ_COOKING_PROBE"
+ ],
+ "bottom_bbq_stop_probe": [
+  "PAGE_BOTTOM_BBQ_STOP_PROBE"
+ ],
+ "bottom_bbq_stop_back_probe": [
+  "PAGE_BOTTOM_BBQ_STOP_BACK_PROBE"
+ ],
+ "bottom_bbq_complete_probe": [
+  "PAGE_BOTTOM_BBQ_COMPLETE_PROBE"
+ ],
+ "bread_menu": [
+  "PAGE_BREAD_MENU"
+ ],
+ "bread_set": [
+  "PAGE_BREAD_SET"
+ ],
+ "bread_cooking": [
+  "PAGE_BREAD_COOKING"
+ ],
+ "bread_setting": [
+  "PAGE_BREAD_SETTING"
+ ],
+ "bread_stop": [
+  "PAGE_BREAD_STOP"
+ ],
+ "bread_stop_back": [
+  "PAGE_BREAD_STOP_BACK"
+ ],
+ "bread_complete": [
+  "PAGE_BREAD_COMPLETE"
+ ],
+ "central_bbq_menu": [
+  "PAGE_CENTRAL_BBQ_MENU"
+ ],
+ "central_bbq_set": [
+  "PAGE_CENTRAL_BBQ_SET"
+ ],
+ "central_bbq_cooking": [
+  "PAGE_CENTRAL_BBQ_COOKING"
+ ],
+ "central_bbq_setting": [
+  "PAGE_CENTRAL_BBQ_SETTING"
+ ],
+ "central_bbq_stop": [
+  "PAGE_CENTRAL_BBQ_STOP"
+ ],
+ "central_bbq_stop_back": [
+  "PAGE_CENTRAL_BBQ_STOP_BACK"
+ ],
+ "central_bbq_complete": [
+  "PAGE_CENTRAL_BBQ_COMPLETE"
+ ],
+ "chip_menu": [
+  "PAGE_CHIP_MENU"
+ ],
+ "chip_set": [
+  "PAGE_CHIP_SET"
+ ],
+ "chip_cooking": [
+  "PAGE_CHIP_COOKING"
+ ],
+ "chip_setting": [
+  "PAGE_CHIP_SETTING"
+ ],
+ "chip_stop": [
+  "PAGE_CHIP_STOP"
+ ],
+ "chip_stop_back": [
+  "PAGE_CHIP_STOP_BACK"
+ ],
+ "chip_complete": [
+  "PAGE_CHIP_COMPLETE"
+ ],
+ "hotclean_menu": [
+  "PAGE_HOTCLEAN_MENU"
+ ],
+ "clean_menu": [
+  "PAGE_CLEAN_MENU"
+ ],
+ "cook_menu_tz": [
+  "PAGE_COOK_MENU_TZ"
+ ],
+ "cookie_menu": [
+  "PAGE_COOKIE_MENU"
+ ],
+ "cookie_set": [
+  "PAGE_COOKIE_SET"
+ ],
+ "cookie_cooking": [
+  "PAGE_COOKIE_COOKING"
+ ],
+ "cookie_setting": [
+  "PAGE_COOKIE_SETTING"
+ ],
+ "cookie_stop": [
+  "PAGE_COOKIE_STOP"
+ ],
+ "cookie_stop_back": [
+  "PAGE_COOKIE_STOP_BACK"
+ ],
+ "cookie_complete": [
+  "PAGE_COOKIE_COMPLETE"
+ ],
+ "corn_menu": [
+  "PAGE_CORN_MENU"
+ ],
+ "corn_set": [
+  "PAGE_CORN_SET"
+ ],
+ "corn_cooking": [
+  "PAGE_CORN_COOKING"
+ ],
+ "corn_setting": [
+  "PAGE_CORN_SETTING"
+ ],
+ "corn_stop": [
+  "PAGE_CORN_STOP"
+ ],
+ "corn_stop_back": [
+  "PAGE_CORN_STOP_BACK"
+ ],
+ "corn_complete": [
+  "PAGE_CORN_COMPLETE"
+ ],
+ "custom_menu": [
+  "PAGE_CUSTOM_MENU"
+ ],
+ "custom_set": [
+  "PAGE_CUSTOM_SET"
+ ],
+ "custom_cooking": [
+  "PAGE_CUSTOM_COOKING"
+ ],
+ "custom_setting": [
+  "PAGE_CUSTOM_SETTING"
+ ],
+ "custom_stop": [
+  "PAGE_CUSTOM_STOP"
+ ],
+ "custom_stop_back": [
+  "PAGE_CUSTOM_STOP_BACK"
+ ],
+ "custom_complete": [
+  "PAGE_CUSTOM_COMPLETE"
+ ],
+ "cook4menu": [
+  "PAGE_COOK4_MENU"
+ ],
+ "delayset": [
+  "PAGE_DELAYSET"
+ ],
+ "frozencookpage": [
+  "PAGE_FROZEN_COOK"
+ ],
+ "heatcontain_menu": [
+  "PAGE_HEATCONTAIN_MENU"
+ ],
+ "heatcontain_set": [
+  "PAGE_HEATCONTAIN_SET"
+ ],
+ "heatcontain_cooking": [
+  "PAGE_HEATCONTAIN_COOKING"
+ ],
+ "heatcontain_setting": [
+  "PAGE_HEATCONTAIN_SETTING"
+ ],
+ "heatcontain_stop": [
+  "PAGE_HEATCONTAIN_STOP"
+ ],
+ "heatcontain_stop_back": [
+  "PAGE_HEATCONTAIN_STOP_BACK"
+ ],
+ "heatcontain_complete": [
+  "PAGE_HEATCONTAIN_COMPLETE"
+ ],
+ "hot_bbq_menu": [
+  "PAGE_HOT_BBQ_MENU"
+ ],
+ "hot_bbq_set": [
+  "PAGE_HOT_BBQ_SET"
+ ],
+ "hot_bbq_cooking": [
+  "PAGE_HOT_BBQ_COOKING"
+ ],
+ "hot_bbq_setting": [
+  "PAGE_HOT_BBQ_SETTING"
+ ],
+ "hot_bbq_stop": [
+  "PAGE_HOT_BBQ_STOP"
+ ],
+ "hot_bbq_stop_back": [
+  "PAGE_HOT_BBQ_STOP_BACK"
+ ],
+ "hot_bbq_complete": [
+  "PAGE_HOT_BBQ_COMPLETE"
+ ],
+ "hot_bbq_menu_probe": [
+  "PAGE_HOT_BBQ_MENU_PROBE"
+ ],
+ "hot_bbq_set_probe": [
+  "PAGE_HOT_BBQ_SET_PROBE"
+ ],
+ "hot_bbq_cooking_probe": [
+  "PAGE_HOT_BBQ_COOKING_PROBE"
+ ],
+ "hot_bbq_stop_probe": [
+  "PAGE_HOT_BBQ_STOP_PROBE"
+ ],
+ "hot_bbq_stop_back_probe": [
+  "PAGE_HOT_BBQ_STOP_BACK_PROBE"
+ ],
+ "hot_bbq_complete_probe": [
+  "PAGE_HOT_BBQ_COMPLETE_PROBE"
+ ],
+ "hotcleanhigh_set": [
+  "PAGE_HOTCLEANHIGH_SET"
+ ],
+ "hotcleanhigh_cooking": [
+  "PAGE_HOTCLEANHIGH_COOKING"
+ ],
+ "hotcleanhigh_stop": [
+  "PAGE_HOTCLEANHIGH_STOP"
+ ],
+ "hotcleanhigh_stop_back": [
+  "PAGE_HOTCLEANHIGH_STOP_BACK"
+ ],
+ "hotcleanhigh_cooling": [
+  "PAGE_HOTCLEANHIGH_COOLING"
+ ],
+ "hotcleanhigh_complete": [
+  "PAGE_HOTCLEANHIGH_COMPLETE"
+ ],
+ "hotcleanmiddle_set": [
+  "PAGE_HOTCLEANMIDDLE_SET"
+ ],
+ "hotcleanmiddle_cooking": [
+  "PAGE_HOTCLEANMIDDLE_COOKING"
+ ],
+ "hotcleanmiddle_stop": [
+  "PAGE_HOTCLEANMIDDLE_STOP"
+ ],
+ "hotcleanmiddle_stop_back": [
+  "PAGE_HOTCLEANMIDDLE_STOP_BACK"
+ ],
+ "hotcleanmiddle_cooling": [
+  "PAGE_HOTCLEANMIDDLE_COOLING"
+ ],
+ "hotcleanmiddle_complete": [
+  "PAGE_HOTCLEANMIDDLE_COMPLETE"
+ ],
+ "hotcleansave_set": [
+  "PAGE_HOTCLEANSAVE_SET"
+ ],
+ "hotcleansave_cooking": [
+  "PAGE_HOTCLEANSAVE_COOKING"
+ ],
+ "hotcleansave_stop": [
+  "PAGE_HOTCLEANSAVE_STOP"
+ ],
+ "hotcleansave_stop_back": [
+  "PAGE_HOTCLEANSAVE_STOP_BACK"
+ ],
+ "hotcleansave_cooling": [
+  "PAGE_HOTCLEANSAVE_COOLING"
+ ],
+ "hotcleansave_complete": [
+  "PAGE_HOTCLEANSAVE_COMPLETE"
+ ],
+ "hotwind_bbq_menu": [
+  "PAGE_HOTWIND_BBQ_MENU"
+ ],
+ "hotwind_bbq_set": [
+  "PAGE_HOTWIND_BBQ_SET"
+ ],
+ "hotwind_bbq_cooking": [
+  "PAGE_HOTWIND_BBQ_COOKING"
+ ],
+ "hotwind_bbq_setting": [
+  "PAGE_HOTWIND_BBQ_SETTING"
+ ],
+ "hotwind_bbq_stop": [
+  "PAGE_HOTWIND_BBQ_STOP"
+ ],
+ "hotwind_bbq_stop_back": [
+  "PAGE_HOTWIND_BBQ_STOP_BACK"
+ ],
+ "hotwind_bbq_complete": [
+  "PAGE_HOTWIND_BBQ_COMPLETE"
+ ],
+ "cookmenu": [
+  "PAGE_COOKMENU"
+ ],
+ "special_menu": [
+  "PAGE_SPECIAL_MENU"
+ ],
+ "updown_bbq_menu": [
+  "PAGE_UPDOWN_BBQ_MENU"
+ ],
+ "updown_bbq_set": [
+  "PAGE_UPDOWN_BBQ_SET"
+ ],
+ "updown_bbq_cooking": [
+  "PAGE_UPDOWN_BBQ_COOKING"
+ ],
+ "updown_bbq_complete": [
+  "PAGE_UPDOWN_BBQ_COMPLETE"
+ ],
+ "updown_bbq_menu_top": [
+  "PAGE_UPDOWN_BBQ_MENU_TOP"
+ ],
+ "updown_bbq_menu_low": [
+  "PAGE_UPDOWN_BBQ_MENU_LOW"
+ ],
+ "color_cookoing": [
+  "PAGE_COLOR_COOKING"
+ ],
+ "colorcooking_complete": [
+  "PAGE_COLOR_COOKING_COMPLETE"
+ ],
+ "major_menu": [
+  "PAGE_MAJOR_MENU"
+ ],
+ "extra_color": [
+  "PAGE_EXTRA_COLOR"
+ ],
+ "lasagna_menu": [
+  "PAGE_LASAGNA_MENU"
+ ],
+ "lasagna_set": [
+  "PAGE_LASAGNA_SET"
+ ],
+ "lasagna_cooking": [
+  "PAGE_LASAGNA_COOKING"
+ ],
+ "lasagna_setting": [
+  "PAGE_LASAGNA_SETTING"
+ ],
+ "lasagna_stop": [
+  "PAGE_LASAGNA_STOP"
+ ],
+ "lasagna_stop_back": [
+  "PAGE_LASAGNA_STOP_BACK"
+ ],
+ "lasagna_complete": [
+  "PAGE_LASAGNA_COMPLETE"
+ ],
+ "major_menu_tz": [
+  "PAGE_MAJOR_MENU_TZ"
+ ],
+ "menu_menu": [
+  "PAGE_MENU_COOK_MENU"
+ ],
+ "menu_set": [
+  "PAGE_MENU_COOK_SET"
+ ],
+ "menu_cooking": [
+  "PAGE_MENU_COOK_COOKING"
+ ],
+ "menu_setting": [
+  "PAGE_MENU_COOK_SETTING"
+ ],
+ "menu_stop": [
+  "PAGE_MENU_COOK_STOP"
+ ],
+ "menu_stop_back": [
+  "PAGE_MENU_COOK_STOP_BACK"
+ ],
+ "menu_complete": [
+  "PAGE_MENU_COOK_COMPLETE"
+ ],
+ "pizza_menu": [
+  "PAGE_PIZZA_MENU"
+ ],
+ "pizza_set": [
+  "PAGE_PIZZA_SET"
+ ],
+ "pizza_cooking": [
+  "PAGE_PIZZA_COOKING"
+ ],
+ "pizza_setting": [
+  "PAGE_PIZZA_SETTING"
+ ],
+ "pizza_stop": [
+  "PAGE_PIZZA_STOP"
+ ],
+ "pizza_stop_back": [
+  "PAGE_PIZZA_STOP_BACK"
+ ],
+ "pizza_complete": [
+  "PAGE_PIZZA_COMPLETE"
+ ],
+ "pizza3_menu": [
+  "PAGE_PIZZA3_MENU"
+ ],
+ "pizza3_set": [
+  "PAGE_PIZZA3_SET"
+ ],
+ "pizza3_cooking": [
+  "PAGE_PIZZA3_COOKING"
+ ],
+ "pizza3_setting": [
+  "PAGE_PIZZA3_SETTING"
+ ],
+ "pizza3_stop": [
+  "PAGE_PIZZA3_STOP"
+ ],
+ "pizza3_stop_back": [
+  "PAGE_PIZZA3_STOP_BACK"
+ ],
+ "pizza3_complete": [
+  "PAGE_PIZZA3_COMPLETE"
+ ],
+ "pizza_2_menu": [
+  "PAGE_PIZZA_2_MENU"
+ ],
+ "pizza_2_set": [
+  "PAGE_PIZZA_2_SET"
+ ],
+ "pizza_2_cooking": [
+  "PAGE_PIZZA_2_COOKING"
+ ],
+ "pizza_2_setting": [
+  "PAGE_PIZZA_2_SETTING"
+ ],
+ "pizza_2_stop": [
+  "PAGE_PIZZA_2_STOP"
+ ],
+ "pizza_2_stop_back": [
+  "PAGE_PIZZA_2_STOP_BACK"
+ ],
+ "pizza_2_complete": [
+  "PAGE_PIZZA_2_COMPLETE"
+ ],
+ "preheatmenu": [
+  "PAGE_PREHEAT_MENU"
+ ],
+ "preheatcooking": [
+  "PAGE_PREHEAT_COOKING"
+ ],
+ "preheatstop": [
+  "PAGE_PREHEAT_STOP"
+ ],
+ "preheat_stop_back": [
+  "PAGE_PREHEAT_STOP_BACK"
+ ],
+ "preheatcomplete": [
+  "PAGE_PREHEAT_COMPLETE"
+ ],
+ "probetip": [
+  "PAGE_PROBETIP"
+ ],
+ "rising_menu": [
+  "PAGE_RISING_MENU"
+ ],
+ "rising_set": [
+  "PAGE_RISING_SET"
+ ],
+ "rising_cooking": [
+  "PAGE_RISING_COOKING"
+ ],
+ "rising_setting": [
+  "PAGE_RISING_SETTING"
+ ],
+ "rising_stop": [
+  "PAGE_RISING_STOP"
+ ],
+ "rising_stop_back": [
+  "PAGE_RISING_STOP_BACK"
+ ],
+ "rising_complete": [
+  "PAGE_RISING_COMPLETE"
+ ],
+ "save_bbq_menu": [
+  "PAGE_SAVE_BBQ_MENU"
+ ],
+ "save_bbq_set": [
+  "PAGE_SAVE_BBQ_SET"
+ ],
+ "save_bbq_cooking": [
+  "PAGE_SAVE_BBQ_COOKING"
+ ],
+ "save_bbq_setting": [
+  "PAGE_SAVE_BBQ_SETTING"
+ ],
+ "save_bbq_stop": [
+  "PAGE_SAVE_BBQ_STOP"
+ ],
+ "save_bbq_stop_back": [
+  "PAGE_SAVE_BBQ_STOP_BACK"
+ ],
+ "save_bbq_complete": [
+  "PAGE_SAVE_BBQ_COMPLETE"
+ ],
+ "screen_SET": [
+  "PAGE_SCREEN_SET"
+ ],
+ "updown_bbq_setting": [
+  "PAGE_UPDOWN_BBQ_SETTING"
+ ],
+ "cake6menu": [
+  "PAGE_CAKE6MENU"
+ ],
+ "chick6menu": [
+  "PAGE_CHICK6MENU"
+ ],
+ "chickenmenu": [
+  "PAGE_CHICKENMENU"
+ ],
+ "duckmenu": [
+  "PAGE_DUCK6MENU"
+ ],
+ "vegetablemenu": [
+  "PAGE_VEGETABLEMENU"
+ ],
+ "probeneedtip": [
+  "PAGE_PROBENEEDTIP"
+ ],
+ "chickencooking": [
+  "PAGE_CHICKENCOOKING"
+ ],
+ "somecook_cooking": [
+  "PAGE_SIX_COOKING",
+  "PAGE_SOMECOOK_COOKING"
+ ],
+ "descriptionmenu": [
+  "PAGE_DESCRIPTIONMENU"
+ ],
+ "risingpage": [
+  "PAGE_RISINGPAGE"
+ ],
+ "sixmenutz": [
+  "PAGE_SIXMENUTZ"
+ ],
+ "chickmenutz": [
+  "PAGE_CHICKMENUTZ"
+ ],
+ "sixmenu": [
+  "PAGE_SIXMENU"
+ ],
+ "bread6menu": [
+  "PAGE_BREAD6MENU"
+ ],
+ "sixop3page": [
+  "PAGE_SIXOP3PAGE"
+ ],
+ "slowcook_menu": [
+  "PAGE_SLOWCOOK_MENU"
+ ],
+ "slowcook_set": [
+  "PAGE_SLOWCOOK_SET"
+ ],
+ "slowcook_cooking": [
+  "PAGE_SLOWCOOK_COOKING"
+ ],
+ "slowcook_setting": [
+  "PAGE_SLOWCOOK_SETTING"
+ ],
+ "slowcook_stop": [
+  "PAGE_SLOWCOOK_STOP"
+ ],
+ "slowcook_stop_back": [
+  "PAGE_SLOWCOOK_STOP_BACK"
+ ],
+ "slowcook_complete": [
+  "PAGE_SLOWCOOK_COMPLETE"
+ ],
+ "slowcook_menu_probe": [
+  "PAGE_SLOWCOOK_MENU_PROBE"
+ ],
+ "slowcook_set_probe": [
+  "PAGE_SLOWCOOK_SET_PROBE"
+ ],
+ "slowcook_cooking_probe": [
+  "PAGE_SLOWCOOK_COOKING_PROBE"
+ ],
+ "slowcook_stop_probe": [
+  "PAGE_SLOWCOOK_STOP_PROBE"
+ ],
+ "slowcook_stop_back_probe": [
+  "PAGE_SLOWCOOK_STOP_BACK_PROBE"
+ ],
+ "slowcook_complete_probe": [
+  "PAGE_SLOWCOOK_COMPLETE_PROBE"
+ ],
+ "stepset": [
+  "PAGE_STEPSET"
+ ],
+ "special_menu_tz": [
+  "PAGE_SPECIAL_MENU_TZ"
+ ],
+ "updown_bbq_stop": [
+  "PAGE_UPDOWN_BBQ_STOP"
+ ],
+ "updown_bbq_stop_back": [
+  "PAGE_UPDOWN_BBQ_STOP_BACK"
+ ],
+ "color_stop": [
+  "PAGE_COLOR_STOP"
+ ],
+ "color_stop_back": [
+  "PAGE_COLOR_STOP_BACK"
+ ],
+ "strudel_menu": [
+  "PAGE_STRUDEL_MENU"
+ ],
+ "strudel_set": [
+  "PAGE_STRUDEL_SET"
+ ],
+ "strudel_cooking": [
+  "PAGE_STRUDEL_COOKING"
+ ],
+ "strudel_setting": [
+  "PAGE_STRUDEL_SETTING"
+ ],
+ "strudel_stop": [
+  "PAGE_STRUDEL_STOP"
+ ],
+ "strudel_stop_back": [
+  "PAGE_STRUDEL_STOP_BACK"
+ ],
+ "strudel_complete": [
+  "PAGE_STRUDEL_COMPLETE"
+ ],
+ "temptip": [
+  "PAGE_TEMPTIP"
+ ],
+ "toastcolor": [
+  "PAGE_TOASTCOLOR"
+ ],
+ "top_bbq_menu": [
+  "PAGE_TOP_BBQ_MENU"
+ ],
+ "top_bbq_set": [
+  "PAGE_TOP_BBQ_SET"
+ ],
+ "top_bbq_cooking": [
+  "PAGE_TOP_BBQ_COOKING"
+ ],
+ "top_bbq_setting": [
+  "PAGE_TOP_BBQ_SETTING"
+ ],
+ "top_bbq_stop": [
+  "PAGE_TOP_BBQ_STOP"
+ ],
+ "top_bbq_stop_back": [
+  "PAGE_TOP_BBQ_STOP_BACK"
+ ],
+ "top_bbq_complete": [
+  "PAGE_TOP_BBQ_COMPLETE"
+ ],
+ "unfrozen_menu": [
+  "PAGE_UNFROZEN_MENU"
+ ],
+ "unfrozen_set": [
+  "PAGE_UNFROZEN_SET"
+ ],
+ "unfrozen_cooking": [
+  "PAGE_UNFROZEN_COOKING"
+ ],
+ "unfrozen_setting": [
+  "PAGE_UNFROZEN_SETTING"
+ ],
+ "unfrozen_stop": [
+  "PAGE_UNFROZEN_STOP"
+ ],
+ "unfrozen_stop_back": [
+  "PAGE_UNFROZEN_STOP_BACK"
+ ],
+ "unfrozen_complete": [
+  "PAGE_UNFROZEN_COMPLETE"
+ ],
+ "updown_bbq_menu_probe": [
+  "PAGE_UPDOWN_BBQ_MENU_PROBE"
+ ],
+ "updown_bbq_set_probe": [
+  "PAGE_UPDOWN_BBQ_SET_PROBE"
+ ],
+ "updown_bbq_cooking_probe": [
+  "PAGE_UPDOWN_BBQ_COOKING_PROBE"
+ ],
+ "updown_bbq_stop_probe": [
+  "PAGE_UPDOWN_BBQ_STOP_PROBE"
+ ],
+ "updown_bbq_stop_back_probe": [
+  "PAGE_UPDOWN_BBQ_STOP_BACK_PROBE"
+ ],
+ "updown_bbq_complete_probe": [
+  "PAGE_UPDOWN_BBQ_COMPLETE_PROBE"
+ ],
+ "waterclean_set": [
+  "PAGE_WATER_CLEAN_SET"
+ ],
+ "waterclean_cooking": [
+  "PAGE_WATER_CLEAN_COOKING"
+ ],
+ "waterclean_stop": [
+  "PAGE_WATER_CLEAN_STOP"
+ ],
+ "waterclean_stop_back": [
+  "PAGE_WATER_CLEAN_STOP_BACK"
+ ],
+ "waterclean_complete": [
+  "PAGE_WATER_CLEAN_COMPLETE"
+ ],
+ "west_menu": [
+  "PAGE_WEST_MENU"
+ ],
+ "west_set": [
+  "PAGE_WEST_SET"
+ ],
+ "west_cooking": [
+  "PAGE_WEST_COOKING"
+ ],
+ "west_setting": [
+  "PAGE_WEST_SETTING"
+ ],
+ "west_stop": [
+  "PAGE_WEST_STOP"
+ ],
+ "west_stop_back": [
+  "PAGE_WEST_STOP_BACK"
+ ],
+ "west_complete": [
+  "PAGE_WEST_COMPLETE"
+ ],
+ "windchange_bbq_menu": [
+  "PAGE_WINDCHANGE_BBQ_MENU"
+ ],
+ "windchange_bbq_set": [
+  "PAGE_WINDCHANGE_BBQ_SET"
+ ],
+ "windchange_bbq_cooking": [
+  "PAGE_WINDCHANGE_BBQ_COOKING"
+ ],
+ "windchange_bbq_setting": [
+  "PAGE_WINDCHANGE_BBQ_SETTING"
+ ],
+ "windchange_bbq_stop": [
+  "PAGE_WINDCHANGE_BBQ_STOP"
+ ],
+ "windchange_bbq_stop_back": [
+  "PAGE_WINDCHANGE_BBQ_STOP_BACK"
+ ],
+ "windchange_bbq_complete": [
+  "PAGE_WINDCHANGE_BBQ_COMPLETE"
+ ],
+ "somecook": [
+  "PAGE_SOMECOOK"
+ ]
+}
