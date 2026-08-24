@@ -211,12 +211,12 @@ const char *six_chick_name(void)
     if (g_six_bread_type == SIX_FISH_WHOLEFISH) return tr("烤全鱼");
     if (six_chick_is_seafood()) {
         const seafood_dish_t *sd = seafood_dish_cfg();
-        return sd ? sd->name : "烤海鲜";
+        return sd ? tr(sd->name) : tr("烤海鲜");
     }
     const chick_dish_t *c = chick_dish_cfg();
-    if (c) return c->name;
+    if (c) return tr(c->name);
     const chick_probe_t *p = chick_probe_cfg();
-    return p ? p->name : "烤全鸡";
+    return p ? tr(p->name) : tr("烤全鸡");
 }
 
 uint8_t six_chick_mode(void) {
