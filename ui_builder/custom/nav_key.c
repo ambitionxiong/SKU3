@@ -170,7 +170,6 @@ void process_key(uint8_t key)
             major_menu_create(&ui_manager);
             groups_create();
             bind_events();
-            major_menu_apply_lang();   /* i18n */
             current_group = g_major_menu;
             lang_scr_load_anim(major_menu_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0,

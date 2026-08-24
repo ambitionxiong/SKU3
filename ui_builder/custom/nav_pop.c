@@ -104,7 +104,6 @@ void page_pop(void)
         major_menu_create(&ui_manager);
         groups_create();
         bind_events();   // 新按钮需要重新绑定点击事件
-        major_menu_apply_lang();   /* i18n */
         current_group = g_major_menu;
 
         /* ⑦ 根据 child 恢复焦点 */
@@ -196,7 +195,6 @@ void page_pop(void)
             set_min = 30;
             g_send.cook_mode = MODE_NONE;
         }
-        cookmenu_apply_lang();   /* i18n: 英文模式设置文本+字体 */
         lang_scr_load_anim(cookmenu_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
                          ui_manager.auto_del);
@@ -2952,8 +2950,7 @@ void page_pop(void)
             major_menu_create(&ui_manager);
             groups_create();
             bind_events();
-            major_menu_apply_lang();   /* i18n */
-            current_group = g_major_menu;
+                current_group = g_major_menu;
             lang_scr_load_anim(major_menu_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0,
                              ui_manager.auto_del);

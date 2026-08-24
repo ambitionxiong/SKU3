@@ -74,9 +74,7 @@ void jump_to_cookmenu(void)
         lv_obj_add_event_cb(cook->preheater_button, on_preheat_click,
                             LV_EVENT_CLICKED, NULL);
 
-    cookmenu_apply_lang();   /* i18n: 英文模式设置文本+字体 */
-
-    lang_scr_load_anim(cookmenu_get(&ui_manager)->obj,
+        lang_scr_load_anim(cookmenu_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
 
@@ -705,7 +703,6 @@ void color_exit_to_home(void)
         major_menu_create(&ui_manager);
         groups_create();
         bind_events();
-        major_menu_apply_lang();   /* i18n */
         current_group = g_major_menu;
         lang_scr_load_anim(major_menu_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
