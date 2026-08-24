@@ -990,13 +990,13 @@ void page_pop(void)
                 if (set_hour == 0) {
                     lv_obj_add_flag(set->hour_label, LV_OBJ_FLAG_HIDDEN);
                     lv_obj_add_flag(set->shi_label, LV_OBJ_FLAG_HIDDEN);
-                    lv_obj_set_pos(set->min_label, 312, 254);
-                    lv_obj_set_pos(set->fen_label, 365, 269);
+                    lv_obj_set_pos(set->min_label, 312 + lang_dyn_dx(), 254 + lang_dyn_dy());
+                    lv_obj_set_pos(set->fen_label, 365 + lang_dyn_dx(), 269 + lang_dyn_dy());
                 } else {
                     lv_obj_clear_flag(set->hour_label, LV_OBJ_FLAG_HIDDEN);
                     lv_obj_clear_flag(set->shi_label, LV_OBJ_FLAG_HIDDEN);
-                    lv_obj_set_pos(set->min_label, 395, 254);
-                    lv_obj_set_pos(set->fen_label, 448, 269);
+                    lv_obj_set_pos(set->min_label, 395 + lang_dyn_dx(), 254 + lang_dyn_dy());
+                    lv_obj_set_pos(set->fen_label, 448 + lang_dyn_dx(), 269 + lang_dyn_dy());
                 }
 
                 /* 恢复 toggle 状态（跟随变量） */

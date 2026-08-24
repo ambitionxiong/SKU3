@@ -31,20 +31,20 @@ def clean_txt(t):
     return t
 
 def collect_dynamic_objs():
-    """扫描 custom 代码中「定时器回调内」lv_obj_set_pos 的对象名集合。
-    定时器每秒重写位置的对象的 pos 不可由 tune 设置（1秒后被覆盖）——
-    其余动态对象(显示路径一次性 set_pos) tune 在其后执行可覆盖，不锁。
-    定时器回调名来自 lv_timer_create(xxx, ...) 注册的函数。"""
+    """锁定对象 = 定时器回调内 set_pos 的对象 ∪ 业务坐标与生成值不同的对象。
+    原因: tune 在页面显示后执行, 若业务按状态切换/改动位置(如 set_hour
+    切换 min 位置), tune 固定值会破坏状态布局——这类对象只能由注册表
+    dx/dy 偏移调整, 不能 tune 直接改。screen_SET(create 初始化=生成值)除外。"""
     timers = set()
     for fn in glob.glob(f"{ROOT}/ui_builder/custom/*.c"):
-        if fn.endswith('nav_lang_tune.c') or fn.endswith('nav_lang.c'):
+        if fn.endswith('nav_lang_tune.c') or fn.endswith('nav_lang.c') or fn.endswith('i18n.c'):
             continue
         src = open(fn, encoding='utf-8', errors='replace').read()
         for m in re.finditer(r'lv_timer_create\((\w+)\s*,', src):
             timers.add(m.group(1))
     dyn = set()
     for fn in glob.glob(f"{ROOT}/ui_builder/custom/*.c"):
-        if fn.endswith('nav_lang_tune.c') or fn.endswith('nav_lang.c'):
+        if fn.endswith('nav_lang_tune.c') or fn.endswith('nav_lang.c') or fn.endswith('i18n.c'):
             continue
         src = open(fn, encoding='utf-8', errors='replace').read()
         func = "?"
@@ -56,6 +56,24 @@ def collect_dynamic_objs():
                 m2 = re.match(r'lv_obj_set_pos\(\w+->(\w+)\s*,', line.strip())
                 if m2:
                     dyn.add(m2.group(1))
+    # 业务 set_pos 坐标集合（排除 screen_SET.c 的 create 初始化）
+    biz = {}
+    for fn in glob.glob(f"{ROOT}/ui_builder/custom/*.c"):
+        if 'screen_SET' in fn or fn.endswith('nav_lang_tune.c') or fn.endswith('nav_lang.c') or fn.endswith('i18n.c'):
+            continue
+        src = open(fn, encoding='utf-8', errors='replace').read()
+        # 兼容已加偏移的形式: N + lang_dyn_dx()
+        for m in re.finditer(r'lv_obj_set_pos\(\w+->(\w+)\s*,\s*(\d+)(?:\s*\+\s*lang_dyn_dx\(\))?\s*,\s*(\d+)(?:\s*\+\s*lang_dyn_dy\(\))?\s*\)', src):
+            biz.setdefault(m.group(1), set()).add((m.group(2), m.group(3)))
+    # 生成文件坐标
+    gen = {}
+    for fn in glob.glob(f"{ROOT}/ui_builder/*.c"):
+        src = open(fn, encoding='utf-8', errors='replace').read()
+        for m in re.finditer(r'lv_obj_set_pos\(scr->(\w+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)', src):
+            gen.setdefault(m.group(1), set()).add((m.group(2), m.group(3)))
+    for obj, coords in biz.items():
+        if len(coords) >= 2 or coords != gen.get(obj, coords):
+            dyn.add(obj)
     return dyn
 
 DYNAMIC = collect_dynamic_objs()
@@ -155,7 +173,7 @@ def gen_function(base, pages):
             desc.append(f"bg: {o['bg']}")
         dynamic = o['name'] in DYNAMIC
         if dynamic:
-            desc.append(f"定时器每秒重写位置(tune改无效, 用注册表dx偏移)")
+            desc.append(f"动态定位(tune改无效, 用注册表dx/dy偏移)")
         L.append(f"    /* {o['name']}: {' | '.join(desc)} */")
         if o['pos'] and not dynamic:
             L.append(f"    lv_obj_set_pos(pg->{o['name']}, {o['pos'][0]}, {o['pos'][1]});")

@@ -35,7 +35,7 @@ static void preheat_update_bar(lv_obj_t *bar, lv_obj_t *bartemp)
         int disp = cavity > set_temp ? set_temp : cavity;
         lv_label_set_text_fmt(bartemp, tr("%d℃"), disp);
         int bx = 122 + (637 * p) / 100 - 80 + lang_dyn_dx();
-        lv_obj_set_pos(bartemp, bx, 323);
+        lv_obj_set_pos(bartemp, bx, 323 + lang_dyn_dy());
     }
 }
 
@@ -435,7 +435,7 @@ void jump_to_preheat_stop_back(void)
             g_complete_to_stop_back = 0;
             lv_label_set_text(back->name, tr("预热完成"));
             lv_bar_set_value(back->bar_1, 100, LV_ANIM_OFF);
-            if (back->bartemp) lv_obj_set_pos(back->bartemp, 679, 323);
+            if (back->bartemp) lv_obj_set_pos(back->bartemp, 679 + lang_dyn_dx(), 323 + lang_dyn_dy());
         }
     }
     current_group = g_preheat_stop_back;
@@ -469,7 +469,7 @@ void preheat_rebuild_stop_back(void)
             g_complete_to_stop_back = 0;
             lv_label_set_text(back->name, tr("预热完成"));
             lv_bar_set_value(back->bar_1, 100, LV_ANIM_OFF);
-            if (back->bartemp) lv_obj_set_pos(back->bartemp, 679, 323);
+            if (back->bartemp) lv_obj_set_pos(back->bartemp, 679 + lang_dyn_dx(), 323 + lang_dyn_dy());
         }
     }
     current_group = g_preheat_stop_back;
@@ -534,7 +534,7 @@ void jump_to_preheat_complete(void)
             preheat_apply_mode_ui(cook->icon, cook->status);
             if (cook->bartemp) {
                 lv_label_set_text_fmt(cook->bartemp, tr("%d℃"), set_temp);
-                lv_obj_set_pos(cook->bartemp, 679, 323);
+                lv_obj_set_pos(cook->bartemp, 679 + lang_dyn_dx(), 323 + lang_dyn_dy());
             }
             preheat_complete_update_ui(cook);
         }
@@ -658,7 +658,7 @@ void preheat_rebuild_complete(void)
             preheat_apply_mode_ui(cook->icon, cook->status);
             if (cook->bartemp) {
                 lv_label_set_text_fmt(cook->bartemp, tr("%d℃"), set_temp);
-                lv_obj_set_pos(cook->bartemp, 679, 323);
+                lv_obj_set_pos(cook->bartemp, 679 + lang_dyn_dx(), 323 + lang_dyn_dy());
             }
             preheat_complete_update_ui(cook);
         }

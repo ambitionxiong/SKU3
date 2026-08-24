@@ -579,7 +579,7 @@ void jump_to_six_cooking(void)
         /* icon:六感图标,右移 23(115 -> 138) */
         if (sc->icon) {
             lv_img_set_src(sc->icon, LVGL_IMAGE_PATH(sixicon.png));
-            lv_obj_set_pos(sc->icon, 163, 161);
+            lv_obj_set_pos(sc->icon, 163 + lang_dyn_dx(), 161 + lang_dyn_dy());
         }
         if (sc->activestatus)
             lv_obj_add_flag(sc->activestatus, LV_OBJ_FLAG_HIDDEN);
@@ -666,7 +666,7 @@ void six_cooking_rebuild(page_id_t child)
 
         if (sc->icon) {
             lv_img_set_src(sc->icon, LVGL_IMAGE_PATH(sixicon.png));
-            lv_obj_set_pos(sc->icon, 163, 161);
+            lv_obj_set_pos(sc->icon, 163 + lang_dyn_dx(), 161 + lang_dyn_dy());
         }
         if (sc->activestatus)
             lv_obj_add_flag(sc->activestatus, LV_OBJ_FLAG_HIDDEN);

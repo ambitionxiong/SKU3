@@ -275,13 +275,13 @@ void jump_to_west_set(void)
     if (set_hour == 0) {
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->label_160, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312, 254);
-        lv_obj_set_pos(set->label_161, 365, 269);
+        lv_obj_set_pos(set->min, 312 + lang_dyn_dx(), 254 + lang_dyn_dy());
+        lv_obj_set_pos(set->label_161, 365 + lang_dyn_dx(), 269 + lang_dyn_dy());
     } else {
         lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->label_160, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395, 254);
-        lv_obj_set_pos(set->label_161, 448, 269);
+        lv_obj_set_pos(set->min, 395 + lang_dyn_dx(), 254 + lang_dyn_dy());
+        lv_obj_set_pos(set->label_161, 448 + lang_dyn_dx(), 269 + lang_dyn_dy());
     }
 
         apply_toggle_state(set->offdelay, set->ondelay, delay_on);
@@ -289,13 +289,13 @@ void jump_to_west_set(void)
     if (set_hour == 0) {
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->label_160, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312, 254);
-        lv_obj_set_pos(set->label_161, 365, 269);
+        lv_obj_set_pos(set->min, 312 + lang_dyn_dx(), 254 + lang_dyn_dy());
+        lv_obj_set_pos(set->label_161, 365 + lang_dyn_dx(), 269 + lang_dyn_dy());
     } else {
         lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->label_160, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395, 254);
-        lv_obj_set_pos(set->label_161, 448, 269);
+        lv_obj_set_pos(set->min, 395 + lang_dyn_dx(), 254 + lang_dyn_dy());
+        lv_obj_set_pos(set->label_161, 448 + lang_dyn_dx(), 269 + lang_dyn_dy());
     }
         apply_toggle_state(set->offcontain, set->oncontain, contain_on);
 
@@ -806,13 +806,13 @@ void west_rebuild_set(page_id_t child)
     if (set_hour == 0) {
         lv_obj_add_flag(set->label_160, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312, 254);
-        lv_obj_set_pos(set->label_161, 365, 269);
+        lv_obj_set_pos(set->min, 312 + lang_dyn_dx(), 254 + lang_dyn_dy());
+        lv_obj_set_pos(set->label_161, 365 + lang_dyn_dx(), 269 + lang_dyn_dy());
     } else {
         lv_obj_clear_flag(set->label_160, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395, 254);
-        lv_obj_set_pos(set->label_161, 448, 269);
+        lv_obj_set_pos(set->min, 395 + lang_dyn_dx(), 254 + lang_dyn_dy());
+        lv_obj_set_pos(set->label_161, 448 + lang_dyn_dx(), 269 + lang_dyn_dy());
     }
 
         apply_toggle_state(set->offdelay, set->ondelay, delay_on);
@@ -820,13 +820,13 @@ void west_rebuild_set(page_id_t child)
     if (set_hour == 0) {
         lv_obj_add_flag(set->label_160, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312, 254);
-        lv_obj_set_pos(set->label_161, 365, 269);
+        lv_obj_set_pos(set->min, 312 + lang_dyn_dx(), 254 + lang_dyn_dy());
+        lv_obj_set_pos(set->label_161, 365 + lang_dyn_dx(), 269 + lang_dyn_dy());
     } else {
         lv_obj_clear_flag(set->label_160, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395, 254);
-        lv_obj_set_pos(set->label_161, 448, 269);
+        lv_obj_set_pos(set->min, 395 + lang_dyn_dx(), 254 + lang_dyn_dy());
+        lv_obj_set_pos(set->label_161, 448 + lang_dyn_dx(), 269 + lang_dyn_dy());
     }
         apply_toggle_state(set->offcontain, set->oncontain, contain_on);
 
