@@ -158,6 +158,10 @@ def extract_biz_layout():
 
 BIZ = extract_biz_layout()
 
+# 场景条件对象：业务 set_pos 只在特定分支执行（如 image_7 仅六感 stop_back 设 163，
+# 普通场景保持生成值 115）——BIZ 解析到的"单值"不代表全部场景，tune 不生成
+SCENE_COND = {'image_7'}
+
 def extract_block_data(fn):
     """解析生成文件，返回 [{name, type, pos, size, font, align, img, bg, txt}]（按成员）"""
     if not os.path.exists(fn):
@@ -255,6 +259,8 @@ def gen_function(base, pages):
         biz = BIZ.get((base, o['name']))
         if dynamic and o['name'] == 'bartemp':
             desc.append(f"定时器每秒重写位置(tune无效, 用注册表dx/dy)")
+        elif dynamic and o['name'] in SCENE_COND:
+            desc.append(f"场景条件定位(业务分支设置, tune不设)")
         elif dynamic and biz and biz['cond'] and biz['else_coords'] and not biz['conflict']:
             desc.append(f"状态切换(默认业务值, 直接改数字)")
         elif dynamic and biz and not biz['conflict'] and (biz['coords'] or biz['else_coords']):
@@ -263,7 +269,9 @@ def gen_function(base, pages):
             desc.append(f"动态定位(需微调见文件头模板)")
         L.append(f"    /* {o['name']}: {' | '.join(desc)} */")
         if dynamic and o['name'] != 'bartemp':
-            if biz and biz['cond'] and biz['else_coords'] and not biz['conflict']:
+            if o['name'] in SCENE_COND:
+                L.append(f"    /* 位置由业务场景分支控制, 微调按文件头模板 */")
+            elif biz and biz['cond'] and biz['else_coords'] and not biz['conflict']:
                 for (x, y) in biz['coords']:
                     L.append(f"    if ({biz['cond']})")
                     L.append(f"        lv_obj_set_pos(pg->{o['name']}, {x}, {y});")

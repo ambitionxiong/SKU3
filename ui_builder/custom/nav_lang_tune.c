@@ -5345,8 +5345,8 @@ void hot_bbq_cooking_probe_lang_tune(void)
     lv_obj_set_pos(pg->stop, 959, 295);
     lv_obj_set_size(pg->stop, 129, 83);
 
-    /* image_7: 图片 | (115,320) | img: bar.png | 动态定位(需微调见文件头模板) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
+    /* image_7: 图片 | (115,320) | img: bar.png | 场景条件定位(业务分支设置, tune不设) */
+    /* 位置由业务场景分支控制, 微调按文件头模板 */
 
     /* bar_1: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_1, 122, 326);
@@ -6437,8 +6437,8 @@ void hotcleanmiddle_stop_lang_tune(void)
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_7: 图片 | (115,320) | img: bar.png | 动态定位(需微调见文件头模板) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
+    /* image_7: 图片 | (115,320) | img: bar.png | 场景条件定位(业务分支设置, tune不设) */
+    /* 位置由业务场景分支控制, 微调按文件头模板 */
 
     /* bar_3: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_3, 122, 326);
@@ -6615,8 +6615,8 @@ void hotcleansave_cooling_lang_tune(void)
     lv_obj_set_pos(pg->bar_3, 122, 326);
     lv_obj_set_size(pg->bar_3, 637, 20);
 
-    /* image_7: 图片 | (115,161) | img: hotcleansaveicon.png | 动态定位(需微调见文件头模板) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
+    /* image_7: 图片 | (115,161) | img: hotcleansaveicon.png | 场景条件定位(业务分支设置, tune不设) */
+    /* 位置由业务场景分支控制, 微调按文件头模板 */
 
     /* label_13: 标签 | "冷却中..." | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_13, 273, 157);
@@ -6727,8 +6727,8 @@ void hotcleansave_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 490, 39);
 
-    /* image_7: 图片 | (115,320) | img: bar.png | 动态定位(需微调见文件头模板) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
+    /* image_7: 图片 | (115,320) | img: bar.png | 场景条件定位(业务分支设置, tune不设) */
+    /* 位置由业务场景分支控制, 微调按文件头模板 */
 
     /* bar_4: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_4, 122, 326);
@@ -11003,8 +11003,8 @@ void slowcook_complete_lang_tune(void)
     /* image_197: 图片 | (115,161) | img: slowcookicon.png */
     lv_obj_set_pos(pg->image_197, 115, 161);
 
-    /* image_7: 图片 | (902,160) | img: tips.png | 动态定位(需微调见文件头模板) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
+    /* image_7: 图片 | (902,160) | img: tips.png | 场景条件定位(业务分支设置, tune不设) */
+    /* 位置由业务场景分支控制, 微调按文件头模板 */
 
 }
 
@@ -14403,8 +14403,8 @@ void updown_bbq_stop_back_lang_tune(void)
     lv_obj_set_pos(pg->bar_2, 122, 326);
     lv_obj_set_size(pg->bar_2, 637, 20);
 
-    /* image_7: 图片 | (115,161) | img: updown_img.png | 动态定位(默认业务值, 直接改数字) */
-    lv_obj_set_pos(pg->image_7, 163, 161);
+    /* image_7: 图片 | (115,161) | img: updown_img.png | 场景条件定位(业务分支设置, tune不设) */
+    /* 位置由业务场景分支控制, 微调按文件头模板 */
 
     /* label_8: 标签 | "暂停中..." | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_8, 273, 157);
@@ -14726,8 +14726,8 @@ void waterclean_stop_lang_tune(void)
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_7: 图片 | (115,320) | img: bar.png | 动态定位(需微调见文件头模板) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
+    /* image_7: 图片 | (115,320) | img: bar.png | 场景条件定位(业务分支设置, tune不设) */
+    /* 位置由业务场景分支控制, 微调按文件头模板 */
 
     /* bar_3: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_3, 122, 326);

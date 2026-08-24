@@ -195,7 +195,7 @@ static lv_obj_tree_walk_res_t lang_apply_obj(lv_obj_t *obj, void *user_data)
         for (const char *q = tp; q && *q; q++) {
             if ((unsigned char)*q >= 0xE4 && (unsigned char)*q <= 0xE9) { has_cjk = true; break; }
         }
-        return LV_OBJ_TREE_WALK_NEXT;
+        if (has_cjk) return LV_OBJ_TREE_WALK_NEXT;
         if (f == &c_taiwanpearl_regular_128)
             lv_obj_set_style_text_font(obj, &c_aktivgroteskmedium_128, LV_PART_MAIN | 0);
         else if (f == &c_taiwanpearl_regular_72)
