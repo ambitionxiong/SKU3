@@ -148,8 +148,8 @@ void jump_to_updown_bbq_stop_back(void)
                                           sd ? sd->cook_min : 22);   /* 蔬菜:菜名+固定时间 */
 
                 } else if (six_chick_is_jacket()) {
-                    lv_label_set_text_fmt(back->statu_label, tr("| %s | %dg %s | %d分钟"), six_chick_name(),
-                                          jacket_weight(), jacket_deg_text(), jacket_cook_min());   /* 烤带皮土豆 */
+                    lv_label_set_text_fmt(back->statu_label, tr("| %s | %dg | %s色 |"),
+                                          six_chick_name(), jacket_weight(), jacket_deg_text());   /* 烤带皮土豆:菜名|克数|程度色 */
                 } else
                     lv_label_set_text_fmt(back->statu_label, tr("| %s | %d分钟"), six_bread_name(), six_bread_cook_min());
                 lv_img_set_src(back->image_7, LVGL_IMAGE_PATH(sixicon.png));
