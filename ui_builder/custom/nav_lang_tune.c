@@ -3563,7 +3563,7 @@ void cookmenu_lang_tune(void)
     if (depth <= 0 || page_stack[depth - 1] != PAGE_COOKMENU) return;
     cookmenu_t *pg = cookmenu_get(&ui_manager);
     if (!pg) return;
-
+    lv_obj_set_style_bg_img_src(pg->obj, LVGL_IMAGE_PATH(cookmenuenbg.png), LV_PART_MAIN | LV_STATE_DEFAULT);
     /* 页面背景: 背景图 bg.jpg | 底色 0x000000 | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* top_bbq_button: 按钮 | (267,75) | 248x193 | font montserratmedium_16 | bg: bottombk.png */
