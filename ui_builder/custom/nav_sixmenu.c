@@ -25,6 +25,9 @@ static void on_sixmenu_chick_click(lv_event_t *e);
 static void on_sixmenu_vegetable_click(lv_event_t *e);
 static void on_sixmenu_meat_click(lv_event_t *e);
 static void on_sixmenu_fish_click(lv_event_t *e);
+static void on_sixmenu_pizza_click(lv_event_t *e);
+static void on_sixmenu_pasta_click(lv_event_t *e);
+static void on_sixmenu_snack_click(lv_event_t *e);
 static void on_bread6menu_breadroll_click(lv_event_t *e);
 static void on_bread6menu_wheat_click(lv_event_t *e);
 static void on_bread6menu_toast_click(lv_event_t *e);
@@ -77,6 +80,15 @@ void jump_to_sixmenu(void)
         if (sm->fish) {
             lv_obj_add_event_cb(sm->fish, on_sixmenu_fish_click, LV_EVENT_CLICKED, NULL);
         }
+        if (sm->pizza6) {
+            lv_obj_add_event_cb(sm->pizza6, on_sixmenu_pizza_click, LV_EVENT_CLICKED, NULL);
+        }
+        if (sm->pasta) {
+            lv_obj_add_event_cb(sm->pasta, on_sixmenu_pasta_click, LV_EVENT_CLICKED, NULL);
+        }
+        if (sm->snack) {
+            lv_obj_add_event_cb(sm->snack, on_sixmenu_snack_click, LV_EVENT_CLICKED, NULL);
+        }
         /* 其余按钮：功能未实现，不绑事件（点击静默无效） */
     }
     current_group = g_sixmenu;
@@ -124,6 +136,15 @@ void sixmenu_rebuild(page_id_t child)
         if (sm->fish) {
             lv_obj_add_event_cb(sm->fish, on_sixmenu_fish_click, LV_EVENT_CLICKED, NULL);
         }
+        if (sm->pizza6) {
+            lv_obj_add_event_cb(sm->pizza6, on_sixmenu_pizza_click, LV_EVENT_CLICKED, NULL);
+        }
+        if (sm->pasta) {
+            lv_obj_add_event_cb(sm->pasta, on_sixmenu_pasta_click, LV_EVENT_CLICKED, NULL);
+        }
+        if (sm->snack) {
+            lv_obj_add_event_cb(sm->snack, on_sixmenu_snack_click, LV_EVENT_CLICKED, NULL);
+        }
 
         /* 焦点恢复：按 child + 模式恢复到进入时的按钮 */
         if (s_six_meat_mode && child == PAGE_BREAD6MENU && sm->meat)
@@ -132,10 +153,16 @@ void sixmenu_rebuild(page_id_t child)
             lv_group_focus_obj(sm->fish);      /* 从鱼/海鲜菜单返回 */
         else if (six_chick_get_vegetable_mode() && child == PAGE_CHICK6MENU && sm->vegetable)
             lv_group_focus_obj(sm->vegetable); /* 从蔬菜/配菜菜单返回 */
+        else if (six_chick_get_pasta_mode() && child == PAGE_CHICK6MENU && sm->pasta)
+            lv_group_focus_obj(sm->pasta);     /* 从砂锅菜/烤意面菜单返回 */
+        else if (six_chick_get_snack_mode() && child == PAGE_DUCK6MENU && sm->snack)
+            lv_group_focus_obj(sm->snack);     /* 从零食子页返回 */
         else if (!six_chick_get_fish_mode() && child == PAGE_CHICK6MENU && sm->chick)
             lv_group_focus_obj(sm->chick);     /* 从鸡菜单返回 */
         else if (child == PAGE_CAKE6MENU && sm->cake)
             lv_group_focus_obj(sm->cake);
+        else if (g_six_bread_type == SIX_PIZZA && child == PAGE_DESCRIPTIONMENU && sm->pizza6)
+            lv_group_focus_obj(sm->pizza6);      /* 从披萨描述页返回 */
         else if (sm->bread)
             lv_group_focus_obj(sm->bread);
     }
@@ -189,6 +216,31 @@ static void on_sixmenu_fish_click(lv_event_t *e)
     (void)e;
     if (screen_is_loading(lv_scr_act())) return;
     jump_to_fish_menu();
+}
+
+/* 披萨:固定参数菜,点击直接进描述页(无菜单/份量/烤色) */
+static void on_sixmenu_pizza_click(lv_event_t *e)
+{
+    (void)e;
+    if (screen_is_loading(lv_scr_act())) return;
+    g_six_bread_type = SIX_PIZZA;
+    jump_to_descriptionmenu();
+}
+
+/* 砂锅菜/烤意面:复用 chick6menu(千层面/卡内罗尼,二维菜) */
+static void on_sixmenu_pasta_click(lv_event_t *e)
+{
+    (void)e;
+    if (screen_is_loading(lv_scr_act())) return;
+    jump_to_pasta_menu();
+}
+
+/* 零食:复用 duckmenu(炸鸡米花,份量驱动) */
+static void on_sixmenu_snack_click(lv_event_t *e)
+{
+    (void)e;
+    if (screen_is_loading(lv_scr_act())) return;
+    jump_to_snack_menu();
 }
 
 /* 肉菜单：复用 bread6menu 页面,换文字 */

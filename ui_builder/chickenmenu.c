@@ -44,91 +44,101 @@ void chickenmenu_create(ui_manager_t *ui)
     lv_obj_t *wholechicken_label = lv_label_create(scr->wholechicken);
     lv_label_set_text(wholechicken_label, "");
     lv_obj_align(wholechicken_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->wholechicken, 19, 75);
-    lv_obj_set_size(scr->wholechicken, 248, 387);
+    lv_obj_set_pos(scr->wholechicken, 14, 75);
+    lv_obj_set_size(scr->wholechicken, 425, 387);
 
     // Set style of scr->wholechicken
     lv_obj_set_style_bg_opa(scr->wholechicken, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->wholechicken, LVGL_IMAGE_PATH(updown80bk.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->wholechicken, LVGL_IMAGE_PATH(div5130.png), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(scr->wholechicken, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->wholechicken, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->wholechicken, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->wholechicken, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->wholechicken, LVGL_IMAGE_PATH(updownbk.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->wholechicken, LVGL_IMAGE_PATH(div5180.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_border_opa(scr->wholechicken, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_shadow_opa(scr->wholechicken, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
 
     // Init scr->grillchickenwing
     scr->grillchickenwing = lv_btn_create(scr->obj);
     lv_obj_t *grillchickenwing_label = lv_label_create(scr->grillchickenwing);
     lv_label_set_text(grillchickenwing_label, "");
     lv_obj_align(grillchickenwing_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->grillchickenwing, 267, 75);
-    lv_obj_set_size(scr->grillchickenwing, 248, 387);
+    lv_obj_set_pos(scr->grillchickenwing, 435, 76);
+    lv_obj_set_size(scr->grillchickenwing, 410, 192);
 
     // Set style of scr->grillchickenwing
     lv_obj_set_style_bg_opa(scr->grillchickenwing, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->grillchickenwing, LVGL_IMAGE_PATH(updown80bk.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->grillchickenwing, LVGL_IMAGE_PATH(div5230.png), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(scr->grillchickenwing, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->grillchickenwing, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->grillchickenwing, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->grillchickenwing, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->grillchickenwing, LVGL_IMAGE_PATH(updownbk.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->grillchickenwing, LVGL_IMAGE_PATH(div5280.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_border_opa(scr->grillchickenwing, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_shadow_opa(scr->grillchickenwing, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
 
     // Init scr->friedchickenwing
     scr->friedchickenwing = lv_btn_create(scr->obj);
     lv_obj_t *friedchickenwing_label = lv_label_create(scr->friedchickenwing);
     lv_label_set_text(friedchickenwing_label, "");
     lv_obj_align(friedchickenwing_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->friedchickenwing, 516, 75);
-    lv_obj_set_size(scr->friedchickenwing, 248, 387);
+    lv_obj_set_pos(scr->friedchickenwing, 849, 76);
+    lv_obj_set_size(scr->friedchickenwing, 410, 192);
 
     // Set style of scr->friedchickenwing
     lv_obj_set_style_bg_opa(scr->friedchickenwing, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->friedchickenwing, LVGL_IMAGE_PATH(updown80bk.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->friedchickenwing, LVGL_IMAGE_PATH(div5230.png), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(scr->friedchickenwing, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->friedchickenwing, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->friedchickenwing, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->friedchickenwing, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->friedchickenwing, LVGL_IMAGE_PATH(updownbk.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->friedchickenwing, LVGL_IMAGE_PATH(div5280.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_border_opa(scr->friedchickenwing, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_shadow_opa(scr->friedchickenwing, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
 
     // Init scr->friedchickenleg
     scr->friedchickenleg = lv_btn_create(scr->obj);
     lv_obj_t *friedchickenleg_label = lv_label_create(scr->friedchickenleg);
     lv_label_set_text(friedchickenleg_label, "");
     lv_obj_align(friedchickenleg_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->friedchickenleg, 764, 75);
-    lv_obj_set_size(scr->friedchickenleg, 248, 387);
+    lv_obj_set_pos(scr->friedchickenleg, 435, 269);
+    lv_obj_set_size(scr->friedchickenleg, 410, 192);
 
     // Set style of scr->friedchickenleg
     lv_obj_set_style_bg_opa(scr->friedchickenleg, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->friedchickenleg, LVGL_IMAGE_PATH(updown80bk.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->friedchickenleg, LVGL_IMAGE_PATH(div5230.png), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(scr->friedchickenleg, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->friedchickenleg, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->friedchickenleg, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->friedchickenleg, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->friedchickenleg, LVGL_IMAGE_PATH(updownbk.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->friedchickenleg, LVGL_IMAGE_PATH(div5280.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_border_opa(scr->friedchickenleg, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_shadow_opa(scr->friedchickenleg, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
 
     // Init scr->grillchickenbreast
     scr->grillchickenbreast = lv_btn_create(scr->obj);
     lv_obj_t *grillchickenbreast_label = lv_label_create(scr->grillchickenbreast);
     lv_label_set_text(grillchickenbreast_label, "");
     lv_obj_align(grillchickenbreast_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->grillchickenbreast, 1012, 75);
-    lv_obj_set_size(scr->grillchickenbreast, 248, 387);
+    lv_obj_set_pos(scr->grillchickenbreast, 849, 269);
+    lv_obj_set_size(scr->grillchickenbreast, 410, 192);
 
     // Set style of scr->grillchickenbreast
     lv_obj_set_style_bg_opa(scr->grillchickenbreast, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->grillchickenbreast, LVGL_IMAGE_PATH(updown80bk.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->grillchickenbreast, LVGL_IMAGE_PATH(div5230.png), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(scr->grillchickenbreast, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_opa(scr->grillchickenbreast, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->grillchickenbreast, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_opa(scr->grillchickenbreast, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->grillchickenbreast, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->grillchickenbreast, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
-    lv_obj_set_style_bg_img_src(scr->grillchickenbreast, LVGL_IMAGE_PATH(updownbk.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->grillchickenbreast, LVGL_IMAGE_PATH(div5280.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
     // Init scr->label_4
     scr->label_4 = lv_label_create(scr->obj);
     lv_label_set_text(scr->label_4, "烤全鸡");
     lv_label_set_long_mode(scr->label_4, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_4, 66, 274);
+    lv_obj_set_pos(scr->label_4, 147, 270);
     lv_obj_set_size(scr->label_4, 158, 32);
 
     // Set style of scr->label_4
@@ -140,7 +150,7 @@ void chickenmenu_create(ui_manager_t *ui)
     scr->label_5 = lv_label_create(scr->obj);
     lv_label_set_text(scr->label_5, "烤鸡翅");
     lv_label_set_long_mode(scr->label_5, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_5, 315, 274);
+    lv_obj_set_pos(scr->label_5, 561, 156);
     lv_obj_set_size(scr->label_5, 158, 32);
 
     // Set style of scr->label_5
@@ -152,7 +162,7 @@ void chickenmenu_create(ui_manager_t *ui)
     scr->label_6 = lv_label_create(scr->obj);
     lv_label_set_text(scr->label_6, "炸鸡中翅");
     lv_label_set_long_mode(scr->label_6, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_6, 562, 274);
+    lv_obj_set_pos(scr->label_6, 975, 156);
     lv_obj_set_size(scr->label_6, 158, 32);
 
     // Set style of scr->label_6
@@ -164,7 +174,7 @@ void chickenmenu_create(ui_manager_t *ui)
     scr->label_7 = lv_label_create(scr->obj);
     lv_label_set_text(scr->label_7, "炸鸡腿");
     lv_label_set_long_mode(scr->label_7, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_7, 812, 274);
+    lv_obj_set_pos(scr->label_7, 561, 349);
     lv_obj_set_size(scr->label_7, 158, 32);
 
     // Set style of scr->label_7
@@ -176,7 +186,7 @@ void chickenmenu_create(ui_manager_t *ui)
     scr->label_8 = lv_label_create(scr->obj);
     lv_label_set_text(scr->label_8, "烤鸡胸肉");
     lv_label_set_long_mode(scr->label_8, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_8, 1060, 274);
+    lv_obj_set_pos(scr->label_8, 975, 349);
     lv_obj_set_size(scr->label_8, 158, 32);
 
     // Set style of scr->label_8
@@ -190,7 +200,7 @@ void chickenmenu_create(ui_manager_t *ui)
     lv_img_set_pivot(scr->image_2, 50, 50);
     lv_img_set_angle(scr->image_2, 0);
     lv_obj_set_style_img_opa(scr->image_2, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->image_2, 111, 213);
+    lv_obj_set_pos(scr->image_2, 192, 213);
 
 
 }

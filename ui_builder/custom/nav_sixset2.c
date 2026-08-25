@@ -18,16 +18,50 @@
 
 lv_group_t *g_sixset2 = NULL;
 
-/* 烤带皮土豆数据 */
-static const int jw[3] = { 500, 1000, 1500 };
+/* 二维菜(份量×程度)数据表:烤带皮土豆 + 千层面 + 卡内罗尼 */
 static const char *jdeg_short[3] = { "浅", "中", "深" };      /* degree 大字显示(单字) */
 static const char *jdeg[3]     = { "浅", "中等", "深" };      /* 小结用全称 */
-static const int jt[3][3] = {
+
+/* 烤带皮土豆(3档) */
+static const int s_jw[3] = { 500, 1000, 1500 };
+static const int s_jt[3][3] = {
     { 38, 40, 45 },   /* 500g  浅/中/深 */
     { 48, 50, 55 },   /* 1000g 浅/中/深 */
     { 58, 60, 65 },   /* 1500g 浅/中/深 */
 };
-static int s_jw = 1;   /* 重量档 idx,默认 1000g */
+/* 千层面(4档,热风对流200) */
+static const int s_lw[4] = { 500, 1000, 1500, 2000 };
+static const int s_lt[4][3] = {
+    { 42, 45, 47 },   /* 500g */
+    { 48, 50, 52 },   /* 1000g */
+    { 53, 55, 57 },   /* 1500g */
+    { 58, 60, 63 },   /* 2000g */
+};
+/* 卡内罗尼(4档,热风对流200) */
+static const int s_cw[4] = { 500, 1000, 1500, 2000 };
+static const int s_ct[4][3] = {
+    { 38, 40, 42 },   /* 500g */
+    { 43, 45, 47 },   /* 1000g */
+    { 48, 50, 52 },   /* 1500g */
+    { 53, 55, 57 },   /* 2000g */
+};
+
+static const int *s_cur_w = s_jw;      /* 当前菜份量档表 */
+static const int (*s_cur_t)[3] = s_jt; /* 当前菜分钟表 */
+static int s_cur_wc = 3;               /* 当前菜份量档数 */
+
+/* 按当前菜选择数据表(进入 sixset2 前须调用) */
+static void six_2d_select(void)
+{
+    switch (g_six_bread_type) {
+    case SIX_PASTA_LASAGNA:    s_cur_w = s_lw; s_cur_t = s_lt; s_cur_wc = 4; break;
+    case SIX_PASTA_CANNELLONI: s_cur_w = s_cw; s_cur_t = s_ct; s_cur_wc = 4; break;
+    case SIX_VEG_JACKET_POTATO:
+    default:                   s_cur_w = s_jw; s_cur_t = s_jt; s_cur_wc = 3; break;
+    }
+}
+
+static int s_widx = 1;   /* 重量档 idx,默认 1000g */
 static int s_jd = 1;   /* 程度档 idx(0浅/1中/2深),默认 中等 */
 static int s_show_maturity = 0;   /* 中间区显示 maturity(true) 还是 weight(false) */
 
@@ -41,9 +75,28 @@ int six_chick_is_jacket(void)
 {
     return (g_six_bread_type == SIX_VEG_JACKET_POTATO);
 }
-int jacket_cook_min(void)         { return jt[s_jw][s_jd]; }
-int jacket_weight(void)           { return jw[s_jw]; }
-const char *jacket_deg_text(void) { return jdeg[s_jd]; }
+int six_chick_is_pasta(void)
+{
+    return (g_six_bread_type == SIX_PASTA_LASAGNA || g_six_bread_type == SIX_PASTA_CANNELLONI);
+}
+int six_chick_is_2d(void)
+{
+    return six_chick_is_jacket() || six_chick_is_pasta();
+}
+
+/* 当前二维菜菜名 */
+const char *six_2d_dish_name(void)
+{
+    if (g_six_bread_type == SIX_PASTA_LASAGNA)    return tr("千层面");
+    if (g_six_bread_type == SIX_PASTA_CANNELLONI) return tr("卡内罗尼");
+    return tr("烤带皮土豆");
+}
+int six_2d_cook_min(void)         { return s_cur_t[s_widx][s_jd]; }
+int six_2d_weight(void)           { return s_cur_w[s_widx]; }
+const char *six_2d_deg_text(void) { return jdeg[s_jd]; }
+int jacket_cook_min(void)         { return six_2d_cook_min(); }   /* 兼容:烤带皮土豆 */
+int jacket_weight(void)           { return six_2d_weight(); }
+const char *jacket_deg_text(void) { return six_2d_deg_text(); }
 
 static void apply_display(void);
 static void on_next_click(lv_event_t *e);
@@ -66,7 +119,7 @@ static void apply_display(void)
 
     /* weight:纯数字 */
     if (pg->weight)
-        lv_label_set_text_fmt(pg->weight, "%d", jw[s_jw]);
+        lv_label_set_text_fmt(pg->weight, "%d", s_cur_w[s_widx]);
 
     /* maturity:文本 */
     if (s_show_maturity && pg->maturity)
@@ -89,7 +142,7 @@ static void apply_line_for(lv_obj_t *focused)
 
     /* ② 只亮焦点字段的线 */
     if (focused == pg->weight && pg->weightline3 && pg->weightline4) {
-        int len = snprintf(NULL, 0, "%d", jw[s_jw]);
+        int len = snprintf(NULL, 0, "%d", s_cur_w[s_widx]);
         if (len >= 4) lv_obj_clear_flag(pg->weightline4, LV_OBJ_FLAG_HIDDEN);
         else          lv_obj_clear_flag(pg->weightline3, LV_OBJ_FLAG_HIDDEN);
     } else if (focused == pg->maturity && pg->maturityline2 && pg->maturityline3) {
@@ -143,12 +196,12 @@ int sixset2_cycle(int dir)
         return 1;
     }
     if (df == pg->weight) {
-        s_jw += dir;
-        if (s_jw < 0) s_jw = 2;
-        if (s_jw > 2) s_jw = 0;
+        s_widx += dir;
+        if (s_widx < 0) s_widx = s_cur_wc - 1;
+        if (s_widx > s_cur_wc - 1) s_widx = 0;
         apply_display();
         apply_line_for(df);
-        printf("[sixset2] weight -> %dg\n", jw[s_jw]);
+        printf("[sixset2] weight -> %dg\n", s_cur_w[s_widx]);
         return 1;
     }
     if (s_show_maturity && df == pg->maturity) {
@@ -200,7 +253,7 @@ void jump_to_sixset2(void)
 
         /* name1 跟随中间组类型 */
         if (pg->name1)    lv_label_set_text(pg->name1, tr("份量/种类"));
-        if (pg->label_18) lv_label_set_text(pg->label_18, tr("烤带皮土豆"));
+        if (pg->label_18) lv_label_set_text(pg->label_18, six_2d_dish_name());
 
         /* degree 组恢复常显 */
         if (pg->label_13)   lv_obj_clear_flag(pg->label_13, LV_OBJ_FLAG_HIDDEN);
@@ -214,7 +267,8 @@ void jump_to_sixset2(void)
         if (pg->maturity) lv_obj_add_event_cb(pg->maturity, sixset2_focus_cb, LV_EVENT_FOCUSED, NULL);
         if (pg->degree)   lv_obj_add_event_cb(pg->degree,   sixset2_focus_cb, LV_EVENT_FOCUSED, NULL);
 
-        s_jw = 1;   /* 默认 1000g */
+        six_2d_select();   /* 按菜选择份量/时间表 */
+        s_widx = six_chick_is_pasta() ? 2 : 1;   /* 意面默认1500g, 带皮土豆默认1000g */
         s_jd = 1;   /* 默认 中等 */
         apply_display();
         apply_line_for(NULL);   /* 初始无线 */
@@ -250,7 +304,7 @@ void sixset2_rebuild(page_id_t child)
         if (pg->maturityline3) lv_obj_add_flag(pg->maturityline3, LV_OBJ_FLAG_HIDDEN);
 
         if (pg->name1)    lv_label_set_text(pg->name1, tr("份量/种类"));
-        if (pg->label_18) lv_label_set_text(pg->label_18, tr("烤带皮土豆"));
+        if (pg->label_18) lv_label_set_text(pg->label_18, six_2d_dish_name());
 
         if (pg->label_13)   lv_obj_clear_flag(pg->label_13, LV_OBJ_FLAG_HIDDEN);
         if (pg->degree)     lv_obj_clear_flag(pg->degree, LV_OBJ_FLAG_HIDDEN);
@@ -262,6 +316,7 @@ void sixset2_rebuild(page_id_t child)
         if (pg->maturity) lv_obj_add_event_cb(pg->maturity, sixset2_focus_cb, LV_EVENT_FOCUSED, NULL);
         if (pg->degree)   lv_obj_add_event_cb(pg->degree,   sixset2_focus_cb, LV_EVENT_FOCUSED, NULL);
 
+        six_2d_select();
         apply_display();
 
         /* 返回时焦点恢复到进入前的维(jacket:degree 在后,先回中间组) */

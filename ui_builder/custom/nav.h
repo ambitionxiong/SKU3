@@ -694,6 +694,7 @@ void jump_to_chickenmenu(void);
 void chickenmenu_rebuild(page_id_t child);
 void jump_to_vegetable_menu(void);      /* 蔬菜/配菜首页(复用 chick6menu UI) */
 int six_chick_get_vegetable_mode(void);
+int six_chick_get_pasta_mode(void);
 void jump_to_vegetablemenu(void);       /* 蔬菜子页(独立页面) */
 void vegetablemenu_rebuild(page_id_t child);
 void jump_to_duckmenu(void);
@@ -769,6 +770,10 @@ extern int six_bread_color_min(int level);
 #define SIX_VEG_JACKET_POTATO   44  /* 烤带皮土豆（二维:份量×程度） */
 #define SIX_VEG_CORN            43  /* 烤玉米（份量驱动,单位:根） */
 #define SIX_VEG_SWEET_POTATO    45  /* 烤红薯（份量驱动,g; 43玉米/44带皮土豆预留） */
+#define SIX_PIZZA               46  /* 披萨（固定参数:披萨230/23分钟/1份） */
+#define SIX_PASTA_LASAGNA       47  /* 千层面（二维:份量×程度） */
+#define SIX_PASTA_CANNELLONI    48  /* 卡内罗尼（二维:份量×程度） */
+#define SIX_SNACK_POPCORN       49  /* 炸鸡米花（份量驱动） */
 /* 烤海鲜固定参数菜配置（定义于 nav_six_chicken.c） */
 typedef struct {
     const char *name;
@@ -782,6 +787,17 @@ int six_chick_is_seafood(void);
 const seafood_dish_t *veg_fixed_cfg(void);
 int six_chick_is_veg(void);
 int six_chick_is_jacket(void);          /* 烤带皮土豆(二维份量×程度) */
+int six_chick_is_pizza(void);           /* 披萨(固定参数) */
+const seafood_dish_t *pizza_fixed_cfg(void);
+int six_chick_is_pasta(void);           /* 千层面/卡内罗尼(二维菜) */
+int six_chick_is_2d(void);              /* 二维菜(份量×程度):带皮土豆+意面 */
+int six_2d_weight(void);                /* 当前二维菜份量 g */
+int six_2d_cook_min(void);              /* 当前二维菜分钟 */
+const char *six_2d_deg_text(void);      /* 当前二维菜程度文本(浅/中等/深) */
+const char *six_2d_dish_name(void);     /* 当前二维菜菜名 */
+void jump_to_pasta_menu(void);          /* 砂锅菜/烤意面首页(复用 chick6menu) */
+void jump_to_snack_menu(void);          /* 零食子页(复用 duckmenu:炸鸡米花) */
+int six_chick_get_snack_mode(void);
 int jacket_cook_min(void);              /* 当前份量×程度对应分钟 */
 int jacket_weight(void);                /* 当前份量 g */
 const char *jacket_deg_text(void);      /* 当前程度文本(浅/中等/深) */

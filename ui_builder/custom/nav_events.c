@@ -428,8 +428,10 @@ static void apply_delay_cook_mode(page_id_t src)
             g_send.cook_mode = six_chick_mode();   /* 烤海鲜:按菜谱(热风对流/上下烧烤) */
         else if (six_chick_is_veg())
             g_send.cook_mode = six_chick_mode();   /* 蔬菜:按菜谱(热风对流/上下烧烤) */
-        else if (six_chick_is_jacket())
-            g_send.cook_mode = six_chick_mode();   /* 烤带皮土豆:热风对流 */
+        else if (six_chick_is_pizza())
+            g_send.cook_mode = six_chick_mode();   /* 披萨:披萨230 */
+        else if (six_chick_is_2d())
+            g_send.cook_mode = six_chick_mode();   /* 二维菜:热风对流(带皮土豆230/意面200) */
         else
             g_send.cook_mode = MODE_UPDOWN_BBQ;
         break;
@@ -760,9 +762,14 @@ void rebuild_delaycooking(void)
                 lv_label_set_text_fmt(dc->status, tr("| %s | %d分钟"), six_chick_name(),
                                       sd ? sd->cook_min : 22);   /* 蔬菜:菜名+固定时间 */
 
-            } else if (six_chick_is_jacket()) {
+            } else if (six_chick_is_pizza()) {
+                const seafood_dish_t *sd = pizza_fixed_cfg();
+                lv_label_set_text_fmt(dc->status, tr("| %s | %d分钟"), six_chick_name(),
+                                      sd ? sd->cook_min : 23);   /* 披萨:菜名+固定时间 */
+
+            } else if (six_chick_is_2d()) {
                 lv_label_set_text_fmt(dc->status, tr("| %s | %dg | %s色"), six_chick_name(),
-                                      jacket_weight(), jacket_deg_text());   /* 烤带皮土豆 */
+                                      six_2d_weight(), six_2d_deg_text());   /* 二维菜:菜名|克数|程度色 */
             } else
                 lv_label_set_text_fmt(dc->status, tr("| %s | %d分钟"), six_bread_name(), six_bread_cook_min());
             lv_img_set_src(dc->icon, LVGL_IMAGE_PATH(sixicon.png));

@@ -147,9 +147,14 @@ void jump_to_updown_bbq_stop_back(void)
                     lv_label_set_text_fmt(back->statu_label, tr("| %s | %d分钟"), six_chick_name(),
                                           sd ? sd->cook_min : 22);   /* 蔬菜:菜名+固定时间 */
 
-                } else if (six_chick_is_jacket()) {
+                } else if (six_chick_is_pizza()) {
+                    const seafood_dish_t *sd = pizza_fixed_cfg();
+                    lv_label_set_text_fmt(back->statu_label, tr("| %s | %d分钟"), six_chick_name(),
+                                          sd ? sd->cook_min : 23);   /* 披萨:菜名+固定时间 */
+
+                } else if (six_chick_is_2d()) {
                     lv_label_set_text_fmt(back->statu_label, tr("| %s | %dg | %s色 |"),
-                                          six_chick_name(), jacket_weight(), jacket_deg_text());   /* 烤带皮土豆:菜名|克数|程度色 */
+                                          six_chick_name(), six_2d_weight(), six_2d_deg_text());   /* 二维菜:菜名|克数|程度色 */
                 } else
                     lv_label_set_text_fmt(back->statu_label, tr("| %s | %d分钟"), six_bread_name(), six_bread_cook_min());
                 lv_img_set_src(back->image_7, LVGL_IMAGE_PATH(sixicon.png));

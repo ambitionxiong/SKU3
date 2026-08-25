@@ -39,10 +39,13 @@ static void descriptionmenu_layout(descriptionmenu_t *dm)
             if (w < 0) w = 800;   /* 兜底 */
             lv_obj_clear_flag(dm->summary, LV_OBJ_FLAG_HIDDEN);
             lv_label_set_text_fmt(dm->summary, tr("小结：\n份量/种类：%d%s\n"), w, toastcolor_weight_unit());
-        } else if (six_chick_is_jacket()) {
+        } else if (six_chick_is_pizza()) {
+            lv_obj_clear_flag(dm->summary, LV_OBJ_FLAG_HIDDEN);
+            lv_label_set_text(dm->summary, tr("小结：\n份量/种类：1份\n"));   /* 披萨:固定1份 */
+        } else if (six_chick_is_2d()) {
             lv_obj_clear_flag(dm->summary, LV_OBJ_FLAG_HIDDEN);
             lv_label_set_text_fmt(dm->summary, tr("小结：\n份量/种类：%dg\n烧烤程度：%s\n"),
-                                  jacket_weight(), jacket_deg_text());
+                                  six_2d_weight(), six_2d_deg_text());   /* 二维菜:份量+程度 */
         } else if (six_bread_has_rising()) {
             lv_label_set_text(dm->summary, g_rising_choice == 1 ?
                               tr("小结：\n有发酵阶段\n") : tr("小结：\n没有发酵阶段\n"));
@@ -74,10 +77,14 @@ static void descriptionmenu_layout(descriptionmenu_t *dm)
             const seafood_dish_t *sd = veg_fixed_cfg();
             lv_obj_clear_flag(dm->cooktime, LV_OBJ_FLAG_HIDDEN);
             lv_label_set_text_fmt(dm->cooktime, tr("预计烹饪时间：%d分钟"), sd ? sd->cook_min : 22);
-
-        } else if (six_chick_is_jacket()) {
+        } else if (six_chick_is_pizza()) {
+            const seafood_dish_t *sd = pizza_fixed_cfg();
             lv_obj_clear_flag(dm->cooktime, LV_OBJ_FLAG_HIDDEN);
-            lv_label_set_text_fmt(dm->cooktime, tr("预计烹饪时间：%d分钟"), jacket_cook_min());
+            lv_label_set_text_fmt(dm->cooktime, tr("预计烹饪时间：%d分钟"), sd ? sd->cook_min : 23);
+
+        } else if (six_chick_is_2d()) {
+            lv_obj_clear_flag(dm->cooktime, LV_OBJ_FLAG_HIDDEN);
+            lv_label_set_text_fmt(dm->cooktime, tr("预计烹饪时间：%d分钟"), six_2d_cook_min());   /* 二维菜 */
         } else {
             lv_obj_clear_flag(dm->cooktime, LV_OBJ_FLAG_HIDDEN);
             /* 选了发酵:发酵分钟+烹饪分钟分开显示 */
