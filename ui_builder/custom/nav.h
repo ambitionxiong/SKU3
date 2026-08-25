@@ -765,6 +765,7 @@ extern int six_bread_color_min(int level);
 #define SIX_VEG_EGGPLANT        40  /* 烤茄子（固定参数） */
 #define SIX_VEG_MIXED           41  /* 烤杂蔬（固定参数） */
 #define SIX_VEG_DAUPHINOISE     42  /* 奶油焗土豆（固定参数） */
+#define SIX_VEG_SWEET_POTATO    45  /* 烤红薯（份量驱动,g; 43玉米/44带皮土豆预留） */
 /* 烤海鲜固定参数菜配置（定义于 nav_six_chicken.c） */
 typedef struct {
     const char *name;
