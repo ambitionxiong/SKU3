@@ -46,6 +46,7 @@ static void on_fish_wholefish_click(lv_event_t *e);
 static void on_vegetable_veg_click(lv_event_t *e);
 static void on_vegetable_side_click(lv_event_t *e);
 static void on_sidedish_fries_click(lv_event_t *e);
+static void on_veg_dish_click(lv_event_t *e);
 void jump_to_sidedish_menu(void);
 static void on_seafood_dish_click(lv_event_t *e);
 
@@ -74,6 +75,10 @@ static const int w_cod_w[] = { 400, 600, 800, 1000 };
 static const int w_cod_t[] = { 18, 21, 24, 27 };
 static const int w_wf_w[]  = { 400, 600, 800, 1000 };
 static const int w_wf_t[]  = { 20, 25, 30, 35 };
+
+/* 炸薯条份量表 */
+static const int w_fries_w[] = { 200, 400, 600, 800 };
+static const int w_fries_t[] = { 22, 26, 30, 32 };
 
 /* 烤海鲜:固定参数菜配置表(无份量/烤色/发酵; 类型在 nav.h) */
 static const seafood_dish_t s_seafood_dishes[] = {
@@ -107,6 +112,35 @@ int six_chick_is_seafood(void)
     return (g_six_bread_type >= SIX_SEAFOOD_SCALLOP && g_six_bread_type <= SIX_SEAFOOD_SQUID);
 }
 
+/* 烤蔬菜:固定参数菜配置表(无份量/烤色/发酵) */
+static const seafood_dish_t s_veg_fixed[] = {
+    /* 烤土豆片(热风对流250) */
+    { "烤土豆片", MODE_WINDCHANGE_BBQ, 250, 22,
+      "刷油，根据个人喜好，撒上盐、烧烤料。在烤盘内均匀铺开\n现在将食物放在第3层\n使用烤盘" },
+    /* 烤茄子(上下烧烤200) */
+    { "烤茄子", MODE_UPDOWN_BBQ, 200, 28,
+      "刷上油。根据喜好用蒜蓉酱、盐和油调味\n现在将食物放在第3层\n使用烤盘" },
+    /* 烤杂蔬(热风对流230) */
+    { "烤杂蔬", MODE_WINDCHANGE_BBQ, 230, 20,
+      "参照您喜欢的食谱进行准备。调味拌入黑椒碎、盐、橄榄油和自己喜欢的酱料等\n现在将食物放在第3层\n使用烤盘" },
+    /* 奶油焗土豆(热风对流200) */
+    { "奶油焗土豆", MODE_WINDCHANGE_BBQ, 200, 45,
+      "把土豆切成片，在烤盘里叠放成排。把奶油均匀地倒在上面，撒上奶酪。重复做两层，最后在上面涂上一层奶油和奶酪，以达到完美的褐色\n现在将食物放在第2层\n使用网架和器皿" },
+};
+
+const seafood_dish_t *veg_fixed_cfg(void)
+{
+    if (g_six_bread_type < SIX_VEG_POTATO_CHIP || g_six_bread_type > SIX_VEG_DAUPHINOISE)
+        return NULL;
+    return &s_veg_fixed[g_six_bread_type - SIX_VEG_POTATO_CHIP];
+}
+
+/* 当前类型是否为蔬菜固定参数菜 */
+int six_chick_is_veg(void)
+{
+    return (g_six_bread_type >= SIX_VEG_POTATO_CHIP && g_six_bread_type <= SIX_VEG_DAUPHINOISE);
+}
+
 static const chick_dish_t s_chick_dishes[] = {
     /* 烤鸡翅 */
     { "烤鸡翅", w_wing_w, w_wing_t, 4, 2, MODE_WINDCHANGE_BBQ, 250,
@@ -131,7 +165,8 @@ int six_chick_is_kind(void)
         || g_six_bread_type == SIX_MEAT_FRIED_RIB
         || g_six_bread_type == SIX_MEAT_SAUSAGE
         || g_six_bread_type == SIX_FISH_COD
-        || g_six_bread_type == SIX_FISH_WHOLEFISH;
+        || g_six_bread_type == SIX_FISH_WHOLEFISH
+        || g_six_bread_type == SIX_SNACK_FRIES;
 }
 
 /* 当前是否为程度→时间驱动（烤羊肉串） */
@@ -155,7 +190,9 @@ static const chick_dish_t *chick_dish_cfg(void)
         g_six_bread_type == SIX_MEAT_FRIED_RIB ||
         g_six_bread_type == SIX_MEAT_SAUSAGE ||
         g_six_bread_type == SIX_FISH_COD ||
-        g_six_bread_type == SIX_FISH_WHOLEFISH)
+        g_six_bread_type == SIX_FISH_WHOLEFISH ||
+        g_six_bread_type == SIX_SNACK_FRIES ||
+        six_chick_is_veg())
         return NULL;  /* 独立表 */
     return six_chick_is_kind() ? &s_chick_dishes[g_six_bread_type - SIX_CHICK_KIND_MIN] : NULL;
 }
@@ -209,9 +246,14 @@ const char *six_chick_name(void)
     if (g_six_bread_type == SIX_MEAT_SAUSAGE) return tr("烤香肠");
     if (g_six_bread_type == SIX_FISH_COD) return tr("烤鳕鱼");
     if (g_six_bread_type == SIX_FISH_WHOLEFISH) return tr("烤全鱼");
+    if (g_six_bread_type == SIX_SNACK_FRIES) return tr("炸薯条");
     if (six_chick_is_seafood()) {
         const seafood_dish_t *sd = seafood_dish_cfg();
         return sd ? tr(sd->name) : tr("烤海鲜");
+    }
+    if (six_chick_is_veg()) {
+        const seafood_dish_t *sd = veg_fixed_cfg();
+        return sd ? tr(sd->name) : tr("烤蔬菜");
     }
     const chick_dish_t *c = chick_dish_cfg();
     if (c) return tr(c->name);
@@ -226,8 +268,13 @@ uint8_t six_chick_mode(void) {
     if (g_six_bread_type == SIX_MEAT_SAUSAGE) return MODE_HOTWIND_BBQ;
     if (g_six_bread_type == SIX_FISH_COD) return MODE_WINDCHANGE_BBQ;   /* 热风对流 */
     if (g_six_bread_type == SIX_FISH_WHOLEFISH) return MODE_HOTWIND_BBQ;/* 热风 */
+    if (g_six_bread_type == SIX_SNACK_FRIES) return MODE_AIR;           /* 空气炸 */
     if (six_chick_is_seafood()) {
         const seafood_dish_t *sd = seafood_dish_cfg();
+        return sd ? sd->mode : MODE_WINDCHANGE_BBQ;
+    }
+    if (six_chick_is_veg()) {
+        const seafood_dish_t *sd = veg_fixed_cfg();
         return sd ? sd->mode : MODE_WINDCHANGE_BBQ;
     }
     const chick_dish_t *c = chick_dish_cfg(); if (c) return c->mode;
@@ -241,8 +288,13 @@ int six_chick_temp(void) {
     if (g_six_bread_type == SIX_MEAT_SAUSAGE) return 180;
     if (g_six_bread_type == SIX_FISH_COD) return 250;
     if (g_six_bread_type == SIX_FISH_WHOLEFISH) return 250;
+    if (g_six_bread_type == SIX_SNACK_FRIES) return 250;
     if (six_chick_is_seafood()) {
         const seafood_dish_t *sd = seafood_dish_cfg();
+        return sd ? sd->temp : 230;
+    }
+    if (six_chick_is_veg()) {
+        const seafood_dish_t *sd = veg_fixed_cfg();
         return sd ? sd->temp : 230;
     }
     const chick_dish_t *c = chick_dish_cfg(); if (c) return c->temp;
@@ -293,6 +345,13 @@ int six_chick_cook_min(int weight_g)
         }
         return 30;  /* 默认800g */
     }
+    /* 炸薯条：独立份量表 */
+    if (g_six_bread_type == SIX_SNACK_FRIES) {
+        for (int i = 0; i < 4; i++) {
+            if (w_fries_w[i] == weight_g) return w_fries_t[i];
+        }
+        return 30;  /* 默认600g */
+    }
     const chick_dish_t *c = chick_dish_cfg();
     if (!c) return 0;
     for (int i = 0; i < c->count; i++) {
@@ -314,9 +373,15 @@ const char *six_chick_desc(void)
         return tr("均匀分布在深盘中\n现在将食物放在第3层\n使用深盘");
     if (g_six_bread_type == SIX_FISH_COD || g_six_bread_type == SIX_FISH_WHOLEFISH)
         return tr("刷油，抹上盐和胡椒。根据个人喜好，用蒜和香草调味\n现在将食物放在第3层\n使用烤盘");
+    if (g_six_bread_type == SIX_SNACK_FRIES)
+        return tr("均匀分布在气炸盘中\n现在将食物放在第3层\n使用气炸盘和深盘");
     if (six_chick_is_seafood()) {
         const seafood_dish_t *sd = seafood_dish_cfg();
         if (sd) return sd->desc;
+    }
+    if (six_chick_is_veg()) {
+        const seafood_dish_t *sd = veg_fixed_cfg();
+        if (sd) return tr(sd->desc);
     }
     const chick_dish_t *c = chick_dish_cfg();
     if (c) return c->desc;
@@ -328,12 +393,12 @@ const char *six_chick_desc(void)
 /* 当前六感菜名/说明：烤鸡/鸭走独立名，其余走面包/蛋糕共用表 */
 const char *six_current_name(void)
 {
-    return (six_chick_is_probe() || six_chick_is_kind() || six_chick_is_seafood())
+    return (six_chick_is_probe() || six_chick_is_kind() || six_chick_is_seafood() || six_chick_is_veg())
            ? six_chick_name() : six_bread_name();
 }
 const char *six_current_desc(void)
 {
-    return (six_chick_is_probe() || six_chick_is_kind() || six_chick_is_seafood())
+    return (six_chick_is_probe() || six_chick_is_kind() || six_chick_is_seafood() || six_chick_is_veg())
            ? six_chick_desc() : six_bread_desc();
 }
 
@@ -870,6 +935,14 @@ static void on_seafood_dish_click(lv_event_t *e)
     jump_to_descriptionmenu();   /* 固定参数菜:无份量/烤色,直接描述页 */
 }
 
+/* 蔬菜固定参数菜点击:同 seafood 流程(直接描述页) */
+static void on_veg_dish_click(lv_event_t *e)
+{
+    if (screen_is_loading(lv_scr_act())) return;
+    g_six_bread_type = (uint8_t)(intptr_t)lv_event_get_user_data(e);
+    jump_to_descriptionmenu();
+}
+
 void jump_to_fish_menu(void)
 {
     /* 互斥清理:防其他复用模式(蔬菜等)残留导致标签错误 */
@@ -925,7 +998,12 @@ void jump_to_vegetablemenu(void)
         if (g_chickenmenu) { lv_group_del(g_chickenmenu); g_chickenmenu = NULL; }
         g_chickenmenu = group_create_for_page(btns, n);
         clear_focus_states(btns, n);
-        /* 按钮 TODO:各菜逻辑后续接入(烤土豆片/烤茄子/烤玉米/烤杂蔬/烤带皮土豆/奶油焗土豆/烤红薯) */
+        /* 绑定固定参数菜(烤土豆片/烤茄子/烤杂蔬/奶油焗土豆);
+           玉米(button_15)/带皮土豆(button_17)/红薯(button_19)份量类后续接入 */
+        if (vm->bt1)        lv_obj_add_event_cb(vm->bt1,        on_veg_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_VEG_POTATO_CHIP);
+        if (vm->button_11)  lv_obj_add_event_cb(vm->button_11,  on_veg_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_VEG_EGGPLANT);
+        if (vm->button_16)  lv_obj_add_event_cb(vm->button_16,  on_veg_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_VEG_MIXED);
+        if (vm->button_18)  lv_obj_add_event_cb(vm->button_18,  on_veg_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_VEG_DAUPHINOISE);
 
         if (vm->bt1) lv_group_focus_obj(vm->bt1);
     }
@@ -955,9 +1033,22 @@ void vegetablemenu_rebuild(page_id_t child)
         }
         g_chickenmenu = group_create_for_page(btns, n);
         clear_focus_states(btns, n);
-        /* 按钮 TODO:同上 */
+        /* 绑定固定参数菜(烤土豆片/烤茄子/烤杂蔬/奶油焗土豆);
+           玉米(button_15)/带皮土豆(button_17)/红薯(button_19)份量类后续接入 */
+        if (vm->bt1)        lv_obj_add_event_cb(vm->bt1,        on_veg_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_VEG_POTATO_CHIP);
+        if (vm->button_11)  lv_obj_add_event_cb(vm->button_11,  on_veg_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_VEG_EGGPLANT);
+        if (vm->button_16)  lv_obj_add_event_cb(vm->button_16,  on_veg_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_VEG_MIXED);
+        if (vm->button_18)  lv_obj_add_event_cb(vm->button_18,  on_veg_dish_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_VEG_DAUPHINOISE);
 
-        if (vm->bt1) lv_group_focus_obj(vm->bt1);
+        /* 返回时恢复到进入前的菜(与海鲜/配菜同机制) */
+        if (g_six_bread_type == SIX_VEG_EGGPLANT && vm->button_11)
+            lv_group_focus_obj(vm->button_11);       /* 烤茄子 */
+        else if (g_six_bread_type == SIX_VEG_MIXED && vm->button_16)
+            lv_group_focus_obj(vm->button_16);       /* 烤杂蔬 */
+        else if (g_six_bread_type == SIX_VEG_DAUPHINOISE && vm->button_18)
+            lv_group_focus_obj(vm->button_18);       /* 奶油焗土豆 */
+        else if (vm->bt1)
+            lv_group_focus_obj(vm->bt1);             /* 烤土豆片/首次进入默认 */
     }
     current_group = g_chickenmenu;
 
@@ -971,17 +1062,19 @@ void vegetablemenu_rebuild(page_id_t child)
 
 static void on_sidedish_fries_click(lv_event_t *e)
 {
-    (void)e;   /* TODO:炸薯条份量流程后续接入 */
+    (void)e;
+    if (screen_is_loading(lv_scr_act())) return;
+    g_six_bread_type = SIX_SNACK_FRIES;
+    toastcolor_set_weight_options(w_fries_w, 4, 2);   /* 默认600g */
+    g_toast_mode = TOAST_MODE_WEIGHT;
+    jump_to_toastcolor();
 }
 
 void jump_to_sidedish_menu(void)
 {
-    /* 互斥清理:duckmenu 三态复用(鸭/肉菜/配菜) + 其他复用模式 */
+    /* 仅清 duckmenu 三态兄弟;fish/seafood/vegetable 是返回目标页
+       (chick6menu/chickenmenu)的渲染身份,须保留供 rebuild 恢复 */
     s_meatdish_mode = 0;
-    s_fish_mode = 0;
-    s_seafood_mode = 0;
-    s_vegetable_mode = 0;
-    s_fish_home_focus = 0;
     s_sidedish_mode = 1;
 
     page_push(PAGE_DUCK6MENU);

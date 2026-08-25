@@ -760,6 +760,11 @@ extern int six_bread_color_min(int level);
 #define SIX_SEAFOOD_OYSTER      35  /* 烤生蚝（固定参数） */
 #define SIX_SEAFOOD_PRAWN       36  /* 烤大虾（固定参数） */
 #define SIX_SEAFOOD_SQUID       37  /* 烤鱿鱼（固定参数） */
+#define SIX_SNACK_FRIES         38  /* 炸薯条（份量驱动） */
+#define SIX_VEG_POTATO_CHIP     39  /* 烤土豆片（固定参数） */
+#define SIX_VEG_EGGPLANT        40  /* 烤茄子（固定参数） */
+#define SIX_VEG_MIXED           41  /* 烤杂蔬（固定参数） */
+#define SIX_VEG_DAUPHINOISE     42  /* 奶油焗土豆（固定参数） */
 /* 烤海鲜固定参数菜配置（定义于 nav_six_chicken.c） */
 typedef struct {
     const char *name;
@@ -770,6 +775,8 @@ typedef struct {
 } seafood_dish_t;
 const seafood_dish_t *seafood_dish_cfg(void);
 int six_chick_is_seafood(void);
+const seafood_dish_t *veg_fixed_cfg(void);
+int six_chick_is_veg(void);
 extern int g_six_probe_temp;        /* 烤全鸡所选探针目标温度（浅75/中80/深85℃），默认中 */
 extern lv_group_t *g_probeneedtip;
 extern lv_group_t *g_chick_cooking; /* 烤全鸡烹饪页（chickencooking UI） */

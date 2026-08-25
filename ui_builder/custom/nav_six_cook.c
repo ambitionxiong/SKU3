@@ -111,8 +111,8 @@ const six_bread_cfg_t *six_bread_cfg(void) { return &s_bread_cfg[six_bread_type_
 const char *six_bread_name(void)     { return tr(six_bread_cfg()->name); }
 const char *six_bread_desc(void)     { return tr(six_bread_cfg()->cook_desc); }
 int six_bread_cook_min(void)         { return six_bread_cfg()->cook_min; }
-int six_bread_has_color(void)  { return (six_chick_is_kind() || six_chick_is_seafood()) ? 0 : six_bread_cfg()->has_color; }   /* 烤鸡翅类/海鲜:无烤色 */
-int six_bread_has_rising(void) { return (six_chick_is_kind() || six_chick_is_seafood()) ? 0 : six_bread_cfg()->has_rising; }  /* 烤鸡翅类/海鲜:无发酵 */
+int six_bread_has_color(void)  { return (six_chick_is_kind() || six_chick_is_seafood() || six_chick_is_veg()) ? 0 : six_bread_cfg()->has_color; }   /* 烤鸡翅类/海鲜/蔬菜:无烤色 */
+int six_bread_has_rising(void) { return (six_chick_is_kind() || six_chick_is_seafood() || six_chick_is_veg()) ? 0 : six_bread_cfg()->has_rising; }  /* 烤鸡翅类/海鲜/蔬菜:无发酵 */
 int six_bread_color_min(int level)   /* 1浅 2中 3深 */
 {
     const six_bread_cfg_t *cfg = six_bread_cfg();
@@ -160,6 +160,10 @@ static int32_t six_cook_sec(void)
         const seafood_dish_t *sd = seafood_dish_cfg();
         return (sd ? sd->cook_min : 18) * 60;
     }
+    if (six_chick_is_veg()) {               /* 蔬菜:固定时长 */
+        const seafood_dish_t *sd = veg_fixed_cfg();
+        return (sd ? sd->cook_min : 22) * 60;
+    }
     return six_bread_cfg()->cook_sec;
 }
 
@@ -181,6 +185,11 @@ static void six_label_status(somecook_cooking_t *sc)
         const seafood_dish_t *sd = seafood_dish_cfg();
         lv_label_set_text_fmt(sc->label_12, tr("| %s | %d分钟 |"),
                               six_chick_name(), sd ? sd->cook_min : 18);
+
+    } else if (six_chick_is_veg()) {
+        const seafood_dish_t *sd = veg_fixed_cfg();
+        lv_label_set_text_fmt(sc->label_12, tr("| %s | %d分钟 |"),
+                              six_chick_name(), sd ? sd->cook_min : 22);
     } else {
         lv_label_set_text_fmt(sc->label_12, tr("| %s | %d分钟"), six_bread_name(), six_bread_cfg()->cook_min);
     }
@@ -189,12 +198,12 @@ static void six_label_status(somecook_cooking_t *sc)
 // 运行模式/温度:烤鸡翅类按菜谱表(热风对流/空气炸250℃),面包/蛋糕按配置
 static uint8_t six_cook_mode(void)
 {
-    if (six_chick_is_kind() || six_chick_is_seafood()) return six_chick_mode();
+    if (six_chick_is_kind() || six_chick_is_seafood() || six_chick_is_veg()) return six_chick_mode();
     return six_bread_cfg()->mode;
 }
 static int six_cook_temp(void)
 {
-    if (six_chick_is_kind() || six_chick_is_seafood()) return six_chick_temp();
+    if (six_chick_is_kind() || six_chick_is_seafood() || six_chick_is_veg()) return six_chick_temp();
     return six_bread_cfg()->cook_temp;
 }
 
