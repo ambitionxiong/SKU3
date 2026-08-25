@@ -249,6 +249,15 @@ typedef struct {
     const char *desc;
 } chick_probe_t;
 
+/* 熟度驱动探针菜配置(烤牛排/烤牛肉) */
+typedef struct {
+    const char *name;
+    uint8_t mode;
+    int temp;
+    int max_min;        /* 最长防护分钟(探针异常兜底) */
+    const char *desc;
+} mat_probe_t;
+
 static const chick_probe_t s_chick_probes[] = {
     /* 烤全鸡 */
     { "烤全鸡", MODE_WINDCHANGE_BBQ, 230, {75, 80, 85}, 80,
@@ -256,18 +265,114 @@ static const chick_probe_t s_chick_probes[] = {
     /* 烤全鸭 */
     { "烤全鸭", MODE_WINDCHANGE_BBQ, 230, {86, 88, 90}, 90,
       "烹饪说明：\n刷油，抹上盐和胡椒。根据个人喜好，用蒜和香草调味\n现在将食物放在第2层\n使用深盘" },
+    /* 烤猪里脊肉(程度驱动探针) */
+    { "烤猪里脊肉", MODE_WINDCHANGE_BBQ, 220, {72, 76, 80}, 90,
+      "烹饪说明：\n刷油，擦盐和胡椒。根据个人喜好，用蒜和香草调味。烹调结束后，在分切前至少静止15分钟\n现在将食物放在第2层\n使用深盘" },
+    /* 烤五花肉(程度驱动探针) */
+    { "烤五花肉", MODE_WINDCHANGE_BBQ, 250, {76, 80, 84}, 90,
+      "烹饪说明：\n在放入烤箱之前，刷上油，加盐和烧烤调料调味\n现在将食物放在第3层\n使用深盘" },
 };
 
-/* 当前类型是否为探针菜 */
+static const chick_probe_t *chick_probe_cfg(void);   /* 前置声明(烤全鸡/鸭配置,定义于后) */
+
+/* 熟度驱动探针菜(烤牛排/烤牛肉)配置: 名称/模式/温度/最长防护分钟/说明 */
+static const mat_probe_t s_mat_probes[] = {
+    /* 烤牛排 */
+    { "烤牛排", MODE_WINDCHANGE_BBQ, 250, 30,
+      "烹饪说明：\n刷油，抹上盐和胡椒。根据个人喜好，用蒜和香草调味。烹调结束后，在分切前至少静止15分钟\n现在将食物放在第3层\n使用深盘" },
+    /* 烤牛肉 */
+    { "烤牛肉", MODE_WINDCHANGE_BBQ, 250, 100,
+      "烹饪说明：\n刷油，擦盐和胡椒。根据个人喜好，用蒜和香草调味。烹调结束后，在分切前至少静止15分钟\n现在将食物放在第3层\n使用深盘" },
+    /* 烤羊腿(熟度3档×程度) */
+    { "烤羊腿", MODE_WINDCHANGE_BBQ, 220, 80,
+      "烹饪说明：\n刷油，抹上盐和胡椒。根据个人喜好，用蒜和香草调味。烹调结束后，在分切前至少静止15分钟\n现在将食物放在第2层\n使用深盘" },
+    /* 烤羊排(熟度3档×程度) */
+    { "烤羊排", MODE_WINDCHANGE_BBQ, 250, 40,
+      "烹饪说明：\n刷油，抹上盐和胡椒。根据个人喜好，用蒜和香草调味。烹调结束后，在分切前至少静止15分钟\n现在将食物放在第3层\n使用深盘" },
+};
+
+static const mat_probe_t *mat_probe_cfg(void)
+{
+    switch (g_six_bread_type) {
+    case SIX_MEAT_GRILL_STEAK: return &s_mat_probes[0];
+    case SIX_MEAT_GRILL_BEEF:  return &s_mat_probes[1];
+    case SIX_MEAT_GRILL_LEG:   return &s_mat_probes[2];
+    case SIX_MEAT_GRILL_LAMBS: return &s_mat_probes[3];
+    default: return NULL;
+    }
+}
+
+/* 当前是否为"熟度×程度"二维探针菜(牛肉/羊腿/羊排,走 sixset2) */
+int six_chick_is_matdeg(void)
+{
+    return (g_six_bread_type == SIX_MEAT_GRILL_BEEF
+            || g_six_bread_type == SIX_MEAT_GRILL_LEG
+            || g_six_bread_type == SIX_MEAT_GRILL_LAMBS);
+}
+
+/* 成熟度文本与探针温度表 */
+static const char *s_mat_text[5] = { "一成熟", "三成熟", "五成熟", "七成熟", "全熟" };
+static const int s_steak_mat_t[5] = { 50, 55, 60, 65, 70 };          /* 烤牛排: 熟度→温度 */
+static const int s_beef_matdeg_t[5][3] = {                          /* 烤牛肉: 熟度×程度→温度 */
+    { 48, 50, 52 }, { 53, 55, 57 }, { 58, 60, 62 }, { 63, 65, 67 }, { 68, 70, 72 },
+};
+static const int s_leg_matdeg_t[3][3] = {                              /* 烤羊腿: 3成熟/5成熟/全熟 × 浅中深 */
+    { 50, 54, 58 }, { 63, 65, 68 }, { 86, 88, 90 },
+};
+static const int s_lamb_matdeg_t[3][3] = {                             /* 烤羊排 */
+    { 58, 60, 62 }, { 64, 68, 72 }, { 90, 92, 94 },
+};
+
+static int s_mat_idx = 2;   /* 成熟度档(0-4),默认五成熟 */
+int six_maturity_idx(void)          { return s_mat_idx; }
+void six_maturity_set(int idx)
+{
+    if (idx < 0) idx = 0;
+    if (idx > 4) idx = 4;
+    s_mat_idx = idx;
+}
+const char *six_maturity_text(void) { return tr(s_mat_text[s_mat_idx]); }
+
+/* 当前探针菜目标温度: 烤牛排按熟度; 烤牛肉按熟度×程度; 烤全鸡/鸭按程度 */
+int six_probe_target_temp(void)
+{
+    if (g_six_bread_type == SIX_MEAT_GRILL_STEAK) return s_steak_mat_t[s_mat_idx];   /* toastcolor 成熟度档 */
+    if (g_six_bread_type == SIX_MEAT_GRILL_BEEF)
+        return s_beef_matdeg_t[six_2d_mat_idx()][six_2d_deg_idx()];
+    if (g_six_bread_type == SIX_MEAT_GRILL_LEG)
+        return s_leg_matdeg_t[six_2d_mat_idx()][six_2d_deg_idx()];
+    if (g_six_bread_type == SIX_MEAT_GRILL_LAMBS)
+        return s_lamb_matdeg_t[six_2d_mat_idx()][six_2d_deg_idx()];
+    return six_chick_probe_temp(toastcolor_degree_value());   /* 烤全鸡/鸭/猪里脊/五花肉:程度档 */
+}
+
+/* 当前探针菜最长防护分钟 */
+int six_probe_max_min(void)
+{
+    const mat_probe_t *m = mat_probe_cfg();
+    if (m) return m->max_min;
+    const chick_probe_t *p = chick_probe_cfg();
+    return p ? p->max_min : 80;
+}
+
+/* 当前类型是否为探针菜(烤全鸡/鸭 + 烤牛排/烤牛肉) */
 int six_chick_is_probe(void)
 {
-    return (g_six_bread_type == SIX_CHICK_WHOLE || g_six_bread_type == SIX_CHICK_DUCK_WHOLE);
+    return (g_six_bread_type == SIX_CHICK_WHOLE || g_six_bread_type == SIX_CHICK_DUCK_WHOLE
+            || g_six_bread_type == SIX_MEAT_GRILL_STEAK || g_six_bread_type == SIX_MEAT_GRILL_BEEF
+            || g_six_bread_type == SIX_MEAT_GRILL_LEG || g_six_bread_type == SIX_MEAT_GRILL_LAMBS
+            || g_six_bread_type == SIX_MEAT_GRILL_TENDERLOIN || g_six_bread_type == SIX_MEAT_GRILL_BELLY);
 }
 
 static const chick_probe_t *chick_probe_cfg(void)
 {
-    if (!six_chick_is_probe()) return NULL;
-    return &s_chick_probes[(g_six_bread_type == SIX_CHICK_DUCK_WHOLE) ? 1 : 0];
+    switch (g_six_bread_type) {
+    case SIX_CHICK_WHOLE:              return &s_chick_probes[0];
+    case SIX_CHICK_DUCK_WHOLE:         return &s_chick_probes[1];
+    case SIX_MEAT_GRILL_TENDERLOIN:    return &s_chick_probes[2];   /* 烤猪里脊肉 */
+    case SIX_MEAT_GRILL_BELLY:         return &s_chick_probes[3];   /* 烤五花肉 */
+    default: return NULL;
+    }
 }
 
 /* 探针菜档位(1浅2中3深)→探针目标温度 */
@@ -307,6 +412,8 @@ const char *six_chick_name(void)
         const seafood_dish_t *sd = pizza_fixed_cfg();
         return sd ? tr(sd->name) : tr("披萨");
     }
+    const mat_probe_t *mp = mat_probe_cfg();
+    if (mp) return tr(mp->name);
     const chick_dish_t *c = chick_dish_cfg();
     if (c) return tr(c->name);
     const chick_probe_t *p = chick_probe_cfg();
@@ -338,6 +445,7 @@ uint8_t six_chick_mode(void) {
         const seafood_dish_t *sd = pizza_fixed_cfg();
         return sd ? sd->mode : MODE_PIZZA_2;
     }
+    const mat_probe_t *mp = mat_probe_cfg(); if (mp) return mp->mode;
     const chick_dish_t *c = chick_dish_cfg(); if (c) return c->mode;
     const chick_probe_t *p = chick_probe_cfg(); if (p) return p->mode;
     return MODE_WINDCHANGE_BBQ;
@@ -367,6 +475,7 @@ int six_chick_temp(void) {
         const seafood_dish_t *sd = pizza_fixed_cfg();
         return sd ? sd->temp : 230;
     }
+    const mat_probe_t *mp = mat_probe_cfg(); if (mp) return mp->temp;
     const chick_dish_t *c = chick_dish_cfg(); if (c) return c->temp;
     const chick_probe_t *p = chick_probe_cfg(); if (p) return p->temp;
     return 230;
@@ -480,6 +589,10 @@ const char *six_chick_desc(void)
     if (six_chick_is_seafood()) {
         const seafood_dish_t *sd = seafood_dish_cfg();
         if (sd) return sd->desc;
+    }
+    {
+        const mat_probe_t *mp = mat_probe_cfg();
+        if (mp) return tr(mp->desc);
     }
     if (six_chick_is_veg()) {
         const seafood_dish_t *sd = veg_fixed_cfg();
@@ -1529,8 +1642,7 @@ void jump_to_chick_cooking(void)
     s_chick_start_probe = get_probe_temp();   /* 进度条起点：起始探针温度 */
     cook_elapsed_saved = 0;
     cook_start_time = lv_tick_get();
-    const chick_probe_t *pcfg = chick_probe_cfg();
-    cook_total_ms = (pcfg ? pcfg->max_min : 80) * 60 * 1000;   /* 探针异常时兜底，非倒计时 */
+    cook_total_ms = six_probe_max_min() * 60 * 1000;   /* 探针异常时兜底(牛排30/牛肉100/鸡鸭80)，非倒计时 */
 
     g_send.iface_status = IFACE_COOKING;
     g_send.cook_mode = six_chick_mode();   /* 烤全鸡/烤全鸭:热风对流 */
@@ -1564,6 +1676,8 @@ static int six_chick_bar_value(int cur)
 /* 烤色程度文字：按已选探针目标温度映射（阈值按菜谱配置） */
 const char *six_chick_degree_text(void)
 {
+    if (six_chick_is_matdeg()) return six_2d_mat_text();        /* 牛肉/羊腿/羊排: 六2d成熟度档 */
+    if (g_six_bread_type == SIX_MEAT_GRILL_STEAK) return six_maturity_text();   /* 烤牛排: toastcolor 成熟度 */
     const chick_probe_t *p = chick_probe_cfg();
     if (!p) return tr("中等色");
     if (g_six_probe_temp <= p->probe[0]) return tr("浅色");
@@ -1572,6 +1686,8 @@ const char *six_chick_degree_text(void)
 }
 const char *six_chick_degree_short(void)
 {
+    if (six_chick_is_matdeg()) return six_2d_mat_text();
+    if (g_six_bread_type == SIX_MEAT_GRILL_STEAK) return six_maturity_text();
     const chick_probe_t *p = chick_probe_cfg();
     if (!p) return tr("中等");
     if (g_six_probe_temp <= p->probe[0]) return tr("浅");
@@ -1590,9 +1706,17 @@ static void six_chick_apply_display(void)
     if (cur < 0) cur = 0;
     if (cur > g_six_probe_temp) cur = g_six_probe_temp;
 
-    /* status:菜名+烤色程度（浅色/中等色/深色） */
-    if (ck->status)
-        lv_label_set_text_fmt(ck->status, tr("| %s | %s |"), six_chick_name(), six_chick_degree_text());
+    /* status:菜名+程度文本(烤牛排/烤牛肉=成熟度; 烤全鸡/鸭=浅/中/深色; 烤牛肉另有颜色) */
+    if (ck->status) {
+        if (six_chick_is_matdeg()) {
+            const char *dc = (six_2d_deg_idx() == 0) ? tr("浅色") :
+                             (six_2d_deg_idx() == 2) ? tr("深色") : tr("中等色");
+            lv_label_set_text_fmt(ck->status, tr("| %s | %s | %s |"),
+                                  six_chick_name(), dc, six_2d_mat_text());   /* 牛肉/羊腿/羊排:菜名+颜色+成熟度 */
+        } else {
+            lv_label_set_text_fmt(ck->status, tr("| %s | %s |"), six_chick_name(), six_chick_degree_text());
+        }
+    }
 
     /* cookstatus:烹饪中/暂停中/已完成（遮罩确认态不改 cookstatus） */
     if (ck->cookstatus) {

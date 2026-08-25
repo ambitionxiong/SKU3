@@ -826,17 +826,33 @@ extern lv_group_t *g_sixop3page;
 #define SIX_OP3_KIND_MUTTON   1  /* 羊肉 */
 #define SIX_OP3_KIND_PORK     2  /* 猪肉 */
 #define SIX_OP3_KIND_MEAT     3  /* 肉菜 */
+#define SIX_OP3_KIND_MEAT_TZ  4  /* 探针版肉菜单(牛肉/羊肉/猪肉,op/probe 隐藏) */
 void jump_to_sixop3page(const char *name, const char *op1, const char *op2, const char *op3, int probe_mask, int kind);
 void sixop3page_rebuild(page_id_t child);
 /* 探针版第六感菜单（nav_six_tz.c 实现） */
 extern lv_group_t *g_sixmenutz;
 extern lv_group_t *g_chickmenutz;
 void jump_to_sixmenutz(void);
+void jump_to_beefmenutz(void);          /* 牛肉二级菜单(复用 chickmenutz:烤牛排/烤牛肉) */
+void jump_to_muttonmenutz(void);         /* 羊肉二级菜单(烤羊腿/烤羊排) */
+void jump_to_porkmenutz(void);           /* 猪肉二级菜单(烤猪里脊肉/烤五花肉) */
+void jump_to_meatmenutz(int kind);       /* 肉二级菜单通用(1=牛肉 2=羊肉 3=猪肉) */
+void jump_to_sixop3page_tz(const char *name, const char *bt1, const char *bt2, const char *bt3);  /* 探针版六选项3页(肉) */
 void sixmenutz_rebuild(page_id_t child);
 void jump_to_chickmenutz(void);
 void chickmenutz_rebuild(page_id_t child);
 int six_chick_is_kind(void);        /* 当前是否为烤鸡翅类(份量驱动, 16..19) */
-int six_chick_is_probe(void);       /* 当前是否为探针菜(烤全鸡/烤全鸭) */
+int six_chick_is_probe(void);       /* 当前是否为探针菜(烤全鸡/鸭 + 烤牛排/烤牛肉) */
+int six_maturity_idx(void);            /* 当前成熟度档(0-4: 一/三/五/七成熟/全熟,默认2=五成熟) */
+void six_maturity_set(int idx);
+const char *six_maturity_text(void);   /* 当前成熟度文本(五成熟等) */
+int six_probe_target_temp(void);       /* 当前探针菜目标温度(按菜: 熟度/熟度×程度/程度) */
+int six_probe_max_min(void);           /* 当前探针菜最长防护分钟(牛排30/牛肉100/鸡鸭80) */
+int six_2d_mat_idx(void);              /* 当前二维菜成熟度档(sixset2 用) */
+const char *six_2d_mat_text(void);     /* 当前二维菜成熟度文本(六2d档) */
+int six_chick_is_matdeg(void);         /* 熟度×程度 二维探针菜(牛肉/羊腿/羊排) */
+int six_2d_deg_idx(void);              /* 当前二维菜程度档(0浅1中2深) */
+void six_2d_set_maturity(int on);      /* 二维菜中间区: 1=成熟度(烤牛肉) 0=份量 */
 int six_chick_probe_temp(int level);/* 探针菜档位(1浅2中3深)→探针目标温度 */
 const char *six_chick_degree_text(void); /* 烤鸡探针菜烤色程度（浅色/中等色/深色） */
 const char *six_chick_degree_short(void);/* 同上（浅/中等/深，descriptionmenu 用） */

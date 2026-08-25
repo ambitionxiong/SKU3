@@ -5,6 +5,9 @@
 #include "nav.h"
 #include "protocol.h"
 #include "custom_defs.h"
+
+static void toastcolor_update_maturity(void);
+static void toastcolor_apply_maturity_line(void);
 #include <string.h>
 
 /* ==============================
@@ -121,20 +124,12 @@ static void toastcolor_apply_mode_visibility(void)
     }
     if (tc->maturityline2) {
         if (!show_mat) lv_obj_add_flag(tc->maturityline2, LV_OBJ_FLAG_HIDDEN);
-        else {
-            int len = (int)strlen(lv_label_get_text(tc->Maturity));
-            if (len >= 2) lv_obj_add_flag(tc->maturityline2, LV_OBJ_FLAG_HIDDEN);
-            else lv_obj_clear_flag(tc->maturityline2, LV_OBJ_FLAG_HIDDEN);
-        }
     }
     if (tc->maturityline3) {
         if (!show_mat) lv_obj_add_flag(tc->maturityline3, LV_OBJ_FLAG_HIDDEN);
-        else {
-            int len = (int)strlen(lv_label_get_text(tc->Maturity));
-            if (len >= 2) lv_obj_clear_flag(tc->maturityline3, LV_OBJ_FLAG_HIDDEN);
-            else lv_obj_add_flag(tc->maturityline3, LV_OBJ_FLAG_HIDDEN);
-        }
     }
+    if (show_mat)
+        toastcolor_apply_maturity_line();   /* 成熟度下划线按字数择一(全熟2字→line2, 其余→line3) */
 
     /* 标题跟随当前组 */
     if (tc->label_23)
@@ -187,8 +182,8 @@ static void on_toastcolor_next_click(lv_event_t *e)
 {
     if (screen_is_loading(lv_scr_act())) return;
     if (six_chick_is_probe()) {
-        /* 探针菜(烤全鸡/烤全鸭):浅/中/深 → 探针目标温度(按菜谱),进 descriptionmenu */
-        g_six_probe_temp = six_chick_probe_temp(s_toast_color);
+        /* 探针菜: 目标温度按菜(烤全鸡/鸭=程度档; 烤牛排=熟度档),进 descriptionmenu */
+        g_six_probe_temp = six_probe_target_temp();
         jump_to_descriptionmenu();
         return;
     }
@@ -218,7 +213,8 @@ void jump_to_toastcolor(void)
             g_toast_mode = TOAST_MODE_DEGREE;
         toastcolor_apply_mode_visibility(); /* 三组互斥：仅显示当前组 */
         /* 焦点组:当前组标签 + next（烤色程度→degree，份量→weight） */
-        lv_obj_t *btns[] = { (g_toast_mode == TOAST_MODE_WEIGHT) ? tc->weight : tc->degree,
+        lv_obj_t *btns[] = { (g_toast_mode == TOAST_MODE_WEIGHT) ? tc->weight :
+                             (g_toast_mode == TOAST_MODE_MATURITY) ? tc->Maturity : tc->degree,
                              tc->next };
         const int n = (int)(sizeof(btns) / sizeof(btns[0]));
         for (int k = 0; k < n; k++) {
@@ -242,10 +238,16 @@ void jump_to_toastcolor(void)
         if (tc->weight && g_toast_mode == TOAST_MODE_WEIGHT) {
             lv_obj_add_event_cb(tc->weight, on_toastcolor_focus, LV_EVENT_FOCUSED, NULL);
         }
+        if (tc->Maturity && g_toast_mode == TOAST_MODE_MATURITY) {
+            lv_obj_add_event_cb(tc->Maturity, on_toastcolor_focus, LV_EVENT_FOCUSED, NULL);
+        }
 
         s_toast_color = 2;                /* 每次进入默认"中" */
         toastcolor_update_degree();
-        if (g_toast_mode == TOAST_MODE_WEIGHT)
+        if (g_toast_mode == TOAST_MODE_MATURITY) {
+            six_maturity_set(2);          /* 默认五成熟 */
+            toastcolor_update_maturity();
+        } else if (g_toast_mode == TOAST_MODE_WEIGHT)
             toastcolor_update_weight();   /* 份量显示当前选中项 */
     }
     current_group = g_toastcolor;
@@ -270,7 +272,8 @@ void toastcolor_rebuild(page_id_t child)
         if (!six_chick_is_probe() && !six_chick_is_kind())
             g_toast_mode = TOAST_MODE_DEGREE;
         toastcolor_apply_mode_visibility(); /* 三组互斥：仅显示当前组 */
-        lv_obj_t *btns[] = { (g_toast_mode == TOAST_MODE_WEIGHT) ? tc->weight : tc->degree,
+        lv_obj_t *btns[] = { (g_toast_mode == TOAST_MODE_WEIGHT) ? tc->weight :
+                             (g_toast_mode == TOAST_MODE_MATURITY) ? tc->Maturity : tc->degree,
                              tc->next };
         const int n = (int)(sizeof(btns) / sizeof(btns[0]));
         for (int k = 0; k < n; k++) {
@@ -293,10 +296,15 @@ void toastcolor_rebuild(page_id_t child)
         if (tc->weight && g_toast_mode == TOAST_MODE_WEIGHT) {
             lv_obj_add_event_cb(tc->weight, on_toastcolor_focus, LV_EVENT_FOCUSED, NULL);
         }
+        if (tc->Maturity && g_toast_mode == TOAST_MODE_MATURITY) {
+            lv_obj_add_event_cb(tc->Maturity, on_toastcolor_focus, LV_EVENT_FOCUSED, NULL);
+        }
 
         s_toast_color = 2;                /* 每次进入默认"中" */
         toastcolor_update_degree();
-        if (g_toast_mode == TOAST_MODE_WEIGHT)
+        if (g_toast_mode == TOAST_MODE_MATURITY)
+            toastcolor_update_maturity();   /* 返回重建保持已选成熟度 */
+        else if (g_toast_mode == TOAST_MODE_WEIGHT)
             toastcolor_update_weight();
     }
     current_group = g_toastcolor;
@@ -326,9 +334,43 @@ static void toastcolor_update_weight(void)
     lv_label_set_text_fmt(tc->weight, "%d", s_weight_opts[s_weight_index]);
 }
 
+// 成熟度下划线:按当前成熟度字数择一(全熟2字→line2, 其余3字→line3)
+static void toastcolor_apply_maturity_line(void)
+{
+    toastcolor_t *tc = toastcolor_get(&ui_manager);
+    if (!tc) return;
+    int len = (tc->Maturity) ? (int)strlen(lv_label_get_text(tc->Maturity)) / 3 : 3;
+    if (tc->maturityline2) {
+        if (len >= 3) lv_obj_add_flag(tc->maturityline2, LV_OBJ_FLAG_HIDDEN);
+        else          lv_obj_clear_flag(tc->maturityline2, LV_OBJ_FLAG_HIDDEN);
+    }
+    if (tc->maturityline3) {
+        if (len >= 3) lv_obj_clear_flag(tc->maturityline3, LV_OBJ_FLAG_HIDDEN);
+        else          lv_obj_add_flag(tc->maturityline3, LV_OBJ_FLAG_HIDDEN);
+    }
+}
+
+// Maturity 标签显示当前成熟度(一/三/五/七成熟/全熟)；切换后刷新下划线
+static void toastcolor_update_maturity(void)
+{
+    toastcolor_t *tc = toastcolor_get(&ui_manager);
+    if (!tc || !tc->Maturity) return;
+    lv_label_set_text(tc->Maturity, six_maturity_text());
+    toastcolor_apply_maturity_line();
+}
+
 // 编码器切换(CW/CCW 由 nav_key.c 调用)：按当前组切换档位或份量
 void toastcolor_cycle(int dir)
 {
+    if (g_toast_mode == TOAST_MODE_MATURITY) {
+        int idx = six_maturity_idx() + dir;
+        if (idx < 0) idx = 4;
+        if (idx > 4) idx = 0;
+        six_maturity_set(idx);
+        toastcolor_update_maturity();
+        printf("[toastcolor] maturity -> %d\n", six_maturity_idx());
+        return;
+    }
     if (g_toast_mode == TOAST_MODE_WEIGHT) {
         toastcolor_t *tc = toastcolor_get(&ui_manager);
         if (s_weight_count <= 1) return;

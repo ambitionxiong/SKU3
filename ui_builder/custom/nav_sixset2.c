@@ -45,10 +45,35 @@ static const int s_ct[4][3] = {
     { 48, 50, 52 },   /* 1500g */
     { 53, 55, 57 },   /* 2000g */
 };
+/* 烤牛肉(熟度5档×程度3档→探针温度;中间区=成熟度,weight 组不用) */
+static const int s_bt[5][3] = {
+    { 48, 50, 52 },   /* 一成熟 */
+    { 53, 55, 57 },   /* 三成熟 */
+    { 58, 60, 62 },   /* 五成熟 */
+    { 63, 65, 67 },   /* 七成熟 */
+    { 68, 70, 72 },   /* 全熟 */
+};
+/* 烤羊腿/烤羊排(熟度3档×程度3档→探针温度) */
+static const int s_leg_t[3][3] = {
+    { 50, 54, 58 },   /* 三成熟 */
+    { 63, 65, 68 },   /* 五成熟 */
+    { 86, 88, 90 },   /* 全熟 */
+};
+static const int s_lamb_t[3][3] = {
+    { 58, 60, 62 },   /* 三成熟 */
+    { 64, 68, 72 },   /* 五成熟 */
+    { 90, 92, 94 },   /* 全熟 */
+};
+
+/* 成熟度文本表(按菜): 牛肉5档标准, 羊腿/羊排3档 */
+static const char *s_beef_mat[5] = { "一成熟", "三成熟", "五成熟", "七成熟", "全熟" };
+static const char *s_leg_mat[3]   = { "三成熟", "五成熟", "全熟" };
 
 static const int *s_cur_w = s_jw;      /* 当前菜份量档表 */
 static const int (*s_cur_t)[3] = s_jt; /* 当前菜分钟表 */
 static int s_cur_wc = 3;               /* 当前菜份量档数 */
+static const char **s_cur_mat = s_beef_mat;   /* 当前菜成熟度文本表 */
+static int s_cur_matc = 5;                    /* 当前菜成熟度档数 */
 
 /* 按当前菜选择数据表(进入 sixset2 前须调用) */
 static void six_2d_select(void)
@@ -56,6 +81,9 @@ static void six_2d_select(void)
     switch (g_six_bread_type) {
     case SIX_PASTA_LASAGNA:    s_cur_w = s_lw; s_cur_t = s_lt; s_cur_wc = 4; break;
     case SIX_PASTA_CANNELLONI: s_cur_w = s_cw; s_cur_t = s_ct; s_cur_wc = 4; break;
+    case SIX_MEAT_GRILL_BEEF:  s_cur_w = NULL; s_cur_t = s_bt; s_cur_wc = 5; s_cur_mat = s_beef_mat; s_cur_matc = 5; break;   /* 烤牛肉 */
+    case SIX_MEAT_GRILL_LEG:   s_cur_w = NULL; s_cur_t = s_leg_t; s_cur_wc = 3; s_cur_mat = s_leg_mat; s_cur_matc = 3; break;  /* 烤羊腿 */
+    case SIX_MEAT_GRILL_LAMBS: s_cur_w = NULL; s_cur_t = s_lamb_t; s_cur_wc = 3; s_cur_mat = s_leg_mat; s_cur_matc = 3; break; /* 烤羊排 */
     case SIX_VEG_JACKET_POTATO:
     default:                   s_cur_w = s_jw; s_cur_t = s_jt; s_cur_wc = 3; break;
     }
@@ -65,11 +93,7 @@ static int s_widx = 1;   /* 重量档 idx,默认 1000g */
 static int s_jd = 1;   /* 程度档 idx(0浅/1中/2深),默认 中等 */
 static int s_show_maturity = 0;   /* 中间区显示 maturity(true) 还是 weight(false) */
 
-/* 成熟度 5 档(预留;具体菜接入时补时间映射) */
-static const char *mat_txt[5] = {
-    "一成熟", "三成熟", "五成熟", "七成熟", "全熟",
-};
-static int s_mat = 4;   /* 默认 五成熟 */
+static int s_mat = 2;   /* 成熟度档(牛肉5档五成熟=2; 羊腿/羊排3档五成熟=1, jump 时按菜重置) */
 
 int six_chick_is_jacket(void)
 {
@@ -89,11 +113,18 @@ const char *six_2d_dish_name(void)
 {
     if (g_six_bread_type == SIX_PASTA_LASAGNA)    return tr("千层面");
     if (g_six_bread_type == SIX_PASTA_CANNELLONI) return tr("卡内罗尼");
+    if (g_six_bread_type == SIX_MEAT_GRILL_BEEF)  return tr("烤牛肉");
+    if (g_six_bread_type == SIX_MEAT_GRILL_LEG)   return tr("烤羊腿");
+    if (g_six_bread_type == SIX_MEAT_GRILL_LAMBS) return tr("烤羊排");
     return tr("烤带皮土豆");
 }
 int six_2d_cook_min(void)         { return s_cur_t[s_widx][s_jd]; }
-int six_2d_weight(void)           { return s_cur_w[s_widx]; }
+int six_2d_weight(void)           { return s_cur_w ? s_cur_w[s_widx] : 0; }
 const char *six_2d_deg_text(void) { return jdeg[s_jd]; }
+int six_2d_mat_idx(void)          { return s_mat; }
+int six_2d_deg_idx(void)          { return s_jd; }
+const char *six_2d_mat_text(void) { return tr(s_cur_mat[s_mat]); }   /* 当前二维菜成熟度文本 */
+void six_2d_set_maturity(int on)  { s_show_maturity = on; }
 int jacket_cook_min(void)         { return six_2d_cook_min(); }   /* 兼容:烤带皮土豆 */
 int jacket_weight(void)           { return six_2d_weight(); }
 const char *jacket_deg_text(void) { return six_2d_deg_text(); }
@@ -117,13 +148,13 @@ static void apply_display(void)
     if (pg->degree)
         lv_label_set_text(pg->degree, jdeg_short[s_jd]);
 
-    /* weight:纯数字 */
-    if (pg->weight)
+    /* weight:纯数字(烤牛肉无份量表,组已隐藏) */
+    if (pg->weight && s_cur_w)
         lv_label_set_text_fmt(pg->weight, "%d", s_cur_w[s_widx]);
 
     /* maturity:文本 */
     if (s_show_maturity && pg->maturity)
-        lv_label_set_text(pg->maturity, mat_txt[s_mat]);
+        lv_label_set_text(pg->maturity, s_cur_mat[s_mat]);
 }
 
 /* 下划线显隐:全隐藏 → 只亮当前焦点字段的线(值决定该字段用哪条线)
@@ -141,12 +172,12 @@ static void apply_line_for(lv_obj_t *focused)
     if (pg->degreeline)    lv_obj_add_flag(pg->degreeline, LV_OBJ_FLAG_HIDDEN);
 
     /* ② 只亮焦点字段的线 */
-    if (focused == pg->weight && pg->weightline3 && pg->weightline4) {
+    if (focused == pg->weight && s_cur_w && pg->weightline3 && pg->weightline4) {
         int len = snprintf(NULL, 0, "%d", s_cur_w[s_widx]);
         if (len >= 4) lv_obj_clear_flag(pg->weightline4, LV_OBJ_FLAG_HIDDEN);
         else          lv_obj_clear_flag(pg->weightline3, LV_OBJ_FLAG_HIDDEN);
     } else if (focused == pg->maturity && pg->maturityline2 && pg->maturityline3) {
-        int len = (int)strlen(mat_txt[s_mat]) / 3;   /* 汉字字数 */
+        int len = (int)strlen(s_cur_mat[s_mat]) / 3;   /* 汉字字数 */
         if (len >= 3) lv_obj_clear_flag(pg->maturityline3, LV_OBJ_FLAG_HIDDEN);
         else          lv_obj_clear_flag(pg->maturityline2, LV_OBJ_FLAG_HIDDEN);
     } else if (focused == pg->degree && pg->degreeline) {
@@ -206,11 +237,11 @@ int sixset2_cycle(int dir)
     }
     if (s_show_maturity && df == pg->maturity) {
         s_mat += dir;
-        if (s_mat < 0) s_mat = 4;
-        if (s_mat > 4) s_mat = 0;
+        if (s_mat < 0) s_mat = s_cur_matc - 1;
+        if (s_mat > s_cur_matc - 1) s_mat = 0;
         apply_display();
         apply_line_for(df);
-        printf("[sixset2] maturity -> %s\n", mat_txt[s_mat]);
+        printf("[sixset2] maturity -> %s\n", s_cur_mat[s_mat]);
         return 1;
     }
     /* next 或其他:移到中间组,不切数值 */
@@ -226,11 +257,14 @@ static void on_next_click(lv_event_t *e)
 {
     (void)e;
     if (screen_is_loading(lv_scr_act())) return;
+    if (g_six_bread_type == SIX_MEAT_GRILL_BEEF)
+        g_six_probe_temp = six_probe_target_temp();   /* 烤牛肉:熟度×程度→探针目标温度 */
     jump_to_descriptionmenu();
 }
 
 void jump_to_sixset2(void)
 {
+    s_show_maturity = six_chick_is_matdeg();   /* 牛肉/羊腿/羊排:中间区=成熟度; 带皮土豆/意面:份量 */
     page_push(PAGE_SIXSET2);
     lv_obj_clean(lv_scr_act());
     sixset2_create(&ui_manager);
@@ -246,13 +280,23 @@ void jump_to_sixset2(void)
         g_sixset2 = group_create_for_page(btns, n);
         clear_focus_states(btns, n);
 
-        /* 中间区互斥:jacket 显示 weight 组、隐藏 maturity 组 */
-        if (pg->maturity)      lv_obj_add_flag(pg->maturity, LV_OBJ_FLAG_HIDDEN);
-        if (pg->maturityline2) lv_obj_add_flag(pg->maturityline2, LV_OBJ_FLAG_HIDDEN);
-        if (pg->maturityline3) lv_obj_add_flag(pg->maturityline3, LV_OBJ_FLAG_HIDDEN);
+        /* 中间区互斥:份量组(带皮土豆/意面) 与 成熟度组(烤牛肉) 二选一 */
+        if (s_show_maturity) {
+            if (pg->weight)      lv_obj_add_flag(pg->weight, LV_OBJ_FLAG_HIDDEN);
+            if (pg->weighticon)  lv_obj_add_flag(pg->weighticon, LV_OBJ_FLAG_HIDDEN);
+            if (pg->weightline3) lv_obj_add_flag(pg->weightline3, LV_OBJ_FLAG_HIDDEN);
+            if (pg->weightline4) lv_obj_add_flag(pg->weightline4, LV_OBJ_FLAG_HIDDEN);
+            if (pg->maturity)      lv_obj_clear_flag(pg->maturity, LV_OBJ_FLAG_HIDDEN);
+            if (pg->maturityline2) lv_obj_clear_flag(pg->maturityline2, LV_OBJ_FLAG_HIDDEN);
+            if (pg->maturityline3) lv_obj_clear_flag(pg->maturityline3, LV_OBJ_FLAG_HIDDEN);
+        } else {
+            if (pg->maturity)      lv_obj_add_flag(pg->maturity, LV_OBJ_FLAG_HIDDEN);
+            if (pg->maturityline2) lv_obj_add_flag(pg->maturityline2, LV_OBJ_FLAG_HIDDEN);
+            if (pg->maturityline3) lv_obj_add_flag(pg->maturityline3, LV_OBJ_FLAG_HIDDEN);
+        }
 
         /* name1 跟随中间组类型 */
-        if (pg->name1)    lv_label_set_text(pg->name1, tr("份量/种类"));
+        if (pg->name1)    lv_label_set_text(pg->name1, s_show_maturity ? tr("成熟度") : tr("份量/种类"));
         if (pg->label_18) lv_label_set_text(pg->label_18, six_2d_dish_name());
 
         /* degree 组恢复常显 */
@@ -270,6 +314,7 @@ void jump_to_sixset2(void)
         six_2d_select();   /* 按菜选择份量/时间表 */
         s_widx = six_chick_is_pasta() ? 2 : 1;   /* 意面默认1500g, 带皮土豆默认1000g */
         s_jd = 1;   /* 默认 中等 */
+        s_mat = (g_six_bread_type == SIX_MEAT_GRILL_BEEF) ? 2 : 1;   /* 默认五成熟: 牛肉5档idx2, 羊腿/羊排3档idx1 */
         apply_display();
         apply_line_for(NULL);   /* 初始无线 */
 
@@ -299,11 +344,21 @@ void sixset2_rebuild(page_id_t child)
         g_sixset2 = group_create_for_page(btns, n);
         clear_focus_states(btns, n);
 
-        if (pg->maturity)      lv_obj_add_flag(pg->maturity, LV_OBJ_FLAG_HIDDEN);
-        if (pg->maturityline2) lv_obj_add_flag(pg->maturityline2, LV_OBJ_FLAG_HIDDEN);
-        if (pg->maturityline3) lv_obj_add_flag(pg->maturityline3, LV_OBJ_FLAG_HIDDEN);
+        if (s_show_maturity) {
+            if (pg->weight)      lv_obj_add_flag(pg->weight, LV_OBJ_FLAG_HIDDEN);
+            if (pg->weighticon)  lv_obj_add_flag(pg->weighticon, LV_OBJ_FLAG_HIDDEN);
+            if (pg->weightline3) lv_obj_add_flag(pg->weightline3, LV_OBJ_FLAG_HIDDEN);
+            if (pg->weightline4) lv_obj_add_flag(pg->weightline4, LV_OBJ_FLAG_HIDDEN);
+            if (pg->maturity)      lv_obj_clear_flag(pg->maturity, LV_OBJ_FLAG_HIDDEN);
+            if (pg->maturityline2) lv_obj_clear_flag(pg->maturityline2, LV_OBJ_FLAG_HIDDEN);
+            if (pg->maturityline3) lv_obj_clear_flag(pg->maturityline3, LV_OBJ_FLAG_HIDDEN);
+        } else {
+            if (pg->maturity)      lv_obj_add_flag(pg->maturity, LV_OBJ_FLAG_HIDDEN);
+            if (pg->maturityline2) lv_obj_add_flag(pg->maturityline2, LV_OBJ_FLAG_HIDDEN);
+            if (pg->maturityline3) lv_obj_add_flag(pg->maturityline3, LV_OBJ_FLAG_HIDDEN);
+        }
 
-        if (pg->name1)    lv_label_set_text(pg->name1, tr("份量/种类"));
+        if (pg->name1)    lv_label_set_text(pg->name1, s_show_maturity ? tr("成熟度") : tr("份量/种类"));
         if (pg->label_18) lv_label_set_text(pg->label_18, six_2d_dish_name());
 
         if (pg->label_13)   lv_obj_clear_flag(pg->label_13, LV_OBJ_FLAG_HIDDEN);

@@ -824,9 +824,10 @@ void process_key(uint8_t key)
         if (current_group == g_toastcolor) {
             lv_obj_t *df = lv_group_get_focused(current_group);
             toastcolor_t *tc = toastcolor_get(&ui_manager);
-            if (tc && df != tc->degree && df != tc->weight) {
-                /* 第一次转动:仅移焦点到当前组标签（烤色程度/份量），不切档位 */
-                lv_group_focus_obj((g_toast_mode == TOAST_MODE_WEIGHT) ? tc->weight : tc->degree);
+            if (tc && df != tc->degree && df != tc->weight && df != tc->Maturity) {
+                /* 第一次转动:仅移焦点到当前组标签（烤色程度/份量/成熟度），不切档位 */
+                lv_group_focus_obj((g_toast_mode == TOAST_MODE_WEIGHT) ? tc->weight :
+                                   (g_toast_mode == TOAST_MODE_MATURITY) ? tc->Maturity : tc->degree);
             } else {
                 toastcolor_cycle(+1);
             }
@@ -950,9 +951,10 @@ void process_key(uint8_t key)
         if (current_group == g_toastcolor) {
             lv_obj_t *df = lv_group_get_focused(current_group);
             toastcolor_t *tc = toastcolor_get(&ui_manager);
-            if (tc && df != tc->degree && df != tc->weight) {
-                /* 第一次转动:仅移焦点到当前组标签（烤色程度/份量），不切档位 */
-                lv_group_focus_obj((g_toast_mode == TOAST_MODE_WEIGHT) ? tc->weight : tc->degree);
+            if (tc && df != tc->degree && df != tc->weight && df != tc->Maturity) {
+                /* 第一次转动:仅移焦点到当前组标签（烤色程度/份量/成熟度），不切档位 */
+                lv_group_focus_obj((g_toast_mode == TOAST_MODE_WEIGHT) ? tc->weight :
+                                   (g_toast_mode == TOAST_MODE_MATURITY) ? tc->Maturity : tc->degree);
             } else {
                 toastcolor_cycle(-1);
             }
@@ -1566,7 +1568,7 @@ void process_key(uint8_t key)
         if (current_group == g_toastcolor) {
             lv_obj_t *df = lv_group_get_focused(current_group);
             toastcolor_t *tc = toastcolor_get(&ui_manager);
-            if (tc && (df == tc->degree || df == tc->weight)) {
+            if (tc && (df == tc->degree || df == tc->weight || df == tc->Maturity)) {
                 g_send.buzzer_req = BUZZER_KEY_VALID;
                 lv_group_focus_obj(tc->next);   /* 确定:从当前组标签切到下一焦点 */
                 uart_print();

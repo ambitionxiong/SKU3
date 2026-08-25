@@ -28,7 +28,14 @@ static void descriptionmenu_layout(descriptionmenu_t *dm)
     if (dm->summary) {
         if (six_chick_is_probe()) {
             lv_obj_clear_flag(dm->summary, LV_OBJ_FLAG_HIDDEN);
-            lv_label_set_text_fmt(dm->summary, tr("小结：\n烧烤程度：%s\n"), six_chick_degree_short());
+            if (six_chick_is_matdeg())
+                lv_label_set_text_fmt(dm->summary, tr("小结：\n熟度：%s\n烧烤程度：%s\n"),
+                                      six_2d_mat_text(), six_2d_deg_text());   /* 牛肉/羊腿/羊排:熟度+程度 */
+            else if (g_six_bread_type == SIX_MEAT_GRILL_STEAK)
+                lv_label_set_text_fmt(dm->summary, tr("小结：\n熟度：%s\n"),
+                                      six_chick_degree_short());                     /* 烤牛排:熟度 */
+            else
+                lv_label_set_text_fmt(dm->summary, tr("小结：\n烧烤程度：%s\n"), six_chick_degree_short());   /* 烤全鸡/鸭 */
         } else if (six_chick_is_degree_time()) {
             int d = toastcolor_degree_value();
             const char *dt = (d == 1) ? tr("浅") : (d == 3) ? tr("深") : tr("中等");
