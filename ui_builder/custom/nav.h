@@ -296,6 +296,7 @@ typedef enum {
     PAGE_DESCRIPTIONMENU,   /* 第六感-烹饪描述 */
     PAGE_SIX_COOKING,       /* 第六感-运行页（复用 somecook_cooking UI） */
     PAGE_TOASTCOLOR,        /* 第六感-烤色选择 */
+    PAGE_SIXSET2,           /* 第六感-双维选择页（复用 sixset2 UI） */
     PAGE_PROBENEEDTIP,      /* 第六感-烤鸡探针提示（未插探针） */
     PAGE_CHICKENCOOKING,    /* 第六感-烤鸡烹饪页（chickencooking UI） */
     PAGE_SIXOP3PAGE,        /* 六选项3页（复用：牛肉/羊肉/猪肉子菜单） */
@@ -765,6 +766,8 @@ extern int six_bread_color_min(int level);
 #define SIX_VEG_EGGPLANT        40  /* 烤茄子（固定参数） */
 #define SIX_VEG_MIXED           41  /* 烤杂蔬（固定参数） */
 #define SIX_VEG_DAUPHINOISE     42  /* 奶油焗土豆（固定参数） */
+#define SIX_VEG_JACKET_POTATO   44  /* 烤带皮土豆（二维:份量×程度） */
+#define SIX_VEG_CORN            43  /* 烤玉米（份量驱动,单位:根） */
 #define SIX_VEG_SWEET_POTATO    45  /* 烤红薯（份量驱动,g; 43玉米/44带皮土豆预留） */
 /* 烤海鲜固定参数菜配置（定义于 nav_six_chicken.c） */
 typedef struct {
@@ -778,6 +781,18 @@ const seafood_dish_t *seafood_dish_cfg(void);
 int six_chick_is_seafood(void);
 const seafood_dish_t *veg_fixed_cfg(void);
 int six_chick_is_veg(void);
+int six_chick_is_jacket(void);          /* 烤带皮土豆(二维份量×程度) */
+int jacket_cook_min(void);              /* 当前份量×程度对应分钟 */
+int jacket_weight(void);                /* 当前份量 g */
+const char *jacket_deg_text(void);      /* 当前程度文本(浅/中等/深) */
+void jump_to_sixset2(void);
+void sixset2_rebuild(page_id_t child);
+extern lv_group_t *g_sixset2;
+int sixset2_cycle(int dir);             /* 编码器:按焦点切份量/程度 */
+void sixset2_press_focus(void);         /* PRESS:焦点推进(weight→maturity→next) */
+void toastcolor_set_weight_unit(const char *unit);   /* 份量单位(g/根),进入份量菜时设置 */
+const char *toastcolor_weight_unit(void);
+void toastcolor_apply_corn_layout(void);   /* 玉米窄版排版(页面建好后调用) */
 extern int g_six_probe_temp;        /* 烤全鸡所选探针目标温度（浅75/中80/深85℃），默认中 */
 extern lv_group_t *g_probeneedtip;
 extern lv_group_t *g_chick_cooking; /* 烤全鸡烹饪页（chickencooking UI） */

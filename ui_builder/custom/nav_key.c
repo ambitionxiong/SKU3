@@ -815,6 +815,12 @@ void process_key(uint8_t key)
             uart_print();
             break;
         }
+        if (current_group == g_sixset2) {
+            sixset2_cycle(+1);   /* 按焦点分派:选择对象上切值,其他移焦点 */
+            g_send.buzzer_req = BUZZER_ENCODER;
+            uart_print();
+            break;
+        }
         if (current_group == g_toastcolor) {
             lv_obj_t *df = lv_group_get_focused(current_group);
             toastcolor_t *tc = toastcolor_get(&ui_manager);
@@ -932,6 +938,12 @@ void process_key(uint8_t key)
 #endif
         if (!current_group) {
             g_send.buzzer_req = BUZZER_KEY_INVALID;
+            uart_print();
+            break;
+        }
+        if (current_group == g_sixset2) {
+            sixset2_cycle(-1);   /* 按焦点分派:选择对象上切值,其他移焦点 */
+            g_send.buzzer_req = BUZZER_ENCODER;
             uart_print();
             break;
         }
@@ -1539,6 +1551,17 @@ void process_key(uint8_t key)
             }
             uart_print();
             break;
+        }
+        if (current_group == g_sixset2) {
+            lv_obj_t *df = lv_group_get_focused(current_group);
+            sixset2_t *pg = sixset2_get(&ui_manager);
+            if (pg && (df == pg->weight || df == pg->maturity || df == pg->degree)) {
+                g_send.buzzer_req = BUZZER_KEY_VALID;
+                sixset2_press_focus();   /* 焦点循环:weight/maturity→degree→next */
+                uart_print();
+                break;
+            }
+            /* next:放行通用逻辑(点击 → 描述页) */
         }
         if (current_group == g_toastcolor) {
             lv_obj_t *df = lv_group_get_focused(current_group);

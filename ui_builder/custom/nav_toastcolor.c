@@ -31,6 +31,8 @@ static void toastcolor_update_degree(void);
 static void toastcolor_update_weight(void);
 
 /* 设置份量选项并选定默认下标（default_idx <0 时取 0） */
+static const char *s_weight_unit = "g";   /* 当前份量单位(默认 g; 玉米等设"根") */
+
 void toastcolor_set_weight_options(const int *opts, int count, int default_idx)
 {
     s_weight_opts = opts;
@@ -38,6 +40,18 @@ void toastcolor_set_weight_options(const int *opts, int count, int default_idx)
     s_weight_index = default_idx;
     if (s_weight_index < 0 || s_weight_index >= s_weight_count)
         s_weight_index = 0;
+    s_weight_unit = "g";   /* 每次设置份量选项时重置默认单位 */
+}
+
+/* 设置份量单位(如玉米的"根");须在 set_weight_options 之后调用 */
+void toastcolor_set_weight_unit(const char *unit)
+{
+    if (unit && *unit) s_weight_unit = unit;
+}
+
+const char *toastcolor_weight_unit(void)
+{
+    return s_weight_unit;
 }
 
 /* 当前选中份量克数；非份量组/未设置返回 -1 */
@@ -94,6 +108,7 @@ static void toastcolor_apply_mode_visibility(void)
         else lv_obj_add_flag(tc->weight, LV_OBJ_FLAG_HIDDEN);
     }
     if (tc->weighticon) {
+        lv_label_set_text(tc->weighticon, s_weight_unit);   /* 单位随菜切换(g/根) */
         if (show_wt) lv_obj_clear_flag(tc->weighticon, LV_OBJ_FLAG_HIDDEN);
         else lv_obj_add_flag(tc->weighticon, LV_OBJ_FLAG_HIDDEN);
     }
@@ -329,4 +344,19 @@ void toastcolor_cycle(int dir)
     if (s_toast_color > 3) s_toast_color = 1;
     toastcolor_update_degree();
     printf("[toastcolor] degree -> %d\n", s_toast_color);
+}
+
+
+/* 烤玉米：1 位数字窄版排版(weight/line3 位置微调 + line3 水平缩短)
+   须在页面创建后调用(on_veg_corn_click 中);坐标与长度可按效果微调 */
+void toastcolor_apply_corn_layout(void)
+{
+    toastcolor_t *tc = toastcolor_get(&ui_manager);
+    if (!tc) return;
+    lv_obj_set_pos(tc->weight,      484, 248);   /* weight 位置(原 519) */
+    lv_obj_set_pos(tc->weighticon,      665, 280);   
+    lv_obj_set_pos(tc->weightline3, 590, 328);   /* line3 位置(原 569) */
+    /* line3 水平缩短:141px → 90px(STRETCH 后 size 生效) */
+    lv_image_set_inner_align(tc->weightline3, LV_IMAGE_ALIGN_STRETCH);
+    lv_obj_set_size(tc->weightline3, 110, 4);
 }

@@ -289,6 +289,10 @@ void page_pop(void)
         vegetablemenu_rebuild(child);
         break;
 
+    case PAGE_SIXSET2:
+        sixset2_rebuild(child);
+        break;
+
     case PAGE_DUCK6MENU:
         duckmenu_rebuild(child);
         break;

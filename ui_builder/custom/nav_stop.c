@@ -140,12 +140,16 @@ void jump_to_updown_bbq_stop_back(void)
                 } else if (six_chick_is_kind()) {
                     int w = toastcolor_weight_value();
                     if (w < 0) w = 800;
-                    lv_label_set_text_fmt(back->statu_label, tr("| %s | %dg | %d分钟 |"),
-                                          six_chick_name(), w, six_chick_cook_min(w));   /* 烤鸡翅类:菜名+克重+时间 */
+                    lv_label_set_text_fmt(back->statu_label, tr("| %s | %d%s | %d分钟 |"),
+                                          six_chick_name(), w, toastcolor_weight_unit(), six_chick_cook_min(w));   /* 烤鸡翅类:菜名+单位+时间 */
                 } else if (six_chick_is_veg()) {
                     const seafood_dish_t *sd = veg_fixed_cfg();
                     lv_label_set_text_fmt(back->statu_label, tr("| %s | %d分钟"), six_chick_name(),
                                           sd ? sd->cook_min : 22);   /* 蔬菜:菜名+固定时间 */
+
+                } else if (six_chick_is_jacket()) {
+                    lv_label_set_text_fmt(back->statu_label, tr("| %s | %dg %s | %d分钟"), six_chick_name(),
+                                          jacket_weight(), jacket_deg_text(), jacket_cook_min());   /* 烤带皮土豆 */
                 } else
                     lv_label_set_text_fmt(back->statu_label, tr("| %s | %d分钟"), six_bread_name(), six_bread_cook_min());
                 lv_img_set_src(back->image_7, LVGL_IMAGE_PATH(sixicon.png));
