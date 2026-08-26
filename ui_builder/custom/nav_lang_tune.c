@@ -1314,6 +1314,14 @@ void bread6menu_lang_tune(void)
     lv_obj_set_pos(pg->croissant, 936, 65);
     lv_obj_set_size(pg->croissant, 340, 406);
 
+    /* ---- 场景分支: 四栏布局相同,仅标题与栏内文字不同 ----
+       面包(默认): 第六感→面包(面包卷/全麦面包/土司/可颂)
+       肉菜单:     第六感→肉(非探针; 牛肉/羊肉/猪肉/肉菜), label_11="肉" ---- */
+    if (six_menu_is_meat_mode()) {
+        /* 肉菜单: 布局同基准,label 文字不同 */
+        /* TODO: 英文实测后调整(label_11 "Meat"/栏内 Roast Leg of Lamb 等宽度) */
+    }
+
 }
 
 
@@ -2257,6 +2265,21 @@ void chick6menu_lang_tune(void)
     lv_obj_set_pos(pg->duck, 633, 74);
     lv_obj_set_size(pg->duck, 637, 389);
 
+    /* ---- 场景分支: 两栏布局相同,仅 label_1 标题与两栏文字不同(运行时设置) ----
+       家禽首页(默认): 第六感→家禽(烤全鸡/烤全鸭)
+       鱼/海鲜首页(fish=1): 第六感→鱼/海鲜(烤鱼/烤海鲜)
+       烤鱼子页(fish=2):   鱼/海鲜→烤鱼(烤鳕鱼/烤全鱼)
+       蔬菜/配菜首页:       第六感→蔬菜/配菜
+       砂锅菜/烤意面首页:   第六感→意面(千层面/卡内罗尼) ---- */
+    if (six_chick_get_vegetable_mode() || six_chick_get_pasta_mode()) {
+        /* 蔬菜配菜 / 砂锅菜烤意面: 标题文字较长("蔬菜/配菜"/"砂锅菜/烤意面") */
+        /* TODO: 英文实测后调整(label_1 "Vegetables & Side Dishes" 等宽度) */
+    } else if (six_chick_get_fish_mode()) {
+        /* 鱼海鲜首页 / 烤鱼子页 */
+        /* TODO: 英文实测后按需调整 */
+    }
+    /* 家禽首页用基准值 */
+
 }
 
 
@@ -2272,9 +2295,20 @@ void chickencooking_lang_tune(void)
 
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
+    /* ---- 场景分支: 本页为探针烹饪页,8 种探针菜共用 ----
+       烤全鸡/烤全鸭:        status "| 菜名 | 浅色/中等色/深色 |"(短)
+       烤牛排:               status "| 烤牛排 | 几成熟 |"
+       二维菜(牛肉/羊腿/羊排): status "| 菜名 | 颜色 | 成熟度 |"(最长)
+       猪里脊/五花肉:         status "| 菜名 | 颜色 |" ---- */
     /* status: 标签 | "| 烤全鸡 | 中等色" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
-    lv_obj_set_size(pg->status, 490, 39);
+    if (six_chick_is_matdeg()) {
+        /* 二维菜文本最长("| 烤猪里脊肉 | 中等色 | 五成熟 |") */
+        lv_obj_set_size(pg->status, 490, 39);
+        /* TODO: 英文实测后调整(如 "Roasted Pork Tenderloin | Mid | Medium Well" 是否超宽/需缩小字号) */
+    } else {
+        lv_obj_set_size(pg->status, 490, 39);
+    }
 
     /* image_10: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_10, 115, 320);
@@ -2404,6 +2438,14 @@ void chickenmenu_lang_tune(void)
      lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_CENTER, 0);
      lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
      lv_obj_align_to(obj, parent, LV_ALIGN_CENTER, 0, 0);
+
+    /* ---- 场景分支: 六栏布局相同,仅栏内文字不同(运行时设置) ----
+       家禽子页(默认): 第六感→家禽→(烤全鸡/烤鸡翅/炸鸡中翅/炸鸡腿/烤鸡胸肉等)
+       海鲜子页:       第六感→鱼/海鲜→烤海鲜(扇贝/青口贝/生蚝/大虾/鱿鱼) ---- */
+    if (six_chick_get_seafood_mode()) {
+        /* 海鲜子页 */
+        /* TODO: 英文实测后调整(Grilled Scallops 等文本宽度) */
+    }
 }
 
 
@@ -2459,6 +2501,15 @@ void chickmenutz_lang_tune(void)
      lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_CENTER, 0);
      lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
      lv_obj_align_to(obj, parent, LV_ALIGN_CENTER, 0, 18);
+
+    /* ---- 场景分支: 两栏布局相同,仅文字不同 ----
+       家禽(默认): 探针模式→第六感→家禽(烤全鸡/烤全鸭)
+       肉二级:     探针模式→第六感→肉→牛肉(烤牛排/烤牛肉) 羊肉(烤羊腿/烤羊排) 猪肉(烤猪里脊肉/烤五花肉)
+                   label_4=父类名 label_5/6=菜名,由运行时按 six_tz_get_meat_mode() 设置 ---- */
+    if (six_tz_get_meat_mode()) {
+        /* 肉二级菜单: 布局同基准,label 文字较长 */
+        /* TODO: 英文实测后调整(label_5 "Roasted Pork Tenderloin" 等较长文本的尺寸/居中) */
+    }
 }
 
 
@@ -4711,29 +4762,46 @@ void duckmenu_lang_tune(void)
 
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
-    /* wholeduck: 按钮 | (18,68) | 624x400 | font taiwanpearl_regular_30 | bg: div2bk30.png */
-    lv_obj_set_pos(pg->wholeduck, 18, 68);
-    lv_obj_set_size(pg->wholeduck, 624, 400);
+    /* ---- 场景分支: 本页被四处复用 ----
+       复用态(零食/配菜/肉菜): 第六感→零食(炸鸡米花) / 蔬菜配菜→配菜(炸薯条) / 蔬菜配菜→肉菜(烤香肠)
+         运行时隐藏 label_2/image_2, 只显示 label_1+按钮
+       默认: 家禽菜单→烤全鸭(label_2/image_2 可见) ---- */
+    if (six_chick_get_snack_mode() || six_chick_get_sidedish_mode() || six_chick_get_meatdish_mode()) {
+        /* 复用态: 只排 label_1 + 按钮 */
+        /* wholeduck: 按钮 | (18,68) | 624x400 | font taiwanpearl_regular_30 | bg: div2bk30.png */
+        lv_obj_set_pos(pg->wholeduck, 18, 68);
+        lv_obj_set_size(pg->wholeduck, 624, 400);
 
-    /* label_1: 标签 | "鸭" | (24,24) | 97x25 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_1, 24, 24);
-    lv_obj_set_size(pg->label_1, 97, 25);
+        /* label_1: 标签 | "鸭" | (24,24) | 97x25 | font taiwanpearl_regular_24 */
+        lv_obj_set_pos(pg->label_1, 24, 24);
+        lv_obj_set_size(pg->label_1, 97, 25);
+        /* TODO: 英文实测后调整(label_1 文字 Snacks/Side Dishes/Meat 较长, 可能需加宽) */
+    } else {
+        /* 默认: 家禽→烤全鸭 */
+        /* wholeduck: 按钮 | (18,68) | 624x400 | font taiwanpearl_regular_30 | bg: div2bk30.png */
+        lv_obj_set_pos(pg->wholeduck, 18, 68);
+        lv_obj_set_size(pg->wholeduck, 624, 400);
 
-    /* label_2: 标签 | "烤全鸭" | (265,274) | 131x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_2, 265, 274);
-    lv_obj_set_size(pg->label_2, 131, 32);
+        /* label_1: 标签 | "鸭" | (24,24) | 97x25 | font taiwanpearl_regular_24 */
+        lv_obj_set_pos(pg->label_1, 24, 24);
+        lv_obj_set_size(pg->label_1, 97, 25);
 
-    /* image_2: 图片 | (296,213) | img: probeiconbig.png */
-    lv_obj_set_pos(pg->image_2, 296, 213);
+        /* label_2: 标签 | "烤全鸭" | (265,274) | 131x32 | font taiwanpearl_regular_30 */
+        lv_obj_set_pos(pg->label_2, 265, 274);
+        lv_obj_set_size(pg->label_2, 131, 32);
 
-     /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ En modify ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-     lv_obj_t *obj = NULL;
-     lv_obj_t *parent = NULL;
-     obj = pg->label_2;
-     parent = pg->wholeduck;
-     lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_CENTER, 0);
-     lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
-     lv_obj_align_to(obj, parent, LV_ALIGN_CENTER, 0, 18);
+        /* image_2: 图片 | (296,213) | img: probeiconbig.png */
+        lv_obj_set_pos(pg->image_2, 296, 213);
+
+         /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ En modify ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+         lv_obj_t *obj = NULL;
+         lv_obj_t *parent = NULL;
+         obj = pg->label_2;
+         parent = pg->wholeduck;
+         lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_CENTER, 0);
+         lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+         lv_obj_align_to(obj, parent, LV_ALIGN_CENTER, 0, 18);
+    }
 }
 
 
@@ -11029,26 +11097,35 @@ void sixop3page_lang_tune(void)
     lv_obj_set_pos(pg->name, 24, 24);
     lv_obj_set_size(pg->name, 80, 22);
 
-    /* op1: 标签 | "烹饪功能" | (153,274) | 147x28 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->op1, 153, 274);
-    lv_obj_set_size(pg->op1, 147, 28);
+    /* ---- 场景分支: 本页被两处复用 ----
+       非探针: 第六感(非探针)→肉→牛肉/羊肉/猪肉(op 文字+probe 图标掩码显隐)
+       探针版(MEAT_TZ): 探针模式→第六感→肉(牛肉/羊肉/猪肉; op/probe 全隐藏,bt 内文字) ---- */
+    if (six_op3_get_kind() == SIX_OP3_KIND_MEAT_TZ) {
+        /* 探针版: op1-3/probe1-3 运行时全隐藏,不排版; bt1-3 内文字(牛肉/羊肉/猪肉) */
+        /* TODO: 英文实测后调整(bt 文字字号/位置) */
+    } else {
+        /* 非探针: 第六感→肉菜单 */
+        /* op1: 标签 | "烹饪功能" | (153,274) | 147x28 | font taiwanpearl_regular_30 */
+        lv_obj_set_pos(pg->op1, 153, 274);
+        lv_obj_set_size(pg->op1, 147, 28);
 
-    /* op2: 标签 | "COOK 4" | (567,274) | 147x28 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->op2, 567, 274);
-    lv_obj_set_size(pg->op2, 147, 28);
+        /* op2: 标签 | "COOK 4" | (567,274) | 147x28 | font taiwanpearl_regular_30 */
+        lv_obj_set_pos(pg->op2, 567, 274);
+        lv_obj_set_size(pg->op2, 147, 28);
 
-    /* op3: 标签 | "特殊功能" | (981,274) | 147x30 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->op3, 981, 274);
-    lv_obj_set_size(pg->op3, 147, 30);
+        /* op3: 标签 | "特殊功能" | (981,274) | 147x30 | font taiwanpearl_regular_30 */
+        lv_obj_set_pos(pg->op3, 981, 274);
+        lv_obj_set_size(pg->op3, 147, 30);
 
-    /* probe1: 图片 | (192,213) | img: probeiconbig.png */
-    lv_obj_set_pos(pg->probe1, 192, 213);
+        /* probe1: 图片 | (192,213) | img: probeiconbig.png */
+        lv_obj_set_pos(pg->probe1, 192, 213);
 
-    /* probe2: 图片 | (606,213) | img: probeiconbig.png */
-    lv_obj_set_pos(pg->probe2, 606, 213);
+        /* probe2: 图片 | (606,213) | img: probeiconbig.png */
+        lv_obj_set_pos(pg->probe2, 606, 213);
 
-    /* probe3: 图片 | (1020,213) | img: probeiconbig.png */
-    lv_obj_set_pos(pg->probe3, 1020, 213);
+        /* probe3: 图片 | (1020,213) | img: probeiconbig.png */
+        lv_obj_set_pos(pg->probe3, 1020, 213);
+    }
 
 }
 
@@ -12711,36 +12788,45 @@ void toastcolor_lang_tune(void)
     lv_obj_set_pos(pg->next, 983, 22);
     lv_obj_set_size(pg->next, 135, 71);
 
-    /* degree: 标签 | "浅中深" | (590,248) | 100x77 | font taiwanpearl_regular_72 */
-    lv_obj_set_pos(pg->degree, 590, 248);
-    lv_obj_set_size(pg->degree, 100, 77);
+    /* ---- 场景分支: 三组互斥(g_toast_mode), 运行时仅一组可见 ----
+       DEGREE   烤色程度: 面包/蛋糕类 + 探针菜(第六感家禽→烤全鸡/鸭, 肉→猪肉→烤猪里脊肉/烤五花肉)
+       MATURITY 成熟度:   探针菜(第六感探针→肉→牛肉→烤牛排)
+       WEIGHT   份量:     鸡翅类/烤鳕鱼/烤全鱼/炸薯条/烤玉米/烤红薯 ---- */
+    if (g_toast_mode == TOAST_MODE_WEIGHT) {
+        /* weight: 标签 | "1600" | (519,248) | 167x77 | font taiwanpearl_regular_72 */
+        lv_obj_set_pos(pg->weight, 519, 248);
+        lv_obj_set_size(pg->weight, 167, 77);
 
-    /* line: 图片 | (606,328) | img: settingline3_73x4.png */
-    lv_obj_set_pos(pg->line, 606, 328);
+        /* weighticon: 标签 | "g" | (685,280) | 37x42 | font taiwanpearl_regular_36 */
+        lv_obj_set_pos(pg->weighticon, 685, 280);
+        lv_obj_set_size(pg->weighticon, 37, 42);
 
-    /* weight: 标签 | "1600" | (519,248) | 167x77 | font taiwanpearl_regular_72 */
-    lv_obj_set_pos(pg->weight, 519, 248);
-    lv_obj_set_size(pg->weight, 167, 77);
+        /* weightline3: 图片 | (569,328) | img: settingline3_141x4.png */
+        lv_obj_set_pos(pg->weightline3, 569, 328);
 
-    /* weighticon: 标签 | "g" | (685,280) | 37x42 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->weighticon, 685, 280);
-    lv_obj_set_size(pg->weighticon, 37, 42);
+        /* weightline4: 图片 | (530,328) | img: settingline3_179x4.png */
+        lv_obj_set_pos(pg->weightline4, 530, 328);
+        /* TODO: 英文实测后调整(数字位数多时 weightline4 位置) */
+    } else if (g_toast_mode == TOAST_MODE_MATURITY) {
+        /* Maturity: 标签 | "全熟" | (531,248) | 218x77 | font taiwanpearl_regular_72 */
+        lv_obj_set_pos(pg->Maturity, 531, 248);
+        lv_obj_set_size(pg->Maturity, 218, 77);
 
-    /* weightline3: 图片 | (569,328) | img: settingline3_141x4.png */
-    lv_obj_set_pos(pg->weightline3, 569, 328);
+        /* maturityline3: 图片 | (537,328) | img: settingline3_211x4.png */
+        lv_obj_set_pos(pg->maturityline3, 537, 328);
 
-    /* weightline4: 图片 | (530,328) | img: settingline3_179x4.png */
-    lv_obj_set_pos(pg->weightline4, 530, 328);
+        /* maturityline2: 图片 | (572,328) | img: settingline3_139x4.png */
+        lv_obj_set_pos(pg->maturityline2, 572, 328);
+        /* TODO: 英文实测后调整(Medium Well 等文本宽度) */
+    } else {
+        /* DEGREE 烤色程度: 面包/蛋糕类 + 探针菜 */
+        /* degree: 标签 | "浅中深" | (590,248) | 100x77 | font taiwanpearl_regular_72 */
+        lv_obj_set_pos(pg->degree, 590, 248);
+        lv_obj_set_size(pg->degree, 100, 77);
 
-    /* Maturity: 标签 | "全熟" | (531,248) | 218x77 | font taiwanpearl_regular_72 */
-    lv_obj_set_pos(pg->Maturity, 531, 248);
-    lv_obj_set_size(pg->Maturity, 218, 77);
-
-    /* maturityline3: 图片 | (537,328) | img: settingline3_211x4.png */
-    lv_obj_set_pos(pg->maturityline3, 537, 328);
-
-    /* maturityline2: 图片 | (572,328) | img: settingline3_139x4.png */
-    lv_obj_set_pos(pg->maturityline2, 572, 328);
+        /* line: 图片 | (606,328) | img: settingline3_73x4.png */
+        lv_obj_set_pos(pg->line, 606, 328);
+    }
 
      /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Eng modify ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
      lv_obj_t *obj = NULL;
@@ -14487,9 +14573,19 @@ void updown_bbq_stop_back_lang_tune(void)
 
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
+    /* ---- 场景分支: 本页被两处复用 ----
+       原生:   上下烧烤流程停止/暂停返回(status "| 上下烧烤 | 180℃ | 时间 |")
+       六感:   六感预约取消(delay_cancel_to_stop_back, g_delay_source_page==PAGE_DESCRIPTIONMENU)
+               status "| 菜名 | 成熟度/颜色 |"(由 nav_stop.c 六感分支设置) ---- */
     /* statu_label: 标签 | "| 上下烧烤 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->statu_label, 274, 232);
-    lv_obj_set_size(pg->statu_label, 490, 39);
+    if (g_delay_source_page == PAGE_DESCRIPTIONMENU) {
+        /* 六感场景: 文本格式不同 */
+        lv_obj_set_size(pg->statu_label, 490, 39);
+        /* TODO: 英文实测后调整(如 "Roast Leg of Lamb | Mid | Medium Well" 宽度) */
+    } else {
+        lv_obj_set_size(pg->statu_label, 490, 39);
+    }
 
     /* image_6: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_6, 115, 320);
@@ -15798,6 +15894,54 @@ void windchange_bbq_stop_back_lang_tune(void)
 
 /* ============ 排版微调函数注册表（页面 → 函数 → 动态偏移 dx/dy） ============
 /* dx/dy: 定时器重写对象(如 bartemp)的整体平移偏移，中文模式/0 = 零影响 */
+/* ==============================================================================
+ * sixset2 英文布局基准（对应 PAGE_SIXSET2 ）
+ * 复用场景: 二维选择页 —— 份量×程度(带皮土豆/千层面/卡内罗尼) vs 成熟度×程度(牛肉/羊腿/羊排)
+ * 分支标志: six_chick_is_matdeg()(熟度模式,中间区=maturity组) / 其余=weight组
+ * ============================================================================== */
+void sixset2_lang_tune(void)
+{
+    if (depth <= 0 || page_stack[depth - 1] != PAGE_SIXSET2) return;
+    sixset2_t *pg = sixset2_get(&ui_manager);
+    if (!pg) return;
+
+    /* next: 按钮 | (981,22) | 138x70 (公共) */
+    lv_obj_set_pos(pg->next, 981, 22);
+    lv_obj_set_size(pg->next, 138, 70);
+
+    /* label_18: 左上角菜名 | (24,25) | 144x32 (公共;文本按菜动态) */
+    lv_obj_set_pos(pg->label_18, 24, 25);
+    lv_obj_set_size(pg->label_18, 144, 32);
+
+    /* degree 组(右侧,常显): label_13 标题 + degree 单字 + degreeline */
+    lv_obj_set_pos(pg->label_13, 855, 137);
+    lv_obj_set_size(pg->label_13, 191, 32);
+    lv_obj_set_pos(pg->degree, 915, 249);
+    lv_obj_set_size(pg->degree, 84, 72);
+    lv_obj_set_pos(pg->degreeline, 918, 328);
+
+    if (six_chick_is_matdeg()) {
+        /* 熟度模式: 中间区 = name1("成熟度") + maturity + maturityline2/3; weight 组隐藏不排 */
+        lv_obj_set_pos(pg->name1, 277, 137);
+        lv_obj_set_size(pg->name1, 104, 32);
+        lv_obj_set_pos(pg->maturity, 216, 249);
+        lv_obj_set_size(pg->maturity, 228, 72);
+        lv_obj_set_pos(pg->maturityline3, 223, 328);
+        lv_obj_set_pos(pg->maturityline2, 262, 328);
+    } else {
+        /* 份量模式: 中间区 = name1("份量/种类") + weight + weighticon(g) + weightline3/4 */
+        lv_obj_set_pos(pg->name1, 277, 137);
+        lv_obj_set_size(pg->name1, 104, 32);
+        lv_obj_set_pos(pg->weight, 152, 248);
+        lv_obj_set_size(pg->weight, 228, 72);
+        lv_obj_set_pos(pg->weighticon, 380, 280);
+        lv_obj_set_pos(pg->weightline4, 223, 328);
+        lv_obj_set_pos(pg->weightline3, 264, 328);
+    }
+    /* TODO: 英文实测后在此分支内微调坐标/字号(如 maturity 文本加宽/居中) */
+}
+
+
 const struct { page_id_t page; lang_tune_fn fn; int dx, dy; } s_tune_tab[] = {
     { PAGE_AIR_COMPLETE, air_complete_lang_tune, 0, 0 },   /*  */
     { PAGE_AIR_COOKING, air_cooking_lang_tune, 0, 0 },   /*  */
@@ -15990,6 +16134,7 @@ const struct { page_id_t page; lang_tune_fn fn; int dx, dy; } s_tune_tab[] = {
     { PAGE_SCREEN_SET, screen_SET_lang_tune, 0, 0 },   /*  */
     { PAGE_SIXMENU, sixmenu_lang_tune, 0, 0 },   /*  */
     { PAGE_SIXMENUTZ, sixmenutz_lang_tune, 0, 0 },   /*  */
+    { PAGE_SIXSET2, sixset2_lang_tune, 0, 0 },   /* 六感双维选择页(复用:份量/熟度两模式) */
     { PAGE_SIXOP3PAGE, sixop3page_lang_tune, 0, 0 },   /*  */
     { PAGE_SLOWCOOK_COMPLETE, slowcook_complete_lang_tune, 0, 0 },   /*  */
     { PAGE_SLOWCOOK_COMPLETE_PROBE, slowcook_complete_probe_lang_tune, 0, 0 },   /*  */
