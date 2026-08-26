@@ -898,6 +898,7 @@ void process_key(uint8_t key)
                 printf("[nav] adjust +: %d\n", *ef->value);
             }
         } else {
+            if (!current_group) { g_send.buzzer_req = BUZZER_KEY_INVALID; uart_print(); break; }
             g_send.buzzer_req = BUZZER_ENCODER;
             lv_group_focus_next(current_group);
             printf("[nav] focus next\n");
@@ -1517,6 +1518,7 @@ void process_key(uint8_t key)
                 printf("[custom] setting focus prev\n");
             }
         } else {
+            if (!current_group) { g_send.buzzer_req = BUZZER_KEY_INVALID; uart_print(); break; }
             lv_group_focus_prev(current_group);
             printf("[nav] focus prev\n");
         }

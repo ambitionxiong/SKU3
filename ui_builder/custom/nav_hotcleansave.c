@@ -314,6 +314,11 @@ void jump_to_hcs_cooling(void)
         lv_bar_set_value(cool->bar_3, 100, LV_ANIM_OFF);
     }
 
+    if (g_hcs_cooling) lv_group_del(g_hcs_cooling);
+    {
+        lv_obj_t *btns[] = { cool->button_9 };
+        g_hcs_cooling = group_create_for_page(btns, 1);
+    }
     current_group = g_hcs_cooling;
 
 #ifdef LV_USE_AIC_SIMULATOR
@@ -331,7 +336,7 @@ void jump_to_hcs_cooling(void)
                      ui_manager.auto_del);
     g_send.iface_status = IFACE_COOKING;
     g_send.set_temp = 0;
-    printf("[hcs] jump: cooking -> cooling\n");
+    printf("[hcs] jump: cooking -> cooling END\n");
 }
 
 void jump_to_hcs_complete(void)
@@ -518,6 +523,11 @@ void hcs_rebuild_cooling(void)
     if (cool) {
         lv_bar_set_range(cool->bar_3, 0, 100);
         lv_bar_set_value(cool->bar_3, 100, LV_ANIM_OFF);
+    }
+    if (g_hcs_cooling) lv_group_del(g_hcs_cooling);
+    {
+        lv_obj_t *btns[] = { cool->button_9 };
+        g_hcs_cooling = group_create_for_page(btns, 1);
     }
     current_group = g_hcs_cooling;
     lang_scr_load_anim(hotcleansave_cooling_get(&ui_manager)->obj,
