@@ -20,6 +20,7 @@ static void on_chickmenutz_wholeduck_click(lv_event_t *e);
 
 static uint8_t s_meat_tz_mode = 0;   /* 0=家禽 1=牛肉 2=羊肉 3=猪肉 二级菜单(复用 chickmenutz) */
 static uint8_t s_meat_tz_enter_duck = 0;   /* 本次从右侧菜(wholeduck)进入,返回焦点依据 */
+int six_tz_get_meat_mode(void)             { return s_meat_tz_mode; }   /* chickmenutz 复用:tune 排版分支用 */
 
 /* ================= sixmenutz（探针版第六感菜单） ================= */
 

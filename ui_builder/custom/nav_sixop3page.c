@@ -25,6 +25,7 @@ static const char *s_op3_bts[3] = { NULL, NULL, NULL };   /* 按钮内文字(探
 static int s_op3_probe_mask = 0;   /* probe 图标显隐掩码: bit0=p1 bit1=p2 bit2=p3 */
 static int s_op3_kind = SIX_OP3_KIND_BEEF;   /* 当前菜父类别（牛肉/羊肉/…） */
 static int s_op3_enter_bt = 0;   /* 探针版:本次进入的按钮(1/2/3),返回焦点依据(不用全局 bread_type 防残留) */
+int six_op3_get_kind(void)       { return s_op3_kind; }   /* tune 排版分支用(探针版/非探针版布局不同) */
 
 /* bt 按钮点击（按菜类别分发） */
 static void on_sixop3page_bt1_click(lv_event_t *e)

@@ -32,6 +32,8 @@ int six_chick_get_fish_mode(void) { return s_fish_mode; }
 int six_chick_get_vegetable_mode(void) { return s_vegetable_mode; }
 int six_chick_get_pasta_mode(void)  { return s_pasta_mode; }
 int six_chick_get_snack_mode(void)  { return s_snack_mode; }
+int six_chick_get_meatdish_mode(void) { return s_meatdish_mode; }   /* duckmenu 复用:tune 排版分支用 */
+int six_chick_get_sidedish_mode(void) { return s_sidedish_mode; }
 /* 烤鱼子页 BACK:整页重建回鱼/海鲜首页(不弹页,页面共用 PAGE_CHICK6MENU)
    注意:必须走 rebuild 重新绑定 mode1 事件,否则子页的直接处理器残留会导致
    文字是首页、点击却触发子页菜(如"烤海鲜"点出"烤全鱼分量页") */

@@ -18,6 +18,8 @@ lv_group_t *g_bread6menu = NULL;
 
 static int s_six_meat_mode = 0;   /* 肉菜单复用 bread6menu 页面标记 */
 static int s_six_meat_kind = 0;   /* 肉菜单进入的子类: 0牛肉 1羊肉 2猪肉 3肉菜(返回焦点恢复用) */
+int six_menu_get_meat_kind(void)   { return s_six_meat_kind; }   /* bread6menu 复用肉菜单:tune 排版分支用 */
+int six_menu_is_meat_mode(void)    { return s_six_meat_mode; }
 
 static void on_sixmenu_bread_click(lv_event_t *e);
 static void on_sixmenu_cake_click(lv_event_t *e);
