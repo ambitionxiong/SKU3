@@ -751,7 +751,7 @@ void rebuild_delaycooking(void)
                 int w = toastcolor_weight_value();
                 if (w < 0) w = 800;
                 lv_label_set_text_fmt(dc->status, tr("| %s | %d%s | %d分钟 |"),
-                                      six_chick_name(), w, toastcolor_weight_unit(), six_chick_cook_min(w));   /* 烤鸡翅类:菜名+单位+时间 */
+                                      six_chick_name(), w, tr(toastcolor_weight_unit()), six_chick_cook_min(w));   /* 烤鸡翅类:菜名+单位+时间 */
             } else if (six_chick_is_seafood()) {
                 const seafood_dish_t *sd = seafood_dish_cfg();
                 lv_label_set_text_fmt(dc->status, tr("| %s | %d分钟"), six_chick_name(),

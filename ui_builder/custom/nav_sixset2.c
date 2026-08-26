@@ -120,7 +120,7 @@ const char *six_2d_dish_name(void)
 }
 int six_2d_cook_min(void)         { return s_cur_t[s_widx][s_jd]; }
 int six_2d_weight(void)           { return s_cur_w ? s_cur_w[s_widx] : 0; }
-const char *six_2d_deg_text(void) { return jdeg[s_jd]; }
+const char *six_2d_deg_text(void) { return tr(jdeg[s_jd]); }
 int six_2d_mat_idx(void)          { return s_mat; }
 int six_2d_deg_idx(void)          { return s_jd; }
 const char *six_2d_mat_text(void) { return tr(s_cur_mat[s_mat]); }   /* 当前二维菜成熟度文本 */
@@ -146,7 +146,7 @@ static void apply_display(void)
 
     /* degree:单字 浅/中/深 */
     if (pg->degree)
-        lv_label_set_text(pg->degree, jdeg_short[s_jd]);
+        lv_label_set_text(pg->degree, tr(jdeg_short[s_jd]));
 
     /* weight:纯数字(烤牛肉无份量表,组已隐藏) */
     if (pg->weight && s_cur_w)
@@ -154,7 +154,7 @@ static void apply_display(void)
 
     /* maturity:文本 */
     if (s_show_maturity && pg->maturity)
-        lv_label_set_text(pg->maturity, s_cur_mat[s_mat]);
+        lv_label_set_text(pg->maturity, tr(s_cur_mat[s_mat]));
 }
 
 /* 下划线显隐:全隐藏 → 只亮当前焦点字段的线(值决定该字段用哪条线)

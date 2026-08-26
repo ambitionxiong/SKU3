@@ -45,7 +45,7 @@ static void descriptionmenu_layout(descriptionmenu_t *dm)
             int w = toastcolor_weight_value();
             if (w < 0) w = 800;   /* 兜底 */
             lv_obj_clear_flag(dm->summary, LV_OBJ_FLAG_HIDDEN);
-            lv_label_set_text_fmt(dm->summary, tr("小结：\n份量/种类：%d%s\n"), w, toastcolor_weight_unit());
+            lv_label_set_text_fmt(dm->summary, tr("小结：\n份量/种类：%d%s\n"), w, tr(toastcolor_weight_unit()));
         } else if (six_chick_is_pizza()) {
             lv_obj_clear_flag(dm->summary, LV_OBJ_FLAG_HIDDEN);
             lv_label_set_text(dm->summary, tr("小结：\n份量/种类：1份\n"));   /* 披萨:固定1份 */

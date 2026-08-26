@@ -2311,7 +2311,7 @@ void chickencooking_lang_tune(void)
 
      /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Eng modify ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
      lv_obj_t *obj = lv_screen_active();
-     lv_obj_set_style_bg_image_src(obj, LVGL_IMAGE_PATH(sku3_bg_work_time_En.png), 0);
+     //lv_obj_set_style_bg_image_src(obj, LVGL_IMAGE_PATH(sku3_bg_work_time_En.png), 0);
 }
 
 
@@ -2332,24 +2332,24 @@ void chickenmenu_lang_tune(void)
     lv_obj_set_size(pg->label_2, 97, 25);
 
     /* wholechicken: 按钮 | (19,75) | 248x387 | font taiwanpearl_regular_30 | bg: updown80bk.png */
-    lv_obj_set_pos(pg->wholechicken, 19, 75);
-    lv_obj_set_size(pg->wholechicken, 248, 387);
+    lv_obj_set_pos(pg->wholechicken, 14, 75);
+    lv_obj_set_size(pg->wholechicken, 425, 387);
 
     /* grillchickenwing: 按钮 | (267,75) | 248x387 | font taiwanpearl_regular_30 | bg: updown80bk.png */
-    lv_obj_set_pos(pg->grillchickenwing, 267, 75);
-    lv_obj_set_size(pg->grillchickenwing, 248, 387);
+    lv_obj_set_pos(pg->grillchickenwing, 435, 76);
+    lv_obj_set_size(pg->grillchickenwing, 410, 192);
 
     /* friedchickenwing: 按钮 | (516,75) | 248x387 | font taiwanpearl_regular_30 | bg: updown80bk.png */
-    lv_obj_set_pos(pg->friedchickenwing, 516, 75);
-    lv_obj_set_size(pg->friedchickenwing, 248, 387);
+    lv_obj_set_pos(pg->friedchickenwing, 849, 76);
+    lv_obj_set_size(pg->friedchickenwing, 410, 192);
 
     /* friedchickenleg: 按钮 | (764,75) | 248x387 | font taiwanpearl_regular_30 | bg: updown80bk.png */
-    lv_obj_set_pos(pg->friedchickenleg, 764, 75);
-    lv_obj_set_size(pg->friedchickenleg, 248, 387);
+    lv_obj_set_pos(pg->friedchickenleg, 435, 269);
+    lv_obj_set_size(pg->friedchickenleg, 410, 192);
 
     /* grillchickenbreast: 按钮 | (1012,75) | 248x387 | font taiwanpearl_regular_30 | bg: updown80bk.png */
-    lv_obj_set_pos(pg->grillchickenbreast, 1012, 75);
-    lv_obj_set_size(pg->grillchickenbreast, 248, 387);
+    lv_obj_set_pos(pg->grillchickenbreast, 849, 269);
+    lv_obj_set_size(pg->grillchickenbreast, 410, 192);
 
     /* label_4: 标签 | "烤全鸡" | (66,274) | 158x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_4, 66, 274);
@@ -2371,8 +2371,8 @@ void chickenmenu_lang_tune(void)
     lv_obj_set_pos(pg->label_8, 1060, 274);
     lv_obj_set_size(pg->label_8, 158, 32);
 
-    /* image_2: 图片 | (111,213) | img: probeiconbig.png */
-    lv_obj_set_pos(pg->image_2, 111, 213);
+    /* image_2: 图片 | (192,213) | img: probeiconbig.png */
+    lv_obj_set_pos(pg->image_2, 192, 213);
 
      /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ En modify ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
      lv_obj_t *obj = pg->label_4;
@@ -10300,7 +10300,7 @@ void risingpage_lang_tune(void)
 
      /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ En modify ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
      lv_obj_t *obj = lv_screen_active();
-     lv_obj_set_style_bg_image_src(obj, LVGL_IMAGE_PATH(sku3_bg_check_rise_En.png), 0);
+     //lv_obj_set_style_bg_image_src(obj, LVGL_IMAGE_PATH(sku3_bg_check_rise_En.png), 0);
  
      obj = pg->label_16;
      lv_obj_set_style_text_font(obj, &c_aktivgroteskmedium_36, 0);
@@ -14698,7 +14698,7 @@ void waitmenu_24_lang_tune(void)
 
      /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Eng modify ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
      lv_obj_t *obj = lv_screen_active();
-     lv_obj_set_style_bg_image_src(obj, LVGL_IMAGE_PATH(sku3_bg_standby_24_En.png), 0);
+     //lv_obj_set_style_bg_image_src(obj, LVGL_IMAGE_PATH(sku3_bg_standby_24_En.png), 0);
  
      obj = pg->time_label;
      // lv_obj_set_style_text_font(obj, c_)

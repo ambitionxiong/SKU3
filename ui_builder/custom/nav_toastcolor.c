@@ -111,7 +111,7 @@ static void toastcolor_apply_mode_visibility(void)
         else lv_obj_add_flag(tc->weight, LV_OBJ_FLAG_HIDDEN);
     }
     if (tc->weighticon) {
-        lv_label_set_text(tc->weighticon, s_weight_unit);   /* 单位随菜切换(g/根) */
+        lv_label_set_text(tc->weighticon, tr(s_weight_unit));   /* 单位随菜切换(g/根),英文翻译(根→corns) */
         if (show_wt) lv_obj_clear_flag(tc->weighticon, LV_OBJ_FLAG_HIDDEN);
         else lv_obj_add_flag(tc->weighticon, LV_OBJ_FLAG_HIDDEN);
     }

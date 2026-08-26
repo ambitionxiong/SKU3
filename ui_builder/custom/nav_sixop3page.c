@@ -131,7 +131,13 @@ static void sixop3page_restore_focus(sixop3page_t *sp)
 {
     if (!sp) return;
     if (s_op3_kind == SIX_OP3_KIND_MEAT_TZ && sp->bt1) {
-        lv_group_focus_obj(sp->bt1);   /* 探针版:返回聚焦牛肉 */
+        /* 探针版:按进入的菜恢复(牛肉系→bt1 羊肉系→bt2 猪肉系→bt3) */
+        if (g_six_bread_type == SIX_MEAT_GRILL_LEG || g_six_bread_type == SIX_MEAT_GRILL_LAMBS)
+            lv_group_focus_obj(sp->bt2 ? sp->bt2 : sp->bt1);
+        else if (g_six_bread_type == SIX_MEAT_GRILL_TENDERLOIN || g_six_bread_type == SIX_MEAT_GRILL_BELLY)
+            lv_group_focus_obj(sp->bt3 ? sp->bt3 : sp->bt1);
+        else
+            lv_group_focus_obj(sp->bt1);
         return;
     }
     if (g_six_bread_type == SIX_MEAT_GRILL_LEG && sp->bt1)

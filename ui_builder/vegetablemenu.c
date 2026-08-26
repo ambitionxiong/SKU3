@@ -99,7 +99,7 @@ void vegetablemenu_create(ui_manager_t *ui)
     // Init scr->button_16
     scr->button_16 = lv_btn_create(scr->obj);
     lv_obj_t *button_16_label = lv_label_create(scr->button_16);
-    lv_label_set_text(button_16_label, "烤杂疏");
+    lv_label_set_text(button_16_label, "烤杂蔬");
     lv_obj_align(button_16_label, LV_ALIGN_CENTER, 0, 0);
     lv_obj_set_pos(scr->button_16, 950, 76);
     lv_obj_set_size(scr->button_16, 310, 193);
