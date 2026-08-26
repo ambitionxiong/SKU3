@@ -24,13 +24,14 @@ static const char *s_op3_ops[3] = { NULL, NULL, NULL };
 static const char *s_op3_bts[3] = { NULL, NULL, NULL };   /* 按钮内文字(探针版用;NULL=保持生成) */
 static int s_op3_probe_mask = 0;   /* probe 图标显隐掩码: bit0=p1 bit1=p2 bit2=p3 */
 static int s_op3_kind = SIX_OP3_KIND_BEEF;   /* 当前菜父类别（牛肉/羊肉/…） */
+static int s_op3_enter_bt = 0;   /* 探针版:本次进入的按钮(1/2/3),返回焦点依据(不用全局 bread_type 防残留) */
 
 /* bt 按钮点击（按菜类别分发） */
 static void on_sixop3page_bt1_click(lv_event_t *e)
 {
     (void)e;
     if (screen_is_loading(lv_scr_act())) return;
-    if (s_op3_kind == SIX_OP3_KIND_MEAT_TZ) { jump_to_beefmenutz(); return; }   /* 探针版:牛肉→牛肉二级菜单 */
+    if (s_op3_kind == SIX_OP3_KIND_MEAT_TZ) { s_op3_enter_bt = 1; jump_to_beefmenutz(); return; }   /* 探针版:牛肉→牛肉二级菜单 */
     if (s_op3_kind == SIX_OP3_KIND_MUTTON)  { g_six_bread_type = SIX_MEAT_GRILL_LEG; jump_to_probeneedtip(); return; }
     if (s_op3_kind == SIX_OP3_KIND_PORK)    { g_six_bread_type = SIX_MEAT_GRILL_TENDERLOIN; jump_to_probeneedtip(); return; }
     g_six_bread_type = SIX_MEAT_GRILL_STEAK;   /* 烤牛排 */
@@ -40,7 +41,7 @@ static void on_sixop3page_bt2_click(lv_event_t *e)
 {
     (void)e;
     if (screen_is_loading(lv_scr_act())) return;
-    if (s_op3_kind == SIX_OP3_KIND_MEAT_TZ) { jump_to_muttonmenutz(); return; }   /* 探针版:羊肉→羊肉二级菜单 */
+    if (s_op3_kind == SIX_OP3_KIND_MEAT_TZ) { s_op3_enter_bt = 2; jump_to_muttonmenutz(); return; }   /* 探针版:羊肉→羊肉二级菜单 */
     if (s_op3_kind == SIX_OP3_KIND_MUTTON)  { g_six_bread_type = SIX_MEAT_GRILL_LAMBS; jump_to_probeneedtip(); return; }
     if (s_op3_kind == SIX_OP3_KIND_PORK)    { g_six_bread_type = SIX_MEAT_GRILL_BELLY; jump_to_probeneedtip(); return; }
     g_six_bread_type = SIX_MEAT_FRIED_STEAK;   /* 炸牛排:份量驱动 */
@@ -52,7 +53,7 @@ static void on_sixop3page_bt3_click(lv_event_t *e)
 {
     (void)e;
     if (screen_is_loading(lv_scr_act())) return;
-    if (s_op3_kind == SIX_OP3_KIND_MEAT_TZ) { jump_to_porkmenutz(); return; }   /* 探针版:猪肉→猪肉二级菜单 */
+    if (s_op3_kind == SIX_OP3_KIND_MEAT_TZ) { s_op3_enter_bt = 3; jump_to_porkmenutz(); return; }   /* 探针版:猪肉→猪肉二级菜单 */
     if (s_op3_kind == SIX_OP3_KIND_MUTTON) {
         g_six_bread_type = SIX_MEAT_GRILL_SKEWER;
         g_toast_mode = TOAST_MODE_DEGREE;
@@ -131,10 +132,10 @@ static void sixop3page_restore_focus(sixop3page_t *sp)
 {
     if (!sp) return;
     if (s_op3_kind == SIX_OP3_KIND_MEAT_TZ && sp->bt1) {
-        /* 探针版:按进入的菜恢复(牛肉系→bt1 羊肉系→bt2 猪肉系→bt3) */
-        if (g_six_bread_type == SIX_MEAT_GRILL_LEG || g_six_bread_type == SIX_MEAT_GRILL_LAMBS)
+        /* 探针版:按本次进入的按钮恢复(不依赖全局 bread_type,防上次残留误聚焦) */
+        if (s_op3_enter_bt == 2)
             lv_group_focus_obj(sp->bt2 ? sp->bt2 : sp->bt1);
-        else if (g_six_bread_type == SIX_MEAT_GRILL_TENDERLOIN || g_six_bread_type == SIX_MEAT_GRILL_BELLY)
+        else if (s_op3_enter_bt == 3)
             lv_group_focus_obj(sp->bt3 ? sp->bt3 : sp->bt1);
         else
             lv_group_focus_obj(sp->bt1);

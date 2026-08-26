@@ -19,6 +19,7 @@ static void on_chickmenutz_wholechicken_click(lv_event_t *e);
 static void on_chickmenutz_wholeduck_click(lv_event_t *e);
 
 static uint8_t s_meat_tz_mode = 0;   /* 0=家禽 1=牛肉 2=羊肉 3=猪肉 二级菜单(复用 chickmenutz) */
+static uint8_t s_meat_tz_enter_duck = 0;   /* 本次从右侧菜(wholeduck)进入,返回焦点依据 */
 
 /* ================= sixmenutz（探针版第六感菜单） ================= */
 
@@ -116,6 +117,7 @@ static void jump_to_tzmenutz(int kind)
     static const char *tz_label5[4] = { NULL, "烤牛排", "烤羊腿", "烤猪里脊肉" };
     static const char *tz_label6[4] = { NULL, "烤牛肉", "烤羊排", "烤五花肉" };
     s_meat_tz_mode = (uint8_t)kind;
+    s_meat_tz_enter_duck = 0;   /* 新进入:默认左侧菜焦点 */
     page_push(PAGE_CHICKMENUTZ);
     lv_obj_clean(lv_scr_act());
     chickmenutz_create(&ui_manager);
@@ -224,13 +226,11 @@ void chickmenutz_rebuild(page_id_t child)
         if (cm->wholeduck)
             lv_obj_add_event_cb(cm->wholeduck, on_chickmenutz_wholeduck_click, LV_EVENT_CLICKED, NULL);
 
-        /* 返回时恢复进入时的菜焦点（探针流程会设置 g_six_bread_type） */
-        if (s_meat_tz_mode && cm->wholeduck &&
-            (g_six_bread_type == SIX_MEAT_GRILL_BEEF || g_six_bread_type == SIX_MEAT_GRILL_LAMBS
-             || g_six_bread_type == SIX_MEAT_GRILL_BELLY))
-            lv_group_focus_obj(cm->wholeduck);                 /* 肉菜单:从右侧菜返回 */
+        /* 返回时恢复本次进入时的菜(不用全局 bread_type,防上次残留误聚焦) */
+        if (s_meat_tz_mode && s_meat_tz_enter_duck && cm->wholeduck)
+            lv_group_focus_obj(cm->wholeduck);                 /* 从右侧菜返回 */
         else if (s_meat_tz_mode && cm->wholechicken)
-            lv_group_focus_obj(cm->wholechicken);              /* 肉菜单:从左侧菜返回 */
+            lv_group_focus_obj(cm->wholechicken);              /* 从左侧菜返回 */
         else if (g_six_bread_type == SIX_CHICK_DUCK_WHOLE && cm->wholeduck)
             lv_group_focus_obj(cm->wholeduck);
         else if (cm->wholechicken)
@@ -249,6 +249,7 @@ static void on_chickmenutz_wholechicken_click(lv_event_t *e)
 {
     if (screen_is_loading(lv_scr_act())) return;
     if (s_meat_tz_mode) {
+        s_meat_tz_enter_duck = 0;   /* 左侧菜 */
         /* 肉二级菜单左侧菜: 牛肉→烤牛排(成熟度) 羊肉→烤羊腿(二维) 猪肉→烤猪里脊肉(程度) */
         switch (s_meat_tz_mode) {
         case 1:
@@ -277,6 +278,7 @@ static void on_chickmenutz_wholeduck_click(lv_event_t *e)
 {
     if (screen_is_loading(lv_scr_act())) return;
     if (s_meat_tz_mode) {
+        s_meat_tz_enter_duck = 1;   /* 右侧菜 */
         /* 肉二级菜单右侧菜: 牛肉→烤牛肉(二维) 羊肉→烤羊排(二维) 猪肉→烤五花肉(程度) */
         switch (s_meat_tz_mode) {
         case 1:

@@ -171,6 +171,18 @@ void textpage_create(ui_manager_t *ui)
     lv_obj_set_style_text_color(scr->label_9, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->label_9, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
+    // Init scr->label_3
+    scr->label_3 = lv_label_create(scr->obj);
+    lv_label_set_text(scr->label_3, "128↑↓°");
+    lv_label_set_long_mode(scr->label_3, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->label_3, 347, 301);
+    lv_obj_set_size(scr->label_3, 173, 121);
+
+    // Set style of scr->label_3
+    lv_obj_set_style_text_font(scr->label_3, &c_aktivgroteskmedium_125, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->label_3, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->label_3, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
+
 
 }
 

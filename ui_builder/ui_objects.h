@@ -3995,6 +3995,7 @@ typedef struct {
     lv_obj_t *label_7;
     lv_obj_t *label_8;
     lv_obj_t *label_9;
+    lv_obj_t *label_3;
 } textpage_t;
 
 typedef struct {
@@ -6186,6 +6187,7 @@ LV_FONT_DECLARE(c_aktivgroteskmedium_48);
 LV_FONT_DECLARE(c_aktivgroteskmedium_60);
 LV_FONT_DECLARE(c_aktivgroteskmedium_72);
 LV_FONT_DECLARE(c_aktivgroteskmedium_128);
+LV_FONT_DECLARE(c_aktivgroteskmedium_125);
 
 
 extern ui_manager_t ui_manager;
