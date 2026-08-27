@@ -155,7 +155,7 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "份量/种类", "Portion/type" },
         { "你想启动安息日烘焙吗", "Start Sabbath Bake?" },
         { "保温", "Keep Warm" },
-        { "保温中...", "Keep Warming..." },
+        { "保温中...", "Keep Warm..." },
         { "全熟", "Well Done" },
         { "全部", "All" },
         { "全麦面包", "Whole Wheat Bread" },
