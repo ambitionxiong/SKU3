@@ -1392,7 +1392,7 @@ void page_pop(void)
                 if (g_keepwarm_active)
                     lv_label_set_text(done->label_242, tr("保温中..."));
 
-                lv_label_set_text_fmt(done->status, tr("| 热风对流 | %d℃ | %02d分钟"), set_temp, set_min);
+                lv_label_set_text_fmt(done->status, tr("| 热风 | %d℃ | %02d分钟"), set_temp, set_min);
                 lv_bar_set_value(done->bar_21, 100, LV_ANIM_OFF);
             }
             current_group = g_hotwind_bbq_complete;
@@ -1596,7 +1596,7 @@ void page_pop(void)
                 if (g_keepwarm_active)
                     lv_label_set_text(done->label_356, tr("保温中..."));
 
-                lv_label_set_text_fmt(done->status, tr("| 加强热风 | %d℃ | %02d分钟"), set_temp, set_min);
+                lv_label_set_text_fmt(done->status, tr("| 热风对流 | %d℃ | %02d分钟"), set_temp, set_min);
                 lv_bar_set_value(done->bar_33, 100, LV_ANIM_OFF);
             }
             current_group = g_windchange_bbq_complete;

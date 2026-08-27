@@ -717,7 +717,7 @@ void validate_constraints(void)
 
     /* 纠正 minute 值（如果当前值超出新范围） */
     if (set_hour == 0 && set_min < 1) {
-        set_min = 1;
+        set_min = 0;
         lv_label_set_text_fmt(min_field->label, min_field->fmt, set_min);
     } else if (set_hour == max_h && set_min != 0) {
         set_min = 0;
