@@ -3330,24 +3330,24 @@ void cookie_menu_lang_tune(void)
     lv_obj_set_pos(pg->image_52, 645, 118);
 
     /* label_88: 标签 | "温度" | (300,137) | 64x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_88, 300, 137);
-    lv_obj_set_size(pg->label_88, 64, 32);
+    lv_obj_set_pos(pg->label_88, 275, 137);   /* 对齐 top_bbq 系排版 */
+    lv_obj_set_size(pg->label_88, 100, 32);   /* 对齐 top_bbq 系排版 */
 
     /* temp: 标签 | "135" | (252,249) | 120x72 | font taiwanpearl_regular_72 */
-    lv_obj_set_pos(pg->temp, 252, 249);
-    lv_obj_set_size(pg->temp, 120, 72);
+    lv_obj_set_pos(pg->temp, 192, 249);   /* 对齐 top_bbq 系排版 */
+    lv_obj_set_size(pg->temp, 180, 72);   /* 对齐 top_bbq 系排版 */
 
     /* label_90: 标签 | "℃" | (372,281) | 38x32 | font taiwanpearl_regular_36 */
     lv_obj_set_pos(pg->label_90, 372, 281);
     lv_obj_set_size(pg->label_90, 38, 32);
 
     /* label_91: 标签 | "烹饪时间" | (891,137) | 125x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_91, 891, 137);
-    lv_obj_set_size(pg->label_91, 125, 32);
+    lv_obj_set_pos(pg->label_91, 855, 137);   /* 对齐 top_bbq 系排版 */
+    lv_obj_set_size(pg->label_91, 180, 32);   /* 对齐 top_bbq 系排版 */
 
     /* hour: 标签 | "00" | (793,248) | 84x72 | font taiwanpearl_regular_72 */
-    lv_obj_set_pos(pg->hour, 793, 248);
-    lv_obj_set_size(pg->hour, 84, 72);
+    lv_obj_set_pos(pg->hour, 788, 248);   /* 对齐 top_bbq 系排版 */
+    lv_obj_set_size(pg->hour, 100, 72);   /* 对齐 top_bbq 系排版 */
 
     /* label_93: 标签 | "时" | (872,280) | 38x32 | font taiwanpearl_regular_36 */
     lv_obj_set_pos(pg->label_93, 872, 280);
@@ -3359,14 +3359,16 @@ void cookie_menu_lang_tune(void)
 
     /* min: 标签 | "30" | (995,248) | 84x72 | font taiwanpearl_regular_72 | 动态定位(需微调见文件头模板) */
     /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->min, 84, 72);
+    lv_obj_set_pos(pg->min, 990, 248);   /* 对齐 top_bbq 系排版 */
+
+    lv_obj_set_size(pg->min, 100, 72);   /* 对齐 top_bbq 系排版 */
 
     /* label_96: 标签 | "饼干" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_96, 24, 25);
-    lv_obj_set_size(pg->label_96, 144, 32);
+    lv_obj_set_pos(pg->label_96, 24, 24);   /* 对齐 top_bbq 系排版 */
+    lv_obj_set_size(pg->label_96, 160, 32);   /* 对齐 top_bbq 系排版 */
 
     /* label_97: 标签 | "下一步" | (996,39) | 117x32 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->label_97, 996, 39);
+    lv_obj_set_pos(pg->label_97, 1007, 41);   /* 对齐 top_bbq 系排版 */
     lv_obj_set_size(pg->label_97, 117, 32);
 
     /* line3: 图片 | (252,328) | img: underline.png */
