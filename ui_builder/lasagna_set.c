@@ -32,7 +32,7 @@ void lasagna_set_create(ui_manager_t *ui)
     scr->label_642 = lv_label_create(scr->obj);
     lv_label_set_text(scr->label_642, "千层面");
     lv_label_set_long_mode(scr->label_642, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_642, 24, 25);
+    lv_obj_set_pos(scr->label_642, 24, 24);
     lv_obj_set_size(scr->label_642, 144, 32);
 
     // Set style of scr->label_642

@@ -3907,6 +3907,9 @@ typedef struct {
     lv_obj_t *light;
     lv_obj_t *container_1;
     lv_obj_t *tip1;
+    lv_obj_t *tip2;
+    lv_obj_t *tip3;
+    lv_obj_t *sure;
 } topflagpage_t;
 
 typedef struct {

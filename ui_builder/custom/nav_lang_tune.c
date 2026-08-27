@@ -234,7 +234,7 @@ void air_set_lang_tune(void)
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_299: 标签 | "空气炸" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_299, 24, 25);
+    lv_obj_set_pos(pg->label_299, 24, 24);
     lv_obj_set_size(pg->label_299, 160, 32);   /* 对齐 top_bbq 系排版 */
 
     /* label_300: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
@@ -799,7 +799,7 @@ void bottom_bbq_menu_probe_lang_tune(void)
     lv_obj_set_size(pg->label_49, 125, 32);
 
     /* label_50: 标签 | "底部烧烤" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_50, 24, 25);
+    lv_obj_set_pos(pg->label_50, 24, 24);
     lv_obj_set_size(pg->label_50, 144, 32);
 
     /* label_51: 标签 | "下一步" | (996,39) | 117x32 | font taiwanpearl_regular_36 */
@@ -839,7 +839,7 @@ void bottom_bbq_set_lang_tune(void)
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_119: 标签 | "底部烧烤" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_119, 24, 25);
+    lv_obj_set_pos(pg->label_119, 24, 24);
     lv_obj_set_size(pg->label_119, 160, 32);   /* 对齐 updown 系英文排版(A) */
 
     /* label_120: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
@@ -955,7 +955,7 @@ void bottom_bbq_set_probe_lang_tune(void)
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_54: 标签 | "底部烧烤" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_54, 24, 25);
+    lv_obj_set_pos(pg->label_54, 24, 24);
     lv_obj_set_size(pg->label_54, 144, 32);
 
     /* label_55: 标签 | "温" | (165,155) | 26x32 | font taiwanpearl_regular_30 */
@@ -1456,7 +1456,7 @@ void bread_menu_lang_tune(void)
     lv_obj_set_size(pg->min, 84, 72);
 
     /* label_728: 标签 | "面包" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_728, 24, 25);
+    lv_obj_set_pos(pg->label_728, 24, 24);
     lv_obj_set_size(pg->label_728, 144, 32);
 
     /* label_729: 标签 | "下一步" | (996,39) | 117x32 | font taiwanpearl_regular_36 */
@@ -1485,7 +1485,7 @@ void bread_set_lang_tune(void)
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_730: 标签 | "面包" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_730, 24, 25);
+    lv_obj_set_pos(pg->label_730, 24, 24);
     lv_obj_set_size(pg->label_730, 144, 32);
 
     /* label_731: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
@@ -1971,7 +1971,7 @@ void central_bbq_set_lang_tune(void)
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_291: 标签 | "集中烧烤" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_291, 24, 25);
+    lv_obj_set_pos(pg->label_291, 24, 24);
     lv_obj_set_size(pg->label_291, 160, 32);   /* 对齐 updown 系英文排版(A) */
 
     /* label_292: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
@@ -2647,7 +2647,7 @@ void chip_menu_lang_tune(void)
     lv_obj_set_size(pg->min, 84, 72);
 
     /* label_810: 标签 | "炸薯条" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_810, 24, 25);
+    lv_obj_set_pos(pg->label_810, 24, 24);
     lv_obj_set_size(pg->label_810, 144, 32);
 
     /* label_811: 标签 | "下一步" | (996,39) | 117x32 | font taiwanpearl_regular_36 */
@@ -2676,7 +2676,7 @@ void chip_set_lang_tune(void)
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_812: 标签 | "炸薯条" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_812, 24, 25);
+    lv_obj_set_pos(pg->label_812, 24, 24);
     lv_obj_set_size(pg->label_812, 144, 32);
 
     /* label_813: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
@@ -3402,7 +3402,7 @@ void cookie_set_lang_tune(void)
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_98: 标签 | "饼干" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_98, 24, 25);
+    lv_obj_set_pos(pg->label_98, 24, 24);
     lv_obj_set_size(pg->label_98, 144, 32);
 
     /* label_99: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
@@ -3949,7 +3949,7 @@ void corn_set_lang_tune(void)
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_544: 标签 | "干果" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_544, 24, 25);
+    lv_obj_set_pos(pg->label_544, 24, 24);
     lv_obj_set_size(pg->label_544, 160, 32);   /* 对齐 top_bbq 系排版 */
 
     /* label_545: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
@@ -4352,7 +4352,7 @@ void custom_menu_lang_tune(void)
     lv_obj_set_size(pg->min, 84, 72);
 
     /* label_851: 标签 | "自定义" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_851, 24, 25);
+    lv_obj_set_pos(pg->label_851, 24, 24);
     lv_obj_set_size(pg->label_851, 144, 32);
 
     /* label_852: 标签 | "下一步" | (996,39) | 117x32 | font taiwanpearl_regular_36 */
@@ -4381,7 +4381,7 @@ void custom_set_lang_tune(void)
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_853: 标签 | "自定义" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_853, 24, 25);
+    lv_obj_set_pos(pg->label_853, 24, 24);
     lv_obj_set_size(pg->label_853, 144, 32);
 
     /* label_854: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
@@ -5082,7 +5082,7 @@ void heatcontain_set_lang_tune(void)
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_593: 标签 | "保温" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_593, 24, 25);
+    lv_obj_set_pos(pg->label_593, 24, 24);
     lv_obj_set_size(pg->label_593, 160, 32);   /* 对齐 top_bbq 系排版 */
 
     /* label_594: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
@@ -5647,7 +5647,7 @@ void hot_bbq_menu_probe_lang_tune(void)
     lv_obj_set_size(pg->label_4, 125, 32);
 
     /* label_5: 标签 | "热风烧烤" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_5, 24, 25);
+    lv_obj_set_pos(pg->label_5, 24, 24);
     lv_obj_set_size(pg->label_5, 144, 32);
 
     /* label_6: 标签 | "下一步" | (996,39) | 117x32 | font taiwanpearl_regular_36 */
@@ -5687,7 +5687,7 @@ void hot_bbq_set_lang_tune(void)
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_167: 标签 | "热风烧烤" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_167, 24, 25);
+    lv_obj_set_pos(pg->label_167, 24, 24);
     lv_obj_set_size(pg->label_167, 160, 32);   /* 对齐 updown 系英文排版(A) */
 
     /* label_168: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
@@ -5803,7 +5803,7 @@ void hot_bbq_set_probe_lang_tune(void)
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_9: 标签 | "热风烧烤" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_9, 24, 25);
+    lv_obj_set_pos(pg->label_9, 24, 24);
     lv_obj_set_size(pg->label_9, 144, 32);
 
     /* label_10: 标签 | "温" | (165,155) | 26x32 | font taiwanpearl_regular_30 */
@@ -7321,7 +7321,7 @@ void hotwind_bbq_set_lang_tune(void)
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_215: 标签 | "热风" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_215, 24, 25);
+    lv_obj_set_pos(pg->label_215, 24, 24);
     lv_obj_set_size(pg->label_215, 160, 32);   /* 对齐 updown 系英文排版(A) */
 
     /* label_216: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
@@ -7725,7 +7725,7 @@ void lasagna_menu_lang_tune(void)
     lv_obj_set_size(pg->min, 84, 72);
 
     /* label_640: 标签 | "千层面" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_640, 24, 25);
+    lv_obj_set_pos(pg->label_640, 24, 24);
     lv_obj_set_size(pg->label_640, 144, 32);
 
     /* label_641: 标签 | "下一步" | (996,39) | 117x32 | font taiwanpearl_regular_36 */
@@ -7754,7 +7754,7 @@ void lasagna_set_lang_tune(void)
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_642: 标签 | "千层面" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_642, 24, 25);
+    lv_obj_set_pos(pg->label_642, 24, 24);
     lv_obj_set_size(pg->label_642, 144, 32);
 
     /* label_643: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
@@ -8260,7 +8260,7 @@ void menu_set_lang_tune(void)
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_251: 标签 | "菜单" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_251, 24, 25);
+    lv_obj_set_pos(pg->label_251, 24, 24);
     lv_obj_set_size(pg->label_251, 144, 32);
 
     /* label_252: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
@@ -8650,7 +8650,7 @@ void pizza3_menu_lang_tune(void)
     lv_obj_set_size(pg->min, 84, 72);
 
     /* label_769: 标签 | "披萨" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_769, 24, 25);
+    lv_obj_set_pos(pg->label_769, 24, 24);
     lv_obj_set_size(pg->label_769, 144, 32);
 
     /* label_770: 标签 | "下一步" | (996,39) | 117x32 | font taiwanpearl_regular_36 */
@@ -8679,7 +8679,7 @@ void pizza3_set_lang_tune(void)
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_771: 标签 | "披萨" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_771, 24, 25);
+    lv_obj_set_pos(pg->label_771, 24, 24);
     lv_obj_set_size(pg->label_771, 144, 32);
 
     /* label_772: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
@@ -9098,7 +9098,7 @@ void pizza_2_set_lang_tune(void)
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_348: 标签 | "披萨" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_348, 24, 25);
+    lv_obj_set_pos(pg->label_348, 24, 24);
     lv_obj_set_size(pg->label_348, 160, 32);   /* 对齐 top_bbq 系排版 */
 
     /* label_349: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
@@ -9552,7 +9552,7 @@ void pizza_set_lang_tune(void)
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_203: 标签 | "披萨" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_203, 24, 25);
+    lv_obj_set_pos(pg->label_203, 24, 24);
     lv_obj_set_size(pg->label_203, 160, 32);   /* 对齐 top_bbq 系排版 */
 
     /* label_204: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
@@ -10305,7 +10305,7 @@ void rising_set_lang_tune(void)
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_495: 标签 | "发酵" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_495, 24, 25);
+    lv_obj_set_pos(pg->label_495, 24, 24);
     lv_obj_set_size(pg->label_495, 160, 32);   /* 对齐 top_bbq 系排版 */
 
     /* label_496: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
@@ -10783,7 +10783,7 @@ void save_bbq_menu_lang_tune(void)
 
     /* label_251: 标签 | "节能热风" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_251, 24, 24);   /* 对齐 updown 系英文排版(A) */
-    lv_obj_set_size(pg->label_251, 160, 32);   /* 对齐 updown 系英文排版(A) */
+    lv_obj_set_size(pg->label_251, 180, 32);   /* 对齐 updown 系英文排版(A) */
 
     /* label_252: 标签 | "下一步" | (996,39) | 117x32 | font taiwanpearl_regular_36 */
     lv_obj_set_pos(pg->label_252, 1007, 41);   /* 对齐 top_bbq 系排版 */   /* 对齐 updown 系英文排版(A) */
@@ -10817,8 +10817,8 @@ void save_bbq_set_lang_tune(void)
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_253: 标签 | "节能热风" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_253, 24, 25);
-    lv_obj_set_size(pg->label_253, 160, 32);   /* 对齐 updown 系英文排版(A) */
+    lv_obj_set_pos(pg->label_253, 24, 24);
+    lv_obj_set_size(pg->label_253, 180, 32);   /* 对齐 updown 系英文排版(A) */
 
     /* label_254: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_254, 163, 155);   /* 对齐 updown 系英文排版(A) */
@@ -11668,7 +11668,7 @@ void slowcook_menu_probe_lang_tune(void)
     lv_obj_set_size(pg->label_82, 125, 32);
 
     /* label_83: 标签 | "慢煮" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_83, 24, 25);
+    lv_obj_set_pos(pg->label_83, 24, 24);
     lv_obj_set_size(pg->label_83, 144, 32);
 
     /* label_84: 标签 | "下一步" | (996,39) | 117x32 | font taiwanpearl_regular_36 */
@@ -11708,7 +11708,7 @@ void slowcook_set_lang_tune(void)
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_397: 标签 | "慢煮" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_397, 24, 25);
+    lv_obj_set_pos(pg->label_397, 24, 24);
     lv_obj_set_size(pg->label_397, 160, 32);   /* 对齐 top_bbq 系排版 */
 
     /* label_398: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
@@ -11823,7 +11823,7 @@ void slowcook_set_probe_lang_tune(void)
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_87: 标签 | "慢煮" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_87, 24, 25);
+    lv_obj_set_pos(pg->label_87, 24, 24);
     lv_obj_set_size(pg->label_87, 144, 32);
 
     /* label_88: 标签 | "温" | (165,155) | 26x32 | font taiwanpearl_regular_30 */
@@ -12713,7 +12713,7 @@ void strudel_menu_lang_tune(void)
     lv_obj_set_size(pg->min, 84, 72);
 
     /* label_687: 标签 | "果馅卷" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_687, 24, 25);
+    lv_obj_set_pos(pg->label_687, 24, 24);
     lv_obj_set_size(pg->label_687, 144, 32);
 
     /* label_688: 标签 | "下一步" | (996,39) | 117x32 | font taiwanpearl_regular_36 */
@@ -12742,7 +12742,7 @@ void strudel_set_lang_tune(void)
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_689: 标签 | "果馅卷" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_689, 24, 25);
+    lv_obj_set_pos(pg->label_689, 24, 24);
     lv_obj_set_size(pg->label_689, 144, 32);
 
     /* label_690: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
@@ -13266,7 +13266,7 @@ void top_bbq_set_lang_tune(void)
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_52: 标签 | "顶部烧烤" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_52, 24, 25);
+    lv_obj_set_pos(pg->label_52, 24, 24);
     lv_obj_set_size(pg->label_52, 160, 32);   /* 对齐 updown 系英文排版(A) */
 
     /* label_53: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
@@ -13722,7 +13722,7 @@ void unfrozen_set_lang_tune(void)
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_446: 标签 | "解冻" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_446, 24, 25);
+    lv_obj_set_pos(pg->label_446, 24, 24);
     lv_obj_set_size(pg->label_446, 160, 32);   /* 对齐 top_bbq 系排版 */
 
     /* label_447: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
@@ -14266,7 +14266,7 @@ void updown_bbq_menu_low_lang_tune(void)
     lv_obj_set_size(pg->label_57, 108, 32);
 
     /* label_60: 标签 | "上下烧烤" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_60, 24, 25);
+    lv_obj_set_pos(pg->label_60, 24, 24);
     lv_obj_set_size(pg->label_60, 144, 32);
 
     /* label_7: 标签 | "温度" | (608,139) | 60x32 | font taiwanpearl_regular_30 */
@@ -14337,7 +14337,7 @@ void updown_bbq_menu_probe_lang_tune(void)
     lv_obj_set_size(pg->label_7, 200, 32);
 
     /* label_12: 标签 | "上下烧烤" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_12, 24, 25);
+    lv_obj_set_pos(pg->label_12, 24, 24);
     lv_obj_set_size(pg->label_12, 200, 32);
 
     /* label_13: 标签 | "下一步" | (996,39) | 117x32 | font taiwanpearl_regular_36 */
@@ -14390,7 +14390,7 @@ void updown_bbq_menu_top_lang_tune(void)
     lv_obj_set_size(pg->label_50, 108, 32);
 
     /* label_49: 标签 | "上下烧烤" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_49, 24, 25);
+    lv_obj_set_pos(pg->label_49, 24, 24);
     lv_obj_set_size(pg->label_49, 144, 32);
 
     /* label_1: 标签 | "温度" | (608,139) | 60x32 | font taiwanpearl_regular_30 */
@@ -14435,7 +14435,7 @@ void updown_bbq_set_lang_tune(void)
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* updown_label: 标签 | "上下烧烤" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->updown_label, 24, 25);
+    lv_obj_set_pos(pg->updown_label, 24, 24);
     lv_obj_set_size(pg->updown_label, 160, 32);
 
     /* wen_label: 标签 | "温" | (165,155) | 26x32 | font taiwanpearl_regular_30 */
@@ -14595,7 +14595,7 @@ void updown_bbq_set_probe_lang_tune(void)
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_19: 标签 | "上下烧烤" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_19, 24, 25);
+    lv_obj_set_pos(pg->label_19, 24, 24);
     lv_obj_set_size(pg->label_19, 144, 32);
 
     /* label_20: 标签 | "温" | (165,155) | 26x32 | font taiwanpearl_regular_30 */
@@ -15490,7 +15490,7 @@ void west_set_lang_tune(void)
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_154: 标签 | "西式塔" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_154, 24, 25);
+    lv_obj_set_pos(pg->label_154, 24, 24);
     lv_obj_set_size(pg->label_154, 144, 32);
 
     /* label_155: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
@@ -15897,7 +15897,7 @@ void windchange_bbq_menu_lang_tune(void)
 
     /* label_327: 标签 | "热风对流" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_327, 24, 24);   /* 对齐 updown 系英文排版(A) */
-    lv_obj_set_size(pg->label_327, 160, 32);   /* 对齐 updown 系英文排版(A) */
+    lv_obj_set_size(pg->label_327, 250, 32);   /* 对齐 updown 系英文排版(A) */
 
     /* label_328: 标签 | "下一步" | (996,39) | 117x32 | font taiwanpearl_regular_36 */
     lv_obj_set_pos(pg->label_328, 1007, 41);   /* 对齐 top_bbq 系排版 */   /* 对齐 updown 系英文排版(A) */
@@ -15931,8 +15931,8 @@ void windchange_bbq_set_lang_tune(void)
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_329: 标签 | "热风对流" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->label_329, 24, 25);
-    lv_obj_set_size(pg->label_329, 160, 32);   /* 对齐 updown 系英文排版(A) */
+    lv_obj_set_pos(pg->label_329, 24, 24);
+    lv_obj_set_size(pg->label_329, 250, 32);   /* 对齐 updown 系英文排版(A) */
 
     /* label_330: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_330, 163, 155);   /* 对齐 updown 系英文排版(A) */
@@ -16227,7 +16227,7 @@ void sixset2_lang_tune(void)
     lv_obj_set_size(pg->next, 138, 70);
 
     /* label_18: 左上角菜名 | (24,25) | 144x32 (公共;文本按菜动态) */
-    lv_obj_set_pos(pg->label_18, 24, 25);
+    lv_obj_set_pos(pg->label_18, 24, 24);
     lv_obj_set_size(pg->label_18, 144, 32);
 
     /* degree 组(右侧,常显): label_13 标题 + degree 单字 + degreeline */

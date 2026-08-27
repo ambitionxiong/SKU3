@@ -155,7 +155,7 @@ void save_bbq_menu_create(ui_manager_t *ui)
     scr->label_251 = lv_label_create(scr->obj);
     lv_label_set_text(scr->label_251, "节能热风");
     lv_label_set_long_mode(scr->label_251, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_251, 24, 25);
+    lv_obj_set_pos(scr->label_251, 24, 24);
     lv_obj_set_size(scr->label_251, 144, 32);
 
     // Set style of scr->label_251

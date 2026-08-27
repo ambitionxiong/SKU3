@@ -113,7 +113,7 @@ void sixset2_create(ui_manager_t *ui)
     scr->label_18 = lv_label_create(scr->obj);
     lv_label_set_text(scr->label_18, "上下烧烤");
     lv_label_set_long_mode(scr->label_18, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_18, 24, 25);
+    lv_obj_set_pos(scr->label_18, 24, 24);
     lv_obj_set_size(scr->label_18, 144, 32);
 
     // Set style of scr->label_18

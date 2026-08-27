@@ -32,7 +32,7 @@ void custom_set_create(ui_manager_t *ui)
     scr->label_853 = lv_label_create(scr->obj);
     lv_label_set_text(scr->label_853, "自定义");
     lv_label_set_long_mode(scr->label_853, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_853, 24, 25);
+    lv_obj_set_pos(scr->label_853, 24, 24);
     lv_obj_set_size(scr->label_853, 144, 32);
 
     // Set style of scr->label_853

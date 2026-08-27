@@ -155,7 +155,7 @@ void unfrozen_menu_create(ui_manager_t *ui)
     scr->label_444 = lv_label_create(scr->obj);
     lv_label_set_text(scr->label_444, "解冻");
     lv_label_set_long_mode(scr->label_444, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_444, 24, 25);
+    lv_obj_set_pos(scr->label_444, 24, 24);
     lv_obj_set_size(scr->label_444, 144, 32);
 
     // Set style of scr->label_444

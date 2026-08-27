@@ -157,7 +157,7 @@ void updown_bbq_menu_create(ui_manager_t *ui)
     scr->updown_label = lv_label_create(scr->obj);
     lv_label_set_text(scr->updown_label, "上下烧烤");
     lv_label_set_long_mode(scr->updown_label, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->updown_label, 24, 25);
+    lv_obj_set_pos(scr->updown_label, 24, 24);
     lv_obj_set_size(scr->updown_label, 144, 32);
 
     // Set style of scr->updown_label

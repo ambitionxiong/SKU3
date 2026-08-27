@@ -112,7 +112,7 @@ void pizza3_menu_create(ui_manager_t *ui)
     scr->label_769 = lv_label_create(scr->obj);
     lv_label_set_text(scr->label_769, "披萨");
     lv_label_set_long_mode(scr->label_769, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_769, 24, 25);
+    lv_obj_set_pos(scr->label_769, 24, 24);
     lv_obj_set_size(scr->label_769, 144, 32);
 
     // Set style of scr->label_769

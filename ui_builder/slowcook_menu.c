@@ -155,7 +155,7 @@ void slowcook_menu_create(ui_manager_t *ui)
     scr->label_395 = lv_label_create(scr->obj);
     lv_label_set_text(scr->label_395, "慢煮");
     lv_label_set_long_mode(scr->label_395, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_395, 24, 25);
+    lv_obj_set_pos(scr->label_395, 24, 24);
     lv_obj_set_size(scr->label_395, 144, 32);
 
     // Set style of scr->label_395

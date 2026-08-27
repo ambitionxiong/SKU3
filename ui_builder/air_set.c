@@ -32,7 +32,7 @@ void air_set_create(ui_manager_t *ui)
     scr->label_299 = lv_label_create(scr->obj);
     lv_label_set_text(scr->label_299, "空气炸");
     lv_label_set_long_mode(scr->label_299, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_299, 24, 25);
+    lv_obj_set_pos(scr->label_299, 24, 24);
     lv_obj_set_size(scr->label_299, 144, 32);
 
     // Set style of scr->label_299

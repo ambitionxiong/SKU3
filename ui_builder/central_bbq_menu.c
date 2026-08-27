@@ -155,7 +155,7 @@ void central_bbq_menu_create(ui_manager_t *ui)
     scr->label_289 = lv_label_create(scr->obj);
     lv_label_set_text(scr->label_289, "集中烧烤");
     lv_label_set_long_mode(scr->label_289, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_289, 24, 25);
+    lv_obj_set_pos(scr->label_289, 24, 24);
     lv_obj_set_size(scr->label_289, 144, 32);
 
     // Set style of scr->label_289

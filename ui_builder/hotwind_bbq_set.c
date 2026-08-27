@@ -32,7 +32,7 @@ void hotwind_bbq_set_create(ui_manager_t *ui)
     scr->label_215 = lv_label_create(scr->obj);
     lv_label_set_text(scr->label_215, "热风");
     lv_label_set_long_mode(scr->label_215, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_215, 24, 25);
+    lv_obj_set_pos(scr->label_215, 24, 24);
     lv_obj_set_size(scr->label_215, 144, 32);
 
     // Set style of scr->label_215
