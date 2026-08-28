@@ -2967,7 +2967,7 @@ void color_cookoing_lang_tune(void)
 
     /* time_label: 标签 | "00:05:00" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->time_label, 907, 157);
-    lv_obj_set_size(pg->time_label, 235, 60);
+    lv_obj_set_size(pg->time_label, 250, 60);
 
     /* stop_button: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop_button, 959, 295);
@@ -2985,7 +2985,7 @@ void color_cookoing_lang_tune(void)
 
     /* cooking_label: 标签 | "烹饪中..." | (273,157) | 255x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->cooking_label, 273, 157);
-    lv_obj_set_size(pg->cooking_label, 255, 60);
+    lv_obj_set_size(pg->cooking_label, 300, 60);
 
 }
 
@@ -3008,7 +3008,7 @@ void color_stop_lang_tune(void)
 
     /* time_label: 标签 | "00:05:00" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->time_label, 907, 157);
-    lv_obj_set_size(pg->time_label, 235, 60);
+    lv_obj_set_size(pg->time_label, 250, 60);
 
     /* button_6: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->button_6, 959, 295);
@@ -3026,7 +3026,7 @@ void color_stop_lang_tune(void)
 
     /* label_15: 标签 | "暂停中..." | (273,157) | 255x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_15, 273, 157);
-    lv_obj_set_size(pg->label_15, 255, 60);
+    lv_obj_set_size(pg->label_15, 300, 60);
 
 }
 
@@ -3059,7 +3059,7 @@ void color_stop_back_lang_tune(void)
 
     /* label_19: 标签 | "暂停中..." | (273,157) | 255x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_19, 273, 157);
-    lv_obj_set_size(pg->label_19, 255, 60);
+    lv_obj_set_size(pg->label_19, 600, 60);
 
     /* container_2: 容器 | (0,0) | 1280x480 */
     lv_obj_set_pos(pg->container_2, 0, 0);
@@ -3105,7 +3105,7 @@ void colorcooking_complete_lang_tune(void)
 
     /* complete_label: 标签 | "已完成" | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->complete_label, 273, 157);
-    lv_obj_set_size(pg->complete_label, 235, 60);
+    lv_obj_set_size(pg->complete_label, 330, 60);
 
     /* color_img: 图片 | (95,163) | img: color.png */
     lv_obj_set_pos(pg->color_img, 95, 163);
@@ -4837,7 +4837,7 @@ void extra_color_lang_tune(void)
 
     /* time_label: 标签 | "00:05:00" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->time_label, 907, 157);
-    lv_obj_set_size(pg->time_label, 235, 60);
+    lv_obj_set_size(pg->time_label, 250, 60);
 
     /* start_button: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start_button, 959, 295);
@@ -4855,7 +4855,7 @@ void extra_color_lang_tune(void)
 
     /* color_label: 标签 | "额外上色" | (273,157) | 255x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->color_label, 273, 157);
-    lv_obj_set_size(pg->color_label, 255, 60);
+    lv_obj_set_size(pg->color_label, 600, 60);
 
 }
 

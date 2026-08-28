@@ -156,6 +156,11 @@ void favorites_save_current(void)
     g_send.buzzer_req = BUZZER_KEY_VALID;
     printf("[fav] save: mode=%d temp=%d time=%dh%dm count=%d\n",
            input_Mode_name, input_Temp, input_Hour, input_Minute, favorites_how_many);
+    printf("[fav-save] cur=%s byte=0x%02X mode=%d temp=%d h=%d m=%d down=%d probe=%d six=%d\n",
+           Fav_Cur == &Func_favorites_Value_Probe ? "PROBE" : "NORM",
+           Fav_Cur->has_favorites_byte, input_Mode_name, input_Temp,
+           input_Hour, input_Minute, input_Temp_Conventional_Dowm,
+           input_Temp_probe[0], input_Six_num);
 }
 
 /* ===================== 收藏启动（直接进入运行） ===================== */
@@ -171,6 +176,12 @@ void favorites_start_selected(void)
 
     favo_safety_group_delete();
     edit_clear();
+
+    /* 收藏页即将跳走：屏幕由目标页 auto_del=true 加载删除，置空防下次 lv_obj_del 悬空；
+     * 弹掉栈顶收藏页，避免栈残留 [...FAVORITES, COOKING] 污染后续返回链 */
+    g_fav_screen.obj = NULL;
+    if (depth > 0 && page_stack[depth - 1] == PAGE_FAVORITES)
+        depth--;
 
     if (fav->PengTiaoMode_name == FAV_MODE_MULTI) {
         /* 多段：恢复 g_steps 后直接启动运行 */
@@ -216,9 +227,17 @@ static void fav_screen_reset(void)
 {
     favo_safety_group_delete();
     if (g_fav_screen.obj) {
-        lv_obj_del(g_fav_screen.obj);
+        /* obj 仅在仍是当前活动屏时才可能存活；若其他页面已激活，
+         * 说明 obj 已被该页 auto_del 加载删除，只清指针即可——
+         * 对悬空指针 lv_obj_del 会破坏堆，表现为画面错乱/叠加/冻结 */
+        if (g_fav_screen.obj == lv_scr_act())
+            lv_obj_del(g_fav_screen.obj);
         g_fav_screen.obj = NULL;
     }
+    /* 根治：清零整个页面结构（64 个控件/组指针全为 NULL）。
+     * create 期间未重建的卡片控件指针不再是悬空旧地址，
+     * 杜绝 lv_label_create 内存复用后 FAV_Option_LB_str 指针比对误命中 */
+    memset(&g_fav_screen, 0, sizeof(g_fav_screen));
 }
 
 void jump_to_favorites(void)
@@ -228,9 +247,12 @@ void jump_to_favorites(void)
     page_push(PAGE_FAVORITES);
     lv_obj_clean(lv_scr_act());
     screen_favorites_create();
+    FAV_screen_Refresh_FirstPage();   /* 统一刷新路径：与翻页后行为完全一致 */
     g_favorites = g_fav_screen.group;
     current_group = g_favorites;
-    lang_scr_load_anim(g_fav_screen.obj, LV_SCR_LOAD_ANIM_NONE, 0, 0, 0);
+    /* auto_del=1：删除被替换的旧屏（已被 lv_obj_clean 清空）。传 0 会每次泄漏
+     * 一个空壳屏对象，反复进出收藏页耗尽 LVGL 堆 → 控件创建失败 → 显示叠乱 */
+    lang_scr_load_anim(g_fav_screen.obj, LV_SCR_LOAD_ANIM_NONE, 0, 0, 1);
     printf("[fav] jump: -> favorites\n");
 }
 
@@ -240,8 +262,9 @@ void favorites_rebuild(page_id_t child)
     fav_screen_reset();
     lv_obj_clean(lv_scr_act());
     screen_favorites_create();
+    FAV_screen_Refresh_FirstPage();
     g_favorites = g_fav_screen.group;
     current_group = g_favorites;
-    lang_scr_load_anim(g_fav_screen.obj, LV_SCR_LOAD_ANIM_NONE, 0, 0, 0);
+    lang_scr_load_anim(g_fav_screen.obj, LV_SCR_LOAD_ANIM_NONE, 0, 0, 1);   /* auto_del=1 防旧屏泄漏 */
     printf("[fav] back to favorites\n");
 }

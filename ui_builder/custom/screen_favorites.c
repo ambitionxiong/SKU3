@@ -92,6 +92,21 @@ void FAV_Option_LB_str(lv_obj_t *obj, int8_t Cooking_FUN);
 void favo_safety_group_delete()
 {
     screen_favorites_t *scr = &g_fav_screen;
+
+    /* 悬空指针防御（闪退根因）：删除组前先断开所有外部引用。
+     * 组被 lv_group_del 释放后，若 g_favorites/current_group/default 仍指向它，
+     * 新页面组建组 malloc 复用同地址会使 current_group==g_favorites 误命中，
+     * 编码器误入收藏分支对 NULL 组 focus_next 直接断言闪退 */
+    lv_group_t *fav_def = lv_group_get_default();
+    if (fav_def == scr->group || fav_def == scr->group_sub_1 || fav_def == scr->group_sub_2 ||
+        fav_def == scr->group_sub_3 || fav_def == scr->group_sub_4)
+        lv_group_set_default(NULL);
+    if (current_group == scr->group || current_group == scr->group_sub_1 ||
+        current_group == scr->group_sub_2 || current_group == scr->group_sub_3 ||
+        current_group == scr->group_sub_4)
+        current_group = NULL;
+    g_favorites = NULL;
+
     //*防御检测是否为空组
     if (scr->group == NULL) printf("[fav] group null\n");
     else 
@@ -179,6 +194,8 @@ static void FAV_Six_Parse(const Fun_favorites_Value *fav, char *summary1, int s1
 }
 static void FAV_Set_FuncTemp_Lb(lv_obj_t *lb, const Fun_favorites_Value *fav)
 {
+	printf("[fav-set] FuncTemp obj=%p mode=%d temp=%d down=%d probe=%d\n",
+	       lb, fav->PengTiaoMode_name, fav->temperature, input_Temp_Conventional_Dowm, fav->Probe_temp);
 	if (fav->PengTiaoMode_name == FAV_MODE_MULTI || fav->PengTiaoMode_name == FAV_MODE_SIX)
 		lv_label_set_text(lb, " ");
 	else if (fav->PengTiaoMode_name == MODE_UPDOWN_BBQ)
@@ -186,6 +203,7 @@ static void FAV_Set_FuncTemp_Lb(lv_obj_t *lb, const Fun_favorites_Value *fav)
 		else lv_label_set_text_fmt(lb, "↑%d℃/↓%d℃", fav->temperature, input_Temp_Conventional_Dowm);
 	else
 		lv_label_set_text_fmt(lb, "%d℃", fav->temperature);
+	printf("[fav-set] FuncTemp txt=%s\n", lv_label_get_text(lb));
 }
 static void FAV_Set_L1_Lb(lv_obj_t *lb, const Fun_favorites_Value *fav)
 {
@@ -218,13 +236,16 @@ static void FAV_Set_L2_Lb(lv_obj_t *lb, const Fun_favorites_Value *fav)
 		else
 			lv_label_set_text(lb, " ");
 	}
-	else if (fav->Probe_temp)
+	else if (fav->Probe_temp && Fav_Cur == &Func_favorites_Value_Probe)	//仅探针收藏集合显示（旧数据普通收藏误存 80，一并屏蔽）
 	{
 		lv_label_set_text_fmt(lb, tr("探针温度：%d℃"), fav->Probe_temp);
 	}
 	else
 	{
+		printf("[fav-set] L2 obj=%p mode=%d h=%d m=%d probe=%d\n",
+		       lb, fav->PengTiaoMode_name, fav->Func_Hour, fav->Func_Minute, fav->Probe_temp);
 		FAV_Option_LB_str(lb, fav->PengTiaoMode_name);
+		printf("[fav-set] L2 txt=%s\n", lv_label_get_text(lb));
 	}
 }
 void Input_favorites(uint16_t temp, int8_t Hour, int8_t Minute, int8_t Is_Steam, int8_t Mode_name, uint8_t Cooking_Mode) 
@@ -239,7 +260,7 @@ void Input_favorites(uint16_t temp, int8_t Hour, int8_t Minute, int8_t Is_Steam,
     item->Func_Minute = Minute;
     item->Func_Steam = Is_Steam;
     item->PengTiaoMode_name = Mode_name;
-	item->Probe_temp = input_Temp_probe[0];
+	item->Probe_temp = is_probe_inserted() ? input_Temp_probe[0] : 0;	//无探针不存探针温度（probe_target_temp 默认 80，防卡片误显示）
 	item->PengTiao_Mode = Cooking_Mode;
 
 	if (Mode_name == FAV_MODE_SIX)
@@ -418,7 +439,7 @@ void Favorites_Cover_Func()
 			item->temperature = input_Temp;
 			item->Func_Steam = input_Is_Steam;
 			item->PengTiaoMode_name = input_Mode_name;
-			item->Probe_temp = input_Temp_probe[0];
+			item->Probe_temp = is_probe_inserted() ? input_Temp_probe[0] : 0;	//无探针不存探针温度（probe_target_temp 默认 80，防卡片误显示）
 			item->PengTiao_Mode = input_Cooking_Mode;
 
 			if (is_probe_inserted())	//探针模式下不用收藏时间
@@ -467,6 +488,12 @@ void encoder_favorites_action(char key)
 {
 	Fav_Select_By_Probe();	//按当前探针模式选择收藏集合
 	screen_favorites_t *scr = &g_fav_screen;
+
+	if (!scr->group || !scr->group_sub_1)	//组已删除（防御）：忽略按键，防对 NULL 组移焦点断言闪退
+	{
+		g_send.buzzer_req = BUZZER_KEY_INVALID;
+		return;
+	}
 
 	if (favorites_how_many)
 	{
@@ -679,6 +706,9 @@ void return_favorites_action()
 	{
 		favo_safety_group_delete();
 		Del_Fav_create_flag = 0;
+		/* 收藏屏幕是当前活动屏，pop 后由目标页 auto_del=true 加载删除：
+		 * 必须置空 obj，否则下次进入收藏页会 lv_obj_del 悬空指针导致冻结 */
+		scr->obj = NULL;
 		page_pop();		//收藏页返回：nav_pop.c 分支回主菜单
 	}
 	else
@@ -730,6 +760,7 @@ void FAV_Option_Title(lv_obj_t *obj, const Fun_favorites_Value *fav)
 		name = fav_mode_name(fav);
 	}
 	if (name) lv_label_set_text(obj, name);
+	printf("[fav-set] Title obj=%p mode=%d name=%s\n", obj, fav->PengTiaoMode_name, name ? name : "(null)");
 }
 //多段烹饪，选择功能名称
 const char* FAV_Option_Fun_name(int8_t Cooking_FUN)
@@ -795,16 +826,19 @@ void FAV_Option_LB_str(lv_obj_t *obj, int8_t Cooking_FUN)
                 char str[32] = "";
                 snprintf(str, sizeof(str), "%s%s", tr("步骤一："), FAV_Option_Fun_name(Favorites_Value.Func_num_1));
                 lv_label_set_text(obj, str);
+                break;
             }
             else if (obj == label2) {
                 char str[32] = "";
                 snprintf(str, sizeof(str), "%s%s", tr("步骤二："), FAV_Option_Fun_name(Favorites_Value.Func_num_2));
                 lv_label_set_text(obj, str);
+                break;
             }
             else if (obj == label3) {
                 char str[32] = "";
                 snprintf(str, sizeof(str), "%s%s", tr("步骤三："), FAV_Option_Fun_name(Favorites_Value.Func_num_3));
                 lv_label_set_text(obj, str);
+                break;
             }
         }
     }
@@ -840,25 +874,24 @@ void FAV_Option_LB_str(lv_obj_t *obj, int8_t Cooking_FUN)
 
             if (obj == label1)
 			{
-				if (g_lang_en == 1)
-				{
-					lv_label_set_text(obj, tr("温度："));
-				}
-				else
-				{
-					lv_label_set_text(obj, tr("温度："));
-				}
+				printf("[fav-LB] hit i=%d L1 obj=%p\n", i, obj);
+				lv_label_set_text(obj, tr("温度："));
+				break;
             }
             else if (obj == label2) {
+                printf("[fav-LB] hit i=%d L2 obj=%p h=%d m=%d\n", i, obj,
+                       Fav_Cur->favorites_val[i].Func_Hour, Fav_Cur->favorites_val[i].Func_Minute);
                 lv_label_set_text_fmt(obj, tr("时间：%d小时%02d分钟"),
                     Fav_Cur->favorites_val[i].Func_Hour,
                     Fav_Cur->favorites_val[i].Func_Minute);
+                break;
             }
             else if (obj == label3) {
                 if (Cooking_FUN == FAV_MODE_SIX)
                     lv_label_set_text(obj, " ");
                 else
-                    FAV_Option_SteamGear(obj, Fav_Cur->favorites_val[i].Func_Steam);
+                    lv_label_set_text(obj, " ");   /* 本机型无蒸汽辅助：第三行固定留空 */
+                break;
             }
         }
     }
@@ -911,6 +944,7 @@ static void FAV_Set_L3_Lb(lv_obj_t *lb, const Fun_favorites_Value *fav)
 //删除选项后实现第一页的页面刷新
 void FAV_screen_Refresh_FirstPage()
 {
+	printf("[fav-refresh] first page\n");
 	Fav_Select_By_Probe();	//按当前探针模式选择收藏集合
 	screen_favorites_t *scr = &g_fav_screen;
 
@@ -1196,8 +1230,24 @@ void screen_favorites_create(void)
     screen_favorites_t *scr = &g_fav_screen;
 
     if (scr->obj) {
-        return;
+        /* 对齐同事 auto_del=true 语义：进入收藏页一律重建（同事版
+         * if (!ui->auto_del && scr->obj) return 在 auto_del=true 时永不 return）。
+         * obj 残留时先安全清理，防止守卫跳过文本设置导致陈旧/空内容错乱 */
+        favo_safety_group_delete();
+        if (scr->obj == lv_scr_act())   /* 仅活动屏可安全删除；悬空指针只清引用 */
+            lv_obj_del(scr->obj);
+        scr->obj = NULL;
     }
+    printf("[fav-create] probe=%d cur=%s byte=0x%02X\n", is_probe_inserted(),
+           Fav_Cur == &Func_favorites_Value_Probe ? "PROBE" : "NORM",
+           Fav_Cur->has_favorites_byte);
+    for (int k = 0; k < 4; k++)
+        printf("  v[%d] mode=%d temp=%d h=%d m=%d probe=%d\n", k,
+               Fav_Cur->favorites_val[k].PengTiaoMode_name,
+               Fav_Cur->favorites_val[k].temperature,
+               Fav_Cur->favorites_val[k].Func_Hour,
+               Fav_Cur->favorites_val[k].Func_Minute,
+               Fav_Cur->favorites_val[k].Probe_temp);
 
 	// Fav_Cur->has_favorites_byte = 0x7F;
 
@@ -2232,8 +2282,7 @@ void screen_favorites_create(void)
 
     if (Fav_Cur->has_favorites_byte & 0b1)
     {
-		favorites_how_many = 1;
-
+        favorites_how_many = 1;
 		lv_group_focus_obj(scr->favorites_box_1_Btn);
 		lv_obj_add_flag(scr->plus_sign_1, LV_OBJ_FLAG_HIDDEN);      	//隐藏加号+
 		lv_obj_remove_flag(scr->plus_sign_2, LV_OBJ_FLAG_HIDDEN);

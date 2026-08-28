@@ -602,7 +602,7 @@ void jump_to_color_cookoing(void)
     }
 
     /* 启动进度条动画 */
-    cook_total_ms = 5 * 60 * 1000;
+    cook_total_ms = 0 * 60 * 1000;
     if (cc) {
         lv_anim_t a;
         lv_anim_init(&a);

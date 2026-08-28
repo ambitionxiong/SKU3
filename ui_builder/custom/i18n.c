@@ -137,7 +137,7 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "| 额外上色 | %d℃ | %02d分钟", "| Extra Browning | %d℃ | %02dm" },
         { "| 额外上色 | %d℃ | %d℃", "| Extra Browning | %d℃ | %d℃" },
         { "| 额外上色 | %d℃ | %d小时%02d分钟", "| Extra Browning | %d℃ | %dh %02dm" },
-        { "| 额外上色 | %d℃ | 5分钟", "| Extra Browning | %d℃ | 5 min" },
+        { "| 额外上色 | %d℃ | 5分钟", "| Extra Browning | %d℃ | 5m" },
         { "一", "1" },
         { "三", "3" },
         { "上下烧烤", "Conventional" },
