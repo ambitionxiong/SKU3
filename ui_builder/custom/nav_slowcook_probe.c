@@ -232,6 +232,7 @@ void jump_to_slowcook_set_probe(void)
 
 void jump_to_slowcook_cooking_probe(void)
 {
+    fav_snapshot_save();   /* 收藏:进入 cooking 时快照初始参数 */
     edit_clear();
     g_on_stop_back = 0;
     g_keepwarm_active = 0;

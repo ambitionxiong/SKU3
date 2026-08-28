@@ -31,6 +31,7 @@ typedef enum {
 #define KEY_MENU              3    // 进入主菜单
 #define KEY_PREHEAT           4    // 进入快速预热
 #define KEY_EXTRA_COLOR       5    // 进入额外上色
+#define KEY_FAV               6    // 收藏键（完成态收藏当前参数，非完成态进入收藏页）
 #define KEY_CLEAN             7    // 进入清洁菜单
 #define KEY_SET               11   // 进入设置页（覆盖层，任何状态可进）
 #define KEY_BACK              21   // 返回键（触控板或按键板）

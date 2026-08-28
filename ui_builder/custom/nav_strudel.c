@@ -266,6 +266,7 @@ void jump_to_strudel_set(void)
 
 void jump_to_strudel_cooking(void)
 {
+    fav_snapshot_save();   /* 收藏:进入 cooking 时快照初始参数 */
     edit_clear();
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;

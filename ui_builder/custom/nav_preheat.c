@@ -293,6 +293,7 @@ void jump_to_preheat_menu(void)
 
 void jump_to_preheat_cooking(void)
 {
+    fav_snapshot_save();   /* 收藏:进入 cooking 时快照初始参数 */
     edit_clear();
     /* 单独进入(来源 preheat_menu)vs 模式预热(来源各模式 set 页),需在 page_push 前判断 */
     g_preheat_solo = (depth > 0 && page_stack[depth - 1] == PAGE_PREHEAT_MENU);

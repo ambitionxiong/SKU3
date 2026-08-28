@@ -60,8 +60,8 @@ void chickmenutz_create(ui_manager_t *ui)
     scr->label_5 = lv_label_create(scr->obj);
     lv_label_set_text(scr->label_5, "烤全鸡");
     lv_label_set_long_mode(scr->label_5, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_5, 265, 274);
-    lv_obj_set_size(scr->label_5, 131, 32);
+    lv_obj_set_pos(scr->label_5, 255, 274);
+    lv_obj_set_size(scr->label_5, 150, 32);
 
     // Set style of scr->label_5
     lv_obj_set_style_text_font(scr->label_5, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);

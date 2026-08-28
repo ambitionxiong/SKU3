@@ -302,6 +302,7 @@ typedef enum {
     PAGE_SIXOP3PAGE,        /* 六选项3页（复用：牛肉/羊肉/猪肉子菜单） */
     PAGE_SIXMENUTZ,         /* 第六感-探针版菜单 */
     PAGE_CHICKMENUTZ,       /* 第六感-探针版家禽菜单 */
+    PAGE_FAVORITES,         /* 收藏页（独立页面，不依赖 ui_manager） */
 } page_id_t;
 
 extern page_id_t page_stack[];
@@ -879,6 +880,8 @@ int toastcolor_degree_value(void);      /* 当前选中程度(1浅2中3深, -1=�
 extern int g_toast_mode;                /* 进入页面时由流程设置的当前组 */
 void toastcolor_set_weight_options(const int *opts, int count, int default_idx);
 void jump_to_six_cooking(void);
+uint8_t six_cook_mode(void);   /* 当前六感菜谱的通信模式号（nav_six_cook.c） */
+void fav_snapshot_save(void);   /* 收藏:进入 cooking 时快照初始参数(nav_favorites.c) */
 void six_cook_handle_back(void);
 void six_cooking_rebuild(page_id_t child);
 void six_cook_goto_setup(void);
@@ -1203,6 +1206,7 @@ extern lv_group_t *g_heatcontain_stop_back;
 extern lv_group_t *g_heatcontain_complete;
 
 extern lv_group_t *g_frozen_cook;
+extern lv_group_t *g_favorites;
 
 extern lv_group_t *g_lasagna_menu;
 extern lv_group_t *g_lasagna_set;

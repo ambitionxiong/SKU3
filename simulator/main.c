@@ -145,6 +145,7 @@ int main(int argc, char **argv)
 		else if (keys[SDL_SCANCODE_2])      sim_key = KEY_SIXMENU;
 		else if (keys[SDL_SCANCODE_4])      sim_key = KEY_PREHEAT;
 		else if (keys[SDL_SCANCODE_7])      sim_key = KEY_CLEAN;
+		else if (keys[SDL_SCANCODE_3])      sim_key = KEY_FAV;
 		else if (keys[SDL_SCANCODE_F9])     sim_key = KEY_SET;
 		if (cur_8 && !prev_8) {
 			uart_data_receive[Receive_data_Probe_Temp_L] += 5;

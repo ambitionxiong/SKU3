@@ -231,7 +231,7 @@ void somecook_cooking_auto_pause(void)
 }
 
 // 进入当前段 cooking
-static void somecook_cooking_start(void)
+void somecook_cooking_start(void)
 {
     /* 空洞步骤:从 run_idx 向后找第一个已设置步骤再启动 */
     int i = g_somecook_run_idx;

@@ -275,6 +275,7 @@ void jump_to_updown_bbq_set(void)
 // updown_bbq_set → updown_bbq_cooking
 void jump_to_updown_bbq_cooking(void)
 {
+    fav_snapshot_save();   /* 收藏:进入 cooking 时快照初始参数 */
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;

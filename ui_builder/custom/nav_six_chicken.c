@@ -1610,6 +1610,7 @@ static void on_chick_cooking_stop_click(lv_event_t *e)
 /* 探针菜烹饪页（烤全鸡/烤全鸭，探针温度标记完成，无倒计时） */
 void jump_to_chick_cooking(void)
 {
+    fav_snapshot_save();   /* 收藏:进入 cooking 时快照初始参数 */
     if (is_door_open()) {   /* 门开不直接进烹饪（与面包 jump_to_six_cooking 一致） */
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;

@@ -191,6 +191,7 @@ lv_group_t *g_heatcontain_stop;
 lv_group_t *g_heatcontain_stop_back;
 lv_group_t *g_heatcontain_complete;
 lv_group_t *g_frozen_cook;
+lv_group_t *g_favorites;
 lv_group_t *g_lasagna_menu;
 lv_group_t *g_lasagna_set;
 lv_group_t *g_lasagna_cooking;

@@ -16,6 +16,7 @@
 
 #include "nav.h"
 #include "nav_internal.h"
+#include "nav_favorites.h"
 
 // ==============================
 // 按键处理（状态机防抖）
@@ -276,6 +277,35 @@ void process_key(uint8_t key)
         jump_to_color_menu();
         g_send.iface_status = IFACE_SETTING;
         g_send.remaining_ms = -1;
+        uart_print();
+        break;
+    case KEY_FAV:           // 6: 收藏键（完成态收藏当前参数，非完成态进入收藏页）
+        if (current_group == g_favorites) {   /* 收藏页内：无效音 */
+            g_send.buzzer_req = BUZZER_KEY_INVALID;
+            uart_print();
+            break;
+        }
+        if (g_send.iface_status == IFACE_COMPLETE) {
+            /* 排除：预热/额外上色/保温（这三种完成态不支持收藏） */
+            if (g_send.cook_mode == MODE_PREHEAT ||
+                g_send.cook_mode == MODE_EXTRA_COLOR ||
+                g_send.cook_mode == MODE_HEATCONTAIN) {
+                g_send.buzzer_req = BUZZER_KEY_INVALID;
+                uart_print();
+                break;
+            }
+            favorites_save_current();   /* 收藏当前运行参数（进 cooking 时的设置值） */
+            uart_print();
+            break;
+        }
+        /* 非完成态：与其他功能键一致，菜单白名单页可进入收藏页 */
+        if (!menu_clean_key_allowed()) {
+            g_send.buzzer_req = BUZZER_KEY_INVALID;
+            uart_print();
+            break;
+        }
+        g_send.buzzer_req = BUZZER_KEY_VALID;
+        jump_to_favorites();
         uart_print();
         break;
     case KEY_CLEAN:         // 7: 进入清洁菜单
@@ -775,6 +805,8 @@ void process_key(uint8_t key)
             } else if (cur == PAGE_SLOWCOOK_COMPLETE_PROBE) {
                 g_complete_to_stop_back = 1;
                 jump_to_slowcook_stop_back_probe();
+            } else if (cur == PAGE_FAVORITES) {
+                return_favorites_action();   /* 收藏页返回 */
             }
             else
                 page_pop();
@@ -812,6 +844,12 @@ void process_key(uint8_t key)
 #endif
         if (!current_group) {
             g_send.buzzer_req = BUZZER_KEY_INVALID;
+            uart_print();
+            break;
+        }
+        if (current_group == g_favorites) {
+            encoder_favorites_action(KEY_ENCODER_CW);   /* 收藏页：翻页/移焦点 */
+            g_send.buzzer_req = BUZZER_ENCODER;
             uart_print();
             break;
         }
@@ -940,6 +978,12 @@ void process_key(uint8_t key)
 #endif
         if (!current_group) {
             g_send.buzzer_req = BUZZER_KEY_INVALID;
+            uart_print();
+            break;
+        }
+        if (current_group == g_favorites) {
+            encoder_favorites_action(KEY_ENCODER_CCW);   /* 收藏页：翻页/移焦点 */
+            g_send.buzzer_req = BUZZER_ENCODER;
             uart_print();
             break;
         }
@@ -1577,6 +1621,12 @@ void process_key(uint8_t key)
                 break;
             }
             /* next:放行通用逻辑(点击 → 回上色准备态) */
+        }
+        if (current_group == g_favorites) {
+            g_send.buzzer_req = BUZZER_KEY_VALID;
+            encoder_favorites_action(KEY_ENCODER_PRESS);   /* 收藏页：选中卡片/启动/删除 */
+            uart_print();
+            break;
         }
         lv_obj_t *focused = lv_group_get_focused(current_group);
         edit_field_t *ef = find_edit_field(focused);

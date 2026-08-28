@@ -210,7 +210,7 @@ static void six_label_status(somecook_cooking_t *sc)
 }
 
 // 运行模式/温度:烤鸡翅类按菜谱表(热风对流/空气炸250℃),面包/蛋糕按配置
-static uint8_t six_cook_mode(void)
+uint8_t six_cook_mode(void)
 {
     if (six_chick_is_kind() || six_chick_is_seafood() || six_chick_is_veg() || six_chick_is_2d() || six_chick_is_pizza()) return six_chick_mode();
     return six_bread_cfg()->mode;
@@ -577,6 +577,7 @@ static void six_cook_exit(void)
 // 进入运行页(choice=1 有发酵)
 void jump_to_six_cooking(void)
 {
+    fav_snapshot_save();   /* 收藏:进入 cooking 时快照初始参数 */
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;

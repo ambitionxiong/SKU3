@@ -309,6 +309,9 @@ void page_pop(void)
         chickmenutz_rebuild(child);
         break;
 
+    case PAGE_FAVORITES:
+        goto pop_to_major_menu;
+
     case PAGE_RISINGPAGE:
         risingpage_rebuild(child);
         break;

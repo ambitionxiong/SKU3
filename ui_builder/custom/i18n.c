@@ -518,6 +518,22 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "鱼/海鲜", "Fish/Seafood" },
         { "鸡", "Chicken" },
         { "鸭", "Duck" },
+        { "收藏功能", "Favorites" },
+        { "启动", "Start" },
+        { "删除", "Delete" },
+        { "多段烹饪", "Multi-Stage Cooking" },
+        { "步骤一：", "Step 1: " },
+        { "步骤二：", "Step 2: " },
+        { "步骤三：", "Step 3: " },
+        { "温度：", "Temp: " },
+        { "时间：%d小时%02d分钟", "Time: %dh%02dmin" },
+        { "蒸汽辅助：否", "Steam: No" },
+        { "蒸汽辅助：低", "Steam: Low" },
+        { "蒸汽辅助：中", "Steam: Medium" },
+        { "蒸汽辅助：高", "Steam: High" },
+        { "发酵：是", "Fermentation: Yes" },
+        { "发酵：否", "Fermentation: No" },
+        { "探针温度：%d℃", "Probe Temp: %d°C" },
     };
 static const int s_table_n = (int)(sizeof(s_table) / sizeof(s_table[0]));
 

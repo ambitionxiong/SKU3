@@ -74,6 +74,7 @@ void cook4menu_rebuild(page_id_t child);
 void cooking_timer_cb(lv_timer_t *timer);
 void delay_cancel_to_stop_back(void);
 void delay_start_cook(void);
+void fav_snapshot_save(void);   /* 收藏:进入 cooking 时快照初始参数(nav_favorites.c) */
 void delayset_refresh_display(delayset_t *ds);
 void edit_clear(void);
 void edit_register(lv_obj_t *label, lv_obj_t *ind_s, lv_obj_t *ind_l, int *value, int min, int max, int step, const char *fmt);
