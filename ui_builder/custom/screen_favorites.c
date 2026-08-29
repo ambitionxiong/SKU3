@@ -173,22 +173,29 @@ static void FAV_Six_Parse(const Fun_favorites_Value *fav, char *summary1, int s1
 	uint8_t old_fun = g_six_bread_type;
 	g_six_bread_type = (uint8_t)fav->Six_Cook_Fun;
 
-	snprintf(summary1, s1_sz, "%s", six_bread_name());
-
+	/* 烹饪时间：cook + 所选发酵(45 分钟，仅含发酵的面包类可选) */
 	int total = six_bread_cook_min();
 	if (fav->Six_FaJiao)
 		total += 45;
 	if (total >= 60)
-		snprintf(summary2, s2_sz, "%s:%s %s:%d%s%d%s",
-		         tr("发酵"), fav->Six_FaJiao ? tr("是") : tr("否"),
+		snprintf(time_buf, t_sz, "%s：%d%s%d%s",
 		         tr("时间"), total / 60, tr("小时"), total % 60, tr("分钟"));
 	else
-		snprintf(summary2, s2_sz, "%s:%s %s:%d%s",
-		         tr("发酵"), fav->Six_FaJiao ? tr("是") : tr("否"),
-		         tr("时间"), total, tr("分钟"));
-	*lines = 2;
-	*has_cook_time = 0;
-	time_buf[0] = '\0';
+		snprintf(time_buf, t_sz, "%s：%d%s", tr("时间"), total, tr("分钟"));
+
+	/* 对齐同事模板：面包类（含发酵）小结="发酵阶段：是"，单行小结 → 时间落 L2；
+	 * 蛋糕类（无发酵）菜谱模板无小结 → 时间落 L1（L2/L3 空） */
+	if (six_bread_has_rising()) {
+		snprintf(summary1, s1_sz, "%s", tr("发酵阶段：是"));
+		snprintf(summary2, s2_sz, "%s", time_buf);
+		*lines = 1;
+		*has_cook_time = 1;
+	} else {
+		summary1[0] = '\0';
+		summary2[0] = '\0';
+		*lines = 0;
+		*has_cook_time = 1;
+	}
 
 	g_six_bread_type = old_fun;
 }
@@ -216,6 +223,8 @@ static void FAV_Set_L1_Lb(lv_obj_t *lb, const Fun_favorites_Value *fav)
 		              tbuf, sizeof(tbuf), &has_cook_time);
 		if (lines >= 1)
 			lv_label_set_text(lb, s1);
+		else if (has_cook_time)
+			lv_label_set_text(lb, tbuf);	//无小结但含时间（蛋糕类）：时间放第一行（同事规则，移植时曾丢失）
 		else
 			lv_label_set_text(lb, " ");
 	}
@@ -234,6 +243,8 @@ static void FAV_Set_L2_Lb(lv_obj_t *lb, const Fun_favorites_Value *fav)
 		              tbuf, sizeof(tbuf), &has_cook_time);
 		if (lines >= 2)
 			lv_label_set_text(lb, s2);
+		else if (lines == 1 && has_cook_time)
+			lv_label_set_text(lb, tbuf);	//单行小结：时间放第二行（与同事模板一致；移植时曾丢失此分支）
 		else
 			lv_label_set_text(lb, " ");
 	}
