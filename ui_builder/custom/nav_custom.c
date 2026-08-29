@@ -192,6 +192,7 @@ void jump_to_custom_menu(void)
 
 void jump_to_custom_set(void)
 {
+    g_delay_source_page = PAGE_CUSTOM_SET;   /* 记录来源子类：收藏卡片名/启动分发依赖 */
     page_push(PAGE_CUSTOM_SET);
 
     preheat_on = 0; delay_on = 0; contain_on = 0;

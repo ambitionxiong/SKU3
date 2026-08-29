@@ -368,6 +368,14 @@ bool Favorites_Check_Exists()
 	{
         if (input_Mode_name == Fav_Cur->favorites_val[i].PengTiaoMode_name)
 		{
+			/* cook4 四组/冷冻烘焙六组共用模式号：子类(source_page)不同视为不同收藏。
+			 * 否则第二个子类会被判"已存在"而覆盖第一条卡（饼干存完，西式塔改它的温/时） */
+			int vm = Fav_Cur->favorites_val[i].PengTiaoMode_name;
+			if ((vm == MODE_COOK4 || vm == MODE_FROZEN_BAKE) &&
+			    (page_id_t)Fav_Cur->favorites_val[i].source_page != g_delay_source_page)
+			{
+				continue;
+			}
 			if (Fav_Cur->favorites_val[i].PengTiaoMode_name == FAV_MODE_SIX)	// 如果是第六感菜单
 			{
 				if (Fav_Cur->favorites_val[i].Six_Cook_Fun == input_Six_num) // 校验当前第六感菜谱是否已有
@@ -418,6 +426,13 @@ void Favorites_Cover_Func()
 	{
         if (input_Mode_name == Fav_Cur->favorites_val[i].PengTiaoMode_name)
 		{
+			/* 与 Favorites_Check_Exists 一致：cook4/冷冻烘焙子类不同不覆盖，另存新卡 */
+			int vm = Fav_Cur->favorites_val[i].PengTiaoMode_name;
+			if ((vm == MODE_COOK4 || vm == MODE_FROZEN_BAKE) &&
+			    (page_id_t)Fav_Cur->favorites_val[i].source_page != g_delay_source_page)
+			{
+				continue;
+			}
 			if (input_Mode_name == FAV_MODE_MULTI)
 			{
 				Fun_favorites_Value *item = &Fav_Cur->favorites_val[i];
@@ -444,6 +459,7 @@ void Favorites_Cover_Func()
 			item->Probe_temp = is_probe_inserted() ? input_Temp_probe[0] : 0;	//无探针不存探针温度（probe_target_temp 默认 80，防卡片误显示）
 			item->PengTiao_Mode = input_Cooking_Mode;
 			item->temp_down = input_Temp_Conventional_Dowm;	//下腔温度随收藏保存（与 Input_favorites 一致）
+			item->source_page = g_delay_source_page;	//子类随覆盖刷新（否则跨子类覆盖后卡片名不变）
 
 			if (is_probe_inserted())	//探针模式下不用收藏时间
 			{

@@ -245,6 +245,7 @@ void jump_to_cookie_menu(void)
 // menu → set
 void jump_to_cookie_set(void)
 {
+    g_delay_source_page = PAGE_COOKIE_SET;   /* 记录来源子类：收藏卡片名/启动分发依赖（直连烹饪此前存残留值） */
     page_push(PAGE_COOKIE_SET);
     lv_obj_clean(lv_scr_act());
     cookie_set_create(&ui_manager);

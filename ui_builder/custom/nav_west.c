@@ -245,6 +245,7 @@ void jump_to_west_menu(void)
 // menu → set
 void jump_to_west_set(void)
 {
+    g_delay_source_page = PAGE_WEST_SET;   /* 记录来源子类：收藏卡片名/启动分发依赖 */
     page_push(PAGE_WEST_SET);
     lv_obj_clean(lv_scr_act());
     west_set_create(&ui_manager);

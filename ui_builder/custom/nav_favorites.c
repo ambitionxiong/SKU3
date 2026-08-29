@@ -77,8 +77,8 @@ const char *fav_mode_name(const Fun_favorites_Value *fav)
     }
     if (m == MODE_COOK4) {
         switch ((page_id_t)fav->source_page) {
-        case PAGE_COOKIE_SET:    return tr("曲奇");
-        case PAGE_WEST_SET:      return tr("西式");
+        case PAGE_COOKIE_SET:    return tr("饼干");
+        case PAGE_WEST_SET:      return tr("西式塔");
         case PAGE_PIZZA_SET:     return tr("披萨");
         case PAGE_MENU_COOK_SET: return tr("菜单");
         default:                 return tr("多层烹调");

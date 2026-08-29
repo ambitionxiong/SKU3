@@ -192,6 +192,7 @@ void jump_to_lasagna_menu(void)
 
 void jump_to_lasagna_set(void)
 {
+    g_delay_source_page = PAGE_LASAGNA_SET;   /* 记录来源子类：收藏卡片名/启动分发依赖（直连烹饪此前存残留值） */
     page_push(PAGE_LASAGNA_SET);
 
     preheat_on = 0; delay_on = 0; contain_on = 0;
