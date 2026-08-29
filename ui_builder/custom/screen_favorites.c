@@ -185,11 +185,11 @@ static void FAV_Six_Parse(const Fun_favorites_Value *fav, char *summary1, int s1
 	/* 注意分支顺序（对齐描述页 nav_six_desc.c）：
 	 * 烤羊肉串(SKEWER)同时属于 is_kind 大类，程度分支必须先于份量分支 */
 	if (six_chick_is_degree_time()) {
-		/* 羊肉串等：程度驱动。小结="烧烤程度：浅/中等/深"，时间=程度→分钟 */
+		/* 羊肉串等：程度驱动。小结="上色程度：浅色/中等色/深色"，时间=程度→分钟 */
 		int d = fav->Six_KaoSe;
 		if (d < 1 || d > 3) d = 2;
-		snprintf(summary1, s1_sz, "%s%s", tr("烧烤程度："),
-		         d == 1 ? tr("浅") : d == 3 ? tr("深") : tr("中等"));
+		snprintf(summary1, s1_sz, "%s%s", tr("上色程度："),
+		         d == 1 ? tr("浅色") : d == 3 ? tr("深色") : tr("中等色"));
 		total = six_chick_degree_min(d);
 		*lines = 1;
 		*has_cook_time = 1;
@@ -215,10 +215,36 @@ static void FAV_Six_Parse(const Fun_favorites_Value *fav, char *summary1, int s1
 			total = sd ? sd->cook_min : 23;
 		}
 		*has_cook_time = 1;
-	} else if (six_chick_is_probe() || six_chick_is_2d()) {
-		/* 探针肉菜：按探针温度结束，无固定时长；二维菜：保存链尚未存 widx/jd（Six_KG/KaoSe 为 -1）。
-		 * 两者暂只显示正确菜名，小结/时间留空（待保存链扩展后补） */
+	} else if (six_chick_is_probe()) {
+		if (six_chick_is_matdeg()) {
+			/* 牛肉/羊腿/羊排（双设置：成熟度×上色程度）：L1=成熟度(几分熟)，L2=上色程度；探针驱动无固定时长 */
+			six_2d_select();   /* 按目标菜谱选成熟度表（g_six_bread_type 已临时切换） */
+			snprintf(summary1, s1_sz, "%s%s", tr("成熟度："),
+			         six_2d_mat_text_idx(fav->Six_Maturity));
+			int d = fav->Six_KaoSe;
+			if (d < 1 || d > 3) d = 2;
+			snprintf(summary2, s2_sz, "%s%s", tr("上色程度："),
+			         d == 1 ? tr("浅色") : d == 3 ? tr("深色") : tr("中等色"));
+			*lines = 2;
+			*has_cook_time = 0;
+		}
+		/* 其余探针菜(全鸡/全鸭/牛排/里脊/五花)：程度由探针温度推算，保存链未存，小结/时间留空 */
 		total = -1;
+	} else if (six_chick_is_2d()) {
+		/* 二维菜（带皮土豆/千层面/卡内罗尼，双设置：份量×上色程度）：L1=份量，L2=上色程度，时间=份量×程度表 */
+		six_2d_select();
+		int w = fav->Six_KG;
+		if (w <= 0) w = 1000;   /* 兜底：默认档 1000g */
+		int widx = six_2d_widx_by_weight(w);
+		int d = fav->Six_KaoSe;
+		if (d < 1 || d > 3) d = 2;
+		snprintf(summary1, s1_sz, "%s%dg", tr("份量/种类："), w);
+		snprintf(summary2, s2_sz, "%s%s", tr("上色程度："),
+		         d == 1 ? tr("浅色") : d == 3 ? tr("深色") : tr("中等色"));
+		*lines = 2;
+		int t = six_2d_cook_min_idx(widx, d - 1);
+		total = (t > 0) ? t : -1;
+		*has_cook_time = (total > 0) ? 1 : 0;
 	} else {
 		/* 面包/蛋糕类 */
 		total = six_bread_cook_min() + (fav->Six_FaJiao ? 45 : 0);
@@ -327,10 +353,17 @@ void Input_favorites(uint16_t temp, int8_t Hour, int8_t Minute, int8_t Is_Steam,
 	if (Mode_name == FAV_MODE_SIX)
 	{
 		item->Six_Cook_Fun = g_six_bread_type;
-		item->Six_KaoSe = (int8_t)toastcolor_degree_value();
+		if (six_chick_is_2d() || six_chick_is_matdeg()) {
+			/* 双设置菜（sixset2 页）：存克重 + 上色程度/成熟度档位 */
+			item->Six_KG       = six_2d_weight();                  /* 二维菜克重；熟度类无份量表 → 0 */
+			item->Six_KaoSe    = (int8_t)(six_2d_deg_idx() + 1);   /* 上色程度统一 1浅/2中/3深 */
+			item->Six_Maturity = (int8_t)six_2d_mat_idx();         /* 成熟度档 idx */
+		} else {
+			item->Six_KaoSe    = (int8_t)toastcolor_degree_value();
+			item->Six_Maturity = (int8_t)six_maturity_idx();
+			item->Six_KG       = toastcolor_weight_value();   /* 克重直存（int16，1000g 不截断） */
+		}
 		item->Six_FaJiao = (g_rising_choice == 1) ? 1 : 0;
-		item->Six_KG = toastcolor_weight_value();   /* 克重直存（Six_KG 已扩为 int16，1000g 不再截断） */
-		item->Six_Maturity = (int8_t)six_maturity_idx();
 	}
 	item->source_page = g_delay_source_page;
 
@@ -533,10 +566,17 @@ void Favorites_Cover_Func()
 			if (input_Mode_name == FAV_MODE_SIX)
 			{
 				item->Six_Cook_Fun = input_Six_num;
-				item->Six_KaoSe = (int8_t)toastcolor_degree_value();
+				if (six_chick_is_2d() || six_chick_is_matdeg()) {
+					/* 双设置菜（sixset2 页）：存克重 + 上色程度/成熟度档位（与 Input_favorites 一致） */
+					item->Six_KG       = six_2d_weight();
+					item->Six_KaoSe    = (int8_t)(six_2d_deg_idx() + 1);   /* 统一 1浅/2中/3深 */
+					item->Six_Maturity = (int8_t)six_2d_mat_idx();
+				} else {
+					item->Six_KaoSe    = (int8_t)toastcolor_degree_value();
+					item->Six_Maturity = (int8_t)six_maturity_idx();
+					item->Six_KG       = toastcolor_weight_value();   /* 克重直存（int16） */
+				}
 				item->Six_FaJiao = (g_rising_choice == 1) ? 1 : 0;
-				item->Six_KG = toastcolor_weight_value();   /* 克重直存（Six_KG 已扩为 int16） */
-				item->Six_Maturity = (int8_t)six_maturity_idx();
 			}
 			return;
 		}

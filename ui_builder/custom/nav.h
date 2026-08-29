@@ -796,6 +796,10 @@ int six_2d_weight(void);                /* 当前二维菜份量 g */
 int six_2d_cook_min(void);              /* 当前二维菜分钟 */
 const char *six_2d_deg_text(void);      /* 当前二维菜程度文本(浅/中等/深) */
 const char *six_2d_dish_name(void);     /* 当前二维菜菜名 */
+void six_2d_select(void);               /* 按当前菜谱选二维/熟度数据表(进 sixset2 前调用;收藏卡片渲染复用) */
+int six_2d_widx_by_weight(int w_g);     /* 克重→份量档 idx(收藏卡片用);未找到返回 -1 */
+int six_2d_cook_min_idx(int widx, int jd); /* 份量档×程度档→分钟(收藏卡片用);越界返回 -1 */
+const char *six_2d_mat_text_idx(int idx);  /* 成熟度档 idx→文本(收藏卡片用);越界回中档 */
 void jump_to_pasta_menu(void);          /* 砂锅菜/烤意面首页(复用 chick6menu) */
 /* ---- 复用页面场景标志访问器(nav_lang_tune 排版分支用,只读) ---- */
 int six_chick_get_pasta_mode(void);

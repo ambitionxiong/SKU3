@@ -75,8 +75,8 @@ static int s_cur_wc = 3;               /* 当前菜份量档数 */
 static const char **s_cur_mat = s_beef_mat;   /* 当前菜成熟度文本表 */
 static int s_cur_matc = 5;                    /* 当前菜成熟度档数 */
 
-/* 按当前菜选择数据表(进入 sixset2 前须调用) */
-static void six_2d_select(void)
+/* 按当前菜选择数据表(进入 sixset2 前须调用)；收藏卡片渲染也复用(切菜谱后调用) */
+void six_2d_select(void)
 {
     switch (g_six_bread_type) {
     case SIX_PASTA_LASAGNA:    s_cur_w = s_lw; s_cur_t = s_lt; s_cur_wc = 4; break;
@@ -128,6 +128,25 @@ void six_2d_set_maturity(int on)  { s_show_maturity = on; }
 int jacket_cook_min(void)         { return six_2d_cook_min(); }   /* 兼容:烤带皮土豆 */
 int jacket_weight(void)           { return six_2d_weight(); }
 const char *jacket_deg_text(void) { return six_2d_deg_text(); }
+
+/* ===== 收藏卡片：按索引读二维/熟度表（调用前先把 g_six_bread_type 切到目标菜谱并 six_2d_select()） ===== */
+int six_2d_widx_by_weight(int w_g)   /* 克重→份量档 idx；未找到/无份量表返回 -1 */
+{
+    if (!s_cur_w) return -1;
+    for (int i = 0; i < s_cur_wc; i++)
+        if (s_cur_w[i] == w_g) return i;
+    return -1;
+}
+int six_2d_cook_min_idx(int widx, int jd)   /* 份量档×程度档 → 分钟（二维菜）；越界返回 -1 */
+{
+    if (!s_cur_t || widx < 0 || widx >= s_cur_wc || jd < 0 || jd > 2) return -1;
+    return s_cur_t[widx][jd];
+}
+const char *six_2d_mat_text_idx(int idx)    /* 成熟度档 idx → 文本；越界回中档 */
+{
+    if (idx < 0 || idx >= s_cur_matc) idx = (s_cur_matc > 2) ? 2 : 0;
+    return tr(s_cur_mat[idx]);
+}
 
 static void apply_display(void);
 static void on_next_click(lv_event_t *e);

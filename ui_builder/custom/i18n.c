@@ -204,6 +204,11 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "发酵阶段：否", "Rising phase: No" },
         { "份量/种类：", "Portion/type: " },       /* 收藏卡片小结行（份量驱动菜） */
         { "烧烤程度：", "Browning: " },            /* 收藏卡片小结行（程度驱动菜） */
+        { "上色程度：", "Browning: " },            /* 收藏卡片小结行（双设置菜 L2） */
+        { "成熟度：", "Doneness: " },              /* 收藏卡片小结行（牛肉/羊腿/羊排 L1） */
+        { "浅色", "Light" },
+        { "中等色", "Medium" },
+        { "深色", "Dark" },
         { "小结：\n烧烤程度：%s\n", "Summary:\nBrowning: %s\n" },
         { "一成熟", "Rare" },
         { "三成熟", "Medium Rare" },
