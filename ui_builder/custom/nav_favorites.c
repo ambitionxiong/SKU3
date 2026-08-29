@@ -58,7 +58,7 @@ const char *fav_mode_name(const Fun_favorites_Value *fav)
     if (m == FAV_MODE_SIX) {
         uint8_t old = g_six_bread_type;
         g_six_bread_type = (uint8_t)fav->Six_Cook_Fun;
-        const char *name = six_bread_name();
+        const char *name = six_current_name();   /* 按类别取名：肉菜/海鲜/蔬菜/二维菜/披萨 → six_chick_name，面包蛋糕 → six_bread_name */
         g_six_bread_type = old;
         return name;
     }

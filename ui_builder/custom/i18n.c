@@ -202,6 +202,8 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "小结：\n没有发酵阶段\n", "Summary:\nNo rising phase\n" },
         { "发酵阶段：是", "Rising phase: Yes" },   /* 收藏卡片小结行（无"小结："前缀） */
         { "发酵阶段：否", "Rising phase: No" },
+        { "份量/种类：", "Portion/type: " },       /* 收藏卡片小结行（份量驱动菜） */
+        { "烧烤程度：", "Browning: " },            /* 收藏卡片小结行（程度驱动菜） */
         { "小结：\n烧烤程度：%s\n", "Summary:\nBrowning: %s\n" },
         { "一成熟", "Rare" },
         { "三成熟", "Medium Rare" },

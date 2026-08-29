@@ -53,7 +53,7 @@ typedef struct
     int8_t Six_Cook_Fun;        /* Six菜单：菜谱编号 */
     int8_t Six_KaoSe;           /* Six菜单：烤色 */
     int8_t Six_FaJiao;          /* Six菜单：发酵 */
-    int8_t Six_KG;              /* Six菜单：克重 */
+    int16_t Six_KG;             /* Six菜单：克重（int16：份量驱动菜 500/800/1000g 超出 int8，二维菜同为克重） */
     int8_t Six_Maturity;        /* Six菜单：成熟度 */
     int16_t source_page;        /* 来源页（区分 MODE_FROZEN_BAKE/COOK4 共用模式号的子类） */
     int16_t temp_down;          /* 下腔温度（上下烧烤） */

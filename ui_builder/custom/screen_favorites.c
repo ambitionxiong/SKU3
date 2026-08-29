@@ -169,32 +169,74 @@ static void FAV_Six_Parse(const Fun_favorites_Value *fav, char *summary1, int s1
                           char *summary2, int s2_sz, int *lines,
                           char *time_buf, int t_sz, int *has_cook_time)
 {
-	/* 临时切换到收藏保存的菜谱，读取名称/时间后恢复（我方 six_bread_cfg 表驱动） */
+	/* 临时切换到收藏保存的菜谱编号（分类判断/配置表只依赖它），用后恢复 */
 	uint8_t old_fun = g_six_bread_type;
 	g_six_bread_type = (uint8_t)fav->Six_Cook_Fun;
 
-	/* 烹饪时间：cook + 所选发酵(45 分钟，仅含发酵的面包类可选) */
-	int total = six_bread_cook_min();
-	if (fav->Six_FaJiao)
-		total += 45;
-	if (total >= 60)
-		snprintf(time_buf, t_sz, "%s：%d%s%d%s",
-		         tr("时间"), total / 60, tr("小时"), total % 60, tr("分钟"));
-	else
-		snprintf(time_buf, t_sz, "%s：%d%s", tr("时间"), total, tr("分钟"));
+	summary1[0] = '\0';
+	summary2[0] = '\0';
+	time_buf[0] = '\0';
+	*lines = 0;
+	*has_cook_time = 0;
 
-	/* 对齐同事模板：面包类（含发酵）小结="发酵阶段：是"，单行小结 → 时间落 L2；
-	 * 蛋糕类（无发酵）菜谱模板无小结 → 时间落 L1（L2/L3 空） */
-	if (six_bread_has_rising()) {
-		snprintf(summary1, s1_sz, "%s", tr("发酵阶段：是"));
-		snprintf(summary2, s2_sz, "%s", time_buf);
+	/* ---------- 按菜谱类别渲染（对齐同事模板；数据取自收藏保存值） ---------- */
+	int total = -1;   /* -1：无固定时长（探针菜按探针温度结束） */
+
+	/* 注意分支顺序（对齐描述页 nav_six_desc.c）：
+	 * 烤羊肉串(SKEWER)同时属于 is_kind 大类，程度分支必须先于份量分支 */
+	if (six_chick_is_degree_time()) {
+		/* 羊肉串等：程度驱动。小结="烧烤程度：浅/中等/深"，时间=程度→分钟 */
+		int d = fav->Six_KaoSe;
+		if (d < 1 || d > 3) d = 2;
+		snprintf(summary1, s1_sz, "%s%s", tr("烧烤程度："),
+		         d == 1 ? tr("浅") : d == 3 ? tr("深") : tr("中等"));
+		total = six_chick_degree_min(d);
 		*lines = 1;
 		*has_cook_time = 1;
-	} else {
-		summary1[0] = '\0';
-		summary2[0] = '\0';
-		*lines = 0;
+	} else if (six_chick_is_kind()) {
+		/* 份量驱动（鸡翅类/炸牛排/炸排骨/香肠/鳕鱼/全鱼/薯条/爆米花/红薯/玉米）。
+		 * 小结="份量/种类：Xg"，时间=份量→分钟 */
+		int w = fav->Six_KG;
+		if (w <= 0) w = 800;   /* 旧数据/异常兜底（与描述页一致） */
+		snprintf(summary1, s1_sz, "%s%dg", tr("份量/种类："), w);
+		total = six_chick_cook_min(w);
+		*lines = 1;
 		*has_cook_time = 1;
+	} else if (six_chick_is_seafood() || six_chick_is_veg() || six_chick_is_pizza()) {
+		/* 海鲜/蔬菜/披萨：固定时长，无小结 → 时间落 L1 */
+		if (six_chick_is_seafood()) {
+			const seafood_dish_t *sd = seafood_dish_cfg();
+			total = sd ? sd->cook_min : 18;
+		} else if (six_chick_is_veg()) {
+			const seafood_dish_t *sd = veg_fixed_cfg();
+			total = sd ? sd->cook_min : 22;
+		} else {
+			const seafood_dish_t *sd = pizza_fixed_cfg();
+			total = sd ? sd->cook_min : 23;
+		}
+		*has_cook_time = 1;
+	} else if (six_chick_is_probe() || six_chick_is_2d()) {
+		/* 探针肉菜：按探针温度结束，无固定时长；二维菜：保存链尚未存 widx/jd（Six_KG/KaoSe 为 -1）。
+		 * 两者暂只显示正确菜名，小结/时间留空（待保存链扩展后补） */
+		total = -1;
+	} else {
+		/* 面包/蛋糕类 */
+		total = six_bread_cook_min() + (fav->Six_FaJiao ? 45 : 0);
+		if (six_bread_has_rising()) {
+			snprintf(summary1, s1_sz, "%s", tr("发酵阶段：是"));
+			*lines = 1;
+		}
+		*has_cook_time = 1;
+	}
+
+	if (total >= 0) {
+		if (total >= 60)
+			snprintf(time_buf, t_sz, "%s：%d%s%d%s",
+			         tr("时间"), total / 60, tr("小时"), total % 60, tr("分钟"));
+		else
+			snprintf(time_buf, t_sz, "%s：%d%s", tr("时间"), total, tr("分钟"));
+		if (*lines == 1)
+			snprintf(summary2, s2_sz, "%s", time_buf);   /* 单行小结：时间落 L2 */
 	}
 
 	g_six_bread_type = old_fun;
@@ -287,7 +329,7 @@ void Input_favorites(uint16_t temp, int8_t Hour, int8_t Minute, int8_t Is_Steam,
 		item->Six_Cook_Fun = g_six_bread_type;
 		item->Six_KaoSe = (int8_t)toastcolor_degree_value();
 		item->Six_FaJiao = (g_rising_choice == 1) ? 1 : 0;
-		item->Six_KG = (int8_t)toastcolor_weight_value();
+		item->Six_KG = toastcolor_weight_value();   /* 克重直存（Six_KG 已扩为 int16，1000g 不再截断） */
 		item->Six_Maturity = (int8_t)six_maturity_idx();
 	}
 	item->source_page = g_delay_source_page;
@@ -493,7 +535,7 @@ void Favorites_Cover_Func()
 				item->Six_Cook_Fun = input_Six_num;
 				item->Six_KaoSe = (int8_t)toastcolor_degree_value();
 				item->Six_FaJiao = (g_rising_choice == 1) ? 1 : 0;
-				item->Six_KG = (int8_t)toastcolor_weight_value();
+				item->Six_KG = toastcolor_weight_value();   /* 克重直存（Six_KG 已扩为 int16） */
 				item->Six_Maturity = (int8_t)six_maturity_idx();
 			}
 			return;
@@ -781,10 +823,10 @@ void FAV_Option_Title(lv_obj_t *obj, const Fun_favorites_Value *fav)
 	const char *name = NULL;
 	if (fav->PengTiaoMode_name == FAV_MODE_SIX)
 	{
-		/* 临时按收藏菜谱编号取名称（我方表驱动，读后恢复） */
+		/* 临时按收藏菜谱编号取名称（分类入口：肉菜/海鲜/蔬菜/二维菜/披萨/面包蛋糕，读后恢复） */
 		uint8_t old = g_six_bread_type;
 		g_six_bread_type = (uint8_t)fav->Six_Cook_Fun;
-		name = six_bread_name();
+		name = six_current_name();
 		g_six_bread_type = old;
 	}
 	else if (fav->PengTiaoMode_name == FAV_MODE_MULTI)
