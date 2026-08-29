@@ -126,7 +126,11 @@ void favorites_save_current(void)
     input_Temp_probe[0]         = (uint8_t)fav_init_probe_temp;
     input_Six_num               = (int8_t)g_six_bread_type;
 
-    if (g_somecook_running) {
+    /* 多段：运行中，或已到多段完成态（完成态复用多段烹饪页；g_somecook_running
+     * 在 somecook_cooking_next_step 收尾时已提前清零，只靠它会把完成态收藏
+     * 误判成普通模式，存成"最后一段模式+过期快照(80℃/30分钟)"） */
+    if (g_somecook_running ||
+        (depth > 0 && page_stack[depth - 1] == PAGE_SOMECOOK_COOKING)) {
         /* 多段：g_steps → Fun_Multi_SUM_Value */
         memset(&Func_SUM_Value_step, 0, sizeof(Func_SUM_Value_step));
         for (int i = 0; i < 3; i++) {

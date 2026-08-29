@@ -245,7 +245,13 @@ static void FAV_Set_L2_Lb(lv_obj_t *lb, const Fun_favorites_Value *fav)
 	{
 		printf("[fav-set] L2 obj=%p mode=%d h=%d m=%d probe=%d\n",
 		       lb, fav->PengTiaoMode_name, fav->Func_Hour, fav->Func_Minute, fav->Probe_temp);
-		FAV_Option_LB_str(lb, fav->PengTiaoMode_name);
+		if (fav->PengTiaoMode_name == FAV_MODE_MULTI)
+			FAV_Option_LB_str(lb, fav->PengTiaoMode_name);   /* 多段：第二行是"步骤二：xxx"（步骤取全局 Favorites_Value） */
+		else
+			/* 时间直接按传入项显示：FAV_Option_LB_str 固定读 val[0..3]，
+			 * 第二页卡片(val[4..7])的时间会串成第一页的值 */
+			lv_label_set_text_fmt(lb, tr("时间：%d小时%02d分钟"),
+			                      fav->Func_Hour, fav->Func_Minute);
 		printf("[fav-set] L2 txt=%s\n", lv_label_get_text(lb));
 	}
 }
