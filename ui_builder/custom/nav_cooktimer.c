@@ -1268,3 +1268,26 @@ void cooking_timer_cb(lv_timer_t *timer)
     g_send.remaining_ms = remaining_sec * 1000;
 }
 
+/* ===================== 模拟器调试：C 键立即完成烹饪 =====================
+ * 把计时起点回拨整个烹饪时长，使 elapsed >= cook_total_ms，随后同步执行一次
+ * cooking_timer_cb —— 走与真实到点完全相同的完成分发（删定时器/完成音/按模式
+ * 裁栈跳完成页/多段切下一段）。探针页由探针温度驱动（用 8/- 键调温）、六感有
+ * 独立阶段状态机（菜谱调试时长已是 1 分钟），均不走此路径，不受影响。 */
+void sim_force_cook_done(void)
+{
+    if (g_send.iface_status != IFACE_COOKING || !cook_timer) return;
+    if (is_door_open()) {   /* 门开时 timer 走暂停分支而非完成，拒绝（先按 0 关门） */
+        g_send.buzzer_req = BUZZER_KEY_INVALID;
+        return;
+    }
+    /* 六感：独立阶段状态机（six_cook_timer_cb），不走 cooking_timer_cb。
+     * 直接推进到完成询问态；不回拨 cook_start_time，避免破坏六感独立计时 */
+    if (g_six_running && current_group == g_six_cooking) {
+        six_cook_force_done();
+        return;
+    }
+    cook_start_time -= cook_total_ms;   /* 回拨起点（无符号回绕安全） */
+    printf("[sim] force cook done\n");
+    cooking_timer_cb(NULL);
+}
+

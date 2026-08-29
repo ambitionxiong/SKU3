@@ -114,7 +114,11 @@ void favorites_save_current(void)
     }
 
     /* 收集当前参数（读进入 cooking 时快照，运行中 setting 改动不参与收藏） */
-    input_Temp                  = (uint16_t)fav_init_temp;
+    /* 上下烧烤（非探针）以真实上腔温度收藏（menu_top 调整后的 set_temp_up 快照，
+     * 此前存的 fav_init_temp=主温，卡片显示 180 而实调 175）；
+     * 其他模式 up 与主温相等（set 页入口已默认）或六感/多段不消费温度，保持主温 */
+    input_Temp                  = (uint16_t)((g_send.cook_mode == MODE_UPDOWN_BBQ && !is_probe_inserted())
+                                             ? fav_init_temp_up : fav_init_temp);
     input_Hour                  = (int8_t)fav_init_hour;
     input_Minute                = (int8_t)fav_init_min;
     input_Is_Steam              = g_send.steam_level;

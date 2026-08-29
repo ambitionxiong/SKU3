@@ -200,7 +200,8 @@ static void FAV_Set_FuncTemp_Lb(lv_obj_t *lb, const Fun_favorites_Value *fav)
 		lv_label_set_text(lb, " ");
 	else if (fav->PengTiaoMode_name == MODE_UPDOWN_BBQ)
 		if (is_probe_inserted()) lv_label_set_text_fmt(lb, "%d℃", fav->temperature);
-		else lv_label_set_text_fmt(lb, "↑%d℃/↓%d℃", fav->temperature, input_Temp_Conventional_Dowm);
+		else lv_label_set_text_fmt(lb, "↑%d℃/↓%d℃", fav->temperature,
+		                           (fav->temp_down > 0) ? fav->temp_down : fav->temperature);	//↓按卡读取（此前读全局残留值，多卡片串值；旧数据 temp_down=0 回退上温）
 	else
 		lv_label_set_text_fmt(lb, "%d℃", fav->temperature);
 	printf("[fav-set] FuncTemp txt=%s\n", lv_label_get_text(lb));
@@ -262,6 +263,7 @@ void Input_favorites(uint16_t temp, int8_t Hour, int8_t Minute, int8_t Is_Steam,
     item->PengTiaoMode_name = Mode_name;
 	item->Probe_temp = is_probe_inserted() ? input_Temp_probe[0] : 0;	//无探针不存探针温度（probe_target_temp 默认 80，防卡片误显示）
 	item->PengTiao_Mode = Cooking_Mode;
+	item->temp_down = input_Temp_Conventional_Dowm;	//下腔温度随收藏保存（此前漏存：启动读到 0 回退主温、卡片只能读全局残留值）
 
 	if (Mode_name == FAV_MODE_SIX)
 	{
@@ -441,6 +443,7 @@ void Favorites_Cover_Func()
 			item->PengTiaoMode_name = input_Mode_name;
 			item->Probe_temp = is_probe_inserted() ? input_Temp_probe[0] : 0;	//无探针不存探针温度（probe_target_temp 默认 80，防卡片误显示）
 			item->PengTiao_Mode = input_Cooking_Mode;
+			item->temp_down = input_Temp_Conventional_Dowm;	//下腔温度随收藏保存（与 Input_favorites 一致）
 
 			if (is_probe_inserted())	//探针模式下不用收藏时间
 			{

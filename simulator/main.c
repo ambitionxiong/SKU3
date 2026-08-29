@@ -124,7 +124,7 @@ int main(int argc, char **argv)
 		/* 读键状态模拟编码器（边沿触发防连击） */
 		static uint8_t prev_key = 0;
 		static uint8_t prev_door = 0;
-		static uint8_t prev_8 = 0, prev_9 = 0, prev_minus = 0, prev_lang = 0;
+		static uint8_t prev_8 = 0, prev_9 = 0, prev_minus = 0, prev_lang = 0, prev_c = 0;
 		SDL_PumpEvents();
 		const Uint8 *keys = SDL_GetKeyboardState(NULL);
 		uint8_t sim_key = 0;
@@ -133,6 +133,7 @@ int main(int argc, char **argv)
 		uint8_t cur_9 = keys[SDL_SCANCODE_9];
 		uint8_t cur_minus = keys[SDL_SCANCODE_MINUS];
 		uint8_t cur_lang = keys[SDL_SCANCODE_6];   /* 6=中英切换（原F8） */
+		uint8_t cur_c = keys[SDL_SCANCODE_C];      /* C=烹饪立即完成（调试） */
 		if      (keys[SDL_SCANCODE_TAB])       sim_key = KEY_MENU;
 		else if (keys[SDL_SCANCODE_5])         sim_key = KEY_EXTRA_COLOR;
 		else if (keys[SDL_SCANCODE_ESCAPE])    sim_key = KEY_BACK;
@@ -178,6 +179,12 @@ int main(int argc, char **argv)
 				(uart_data_receive[Receive_data_Power_ALL_State] & (1 << 1)) ? "OPEN" : "CLOSED");
 		}
 		prev_door = cur_door;
+
+		if (cur_c && !prev_c) {
+			extern void sim_force_cook_done(void);
+			sim_force_cook_done();
+		}
+		prev_c = cur_c;
 
 		if (sim_key != prev_key) {
 			nav_handle_key(sim_key);

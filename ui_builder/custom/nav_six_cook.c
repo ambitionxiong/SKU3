@@ -476,6 +476,23 @@ static void six_cook_timer_cb(lv_timer_t *timer)
     }
 }
 
+// 模拟器调试：c 键强制完成当前六感运行阶段（与 six_cook_timer_cb 到点逻辑一致）
+void six_cook_force_done(void)
+{
+    if (!g_six_running || g_six_paused) return;
+    if (g_six_phase != SIX_PHASE_RISING && g_six_phase != SIX_PHASE_COOKING &&
+        g_six_phase != SIX_PHASE_COLOR_COOKING) return;
+    if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
+    g_six_overlay = 0;
+    cook_start_time = lv_tick_get();
+    cook_elapsed_saved = 0;
+    printf("[sim] force six cook done (phase=%d)\n", g_six_phase);
+    if (g_six_phase == SIX_PHASE_COLOR_COOKING)
+        six_cook_set_phase(SIX_PHASE_ASK_COLOR);   /* 上色完成询问 */
+    else
+        six_cook_set_phase(SIX_PHASE_ASK);          /* 烹饪完成询问（含 Rising 直接跳过） */
+}
+
 // 运行页 stop 按钮:暂停/开始/需要/确定
 static void on_six_stop_click(lv_event_t *e)
 {

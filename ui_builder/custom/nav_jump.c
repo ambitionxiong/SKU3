@@ -275,7 +275,6 @@ void jump_to_updown_bbq_set(void)
 // updown_bbq_set → updown_bbq_cooking
 void jump_to_updown_bbq_cooking(void)
 {
-    fav_snapshot_save();   /* 收藏:进入 cooking 时快照初始参数 */
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;
@@ -311,9 +310,11 @@ void jump_to_updown_bbq_cooking(void)
     if (cook)
         lv_label_set_text_fmt(cook->time_label, "%02d:%02d:%02d", set_hour, set_min, 0);
 
-    /* 初始化上下温度（从 set 页带入） */
-    set_temp_up = set_temp;
-    set_temp_down = set_temp;
+    /* 上下温度不在此处覆写：set 页入口已默认 up/down=主温，
+     * menu_top/menu_low 子页的单独调整必须保留到 cooking/通信。
+     * （原覆写导致进 cooking 后通信发的仍是主温，top/low 调整失效；
+     *   收藏启动的 up/down 也曾被此处抹掉） */
+    fav_snapshot_save();   /* 收藏:进入 cooking 时快照初始参数（up/down 设置后） */
 
     /* 初始化进度条 + 启动动画（连续无级平滑） */
     cook_total_ms = (set_hour * 3600 + set_min * 60) * 1000;

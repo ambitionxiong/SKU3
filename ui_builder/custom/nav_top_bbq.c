@@ -334,7 +334,6 @@ void jump_to_top_bbq_set(void)
 // set → cooking
 void jump_to_top_bbq_cooking(void)
 {
-    fav_snapshot_save();   /* 收藏:进入 cooking 时快照初始参数 */
     edit_clear();
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
@@ -377,6 +376,7 @@ void jump_to_top_bbq_cooking(void)
     }
 
     set_temp_up = set_temp; set_temp_down = set_temp;
+    fav_snapshot_save();   /* 收藏:进入 cooking 时快照初始参数 */
     cook_start_time = lv_tick_get();
     if (cook_timer) lv_timer_del(cook_timer);
     cook_timer = lv_timer_create(cooking_timer_cb, 1000, NULL);

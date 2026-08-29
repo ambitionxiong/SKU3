@@ -881,6 +881,7 @@ extern int g_toast_mode;                /* 进入页面时由流程设置的当�
 void toastcolor_set_weight_options(const int *opts, int count, int default_idx);
 void jump_to_six_cooking(void);
 uint8_t six_cook_mode(void);   /* 当前六感菜谱的通信模式号（nav_six_cook.c） */
+void six_cook_force_done(void);   /* 模拟器调试:c 键强制完成六感当前阶段(nav_six_cook.c) */
 void fav_snapshot_save(void);   /* 收藏:进入 cooking 时快照初始参数(nav_favorites.c) */
 void six_cook_handle_back(void);
 void six_cooking_rebuild(page_id_t child);
