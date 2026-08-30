@@ -135,6 +135,7 @@ void on_windchange_click(lv_event_t *e);
 void page_pop(void);
 void page_push(page_id_t id);
 void process_key(uint8_t key);
+int is_cook_setting_page(page_id_t cur);   /* 各模式 SETTING 页(烹饪中小按钮进入,nav_key.c) */
 void rebuild_delaycooking(void);
 void set_status_label_min(lv_obj_t *label, int temp_up, int temp_down, int hour, int min);
 void setup_set_temp_display(updown_bbq_set_t *set);

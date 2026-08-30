@@ -28,73 +28,45 @@ uint32_t active_key_time = 0;
 
 // MENU/CLEAN 键白名单：仅在菜单/待机/探针提示类页面有效，
 // 设置温度时间页、运行状态页、完成页等一律无效音
-static int menu_clean_key_allowed(void)
+/* 是否为各模式 SETTING 页(烹饪中/完成后小按钮进入,不切状态、仍处烹饪态)。
+ * 两处使用:menu_clean_key_allowed 排除功能键跳转;nav_show_invalid_hint 不弹窗只留无效音 */
+int is_cook_setting_page(page_id_t cur)
 {
-    if (depth <= 0) return 0;
-    switch (page_stack[depth - 1]) {
-    case PAGE_WAITMENU_24:
-    case PAGE_PROBETIP:
-    case PAGE_TEMPTIP:
-    case PAGE_SIXOP3PAGE:
-    case PAGE_MAJOR_MENU:
-    case PAGE_MAJOR_MENU_TZ:
-    case PAGE_COOKMENU:
-    case PAGE_COOK_MENU_TZ:
-    case PAGE_SPECIAL_MENU:
-    case PAGE_SPECIAL_MENU_TZ:
-    case PAGE_COOK4_MENU:
-    case PAGE_FROZEN_COOK:
-    case PAGE_CLEAN_MENU:
-    case PAGE_HOTCLEAN_MENU:
-    case PAGE_SIXMENU:       /* 第六感:只放开前两层 */
-    case PAGE_BREAD6MENU:
-    case PAGE_CAKE6MENU:
-    case PAGE_CHICK6MENU:
-    case PAGE_CHICKENMENU:
-    case PAGE_DUCK6MENU:
-    case PAGE_VEGETABLEMENU:
-    case PAGE_SIXMENUTZ:
-    case PAGE_CHICKMENUTZ:
+    switch (cur) {
+    case PAGE_UPDOWN_BBQ_SETTING: case PAGE_TOP_BBQ_SETTING:
+    case PAGE_BOTTOM_BBQ_SETTING: case PAGE_HOT_BBQ_SETTING:
+    case PAGE_HOTWIND_BBQ_SETTING: case PAGE_SAVE_BBQ_SETTING:
+    case PAGE_CENTRAL_BBQ_SETTING: case PAGE_WINDCHANGE_BBQ_SETTING:
+    case PAGE_PIZZA_2_SETTING: case PAGE_SLOWCOOK_SETTING:
+    case PAGE_UNFROZEN_SETTING: case PAGE_RISING_SETTING:
+    case PAGE_CORN_SETTING: case PAGE_HEATCONTAIN_SETTING:
+    case PAGE_COOKIE_SETTING: case PAGE_WEST_SETTING: case PAGE_PIZZA_SETTING:
+    case PAGE_MENU_COOK_SETTING: case PAGE_LASAGNA_SETTING:
+    case PAGE_STRUDEL_SETTING: case PAGE_BREAD_SETTING: case PAGE_PIZZA3_SETTING:
+    case PAGE_CHIP_SETTING: case PAGE_CUSTOM_SETTING:
         return 1;
     default:
         return 0;
     }
 }
-/* 设置页下层页面是否允许功能键跳转(与各 case 内白名单/防重入/拦截一致) */
-static int screen_set_key_allowed(page_id_t below, uint8_t key)
+
+static int menu_clean_key_allowed(void)
 {
-    switch (below) {   /* 菜单白名单(与 menu_clean_key_allowed 同列表) */
-    case PAGE_WAITMENU_24: case PAGE_PROBETIP: case PAGE_TEMPTIP: case PAGE_MAJOR_MENU:
-    case PAGE_MAJOR_MENU_TZ: case PAGE_COOKMENU: case PAGE_COOK_MENU_TZ:
-    case PAGE_SPECIAL_MENU: case PAGE_SPECIAL_MENU_TZ: case PAGE_COOK4_MENU:
-    case PAGE_FROZEN_COOK: case PAGE_CLEAN_MENU: case PAGE_HOTCLEAN_MENU:
-    case PAGE_SIXMENU: case PAGE_BREAD6MENU: case PAGE_CAKE6MENU:
-    case PAGE_CHICK6MENU: case PAGE_CHICKENMENU: case PAGE_DUCK6MENU:
-    case PAGE_VEGETABLEMENU:
-    case PAGE_SIXMENUTZ: case PAGE_CHICKMENUTZ:
-    case PAGE_SIXOP3PAGE:
-        break;
-    default:
+    /* 2026-08-30:以运行状态取代页面白名单——待机/设置浏览态(IFACE_STANDBY/
+     * IFACE_SETTING,含各模式 menu/set 流程页)功能键均可跳转;烹饪/暂停/完成/
+     * 预约态(IFACE_DELAY_RESERVE,含预约等待页)功能键保持无效音,完成态的收藏
+     * 保存/再次上色由各 case 自身逻辑先行处理。
+     * 例外:各模式 SETTING 页(烹饪中/完成后小按钮进入)属 cooking 家族,
+     * 显式排除,功能键无效音 */
+    if (depth <= 0) return 0;
+    if (page_stack[depth - 1] == PAGE_DELAYCOOKING)   /* 预约等待(DELAY_RESERVE 态,防御性排除) */
         return 0;
-    }
-    /* 各键专属防重入/拦截 */
-    if (key == KEY_MENU && (below == PAGE_MAJOR_MENU || below == PAGE_MAJOR_MENU_TZ)) return 0;
-    if (key == KEY_CLEAN && below == PAGE_CLEAN_MENU) return 0;
-    if (key == KEY_SIXMENU && (below == PAGE_SIXMENU || below == PAGE_BREAD6MENU ||
-        below == PAGE_CAKE6MENU || below == PAGE_CHICK6MENU || below == PAGE_CHICKENMENU ||
-        below == PAGE_DUCK6MENU ||
-        below == PAGE_SIXMENUTZ || below == PAGE_CHICKMENUTZ ||
-        below == PAGE_RISINGPAGE || below == PAGE_DESCRIPTIONMENU ||
-        below == PAGE_SIX_COOKING || below == PAGE_TOASTCOLOR)) return 0;
-    if (key == KEY_PREHEAT && (below == PAGE_PREHEAT_MENU || below == PAGE_PREHEAT_COOKING ||
-        below == PAGE_PREHEAT_STOP || below == PAGE_PREHEAT_STOP_BACK ||
-        below == PAGE_PREHEAT_COMPLETE)) return 0;
-    if (key == KEY_EXTRA_COLOR && (below == PAGE_SCREEN_SET ||
-        below == PAGE_SIX_COOKING || below == PAGE_TOASTCOLOR)) return 0;
-    return 1;
+    if (is_cook_setting_page(page_stack[depth - 1]))
+        return 0;
+    return (g_send.iface_status == IFACE_SETTING || g_send.iface_status == IFACE_STANDBY);
 }
 /* 核心按键分发：按 key 值进入各功能分支。
-   入口统一处理：SLEEP 拦截 → 无效提示弹窗屏蔽 → 探针提示页屏蔽 → 设置页防御。
+   入口统一处理：SLEEP 拦截 → 重复收藏确认模态 → 无效提示弹窗屏蔽 → 设置页先关后处理。
    各 case 内再做白名单/防重入/运行态拦截，并设置 buzzer_req 反馈。 */
 void process_key(uint8_t key)
 {
@@ -119,18 +91,12 @@ void process_key(uint8_t key)
     if (depth > 0 && page_stack[depth - 1] == PAGE_PROBENEEDTIP &&
         key != KEY_BACK && key != KEY_ENCODER_PRESS)
         return;
-    /* 设置页覆盖层打开时按功能键:
-       - 下层运行态(烹饪/暂停)或下层不允许该键 → 防御:无效音,设置页保持
-       - 下层允许该键(菜单页) → 关闭设置页 + 弹栈,按下层正常跳转 */
+    /* 设置页覆盖层打开时按功能键:先关闭设置页(弹栈恢复下层页面),再按下层
+     * 页面正常处理——功能键在设置页也能生效;键自身的白名单/防重入/运行态
+     * 拦截(烹饪中等)由各 case 照常判断 */
     if (depth > 1 && page_stack[depth - 1] == PAGE_SCREEN_SET &&
         (key == KEY_MENU || key == KEY_SIXMENU || key == KEY_PREHEAT ||
-         key == KEY_EXTRA_COLOR || key == KEY_CLEAN)) {
-        if (g_send.iface_status == IFACE_COOKING || g_send.iface_status == IFACE_PAUSE ||
-            g_send.iface_status == IFACE_COMPLETE ||
-            !screen_set_key_allowed(page_stack[depth - 2], key)) {
-            g_send.buzzer_req = BUZZER_KEY_INVALID;   /* 防御:设置页不关 */
-            return;
-        }
+         key == KEY_EXTRA_COLOR || key == KEY_CLEAN || key == KEY_FAV)) {
         screen_set_reset();   /* 清覆盖层对象/指针,防悬空 */
         depth--;              /* 弹掉 PAGE_SCREEN_SET,栈顶恢复下层页面 */
         topflag_update_visibility();   /* 与 page_pop 一致刷新 topflag 显隐 */
@@ -308,6 +274,7 @@ void process_key(uint8_t key)
          * 一致,待机时钟态 depth=0 时同样先建根页再进),BACK 即回 waitmenu */
         if (!menu_clean_key_allowed()) {
             g_send.buzzer_req = BUZZER_KEY_INVALID;
+            nav_show_invalid_hint();   /* 烹饪中:与其他功能键一致弹无效提示(非烹饪态内部自动跳过) */
             uart_print();
             break;
         }

@@ -640,6 +640,7 @@ uint8_t nav_key1_hold_check(void);
 void nav_init(void);
 void page_push(page_id_t id);
 void page_pop(void);
+int is_cook_setting_page(page_id_t cur);   /* 各模式 SETTING 页(烹饪中小按钮进入,nav_key.c) */
 void stepset_bind_events(void);
 void delay_cancel_exit_to_set(void);
 extern uint8_t g_delay_cancel_btn;

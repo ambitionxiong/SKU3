@@ -152,6 +152,8 @@ static void hint_timer_cb(lv_timer_t *t)
 void nav_show_invalid_hint(void)
 {
     if (g_send.iface_status != IFACE_COOKING) return;
+    /* SETTING 页(烹饪中小按钮进入,仍处烹饪态):仅无效音,不弹窗 */
+    if (depth > 0 && is_cook_setting_page(page_stack[depth - 1])) return;
     /* stopback/遮罩确认态:不弹提示(右侧无映射元素,且与页面自身遮罩重叠),仅保留无效音 */
     if (g_on_stop_back || six_cook_is_overlay() || somecook_cooking_is_stopback()) return;
     /* 已在提示:重置 3 秒计时 */
