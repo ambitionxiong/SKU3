@@ -22,6 +22,14 @@ static void toastcolor_apply_maturity_line(void);
 lv_group_t *g_toastcolor = NULL;
 static int s_toast_color = 2;   /* 1浅 2中 3深 */
 
+/* 收藏启动恢复值（份量菜/程度菜跳过设置页直进烹饪时提供档位；
+ * 正常流程入口 jump_to_toastcolor / set_weight_options 自动清除，不污染常规选择） */
+static int s_degree_override = -1;   /* 烤色程度 1浅/2中/3深（-1=无） */
+static int s_weight_override = -1;   /* 份量值：克数或玉米根数（-1=无） */
+
+void toastcolor_set_degree_sel(int d) { s_degree_override = (d >= 1 && d <= 3) ? d : -1; }
+void toastcolor_set_weight_sel(int v) { s_weight_override = (v > 0) ? v : -1; }
+
 /* 当前激活组：三组互斥（默认烤色程度；进入前由流程设置 g_toast_mode） */
 int g_toast_mode = TOAST_MODE_DEGREE;
 
@@ -44,6 +52,7 @@ void toastcolor_set_weight_options(const int *opts, int count, int default_idx)
     if (s_weight_index < 0 || s_weight_index >= s_weight_count)
         s_weight_index = 0;
     s_weight_unit = "g";   /* 每次设置份量选项时重置默认单位 */
+    s_weight_override = -1;   /* 正常流程重新选表，收藏恢复值失效 */
 }
 
 /* 设置份量单位(如玉米的"根");须在 set_weight_options 之后调用 */
@@ -57,20 +66,24 @@ const char *toastcolor_weight_unit(void)
     return s_weight_unit;
 }
 
-/* 当前选中份量克数；非份量组/未设置返回 -1 */
+/* 当前选中份量克数（或玉米根数）；收藏恢复值优先，非份量组/未设置返回 -1 */
 int toastcolor_weight_value(void)
 {
-    if (g_toast_mode != TOAST_MODE_WEIGHT || s_weight_count <= 0 || !s_weight_opts)
-        return -1;
-    return s_weight_opts[s_weight_index];
+	if (s_weight_override > 0)
+		return s_weight_override;
+	if (g_toast_mode != TOAST_MODE_WEIGHT || s_weight_count <= 0 || !s_weight_opts)
+		return -1;
+	return s_weight_opts[s_weight_index];
 }
 
-/* 当前选中程度(1浅2中3深)；非 degree 组返回 -1 */
+/* 当前选中程度(1浅2中3深)；收藏恢复值优先，非 degree 组返回 -1 */
 int toastcolor_degree_value(void)
 {
-    if (g_toast_mode != TOAST_MODE_DEGREE)
-        return -1;
-    return s_toast_color;
+	if (s_degree_override > 0)
+		return s_degree_override;
+	if (g_toast_mode != TOAST_MODE_DEGREE)
+		return -1;
+	return s_toast_color;
 }
 
 /* 互斥显示：仅显示当前激活组，其余两组整体隐藏 */
@@ -200,6 +213,8 @@ static void on_toastcolor_next_click(lv_event_t *e)
 
 void jump_to_toastcolor(void)
 {
+    s_degree_override = -1;   /* 正常流程重新选择，收藏恢复值失效 */
+    s_weight_override = -1;
     page_push(PAGE_TOASTCOLOR);
     lv_obj_clean(lv_scr_act());
     toastcolor_create(&ui_manager);

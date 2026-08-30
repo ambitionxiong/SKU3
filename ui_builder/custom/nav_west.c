@@ -33,9 +33,9 @@ void jump_to_west_complete(void);
 static void west_set_status(lv_obj_t *label, int temp, int hour, int min)
 {
     if (hour == 0)
-        lv_label_set_text_fmt(label, tr("| 西式 | %d℃ | %02d分钟"), temp, min);
+        lv_label_set_text_fmt(label, tr("| 西式塔 | %d℃ | %02d分钟"), temp, min);
     else
-        lv_label_set_text_fmt(label, tr("| 西式 | %d℃ | %d小时%02d分钟"), temp, hour, min);
+        lv_label_set_text_fmt(label, tr("| 西式塔 | %d℃ | %d小时%02d分钟"), temp, hour, min);
 }
 
 static void west_preheat_toggle(lv_event_t *e)
@@ -698,9 +698,9 @@ void jump_to_west_complete(void)
             lv_obj_add_event_cb(cook->little, on_west_cooking_setting_click,
                                 LV_EVENT_CLICKED, NULL);
             if (set_hour == 0)
-                lv_label_set_text_fmt(cook->status, tr("| 西式 | %d℃ | %02d分钟"), set_temp, set_min);
+                lv_label_set_text_fmt(cook->status, tr("| 西式塔 | %d℃ | %02d分钟"), set_temp, set_min);
             else
-                lv_label_set_text_fmt(cook->status, tr("| 西式 | %d℃ | %d小时%02d分钟"), set_temp, set_hour, set_min);
+                lv_label_set_text_fmt(cook->status, tr("| 西式塔 | %d℃ | %d小时%02d分钟"), set_temp, set_hour, set_min);
             lv_bar_set_value(cook->bar_11, 100, LV_ANIM_OFF);
         }
     }

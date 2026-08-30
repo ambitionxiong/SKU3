@@ -108,32 +108,27 @@ void favo_safety_group_delete()
     g_favorites = NULL;
 
     //*防御检测是否为空组
-    if (scr->group == NULL) printf("[fav] group null\n");
-    else 
+    if (scr->group) 
     {
         lv_group_del(scr->group);
         scr->group = NULL;
     }
-    if (scr->group_sub_1 == NULL) printf("[fav] group_sub_1 null\n");
-    else 
+    if (scr->group_sub_1)
     {
         lv_group_del(scr->group_sub_1);
         scr->group_sub_1 = NULL;
     }
-    if (scr->group_sub_2 == NULL) printf("[fav] group_sub_2 null\n");
-    else 
+    if (scr->group_sub_2)
     {
         lv_group_del(scr->group_sub_2);
         scr->group_sub_2 = NULL;
     }
-    if (scr->group_sub_3 == NULL) printf("[fav] group_sub_3 null\n");
-    else 
+    if (scr->group_sub_3)
     {
         lv_group_del(scr->group_sub_3);
         scr->group_sub_3 = NULL;
     }
-    if (scr->group_sub_4 == NULL) printf("[fav] group_sub_4 null\n");
-    else 
+    if (scr->group_sub_4)
     {
         lv_group_del(scr->group_sub_4);
         scr->group_sub_4 = NULL;
@@ -195,10 +190,11 @@ static void FAV_Six_Parse(const Fun_favorites_Value *fav, char *summary1, int s1
 		*has_cook_time = 1;
 	} else if (six_chick_is_kind()) {
 		/* 份量驱动（鸡翅类/炸牛排/炸排骨/香肠/鳕鱼/全鱼/薯条/爆米花/红薯/玉米）。
-		 * 小结="份量/种类：Xg"，时间=份量→分钟 */
+		 * 小结="份量/种类：Xg"，时间=份量→分钟；玉米存根数(1-4)，单位随菜显示"根" */
 		int w = fav->Six_KG;
 		if (w <= 0) w = 800;   /* 旧数据/异常兜底（与描述页一致） */
-		snprintf(summary1, s1_sz, "%s%dg", tr("份量/种类："), w);
+		snprintf(summary1, s1_sz, "%s%d%s", tr("份量/种类："), w,
+		         (g_six_bread_type == SIX_VEG_CORN) ? tr("根") : "g");
 		total = six_chick_cook_min(w);
 		*lines = 1;
 		*has_cook_time = 1;
@@ -227,8 +223,25 @@ static void FAV_Six_Parse(const Fun_favorites_Value *fav, char *summary1, int s1
 			         d == 1 ? tr("浅色") : d == 3 ? tr("深色") : tr("中等色"));
 			*lines = 2;
 			*has_cook_time = 0;
+		} else if (g_six_bread_type == SIX_MEAT_GRILL_STEAK) {
+			/* 烤牛排：成熟度档（toastcolor 成熟度表，保存链存 Six_Maturity）；
+			 * 临时切换档位读文本，用后恢复（渲染同步完成） */
+			int om = six_maturity_idx();
+			six_maturity_set(fav->Six_Maturity);
+			snprintf(summary1, s1_sz, "%s%s", tr("成熟度："), six_maturity_text());
+			six_maturity_set(om);
+			*lines = 1;
+			*has_cook_time = 0;
+		} else {
+			/* 全鸡/全鸭/里脊/五花：烧烤程度=所选探针目标档（保存链存 Six_KaoSe 1浅/2中/3深），
+			 * 探针驱动无固定时长 */
+			int d = fav->Six_KaoSe;
+			if (d < 1 || d > 3) d = 2;
+			snprintf(summary1, s1_sz, "%s%s", tr("上色程度："),
+			         d == 1 ? tr("浅色") : d == 3 ? tr("深色") : tr("中等色"));
+			*lines = 1;
+			*has_cook_time = 0;
 		}
-		/* 其余探针菜(全鸡/全鸭/牛排/里脊/五花)：程度由探针温度推算，保存链未存，小结/时间留空 */
 		total = -1;
 	} else if (six_chick_is_2d()) {
 		/* 二维菜（带皮土豆/千层面/卡内罗尼，双设置：份量×上色程度）：L1=份量，L2=上色程度，时间=份量×程度表 */
@@ -269,8 +282,6 @@ static void FAV_Six_Parse(const Fun_favorites_Value *fav, char *summary1, int s1
 }
 static void FAV_Set_FuncTemp_Lb(lv_obj_t *lb, const Fun_favorites_Value *fav)
 {
-	printf("[fav-set] FuncTemp obj=%p mode=%d temp=%d down=%d probe=%d\n",
-	       lb, fav->PengTiaoMode_name, fav->temperature, input_Temp_Conventional_Dowm, fav->Probe_temp);
 	if (fav->PengTiaoMode_name == FAV_MODE_MULTI || fav->PengTiaoMode_name == FAV_MODE_SIX)
 		lv_label_set_text(lb, " ");
 	else if (fav->PengTiaoMode_name == MODE_UPDOWN_BBQ)
@@ -279,7 +290,6 @@ static void FAV_Set_FuncTemp_Lb(lv_obj_t *lb, const Fun_favorites_Value *fav)
 		                           (fav->temp_down > 0) ? fav->temp_down : fav->temperature);	//↓按卡读取（此前读全局残留值，多卡片串值；旧数据 temp_down=0 回退上温）
 	else
 		lv_label_set_text_fmt(lb, "%d℃", fav->temperature);
-	printf("[fav-set] FuncTemp txt=%s\n", lv_label_get_text(lb));
 }
 static void FAV_Set_L1_Lb(lv_obj_t *lb, const Fun_favorites_Value *fav)
 {
@@ -322,8 +332,6 @@ static void FAV_Set_L2_Lb(lv_obj_t *lb, const Fun_favorites_Value *fav)
 	}
 	else
 	{
-		printf("[fav-set] L2 obj=%p mode=%d h=%d m=%d probe=%d\n",
-		       lb, fav->PengTiaoMode_name, fav->Func_Hour, fav->Func_Minute, fav->Probe_temp);
 		if (fav->PengTiaoMode_name == FAV_MODE_MULTI)
 			FAV_Option_LB_str(lb, fav->PengTiaoMode_name);   /* 多段：第二行是"步骤二：xxx"（步骤取全局 Favorites_Value） */
 		else
@@ -331,7 +339,6 @@ static void FAV_Set_L2_Lb(lv_obj_t *lb, const Fun_favorites_Value *fav)
 			 * 第二页卡片(val[4..7])的时间会串成第一页的值 */
 			lv_label_set_text_fmt(lb, tr("时间：%d小时%02d分钟"),
 			                      fav->Func_Hour, fav->Func_Minute);
-		printf("[fav-set] L2 txt=%s\n", lv_label_get_text(lb));
 	}
 }
 void Input_favorites(uint16_t temp, int8_t Hour, int8_t Minute, int8_t Is_Steam, int8_t Mode_name, uint8_t Cooking_Mode) 
@@ -363,6 +370,10 @@ void Input_favorites(uint16_t temp, int8_t Hour, int8_t Minute, int8_t Is_Steam,
 			item->Six_Maturity = (int8_t)six_maturity_idx();
 			item->Six_KG       = toastcolor_weight_value();   /* 克重直存（int16，1000g 不截断） */
 		}
+		/* 探针肉菜：改存六感流程的探针目标温度（fav_init_probe_temp 快照的是常规模式的
+		 * probe_target_temp，六感流程从不写它，此前存入的是残留值；启动恢复与查重依赖此值） */
+		if (is_probe_inserted() && six_chick_is_probe())
+			item->Probe_temp = (int8_t)g_six_probe_temp;
 		item->Six_FaJiao = (g_rising_choice == 1) ? 1 : 0;
 	}
 	item->source_page = g_delay_source_page;
@@ -434,7 +445,6 @@ void Add_favorites()
 	{
 		Input_favorites(input_Temp, input_Hour, input_Minute, input_Is_Steam, input_Mode_name, input_Cooking_Mode);
 	}
-	print_status(Fav_Cur);
 }
 //添加一个多段烹饪功能收藏
 void Add_favorites_of_Multi(Fun_Multi_SUM_Value Fav_Val)
@@ -449,8 +459,6 @@ void Add_favorites_of_Multi(Fun_Multi_SUM_Value Fav_Val)
 
 	//保存首段通信模式编号，供启动恢复 PengTiao_mode_num
 	Fav_Cur->favorites_val[set_place].PengTiao_Mode = Favorites_Value.Func_Value_step_1.PengTiaoMode_num;
-
-	print_status(Fav_Cur);
 }
 //检测收藏是否是已存在功能，0：不存在，1：存在
 bool Favorites_Check_Exists()
@@ -804,8 +812,6 @@ void encoder_favorites_action(char key)
 					}
 				}
 			}
-			
-			print_status(Fav_Cur);
 		}
 	}
 	else
@@ -878,7 +884,6 @@ void FAV_Option_Title(lv_obj_t *obj, const Fun_favorites_Value *fav)
 		name = fav_mode_name(fav);
 	}
 	if (name) lv_label_set_text(obj, name);
-	printf("[fav-set] Title obj=%p mode=%d name=%s\n", obj, fav->PengTiaoMode_name, name ? name : "(null)");
 }
 //多段烹饪，选择功能名称
 const char* FAV_Option_Fun_name(int8_t Cooking_FUN)
@@ -992,13 +997,10 @@ void FAV_Option_LB_str(lv_obj_t *obj, int8_t Cooking_FUN)
 
             if (obj == label1)
 			{
-				printf("[fav-LB] hit i=%d L1 obj=%p\n", i, obj);
 				lv_label_set_text(obj, tr("温度："));
 				break;
             }
             else if (obj == label2) {
-                printf("[fav-LB] hit i=%d L2 obj=%p h=%d m=%d\n", i, obj,
-                       Fav_Cur->favorites_val[i].Func_Hour, Fav_Cur->favorites_val[i].Func_Minute);
                 lv_label_set_text_fmt(obj, tr("时间：%d小时%02d分钟"),
                     Fav_Cur->favorites_val[i].Func_Hour,
                     Fav_Cur->favorites_val[i].Func_Minute);
@@ -1062,7 +1064,6 @@ static void FAV_Set_L3_Lb(lv_obj_t *lb, const Fun_favorites_Value *fav)
 //删除选项后实现第一页的页面刷新
 void FAV_screen_Refresh_FirstPage()
 {
-	printf("[fav-refresh] first page\n");
 	Fav_Select_By_Probe();	//按当前探针模式选择收藏集合
 	screen_favorites_t *scr = &g_fav_screen;
 
@@ -1356,16 +1357,6 @@ void screen_favorites_create(void)
             lv_obj_del(scr->obj);
         scr->obj = NULL;
     }
-    printf("[fav-create] probe=%d cur=%s byte=0x%02X\n", is_probe_inserted(),
-           Fav_Cur == &Func_favorites_Value_Probe ? "PROBE" : "NORM",
-           Fav_Cur->has_favorites_byte);
-    for (int k = 0; k < 4; k++)
-        printf("  v[%d] mode=%d temp=%d h=%d m=%d probe=%d\n", k,
-               Fav_Cur->favorites_val[k].PengTiaoMode_name,
-               Fav_Cur->favorites_val[k].temperature,
-               Fav_Cur->favorites_val[k].Func_Hour,
-               Fav_Cur->favorites_val[k].Func_Minute,
-               Fav_Cur->favorites_val[k].Probe_temp);
 
 	// Fav_Cur->has_favorites_byte = 0x7F;
 

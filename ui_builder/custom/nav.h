@@ -800,6 +800,7 @@ void six_2d_select(void);               /* 按当前菜谱选二维/熟度数据
 int six_2d_widx_by_weight(int w_g);     /* 克重→份量档 idx(收藏卡片用);未找到返回 -1 */
 int six_2d_cook_min_idx(int widx, int jd); /* 份量档×程度档→分钟(收藏卡片用);越界返回 -1 */
 const char *six_2d_mat_text_idx(int idx);  /* 成熟度档 idx→文本(收藏卡片用);越界回中档 */
+void six_2d_restore(int weight_g, int deg_lvl, int mat_idx);   /* 收藏启动恢复双维/熟度菜档位 */
 void jump_to_pasta_menu(void);          /* 砂锅菜/烤意面首页(复用 chick6menu) */
 /* ---- 复用页面场景标志访问器(nav_lang_tune 排版分支用,只读) ---- */
 int six_chick_get_pasta_mode(void);
@@ -875,7 +876,9 @@ int six_chick_temp(void);           /* 烤鸡类当前菜的温度 */
 int six_chick_cook_min(int weight_g);   /* 烤鸡翅类：份量→烹饪分钟（SKU3 菜谱表） */
 int six_chick_is_degree_time(void);     /* 当前是否为程度→时间驱动(烤羊肉串) */
 int six_chick_degree_min(int degree);   /* 程度→烹饪分钟(1浅2中3深: 18/20/24) */
-int toastcolor_degree_value(void);      /* 当前选中程度(1浅2中3深, -1=非degree组) */
+int toastcolor_degree_value(void);      /* 当前选中程度(1浅2中3深, -1=非degree组;收藏恢复值优先) */
+void toastcolor_set_degree_sel(int d);  /* 收藏启动恢复烤色程度档(nav_toastcolor.c) */
+void toastcolor_set_weight_sel(int v);  /* 收藏启动恢复份量值(克/玉米根数)(nav_toastcolor.c) */
 
 /* 第六感烤色选择（nav_toastcolor.c 实现）：三组互斥显示模式 */
 #define TOAST_MODE_DEGREE   0     /* 烤色程度（degree+line） */

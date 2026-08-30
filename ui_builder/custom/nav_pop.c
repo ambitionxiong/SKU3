@@ -1670,7 +1670,7 @@ void page_pop(void)
                 if (g_keepwarm_active)
                     lv_label_set_text(done->label_143, tr("保温中..."));
 
-                lv_label_set_text_fmt(done->status, tr("| 曲奇 | %d℃ | %02d分钟"), set_temp, set_min);
+                lv_label_set_text_fmt(done->status, tr("| 饼干 | %d℃ | %02d分钟"), set_temp, set_min);
                 lv_bar_set_value(done->bar_7, 100, LV_ANIM_OFF);
             }
             current_group = g_cookie_complete;
@@ -1738,7 +1738,7 @@ void page_pop(void)
                 if (g_keepwarm_active)
                     lv_label_set_text(done->label_192, tr("保温中..."));
 
-                lv_label_set_text_fmt(done->status, tr("| 西式 | %d℃ | %02d分钟"), set_temp, set_min);
+                lv_label_set_text_fmt(done->status, tr("| 西式塔 | %d℃ | %02d分钟"), set_temp, set_min);
                 lv_bar_set_value(done->bar_11, 100, LV_ANIM_OFF);
             }
             current_group = g_west_complete;

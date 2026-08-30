@@ -143,8 +143,12 @@ void favorites_save_current(void)
         }
         input_Mode_name   = FAV_MODE_MULTI;
         input_Cooking_Mode = (uint8_t)g_steps[0].mode;
-    } else if (g_six_running) {
-        /* 六感：菜谱编号 + 档位（时间由菜谱数据决定，不收藏时间） */
+    } else if (g_six_running ||
+               (depth > 0 && page_stack[depth - 1] == PAGE_CHICKENCOOKING)) {
+        /* 六感：菜谱编号 + 档位（时间由菜谱数据决定，不收藏时间）。
+         * 探针肉菜(全鸡/鸭/牛排/牛肉/羊腿/羊排/里脊/五花)运行页是 chickencooking，
+         * 不置 g_six_running——此前漏判，存成普通模式：卡片显示模式名、
+         * 启动进 updown 等普通烹饪页（用户实测闪退/串页根因） */
         input_Mode_name    = FAV_MODE_SIX;
         input_Cooking_Mode = g_send.cook_mode;
     } else {
@@ -162,13 +166,27 @@ void favorites_save_current(void)
 
     fav_succeed_no_repetitive = 1;
     g_send.buzzer_req = BUZZER_KEY_VALID;
-    printf("[fav] save: mode=%d temp=%d time=%dh%dm count=%d\n",
-           input_Mode_name, input_Temp, input_Hour, input_Minute, favorites_how_many);
-    printf("[fav-save] cur=%s byte=0x%02X mode=%d temp=%d h=%d m=%d down=%d probe=%d six=%d\n",
-           Fav_Cur == &Func_favorites_Value_Probe ? "PROBE" : "NORM",
-           Fav_Cur->has_favorites_byte, input_Mode_name, input_Temp,
-           input_Hour, input_Minute, input_Temp_Conventional_Dowm,
-           input_Temp_probe[0], input_Six_num);
+}
+
+/* 收藏启动：按菜类恢复各设置页状态变量（份量/烤色/成熟度/探针目标温度）。
+ * 各选择页的档位是其文件内静态变量，正常流程由菜单入口设置；收藏启动跳过了那些
+ * 入口，这里经导出接口复现"选完档位"后的等效状态，烹饪页读档位即得收藏值 */
+static void six_fav_restore_settings(const Fun_favorites_Value *fav)
+{
+    if (six_chick_is_matdeg() || six_chick_is_2d()) {
+        /* 双设置菜（sixset2 页）：熟度菜恢复成熟度+程度，二维菜恢复克重+程度 */
+        six_2d_restore(fav->Six_KG, fav->Six_KaoSe, fav->Six_Maturity);
+    } else if (g_six_bread_type == SIX_MEAT_GRILL_STEAK) {
+        six_maturity_set(fav->Six_Maturity);   /* 烤牛排：成熟度档 */
+    } else if (six_chick_is_degree_time() || six_chick_is_probe()) {
+        toastcolor_set_degree_sel(fav->Six_KaoSe);   /* 羊肉串/全鸡类：烤色程度档 */
+    } else if (six_chick_is_kind()) {
+        /* 份量驱动：恢复份量值与单位（玉米存根数） */
+        toastcolor_set_weight_sel(fav->Six_KG);
+        toastcolor_set_weight_unit((g_six_bread_type == SIX_VEG_CORN) ? "根" : "g");
+    }
+    if (six_chick_is_probe())
+        g_six_probe_temp = six_probe_target_temp();   /* 探针目标温度按恢复后的档位重算 */
 }
 
 /* ===================== 收藏启动（直接进入运行） ===================== */
@@ -209,11 +227,16 @@ void favorites_start_selected(void)
     }
 
     if (fav->PengTiaoMode_name == FAV_MODE_SIX) {
-        /* 六感：恢复菜谱编号 + 发酵选择后进入六感烹饪 */
+        /* 六感：恢复菜谱编号+发酵选择+烤色/份量/成熟度档位后进入六感烹饪
+         * （此前只恢复菜谱编号+发酵，份量/程度驱动菜跑默认档位） */
         g_six_bread_type = (uint8_t)fav->Six_Cook_Fun;
         g_rising_choice  = fav->Six_FaJiao ? 1 : -1;
+        six_fav_restore_settings(fav);
         g_send.cook_mode = six_cook_mode();
-        jump_to_six_cooking();
+        if (six_chick_is_probe())
+            jump_to_chick_cooking();   /* 探针菜：探针驱动烹饪页（此前误走面包烹饪页，且无探针目标温度） */
+        else
+            jump_to_six_cooking();
         return;
     }
 
@@ -261,7 +284,6 @@ void jump_to_favorites(void)
     /* auto_del=1：删除被替换的旧屏（已被 lv_obj_clean 清空）。传 0 会每次泄漏
      * 一个空壳屏对象，反复进出收藏页耗尽 LVGL 堆 → 控件创建失败 → 显示叠乱 */
     lang_scr_load_anim(g_fav_screen.obj, LV_SCR_LOAD_ANIM_NONE, 0, 0, 1);
-    printf("[fav] jump: -> favorites\n");
 }
 
 void favorites_rebuild(page_id_t child)
@@ -274,5 +296,4 @@ void favorites_rebuild(page_id_t child)
     g_favorites = g_fav_screen.group;
     current_group = g_favorites;
     lang_scr_load_anim(g_fav_screen.obj, LV_SCR_LOAD_ANIM_NONE, 0, 0, 1);   /* auto_del=1 防旧屏泄漏 */
-    printf("[fav] back to favorites\n");
 }

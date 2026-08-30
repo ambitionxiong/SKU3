@@ -148,6 +148,19 @@ const char *six_2d_mat_text_idx(int idx)    /* 成熟度档 idx → 文本；越
     return tr(s_cur_mat[idx]);
 }
 
+/* 收藏启动恢复：按保存值设置二维/熟度菜档位（克重→份量档 idx，程度 1浅/2中/3深→idx，
+ * 成熟度档 idx）。须先把 g_six_bread_type 切到目标菜谱；保存值越界时保留当前档 */
+void six_2d_restore(int weight_g, int deg_lvl, int mat_idx)
+{
+    six_2d_select();   /* 按当前菜选表 */
+    if (s_cur_w && weight_g > 0) {
+        int wi = six_2d_widx_by_weight(weight_g);
+        if (wi >= 0) s_widx = wi;
+    }
+    if (deg_lvl >= 1 && deg_lvl <= 3) s_jd = deg_lvl - 1;
+    if (mat_idx >= 0 && mat_idx < s_cur_matc) s_mat = mat_idx;
+}
+
 static void apply_display(void);
 static void on_next_click(lv_event_t *e);
 
@@ -276,8 +289,8 @@ static void on_next_click(lv_event_t *e)
 {
     (void)e;
     if (screen_is_loading(lv_scr_act())) return;
-    if (g_six_bread_type == SIX_MEAT_GRILL_BEEF)
-        g_six_probe_temp = six_probe_target_temp();   /* 烤牛肉:熟度×程度→探针目标温度 */
+    if (six_chick_is_probe())
+        g_six_probe_temp = six_probe_target_temp();   /* 探针菜:熟度×程度→探针目标温度（此前只有烤牛肉设置，羊腿/羊排进烹饪页用的是残留值） */
     jump_to_descriptionmenu();
 }
 

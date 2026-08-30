@@ -251,11 +251,9 @@ void jump_to_updown_bbq_cooking_probe(void)
         return;
     }
 
-    updown_bbq_set_probe_t *set = updown_bbq_set_probe_get(&ui_manager);
-    if (set) {
-        const char *txt = lv_label_get_text(set->probetemp);
-        probe_target_temp = txt ? atoi(txt) : 80;
-    }
+    /* probe_target_temp 由菜单页 edit_register 直接绑定全局（label 只是视图），
+     * 收藏/预约启动也已提前恢复全局——不再从设置页 label 读值：
+     * 从收藏启动时设置页早已销毁，读悬空控件得到垃圾温度（闪退隐患） */
 
     page_push(PAGE_UPDOWN_BBQ_COOKING_PROBE);
     lv_obj_clean(lv_scr_act());
