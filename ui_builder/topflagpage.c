@@ -101,6 +101,51 @@ void topflagpage_create(ui_manager_t *ui)
     lv_obj_set_style_text_color(scr->tip1, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->tip1, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
+    // Init scr->tip2 (文字"请删除不太喜欢的烹调！",收藏夹已满提示,默认隐藏;同步自上位机 2026-08-30)
+    scr->tip2 = lv_label_create(scr->obj);
+    lv_label_set_text(scr->tip2, "请删除不太喜欢的烹调！");
+    lv_label_set_long_mode(scr->tip2, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->tip2, 836, 198);
+    lv_obj_set_size(scr->tip2, 370, 36);
+    lv_obj_add_flag(scr->tip2, LV_OBJ_FLAG_HIDDEN);
+
+    // Set style of scr->tip2
+    lv_obj_set_style_text_font(scr->tip2, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->tip2, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->tip2, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // Init scr->tip3 (文字"收藏成功",收藏成功提示,默认隐藏;同步自上位机 2026-08-30,显隐由 custom/nav_hint.c 控制)
+    scr->tip3 = lv_label_create(scr->obj);
+    lv_label_set_text(scr->tip3, "收藏成功");
+    lv_label_set_long_mode(scr->tip3, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->tip3, 838, 161);
+    lv_obj_set_size(scr->tip3, 370, 61);
+    lv_obj_add_flag(scr->tip3, LV_OBJ_FLAG_HIDDEN);
+
+    // Set style of scr->tip3
+    lv_obj_set_style_text_font(scr->tip3, &c_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->tip3, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->tip3, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // Init scr->sure (文字"确 定",已收藏覆盖确认按钮,默认隐藏;同步自上位机 2026-08-30)
+    scr->sure = lv_btn_create(scr->obj);
+    lv_obj_t *sure_label = lv_label_create(scr->sure);
+    lv_label_set_text(sure_label, "确 定");
+    lv_obj_align(sure_label, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_pos(scr->sure, 959, 295);
+    lv_obj_set_size(scr->sure, 129, 83);
+    lv_obj_add_flag(scr->sure, LV_OBJ_FLAG_HIDDEN);
+
+    // Set style of scr->sure
+    lv_obj_set_style_bg_opa(scr->sure, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->sure, LVGL_IMAGE_PATH(stopbk1.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->sure, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(scr->sure, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(scr->sure, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(scr->sure, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->sure, LVGL_IMAGE_PATH(stopbk2.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+
+
 }
 
 

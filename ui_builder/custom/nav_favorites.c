@@ -72,7 +72,7 @@ const char *fav_mode_name(const Fun_favorites_Value *fav)
         case PAGE_PIZZA3_SET:  return tr("披萨");
         case PAGE_CHIP_SET:    return tr("薯条");
         case PAGE_CUSTOM_SET:  return tr("自定义");
-        default:               return tr("冷食速烹");
+        default:               return tr("冷冻烘焙");   /* 与预约/事件链路 mode_display_name 同名（Frozen Bake） */
         }
     }
     if (m == MODE_COOK4) {
@@ -158,11 +158,14 @@ void favorites_save_current(void)
     }
 
     if (Favorites_Check_Exists())
-        Favorites_Cover_Func();
-    else if (input_Mode_name == FAV_MODE_MULTI)
+        Favorites_Cover_Func();   /* 已收藏:覆盖(结果提示弹窗待接入) */
+    else if (input_Mode_name == FAV_MODE_MULTI) {
         Add_favorites_of_Multi(Func_SUM_Value_step);
-    else
+        nav_show_fav_tip();       /* 正常收藏成功:顶层 tip3"收藏成功"2 秒 */
+    } else {
         Add_favorites();
+        nav_show_fav_tip();
+    }
 
     fav_succeed_no_repetitive = 1;
     g_send.buzzer_req = BUZZER_KEY_VALID;

@@ -99,9 +99,9 @@ static int screen_set_key_allowed(page_id_t below, uint8_t key)
 void process_key(uint8_t key)
 {
     if (g_send.iface_status == IFACE_SLEEP) return;
-    /* 无效提示弹窗:仅 BACK 有效(KEY_BACK 分支关闭弹窗);长按关机由
+    /* 无效提示弹窗/收藏结果提示:仅 BACK 有效(KEY_BACK 分支关闭弹窗);长按关机由
        nav_handle_key 独立检测不受影响;其余键静默忽略,避免主动操作 */
-    if (nav_hint_active() && key != KEY_BACK)
+    if ((nav_hint_active() || nav_favtip_active()) && key != KEY_BACK)
         return;
     /* 探针提示页:仅 BACK 有效(probetip_dismiss_now 提前结束),功能键静默忽略 */
     if (depth > 0 && page_stack[depth - 1] == PAGE_PROBETIP && key != KEY_BACK)
@@ -474,6 +474,12 @@ void process_key(uint8_t key)
         uart_print();
         break;
     case KEY_BACK:          // 21: 返回
+        if (nav_favtip_active()) {
+            /* 收藏结果提示中:BACK 直接关闭提示,不执行返回 */
+            nav_favtip_cancel();
+            uart_print();
+            break;
+        }
         if (nav_hint_active()) {
             /* 无效提示弹窗中:BACK 直接结束提示恢复页面,不执行返回 */
             nav_hint_cancel();

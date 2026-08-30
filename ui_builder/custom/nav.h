@@ -671,6 +671,9 @@ void screen_set_reset(void);
 void nav_show_invalid_hint(void);
 void nav_hint_cancel(void);
 int nav_hint_active(void);
+void nav_show_fav_tip(void);   /* 收藏保存成功提示:topflag 顶层 tip3,2 秒自动消失(nav_hint.c) */
+void nav_favtip_cancel(void);  /* BACK 提前关闭收藏提示 */
+int nav_favtip_active(void);
 
 /* 第六感菜单（nav_sixmenu.c 实现） */
 extern lv_group_t *g_sixmenu;

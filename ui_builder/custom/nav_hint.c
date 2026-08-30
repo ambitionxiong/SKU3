@@ -229,3 +229,90 @@ int nav_hint_active(void)
 {
     return g_hint_timer != NULL;
 }
+
+/* ==============================
+ * 收藏保存结果提示（topflagpage 顶层 tip3,2 秒自动消失）
+ * 三种情况之一:正常收藏成功(已收藏/收藏夹已满后续接入)。
+ * 遮罩复用 topflagpage 的 container_1(常驻 lv_layer_top,与
+ * "烤箱运行时不可用"同款半透明遮罩+右侧文字);完成页在遮罩之下,
+ * 2 秒后隐藏即自动回到完成页。期间功能键忽略、BACK 提前关闭(nav_key.c 守卫)。
+ * ============================== */
+static lv_timer_t *g_favtip_timer = NULL;
+static lv_obj_t *g_favtip_objs[8];   /* 提示期间隐藏的完成页右侧组件 */
+static int g_favtip_n = 0;
+static int g_favtip_was[8];          /* 隐藏前是否本就隐藏(恢复时只还原我们藏掉的) */
+
+/* 对象销毁时同步置空指针(防悬空,同 hint_del_cb) */
+static void favtip_del_cb(lv_event_t *e)
+{
+    lv_obj_t *obj = lv_event_get_target(e);
+    for (int i = 0; i < g_favtip_n; i++)
+        if (g_favtip_objs[i] == obj) g_favtip_objs[i] = NULL;
+}
+
+/* 收集并隐藏当前完成页右侧组件(防烫图标/文字等)。
+ * 完成页 30+ 张、右侧组件字段名各异(image_3/6/26/70、text1/2...),
+ * 按几何位置通用识别:屏幕直属子对象 x>=800 即右侧列(同 nav_hint_collect 思路) */
+static void nav_favtip_collect_hide(void)
+{
+    g_favtip_n = 0;
+    lv_obj_t *scr = lv_scr_act();
+    if (!scr) return;
+    uint32_t cnt = lv_obj_get_child_cnt(scr);
+    for (uint32_t i = 0; i < cnt && g_favtip_n < 8; i++) {
+        lv_obj_t *ch = lv_obj_get_child(scr, i);
+        if (!ch) continue;
+        if (lv_obj_get_x(ch) >= 800) {
+            g_favtip_was[g_favtip_n] = lv_obj_has_flag(ch, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(ch, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_remove_event_cb(ch, favtip_del_cb);
+            lv_obj_add_event_cb(ch, favtip_del_cb, LV_EVENT_DELETE, NULL);
+            g_favtip_objs[g_favtip_n++] = ch;
+        }
+    }
+}
+
+static void nav_favtip_hide(void)
+{
+    if (g_favtip_timer) { lv_timer_del(g_favtip_timer); g_favtip_timer = NULL; }
+    for (int i = 0; i < g_favtip_n; i++)
+        if (g_favtip_objs[i] && !g_favtip_was[i])
+            lv_obj_clear_flag(g_favtip_objs[i], LV_OBJ_FLAG_HIDDEN);
+    g_favtip_n = 0;
+    topflagpage_t *tf = topflagpage_get(&ui_manager);
+    if (!tf || !tf->obj) return;
+    if (tf->tip3)        lv_obj_add_flag(tf->tip3, LV_OBJ_FLAG_HIDDEN);
+    if (tf->container_1) lv_obj_add_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);
+}
+
+static void favtip_timer_cb(lv_timer_t *t)
+{
+    (void)t;
+    nav_favtip_hide();
+}
+
+// 触发:正常收藏成功时调用(favorites_save_current)
+void nav_show_fav_tip(void)
+{
+    topflagpage_t *tf = topflagpage_get(&ui_manager);
+    if (!tf || !tf->obj || !tf->tip3 || !tf->container_1) return;
+    nav_favtip_hide();   /* 重复触发:重置 2 秒计时 */
+    lv_label_set_text(tf->tip3, tr("收藏成功"));   /* 每次显示时设文本,随语言切换 */
+    nav_favtip_collect_hide();   /* 隐藏完成页右侧组件(防烫图标/文字),恢复在 hide */
+    lv_obj_clear_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(tf->tip3, LV_OBJ_FLAG_HIDDEN);
+    g_favtip_timer = lv_timer_create(favtip_timer_cb, 2000, NULL);
+    printf("[hint] fav tip show\n");
+}
+
+// BACK 提前关闭收藏提示
+void nav_favtip_cancel(void)
+{
+    nav_favtip_hide();
+    printf("[hint] fav tip cancel\n");
+}
+
+int nav_favtip_active(void)
+{
+    return g_favtip_timer != NULL;
+}

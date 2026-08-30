@@ -270,10 +270,9 @@ static void FAV_Six_Parse(const Fun_favorites_Value *fav, char *summary1, int s1
 
 	if (total >= 0) {
 		if (total >= 60)
-			snprintf(time_buf, t_sz, "%s：%d%s%d%s",
-			         tr("时间"), total / 60, tr("小时"), total % 60, tr("分钟"));
+			snprintf(time_buf, t_sz, tr("时间：%d小时%02d分钟"), total / 60, total % 60);
 		else
-			snprintf(time_buf, t_sz, "%s：%d%s", tr("时间"), total, tr("分钟"));
+			snprintf(time_buf, t_sz, tr("时间：%d分钟"), total);
 		if (*lines == 1)
 			snprintf(summary2, s2_sz, "%s", time_buf);   /* 单行小结：时间落 L2 */
 	}
@@ -1678,7 +1677,7 @@ void screen_favorites_create(void)
     lv_label_set_text(favo_Start_Btn_1_label, tr("启动"));
     lv_obj_align(favo_Start_Btn_1_label, LV_ALIGN_CENTER, 0, 0);
     lv_obj_set_pos(scr->favo_Start_Btn_1, 22, 302);
-    lv_obj_set_size(scr->favo_Start_Btn_1, 84, 52);
+    lv_obj_set_size(scr->favo_Start_Btn_1, 105, 55);
 
     // Set style of scr->favo_Start_Btn_1
     lv_obj_set_style_bg_opa(scr->favo_Start_Btn_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -1699,8 +1698,8 @@ void screen_favorites_create(void)
     lv_obj_t *favo_Delete_Btn_1_label = lv_label_create(scr->favo_Delete_Btn_1);
     lv_label_set_text(favo_Delete_Btn_1_label, tr("删除"));
     lv_obj_align(favo_Delete_Btn_1_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->favo_Delete_Btn_1, 195, 302);
-    lv_obj_set_size(scr->favo_Delete_Btn_1, 84, 52);
+    lv_obj_set_pos(scr->favo_Delete_Btn_1, 174, 302);
+    lv_obj_set_size(scr->favo_Delete_Btn_1, 105, 55);
 
     // Set style of scr->favo_Delete_Btn_1
     lv_obj_set_style_bg_opa(scr->favo_Delete_Btn_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -1841,7 +1840,7 @@ void screen_favorites_create(void)
     lv_label_set_text(favo_Start_Btn_2_label, tr("启动"));
     lv_obj_align(favo_Start_Btn_2_label, LV_ALIGN_CENTER, 0, 0);
     lv_obj_set_pos(scr->favo_Start_Btn_2, 22, 302);
-    lv_obj_set_size(scr->favo_Start_Btn_2, 84, 52);
+    lv_obj_set_size(scr->favo_Start_Btn_2, 105, 55);
 
     // Set style of scr->favo_Start_Btn_2
     lv_obj_set_style_bg_opa(scr->favo_Start_Btn_2, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -1862,8 +1861,8 @@ void screen_favorites_create(void)
     lv_obj_t *favo_Delete_Btn_2_label = lv_label_create(scr->favo_Delete_Btn_2);
     lv_label_set_text(favo_Delete_Btn_2_label, tr("删除"));
     lv_obj_align(favo_Delete_Btn_2_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->favo_Delete_Btn_2, 195, 302);
-    lv_obj_set_size(scr->favo_Delete_Btn_2, 84, 52);
+    lv_obj_set_pos(scr->favo_Delete_Btn_2, 174, 302);
+    lv_obj_set_size(scr->favo_Delete_Btn_2, 105, 55);
 
     // Set style of scr->favo_Delete_Btn_2
     lv_obj_set_style_bg_opa(scr->favo_Delete_Btn_2, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -2004,7 +2003,7 @@ void screen_favorites_create(void)
     lv_label_set_text(favo_Start_Btn_3_label, tr("启动"));
     lv_obj_align(favo_Start_Btn_3_label, LV_ALIGN_CENTER, 0, 0);
     lv_obj_set_pos(scr->favo_Start_Btn_3, 22, 302);
-    lv_obj_set_size(scr->favo_Start_Btn_3, 84, 52);
+    lv_obj_set_size(scr->favo_Start_Btn_3, 105, 55);
 
     // Set style of scr->favo_Start_Btn_3
     lv_obj_set_style_bg_opa(scr->favo_Start_Btn_3, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -2025,8 +2024,8 @@ void screen_favorites_create(void)
     lv_obj_t *favo_Delete_Btn_3_label = lv_label_create(scr->favo_Delete_Btn_3);
     lv_label_set_text(favo_Delete_Btn_3_label, tr("删除"));
     lv_obj_align(favo_Delete_Btn_3_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->favo_Delete_Btn_3, 195, 302);
-    lv_obj_set_size(scr->favo_Delete_Btn_3, 84, 52);
+    lv_obj_set_pos(scr->favo_Delete_Btn_3, 174, 302);
+    lv_obj_set_size(scr->favo_Delete_Btn_3, 105, 55);
 
     // Set style of scr->favo_Delete_Btn_3
     lv_obj_set_style_bg_opa(scr->favo_Delete_Btn_3, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -2168,7 +2167,7 @@ void screen_favorites_create(void)
     lv_label_set_text(favo_Start_Btn_4_label, tr("启动"));
     lv_obj_align(favo_Start_Btn_4_label, LV_ALIGN_CENTER, 0, 0);
     lv_obj_set_pos(scr->favo_Start_Btn_4, 22, 302);
-    lv_obj_set_size(scr->favo_Start_Btn_4, 84, 52);
+    lv_obj_set_size(scr->favo_Start_Btn_4, 105, 55);
 
     // Set style of scr->favo_Start_Btn_4
     lv_obj_set_style_bg_opa(scr->favo_Start_Btn_4, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -2189,8 +2188,8 @@ void screen_favorites_create(void)
     lv_obj_t *favo_Delete_Btn_4_label = lv_label_create(scr->favo_Delete_Btn_4);
     lv_label_set_text(favo_Delete_Btn_4_label, tr("删除"));
     lv_obj_align(favo_Delete_Btn_4_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->favo_Delete_Btn_4, 195, 302);
-    lv_obj_set_size(scr->favo_Delete_Btn_4, 84, 52);
+    lv_obj_set_pos(scr->favo_Delete_Btn_4, 174, 302);
+    lv_obj_set_size(scr->favo_Delete_Btn_4, 105, 55);
 
     // Set style of scr->favo_Delete_Btn_4
     lv_obj_set_style_bg_opa(scr->favo_Delete_Btn_4, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
