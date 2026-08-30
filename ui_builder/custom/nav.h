@@ -673,6 +673,7 @@ void nav_show_invalid_hint(void);
 void nav_hint_cancel(void);
 int nav_hint_active(void);
 void nav_show_fav_tip(void);   /* 收藏保存成功提示:topflag 顶层 tip3,2 秒自动消失(nav_hint.c) */
+void nav_show_state_tip(const char *text);   /* 通用状态提示:右侧 tip3 显示文本 2 秒(nav_hint.c) */
 void nav_favtip_cancel(void);  /* BACK 提前关闭收藏提示 */
 int nav_favtip_active(void);
 void nav_show_fav_ask(void);   /* 重复收藏确认:topflag 顶层遮罩+tip1+tip2+sure,不自动消失(nav_hint.c) */

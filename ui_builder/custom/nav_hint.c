@@ -257,14 +257,26 @@ static void favtip_timer_cb(lv_timer_t *t)
 // 收藏成功不显示遮罩(container_1 保持隐藏),仅右侧 tip3 文字,2 秒自动消失
 void nav_show_fav_tip(void)
 {
+    nav_favtip_hide();   /* 重复触发:重置 2 秒计时 */
     topflagpage_t *tf = topflagpage_get(&ui_manager);
     if (!tf || !tf->obj || !tf->tip3) return;
-    nav_favtip_hide();   /* 重复触发:重置 2 秒计时 */
     lv_label_set_text(tf->tip3, tr("收藏成功"));   /* 每次显示时设文本,随语言切换 */
     nav_favtip_collect_hide();   /* 隐藏完成页右侧组件(防烫图标/文字),恢复在 hide */
     lv_obj_clear_flag(tf->tip3, LV_OBJ_FLAG_HIDDEN);
     g_favtip_timer = lv_timer_create(favtip_timer_cb, 2000, NULL);
     printf("[hint] fav tip show\n");
+}
+
+// 通用状态提示:右侧 tip3 显示任意文本 2 秒,无遮罩、不隐藏页面元素
+// (设置覆盖层开关项的即时反馈等)
+void nav_show_state_tip(const char *text)
+{
+    topflagpage_t *tf = topflagpage_get(&ui_manager);
+    if (!tf || !tf->obj || !tf->tip3) return;
+    nav_favtip_hide();   /* 重置计时 */
+    lv_label_set_text(tf->tip3, text);
+    lv_obj_clear_flag(tf->tip3, LV_OBJ_FLAG_HIDDEN);
+    g_favtip_timer = lv_timer_create(favtip_timer_cb, 2000, NULL);
 }
 
 // BACK 提前关闭收藏提示

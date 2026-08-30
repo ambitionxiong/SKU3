@@ -91,6 +91,10 @@ void process_key(uint8_t key)
     if (depth > 0 && page_stack[depth - 1] == PAGE_PROBENEEDTIP &&
         key != KEY_BACK && key != KEY_ENCODER_PRESS)
         return;
+    /* 设置层选项弹窗激活:按键全部由弹窗消化(编码器切选项/PRESS确认/BACK取消,
+     * 其余键无效音),不触发覆盖层的功能键关层 */
+    if (screen_set_popup_active() && screen_set_popup_key(key))
+        return;
     /* 设置页覆盖层打开时按功能键:先关闭设置页(弹栈恢复下层页面),再按下层
      * 页面正常处理——功能键在设置页也能生效;键自身的白名单/防重入/运行态
      * 拦截(烹饪中等)由各 case 照常判断 */

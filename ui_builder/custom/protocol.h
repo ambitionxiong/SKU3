@@ -38,6 +38,52 @@
 #define IFACE_SLEEP      5
 #define IFACE_DELAY_RESERVE 6   // 延时预约
 
+/* ===== 机器设置状态字节(移植自同事 screen_SET.c,BUF[15]/BUF[16]/BUF[17]) =====
+ * Machine_Set_num_1 → SEND_SETTINGS1(15);Machine_Set_num → SEND_SETTINGS2(17),
+ * 其 BIT4-5(炉灯态 0-3)同时映射到 SEND_LAMP_STATE(16)。宏直接操作状态字节 */
+#define Send_MachineState_1_SoundMute			0x01		// BIT0: 声音总开关 (1=静音)
+#define Send_MachineState_1_KeyTone_BIT1		0x02		// BIT1: 按键音音量低位
+#define Send_MachineState_1_KeyTone_BIT2		0x04		// BIT2: 按键音音量中位
+#define Send_MachineState_1_KeyTone_BIT3		0x08		// BIT3: 按键音音量高位
+#define Send_MachineState_1_BootTone_ON_or_OFF	0x10		// BIT4: 打开开机音 (1=关闭)
+
+// 声音总开关
+#define MSt_SoundMute_ON						Machine_Set_num_1 &= ~Send_MachineState_1_SoundMute          // 声音：开
+#define MSt_SoundMute_OFF						Machine_Set_num_1 |=  Send_MachineState_1_SoundMute          // 声音：关
+// 按键音音量设置（反逻辑：000=7档最大，111=0档无按键音）
+#define MSt_KeyTone_Level7						Machine_Set_num_1 &= ~(Send_MachineState_1_KeyTone_BIT1 |  Send_MachineState_1_KeyTone_BIT2 | Send_MachineState_1_KeyTone_BIT3)	// 000=7档（最大）
+#define MSt_KeyTone_Level6						Machine_Set_num_1  =  (Machine_Set_num_1 & ~(0x0E))		|  Send_MachineState_1_KeyTone_BIT1
+#define MSt_KeyTone_Level5						Machine_Set_num_1  =  (Machine_Set_num_1 & ~(0x0E))		|  Send_MachineState_1_KeyTone_BIT2
+#define MSt_KeyTone_Level4						Machine_Set_num_1  =  (Machine_Set_num_1 & ~(0x0E))		| (Send_MachineState_1_KeyTone_BIT1 | Send_MachineState_1_KeyTone_BIT2)	// 011=4档
+#define MSt_KeyTone_Level3						Machine_Set_num_1  =  (Machine_Set_num_1 & ~(0x0E))		|  Send_MachineState_1_KeyTone_BIT3						// 100=3档
+#define MSt_KeyTone_Level2						Machine_Set_num_1  =  (Machine_Set_num_1 & ~(0x0E))		| (Send_MachineState_1_KeyTone_BIT1 | Send_MachineState_1_KeyTone_BIT3)	// 101=2档
+#define MSt_KeyTone_Level1						Machine_Set_num_1  =  (Machine_Set_num_1 & ~(0x0E))		| (Send_MachineState_1_KeyTone_BIT2 | Send_MachineState_1_KeyTone_BIT3)	// 110=1档
+#define MSt_KeyTone_Level0						Machine_Set_num_1 |=  (Send_MachineState_1_KeyTone_BIT1 |  Send_MachineState_1_KeyTone_BIT2 | Send_MachineState_1_KeyTone_BIT3)	// 111=0档（无按键音）
+// 开机音开关
+#define MSt_BootTone_ON							Machine_Set_num_1 &= ~Send_MachineState_1_BootTone_ON_or_OFF         // 开机音—打开
+#define MSt_BootTone_OFF						Machine_Set_num_1 |=  Send_MachineState_1_BootTone_ON_or_OFF         // 开机音—关闭
+
+#define Send_MachineState_AutoKeepWarm          0x01
+#define Send_MachineState_CoolingFanRun         0x02        //0 Temp controlled  1 Time controlled
+#define Send_MachineState_Power_xxA             0x08        //16A电流
+#define Send_MachineState_LightState_ON_15S     0x10        //炉灯亮15s
+#define Send_MachineState_LightState_DOOR       0x20        //炉灯仅在开门时亮
+#define Send_MachineState_LightState_OFF        0x30        //炉灯关
+
+#define MSt_AutoKeepWarm_EN                     Machine_Set_num |=  Send_MachineState_AutoKeepWarm          //自动保温—开
+#define MSt_AutoKeepWarm_UN                     Machine_Set_num &= ~Send_MachineState_AutoKeepWarm          //自动保温—关
+#define MSt_CoolingFanRun_of_TimeControlled     Machine_Set_num |=  Send_MachineState_CoolingFanRun         //风扇—时间 控制
+#define MSt_CoolingFanRun_of_TempControlled     Machine_Set_num &= ~Send_MachineState_CoolingFanRun         //风扇—温度 控制
+#define MSt_Power_16A                           Machine_Set_num |=  Send_MachineState_Power_xxA             //16A—电流
+#define MSt_Power_13A                           Machine_Set_num &= ~Send_MachineState_Power_xxA             //13A—电流
+#define MSt_LightState_ON                       Machine_Set_num &= ~(Send_MachineState_LightState_ON_15S | Send_MachineState_LightState_DOOR | Send_MachineState_LightState_OFF)        //炉灯—开
+#define MSt_LightState_ON_15S                   Machine_Set_num = (Machine_Set_num & ~(0x30)) | Send_MachineState_LightState_ON_15S   //炉灯—亮15s
+#define MSt_LightState_DOOR                     Machine_Set_num = (Machine_Set_num & ~(0x30)) | Send_MachineState_LightState_DOOR     //炉灯—仅在开门时亮
+#define MSt_LightState_OFF                      Machine_Set_num = (Machine_Set_num & ~(0x30)) | Send_MachineState_LightState_OFF        //炉灯—关
+
+extern uint8_t Machine_Set_num_1;   /* 机器设置字节1(声音/按键音/开机音) → BUF[15] */
+extern uint8_t Machine_Set_num;     /* 机器设置字节2(保温/风扇/功率/炉灯) → BUF[17],BIT4-5→BUF[16] */
+
 // ===== 烹调模式 (BUF[4]) =====
 #define MODE_NONE           0
 #define MODE_UPDOWN_BBQ     3

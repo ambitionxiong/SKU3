@@ -135,7 +135,10 @@ void on_windchange_click(lv_event_t *e);
 void page_pop(void);
 void page_push(page_id_t id);
 void process_key(uint8_t key);
-int is_cook_setting_page(page_id_t cur);   /* 各模式 SETTING 页(烹饪中小按钮进入,nav_key.c) */
+int is_cook_setting_page(page_id_t cur);
+int screen_set_popup_active(void);   /* 设置层选项弹窗激活中(nav_screen_set.c) */
+int screen_set_popup_key(uint8_t key);     /* 弹窗按键路由,返回1=已消化 */
+void screen_set_popup_reset(void);         /* 覆盖层销毁时复位弹窗状态 */   /* 各模式 SETTING 页(烹饪中小按钮进入,nav_key.c) */
 void rebuild_delaycooking(void);
 void set_status_label_min(lv_obj_t *label, int temp_up, int temp_down, int hour, int min);
 void setup_set_temp_display(updown_bbq_set_t *set);

@@ -7,6 +7,7 @@
 #include "nav.h"
 #include "protocol.h"
 #include "custom_defs.h"
+#include "nav_internal.h"
 #include "screen_SET.h"
 
 /* ==============================
@@ -24,6 +25,202 @@ static uint8_t s_was_running = 0;        /* 进入设置页前是否运行态(�
 static void screen_set_del_cb(lv_event_t *e)
 {
     if (lv_event_get_target(e) == screen_SET.obj) screen_SET.obj = NULL;
+}
+
+/* ===== 选项弹窗(移植同事 SET_Select_N2/N4:风扇二选一/炉灯四选一/功率二选一) =====
+ * 全屏半透明遮罩 + lock_select_bg 面板 + 标题 + 选项行(lock_select01/02 图标标示选中);
+ * 弹窗激活时按键全部由弹窗消化:编码器切选项、PRESS 确认、BACK 取消 */
+#define SEL_WHERE_FAN    1
+#define SEL_WHERE_LIGHT  2
+#define SEL_WHERE_POWER  3
+static lv_obj_t *s_sel_cont = NULL;   /* 全屏遮罩容器(filter_Cont) */
+static lv_obj_t *s_sel_icons[4];     /* 选项选中图标(02=选中) */
+static lv_obj_t *s_sel_labels[4];    /* 选项文本 */
+static int s_sel_where = 0;          /* 0=关闭 1=风扇 2=炉灯 3=功率 */
+static int s_sel_flag = 0;           /* 弹窗内临时选择 */
+static int s_sel_n = 2;              /* 选项数 */
+
+static void sel_icons_refresh(void)
+{
+    for (int i = 0; i < s_sel_n; i++) {
+        lv_obj_t *icon = s_sel_icons[i];
+        if (!icon) continue;
+        /* LVGL_IMAGE_PATH 是编译期字符串化宏,不能塞三元表达式,按分支展开(同同事写法) */
+        if (i == s_sel_flag)
+            lv_img_set_src(icon, LVGL_IMAGE_PATH(used/lock_select02.png));
+        else
+            lv_img_set_src(icon, LVGL_IMAGE_PATH(used/lock_select01.png));
+    }
+}
+
+static void sel_popup_close(void)
+{
+    if (s_sel_cont) { lv_obj_del(s_sel_cont); s_sel_cont = NULL; }
+    for (int i = 0; i < 4; i++) { s_sel_icons[i] = NULL; s_sel_labels[i] = NULL; }
+    s_sel_where = 0;
+}
+
+/* ---- 每个弹窗的标准几何(照搬同事 SET_Select_N2/N4_Cont_Create 的精确坐标) ---- */
+typedef struct {
+    int px, py, pw, ph;             /* 面板位置尺寸 */
+    const char *bg;                 /* 面板背景图文件名(assets/image/used/ 下) */
+    int tx[4], ty[4];               /* 选项文本位置(尺寸 200x32,L3 450x32) */
+    int ix[4], iy[4];               /* 选中图标位置(pivot 中心) */
+} sel_layout_t;
+
+/* N2:lock_select_bg 面板(390,120)501x241;文本(51,105)/(50,166);图标(429,109)/(430,170) */
+static const sel_layout_t s_sel_n2 = {
+    390, 120, 501, 241, "used/lock_select_bg.png",
+    { 51, 50, 0, 0 }, { 105, 166, 0, 0 },
+    { 429, 430, 0, 0 }, { 109, 170, 0, 0 },
+};
+/* N4:Set_4seletc_bg_IMG 面板(390,87)501x361;文本(50,105)/(50,166)/(50,226)/(50,286);
+ * 图标(429,110)/(430,171)/(429,231)/(430,291) */
+static const sel_layout_t s_sel_n4 = {
+    390, 87, 501, 361, "used/Set_4seletc_bg_IMG.png",
+    { 50, 50, 50, 50 }, { 105, 166, 226, 286 },
+    { 429, 430, 429, 430 }, { 110, 171, 231, 291 },
+};
+
+static void sel_popup_create(int where, int flag, int n, const char *title_text, const char *const *opts)
+{
+    screen_SET_t *ss = screen_SET_get(&ui_manager);
+    if (!ss || !ss->obj) return;
+    sel_popup_close();
+
+    const sel_layout_t *L = (n >= 4) ? &s_sel_n4 : &s_sel_n2;
+
+    s_sel_cont = lv_obj_create(ss->obj);   /* 全屏遮罩(同同事 filter_Cont) */
+    lv_obj_set_pos(s_sel_cont, 0, 0);
+    lv_obj_set_size(s_sel_cont, 1280, 480);
+    lv_obj_set_scrollbar_mode(s_sel_cont, LV_SCROLLBAR_MODE_OFF);
+    lv_obj_set_style_bg_color(s_sel_cont, lv_color_hex(0x070404), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(s_sel_cont, 115, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(s_sel_cont, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    /* 面板背景:编译期字面量二选一(同事即此写法);运行时 snprintf 拼路径会被
+     * 96 字节缓冲截断成 "…assets/image/used" 导致图片加载失败 */
+    const char *bg_path = (n >= 4) ? LVGL_IMAGE_PATH(used/Set_4seletc_bg_IMG.png)
+                                   : LVGL_IMAGE_PATH(used/lock_select_bg.png);
+    lv_obj_t *panel = lv_obj_create(s_sel_cont);
+    lv_obj_set_pos(panel, L->px, L->py);
+    lv_obj_set_size(panel, L->pw, L->ph);
+    lv_obj_set_scrollbar_mode(panel, LV_SCROLLBAR_MODE_OFF);
+    lv_obj_set_style_bg_img_src(panel, bg_path, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(panel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(panel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    lv_obj_t *title = lv_label_create(panel);
+    lv_label_set_text(title, title_text);
+    lv_obj_set_pos(title, 0, 46);
+    lv_obj_set_size(title, 502, 32);
+    lv_obj_set_style_text_font(title, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(title, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(title, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    s_sel_n = n;
+    for (int i = 0; i < n; i++) {
+        s_sel_icons[i] = lv_img_create(panel);
+        lv_img_set_src(s_sel_icons[i], LVGL_IMAGE_PATH(used/lock_select01.png));
+        lv_img_set_pivot(s_sel_icons[i], 50, 50);   /* 同事:set_pos 即图标中心 */
+        lv_obj_set_pos(s_sel_icons[i], L->ix[i], L->iy[i]);
+        s_sel_labels[i] = lv_label_create(panel);
+        lv_label_set_text(s_sel_labels[i], tr(opts[i]));
+        lv_obj_set_pos(s_sel_labels[i], L->tx[i], L->ty[i]);
+        lv_obj_set_size(s_sel_labels[i], (i == 2 && n == 4) ? 450 : 200, 32);
+        lv_obj_set_style_text_font(s_sel_labels[i], &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_text_color(s_sel_labels[i], lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    }
+    s_sel_flag = flag;
+    s_sel_where = where;
+    sel_icons_refresh();
+}
+static void sel_popup_apply(void)
+{
+    screen_SET_t *ss = screen_SET_get(&ui_manager);
+    switch (s_sel_where) {
+    case SEL_WHERE_FAN:
+        if (s_sel_flag) MSt_CoolingFanRun_of_TimeControlled; else MSt_CoolingFanRun_of_TempControlled;
+        break;
+    case SEL_WHERE_LIGHT:
+        switch (s_sel_flag) {
+        case 0: MSt_LightState_ON;     break;
+        case 1: MSt_LightState_ON_15S; break;
+        case 2: MSt_LightState_DOOR;   break;
+        default: MSt_LightState_OFF;   break;
+        }
+        break;
+    case SEL_WHERE_POWER:
+        if (s_sel_flag) MSt_Power_16A; else MSt_Power_13A;
+        if (ss && ss->Power_Lb) lv_label_set_text(ss->Power_Lb, s_sel_flag ? "16A" : "13A");
+        break;
+    default: break;
+    }
+    sel_popup_close();
+    uart_print();   /* 立即上报新状态帧 */
+}
+
+/* 弹窗激活时按键全部由弹窗消化;返回 1=已处理 */
+int screen_set_popup_key(uint8_t key)
+{
+    if (!s_sel_where) return 0;
+    switch (key) {
+    case KEY_ENCODER_CW:  s_sel_flag = (s_sel_flag + 1) % s_sel_n; sel_icons_refresh(); g_send.buzzer_req = BUZZER_KEY_VALID; break;
+    case KEY_ENCODER_CCW: s_sel_flag = (s_sel_flag + s_sel_n - 1) % s_sel_n; sel_icons_refresh(); g_send.buzzer_req = BUZZER_KEY_VALID; break;
+    case KEY_ENCODER_PRESS: sel_popup_apply(); break;
+    case KEY_BACK: sel_popup_close(); break;
+    default: g_send.buzzer_req = BUZZER_KEY_INVALID; break;   /* 其余键无效音,弹窗保持 */
+    }
+    uart_print();
+    return 1;
+}
+
+int screen_set_popup_active(void)
+{
+    return s_sel_where != 0;
+}
+
+/* 覆盖层被整屏清理(功能键跳离等)时同步复位弹窗状态(对象随父销毁,只需清指针) */
+void screen_set_popup_reset(void)
+{
+    s_sel_cont = NULL;
+    for (int i = 0; i < 4; i++) { s_sel_icons[i] = NULL; s_sel_labels[i] = NULL; }
+    s_sel_where = 0;
+}
+
+/* ===== 设置覆盖层基础设置项:状态字节即通信帧 BUF[15]/17,PRESS 循环切换 ===== */
+static void on_set_zdbw_click(lv_event_t *e)
+{
+    (void)e;
+    int on = !(Machine_Set_num & Send_MachineState_AutoKeepWarm);
+    if (on) MSt_AutoKeepWarm_EN; else MSt_AutoKeepWarm_UN;
+    screen_SET_t *ss = screen_SET_get(&ui_manager);
+    if (ss && ss->ZDBW_Lb) lv_label_set_text(ss->ZDBW_Lb, tr(on ? "开" : "关"));
+    uart_print();   /* 立即上报新状态帧 */
+}
+
+static void on_set_tflqyx_click(lv_event_t *e)
+{
+    (void)e;
+    int flag = (Machine_Set_num & Send_MachineState_CoolingFanRun) ? 1 : 0;   /* 0=温度控制(BIT清) 1=时间控制(BIT置),与选项行序一致 */
+    static const char *const opts[2] = { "温度控制", "时间控制" };
+    sel_popup_create(SEL_WHERE_FAN, flag, 2, "通风冷却", opts);
+}
+
+static void on_set_ldg_click(lv_event_t *e)
+{
+    (void)e;
+    int flag = (int)((Machine_Set_num >> 4) & 0x03);
+    static const char *const opts[4] = { "常亮", "亮15秒", "开门亮", "炉灯关" };
+    sel_popup_create(SEL_WHERE_LIGHT, flag, 4, "炉灯", opts);
+}
+
+static void on_set_power_click(lv_event_t *e)
+{
+    (void)e;
+    int flag = (Machine_Set_num & Send_MachineState_Power_xxA) ? 1 : 0;   /* 0=13A 1=16A */
+    static const char *const opts[2] = { "13A", "16A" };
+    sel_popup_create(SEL_WHERE_POWER, flag, 2, "功率", opts);
 }
 
 void jump_to_screen_set(void)
@@ -86,6 +283,14 @@ void jump_to_screen_set(void)
     g_screen_set = group_create_for_page(btns, n);
     clear_focus_states(btns, n);
 
+
+    /* 基础设置项:状态字节 → 标签回显 + PRESS 切换回调(运行态 3 键组仅含 ZDBW) */
+    if (ss->ZDBW_Lb) lv_label_set_text(ss->ZDBW_Lb, tr((Machine_Set_num & Send_MachineState_AutoKeepWarm) ? "关" : "开"));
+    if (ss->Power_Lb) lv_label_set_text(ss->Power_Lb, (Machine_Set_num & Send_MachineState_Power_xxA) ? "16A" : "13A");
+    lv_obj_add_event_cb(ss->ZDBW_Btn, on_set_zdbw_click, LV_EVENT_CLICKED, NULL);
+    lv_obj_add_event_cb(ss->TFLQYX_Btn, on_set_tflqyx_click, LV_EVENT_CLICKED, NULL);
+    lv_obj_add_event_cb(ss->LDG_Btn, on_set_ldg_click, LV_EVENT_CLICKED, NULL);
+    lv_obj_add_event_cb(ss->Power_Btn, on_set_power_click, LV_EVENT_CLICKED, NULL);
     /* ③ 焦点 */
     s_prev_group = current_group;
     current_group = g_screen_set;
@@ -144,4 +349,5 @@ void screen_set_reset(void)
         screen_SET.obj = NULL;
     }
     s_prev_group = NULL;
+    screen_set_popup_reset();   /* 覆盖层销毁时弹窗对象随之消亡,复位状态 */
 }

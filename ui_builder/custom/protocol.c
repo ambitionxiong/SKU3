@@ -13,6 +13,11 @@ send_state_t g_send = {
     .remaining_ms = -1,
 };
 
+/* 机器设置状态字节(设置覆盖层改动,通信帧 BUF[15]/16/17 持续上报)。
+ * 默认:声音开/按键音7档/开机音开;自动保温关/风扇温度控制/13A/炉灯常亮 */
+uint8_t Machine_Set_num_1 = 0x00;
+uint8_t Machine_Set_num   = 0x00;
+
 uint8_t CalculateChecksum(uint8_t *data, int length)
 {
     uint8_t checksum = 0;
@@ -51,9 +56,9 @@ void uart_send_fill(void)
     uart_data_send[SEND_BUZZER]       = g_send.buzzer_req;
     g_send.buzzer_req = 0;
 
-    uart_data_send[SEND_SETTINGS1]    = 0;
-    uart_data_send[SEND_LAMP_STATE]   = 0;
-    uart_data_send[SEND_SETTINGS2]    = g_keepwarm_active ? 0x01 : 0x00;   // BIT0: Automatic keep warm
+    uart_data_send[SEND_SETTINGS1]    = Machine_Set_num_1;
+    uart_data_send[SEND_LAMP_STATE]   = (uint8_t)((Machine_Set_num >> 4) & 0x03);   /* 炉灯态 0-3,联调时与板端确认 */
+    uart_data_send[SEND_SETTINGS2]    = (uint8_t)(Machine_Set_num | (g_keepwarm_active ? Send_MachineState_AutoKeepWarm : 0x00));   /* BIT0: 设置位 | 运行中保温 */
 
     uart_data_send[SEND_TEMP_LOWER_H] = (uint8_t)(g_send.set_temp_lower >> 8);
     uart_data_send[SEND_TEMP_LOWER_L] = (uint8_t)(g_send.set_temp_lower & 0xFF);
