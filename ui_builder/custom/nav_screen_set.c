@@ -16,6 +16,15 @@
  * BACK 仅弹栈 + 删除覆盖层，恢复原页面焦点组。
  * ============================== */
 
+/* 机器设置数据(同事 SET_Data,custom_defs.h extern 声明,工程内唯一实例,默认值同同事) */
+volatile Setting_Data SET_Data = {
+    .Set_Lock = 0, .Set_KeepWarm = 0, .Set_FanCooling = 0, .Set_6th = 0,
+    .Set_Light = 0, .Set_TempUnit = 0, .Set_VolumeFlag = 1, .Set_VolumeHintTime = 0,
+    .Set_VolumeKey = 7, .Set_VolumeWelcome = 1, .Set_Brightness = 7,
+    .Set_TimeType = 0, .Set_StandbyTime = 0, .Set_Language = 0, .Set_Power = 0,
+    .Set_DemoMode = 0,
+};
+
 lv_group_t *g_screen_set = NULL;      /* 设置页焦点组 */
 static lv_group_t *s_prev_group = NULL;  /* 进入前焦点组 */
 static uint8_t s_was_running = 0;        /* 进入设置页前是否运行态(烹饪/暂停/完成/预约) */
@@ -33,6 +42,9 @@ static void screen_set_del_cb(lv_event_t *e)
 #define SEL_WHERE_FAN    1
 #define SEL_WHERE_LIGHT  2
 #define SEL_WHERE_POWER  3
+#define SEL_WHERE_TS     4
+#define SEL_WHERE_DJ     5
+#define SEL_WHERE_DEMO   6
 static lv_obj_t *s_sel_cont = NULL;   /* 全屏遮罩容器(filter_Cont) */
 static lv_obj_t *s_sel_icons[4];     /* 选项选中图标(02=选中) */
 static lv_obj_t *s_sel_labels[4];    /* 选项文本 */
@@ -81,6 +93,13 @@ static const sel_layout_t s_sel_n4 = {
     { 50, 50, 50, 50 }, { 105, 166, 226, 286 },
     { 429, 430, 429, 430 }, { 110, 171, 231, 291 },
 };
+/* N3:Set_3seletc_bg_IMG 面板(390,111)501x315;文本(50,111)/(50,171)/(50,231)200x32;
+ * 图标(429,115)/(429,176)/(429,236) */
+static const sel_layout_t s_sel_n3 = {
+    390, 111, 501, 315, "used/Set_3seletc_bg_IMG.png",
+    { 50, 50, 50 }, { 111, 171, 231 },
+    { 429, 429, 429 }, { 115, 176, 236 },
+};
 
 static void sel_popup_create(int where, int flag, int n, const char *title_text, const char *const *opts)
 {
@@ -88,7 +107,7 @@ static void sel_popup_create(int where, int flag, int n, const char *title_text,
     if (!ss || !ss->obj) return;
     sel_popup_close();
 
-    const sel_layout_t *L = (n >= 4) ? &s_sel_n4 : &s_sel_n2;
+    const sel_layout_t *L = (n >= 4) ? &s_sel_n4 : (n == 3) ? &s_sel_n3 : &s_sel_n2;
 
     s_sel_cont = lv_obj_create(ss->obj);   /* 全屏遮罩(同同事 filter_Cont) */
     lv_obj_set_pos(s_sel_cont, 0, 0);
@@ -109,6 +128,13 @@ static void sel_popup_create(int where, int flag, int n, const char *title_text,
     lv_obj_set_style_bg_img_src(panel, bg_path, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(panel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(panel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(panel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_bottom(panel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_left(panel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_right(panel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(panel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_opa(panel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(panel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     lv_obj_t *title = lv_label_create(panel);
     lv_label_set_text(title, title_text);
@@ -140,9 +166,11 @@ static void sel_popup_apply(void)
     screen_SET_t *ss = screen_SET_get(&ui_manager);
     switch (s_sel_where) {
     case SEL_WHERE_FAN:
+        SET_Data.Set_FanCooling = s_sel_flag;
         if (s_sel_flag) MSt_CoolingFanRun_of_TimeControlled; else MSt_CoolingFanRun_of_TempControlled;
         break;
     case SEL_WHERE_LIGHT:
+        SET_Data.Set_Light = s_sel_flag;
         switch (s_sel_flag) {
         case 0: MSt_LightState_ON;     break;
         case 1: MSt_LightState_ON_15S; break;
@@ -151,8 +179,21 @@ static void sel_popup_apply(void)
         }
         break;
     case SEL_WHERE_POWER:
+        SET_Data.Set_Power = s_sel_flag;
         if (s_sel_flag) MSt_Power_16A; else MSt_Power_13A;
         if (ss && ss->Power_Lb) lv_label_set_text(ss->Power_Lb, s_sel_flag ? "16A" : "13A");
+        break;
+    case SEL_WHERE_TS:
+        /* 选项行序 开(row0)/关(row1):row0=开锁(row1 是关) */
+        SET_Data.Set_Lock = (s_sel_flag == 0) ? 1 : 0;
+        if (ss && ss->TS_Lb) lv_label_set_text(ss->TS_Lb, tr(SET_Data.Set_Lock ? "开" : "关"));
+        break;
+    case SEL_WHERE_DJ:
+        SET_Data.Set_StandbyTime = s_sel_flag;
+        break;
+    case SEL_WHERE_DEMO:
+        SET_Data.Set_DemoMode = s_sel_flag;
+        if (ss && ss->Demo_Lb) lv_label_set_text(ss->Demo_Lb, tr(s_sel_flag ? "开" : "关"));
         break;
     default: break;
     }
@@ -193,6 +234,7 @@ static void on_set_zdbw_click(lv_event_t *e)
 {
     (void)e;
     int on = !(Machine_Set_num & Send_MachineState_AutoKeepWarm);
+    SET_Data.Set_KeepWarm = on;
     if (on) MSt_AutoKeepWarm_EN; else MSt_AutoKeepWarm_UN;
     screen_SET_t *ss = screen_SET_get(&ui_manager);
     if (ss && ss->ZDBW_Lb) lv_label_set_text(ss->ZDBW_Lb, tr(on ? "开" : "关"));
@@ -223,9 +265,46 @@ static void on_set_power_click(lv_event_t *e)
     sel_popup_create(SEL_WHERE_POWER, flag, 2, "功率", opts);
 }
 
-void jump_to_screen_set(void)
+static void on_set_ts_click(lv_event_t *e)
 {
-    if (screen_is_loading(lv_scr_act())) return;
+    (void)e;
+    static const char *const opts[2] = { "开", "关" };
+    /* 选项行序 开(row0)/关(row1):选中行 = 1-锁状态(锁开→高亮"开") */
+    sel_popup_create(SEL_WHERE_TS, SET_Data.Set_Lock ? 0 : 1, 2, "童锁", opts);
+}
+
+static void on_set_six_click(lv_event_t *e)
+{
+    (void)e;
+    SET_Data.Set_6th = !SET_Data.Set_6th;
+    screen_SET_t *ss = screen_SET_get(&ui_manager);
+    if (ss && ss->Six_Lb) lv_label_set_text(ss->Six_Lb, tr(SET_Data.Set_6th ? "含猪肉" : "全部"));
+}
+
+static void on_set_wddw_click(lv_event_t *e)
+{
+    (void)e;
+    SET_Data.Set_TempUnit = !SET_Data.Set_TempUnit;
+    screen_SET_t *ss = screen_SET_get(&ui_manager);
+    if (ss && ss->WDDW_Lb) lv_label_set_text(ss->WDDW_Lb, tr(SET_Data.Set_TempUnit ? "°F" : "°C"));
+}
+
+static void on_set_djtime_click(lv_event_t *e)
+{
+    (void)e;
+    static const char *const opts[3] = { "开", "关", "夜间模式" };
+    sel_popup_create(SEL_WHERE_DJ, SET_Data.Set_StandbyTime, 3, "待机显示", opts);
+}
+
+static void on_set_demo_click(lv_event_t *e)
+{
+    (void)e;
+    static const char *const opts[2] = { "关", "开" };
+    sel_popup_create(SEL_WHERE_DEMO, SET_Data.Set_DemoMode, 2, "演示模式", opts);
+}
+
+void screen_set_rebuild(void)
+{
     /* 防重入：已在设置页 */
     if (depth > 0 && page_stack[depth - 1] == PAGE_SCREEN_SET) return;
     /* 记录进入前是否运行态:返回时区分回原页面(运行中)还是回待机页(非运行) */
@@ -287,16 +366,33 @@ void jump_to_screen_set(void)
     /* 基础设置项:状态字节 → 标签回显 + PRESS 切换回调(运行态 3 键组仅含 ZDBW) */
     if (ss->ZDBW_Lb) lv_label_set_text(ss->ZDBW_Lb, tr((Machine_Set_num & Send_MachineState_AutoKeepWarm) ? "关" : "开"));
     if (ss->Power_Lb) lv_label_set_text(ss->Power_Lb, (Machine_Set_num & Send_MachineState_Power_xxA) ? "16A" : "13A");
+    if (ss->TS_Lb) lv_label_set_text(ss->TS_Lb, tr(SET_Data.Set_Lock ? "开" : "关"));
+    if (ss->Six_Lb) lv_label_set_text(ss->Six_Lb, tr(SET_Data.Set_6th ? "含猪肉" : "全部"));
+    if (ss->WDDW_Lb) lv_label_set_text(ss->WDDW_Lb, tr(SET_Data.Set_TempUnit ? "°F" : "°C"));
+    if (ss->Demo_Lb) lv_label_set_text(ss->Demo_Lb, tr(SET_Data.Set_DemoMode ? "开" : "关"));
     lv_obj_add_event_cb(ss->ZDBW_Btn, on_set_zdbw_click, LV_EVENT_CLICKED, NULL);
     lv_obj_add_event_cb(ss->TFLQYX_Btn, on_set_tflqyx_click, LV_EVENT_CLICKED, NULL);
     lv_obj_add_event_cb(ss->LDG_Btn, on_set_ldg_click, LV_EVENT_CLICKED, NULL);
     lv_obj_add_event_cb(ss->Power_Btn, on_set_power_click, LV_EVENT_CLICKED, NULL);
+    lv_obj_add_event_cb(ss->TS_Btn, on_set_ts_click, LV_EVENT_CLICKED, NULL);
+    lv_obj_add_event_cb(ss->Six_Btn, on_set_six_click, LV_EVENT_CLICKED, NULL);
+    lv_obj_add_event_cb(ss->WDDW_Btn, on_set_wddw_click, LV_EVENT_CLICKED, NULL);
+    lv_obj_add_event_cb(ss->DJ_Time_Btn, on_set_djtime_click, LV_EVENT_CLICKED, NULL);
+    lv_obj_add_event_cb(ss->Demo_Btn, on_set_demo_click, LV_EVENT_CLICKED, NULL);
     /* ③ 焦点 */
     s_prev_group = current_group;
     current_group = g_screen_set;
     lv_group_focus_obj(btns[0]);
 
+}
+
+void jump_to_screen_set(void)
+{
+    screen_set_rebuild();   /* 含防重入/运行态记录/覆盖层构建 */
     page_push(PAGE_SCREEN_SET);
+    printf("[screen_set] enter (overlay, running=%d)
+", s_was_running);
+}
     printf("[screen_set] enter (overlay, running=%d)\n", s_was_running);
 }
 
