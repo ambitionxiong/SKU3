@@ -158,6 +158,7 @@ void on_setting_sure_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
     if (screen_is_loading(act_scr)) return;
+    edit_clear();   /* 清除编辑注册表残留,防止悬空 label 指针(UAF,与 nav_air.c 一致) */
 
     /* 温差钳位 */
     if (set_temp_up - set_temp_down > 20) set_temp_up = set_temp_down + 20;

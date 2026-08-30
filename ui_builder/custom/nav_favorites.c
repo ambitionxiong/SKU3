@@ -322,5 +322,6 @@ void favorites_rebuild(page_id_t child)
     FAV_screen_Refresh_FirstPage();
     g_favorites = g_fav_screen.group;
     current_group = g_favorites;
+    lv_group_set_default(g_favorites);   /* 与 jump_to_favorites 一致,防 encoder 对 NULL 默认组 focus_next 挂死 */
     lang_scr_load_anim(g_fav_screen.obj, LV_SCR_LOAD_ANIM_NONE, 0, 0, 1);   /* auto_del=1 防旧屏泄漏 */
 }

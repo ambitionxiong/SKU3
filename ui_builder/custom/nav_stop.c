@@ -29,6 +29,7 @@ static void six_delay_exit_to_sixmenu(void);
 // cooking → stop（暂停）
 void jump_to_updown_bbq_stop(void)
 {
+    edit_clear();
     cook_elapsed_saved = lv_tick_get() - cook_start_time;
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
 
@@ -79,6 +80,7 @@ void jump_to_updown_bbq_stop(void)
 // stop/cooking → stop_back（确认退出）
 void jump_to_updown_bbq_stop_back(void)
 {
+    edit_clear();
     int cooking_bar_val = 0;
     if (cook_timer && depth > 0 && page_stack[depth - 1] == PAGE_UPDOWN_BBQ_COOKING) {
         updown_bbq_cooking_t *cook = updown_bbq_cooking_get(&ui_manager);
@@ -212,6 +214,7 @@ void on_stop_back_littal_click(lv_event_t *e)
 // stop 恢复 cooking（不经过 page_pop，直接重建）
 void stop_resume_cooking(void)
 {
+    edit_clear();
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;
@@ -407,6 +410,7 @@ void on_stop_back_sure_click(lv_event_t *e)
 // color_cookoing → color_stop（暂停）
 void jump_to_color_stop(void)
 {
+    edit_clear();
     g_on_stop_back = 0;
     cook_elapsed_saved = lv_tick_get() - cook_start_time;
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
@@ -454,6 +458,7 @@ void jump_to_color_stop(void)
 // color_stop → color_stop_back（确认退出）
 void jump_to_color_stop_back(void)
 {
+    edit_clear();
     g_on_stop_back = 1;
     g_stop_back_complete = jump_to_color_complete;
     page_push(PAGE_COLOR_STOP_BACK);
@@ -515,6 +520,7 @@ void on_color_stop_start_click(lv_event_t *e)
 // color_stop 恢复 cooking（不经过 page_pop，直接重建）
 void color_resume_cooking(void)
 {
+    edit_clear();
     if (is_door_open()) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;

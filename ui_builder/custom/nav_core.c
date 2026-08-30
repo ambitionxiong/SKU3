@@ -445,12 +445,21 @@ void edit_register(lv_obj_t *label, lv_obj_t *ind_s, lv_obj_t *ind_l,
         edit_count++;
     }
 }
-/* 按 label 查找已注册的可编辑字段（编码器加减时定位字段） */
+/* 按 label 查找已注册的可编辑字段（编码器加减时定位字段）。
+ * lv_obj_is_valid 校验:残条目(所属页已销毁,如功能键跳离编辑页未清注册)的
+ * label 地址失效即跳过并就地置空——从根上杜绝"地址复用误命中→悬空 label
+ * 调参"的 UAF 类问题,不依赖每条跳转路径都记得 edit_clear */
 edit_field_t *find_edit_field(lv_obj_t *obj)
 {
-    for (int i = 0; i < edit_count; i++)
-        if (edit_fields[i].label == obj)
+    for (int i = 0; i < edit_count; i++) {
+        if (edit_fields[i].label == obj) {
+            if (!lv_obj_is_valid(edit_fields[i].label)) {
+                edit_fields[i].label = NULL;   /* 失效条目就地失效 */
+                continue;
+            }
             return &edit_fields[i];
+        }
+    }
     return NULL;
 }
 /* 编码器加减：循环调整数值、刷新标签与温度指示线、

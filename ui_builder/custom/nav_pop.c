@@ -19,6 +19,7 @@
 #include "nav.h"
 #include "nav_lang.h"
 #include "nav_internal.h"
+#include "nav_favorites.h"
 
 
 // 收到 KEY21 时调用，回到上一页
@@ -310,7 +311,10 @@ void page_pop(void)
         break;
 
     case PAGE_FAVORITES:
-        goto pop_to_waitmenu;   /* 收藏页返回固定回 waitmenu(根级页面) */
+        /* 下层是收藏页(如收藏页按键触发"不支持探针"提示页):重建收藏页,
+         * BACK/3 秒自动关闭都回到收藏页,不去待机 */
+        favorites_rebuild(child);
+        break;
 
     case PAGE_RISINGPAGE:
         risingpage_rebuild(child);

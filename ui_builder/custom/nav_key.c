@@ -101,6 +101,17 @@ void process_key(uint8_t key)
         depth--;              /* 弹掉 PAGE_SCREEN_SET,栈顶恢复下层页面 */
         topflag_update_visibility();   /* 与 page_pop 一致刷新 topflag 显隐 */
     }
+    /* 功能键离开收藏页:先安全清理收藏组/默认组引用——收藏页出口原只有 BACK 与
+     * Fav_Start 走 favo_safety_group_delete,功能键直接跳转会留下僵尸默认组,
+     * 污染后续页面首个控件的焦点事件(favo_safety_group_delete 注记载的同类问题)。
+     * 仅对确定跳离的键清理:预热/清洁在探针插入时只弹提示留在本页,不清理;
+     * KEY_SET 把设置覆盖层压在收藏页之上,收藏页仍存活,也不清理 */
+    if (g_favorites && current_group == g_favorites &&
+        (key == KEY_MENU || key == KEY_SIXMENU || key == KEY_EXTRA_COLOR ||
+         key == KEY_CLEAN || key == KEY_PREHEAT) &&
+        !(is_probe_inserted() && (key == KEY_PREHEAT || key == KEY_CLEAN))) {
+        favo_safety_group_delete();
+    }
     uart_data_receive[Receive_data_Touch_Key] = 0;
 
     switch (key) {

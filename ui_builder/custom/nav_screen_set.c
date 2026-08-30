@@ -19,6 +19,13 @@ lv_group_t *g_screen_set = NULL;      /* 设置页焦点组 */
 static lv_group_t *s_prev_group = NULL;  /* 进入前焦点组 */
 static uint8_t s_was_running = 0;        /* 进入设置页前是否运行态(烹饪/暂停/完成/预约) */
 
+/* 覆盖层对象被任意 lv_obj_clean 销毁时同步置空指针(防悬空,同 nav_hint.c hint_del_cb。
+ * 否则下次 jump_to_screen_set 的防御性 lv_obj_del 是对已释放内存的二次释放) */
+static void screen_set_del_cb(lv_event_t *e)
+{
+    if (lv_event_get_target(e) == screen_SET.obj) screen_SET.obj = NULL;
+}
+
 void jump_to_screen_set(void)
 {
     if (screen_is_loading(lv_scr_act())) return;
@@ -29,8 +36,9 @@ void jump_to_screen_set(void)
                      g_send.iface_status == IFACE_PAUSE ||
                      g_send.iface_status == IFACE_COMPLETE ||
                      g_send.iface_status == IFACE_DELAY_RESERVE);
-    /* 清残留编辑字段注册,防 find_edit_field 指针复用误判 */
-    edit_clear();
+    /* 不 edit_clear:下层页面在覆盖层之下仍存活,其编辑注册表需保留
+     * (退出覆盖层后编码器才能继续调参);功能键跳离时的残表由
+     * find_edit_field 的 lv_obj_is_valid 校验兜底 */
 
     /* 覆盖层对象清理（上次返回未删净的防御） */
     if (screen_SET.obj) {
@@ -41,6 +49,7 @@ void jump_to_screen_set(void)
 
     screen_SET_t *ss = screen_SET_get(&ui_manager);
     if (!ss || !ss->obj) return;
+    lv_obj_add_event_cb(ss->obj, screen_set_del_cb, LV_EVENT_DELETE, NULL);
 
     /* 全屏覆盖层（create 已直接挂当前屏幕,下层页面对象原样保留） */
     lv_obj_set_pos(ss->obj, 0, 0);

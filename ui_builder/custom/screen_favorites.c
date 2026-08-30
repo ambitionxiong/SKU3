@@ -88,6 +88,14 @@ void FAV_Option_SteamGear(lv_obj_t *obj, int8_t Steam_Gear);
 void FAV_Option_LB_str(lv_obj_t *obj, int8_t Cooking_FUN);
 
 
+/* 建组安全封装:组或控件为 NULL(如 LVGL 堆耗尽 create 失败)时跳过,
+ * 防止 lv_group_add_obj 内部 lv_obj_get_group(NULL) 解引用崩溃 */
+static void fav_group_add_safe(lv_group_t *group, lv_obj_t *obj)
+{
+    if (group && obj) lv_group_add_obj(group, obj);
+}
+
+
 //整体安全的删除组
 void favo_safety_group_delete()
 {
@@ -2346,33 +2354,33 @@ void screen_favorites_create(void)
         scr->group_sub_3 = lv_group_create();        // 创建焦点组对象
 		scr->group_sub_4 = lv_group_create();        // 创建焦点组对象
     }
-    lv_group_add_obj(scr->group, scr->favorites_box_1_Btn);
-    lv_group_add_obj(scr->group, scr->favorites_box_2_Btn);
-	lv_group_add_obj(scr->group, scr->favorites_box_3_Btn);
-    lv_group_add_obj(scr->group, scr->favorites_box_4_Btn);
+    fav_group_add_safe(scr->group, scr->favorites_box_1_Btn);
+    fav_group_add_safe(scr->group, scr->favorites_box_2_Btn);
+	fav_group_add_safe(scr->group, scr->favorites_box_3_Btn);
+    fav_group_add_safe(scr->group, scr->favorites_box_4_Btn);
 	if (Del_Fav_create_flag)	//创建删除界面
 	{
-		lv_group_add_obj(scr->group_sub_1, scr->Favorites_full_delete_1_Btn);
-		lv_group_add_obj(scr->group_sub_2, scr->Favorites_full_delete_2_Btn);
-		lv_group_add_obj(scr->group_sub_3, scr->Favorites_full_delete_3_Btn);
-		lv_group_add_obj(scr->group_sub_4, scr->Favorites_full_delete_4_Btn);
+		fav_group_add_safe(scr->group_sub_1, scr->Favorites_full_delete_1_Btn);
+		fav_group_add_safe(scr->group_sub_2, scr->Favorites_full_delete_2_Btn);
+		fav_group_add_safe(scr->group_sub_3, scr->Favorites_full_delete_3_Btn);
+		fav_group_add_safe(scr->group_sub_4, scr->Favorites_full_delete_4_Btn);
 	}
 	else
 	{
-		lv_group_add_obj(scr->group_sub_1, scr->favo_Start_Btn_1);
-		lv_group_add_obj(scr->group_sub_1, scr->favo_Delete_Btn_1);
-		lv_group_add_obj(scr->group_sub_2, scr->favo_Start_Btn_2);
-		lv_group_add_obj(scr->group_sub_2, scr->favo_Delete_Btn_2);
-		lv_group_add_obj(scr->group_sub_3, scr->favo_Start_Btn_3);
-		lv_group_add_obj(scr->group_sub_3, scr->favo_Delete_Btn_3);
-		lv_group_add_obj(scr->group_sub_4, scr->favo_Start_Btn_4);
-		lv_group_add_obj(scr->group_sub_4, scr->favo_Delete_Btn_4);
+		fav_group_add_safe(scr->group_sub_1, scr->favo_Start_Btn_1);
+		fav_group_add_safe(scr->group_sub_1, scr->favo_Delete_Btn_1);
+		fav_group_add_safe(scr->group_sub_2, scr->favo_Start_Btn_2);
+		fav_group_add_safe(scr->group_sub_2, scr->favo_Delete_Btn_2);
+		fav_group_add_safe(scr->group_sub_3, scr->favo_Start_Btn_3);
+		fav_group_add_safe(scr->group_sub_3, scr->favo_Delete_Btn_3);
+		fav_group_add_safe(scr->group_sub_4, scr->favo_Start_Btn_4);
+		fav_group_add_safe(scr->group_sub_4, scr->favo_Delete_Btn_4);
 	}
-	lv_group_add_obj(scr->group, scr->obj_null);
-    lv_group_add_obj(scr->group_sub_1, scr->obj_null_1);
-    lv_group_add_obj(scr->group_sub_2, scr->obj_null_2);
-    lv_group_add_obj(scr->group_sub_3, scr->obj_null_3);
-	lv_group_add_obj(scr->group_sub_4, scr->obj_null_4);
+	fav_group_add_safe(scr->group, scr->obj_null);
+    fav_group_add_safe(scr->group_sub_1, scr->obj_null_1);
+    fav_group_add_safe(scr->group_sub_2, scr->obj_null_2);
+    fav_group_add_safe(scr->group_sub_3, scr->obj_null_3);
+	fav_group_add_safe(scr->group_sub_4, scr->obj_null_4);
 
     lv_group_set_default(scr->group);
 	lv_group_focus_obj(scr->obj_null);
