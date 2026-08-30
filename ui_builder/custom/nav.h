@@ -674,6 +674,12 @@ int nav_hint_active(void);
 void nav_show_fav_tip(void);   /* 收藏保存成功提示:topflag 顶层 tip3,2 秒自动消失(nav_hint.c) */
 void nav_favtip_cancel(void);  /* BACK 提前关闭收藏提示 */
 int nav_favtip_active(void);
+void nav_show_fav_ask(void);   /* 重复收藏确认:topflag 顶层遮罩+tip1+tip2+sure,不自动消失(nav_hint.c) */
+void nav_show_fav_full(void);  /* 收藏夹已满确认:确认后进收藏夹删除界面(nav_hint.c) */
+void nav_favask_cancel(void);  /* 关闭确认弹层(BACK;完成页在弹层之下) */
+int nav_favask_active(void);
+int nav_favask_get_mode(void); /* 1 重复收藏确认 2 收藏夹已满(nav_hint.c) */
+void nav_favask_confirm(void); /* 确认(PRESS):覆盖保存/进删除界面(nav_favorites.c) */
 
 /* 第六感菜单（nav_sixmenu.c 实现） */
 extern lv_group_t *g_sixmenu;

@@ -110,6 +110,7 @@ void favorites_save_current(void)
     Fav_Select_By_Probe();
     if (Fav_Cur->has_favorites_byte == 0xFF) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;   /* 收藏已满 */
+        nav_show_fav_full();   /* 遮罩+收藏夹已满/请删除不太喜欢的烹调/确 定;确认进删除界面 */
         return;
     }
 
@@ -157,9 +158,13 @@ void favorites_save_current(void)
         input_Cooking_Mode = g_send.cook_mode;
     }
 
-    if (Favorites_Check_Exists())
-        Favorites_Cover_Func();   /* 已收藏:覆盖(结果提示弹窗待接入) */
-    else if (input_Mode_name == FAV_MODE_MULTI) {
+    if (Favorites_Check_Exists()) {
+        /* 重复收藏:弹确认(tip1 该烹调已有 / tip2 需要覆盖原有烹调吗？/ sure 确 定)。
+         * 不自动返回:确认(PRESS)→nav_favask_confirm 覆盖保存;BACK→关闭回完成页 */
+        nav_show_fav_ask();
+        return;
+    }
+    if (input_Mode_name == FAV_MODE_MULTI) {
         Add_favorites_of_Multi(Func_SUM_Value_step);
         nav_show_fav_tip();       /* 正常收藏成功:顶层 tip3"收藏成功"2 秒 */
     } else {
@@ -255,6 +260,24 @@ void favorites_start_selected(void)
     delay_start_cook();
 }
 
+/* 收藏确认弹层的"确 定"回调(nav_key.c 模态守卫 PRESS 触发)。
+ * input_* 快照在弹层期间被键守卫保护,不会变化 */
+void nav_favask_confirm(void)
+{
+    int mode = nav_favask_get_mode();
+    nav_favask_cancel();
+    if (mode == 2) {
+        /* 收藏夹已满:进收藏夹删除界面(整卡删除)。
+         * 页面推在完成页之上,删除界面 BACK 即回完成页 */
+        Del_Fav_create_flag = 1;
+        jump_to_favorites();
+        return;
+    }
+    Favorites_Cover_Func();
+    fav_succeed_no_repetitive = 1;
+    g_send.buzzer_req = BUZZER_KEY_VALID;
+}
+
 /* ===================== 收藏页导航 ===================== */
 /* 销毁旧页面实例（收藏页 obj 是独立屏幕对象，不会随 lv_obj_clean 自动删除） */
 static void fav_screen_reset(void)
@@ -284,6 +307,7 @@ void jump_to_favorites(void)
     FAV_screen_Refresh_FirstPage();   /* 统一刷新路径：与翻页后行为完全一致 */
     g_favorites = g_fav_screen.group;
     current_group = g_favorites;
+    lv_group_set_default(g_favorites);   /* 主组为默认:删除模式下未删任何卡直接 BACK 也能正确出栈 */
     /* auto_del=1：删除被替换的旧屏（已被 lv_obj_clean 清空）。传 0 会每次泄漏
      * 一个空壳屏对象，反复进出收藏页耗尽 LVGL 堆 → 控件创建失败 → 显示叠乱 */
     lang_scr_load_anim(g_fav_screen.obj, LV_SCR_LOAD_ANIM_NONE, 0, 0, 1);

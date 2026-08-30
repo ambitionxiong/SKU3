@@ -99,6 +99,12 @@ static int screen_set_key_allowed(page_id_t below, uint8_t key)
 void process_key(uint8_t key)
 {
     if (g_send.iface_status == IFACE_SLEEP) return;
+    /* 重复收藏确认弹层:模态。PRESS=确认覆盖保存,BACK=取消回完成页,其余键忽略 */
+    if (nav_favask_active()) {
+        if (key == KEY_ENCODER_PRESS) nav_favask_confirm();
+        else if (key == KEY_BACK) nav_favask_cancel();
+        return;
+    }
     /* 无效提示弹窗/收藏结果提示:仅 BACK 有效(KEY_BACK 分支关闭弹窗);长按关机由
        nav_handle_key 独立检测不受影响;其余键静默忽略,避免主动操作 */
     if ((nav_hint_active() || nav_favtip_active()) && key != KEY_BACK)
@@ -280,7 +286,7 @@ void process_key(uint8_t key)
         uart_print();
         break;
     case KEY_FAV:           // 6: 收藏键（完成态收藏当前参数，非完成态进入收藏页）
-        if (current_group == g_favorites) {   /* 收藏页内：无效音 */
+        if (g_favorites && current_group == g_favorites) {   /* 收藏页内：无效音（须判空:待机页两者皆 NULL 会误等） */
             g_send.buzzer_req = BUZZER_KEY_INVALID;
             uart_print();
             break;
@@ -298,13 +304,24 @@ void process_key(uint8_t key)
             uart_print();
             break;
         }
-        /* 非完成态：与其他功能键一致，菜单白名单页可进入收藏页 */
+        /* 非完成态：收藏页是根级页面,统一挂在 waitmenu 之下(与 KEY_MENU 建栈方式
+         * 一致,待机时钟态 depth=0 时同样先建根页再进),BACK 即回 waitmenu */
         if (!menu_clean_key_allowed()) {
             g_send.buzzer_req = BUZZER_KEY_INVALID;
             uart_print();
             break;
         }
         g_send.buzzer_req = BUZZER_KEY_VALID;
+        if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
+        g_on_stop_back = 0;
+        g_complete_to_stop_back = 0;
+        g_cooling_to_stop_back = 0;
+        g_extra_color_to_stop_back = 0;
+        g_keepwarm_active = 0;
+        cook_is_color = 0;
+        g_stop_back_complete = NULL;
+        depth = 0;
+        page_push(PAGE_WAITMENU_24);
         jump_to_favorites();
         uart_print();
         break;

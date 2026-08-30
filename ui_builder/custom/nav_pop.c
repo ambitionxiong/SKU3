@@ -310,7 +310,7 @@ void page_pop(void)
         break;
 
     case PAGE_FAVORITES:
-        goto pop_to_major_menu;
+        goto pop_to_waitmenu;   /* 收藏页返回固定回 waitmenu(根级页面) */
 
     case PAGE_RISINGPAGE:
         risingpage_rebuild(child);
@@ -669,7 +669,7 @@ void page_pop(void)
             set_hour = updown_setting_saved_hour;
             set_min = updown_setting_saved_min;
         }
-        if (child == PAGE_UPDOWN_BBQ_SETTING || child == PAGE_UPDOWN_BBQ_STOP_BACK) {
+        if (child == PAGE_UPDOWN_BBQ_SETTING || child == PAGE_UPDOWN_BBQ_STOP_BACK || child == PAGE_FAVORITES) {
             updown_bbq_complete_create(&ui_manager);
             updown_bbq_complete_t *done = updown_bbq_complete_get(&ui_manager);
             if (done) {
@@ -723,7 +723,7 @@ void page_pop(void)
         break;
 
     case PAGE_UPDOWN_BBQ_COMPLETE_PROBE:
-        if (child == PAGE_UPDOWN_BBQ_STOP_BACK_PROBE) {
+        if (child == PAGE_UPDOWN_BBQ_STOP_BACK_PROBE || child == PAGE_FAVORITES) {
             updown_bbq_complete_probe_create(&ui_manager);
             updown_bbq_complete_probe_t *done = updown_bbq_complete_probe_get(&ui_manager);
             if (done) {
@@ -765,7 +765,7 @@ void page_pop(void)
         hot_bbq_probe_rebuild_stop_back();
         break;
     case PAGE_HOT_BBQ_COMPLETE_PROBE:
-        if (child == PAGE_HOT_BBQ_STOP_BACK_PROBE) {
+        if (child == PAGE_HOT_BBQ_STOP_BACK_PROBE || child == PAGE_FAVORITES) {
             hot_bbq_complete_probe_create(&ui_manager);
             hot_bbq_complete_probe_t *done = hot_bbq_complete_probe_get(&ui_manager);
             if (done) {
@@ -807,7 +807,7 @@ void page_pop(void)
         bottom_bbq_probe_rebuild_stop_back();
         break;
     case PAGE_BOTTOM_BBQ_COMPLETE_PROBE:
-        if (child == PAGE_BOTTOM_BBQ_STOP_BACK_PROBE) {
+        if (child == PAGE_BOTTOM_BBQ_STOP_BACK_PROBE || child == PAGE_FAVORITES) {
             bottom_bbq_complete_probe_create(&ui_manager);
             bottom_bbq_complete_probe_t *done = bottom_bbq_complete_probe_get(&ui_manager);
             if (done) {
@@ -849,7 +849,7 @@ void page_pop(void)
         slowcook_probe_rebuild_stop_back();
         break;
     case PAGE_SLOWCOOK_COMPLETE_PROBE:
-        if (child == PAGE_SLOWCOOK_STOP_BACK_PROBE) {
+        if (child == PAGE_SLOWCOOK_STOP_BACK_PROBE || child == PAGE_FAVORITES) {
             slowcook_complete_probe_create(&ui_manager);
             slowcook_complete_probe_t *done = slowcook_complete_probe_get(&ui_manager);
             if (done) {
@@ -935,7 +935,7 @@ void page_pop(void)
         color_exit_to_home();
         break;
     case PAGE_COLOR_COOKING_COMPLETE:
-        if (child == PAGE_COLOR_STOP_BACK) {
+        if (child == PAGE_COLOR_STOP_BACK || child == PAGE_FAVORITES) {
             colorcooking_complete_create(&ui_manager);
             colorcooking_complete_t *cc = colorcooking_complete_get(&ui_manager);
             if (cc) {
@@ -1167,7 +1167,7 @@ void page_pop(void)
             set_hour = top_setting_saved_hour;
             set_min = top_setting_saved_min;
         }
-        if (child == PAGE_TOP_BBQ_SETTING || child == PAGE_TOP_BBQ_STOP_BACK) {
+        if (child == PAGE_TOP_BBQ_SETTING || child == PAGE_TOP_BBQ_STOP_BACK || child == PAGE_FAVORITES) {
             top_bbq_complete_create(&ui_manager);
             top_bbq_complete_t *done = top_bbq_complete_get(&ui_manager);
             if (done) {
@@ -1241,7 +1241,7 @@ void page_pop(void)
             set_hour = bottom_bbq_setting_saved_hour;
             set_min = bottom_bbq_setting_saved_min;
         }
-        if (child == PAGE_BOTTOM_BBQ_SETTING || child == PAGE_BOTTOM_BBQ_STOP_BACK) {
+        if (child == PAGE_BOTTOM_BBQ_SETTING || child == PAGE_BOTTOM_BBQ_STOP_BACK || child == PAGE_FAVORITES) {
             bottom_bbq_complete_create(&ui_manager);
             bottom_bbq_complete_t *done = bottom_bbq_complete_get(&ui_manager);
             if (done) {
@@ -1315,7 +1315,7 @@ void page_pop(void)
             set_hour = hot_bbq_setting_saved_hour;
             set_min = hot_bbq_setting_saved_min;
         }
-        if (child == PAGE_HOT_BBQ_SETTING || child == PAGE_HOT_BBQ_STOP_BACK) {
+        if (child == PAGE_HOT_BBQ_SETTING || child == PAGE_HOT_BBQ_STOP_BACK || child == PAGE_FAVORITES) {
             hot_bbq_complete_create(&ui_manager);
             hot_bbq_complete_t *done = hot_bbq_complete_get(&ui_manager);
             if (done) {
@@ -1383,7 +1383,7 @@ void page_pop(void)
             set_hour = hotwind_bbq_setting_saved_hour;
             set_min = hotwind_bbq_setting_saved_min;
         }
-        if (child == PAGE_HOTWIND_BBQ_SETTING || child == PAGE_HOTWIND_BBQ_STOP_BACK) {
+        if (child == PAGE_HOTWIND_BBQ_SETTING || child == PAGE_HOTWIND_BBQ_STOP_BACK || child == PAGE_FAVORITES) {
             hotwind_bbq_complete_create(&ui_manager);
             hotwind_bbq_complete_t *done = hotwind_bbq_complete_get(&ui_manager);
             if (done) {
@@ -1451,7 +1451,7 @@ void page_pop(void)
             set_hour = save_bbq_setting_saved_hour;
             set_min = save_bbq_setting_saved_min;
         }
-        if (child == PAGE_SAVE_BBQ_SETTING || child == PAGE_SAVE_BBQ_STOP_BACK) {
+        if (child == PAGE_SAVE_BBQ_SETTING || child == PAGE_SAVE_BBQ_STOP_BACK || child == PAGE_FAVORITES) {
             save_bbq_complete_create(&ui_manager);
             save_bbq_complete_t *done = save_bbq_complete_get(&ui_manager);
             if (done) {
@@ -1519,7 +1519,7 @@ void page_pop(void)
             set_hour = central_bbq_setting_saved_hour;
             set_min = central_bbq_setting_saved_min;
         }
-        if (child == PAGE_CENTRAL_BBQ_SETTING || child == PAGE_CENTRAL_BBQ_STOP_BACK) {
+        if (child == PAGE_CENTRAL_BBQ_SETTING || child == PAGE_CENTRAL_BBQ_STOP_BACK || child == PAGE_FAVORITES) {
             central_bbq_complete_create(&ui_manager);
             central_bbq_complete_t *done = central_bbq_complete_get(&ui_manager);
             if (done) {
@@ -1587,7 +1587,7 @@ void page_pop(void)
             set_hour = windchange_bbq_setting_saved_hour;
             set_min = windchange_bbq_setting_saved_min;
         }
-        if (child == PAGE_WINDCHANGE_BBQ_SETTING || child == PAGE_WINDCHANGE_BBQ_STOP_BACK) {
+        if (child == PAGE_WINDCHANGE_BBQ_SETTING || child == PAGE_WINDCHANGE_BBQ_STOP_BACK || child == PAGE_FAVORITES) {
             windchange_bbq_complete_create(&ui_manager);
             windchange_bbq_complete_t *done = windchange_bbq_complete_get(&ui_manager);
             if (done) {
@@ -1658,7 +1658,7 @@ void page_pop(void)
             set_hour = cookie_setting_saved_hour;
             set_min = cookie_setting_saved_min;
         }
-        if (child == PAGE_COOKIE_SETTING || child == PAGE_COOKIE_STOP_BACK) {
+        if (child == PAGE_COOKIE_SETTING || child == PAGE_COOKIE_STOP_BACK || child == PAGE_FAVORITES) {
             cookie_complete_create(&ui_manager);
             cookie_complete_t *done = cookie_complete_get(&ui_manager);
             if (done) {
@@ -1726,7 +1726,7 @@ void page_pop(void)
             set_hour = west_setting_saved_hour;
             set_min = west_setting_saved_min;
         }
-        if (child == PAGE_WEST_SETTING || child == PAGE_WEST_STOP_BACK) {
+        if (child == PAGE_WEST_SETTING || child == PAGE_WEST_STOP_BACK || child == PAGE_FAVORITES) {
             west_complete_create(&ui_manager);
             west_complete_t *done = west_complete_get(&ui_manager);
             if (done) {
@@ -1794,7 +1794,7 @@ void page_pop(void)
             set_hour = pizza_setting_saved_hour;
             set_min = pizza_setting_saved_min;
         }
-        if (child == PAGE_PIZZA_SETTING || child == PAGE_PIZZA_STOP_BACK) {
+        if (child == PAGE_PIZZA_SETTING || child == PAGE_PIZZA_STOP_BACK || child == PAGE_FAVORITES) {
             pizza_complete_create(&ui_manager);
             pizza_complete_t *done = pizza_complete_get(&ui_manager);
             if (done) {
@@ -1862,7 +1862,7 @@ void page_pop(void)
             set_hour = menu_setting_saved_hour;
             set_min = menu_setting_saved_min;
         }
-        if (child == PAGE_MENU_COOK_SETTING || child == PAGE_MENU_COOK_STOP_BACK) {
+        if (child == PAGE_MENU_COOK_SETTING || child == PAGE_MENU_COOK_STOP_BACK || child == PAGE_FAVORITES) {
             menu_complete_create(&ui_manager);
             menu_complete_t *done = menu_complete_get(&ui_manager);
             if (done) {
@@ -1930,7 +1930,7 @@ void page_pop(void)
             set_hour = air_setting_saved_hour;
             set_min = air_setting_saved_min;
         }
-        if (child == PAGE_AIR_SETTING || child == PAGE_AIR_STOP_BACK) {
+        if (child == PAGE_AIR_SETTING || child == PAGE_AIR_STOP_BACK || child == PAGE_FAVORITES) {
             air_complete_create(&ui_manager);
             air_complete_t *done = air_complete_get(&ui_manager);
             if (done) {
@@ -1998,7 +1998,7 @@ void page_pop(void)
             set_hour = pizza_2_setting_saved_hour;
             set_min = pizza_2_setting_saved_min;
         }
-        if (child == PAGE_PIZZA_2_SETTING || child == PAGE_PIZZA_2_STOP_BACK) {
+        if (child == PAGE_PIZZA_2_SETTING || child == PAGE_PIZZA_2_STOP_BACK || child == PAGE_FAVORITES) {
             pizza_2_complete_create(&ui_manager);
             pizza_2_complete_t *done = pizza_2_complete_get(&ui_manager);
             if (done) {
@@ -2066,7 +2066,7 @@ void page_pop(void)
             set_hour = slowcook_setting_saved_hour;
             set_min = slowcook_setting_saved_min;
         }
-        if (child == PAGE_SLOWCOOK_SETTING || child == PAGE_SLOWCOOK_STOP_BACK) {
+        if (child == PAGE_SLOWCOOK_SETTING || child == PAGE_SLOWCOOK_STOP_BACK || child == PAGE_FAVORITES) {
             slowcook_complete_create(&ui_manager);
             slowcook_complete_t *done = slowcook_complete_get(&ui_manager);
             if (done) {
@@ -2134,7 +2134,7 @@ void page_pop(void)
             set_hour = unfrozen_setting_saved_hour;
             set_min = unfrozen_setting_saved_min;
         }
-        if (child == PAGE_UNFROZEN_SETTING || child == PAGE_UNFROZEN_STOP_BACK) {
+        if (child == PAGE_UNFROZEN_SETTING || child == PAGE_UNFROZEN_STOP_BACK || child == PAGE_FAVORITES) {
             unfrozen_complete_create(&ui_manager);
             unfrozen_complete_t *done = unfrozen_complete_get(&ui_manager);
             if (done) {
@@ -2202,7 +2202,7 @@ void page_pop(void)
             set_hour = rising_setting_saved_hour;
             set_min = rising_setting_saved_min;
         }
-        if (child == PAGE_RISING_SETTING || child == PAGE_RISING_STOP_BACK) {
+        if (child == PAGE_RISING_SETTING || child == PAGE_RISING_STOP_BACK || child == PAGE_FAVORITES) {
             rising_complete_create(&ui_manager);
             rising_complete_t *done = rising_complete_get(&ui_manager);
             if (done) {
@@ -2270,7 +2270,7 @@ void page_pop(void)
             set_hour = corn_setting_saved_hour;
             set_min = corn_setting_saved_min;
         }
-        if (child == PAGE_CORN_SETTING || child == PAGE_CORN_STOP_BACK) {
+        if (child == PAGE_CORN_SETTING || child == PAGE_CORN_STOP_BACK || child == PAGE_FAVORITES) {
             corn_complete_create(&ui_manager);
             corn_complete_t *done = corn_complete_get(&ui_manager);
             if (done) {
@@ -2338,7 +2338,7 @@ void page_pop(void)
             set_hour = heatcontain_setting_saved_hour;
             set_min = heatcontain_setting_saved_min;
         }
-        if (child == PAGE_HEATCONTAIN_SETTING || child == PAGE_HEATCONTAIN_STOP_BACK) {
+        if (child == PAGE_HEATCONTAIN_SETTING || child == PAGE_HEATCONTAIN_STOP_BACK || child == PAGE_FAVORITES) {
             heatcontain_complete_create(&ui_manager);
             heatcontain_complete_t *done = heatcontain_complete_get(&ui_manager);
             if (done) {
@@ -2402,7 +2402,7 @@ void page_pop(void)
         lasagna_rebuild_stop_back();
         break;
     case PAGE_LASAGNA_COMPLETE:
-        if (child == PAGE_LASAGNA_SETTING || child == PAGE_LASAGNA_STOP_BACK) {
+        if (child == PAGE_LASAGNA_SETTING || child == PAGE_LASAGNA_STOP_BACK || child == PAGE_FAVORITES) {
             lasagna_complete_create(&ui_manager);
             lasagna_complete_t *done = lasagna_complete_get(&ui_manager);
             if (done) {
@@ -2465,7 +2465,7 @@ void page_pop(void)
         strudel_rebuild_stop_back();
         break;
     case PAGE_STRUDEL_COMPLETE:
-        if (child == PAGE_STRUDEL_SETTING || child == PAGE_STRUDEL_STOP_BACK) {
+        if (child == PAGE_STRUDEL_SETTING || child == PAGE_STRUDEL_STOP_BACK || child == PAGE_FAVORITES) {
             strudel_complete_create(&ui_manager);
             strudel_complete_t *done = strudel_complete_get(&ui_manager);
             if (done) {
@@ -2528,7 +2528,7 @@ void page_pop(void)
         bread_rebuild_stop_back();
         break;
     case PAGE_BREAD_COMPLETE:
-        if (child == PAGE_BREAD_SETTING || child == PAGE_BREAD_STOP_BACK) {
+        if (child == PAGE_BREAD_SETTING || child == PAGE_BREAD_STOP_BACK || child == PAGE_FAVORITES) {
             bread_complete_create(&ui_manager);
             bread_complete_t *done = bread_complete_get(&ui_manager);
             if (done) {
@@ -2591,7 +2591,7 @@ void page_pop(void)
         pizza3_rebuild_stop_back();
         break;
     case PAGE_PIZZA3_COMPLETE:
-        if (child == PAGE_PIZZA3_SETTING || child == PAGE_PIZZA3_STOP_BACK) {
+        if (child == PAGE_PIZZA3_SETTING || child == PAGE_PIZZA3_STOP_BACK || child == PAGE_FAVORITES) {
             pizza3_complete_create(&ui_manager);
             pizza3_complete_t *done = pizza3_complete_get(&ui_manager);
             if (done) {
@@ -2654,7 +2654,7 @@ void page_pop(void)
         chip_rebuild_stop_back();
         break;
     case PAGE_CHIP_COMPLETE:
-        if (child == PAGE_CHIP_SETTING || child == PAGE_CHIP_STOP_BACK) {
+        if (child == PAGE_CHIP_SETTING || child == PAGE_CHIP_STOP_BACK || child == PAGE_FAVORITES) {
             chip_complete_create(&ui_manager);
             chip_complete_t *done = chip_complete_get(&ui_manager);
             if (done) {
@@ -2717,7 +2717,7 @@ void page_pop(void)
         custom_rebuild_stop_back();
         break;
     case PAGE_CUSTOM_COMPLETE:
-        if (child == PAGE_CUSTOM_SETTING || child == PAGE_CUSTOM_STOP_BACK) {
+        if (child == PAGE_CUSTOM_SETTING || child == PAGE_CUSTOM_STOP_BACK || child == PAGE_FAVORITES) {
             custom_complete_create(&ui_manager);
             custom_complete_t *done = custom_complete_get(&ui_manager);
             if (done) {
@@ -2774,7 +2774,7 @@ void page_pop(void)
         hcs_rebuild_cooling();
         break;
     case PAGE_HOTCLEANSAVE_COMPLETE:
-        if (child == PAGE_HOTCLEANSAVE_STOP_BACK) {
+        if (child == PAGE_HOTCLEANSAVE_STOP_BACK || child == PAGE_FAVORITES) {
             hotcleansave_complete_create(&ui_manager);
             hotcleansave_complete_t *done = hotcleansave_complete_get(&ui_manager);
             if (done) {
@@ -2812,7 +2812,7 @@ void page_pop(void)
         hcm_rebuild_cooling();
         break;
     case PAGE_HOTCLEANMIDDLE_COMPLETE:
-        if (child == PAGE_HOTCLEANMIDDLE_STOP_BACK) {
+        if (child == PAGE_HOTCLEANMIDDLE_STOP_BACK || child == PAGE_FAVORITES) {
             hotcleanmiddle_complete_create(&ui_manager);
             hotcleanmiddle_complete_t *done = hotcleanmiddle_complete_get(&ui_manager);
             if (done) {
@@ -2850,7 +2850,7 @@ void page_pop(void)
         hch_rebuild_cooling();
         break;
     case PAGE_HOTCLEANHIGH_COMPLETE:
-        if (child == PAGE_HOTCLEANHIGH_STOP_BACK) {
+        if (child == PAGE_HOTCLEANHIGH_STOP_BACK || child == PAGE_FAVORITES) {
             hotcleanhigh_complete_create(&ui_manager);
             hotcleanhigh_complete_t *done = hotcleanhigh_complete_get(&ui_manager);
             if (done) {
@@ -2881,7 +2881,7 @@ void page_pop(void)
         wc_rebuild_stop_back();
         break;
     case PAGE_WATER_CLEAN_COMPLETE:
-        if (child == PAGE_WATER_CLEAN_STOP_BACK) {
+        if (child == PAGE_WATER_CLEAN_STOP_BACK || child == PAGE_FAVORITES) {
             waterclean_complete_create(&ui_manager);
             waterclean_complete_t *done = waterclean_complete_get(&ui_manager);
             if (done) {
@@ -2926,7 +2926,7 @@ void page_pop(void)
         preheat_rebuild_stop_back();
         break;
     case PAGE_PREHEAT_COMPLETE:
-        if (child == PAGE_PREHEAT_STOP_BACK) {
+        if (child == PAGE_PREHEAT_STOP_BACK || child == PAGE_FAVORITES) {
             preheat_rebuild_complete();
             break;
         }

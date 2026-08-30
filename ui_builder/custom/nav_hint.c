@@ -1,15 +1,17 @@
 /*
- * nav_hint.c - 功能键无效提示弹窗
+ * nav_hint.c - 功能键无效提示弹窗 + 收藏保存结果提示
  * 烹饪中按功能键弹出'烤箱运行时不可用'提示(3秒自动关闭)，
  * 期间仅BACK有效，UAF安全处理。
  */
+
 #include "nav.h"
 #include "protocol.h"
 
 /* ==============================
  * 烹饪中功能键无效提示
  * 提示时:隐藏当前 cooking 页右侧元素(timelabel/temp/探针图标),
- * 并在当前页面对象上动态创建遮罩 + tip1(随页面销毁自动清理,无残留重叠),
+ * 遮罩与文字用 topflagpage 的 container_1 + tip1(常驻 lv_layer_top,
+ * 与收藏结果提示同款;时钟/状态图标在遮罩下层随层级自然显示),
  * 3 秒后恢复;BACK 可提前结束(恢复页面,不执行返回)。
  * ============================== */
 
@@ -17,9 +19,6 @@ static lv_timer_t *g_hint_timer = NULL;
 static lv_obj_t *g_hint_objs[2];
 static int g_hint_n = 0;
 static lv_group_t *g_hint_group = NULL;   /* 触发时页面组,恢复时校验元素有效性 */
-static lv_obj_t *g_hint_scr = NULL;       /* 创建遮罩时的屏幕(恢复时对比防悬空) */
-static lv_obj_t *g_hint_mask = NULL;      /* 动态遮罩 */
-static lv_obj_t *g_hint_tip = NULL;       /* 动态 tip1 */
 
 static void nav_hint_restore(void);
 
@@ -27,8 +26,6 @@ static void nav_hint_restore(void);
 static void hint_del_cb(lv_event_t *e)
 {
     lv_obj_t *obj = lv_event_get_target(e);
-    if (obj == g_hint_mask) g_hint_mask = NULL;
-    if (obj == g_hint_tip)  g_hint_tip = NULL;
     for (int i = 0; i < g_hint_n; i++)
         if (g_hint_objs[i] == obj) g_hint_objs[i] = NULL;
 }
@@ -123,7 +120,7 @@ static void nav_hint_collect(void)
         }
 }
 
-// 恢复:元素恢复 + 重放页面状态 + 删除动态遮罩 + 删 timer
+// 恢复:元素恢复 + 重放页面状态 + 收起 topflag 遮罩/文字 + 删 timer
 static void nav_hint_restore(void)
 {
     if (g_hint_timer) { lv_timer_del(g_hint_timer); g_hint_timer = NULL; }
@@ -138,12 +135,11 @@ static void nav_hint_restore(void)
     g_hint_n = 0;
     g_hint_group = NULL;
 
-    /* 删除动态遮罩:非 NULL 即有效(页面切换销毁时 DELETE 回调已置空) */
-    if (g_hint_mask) lv_obj_del(g_hint_mask);
-    if (g_hint_tip)  lv_obj_del(g_hint_tip);
-    g_hint_mask = NULL;
-    g_hint_tip = NULL;
-    g_hint_scr = NULL;
+    topflagpage_t *tf = topflagpage_get(&ui_manager);
+    if (tf && tf->obj) {
+        if (tf->tip1)        lv_obj_add_flag(tf->tip1, LV_OBJ_FLAG_HIDDEN);
+        if (tf->container_1) lv_obj_add_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);
+    }
 }
 
 static void hint_timer_cb(lv_timer_t *t)
@@ -161,59 +157,18 @@ void nav_show_invalid_hint(void)
     /* 已在提示:重置 3 秒计时 */
     nav_hint_restore();
 
+    topflagpage_t *tf = topflagpage_get(&ui_manager);
+    if (!tf || !tf->obj || !tf->tip1 || !tf->container_1) return;
+
     g_hint_group = current_group;
     nav_hint_collect();
     for (int i = 0; i < g_hint_n; i++)
         if (g_hint_objs[i]) lv_obj_add_flag(g_hint_objs[i], LV_OBJ_FLAG_HIDDEN);
 
-    /* 动态创建遮罩 + tip1 到当前页面(随页面销毁自动清理) */
-    g_hint_scr = lv_scr_act();
-    if (g_hint_scr) {
-        g_hint_mask = lv_obj_create(g_hint_scr);
-        if (!g_hint_mask) {
-            /* 遮罩创建失败:恢复已隐藏元素并放弃提示,避免后续空指针 */
-            for (int i = 0; i < g_hint_n; i++)
-                if (g_hint_objs[i]) lv_obj_clear_flag(g_hint_objs[i], LV_OBJ_FLAG_HIDDEN);
-            g_hint_n = 0;
-            g_hint_group = NULL;
-            g_hint_scr = NULL;
-            return;
-        }
-        lv_obj_remove_style_all(g_hint_mask);   /* 防默认主题白底 */
-        lv_obj_set_pos(g_hint_mask, 0, 0);
-        lv_obj_set_size(g_hint_mask, 1280, 480);
-        lv_obj_set_scrollbar_mode(g_hint_mask, LV_SCROLLBAR_MODE_OFF);
-        lv_obj_set_style_bg_color(g_hint_mask, lv_color_hex(0x060505), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_opa(g_hint_mask, 113, LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_border_width(g_hint_mask, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_radius(g_hint_mask, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_pad_top(g_hint_mask, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_pad_right(g_hint_mask, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_pad_bottom(g_hint_mask, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_pad_left(g_hint_mask, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-        g_hint_tip = lv_label_create(g_hint_scr);
-        if (!g_hint_tip) {
-            /* 提示标签创建失败:删除遮罩并恢复元素,避免后续空指针 */
-            lv_obj_del(g_hint_mask);
-            g_hint_mask = NULL;
-            for (int i = 0; i < g_hint_n; i++)
-                if (g_hint_objs[i]) lv_obj_clear_flag(g_hint_objs[i], LV_OBJ_FLAG_HIDDEN);
-            g_hint_n = 0;
-            g_hint_group = NULL;
-            g_hint_scr = NULL;
-            return;
-        }
-        lv_label_set_text(g_hint_tip, tr("烤箱运行时不可用。"));
-        lv_label_set_long_mode(g_hint_tip, LV_LABEL_LONG_WRAP);
-        lv_obj_set_pos(g_hint_tip, 885, 161);
-        lv_obj_set_size(g_hint_tip, 275, 36);
-        lv_obj_set_style_text_font(g_hint_tip, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_text_color(g_hint_tip, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_text_align(g_hint_tip, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_add_event_cb(g_hint_mask, hint_del_cb, LV_EVENT_DELETE, NULL);
-        lv_obj_add_event_cb(g_hint_tip, hint_del_cb, LV_EVENT_DELETE, NULL);
-    }
+    /* 显示 topflag 遮罩 + tip1(文本每次设置,随语言切换) */
+    lv_label_set_text(tf->tip1, tr("烤箱运行时不可用。"));
+    lv_obj_clear_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(tf->tip1, LV_OBJ_FLAG_HIDDEN);
     g_hint_timer = lv_timer_create(hint_timer_cb, 3000, NULL);
     printf("[hint] show\n");
 }
@@ -233,9 +188,8 @@ int nav_hint_active(void)
 /* ==============================
  * 收藏保存结果提示（topflagpage 顶层 tip3,2 秒自动消失）
  * 三种情况之一:正常收藏成功(已收藏/收藏夹已满后续接入)。
- * 遮罩复用 topflagpage 的 container_1(常驻 lv_layer_top,与
- * "烤箱运行时不可用"同款半透明遮罩+右侧文字);完成页在遮罩之下,
- * 2 秒后隐藏即自动回到完成页。期间功能键忽略、BACK 提前关闭(nav_key.c 守卫)。
+ * 不显示遮罩(container_1 保持隐藏),仅右侧 tip3 文字;完成页右侧组件
+ * 隐藏/恢复见 collect_hide。期间功能键忽略、BACK 提前关闭(nav_key.c 守卫)。
  * ============================== */
 static lv_timer_t *g_favtip_timer = NULL;
 static lv_obj_t *g_favtip_objs[8];   /* 提示期间隐藏的完成页右侧组件 */
@@ -272,17 +226,23 @@ static void nav_favtip_collect_hide(void)
     }
 }
 
-static void nav_favtip_hide(void)
+/* 恢复被隐藏的完成页右侧组件(只还原我们藏掉的,本就隐藏的保持原状) */
+static void nav_favtip_restore_elems(void)
 {
-    if (g_favtip_timer) { lv_timer_del(g_favtip_timer); g_favtip_timer = NULL; }
     for (int i = 0; i < g_favtip_n; i++)
         if (g_favtip_objs[i] && !g_favtip_was[i])
             lv_obj_clear_flag(g_favtip_objs[i], LV_OBJ_FLAG_HIDDEN);
     g_favtip_n = 0;
+}
+
+static void nav_favtip_hide(void)
+{
+    if (g_favtip_timer) { lv_timer_del(g_favtip_timer); g_favtip_timer = NULL; }
+    nav_favtip_restore_elems();
     topflagpage_t *tf = topflagpage_get(&ui_manager);
     if (!tf || !tf->obj) return;
     if (tf->tip3)        lv_obj_add_flag(tf->tip3, LV_OBJ_FLAG_HIDDEN);
-    if (tf->container_1) lv_obj_add_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);
+    if (tf->container_1) lv_obj_add_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);   /* 防御:保持隐藏 */
 }
 
 static void favtip_timer_cb(lv_timer_t *t)
@@ -292,14 +252,14 @@ static void favtip_timer_cb(lv_timer_t *t)
 }
 
 // 触发:正常收藏成功时调用(favorites_save_current)
+// 收藏成功不显示遮罩(container_1 保持隐藏),仅右侧 tip3 文字,2 秒自动消失
 void nav_show_fav_tip(void)
 {
     topflagpage_t *tf = topflagpage_get(&ui_manager);
-    if (!tf || !tf->obj || !tf->tip3 || !tf->container_1) return;
+    if (!tf || !tf->obj || !tf->tip3) return;
     nav_favtip_hide();   /* 重复触发:重置 2 秒计时 */
     lv_label_set_text(tf->tip3, tr("收藏成功"));   /* 每次显示时设文本,随语言切换 */
     nav_favtip_collect_hide();   /* 隐藏完成页右侧组件(防烫图标/文字),恢复在 hide */
-    lv_obj_clear_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);
     lv_obj_clear_flag(tf->tip3, LV_OBJ_FLAG_HIDDEN);
     g_favtip_timer = lv_timer_create(favtip_timer_cb, 2000, NULL);
     printf("[hint] fav tip show\n");
@@ -315,4 +275,87 @@ void nav_favtip_cancel(void)
 int nav_favtip_active(void)
 {
     return g_favtip_timer != NULL;
+}
+
+/* ==============================
+ * 收藏确认弹层（topflag 顶层遮罩+tip1+tip2+sure,不自动消失）
+ * 两种模式:
+ *   FAV_ASK_DUPLICATE:tip1="该烹调已有，" tip2="需要覆盖原有烹调吗？"
+ *                     确认→覆盖保存(nav_favorites.c nav_favask_confirm)
+ *   FAV_ASK_FULL:    tip1="收藏夹已满，" tip2="请删除不太喜欢的烹调！"
+ *                     确认→进收藏夹删除界面(整卡删除,Del_Fav_create_flag)
+ * BACK→关闭回完成页;其余键忽略(nav_key.c 模态守卫)。均无自动返回。
+ * ============================== */
+static int g_favask_active = 0;
+static int g_favask_mode = 0;    /* 0 关闭 1 重复收藏确认 2 收藏夹已满 */
+
+#define FAV_ASK_DUPLICATE 1
+#define FAV_ASK_FULL      2
+
+// 显示收藏确认弹层(mode:1 重复收藏 2 收藏夹已满;favorites_save_current 调用)
+static void fav_ask_show(int mode)
+{
+    topflagpage_t *tf = topflagpage_get(&ui_manager);
+    if (!tf || !tf->obj || !tf->tip1 || !tf->tip2 || !tf->sure) return;
+    nav_favtip_hide();   /* 关掉可能存在的成功提示,重置状态 */
+    if (mode == FAV_ASK_FULL) {
+        lv_label_set_text(tf->tip1, tr("收藏夹已满，"));
+        lv_label_set_text(tf->tip2, tr("请删除不太喜欢的烹调！"));
+    } else {
+        lv_label_set_text(tf->tip1, tr("该烹调已有，"));
+        lv_label_set_text(tf->tip2, tr("需要覆盖原有烹调吗？"));
+    }
+    if (tf->sure) {
+        lv_obj_t *lbl = lv_obj_get_child(tf->sure, 0);   /* 按钮文字随语言切换 */
+        if (lbl) lv_label_set_text(lbl, tr("确 定"));
+        lv_obj_add_state(tf->sure, LV_STATE_FOCUSED);    /* 常亮聚焦底图,提示可按 */
+    }
+    lv_obj_clear_flag(tf->tip1, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(tf->tip2, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(tf->sure, LV_OBJ_FLAG_HIDDEN);
+    if (tf->container_1) lv_obj_clear_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);   /* 遮罩 */
+    nav_favtip_collect_hide();   /* tip1 与完成页右侧防烫组件同位,同样藏掉,关闭时恢复 */
+    g_favask_active = 1;
+    g_favask_mode = mode;
+    printf("[hint] fav ask show mode=%d\n", mode);
+}
+
+// 重复收藏:覆盖保存确认(favorites_save_current 检测到已收藏时调用)
+void nav_show_fav_ask(void)
+{
+    fav_ask_show(FAV_ASK_DUPLICATE);
+}
+
+// 收藏夹已满:确认后进删除界面(favorites_save_current 检测满时调用)
+void nav_show_fav_full(void)
+{
+    fav_ask_show(FAV_ASK_FULL);
+}
+
+// 关闭确认弹层(确认保存后与 BACK 取消共用;完成页在弹层之下,关闭即回到完成页)
+void nav_favask_cancel(void)
+{
+    if (!g_favask_active) return;
+    g_favask_active = 0;
+    topflagpage_t *tf = topflagpage_get(&ui_manager);
+    if (!tf || !tf->obj) return;
+    if (tf->tip1) lv_obj_add_flag(tf->tip1, LV_OBJ_FLAG_HIDDEN);
+    if (tf->tip2) lv_obj_add_flag(tf->tip2, LV_OBJ_FLAG_HIDDEN);
+    if (tf->sure) {
+        lv_obj_add_flag(tf->sure, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_state(tf->sure, LV_STATE_FOCUSED);
+    }
+    if (tf->container_1) lv_obj_add_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);
+    nav_favtip_restore_elems();
+    printf("[hint] fav ask cancel\n");
+}
+
+int nav_favask_active(void)
+{
+    return g_favask_active;
+}
+
+int nav_favask_get_mode(void)
+{
+    return g_favask_mode;
 }
