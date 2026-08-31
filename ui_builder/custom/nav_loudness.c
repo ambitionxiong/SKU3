@@ -27,7 +27,9 @@ typedef struct {
     lv_obj_t *arrow_1_Btn;
     lv_obj_t *arrow_2_Btn;
     lv_obj_t *arrow_3_Btn;
+    lv_obj_t *Loudness_Switch;   /* 声音开关容器（switch_bg_Btn/旋钮/开关字的父容器） */
     lv_obj_t *TiShiYin_Cont;
+    lv_obj_t *filter_Cont;   /* 提示音时长弹窗（全屏遮罩 + 面板） */
     lv_obj_t *One_icon_Img;
     lv_obj_t *s5_icon_Img;
     lv_obj_t *s10_icon_Img;
@@ -88,7 +90,7 @@ static void screen_Loudness_switch_bg_Btn_clicked (lv_event_t *e) {
 //设置选中的图标
 void Set_Select_icon()
 {
-	screen_Loudness_t *scr = screen_Loudness_get(&ui_manager);
+	screen_loudness_page_t *scr = screen_Loudness_get(&ui_manager);
 
 	// if ()
 	// {
@@ -142,7 +144,7 @@ void Set_Select_icon()
 //删除对象组
 static void Scr_Group_Delete(lv_event_t *e)
 {
-	screen_Loudness_t *scr = screen_Loudness_get(&ui_manager);
+	screen_loudness_page_t *scr = screen_Loudness_get(&ui_manager);
 	if (scr->group != NULL)
 	{
 		lv_group_del(scr->group);
@@ -156,7 +158,7 @@ static void Scr_Group_Delete(lv_event_t *e)
 
 void encoder_Loudness_action(char key)
 {
-	screen_Loudness_t *scr = screen_Loudness_get(&ui_manager);
+	screen_loudness_page_t *scr = screen_Loudness_get(&ui_manager);
     
     if(key == KEY_ENCODER_CW)          //编码器顺时针旋转
     {
@@ -236,10 +238,9 @@ void encoder_Loudness_action(char key)
 		}
 		else if (scr->arrow_2_Btn == lv_group_get_focused(scr->group))	//按键音
 		{
-			Set_Loudness_where = 2;
-			lv_obj_clean(lv_screen_active());
-			screen_Loudness_or_Luminance_Set_Val_create(&ui_manager, 1);
-			lv_scr_load_anim(screen_Loudness_Set_Val_get(&ui_manager)->obj, LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
+			/* TODO: Loudness_Set_Val 音量条页未移植（交接四.8），移植后接：
+			 * Set_Loudness_where = 2; screen_Loudness_or_Luminance_Set_Val_create(&ui_manager, 1); 跳转加载 */
+			g_send.buzzer_req = BUZZER_KEY_INVALID;
 		}
 		else if (scr->arrow_3_Btn == lv_group_get_focused(scr->group))	//开机欢迎曲
 		{
@@ -259,17 +260,15 @@ void encoder_Loudness_action(char key)
     }
 }
 
-extern int8_t return_Set_focus;
 void return_Loudness_action()
 {
-	screen_Loudness_t *scr = screen_Loudness_get(&ui_manager);
+	screen_loudness_page_t *scr = screen_Loudness_get(&ui_manager);
 
 	if (Set_Loudness_where == 0)
 	{
-		return_Set_focus = 8;		//返回焦点
-		lv_obj_clean(lv_screen_active());
-		screen_SET_create(&ui_manager);
-		lv_scr_load_anim(screen_SET_get(&ui_manager)->obj, LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
+		/* 返回设置层：我方设置层为覆盖层（非同事独立页）——弹栈后重建覆盖层 */
+		depth--;
+		screen_set_rebuild();
 	}
 	else
 	{
@@ -291,7 +290,7 @@ void return_Loudness_action()
 //提示音设置容器的创建
 void TiShiYin_Cont_create()
 {
-	screen_Loudness_t *scr = screen_Loudness_get(&ui_manager);
+	screen_loudness_page_t *scr = screen_Loudness_get(&ui_manager);
 
 	// Init filter_Cont
     scr->filter_Cont = lv_obj_create(scr->obj);
@@ -319,7 +318,7 @@ void TiShiYin_Cont_create()
     // Set style of scr->TiShiYin_Cont
     lv_obj_set_style_bg_color(scr->TiShiYin_Cont, lv_color_hex(0xeff8f5), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->TiShiYin_Cont, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->TiShiYin_Cont, ui_lang_img(IMG_VOLUMEHINTTIME_BG), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->TiShiYin_Cont, LVGL_IMAGE_PATH(used/VolumeHintTime_bg.png), LV_PART_MAIN | LV_STATE_DEFAULT);   /* TODO: 英文底图出图后按 g_lang_en 切换 */
     lv_obj_set_style_bg_image_opa(scr->TiShiYin_Cont, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_recolor_opa(scr->TiShiYin_Cont, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_opa(scr->TiShiYin_Cont, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -383,7 +382,7 @@ void TiShiYin_Cont_create()
 
 void screen_Loudness_create(ui_manager_t *ui)
 {
-    screen_Loudness_t *scr = screen_Loudness_get(ui);
+    screen_loudness_page_t *scr = screen_Loudness_get(ui);
 
     if (!ui->auto_del && scr->obj) {
         return;
@@ -495,7 +494,7 @@ void screen_Loudness_create(ui_manager_t *ui)
     lv_obj_set_style_bg_color(scr->switch_bg_Btn, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->switch_bg_Btn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->switch_bg_Btn, LVGL_IMAGE_PATH(used/switch_bg_yuankuang.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->switch_bg_Btn, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->switch_bg_Btn, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_opa(scr->switch_bg_Btn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->switch_bg_Btn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_opa(scr->switch_bg_Btn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -574,7 +573,7 @@ void screen_Loudness_create(ui_manager_t *ui)
     // Set style of scr->arrow_1_Btn
     lv_obj_set_style_bg_opa(scr->arrow_1_Btn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->arrow_1_Btn, LVGL_IMAGE_PATH(used/select_arrows_1.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->arrow_1_Btn, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->arrow_1_Btn, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_opa(scr->arrow_1_Btn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->arrow_1_Btn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_opa(scr->arrow_1_Btn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -595,7 +594,7 @@ void screen_Loudness_create(ui_manager_t *ui)
     // Set style of scr->arrow_2_Btn
     lv_obj_set_style_bg_opa(scr->arrow_2_Btn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->arrow_2_Btn, LVGL_IMAGE_PATH(used/select_arrows_1.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->arrow_2_Btn, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->arrow_2_Btn, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_opa(scr->arrow_2_Btn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->arrow_2_Btn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_opa(scr->arrow_2_Btn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -616,7 +615,7 @@ void screen_Loudness_create(ui_manager_t *ui)
     // Set style of scr->arrow_3_Btn
     lv_obj_set_style_bg_opa(scr->arrow_3_Btn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->arrow_3_Btn, LVGL_IMAGE_PATH(used/select_arrows_1.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->arrow_3_Btn, fs_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->arrow_3_Btn, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_opa(scr->arrow_3_Btn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->arrow_3_Btn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_opa(scr->arrow_3_Btn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -642,7 +641,7 @@ void screen_Loudness_create(ui_manager_t *ui)
 	lv_obj_set_style_text_opa(scr->KJHYQ_off_on_Lb, LV_OPA_30, LV_PART_MAIN | LV_STATE_DEFAULT);
 
 	// 英文排版
-	if (ui_lang_get() == LANG_EN) 
+	if (g_lang_en == 1)
 	{
 		// 标题
 		lv_obj_set_pos(scr->Title_Lb, 24, 24);
@@ -686,8 +685,63 @@ void screen_Loudness_create(ui_manager_t *ui)
 	{
 		lv_group_focus_obj(scr->arrow_2_Btn);
 	}
-	
+
 	Set_Loudness_where = 0;
+}
+
+/* ===================== 导航包装（nav_key / nav_pop 接线用） ===================== */
+lv_group_t *loudness_page_group(void) { return s_loud_page.group; }
+
+/* 提示音时长弹窗激活中（供 nav_key 模态守卫） */
+int loudness_popup_active(void)
+{
+    return (current_group == s_loud_page.group && Set_Loudness_where == 1);
+}
+
+/* 弹窗激活时消化按键：编码器切选项 / PRESS 确认 / BACK 取消，其余无效音 */
+int loudness_popup_key(uint8_t key)
+{
+    if (!loudness_popup_active()) return 0;
+    switch (key) {
+    case KEY_ENCODER_CW:
+    case KEY_ENCODER_CCW:
+    case KEY_ENCODER_PRESS:
+        encoder_Loudness_action((char)key);
+        return 1;
+    case KEY_BACK:
+        return_Loudness_action();   /* else 分支：关弹窗回箭头行 */
+        return 1;
+    default:
+        g_send.buzzer_req = BUZZER_KEY_INVALID;
+        return 1;
+    }
+}
+
+void jump_to_loudness(void)
+{
+    /* 覆盖层挂当前屏：clean 会连它一起删，先 reset 清指针防悬空；
+     * 弹掉 PAGE_SCREEN_SET 再 push 本页，BACK 时 depth-- 恰回设置层栈项 */
+    screen_set_reset();
+    depth--;
+    page_push(PAGE_LOUDNESS);
+    lv_obj_clean(lv_scr_act());
+    Set_Loudness_where = 0;
+    Set_Flag = -1;
+    screen_Loudness_create(&ui_manager);
+    current_group = s_loud_page.group;
+    if (s_loud_page.switch_bg_Btn) lv_group_focus_obj(s_loud_page.switch_bg_Btn);
+    lang_scr_load_anim(s_loud_page.obj, LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
+    printf("[loudness] jump: screen_set -> loudness\n");
+}
+
+/* 供 page_pop 重建声音页（BACK 主路径走 return_Loudness_action，不经此） */
+void loudness_page_rebuild(void)
+{
+    lv_obj_clean(lv_scr_act());
+    screen_Loudness_create(&ui_manager);
+    current_group = s_loud_page.group;
+    if (s_loud_page.switch_bg_Btn) lv_group_focus_obj(s_loud_page.switch_bg_Btn);
+    lang_scr_load_anim(s_loud_page.obj, LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
 }
 
 

@@ -316,6 +316,11 @@ void page_pop(void)
         favorites_rebuild(child);
         break;
 
+    case PAGE_LOUDNESS:
+        /* 下层是声音设置页(如提示页在声音页上打开):重建声音页 */
+        loudness_page_rebuild();
+        break;
+
     case PAGE_RISINGPAGE:
         risingpage_rebuild(child);
         break;

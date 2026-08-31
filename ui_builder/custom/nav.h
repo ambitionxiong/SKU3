@@ -303,6 +303,7 @@ typedef enum {
     PAGE_SIXMENUTZ,         /* 第六感-探针版菜单 */
     PAGE_CHICKMENUTZ,       /* 第六感-探针版家禽菜单 */
     PAGE_FAVORITES,         /* 收藏页（独立页面，不依赖 ui_manager） */
+    PAGE_LOUDNESS,          /* 声音设置子页（设置覆盖层的子页，独立屏幕） */
 } page_id_t;
 
 extern page_id_t page_stack[];
@@ -667,6 +668,15 @@ extern lv_group_t *g_screen_set;
 void jump_to_screen_set(void);
 void screen_set_back(void);
 void screen_set_reset(void);
+
+/* 声音设置子页（nav_loudness.c 实现，PAGE_LOUDNESS） */
+void jump_to_loudness(void);
+lv_group_t *loudness_page_group(void);
+void return_Loudness_action(void);
+void encoder_Loudness_action(char key);
+int loudness_popup_active(void);
+int loudness_popup_key(uint8_t key);
+void loudness_page_rebuild(void);
 
 /* 功能键无效提示（nav_hint.c 实现） */
 void nav_show_invalid_hint(void);

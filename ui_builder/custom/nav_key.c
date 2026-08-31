@@ -95,6 +95,10 @@ void process_key(uint8_t key)
      * 其余键无效音),不触发覆盖层的功能键关层 */
     if (screen_set_popup_active() && screen_set_popup_key(key))
         return;
+    /* 声音设置页提示音弹窗激活:按键全部由弹窗消化(编码器切选项/PRESS确认/
+     * BACK取消,其余无效音),不影响覆盖层/下层页面 */
+    if (loudness_popup_active() && loudness_popup_key(key))
+        return;
     /* 设置页覆盖层打开时按功能键:先关闭设置页(弹栈恢复下层页面),再按下层
      * 页面正常处理——功能键在设置页也能生效;键自身的白名单/防重入/运行态
      * 拦截(烹饪中等)由各 case 照常判断 */
@@ -638,6 +642,9 @@ void process_key(uint8_t key)
             else if (cur == PAGE_TEMPTIP) {
                 temptip_dismiss_now();   /* 温度提示:BACK 提前结束(恢复 iface + 回 prev) */
             }
+            else if (cur == PAGE_LOUDNESS) {
+                return_Loudness_action();   /* 声音页 BACK:弹窗开则关弹窗,否则回设置覆盖层 */
+            }
             else if (cur == PAGE_SCREEN_SET) {
                 screen_set_back();
             }
@@ -858,6 +865,12 @@ void process_key(uint8_t key)
             uart_print();
             break;
         }
+        if (current_group == loudness_page_group()) {
+            encoder_Loudness_action(KEY_ENCODER_CW);   /* 声音页:行间移焦点 */
+            g_send.buzzer_req = BUZZER_ENCODER;
+            uart_print();
+            break;
+        }
         if (current_group == g_sixset2) {
             sixset2_cycle(+1);   /* 按焦点分派:选择对象上切值,其他移焦点 */
             g_send.buzzer_req = BUZZER_ENCODER;
@@ -988,6 +1001,12 @@ void process_key(uint8_t key)
         }
         if (current_group == g_favorites) {
             encoder_favorites_action(KEY_ENCODER_CCW);   /* 收藏页：翻页/移焦点 */
+            g_send.buzzer_req = BUZZER_ENCODER;
+            uart_print();
+            break;
+        }
+        if (current_group == loudness_page_group()) {
+            encoder_Loudness_action(KEY_ENCODER_CCW);   /* 声音页:行间移焦点 */
             g_send.buzzer_req = BUZZER_ENCODER;
             uart_print();
             break;
@@ -1602,6 +1621,12 @@ void process_key(uint8_t key)
                 g_send.buzzer_req = BUZZER_KEY_VALID;
                 lv_group_focus_next(current_group);
             }
+            uart_print();
+            break;
+        }
+        if (current_group == loudness_page_group()) {
+            encoder_Loudness_action(KEY_ENCODER_PRESS);   /* 声音页:进弹窗/确认 */
+            g_send.buzzer_req = BUZZER_KEY_VALID;
             uart_print();
             break;
         }

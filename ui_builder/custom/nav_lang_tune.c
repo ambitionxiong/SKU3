@@ -1436,31 +1436,31 @@ void bread_menu_lang_tune(void)
     lv_obj_set_pos(pg->image_340, 24, 117);
 
     /* label_723: 标签 | "烹饪时间" | (578,139) | 125x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_723, 578, 139);
-    lv_obj_set_size(pg->label_723, 125, 32);
+    lv_obj_set_pos(pg->label_723, 571, 139);
+    lv_obj_set_size(pg->label_723, 230, 32);
 
     /* hour: 标签 | "00" | (482,248) | 84x72 | font taiwanpearl_regular_72 */
-    lv_obj_set_pos(pg->hour, 482, 248);
-    lv_obj_set_size(pg->hour, 84, 72);
+    lv_obj_set_pos(pg->hour, 477, 248);
+    lv_obj_set_size(pg->hour, 100, 72);
 
     /* label_725: 标签 | "时" | (562,280) | 38x32 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->label_725, 562, 280);
+    lv_obj_set_pos(pg->label_725, 562, 278);
     lv_obj_set_size(pg->label_725, 38, 32);
 
     /* label_726: 标签 | "分" | (762,280) | 38x32 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->label_726, 762, 280);
+    lv_obj_set_pos(pg->label_726, 762, 278);
     lv_obj_set_size(pg->label_726, 38, 32);
 
     /* min: 标签 | "30" | (682,248) | 84x72 | font taiwanpearl_regular_72 | 动态定位(需微调见文件头模板) */
     /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->min, 84, 72);
+    lv_obj_set_size(pg->min, 100, 72);
 
     /* label_728: 标签 | "面包" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_728, 24, 24);
     lv_obj_set_size(pg->label_728, 144, 32);
 
     /* label_729: 标签 | "下一步" | (996,39) | 117x32 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->label_729, 996, 39);
+    lv_obj_set_pos(pg->label_729, 1008, 41);
     lv_obj_set_size(pg->label_729, 117, 32);
 
     /* hourline: 图片 | (480,327) | img: underline_120x4.png */
@@ -1490,23 +1490,23 @@ void bread_set_lang_tune(void)
 
     /* label_731: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_731, 165, 157);
-    lv_obj_set_size(pg->label_731, 26, 32);
+    lv_obj_set_size(pg->label_731, 120, 32);
 
     /* label_732: 标签 | "度：" | (252,157) | 64x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_732, 252, 157);
     lv_obj_set_size(pg->label_732, 64, 32);
 
     /* label_733: 标签 | "烹饪时间：" | (141,270) | 175x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_733, 141, 270);
-    lv_obj_set_size(pg->label_733, 175, 32);
+    lv_obj_set_pos(pg->label_733, 146, 270);
+    lv_obj_set_size(pg->label_733, 180, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
     lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 62, 53);
+    lv_obj_set_size(pg->hour, 80, 53);
 
     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
     /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->min, 58, 53);
+    lv_obj_set_size(pg->min, 90, 53);
 
     /* label_736: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_736, 368, 270);
@@ -1521,23 +1521,23 @@ void bread_set_lang_tune(void)
 
     /* label_738: 标签 | "烤架位置 3" | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_738, 232, 385);
-    lv_obj_set_size(pg->label_738, 148, 32);
+    lv_obj_set_size(pg->label_738, 220, 32);
 
     /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
     /* label_739: 标签 | "延" | (840,154) | 26x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_739, 840, 154);
-    lv_obj_set_size(pg->label_739, 26, 32);
+    lv_obj_set_pos(pg->label_739, 882, 154);
+    lv_obj_set_size(pg->label_739, 100, 32);
 
     /* label_740: 标签 | "迟" | (930,154) | 26x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_740, 930, 154);
     lv_obj_set_size(pg->label_740, 26, 32);
 
     /* label_741: 标签 | "自动保温" | (831,270) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_741, 831, 270);
-    lv_obj_set_size(pg->label_741, 130, 32);
+    lv_obj_set_pos(pg->label_741, 714, 270);
+    lv_obj_set_size(pg->label_741, 250, 32);
 
     /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 144);
@@ -1548,8 +1548,8 @@ void bread_set_lang_tune(void)
     lv_obj_set_size(pg->offcontain, 135, 53);
 
     /* temp: 标签 | "200" | (315,141) | 83x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->temp, 315, 141);
-    lv_obj_set_size(pg->temp, 83, 53);
+    lv_obj_set_pos(pg->temp, 268, 142);
+    lv_obj_set_size(pg->temp, 120, 53);
 
     /* label_743: 标签 | "确 定" | (1010,39) | 85x36 | font taiwanpearl_regular_36 */
     lv_obj_set_pos(pg->label_743, 1010, 39);
@@ -1564,12 +1564,12 @@ void bread_set_lang_tune(void)
     lv_obj_set_size(pg->oncontain, 135, 53);
 
     /* icon3: 标签 | "℃" | (396,157) | 32x30 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->icon3, 396, 157);
-    lv_obj_set_size(pg->icon3, 32, 30);
+    lv_obj_set_pos(pg->icon3, 352, 157);
+    lv_obj_set_size(pg->icon3, 50, 30);
 
     /* icon2: 标签 | "℃" | (369,157) | 32x30 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->icon2, 369, 157);
-    lv_obj_set_size(pg->icon2, 32, 30);
+    lv_obj_set_size(pg->icon2, 50, 30);
 
 }
 
@@ -2627,31 +2627,31 @@ void chip_menu_lang_tune(void)
     lv_obj_set_pos(pg->image_372, 24, 117);
 
     /* label_805: 标签 | "烹饪时间" | (578,139) | 125x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_805, 578, 139);
-    lv_obj_set_size(pg->label_805, 125, 32);
+    lv_obj_set_pos(pg->label_805, 571, 139);
+    lv_obj_set_size(pg->label_805, 230, 32);
 
     /* hour: 标签 | "00" | (482,248) | 84x72 | font taiwanpearl_regular_72 */
-    lv_obj_set_pos(pg->hour, 482, 248);
-    lv_obj_set_size(pg->hour, 84, 72);
+    lv_obj_set_pos(pg->hour, 477, 248);
+    lv_obj_set_size(pg->hour, 100, 72);
 
     /* label_807: 标签 | "时" | (562,280) | 38x32 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->label_807, 562, 280);
+    lv_obj_set_pos(pg->label_807, 562, 278);
     lv_obj_set_size(pg->label_807, 38, 32);
 
     /* label_808: 标签 | "分" | (762,280) | 38x32 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->label_808, 762, 280);
+    lv_obj_set_pos(pg->label_808, 762, 278);
     lv_obj_set_size(pg->label_808, 38, 32);
 
     /* min: 标签 | "30" | (682,248) | 84x72 | font taiwanpearl_regular_72 | 动态定位(需微调见文件头模板) */
     /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->min, 84, 72);
+    lv_obj_set_size(pg->min, 100, 72);
 
     /* label_810: 标签 | "炸薯条" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_810, 24, 24);
     lv_obj_set_size(pg->label_810, 144, 32);
 
     /* label_811: 标签 | "下一步" | (996,39) | 117x32 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->label_811, 996, 39);
+    lv_obj_set_pos(pg->label_811, 1008, 41);
     lv_obj_set_size(pg->label_811, 117, 32);
 
     /* hourline: 图片 | (480,327) | img: underline_120x4.png */
@@ -2681,23 +2681,23 @@ void chip_set_lang_tune(void)
 
     /* label_813: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_813, 165, 157);
-    lv_obj_set_size(pg->label_813, 26, 32);
+    lv_obj_set_size(pg->label_813, 120, 32);
 
     /* label_814: 标签 | "度：" | (252,157) | 64x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_814, 252, 157);
     lv_obj_set_size(pg->label_814, 64, 32);
 
     /* label_815: 标签 | "烹饪时间：" | (141,270) | 175x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_815, 141, 270);
-    lv_obj_set_size(pg->label_815, 175, 32);
+    lv_obj_set_pos(pg->label_815, 146, 270);
+    lv_obj_set_size(pg->label_815, 180, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
     lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 62, 53);
+    lv_obj_set_size(pg->hour, 80, 53);
 
     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
     /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->min, 58, 53);
+    lv_obj_set_size(pg->min, 90, 53);
 
     /* label_818: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_818, 368, 270);
@@ -2712,23 +2712,23 @@ void chip_set_lang_tune(void)
 
     /* label_820: 标签 | "烤架位置 3" | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_820, 232, 385);
-    lv_obj_set_size(pg->label_820, 148, 32);
+    lv_obj_set_size(pg->label_820, 220, 32);
 
     /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
     /* label_821: 标签 | "延" | (840,154) | 26x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_821, 840, 154);
-    lv_obj_set_size(pg->label_821, 26, 32);
+    lv_obj_set_pos(pg->label_821, 882, 154);
+    lv_obj_set_size(pg->label_821, 100, 32);
 
     /* label_822: 标签 | "迟" | (930,154) | 26x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_822, 930, 154);
     lv_obj_set_size(pg->label_822, 26, 32);
 
     /* label_823: 标签 | "自动保温" | (831,270) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_823, 831, 270);
-    lv_obj_set_size(pg->label_823, 130, 32);
+    lv_obj_set_pos(pg->label_823, 714, 270);
+    lv_obj_set_size(pg->label_823, 250, 32);
 
     /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 144);
@@ -2739,8 +2739,8 @@ void chip_set_lang_tune(void)
     lv_obj_set_size(pg->offcontain, 135, 53);
 
     /* temp: 标签 | "230" | (315,141) | 83x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->temp, 315, 141);
-    lv_obj_set_size(pg->temp, 83, 53);
+    lv_obj_set_pos(pg->temp, 268, 142);
+    lv_obj_set_size(pg->temp, 120, 53);
 
     /* label_825: 标签 | "确 定" | (1010,39) | 85x36 | font taiwanpearl_regular_36 */
     lv_obj_set_pos(pg->label_825, 1010, 39);
@@ -2755,12 +2755,12 @@ void chip_set_lang_tune(void)
     lv_obj_set_size(pg->oncontain, 135, 53);
 
     /* icon3: 标签 | "℃" | (396,157) | 32x30 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->icon3, 396, 157);
-    lv_obj_set_size(pg->icon3, 32, 30);
+    lv_obj_set_pos(pg->icon3, 352, 157);
+    lv_obj_set_size(pg->icon3, 50, 30);
 
     /* icon2: 标签 | "℃" | (369,157) | 32x30 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->icon2, 369, 157);
-    lv_obj_set_size(pg->icon2, 32, 30);
+    lv_obj_set_size(pg->icon2, 50, 30);
 
 }
 
@@ -3407,23 +3407,23 @@ void cookie_set_lang_tune(void)
 
     /* label_99: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_99, 165, 157);
-    lv_obj_set_size(pg->label_99, 26, 32);
+    lv_obj_set_size(pg->label_99, 120, 32);
 
     /* label_100: 标签 | "度：" | (252,157) | 64x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_100, 252, 157);
     lv_obj_set_size(pg->label_100, 64, 32);
 
     /* label_101: 标签 | "烹饪时间：" | (141,270) | 175x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_101, 141, 270);
-    lv_obj_set_size(pg->label_101, 175, 32);
+    lv_obj_set_pos(pg->label_101, 146, 270);
+    lv_obj_set_size(pg->label_101, 180, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
     lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 62, 53);
+    lv_obj_set_size(pg->hour, 80, 53);
 
     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
     /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->min, 58, 53);
+    lv_obj_set_size(pg->min, 90, 53);
 
     /* label_104: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_104, 368, 270);
@@ -3438,23 +3438,23 @@ void cookie_set_lang_tune(void)
 
     /* label_106: 标签 | "烤架位置 3" | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_106, 232, 385);
-    lv_obj_set_size(pg->label_106, 148, 32);
+    lv_obj_set_size(pg->label_106, 220, 32);
 
     /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
     /* label_108: 标签 | "延" | (840,154) | 26x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_108, 840, 154);
-    lv_obj_set_size(pg->label_108, 26, 32);
+    lv_obj_set_pos(pg->label_108, 882, 154);
+    lv_obj_set_size(pg->label_108, 100, 32);
 
     /* label_109: 标签 | "迟" | (930,154) | 26x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_109, 930, 154);
     lv_obj_set_size(pg->label_109, 26, 32);
 
     /* label_110: 标签 | "自动保温" | (831,270) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_110, 831, 270);
-    lv_obj_set_size(pg->label_110, 130, 32);
+    lv_obj_set_pos(pg->label_110, 714, 270);
+    lv_obj_set_size(pg->label_110, 250, 32);
 
     /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 144);
@@ -3465,8 +3465,8 @@ void cookie_set_lang_tune(void)
     lv_obj_set_size(pg->offcontain, 135, 53);
 
     /* temp: 标签 | "135" | (315,141) | 83x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->temp, 315, 141);
-    lv_obj_set_size(pg->temp, 83, 53);
+    lv_obj_set_pos(pg->temp, 268, 142);
+    lv_obj_set_size(pg->temp, 120, 53);
 
     /* label_112: 标签 | "确 定" | (1010,39) | 85x36 | font taiwanpearl_regular_36 */
     lv_obj_set_pos(pg->label_112, 1010, 39);
@@ -3481,12 +3481,12 @@ void cookie_set_lang_tune(void)
     lv_obj_set_size(pg->oncontain, 135, 53);
 
     /* icon3: 标签 | "℃" | (396,157) | 32x30 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->icon3, 396, 157);
-    lv_obj_set_size(pg->icon3, 32, 30);
+    lv_obj_set_pos(pg->icon3, 352, 157);
+    lv_obj_set_size(pg->icon3, 50, 30);
 
     /* icon2: 标签 | "℃" | (369,157) | 32x30 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->icon2, 369, 157);
-    lv_obj_set_size(pg->icon2, 32, 30);
+    lv_obj_set_size(pg->icon2, 50, 30);
 
 }
 
@@ -4332,31 +4332,31 @@ void custom_menu_lang_tune(void)
     lv_obj_set_pos(pg->image_388, 24, 117);
 
     /* label_846: 标签 | "烹饪时间" | (578,139) | 125x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_846, 578, 139);
-    lv_obj_set_size(pg->label_846, 125, 32);
+    lv_obj_set_pos(pg->label_846, 571, 139);
+    lv_obj_set_size(pg->label_846, 230, 32);
 
     /* hour: 标签 | "00" | (482,248) | 84x72 | font taiwanpearl_regular_72 */
-    lv_obj_set_pos(pg->hour, 482, 248);
-    lv_obj_set_size(pg->hour, 84, 72);
+    lv_obj_set_pos(pg->hour, 477, 248);
+    lv_obj_set_size(pg->hour, 100, 72);
 
     /* label_848: 标签 | "时" | (562,280) | 38x32 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->label_848, 562, 280);
+    lv_obj_set_pos(pg->label_848, 562, 278);
     lv_obj_set_size(pg->label_848, 38, 32);
 
     /* label_849: 标签 | "分" | (762,280) | 38x32 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->label_849, 762, 280);
+    lv_obj_set_pos(pg->label_849, 762, 278);
     lv_obj_set_size(pg->label_849, 38, 32);
 
     /* min: 标签 | "30" | (682,248) | 84x72 | font taiwanpearl_regular_72 | 动态定位(需微调见文件头模板) */
     /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->min, 84, 72);
+    lv_obj_set_size(pg->min, 100, 72);
 
     /* label_851: 标签 | "自定义" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_851, 24, 24);
     lv_obj_set_size(pg->label_851, 144, 32);
 
     /* label_852: 标签 | "下一步" | (996,39) | 117x32 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->label_852, 996, 39);
+    lv_obj_set_pos(pg->label_852, 1008, 41);
     lv_obj_set_size(pg->label_852, 117, 32);
 
     /* hourline: 图片 | (480,327) | img: underline_120x4.png */
@@ -4386,23 +4386,23 @@ void custom_set_lang_tune(void)
 
     /* label_854: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_854, 165, 157);
-    lv_obj_set_size(pg->label_854, 26, 32);
+    lv_obj_set_size(pg->label_854, 120, 32);
 
     /* label_855: 标签 | "度：" | (252,157) | 64x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_855, 252, 157);
     lv_obj_set_size(pg->label_855, 64, 32);
 
     /* label_856: 标签 | "烹饪时间：" | (141,270) | 175x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_856, 141, 270);
-    lv_obj_set_size(pg->label_856, 175, 32);
+    lv_obj_set_pos(pg->label_856, 146, 270);
+    lv_obj_set_size(pg->label_856, 180, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
     lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 62, 53);
+    lv_obj_set_size(pg->hour, 80, 53);
 
     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
     /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->min, 58, 53);
+    lv_obj_set_size(pg->min, 90, 53);
 
     /* label_859: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_859, 368, 270);
@@ -4417,23 +4417,23 @@ void custom_set_lang_tune(void)
 
     /* label_861: 标签 | "烤架位置 3" | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_861, 232, 385);
-    lv_obj_set_size(pg->label_861, 148, 32);
+    lv_obj_set_size(pg->label_861, 220, 32);
 
     /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
     /* label_862: 标签 | "延" | (840,154) | 26x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_862, 840, 154);
-    lv_obj_set_size(pg->label_862, 26, 32);
+    lv_obj_set_pos(pg->label_862, 882, 154);
+    lv_obj_set_size(pg->label_862, 100, 32);
 
     /* label_863: 标签 | "迟" | (930,154) | 26x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_863, 930, 154);
     lv_obj_set_size(pg->label_863, 26, 32);
 
     /* label_864: 标签 | "自动保温" | (831,270) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_864, 831, 270);
-    lv_obj_set_size(pg->label_864, 130, 32);
+    lv_obj_set_pos(pg->label_864, 714, 270);
+    lv_obj_set_size(pg->label_864, 250, 32);
 
     /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 144);
@@ -4444,8 +4444,8 @@ void custom_set_lang_tune(void)
     lv_obj_set_size(pg->offcontain, 135, 53);
 
     /* temp: 标签 | "200" | (315,141) | 83x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->temp, 315, 141);
-    lv_obj_set_size(pg->temp, 83, 53);
+    lv_obj_set_pos(pg->temp, 268, 142);
+    lv_obj_set_size(pg->temp, 120, 53);
 
     /* label_866: 标签 | "确 定" | (1010,39) | 85x36 | font taiwanpearl_regular_36 */
     lv_obj_set_pos(pg->label_866, 1010, 39);
@@ -4460,12 +4460,12 @@ void custom_set_lang_tune(void)
     lv_obj_set_size(pg->oncontain, 135, 53);
 
     /* icon3: 标签 | "℃" | (396,157) | 32x30 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->icon3, 396, 157);
-    lv_obj_set_size(pg->icon3, 32, 30);
+    lv_obj_set_pos(pg->icon3, 352, 157);
+    lv_obj_set_size(pg->icon3, 50, 30);
 
     /* icon2: 标签 | "℃" | (369,157) | 32x30 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->icon2, 369, 157);
-    lv_obj_set_size(pg->icon2, 32, 30);
+    lv_obj_set_size(pg->icon2, 50, 30);
 
 }
 
@@ -7705,31 +7705,31 @@ void lasagna_menu_lang_tune(void)
     lv_obj_set_pos(pg->image_282, 24, 117);
 
     /* label_635: 标签 | "烹饪时间" | (578,139) | 125x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_635, 578, 139);
-    lv_obj_set_size(pg->label_635, 125, 32);
+    lv_obj_set_pos(pg->label_635, 571, 139);
+    lv_obj_set_size(pg->label_635, 230, 32);
 
     /* hour: 标签 | "00" | (482,248) | 84x72 | font taiwanpearl_regular_72 */
-    lv_obj_set_pos(pg->hour, 482, 248);
-    lv_obj_set_size(pg->hour, 84, 72);
+    lv_obj_set_pos(pg->hour, 477, 248);
+    lv_obj_set_size(pg->hour, 100, 72);
 
     /* label_637: 标签 | "时" | (562,280) | 38x32 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->label_637, 562, 280);
+    lv_obj_set_pos(pg->label_637, 562, 278);
     lv_obj_set_size(pg->label_637, 38, 32);
 
     /* label_638: 标签 | "分" | (762,280) | 38x32 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->label_638, 762, 280);
+    lv_obj_set_pos(pg->label_638, 762, 278);
     lv_obj_set_size(pg->label_638, 38, 32);
 
     /* min: 标签 | "30" | (682,248) | 84x72 | font taiwanpearl_regular_72 | 动态定位(需微调见文件头模板) */
     /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->min, 84, 72);
+    lv_obj_set_size(pg->min, 100, 72);
 
     /* label_640: 标签 | "千层面" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_640, 24, 24);
     lv_obj_set_size(pg->label_640, 144, 32);
 
     /* label_641: 标签 | "下一步" | (996,39) | 117x32 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->label_641, 996, 39);
+    lv_obj_set_pos(pg->label_641, 1008, 41);
     lv_obj_set_size(pg->label_641, 117, 32);
 
     /* hourline: 图片 | (480,327) | img: underline_120x4.png */
@@ -7759,23 +7759,23 @@ void lasagna_set_lang_tune(void)
 
     /* label_643: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_643, 165, 157);
-    lv_obj_set_size(pg->label_643, 26, 32);
+    lv_obj_set_size(pg->label_643, 120, 32);
 
     /* label_644: 标签 | "度：" | (252,157) | 64x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_644, 252, 157);
     lv_obj_set_size(pg->label_644, 64, 32);
 
     /* label_645: 标签 | "烹饪时间：" | (141,270) | 175x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_645, 141, 270);
-    lv_obj_set_size(pg->label_645, 175, 32);
+    lv_obj_set_pos(pg->label_645, 146, 270);
+    lv_obj_set_size(pg->label_645, 180, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
     lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 62, 53);
+    lv_obj_set_size(pg->hour, 80, 53);
 
     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
     /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->min, 58, 53);
+    lv_obj_set_size(pg->min, 90, 53);
 
     /* label_648: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_648, 368, 270);
@@ -7790,23 +7790,23 @@ void lasagna_set_lang_tune(void)
 
     /* label_650: 标签 | "烤架位置 3" | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_650, 232, 385);
-    lv_obj_set_size(pg->label_650, 148, 32);
+    lv_obj_set_size(pg->label_650, 220, 32);
 
     /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
     /* label_651: 标签 | "延" | (840,154) | 26x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_651, 840, 154);
-    lv_obj_set_size(pg->label_651, 26, 32);
+    lv_obj_set_pos(pg->label_651, 882, 154);
+    lv_obj_set_size(pg->label_651, 100, 32);
 
     /* label_652: 标签 | "迟" | (930,154) | 26x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_652, 930, 154);
     lv_obj_set_size(pg->label_652, 26, 32);
 
     /* label_653: 标签 | "自动保温" | (831,270) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_653, 831, 270);
-    lv_obj_set_size(pg->label_653, 130, 32);
+    lv_obj_set_pos(pg->label_653, 714, 270);
+    lv_obj_set_size(pg->label_653, 250, 32);
 
     /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 144);
@@ -7817,8 +7817,8 @@ void lasagna_set_lang_tune(void)
     lv_obj_set_size(pg->offcontain, 135, 53);
 
     /* temp: 标签 | "230" | (315,141) | 83x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->temp, 315, 141);
-    lv_obj_set_size(pg->temp, 83, 53);
+    lv_obj_set_pos(pg->temp, 268, 142);
+    lv_obj_set_size(pg->temp, 120, 53);
 
     /* label_655: 标签 | "确 定" | (1010,39) | 85x36 | font taiwanpearl_regular_36 */
     lv_obj_set_pos(pg->label_655, 1010, 39);
@@ -7833,12 +7833,12 @@ void lasagna_set_lang_tune(void)
     lv_obj_set_size(pg->oncontain, 135, 53);
 
     /* icon3: 标签 | "℃" | (396,157) | 32x30 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->icon3, 396, 157);
-    lv_obj_set_size(pg->icon3, 32, 30);
+    lv_obj_set_pos(pg->icon3, 352, 157);
+    lv_obj_set_size(pg->icon3, 50, 30);
 
     /* icon2: 标签 | "℃" | (369,157) | 32x30 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->icon2, 369, 157);
-    lv_obj_set_size(pg->icon2, 32, 30);
+    lv_obj_set_size(pg->icon2, 50, 30);
 
 }
 
@@ -7857,7 +7857,7 @@ void lasagna_setting_lang_tune(void)
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->timelabel, 907, 157);
-    lv_obj_set_size(pg->timelabel, 235, 60);
+    lv_obj_set_size(pg->timelabel, 250, 60);
 
     /* container_29: 容器 | (0,0) | 1280x480 */
     lv_obj_set_pos(pg->container_29, 0, 0);
@@ -7868,10 +7868,10 @@ void lasagna_setting_lang_tune(void)
 
     /* label_663: 标签 | "烹饪时间" | (373,136) | 135x30 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_663, 373, 136);
-    lv_obj_set_size(pg->label_663, 135, 30);
+    lv_obj_set_size(pg->label_663, 160, 30);
 
     /* hour: 标签 | "00" | (266,212) | 102x46 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->hour, 266, 212);
+    lv_obj_set_pos(pg->hour, 266, 214);
     lv_obj_set_size(pg->hour, 102, 46);
 
     /* label_668: 标签 | "时" | (340,228) | 37x30 | font taiwanpearl_regular_30 */
@@ -7879,7 +7879,7 @@ void lasagna_setting_lang_tune(void)
     lv_obj_set_size(pg->label_668, 37, 30);
 
     /* hourline: 图片 | (291,269) | img: settingline3.png */
-    lv_obj_set_pos(pg->hourline, 291, 269);
+    lv_obj_set_pos(pg->hourline, 288, 269);
 
     /* min: 标签 | "00" | (483,212) | 102x46 | font taiwanpearl_regular_48 | 动态定位(需微调见文件头模板) */
     /* 位置由业务动态控制, 微调按文件头模板 */
@@ -7890,7 +7890,7 @@ void lasagna_setting_lang_tune(void)
     lv_obj_set_size(pg->label_669, 37, 30);
 
     /* minline: 图片 | (508,269) | img: settingline3.png */
-    lv_obj_set_pos(pg->minline, 508, 269);
+    lv_obj_set_pos(pg->minline, 505, 269);
 
     /* button_200: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->button_200, 959, 295);
@@ -8265,23 +8265,23 @@ void menu_set_lang_tune(void)
 
     /* label_252: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_252, 165, 157);
-    lv_obj_set_size(pg->label_252, 26, 32);
+    lv_obj_set_size(pg->label_252, 120, 32);
 
     /* label_253: 标签 | "度：" | (252,157) | 64x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_253, 252, 157);
     lv_obj_set_size(pg->label_253, 64, 32);
 
     /* label_254: 标签 | "烹饪时间：" | (141,270) | 175x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_254, 141, 270);
-    lv_obj_set_size(pg->label_254, 175, 32);
+    lv_obj_set_pos(pg->label_254, 146, 270);
+    lv_obj_set_size(pg->label_254, 180, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
     lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 62, 53);
+    lv_obj_set_size(pg->hour, 80, 53);
 
     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
     /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->min, 58, 53);
+    lv_obj_set_size(pg->min, 90, 53);
 
     /* label_257: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_257, 368, 270);
@@ -8296,7 +8296,7 @@ void menu_set_lang_tune(void)
 
     /* label_259: 标签 | "烤架位置 3" | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_259, 232, 385);
-    lv_obj_set_size(pg->label_259, 148, 32);
+    lv_obj_set_size(pg->label_259, 220, 32);
 
     /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
@@ -8304,15 +8304,16 @@ void menu_set_lang_tune(void)
 
     /* label_260: 标签 | "延" | (840,154) | 26x32 | font taiwanpearl_regular_30 | 动态定位(需微调见文件头模板) */
     /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->label_260, 26, 32);
+    lv_obj_set_pos(pg->label_260, 882, 154);
+    lv_obj_set_size(pg->label_260, 100, 32);
 
     /* label_261: 标签 | "迟" | (930,154) | 26x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_261, 930, 154);
     lv_obj_set_size(pg->label_261, 26, 32);
 
     /* label_262: 标签 | "自动保温" | (831,270) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_262, 831, 270);
-    lv_obj_set_size(pg->label_262, 130, 32);
+    lv_obj_set_pos(pg->label_262, 714, 270);
+    lv_obj_set_size(pg->label_262, 250, 32);
 
     /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 144);
@@ -8323,8 +8324,8 @@ void menu_set_lang_tune(void)
     lv_obj_set_size(pg->offcontain, 135, 53);
 
     /* temp: 标签 | "210" | (315,141) | 83x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->temp, 315, 141);
-    lv_obj_set_size(pg->temp, 83, 53);
+    lv_obj_set_pos(pg->temp, 268, 142);
+    lv_obj_set_size(pg->temp, 120, 53);
 
     /* label_264: 标签 | "确 定" | (1010,39) | 85x36 | font taiwanpearl_regular_36 */
     lv_obj_set_pos(pg->label_264, 1010, 39);
@@ -8339,12 +8340,12 @@ void menu_set_lang_tune(void)
     lv_obj_set_size(pg->oncontain, 135, 53);
 
     /* icon3: 标签 | "℃" | (396,157) | 32x30 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->icon3, 396, 157);
-    lv_obj_set_size(pg->icon3, 32, 30);
+    lv_obj_set_pos(pg->icon3, 352, 157);
+    lv_obj_set_size(pg->icon3, 50, 30);
 
     /* icon2: 标签 | "℃" | (369,157) | 32x30 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->icon2, 369, 157);
-    lv_obj_set_size(pg->icon2, 32, 30);
+    lv_obj_set_size(pg->icon2, 50, 30);
 
 }
 
@@ -8630,31 +8631,31 @@ void pizza3_menu_lang_tune(void)
     lv_obj_set_pos(pg->image_356, 24, 117);
 
     /* label_764: 标签 | "烹饪时间" | (578,139) | 125x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_764, 578, 139);
-    lv_obj_set_size(pg->label_764, 125, 32);
+    lv_obj_set_pos(pg->label_764, 571, 139);
+    lv_obj_set_size(pg->label_764, 230, 32);
 
     /* hour: 标签 | "00" | (482,248) | 84x72 | font taiwanpearl_regular_72 */
-    lv_obj_set_pos(pg->hour, 482, 248);
-    lv_obj_set_size(pg->hour, 84, 72);
+    lv_obj_set_pos(pg->hour, 477, 248);
+    lv_obj_set_size(pg->hour, 100, 72);
 
     /* label_766: 标签 | "时" | (562,280) | 38x32 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->label_766, 562, 280);
+    lv_obj_set_pos(pg->label_766, 562, 278);
     lv_obj_set_size(pg->label_766, 38, 32);
 
     /* label_767: 标签 | "分" | (762,280) | 38x32 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->label_767, 762, 280);
+    lv_obj_set_pos(pg->label_767, 762, 278);
     lv_obj_set_size(pg->label_767, 38, 32);
 
     /* min: 标签 | "30" | (682,248) | 84x72 | font taiwanpearl_regular_72 | 动态定位(需微调见文件头模板) */
     /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->min, 84, 72);
+    lv_obj_set_size(pg->min, 100, 72);
 
     /* label_769: 标签 | "披萨" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_769, 24, 24);
     lv_obj_set_size(pg->label_769, 144, 32);
 
     /* label_770: 标签 | "下一步" | (996,39) | 117x32 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->label_770, 996, 39);
+    lv_obj_set_pos(pg->label_770, 1008, 41);
     lv_obj_set_size(pg->label_770, 117, 32);
 
     /* hourline: 图片 | (480,327) | img: underline_120x4.png */
@@ -8684,23 +8685,23 @@ void pizza3_set_lang_tune(void)
 
     /* label_772: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_772, 165, 157);
-    lv_obj_set_size(pg->label_772, 26, 32);
+    lv_obj_set_size(pg->label_772, 120, 32);
 
     /* label_773: 标签 | "度：" | (252,157) | 64x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_773, 252, 157);
     lv_obj_set_size(pg->label_773, 64, 32);
 
     /* label_774: 标签 | "烹饪时间：" | (141,270) | 175x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_774, 141, 270);
-    lv_obj_set_size(pg->label_774, 175, 32);
+    lv_obj_set_pos(pg->label_774, 146, 270);
+    lv_obj_set_size(pg->label_774, 180, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
     lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 62, 53);
+    lv_obj_set_size(pg->hour, 80, 53);
 
     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
     /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->min, 58, 53);
+    lv_obj_set_size(pg->min, 90, 53);
 
     /* label_777: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_777, 368, 270);
@@ -8715,23 +8716,23 @@ void pizza3_set_lang_tune(void)
 
     /* label_779: 标签 | "烤架位置 3" | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_779, 232, 385);
-    lv_obj_set_size(pg->label_779, 148, 32);
+    lv_obj_set_size(pg->label_779, 220, 32);
 
     /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
     /* label_780: 标签 | "延" | (840,154) | 26x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_780, 840, 154);
-    lv_obj_set_size(pg->label_780, 26, 32);
+    lv_obj_set_pos(pg->label_780, 882, 154);
+    lv_obj_set_size(pg->label_780, 100, 32);
 
     /* label_781: 标签 | "迟" | (930,154) | 26x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_781, 930, 154);
     lv_obj_set_size(pg->label_781, 26, 32);
 
     /* label_782: 标签 | "自动保温" | (831,270) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_782, 831, 270);
-    lv_obj_set_size(pg->label_782, 130, 32);
+    lv_obj_set_pos(pg->label_782, 714, 270);
+    lv_obj_set_size(pg->label_782, 250, 32);
 
     /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 144);
@@ -8742,8 +8743,8 @@ void pizza3_set_lang_tune(void)
     lv_obj_set_size(pg->offcontain, 135, 53);
 
     /* temp: 标签 | "250" | (315,141) | 83x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->temp, 315, 141);
-    lv_obj_set_size(pg->temp, 83, 53);
+    lv_obj_set_pos(pg->temp, 268, 142);
+    lv_obj_set_size(pg->temp, 120, 53);
 
     /* label_784: 标签 | "确 定" | (1010,39) | 85x36 | font taiwanpearl_regular_36 */
     lv_obj_set_pos(pg->label_784, 1010, 39);
@@ -8758,12 +8759,12 @@ void pizza3_set_lang_tune(void)
     lv_obj_set_size(pg->oncontain, 135, 53);
 
     /* icon3: 标签 | "℃" | (396,157) | 32x30 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->icon3, 396, 157);
-    lv_obj_set_size(pg->icon3, 32, 30);
+    lv_obj_set_pos(pg->icon3, 352, 157);
+    lv_obj_set_size(pg->icon3,50, 30);
 
     /* icon2: 标签 | "℃" | (369,157) | 32x30 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->icon2, 369, 157);
-    lv_obj_set_size(pg->icon2, 32, 30);
+    lv_obj_set_size(pg->icon2, 50, 30);
 
 }
 
@@ -9556,25 +9557,25 @@ void pizza_set_lang_tune(void)
     lv_obj_set_size(pg->label_203, 160, 32);   /* 对齐 top_bbq 系排版 */
 
     /* label_204: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_204, 163, 155);   /* 对齐 top_bbq 系排版 */
-    lv_obj_set_size(pg->label_204, 100, 32);   /* 对齐 top_bbq 系排版 */
+    lv_obj_set_pos(pg->label_204, 165, 157);   /* 对齐 top_bbq 系排版 */
+    lv_obj_set_size(pg->label_204, 120, 32);   /* 对齐 top_bbq 系排版 */
 
     /* label_205: 标签 | "度：" | (252,157) | 64x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_205, 252, 157);
     lv_obj_set_size(pg->label_205, 64, 32);
 
     /* label_206: 标签 | "烹饪时间：" | (141,270) | 175x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_206, 150, 270);   /* 对齐 top_bbq 系排版 */
-    lv_obj_set_size(pg->label_206, 175, 32);
+    lv_obj_set_pos(pg->label_206, 146, 270);   /* 对齐 top_bbq 系排版 */
+    lv_obj_set_size(pg->label_206, 180, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
     lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 62, 53);
+    lv_obj_set_size(pg->hour, 80, 53);
 
     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
     /* 位置由业务动态控制, 微调按文件头模板 */
     // lv_obj_set_pos(pg->min, 317, 258);
-    lv_obj_set_size(pg->min, 68, 66);   /* 对齐 air_set */
+    lv_obj_set_size(pg->min, 90, 53);   /* 对齐 air_set */
 
     /* label_209: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_209, 368, 270);
@@ -9589,23 +9590,23 @@ void pizza_set_lang_tune(void)
 
     /* label_211: 标签 | "烤架位置 3" | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_211, 232, 385);
-    lv_obj_set_size(pg->label_211, 148, 32);
+    lv_obj_set_size(pg->label_211, 220, 32);
 
     /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
     /* label_212: 标签 | "延" | (840,154) | 26x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_212, 840, 154);
-    lv_obj_set_size(pg->label_212, 26, 32);
+    lv_obj_set_pos(pg->label_212, 882, 154);
+    lv_obj_set_size(pg->label_212, 100, 32);
 
     /* label_213: 标签 | "迟" | (930,154) | 26x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_213, 930, 154);
     lv_obj_set_size(pg->label_213, 26, 32);
 
     /* label_214: 标签 | "自动保温" | (831,270) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_214, 831, 270);
-    lv_obj_set_size(pg->label_214, 130, 32);
+    lv_obj_set_pos(pg->label_214, 714, 270);
+    lv_obj_set_size(pg->label_214, 250, 32);
 
     /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 144);
@@ -9616,8 +9617,8 @@ void pizza_set_lang_tune(void)
     lv_obj_set_size(pg->offcontain, 135, 53);
 
     /* temp: 标签 | "210" | (315,141) | 83x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->temp, 269, 143);   /* 对齐 air_set */
-    lv_obj_set_size(pg->temp, 100, 53);   /* 对齐 air_set */
+    lv_obj_set_pos(pg->temp, 268, 142);   /* 对齐 air_set */
+    lv_obj_set_size(pg->temp, 120, 53);   /* 对齐 air_set */
 
     /* label_216: 标签 | "确 定" | (1010,39) | 85x36 | font taiwanpearl_regular_36 */
     lv_obj_set_pos(pg->label_216, 1010, 39);
@@ -9632,12 +9633,12 @@ void pizza_set_lang_tune(void)
     lv_obj_set_size(pg->oncontain, 135, 53);
 
     /* icon3: 标签 | "℃" | (396,157) | 32x30 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->icon3, 355, 157);   /* 对齐 air_set */
-    lv_obj_set_size(pg->icon3, 32, 30);
+    lv_obj_set_pos(pg->icon3, 352, 157);   /* 对齐 air_set */
+    lv_obj_set_size(pg->icon3, 50, 30);
 
     /* icon2: 标签 | "℃" | (369,157) | 32x30 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->icon2, 327, 157);   /* 对齐 air_set */
-    lv_obj_set_size(pg->icon2, 32, 30);
+    lv_obj_set_pos(pg->icon2, 369, 157);   /* 对齐 air_set */
+    lv_obj_set_size(pg->icon2, 50, 30);
 
 }
 
@@ -9974,7 +9975,7 @@ static void preheatmenu_common(void)
     /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
-    lv_obj_set_pos(pg->next, 981, 22);
+    lv_obj_set_pos(pg->next, 979, 22);
     lv_obj_set_size(pg->next, 138, 70);
 
     /* image_33: 图片 | (24,118) | img: preheatbg.png */
@@ -9982,11 +9983,11 @@ static void preheatmenu_common(void)
 
     /* label_61: 标签 | "温度" | (608,139) | 64x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_61, 608, 139);
-    lv_obj_set_size(pg->label_61, 64, 32);
+    lv_obj_set_size(pg->label_61, 80, 32);
 
     /* temp: 标签 | "180" | (562,248) | 120x72 | font taiwanpearl_regular_72 */
-    lv_obj_set_pos(pg->temp, 562, 248);
-    lv_obj_set_size(pg->temp, 120, 72);
+    lv_obj_set_pos(pg->temp, 511, 251);
+    lv_obj_set_size(pg->temp, 170, 72);
 
     /* label_63: 标签 | "℃" | (682,280) | 38x32 | font taiwanpearl_regular_36 */
     lv_obj_set_pos(pg->label_63, 682, 280);
@@ -9997,11 +9998,13 @@ static void preheatmenu_common(void)
     lv_obj_set_size(pg->label_69, 144, 32);
 
     /* label_70: 标签 | "下一步" | (996,39) | 117x32 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->label_70, 996, 39);
+    lv_obj_set_pos(pg->label_70, 1009, 41);
     lv_obj_set_size(pg->label_70, 117, 32);
 
     /* line3: 图片 | (562,327) | img: underline.png */
-    lv_obj_set_pos(pg->line3, 562, 327);
+	lv_img_set_src(pg->line3, LVGL_IMAGE_PATH(underline_179x4.png));
+    lv_obj_set_pos(pg->line3, 555, 327);
+	lv_obj_set_size(pg->line3, 164, 5);
 
     /* line2: 图片 | (599,327) | img: underline_120x4.png */
     lv_obj_set_pos(pg->line2, 599, 327);
@@ -12693,31 +12696,31 @@ void strudel_menu_lang_tune(void)
     lv_obj_set_pos(pg->image_324, 24, 117);
 
     /* label_682: 标签 | "烹饪时间" | (578,139) | 125x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_682, 578, 139);
-    lv_obj_set_size(pg->label_682, 125, 32);
+    lv_obj_set_pos(pg->label_682, 571, 139);
+    lv_obj_set_size(pg->label_682, 230, 32);
 
     /* hour: 标签 | "00" | (482,248) | 84x72 | font taiwanpearl_regular_72 */
-    lv_obj_set_pos(pg->hour, 482, 248);
-    lv_obj_set_size(pg->hour, 84, 72);
+    lv_obj_set_pos(pg->hour, 477, 248);
+    lv_obj_set_size(pg->hour, 100, 72);
 
     /* label_684: 标签 | "时" | (562,280) | 38x32 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->label_684, 562, 280);
+    lv_obj_set_pos(pg->label_684, 562, 278);
     lv_obj_set_size(pg->label_684, 38, 32);
 
     /* label_685: 标签 | "分" | (762,280) | 38x32 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->label_685, 762, 280);
+    lv_obj_set_pos(pg->label_685, 762, 278);
     lv_obj_set_size(pg->label_685, 38, 32);
 
     /* min: 标签 | "30" | (682,248) | 84x72 | font taiwanpearl_regular_72 | 动态定位(需微调见文件头模板) */
     /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->min, 84, 72);
+    lv_obj_set_size(pg->min, 100, 72);
 
     /* label_687: 标签 | "果馅卷" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_687, 24, 24);
     lv_obj_set_size(pg->label_687, 144, 32);
 
     /* label_688: 标签 | "下一步" | (996,39) | 117x32 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->label_688, 996, 39);
+    lv_obj_set_pos(pg->label_688, 1008, 41);
     lv_obj_set_size(pg->label_688, 117, 32);
 
     /* hourline: 图片 | (480,327) | img: underline_120x4.png */
@@ -12747,23 +12750,23 @@ void strudel_set_lang_tune(void)
 
     /* label_690: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_690, 165, 157);
-    lv_obj_set_size(pg->label_690, 26, 32);
+    lv_obj_set_size(pg->label_690, 120, 32);
 
     /* label_691: 标签 | "度：" | (252,157) | 64x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_691, 252, 157);
     lv_obj_set_size(pg->label_691, 64, 32);
 
     /* label_692: 标签 | "烹饪时间：" | (141,270) | 175x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_692, 141, 270);
-    lv_obj_set_size(pg->label_692, 175, 32);
+    lv_obj_set_pos(pg->label_692, 146, 270);
+    lv_obj_set_size(pg->label_692, 180, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
     lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 62, 53);
+    lv_obj_set_size(pg->hour, 80, 53);
 
     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
     /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->min, 58, 53);
+    lv_obj_set_size(pg->min, 90, 53);
 
     /* label_695: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_695, 368, 270);
@@ -12778,23 +12781,23 @@ void strudel_set_lang_tune(void)
 
     /* label_697: 标签 | "烤架位置 3" | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_697, 232, 385);
-    lv_obj_set_size(pg->label_697, 148, 32);
+    lv_obj_set_size(pg->label_697, 220, 32);
 
     /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
     /* label_698: 标签 | "延" | (840,154) | 26x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_698, 840, 154);
-    lv_obj_set_size(pg->label_698, 26, 32);
+    lv_obj_set_pos(pg->label_698, 882, 154);
+    lv_obj_set_size(pg->label_698, 100, 32);
 
     /* label_699: 标签 | "迟" | (930,154) | 26x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_699, 930, 154);
     lv_obj_set_size(pg->label_699, 26, 32);
 
     /* label_700: 标签 | "自动保温" | (831,270) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_700, 831, 270);
-    lv_obj_set_size(pg->label_700, 130, 32);
+    lv_obj_set_pos(pg->label_700, 714, 270);
+    lv_obj_set_size(pg->label_700, 250, 32);
 
     /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 144);
@@ -12805,8 +12808,8 @@ void strudel_set_lang_tune(void)
     lv_obj_set_size(pg->offcontain, 135, 53);
 
     /* temp: 标签 | "200" | (315,141) | 83x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->temp, 315, 141);
-    lv_obj_set_size(pg->temp, 83, 53);
+    lv_obj_set_pos(pg->temp, 268, 142);
+    lv_obj_set_size(pg->temp, 120, 53);
 
     /* label_702: 标签 | "确 定" | (1010,39) | 85x36 | font taiwanpearl_regular_36 */
     lv_obj_set_pos(pg->label_702, 1010, 39);
@@ -12821,12 +12824,12 @@ void strudel_set_lang_tune(void)
     lv_obj_set_size(pg->oncontain, 135, 53);
 
     /* icon3: 标签 | "℃" | (396,157) | 32x30 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->icon3, 396, 157);
-    lv_obj_set_size(pg->icon3, 32, 30);
+    lv_obj_set_pos(pg->icon3, 352, 157);
+    lv_obj_set_size(pg->icon3, 50, 30);
 
     /* icon2: 标签 | "℃" | (369,157) | 32x30 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->icon2, 369, 157);
-    lv_obj_set_size(pg->icon2, 32, 30);
+    lv_obj_set_size(pg->icon2, 50, 30);
 
 }
 
@@ -14262,20 +14265,20 @@ void updown_bbq_menu_low_lang_tune(void)
     lv_obj_set_size(pg->next, 138, 70);
 
     /* label_57: 标签 | "下一步" | (996,39) | 108x32 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->label_57, 996, 39);
+    lv_obj_set_pos(pg->label_57, 996, 41);
     lv_obj_set_size(pg->label_57, 108, 32);
 
     /* label_60: 标签 | "上下烧烤" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_60, 24, 24);
-    lv_obj_set_size(pg->label_60, 144, 32);
+    lv_obj_set_size(pg->label_60, 150, 32);
 
     /* label_7: 标签 | "温度" | (608,139) | 60x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_7, 608, 139);
-    lv_obj_set_size(pg->label_7, 60, 32);
+    lv_obj_set_pos(pg->label_7, 595, 139);
+    lv_obj_set_size(pg->label_7, 100, 32);
 
     /* temp: 标签 | "180" | (562,248) | 120x72 | font taiwanpearl_regular_72 */
-    lv_obj_set_pos(pg->temp, 562, 248);
-    lv_obj_set_size(pg->temp, 120, 72);
+    lv_obj_set_pos(pg->temp, 533, 250);
+    lv_obj_set_size(pg->temp, 150, 72);
 
     /* label_9: 标签 | "℃" | (682,280) | 38x32 | font taiwanpearl_regular_36 */
     lv_obj_set_pos(pg->label_9, 682, 280);
@@ -14386,20 +14389,20 @@ void updown_bbq_menu_top_lang_tune(void)
     lv_obj_set_size(pg->next, 138, 70);
 
     /* label_50: 标签 | "下一步" | (996,39) | 108x32 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->label_50, 996, 39);
+    lv_obj_set_pos(pg->label_50, 996, 41);
     lv_obj_set_size(pg->label_50, 108, 32);
 
     /* label_49: 标签 | "上下烧烤" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_49, 24, 24);
-    lv_obj_set_size(pg->label_49, 144, 32);
+    lv_obj_set_size(pg->label_49, 150, 32);
 
     /* label_1: 标签 | "温度" | (608,139) | 60x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_1, 608, 139);
-    lv_obj_set_size(pg->label_1, 60, 32);
+    lv_obj_set_pos(pg->label_1, 595, 139);
+    lv_obj_set_size(pg->label_1, 100, 32);
 
     /* temp: 标签 | "180" | (562,248) | 120x72 | font taiwanpearl_regular_72 */
-    lv_obj_set_pos(pg->temp, 562, 248);
-    lv_obj_set_size(pg->temp, 120, 72);
+    lv_obj_set_pos(pg->temp, 533, 250);
+    lv_obj_set_size(pg->temp, 150, 72);
 
     /* label_3: 标签 | "℃" | (682,280) | 38x32 | font taiwanpearl_regular_36 */
     lv_obj_set_pos(pg->label_3, 682, 280);
@@ -14726,7 +14729,7 @@ void updown_bbq_setting_lang_tune(void)
     lv_obj_set_size(pg->icon3_label2, 37, 30);
 
     /* longdown_templine_img: 图片 | (299,269) | img: settingline1.png */
-    lv_obj_set_pos(pg->longdown_templine_img, 299, 269);
+    lv_obj_set_pos(pg->longdown_templine_img, 301, 269);
 
     /* hour_label: 标签 | "00" | (450,213) | 102x46 | font taiwanpearl_regular_48 */
     lv_obj_set_pos(pg->hour_label, 451, 217);
@@ -14755,17 +14758,17 @@ void updown_bbq_setting_lang_tune(void)
     lv_obj_set_size(pg->icon2_label1, 37, 30);
 
     /* dirup2_label: 标签 | "↑" | (161,229) | 37x30 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->dirup2_label, 161, 229);
+    lv_obj_set_pos(pg->dirup2_label, 150, 229);
     lv_obj_set_size(pg->dirup2_label, 37, 30);
 
     /* shortup_templine_img: 图片 | (156,269) | img: settingline2.png */
-    lv_obj_set_pos(pg->shortup_templine_img, 156, 269);
+    lv_obj_set_pos(pg->shortup_templine_img, 159, 269);
 
     /* shordown_templine_img: 图片 | (306,269) | img: settingline2.png */
-    lv_obj_set_pos(pg->shordown_templine_img, 306, 269);
+    lv_obj_set_pos(pg->shordown_templine_img, 310, 269);
 
     /* dirdown2_label: 标签 | "↓" | (311,229) | 37x30 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->dirdown2_label, 311, 229);
+    lv_obj_set_pos(pg->dirdown2_label, 300, 229);
     lv_obj_set_size(pg->dirdown2_label, 37, 30);
 
     /* icon2_label2: 标签 | "℃" | (386,229) | 37x30 | font taiwanpearl_regular_30 */
@@ -15495,23 +15498,23 @@ void west_set_lang_tune(void)
 
     /* label_155: 标签 | "温" | (165,157) | 26x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_155, 165, 157);
-    lv_obj_set_size(pg->label_155, 26, 32);
+    lv_obj_set_size(pg->label_155, 120, 32);
 
     /* label_156: 标签 | "度：" | (252,157) | 64x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_156, 252, 157);
     lv_obj_set_size(pg->label_156, 64, 32);
 
     /* label_157: 标签 | "烹饪时间：" | (141,270) | 175x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_157, 141, 270);
-    lv_obj_set_size(pg->label_157, 175, 32);
+    lv_obj_set_pos(pg->label_157, 146, 270);
+    lv_obj_set_size(pg->label_157, 180, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
     lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 62, 53);
+    lv_obj_set_size(pg->hour, 80, 53);
 
     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
     /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->min, 58, 53);
+    lv_obj_set_size(pg->min, 90, 53);
 
     /* label_160: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_160, 368, 270);
@@ -15526,23 +15529,23 @@ void west_set_lang_tune(void)
 
     /* label_162: 标签 | "烤架位置 3" | (232,385) | 148x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_162, 232, 385);
-    lv_obj_set_size(pg->label_162, 148, 32);
+    lv_obj_set_size(pg->label_162, 220, 32);
 
     /* sure: 按钮 | (983,22) | 135x71 | font taiwanpearl_regular_36 | bg: surebk.png */
     lv_obj_set_pos(pg->sure, 983, 22);
     lv_obj_set_size(pg->sure, 135, 71);
 
     /* label_164: 标签 | "延" | (840,154) | 26x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_164, 840, 154);
-    lv_obj_set_size(pg->label_164, 26, 32);
+    lv_obj_set_pos(pg->label_164, 882, 154);
+    lv_obj_set_size(pg->label_164, 100, 32);
 
     /* label_165: 标签 | "迟" | (930,154) | 26x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_165, 930, 154);
     lv_obj_set_size(pg->label_165, 26, 32);
 
     /* label_166: 标签 | "自动保温" | (831,270) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_166, 831, 270);
-    lv_obj_set_size(pg->label_166, 130, 32);
+    lv_obj_set_pos(pg->label_166, 714, 270);
+    lv_obj_set_size(pg->label_166, 250, 32);
 
     /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offdelay, 983, 144);
@@ -15553,8 +15556,8 @@ void west_set_lang_tune(void)
     lv_obj_set_size(pg->offcontain, 135, 53);
 
     /* temp: 标签 | "170" | (315,141) | 83x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->temp, 315, 141);
-    lv_obj_set_size(pg->temp, 83, 53);
+    lv_obj_set_pos(pg->temp, 268, 141);
+    lv_obj_set_size(pg->temp, 120, 53);
 
     /* label_168: 标签 | "确 定" | (1010,39) | 85x36 | font taiwanpearl_regular_36 */
     lv_obj_set_pos(pg->label_168, 1010, 39);
@@ -15569,12 +15572,12 @@ void west_set_lang_tune(void)
     lv_obj_set_size(pg->oncontain, 135, 53);
 
     /* icon3: 标签 | "℃" | (396,157) | 32x30 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->icon3, 396, 157);
-    lv_obj_set_size(pg->icon3, 32, 30);
+    lv_obj_set_pos(pg->icon3, 352, 157);
+    lv_obj_set_size(pg->icon3, 50, 30);
 
     /* icon2: 标签 | "℃" | (369,157) | 32x30 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->icon2, 369, 157);
-    lv_obj_set_size(pg->icon2, 32, 30);
+    lv_obj_set_size(pg->icon2, 50, 30);
 
 }
 

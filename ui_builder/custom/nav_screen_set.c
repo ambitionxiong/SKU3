@@ -302,11 +302,19 @@ static void on_set_demo_click(lv_event_t *e)
     static const char *const opts[2] = { "关", "开" };
     sel_popup_create(SEL_WHERE_DEMO, SET_Data.Set_DemoMode, 2, "演示模式", opts);
 }
+/* SYSZ 声音设置行：进入声音设置子页（nav_loudness.c） */
+static void on_set_sysz_click(lv_event_t *e)
+{
+    (void)e;
+    jump_to_loudness();
+}
 
 void screen_set_rebuild(void)
 {
-    /* 防重入：已在设置页 */
-    if (depth > 0 && page_stack[depth - 1] == PAGE_SCREEN_SET) return;
+    /* 防重入：覆盖层对象仍存活（jump 重复进入）。从子页（声音设置等）返回时
+     * 栈顶同样是 PAGE_SCREEN_SET，但跳转子页时对象已被 screen_set_reset 清掉，
+     * 需正常重建——故按对象判断而非栈顶页 */
+    if (screen_SET.obj) return;
     /* 记录进入前是否运行态:返回时区分回原页面(运行中)还是回待机页(非运行) */
     s_was_running = (g_send.iface_status == IFACE_COOKING ||
                      g_send.iface_status == IFACE_PAUSE ||
@@ -379,6 +387,7 @@ void screen_set_rebuild(void)
     lv_obj_add_event_cb(ss->WDDW_Btn, on_set_wddw_click, LV_EVENT_CLICKED, NULL);
     lv_obj_add_event_cb(ss->DJ_Time_Btn, on_set_djtime_click, LV_EVENT_CLICKED, NULL);
     lv_obj_add_event_cb(ss->Demo_Btn, on_set_demo_click, LV_EVENT_CLICKED, NULL);
+    lv_obj_add_event_cb(ss->SYSZ_Btn, on_set_sysz_click, LV_EVENT_CLICKED, NULL);
     /* ③ 焦点 */
     s_prev_group = current_group;
     current_group = g_screen_set;
@@ -390,9 +399,6 @@ void jump_to_screen_set(void)
 {
     screen_set_rebuild();   /* 含防重入/运行态记录/覆盖层构建 */
     page_push(PAGE_SCREEN_SET);
-    printf("[screen_set] enter (overlay, running=%d)
-", s_was_running);
-}
     printf("[screen_set] enter (overlay, running=%d)\n", s_was_running);
 }
 
