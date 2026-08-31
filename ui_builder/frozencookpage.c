@@ -42,7 +42,7 @@ void frozencookpage_create(ui_manager_t *ui)
     // Init scr->Lasagna
     scr->Lasagna = lv_btn_create(scr->obj);
     lv_obj_t *Lasagna_label = lv_label_create(scr->Lasagna);
-    lv_label_set_text(Lasagna_label, "");
+    lv_label_set_text(Lasagna_label, "千层面");
     lv_obj_align(Lasagna_label, LV_ALIGN_CENTER, 0, 0);
     lv_obj_set_pos(scr->Lasagna, 8, 62);
     lv_obj_set_size(scr->Lasagna, 437, 221);
@@ -50,7 +50,7 @@ void frozencookpage_create(ui_manager_t *ui)
     // Set style of scr->Lasagna
     lv_obj_set_style_bg_opa(scr->Lasagna, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->Lasagna, LVGL_IMAGE_PATH(div6bg80.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->Lasagna, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->Lasagna, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->Lasagna, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->Lasagna, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->Lasagna, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -59,7 +59,7 @@ void frozencookpage_create(ui_manager_t *ui)
     // Init scr->Strudel
     scr->Strudel = lv_btn_create(scr->obj);
     lv_obj_t *Strudel_label = lv_label_create(scr->Strudel);
-    lv_label_set_text(Strudel_label, "");
+    lv_label_set_text(Strudel_label, "果馅卷");
     lv_obj_align(Strudel_label, LV_ALIGN_CENTER, 0, 0);
     lv_obj_set_pos(scr->Strudel, 422, 62);
     lv_obj_set_size(scr->Strudel, 437, 221);
@@ -67,7 +67,7 @@ void frozencookpage_create(ui_manager_t *ui)
     // Set style of scr->Strudel
     lv_obj_set_style_bg_opa(scr->Strudel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->Strudel, LVGL_IMAGE_PATH(div6bg80.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->Strudel, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->Strudel, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->Strudel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->Strudel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->Strudel, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -76,7 +76,7 @@ void frozencookpage_create(ui_manager_t *ui)
     // Init scr->bread
     scr->bread = lv_btn_create(scr->obj);
     lv_obj_t *bread_label = lv_label_create(scr->bread);
-    lv_label_set_text(bread_label, "");
+    lv_label_set_text(bread_label, "面包");
     lv_obj_align(bread_label, LV_ALIGN_CENTER, 0, 0);
     lv_obj_set_pos(scr->bread, 836, 62);
     lv_obj_set_size(scr->bread, 437, 221);
@@ -84,7 +84,7 @@ void frozencookpage_create(ui_manager_t *ui)
     // Set style of scr->bread
     lv_obj_set_style_bg_opa(scr->bread, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->bread, LVGL_IMAGE_PATH(div6bg80.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->bread, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->bread, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->bread, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->bread, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->bread, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -93,7 +93,7 @@ void frozencookpage_create(ui_manager_t *ui)
     // Init scr->pizza3
     scr->pizza3 = lv_btn_create(scr->obj);
     lv_obj_t *pizza3_label = lv_label_create(scr->pizza3);
-    lv_label_set_text(pizza3_label, "");
+    lv_label_set_text(pizza3_label, "披萨");
     lv_obj_align(pizza3_label, LV_ALIGN_CENTER, 0, 0);
     lv_obj_set_pos(scr->pizza3, 8, 255);
     lv_obj_set_size(scr->pizza3, 437, 221);
@@ -101,7 +101,7 @@ void frozencookpage_create(ui_manager_t *ui)
     // Set style of scr->pizza3
     lv_obj_set_style_bg_opa(scr->pizza3, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->pizza3, LVGL_IMAGE_PATH(div6bg80.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->pizza3, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->pizza3, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->pizza3, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->pizza3, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->pizza3, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -110,7 +110,7 @@ void frozencookpage_create(ui_manager_t *ui)
     // Init scr->chip
     scr->chip = lv_btn_create(scr->obj);
     lv_obj_t *chip_label = lv_label_create(scr->chip);
-    lv_label_set_text(chip_label, "");
+    lv_label_set_text(chip_label, "炸薯条");
     lv_obj_align(chip_label, LV_ALIGN_CENTER, 0, 0);
     lv_obj_set_pos(scr->chip, 421, 255);
     lv_obj_set_size(scr->chip, 437, 221);
@@ -118,7 +118,7 @@ void frozencookpage_create(ui_manager_t *ui)
     // Set style of scr->chip
     lv_obj_set_style_bg_opa(scr->chip, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->chip, LVGL_IMAGE_PATH(div6bg80.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->chip, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->chip, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->chip, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->chip, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->chip, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -127,7 +127,7 @@ void frozencookpage_create(ui_manager_t *ui)
     // Init scr->custom
     scr->custom = lv_btn_create(scr->obj);
     lv_obj_t *custom_label = lv_label_create(scr->custom);
-    lv_label_set_text(custom_label, "");
+    lv_label_set_text(custom_label, "自定义");
     lv_obj_align(custom_label, LV_ALIGN_CENTER, 0, 0);
     lv_obj_set_pos(scr->custom, 836, 255);
     lv_obj_set_size(scr->custom, 437, 221);
@@ -135,7 +135,7 @@ void frozencookpage_create(ui_manager_t *ui)
     // Set style of scr->custom
     lv_obj_set_style_bg_opa(scr->custom, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->custom, LVGL_IMAGE_PATH(div6bg80.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->custom, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->custom, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(scr->custom, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(scr->custom, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->custom, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
@@ -148,6 +148,7 @@ void frozencookpage_create(ui_manager_t *ui)
     lv_img_set_angle(scr->image_279, 0);
     lv_obj_set_style_img_opa(scr->image_279, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_pos(scr->image_279, 177, 111);
+    lv_obj_add_flag(scr->image_279, LV_OBJ_FLAG_HIDDEN);
 
 
 }
