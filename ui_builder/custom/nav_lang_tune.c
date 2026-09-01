@@ -254,8 +254,10 @@ void air_set_lang_tune(void)
     }
     if (pg->ondelay) {
         lv_obj_set_size(pg->ondelay, 135, 62);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    if (!delay_on) {   /* 延时已设:ondelay 背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿被英文图覆盖 */
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
     }
     if (pg->oncontain) {
         lv_obj_set_size(pg->oncontain, 135, 62);
@@ -913,8 +915,10 @@ void bottom_bbq_set_lang_tune(void)
     }
     if (pg->ondelay) {
         lv_obj_set_size(pg->ondelay, 135, 62);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    if (!delay_on) {   /* 延时已设:ondelay 背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿被英文图覆盖 */
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
     }
     if (pg->oncontain) {
         lv_obj_set_size(pg->oncontain, 135, 62);
@@ -1623,8 +1627,10 @@ void bread_set_lang_tune(void)
     }
     if (pg->ondelay) {
         lv_obj_set_size(pg->ondelay, 135, 62);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    if (!delay_on) {   /* 延时已设:ondelay 背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿被英文图覆盖 */
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
     }
     if (pg->oncontain) {
         lv_obj_set_size(pg->oncontain, 135, 62);
@@ -2161,8 +2167,10 @@ void central_bbq_set_lang_tune(void)
     }
     if (pg->ondelay) {
         lv_obj_set_size(pg->ondelay, 135, 62);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    if (!delay_on) {   /* 延时已设:ondelay 背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿被英文图覆盖 */
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
     }
     if (pg->oncontain) {
         lv_obj_set_size(pg->oncontain, 135, 62);
@@ -2908,8 +2916,10 @@ void chip_set_lang_tune(void)
     }
     if (pg->ondelay) {
         lv_obj_set_size(pg->ondelay, 135, 62);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    if (!delay_on) {   /* 延时已设:ondelay 背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿被英文图覆盖 */
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
     }
     if (pg->oncontain) {
         lv_obj_set_size(pg->oncontain, 135, 62);
@@ -3676,8 +3686,10 @@ void cookie_set_lang_tune(void)
     }
     if (pg->ondelay) {
         lv_obj_set_size(pg->ondelay, 135, 62);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    if (!delay_on) {   /* 延时已设:ondelay 背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿被英文图覆盖 */
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
     }
     if (pg->oncontain) {
         lv_obj_set_size(pg->oncontain, 135, 62);
@@ -4275,8 +4287,10 @@ void corn_set_lang_tune(void)
     }
     if (pg->ondelay) {
         lv_obj_set_size(pg->ondelay, 135, 62);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    if (!delay_on) {   /* 延时已设:ondelay 背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿被英文图覆盖 */
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
     }
     if (pg->oncontain) {
         lv_obj_set_size(pg->oncontain, 135, 62);
@@ -4749,8 +4763,10 @@ void custom_set_lang_tune(void)
     }
     if (pg->ondelay) {
         lv_obj_set_size(pg->ondelay, 135, 62);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    if (!delay_on) {   /* 延时已设:ondelay 背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿被英文图覆盖 */
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
     }
     if (pg->oncontain) {
         lv_obj_set_size(pg->oncontain, 135, 62);
@@ -5502,8 +5518,10 @@ void heatcontain_set_lang_tune(void)
     }
     if (pg->ondelay) {
         lv_obj_set_size(pg->ondelay, 135, 62);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    if (!delay_on) {   /* 延时已设:ondelay 背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿被英文图覆盖 */
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
     }
     if (pg->oncontain) {
         lv_obj_set_size(pg->oncontain, 135, 62);
@@ -6161,8 +6179,10 @@ void hot_bbq_set_lang_tune(void)
     }
     if (pg->ondelay) {
         lv_obj_set_size(pg->ondelay, 135, 62);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    if (!delay_on) {   /* 延时已设:ondelay 背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿被英文图覆盖 */
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
     }
     if (pg->oncontain) {
         lv_obj_set_size(pg->oncontain, 135, 62);
@@ -7869,8 +7889,10 @@ void hotwind_bbq_set_lang_tune(void)
     }
     if (pg->ondelay) {
         lv_obj_set_size(pg->ondelay, 135, 62);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    if (!delay_on) {   /* 延时已设:ondelay 背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿被英文图覆盖 */
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
     }
     if (pg->oncontain) {
         lv_obj_set_size(pg->oncontain, 135, 62);
@@ -8344,8 +8366,10 @@ void lasagna_set_lang_tune(void)
     }
     if (pg->ondelay) {
         lv_obj_set_size(pg->ondelay, 135, 62);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    if (!delay_on) {   /* 延时已设:ondelay 背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿被英文图覆盖 */
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
     }
     if (pg->oncontain) {
         lv_obj_set_size(pg->oncontain, 135, 62);
@@ -8892,8 +8916,10 @@ void menu_set_lang_tune(void)
     }
     if (pg->ondelay) {
         lv_obj_set_size(pg->ondelay, 135, 62);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    if (!delay_on) {   /* 延时已设:ondelay 背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿被英文图覆盖 */
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
     }
     if (pg->oncontain) {
         lv_obj_set_size(pg->oncontain, 135, 62);
@@ -9354,8 +9380,10 @@ void pizza3_set_lang_tune(void)
     }
     if (pg->ondelay) {
         lv_obj_set_size(pg->ondelay, 135, 62);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    if (!delay_on) {   /* 延时已设:ondelay 背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿被英文图覆盖 */
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
     }
     if (pg->oncontain) {
         lv_obj_set_size(pg->oncontain, 135, 62);
@@ -9825,8 +9853,10 @@ void pizza_2_set_lang_tune(void)
     }
     if (pg->ondelay) {
         lv_obj_set_size(pg->ondelay, 135, 62);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    if (!delay_on) {   /* 延时已设:ondelay 背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿被英文图覆盖 */
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
     }
     if (pg->oncontain) {
         lv_obj_set_size(pg->oncontain, 135, 62);
@@ -10321,8 +10351,10 @@ void pizza_set_lang_tune(void)
     }
     if (pg->ondelay) {
         lv_obj_set_size(pg->ondelay, 135, 62);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    if (!delay_on) {   /* 延时已设:ondelay 背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿被英文图覆盖 */
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
     }
     if (pg->oncontain) {
         lv_obj_set_size(pg->oncontain, 135, 62);
@@ -11128,8 +11160,10 @@ void rising_set_lang_tune(void)
     }
     if (pg->ondelay) {
         lv_obj_set_size(pg->ondelay, 135, 62);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    if (!delay_on) {   /* 延时已设:ondelay 背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿被英文图覆盖 */
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
     }
     if (pg->oncontain) {
         lv_obj_set_size(pg->oncontain, 135, 62);
@@ -11692,8 +11726,10 @@ void save_bbq_set_lang_tune(void)
     }
     if (pg->ondelay) {
         lv_obj_set_size(pg->ondelay, 135, 62);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    if (!delay_on) {   /* 延时已设:ondelay 背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿被英文图覆盖 */
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
     }
     if (pg->oncontain) {
         lv_obj_set_size(pg->oncontain, 135, 62);
@@ -12638,8 +12674,10 @@ void slowcook_set_lang_tune(void)
     }
     if (pg->ondelay) {
         lv_obj_set_size(pg->ondelay, 135, 62);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    if (!delay_on) {   /* 延时已设:ondelay 背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿被英文图覆盖 */
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
     }
     if (pg->oncontain) {
         lv_obj_set_size(pg->oncontain, 135, 62);
@@ -13736,8 +13774,10 @@ void strudel_set_lang_tune(void)
     }
     if (pg->ondelay) {
         lv_obj_set_size(pg->ondelay, 135, 62);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    if (!delay_on) {   /* 延时已设:ondelay 背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿被英文图覆盖 */
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
     }
     if (pg->oncontain) {
         lv_obj_set_size(pg->oncontain, 135, 62);
@@ -14312,8 +14352,10 @@ void top_bbq_set_lang_tune(void)
     }
     if (pg->ondelay_button) {
         lv_obj_set_size(pg->ondelay_button, 135, 62);
-        lv_obj_set_style_bg_img_src(pg->ondelay_button, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_img_src(pg->ondelay_button, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    if (!delay_on) {   /* 延时已设:ondelay 背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿被英文图覆盖 */
+            lv_obj_set_style_bg_img_src(pg->ondelay_button, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_img_src(pg->ondelay_button, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
     }
     if (pg->oncontain_button) {
         lv_obj_set_size(pg->oncontain_button, 135, 62);
@@ -14820,8 +14862,10 @@ void unfrozen_set_lang_tune(void)
     }
     if (pg->ondelay) {
         lv_obj_set_size(pg->ondelay, 135, 62);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    if (!delay_on) {   /* 延时已设:ondelay 背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿被英文图覆盖 */
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
     }
     if (pg->oncontain) {
         lv_obj_set_size(pg->oncontain, 135, 62);
@@ -16671,8 +16715,10 @@ void west_set_lang_tune(void)
     }
     if (pg->ondelay) {
         lv_obj_set_size(pg->ondelay, 135, 62);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    if (!delay_on) {   /* 延时已设:ondelay 背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿被英文图覆盖 */
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
     }
     if (pg->oncontain) {
         lv_obj_set_size(pg->oncontain, 135, 62);
@@ -17164,8 +17210,10 @@ void windchange_bbq_set_lang_tune(void)
     }
     if (pg->ondelay) {
         lv_obj_set_size(pg->ondelay, 135, 62);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    if (!delay_on) {   /* 延时已设:ondelay 背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿被英文图覆盖 */
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
     }
     if (pg->oncontain) {
         lv_obj_set_size(pg->oncontain, 135, 62);
