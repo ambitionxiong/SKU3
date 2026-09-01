@@ -79,7 +79,7 @@ typedef struct {
 static const int w_wing_w[] = { 400, 600, 800, 1000 };
 static const int w_wing_t[] = { 21, 24, 27, 30 };
 static const int w_fwing_w[] = { 400, 600, 800 };
-static const int w_fwing_t[] = { 22, 24, 26 };
+static const int w_fwing_t[] = { 24, 26, 28 };
 static const int w_fleg_w[]  = { 600, 800, 1000 };
 static const int w_fleg_t[]  = { 27, 30, 33 };
 static const int w_breast_w[] = { 400, 600, 800, 1000 };
@@ -508,11 +508,11 @@ int six_chick_cook_min(int weight_g)
     /* 烤香肠：独立份量表 */
     if (g_six_bread_type == SIX_MEAT_SAUSAGE) {
         static const int sw[] = { 200, 400, 600, 800 };
-        static const int st[] = { 12, 14, 16, 18 };
+        static const int st[] = { 20, 23, 26, 28 };
         for (int i = 0; i < 4; i++) {
             if (sw[i] == weight_g) return st[i];
         }
-        return 16;  /* 默认600g */
+        return 26;  /* 默认600g */
     }
     /* 烤鳕鱼/烤全鱼：独立份量表 */
     if (g_six_bread_type == SIX_FISH_COD) {

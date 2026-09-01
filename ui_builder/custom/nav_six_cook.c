@@ -135,7 +135,7 @@ static uint8_t g_six_overlay = 0;   /* 遮罩确认态 */
 static uint8_t g_six_from = SIX_PHASE_COOKING;  /* 遮罩进入源 */
 static uint8_t g_six_has_rising = 0;   /* 是否有发酵段 */
 
-#define SIX_RISING_SEC     (1 * 60)   /* 调试:临时 1 分钟,正式 45 分钟 */
+#define SIX_RISING_SEC     (45 * 60)  /* 发酵 45分钟/45℃（Excel: 如添加发酵步骤,设置为发酵45℃ 45分钟） */
 int six_rising_min(void)  { return SIX_RISING_SEC / 60; }   /* 发酵分钟(预计烹饪时间显示) */
 /* 烹饪秒数按菜: SIX_COOKING_SEC() 宏 */
 #define SIX_COOKING_SEC(cfg)    ((cfg)->cook_sec)
