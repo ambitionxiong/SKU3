@@ -14384,6 +14384,70 @@ void temptip_lang_tune(void)
 }
 
 
+/* ===== 英文: toastcolor 成熟度下划线随文本(Rare/.../Well Done)宽度自适应 =====
+   与 sixset2 degreeline 同规则(线宽=文本宽)。apply_maturity_line 按中文字数在
+   line2/line3 二选一显线(英文按字节长度也会落到不同线),两根都拉到同宽同位,显哪根都对 */
+static void toastcolor_en_mat_line_set(toastcolor_t *pg, int tw)
+{
+    if (!pg || !pg->Maturity || tw <= 0) return;
+    lv_area_t ca;
+    lv_obj_get_coords(lv_obj_get_parent(pg->Maturity), &ca);   /* scr->obj 全屏根,文本 CENTER(0,48) 水平居中 */
+    lv_obj_t *ls[2] = { pg->maturityline2, pg->maturityline3 };
+    const int base[2] = { 139, 211 };                          /* settingline3_139x4 / settingline3_211x4 原始线宽 */
+    for (int i = 0; i < 2; i++) {
+        if (!ls[i]) continue;
+        lv_image_set_pivot(ls[i], 0, 0);                       /* 原 pivot(50,50) 拉伸会绕偏心点,归左上:x=左缘 */
+        lv_image_set_scale_x(ls[i], tw * 256 / base[i]);       /* 256=100% */
+        lv_obj_set_pos(ls[i], (ca.x1 + ca.x2) / 2 - tw / 2, 328);
+    }
+}
+
+/* 上次已应用的文本宽(绘制对账用);进页初摆后记录,之后变了才重摆 */
+static int s_toastcolor_mat_last_tw = -1;
+
+/* 进页初摆:tune 在屏幕 load+英文翻译之后执行,update_layout 后量实际宽 */
+static void toastcolor_en_mat_line_apply(toastcolor_t *pg)
+{
+    if (!pg || !pg->Maturity) return;
+    lv_obj_update_layout(pg->Maturity);                        /* LV_SIZE_CONTENT 先算出英文实际宽 */
+    int tw = lv_obj_get_width(pg->Maturity);
+    printf("[toastcolor][EN] mat line apply: mode=%d tw=%d\n", g_toast_mode, tw);
+    if (tw <= 0) {                                             /* 布局未就绪:退回中文静态位 */
+        lv_obj_set_pos(pg->maturityline3, 537, 328);
+        lv_obj_set_pos(pg->maturityline2, 572, 328);
+        s_toastcolor_mat_last_tw = -1;
+        return;
+    }
+    toastcolor_en_mat_line_set(pg, tw);
+    s_toastcolor_mat_last_tw = tw;
+}
+
+/* 编码器切成熟度:文本变宽/变窄 → LVGL 发 SIZE_CHANGED(coords 已按新宽更新),线随动。
+   tune 只在进页时跑一次,页面存活期的切换靠这个事件跟进 */
+static void toastcolor_en_mat_line_sync(lv_event_t *e)
+{
+    toastcolor_t *pg = (toastcolor_t *)lv_event_get_user_data(e);
+    if (!pg || !pg->Maturity) return;
+    int tw = lv_obj_get_width(pg->Maturity);
+    printf("[toastcolor][EN] mat line sync: tw=%d\n", tw);
+    toastcolor_en_mat_line_set(pg, tw);
+    s_toastcolor_mat_last_tw = tw;
+}
+
+/* 兜底自愈:不依赖 SIZE_CHANGED 是否送达——标签每次被重绘时对账一次,
+   实宽与上次已应用值不同才重摆(宽度没变就不动,不会逐帧抖) */
+static void toastcolor_en_mat_line_draw_cb(lv_event_t *e)
+{
+    toastcolor_t *pg = (toastcolor_t *)lv_event_get_user_data(e);
+    if (!pg || !pg->Maturity) return;
+    int tw = lv_obj_get_width(pg->Maturity);
+    if (tw > 0 && tw != s_toastcolor_mat_last_tw) {
+        printf("[toastcolor][EN] mat line draw-heal: tw=%d (last=%d)\n", tw, s_toastcolor_mat_last_tw);
+        toastcolor_en_mat_line_set(pg, tw);
+        s_toastcolor_mat_last_tw = tw;
+    }
+}
+
 /* ==============================================================================
  * toastcolor 英文布局基准（对应 PAGE_TOASTCOLOR ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
@@ -14513,6 +14577,11 @@ void toastcolor_lang_tune(void)
         obj = pg->Maturity;
         lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
         lv_obj_align(obj, LV_ALIGN_CENTER, 0, 48);
+
+        /* maturityline2/3:进页按当前成熟度文本宽初摆 + 文本尺寸变化随动(编码器切档) */
+        toastcolor_en_mat_line_apply(pg);
+        lv_obj_add_event_cb(pg->Maturity, toastcolor_en_mat_line_sync, LV_EVENT_SIZE_CHANGED, pg);
+        lv_obj_add_event_cb(pg->Maturity, toastcolor_en_mat_line_draw_cb, LV_EVENT_DRAW_MAIN, pg);
 
         // lv_obj_update_layout(obj);
         
@@ -18004,6 +18073,50 @@ static void sixset2_en_degree_line_sync(lv_event_t *e)
     sixset2_en_degree_line_set(pg, lv_obj_get_width(pg->degree));
 }
 
+/* ===== 英文: maturity 下划线随成熟度文本(Rare/Medium../Well Done)宽度自适应 =====
+   与 degreeline 同规则(线宽=文本宽)。apply_line_for 按中文字数二选一显线(英文按字节
+   长度也会落到不同线),两根都拉到同宽同位,显哪根都对 */
+static void sixset2_en_mat_line_set(sixset2_t *pg, int tw)
+{
+    if (!pg || !pg->maturity || tw <= 0) return;
+    lv_area_t ca;
+    lv_obj_get_coords(lv_obj_get_parent(pg->maturity), &ca);   /* image_1 卡片,文本水平居中 */
+    lv_obj_t *ls[2] = { pg->maturityline2, pg->maturityline3 };
+    const int base[2] = { 139, 211 };                          /* underline_139x4 / underline_216x4 原始线宽 */
+    for (int i = 0; i < 2; i++) {
+        if (!ls[i]) continue;
+        lv_image_set_pivot(ls[i], 0, 0);                       /* 原 pivot(50,50) 拉伸会绕偏心点,归左上:x=左缘 */
+        lv_image_set_scale_x(ls[i], tw * 256 / base[i]);       /* 256=100% */
+        lv_obj_set_pos(ls[i], (ca.x1 + ca.x2) / 2 - 1 - tw / 2, 328);  /* -1=对齐偏移,与文本 CENTER(-1,1) 同源 */
+    }
+}
+
+/* 进页初摆:tune 在屏幕 load+英文翻译之后执行,update_layout 后量实际宽 */
+static void sixset2_en_mat_line_apply(sixset2_t *pg)
+{
+    if (!pg || !pg->maturity) return;
+    lv_obj_update_layout(pg->maturity);                       /* LV_SIZE_CONTENT 先算出英文实际宽 */
+    int tw = lv_obj_get_width(pg->maturity);
+    printf("[sixset2][EN] mat line apply: tw=%d\n", tw);
+    if (tw <= 0) {                                            /* 布局未就绪:退回中文静态位 */
+        lv_obj_set_pos(pg->maturityline3, 223, 328);
+        lv_obj_set_pos(pg->maturityline2, 262, 328);
+        return;
+    }
+    sixset2_en_mat_line_set(pg, tw);
+}
+
+/* 编码器切成熟度:文本变宽/变窄 → LVGL 发 SIZE_CHANGED(coords 已按新宽更新),线随动。
+   tune 只在进页时跑一次,页面存活期的切换靠这个事件跟进 */
+static void sixset2_en_mat_line_sync(lv_event_t *e)
+{
+    sixset2_t *pg = (sixset2_t *)lv_event_get_user_data(e);
+    if (!pg || !pg->maturity) return;
+    int tw = lv_obj_get_width(pg->maturity);
+    printf("[sixset2][EN] mat line sync: tw=%d\n", tw);
+    sixset2_en_mat_line_set(pg, tw);
+}
+
 /* ============ 排版微调函数注册表（页面 → 函数 → 动态偏移 dx/dy） ============
 /* dx/dy: 定时器重写对象(如 bartemp)的整体平移偏移，中文模式/0 = 零影响 */
 /* ==============================================================================
@@ -18089,6 +18202,10 @@ void sixset2_lang_tune(void)
         lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
         lv_obj_set_parent(obj, pg->image_1);
         lv_obj_align(obj, LV_ALIGN_CENTER, -1, 1);
+
+        /* maturityline2/3:进页按当前成熟度文本宽初摆 + 文本尺寸变化随动(编码器切档) */
+        sixset2_en_mat_line_apply(pg);
+        lv_obj_add_event_cb(pg->maturity, sixset2_en_mat_line_sync, LV_EVENT_SIZE_CHANGED, pg);
     }
     else {
         lv_obj_t *cont = lv_obj_create(pg->image_1);
