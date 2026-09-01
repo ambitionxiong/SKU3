@@ -1141,12 +1141,27 @@ void bottom_bbq_set_probe_lang_tune(void)
     lv_obj_add_flag(pg->image_4, LV_OBJ_FLAG_HIDDEN);   /* 延/迟标签已替代中文图 */
 
     /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
+    /* offdelay: EN 英文图 + 加高 53→62（中文模式早退不影响） */
     lv_obj_set_pos(pg->offdelay, 983, 144);
-//     lv_obj_set_size(pg->offdelay, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
+    lv_obj_set_size(pg->offdelay, 135, 62);
+    lv_obj_set_style_bg_img_src(pg->offdelay, LVGL_IMAGE_PATH(off_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(pg->offdelay, LVGL_IMAGE_PATH(focusoff_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
-    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
+    /* ondelay: EN 英文图 + 加高; delay_on 时背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿覆盖 */
     lv_obj_set_pos(pg->ondelay, 983, 144);
-//     lv_obj_set_size(pg->ondelay, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
+    lv_obj_set_size(pg->ondelay, 135, 62);
+    if (!delay_on) {
+        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
+    {
+        lv_obj_t *dlbl = lv_obj_get_child(pg->ondelay, 0);
+        if (dlbl) {
+            lv_obj_set_style_text_font(dlbl, &c_aktivgroteskmedium_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_width(dlbl, 120);
+            lv_obj_align(dlbl, LV_ALIGN_CENTER, 0, 0);
+        }
+    }
 
 }
 
@@ -1716,24 +1731,27 @@ void bread_set_lang_tune(void)
     lv_obj_set_size(pg->label_741, 250, 32);
 
     /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
+    /* offdelay: EN 英文图 + 加高 53→62（中文模式早退不影响） */
     lv_obj_set_pos(pg->offdelay, 983, 144);
-//     lv_obj_set_size(pg->offdelay, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
+    lv_obj_set_size(pg->offdelay, 135, 62);
+    lv_obj_set_style_bg_img_src(pg->offdelay, LVGL_IMAGE_PATH(off_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(pg->offdelay, LVGL_IMAGE_PATH(focusoff_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
-    /* offcontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
-    lv_obj_set_pos(pg->offcontain, 983, 260);
-//     lv_obj_set_size(pg->offcontain, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
-
-    /* temp: 标签 | "200" | (315,141) | 83x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->temp, 268, 142);
-    lv_obj_set_size(pg->temp, 120, 53);
-
-    /* label_743: 标签 | "确 定" | (1010,39) | 85x36 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->label_743, 1010, 39);
-    lv_obj_set_size(pg->label_743, 85, 36);
-
-    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
+    /* ondelay: EN 英文图 + 加高; delay_on 时背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿覆盖 */
     lv_obj_set_pos(pg->ondelay, 983, 144);
-//     lv_obj_set_size(pg->ondelay, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
+    lv_obj_set_size(pg->ondelay, 135, 62);
+    if (!delay_on) {
+        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
+    {
+        lv_obj_t *dlbl = lv_obj_get_child(pg->ondelay, 0);
+        if (dlbl) {
+            lv_obj_set_style_text_font(dlbl, &c_aktivgroteskmedium_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_width(dlbl, 120);
+            lv_obj_align(dlbl, LV_ALIGN_CENTER, 0, 0);
+        }
+    }
 
     /* oncontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 260);
@@ -3005,24 +3023,27 @@ void chip_set_lang_tune(void)
     lv_obj_set_size(pg->label_823, 250, 32);
 
     /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
+    /* offdelay: EN 英文图 + 加高 53→62（中文模式早退不影响） */
     lv_obj_set_pos(pg->offdelay, 983, 144);
-//     lv_obj_set_size(pg->offdelay, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
+    lv_obj_set_size(pg->offdelay, 135, 62);
+    lv_obj_set_style_bg_img_src(pg->offdelay, LVGL_IMAGE_PATH(off_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(pg->offdelay, LVGL_IMAGE_PATH(focusoff_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
-    /* offcontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
-    lv_obj_set_pos(pg->offcontain, 983, 260);
-//     lv_obj_set_size(pg->offcontain, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
-
-    /* temp: 标签 | "230" | (315,141) | 83x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->temp, 268, 142);
-    lv_obj_set_size(pg->temp, 120, 53);
-
-    /* label_825: 标签 | "确 定" | (1010,39) | 85x36 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->label_825, 1010, 39);
-    lv_obj_set_size(pg->label_825, 85, 36);
-
-    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
+    /* ondelay: EN 英文图 + 加高; delay_on 时背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿覆盖 */
     lv_obj_set_pos(pg->ondelay, 983, 144);
-//     lv_obj_set_size(pg->ondelay, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
+    lv_obj_set_size(pg->ondelay, 135, 62);
+    if (!delay_on) {
+        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
+    {
+        lv_obj_t *dlbl = lv_obj_get_child(pg->ondelay, 0);
+        if (dlbl) {
+            lv_obj_set_style_text_font(dlbl, &c_aktivgroteskmedium_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_width(dlbl, 120);
+            lv_obj_align(dlbl, LV_ALIGN_CENTER, 0, 0);
+        }
+    }
 
     /* oncontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 260);
@@ -3493,8 +3514,8 @@ void cook_menu_tz_lang_tune(void)
     lv_obj_set_size(pg->hot_label, 147, 28);
 
     /* bottom_label: 标签 | "底部烧烤" | (981,291) | 147x30 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->bottom_label, 981, 291);
-    lv_obj_set_size(pg->bottom_label, 147, 30);
+    lv_obj_set_pos(pg->bottom_label, 965, 291);
+    lv_obj_set_size(pg->bottom_label, 180, 30);
 
 }
 
@@ -3775,24 +3796,27 @@ void cookie_set_lang_tune(void)
     lv_obj_set_size(pg->label_110, 250, 32);
 
     /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
+    /* offdelay: EN 英文图 + 加高 53→62（中文模式早退不影响） */
     lv_obj_set_pos(pg->offdelay, 983, 144);
-//     lv_obj_set_size(pg->offdelay, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
+    lv_obj_set_size(pg->offdelay, 135, 62);
+    lv_obj_set_style_bg_img_src(pg->offdelay, LVGL_IMAGE_PATH(off_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(pg->offdelay, LVGL_IMAGE_PATH(focusoff_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
-    /* offcontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
-    lv_obj_set_pos(pg->offcontain, 983, 260);
-//     lv_obj_set_size(pg->offcontain, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
-
-    /* temp: 标签 | "135" | (315,141) | 83x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->temp, 268, 142);
-    lv_obj_set_size(pg->temp, 120, 53);
-
-    /* label_112: 标签 | "确 定" | (1010,39) | 85x36 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->label_112, 1010, 39);
-    lv_obj_set_size(pg->label_112, 85, 36);
-
-    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
+    /* ondelay: EN 英文图 + 加高; delay_on 时背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿覆盖 */
     lv_obj_set_pos(pg->ondelay, 983, 144);
-//     lv_obj_set_size(pg->ondelay, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
+    lv_obj_set_size(pg->ondelay, 135, 62);
+    if (!delay_on) {
+        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
+    {
+        lv_obj_t *dlbl = lv_obj_get_child(pg->ondelay, 0);
+        if (dlbl) {
+            lv_obj_set_style_text_font(dlbl, &c_aktivgroteskmedium_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_width(dlbl, 120);
+            lv_obj_align(dlbl, LV_ALIGN_CENTER, 0, 0);
+        }
+    }
 
     /* oncontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 260);
@@ -4852,24 +4876,27 @@ void custom_set_lang_tune(void)
     lv_obj_set_size(pg->label_864, 250, 32);
 
     /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
+    /* offdelay: EN 英文图 + 加高 53→62（中文模式早退不影响） */
     lv_obj_set_pos(pg->offdelay, 983, 144);
-//     lv_obj_set_size(pg->offdelay, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
+    lv_obj_set_size(pg->offdelay, 135, 62);
+    lv_obj_set_style_bg_img_src(pg->offdelay, LVGL_IMAGE_PATH(off_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(pg->offdelay, LVGL_IMAGE_PATH(focusoff_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
-    /* offcontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
-    lv_obj_set_pos(pg->offcontain, 983, 260);
-//     lv_obj_set_size(pg->offcontain, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
-
-    /* temp: 标签 | "200" | (315,141) | 83x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->temp, 268, 142);
-    lv_obj_set_size(pg->temp, 120, 53);
-
-    /* label_866: 标签 | "确 定" | (1010,39) | 85x36 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->label_866, 1010, 39);
-    lv_obj_set_size(pg->label_866, 85, 36);
-
-    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
+    /* ondelay: EN 英文图 + 加高; delay_on 时背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿覆盖 */
     lv_obj_set_pos(pg->ondelay, 983, 144);
-//     lv_obj_set_size(pg->ondelay, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
+    lv_obj_set_size(pg->ondelay, 135, 62);
+    if (!delay_on) {
+        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
+    {
+        lv_obj_t *dlbl = lv_obj_get_child(pg->ondelay, 0);
+        if (dlbl) {
+            lv_obj_set_style_text_font(dlbl, &c_aktivgroteskmedium_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_width(dlbl, 120);
+            lv_obj_align(dlbl, LV_ALIGN_CENTER, 0, 0);
+        }
+    }
 
     /* oncontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 260);
@@ -6380,12 +6407,27 @@ void hot_bbq_set_probe_lang_tune(void)
     lv_obj_set_size(pg->icon3, 32, 30);
 
     /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
+    /* offdelay: EN 英文图 + 加高 53→62（中文模式早退不影响） */
     lv_obj_set_pos(pg->offdelay, 983, 144);
-//     lv_obj_set_size(pg->offdelay, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
+    lv_obj_set_size(pg->offdelay, 135, 62);
+    lv_obj_set_style_bg_img_src(pg->offdelay, LVGL_IMAGE_PATH(off_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(pg->offdelay, LVGL_IMAGE_PATH(focusoff_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
-    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
+    /* ondelay: EN 英文图 + 加高; delay_on 时背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿覆盖 */
     lv_obj_set_pos(pg->ondelay, 983, 144);
-//     lv_obj_set_size(pg->ondelay, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
+    lv_obj_set_size(pg->ondelay, 135, 62);
+    if (!delay_on) {
+        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
+    {
+        lv_obj_t *dlbl = lv_obj_get_child(pg->ondelay, 0);
+        if (dlbl) {
+            lv_obj_set_style_text_font(dlbl, &c_aktivgroteskmedium_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_width(dlbl, 120);
+            lv_obj_align(dlbl, LV_ALIGN_CENTER, 0, 0);
+        }
+    }
 
     /* image_3: 图片 | (839,154) | img: delaytext.png */
     lv_obj_set_pos(pg->image_3, 839, 154);
@@ -8455,24 +8497,27 @@ void lasagna_set_lang_tune(void)
     lv_obj_set_size(pg->label_653, 250, 32);
 
     /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
+    /* offdelay: EN 英文图 + 加高 53→62（中文模式早退不影响） */
     lv_obj_set_pos(pg->offdelay, 983, 144);
-//     lv_obj_set_size(pg->offdelay, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
+    lv_obj_set_size(pg->offdelay, 135, 62);
+    lv_obj_set_style_bg_img_src(pg->offdelay, LVGL_IMAGE_PATH(off_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(pg->offdelay, LVGL_IMAGE_PATH(focusoff_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
-    /* offcontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
-    lv_obj_set_pos(pg->offcontain, 983, 260);
-//     lv_obj_set_size(pg->offcontain, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
-
-    /* temp: 标签 | "230" | (315,141) | 83x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->temp, 268, 142);
-    lv_obj_set_size(pg->temp, 120, 53);
-
-    /* label_655: 标签 | "确 定" | (1010,39) | 85x36 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->label_655, 1010, 39);
-    lv_obj_set_size(pg->label_655, 85, 36);
-
-    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
+    /* ondelay: EN 英文图 + 加高; delay_on 时背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿覆盖 */
     lv_obj_set_pos(pg->ondelay, 983, 144);
-//     lv_obj_set_size(pg->ondelay, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
+    lv_obj_set_size(pg->ondelay, 135, 62);
+    if (!delay_on) {
+        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
+    {
+        lv_obj_t *dlbl = lv_obj_get_child(pg->ondelay, 0);
+        if (dlbl) {
+            lv_obj_set_style_text_font(dlbl, &c_aktivgroteskmedium_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_width(dlbl, 120);
+            lv_obj_align(dlbl, LV_ALIGN_CENTER, 0, 0);
+        }
+    }
 
     /* oncontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 260);
@@ -9006,24 +9051,27 @@ void menu_set_lang_tune(void)
     lv_obj_set_size(pg->label_262, 250, 32);
 
     /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
+    /* offdelay: EN 英文图 + 加高 53→62（中文模式早退不影响） */
     lv_obj_set_pos(pg->offdelay, 983, 144);
-//     lv_obj_set_size(pg->offdelay, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
+    lv_obj_set_size(pg->offdelay, 135, 62);
+    lv_obj_set_style_bg_img_src(pg->offdelay, LVGL_IMAGE_PATH(off_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(pg->offdelay, LVGL_IMAGE_PATH(focusoff_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
-    /* offcontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
-    lv_obj_set_pos(pg->offcontain, 983, 260);
-//     lv_obj_set_size(pg->offcontain, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
-
-    /* temp: 标签 | "210" | (315,141) | 83x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->temp, 268, 142);
-    lv_obj_set_size(pg->temp, 120, 53);
-
-    /* label_264: 标签 | "确 定" | (1010,39) | 85x36 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->label_264, 1010, 39);
-    lv_obj_set_size(pg->label_264, 85, 36);
-
-    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
+    /* ondelay: EN 英文图 + 加高; delay_on 时背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿覆盖 */
     lv_obj_set_pos(pg->ondelay, 983, 144);
-//     lv_obj_set_size(pg->ondelay, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
+    lv_obj_set_size(pg->ondelay, 135, 62);
+    if (!delay_on) {
+        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
+    {
+        lv_obj_t *dlbl = lv_obj_get_child(pg->ondelay, 0);
+        if (dlbl) {
+            lv_obj_set_style_text_font(dlbl, &c_aktivgroteskmedium_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_width(dlbl, 120);
+            lv_obj_align(dlbl, LV_ALIGN_CENTER, 0, 0);
+        }
+    }
 
     /* oncontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 260);
@@ -9469,24 +9517,27 @@ void pizza3_set_lang_tune(void)
     lv_obj_set_size(pg->label_782, 250, 32);
 
     /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
+    /* offdelay: EN 英文图 + 加高 53→62（中文模式早退不影响） */
     lv_obj_set_pos(pg->offdelay, 983, 144);
-//     lv_obj_set_size(pg->offdelay, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
+    lv_obj_set_size(pg->offdelay, 135, 62);
+    lv_obj_set_style_bg_img_src(pg->offdelay, LVGL_IMAGE_PATH(off_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(pg->offdelay, LVGL_IMAGE_PATH(focusoff_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
-    /* offcontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
-    lv_obj_set_pos(pg->offcontain, 983, 260);
-//     lv_obj_set_size(pg->offcontain, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
-
-    /* temp: 标签 | "250" | (315,141) | 83x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->temp, 268, 142);
-    lv_obj_set_size(pg->temp, 120, 53);
-
-    /* label_784: 标签 | "确 定" | (1010,39) | 85x36 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->label_784, 1010, 39);
-    lv_obj_set_size(pg->label_784, 85, 36);
-
-    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
+    /* ondelay: EN 英文图 + 加高; delay_on 时背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿覆盖 */
     lv_obj_set_pos(pg->ondelay, 983, 144);
-//     lv_obj_set_size(pg->ondelay, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
+    lv_obj_set_size(pg->ondelay, 135, 62);
+    if (!delay_on) {
+        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
+    {
+        lv_obj_t *dlbl = lv_obj_get_child(pg->ondelay, 0);
+        if (dlbl) {
+            lv_obj_set_style_text_font(dlbl, &c_aktivgroteskmedium_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_width(dlbl, 120);
+            lv_obj_align(dlbl, LV_ALIGN_CENTER, 0, 0);
+        }
+    }
 
     /* oncontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 260);
@@ -10441,24 +10492,27 @@ void pizza_set_lang_tune(void)
     lv_obj_set_size(pg->label_214, 250, 32);
 
     /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
+    /* offdelay: EN 英文图 + 加高 53→62（中文模式早退不影响） */
     lv_obj_set_pos(pg->offdelay, 983, 144);
-//     lv_obj_set_size(pg->offdelay, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
+    lv_obj_set_size(pg->offdelay, 135, 62);
+    lv_obj_set_style_bg_img_src(pg->offdelay, LVGL_IMAGE_PATH(off_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(pg->offdelay, LVGL_IMAGE_PATH(focusoff_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
-    /* offcontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
-    lv_obj_set_pos(pg->offcontain, 983, 260);
-//     lv_obj_set_size(pg->offcontain, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
-
-    /* temp: 标签 | "210" | (315,141) | 83x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->temp, 268, 142);   /* 对齐 air_set */
-    lv_obj_set_size(pg->temp, 120, 53);   /* 对齐 air_set */
-
-    /* label_216: 标签 | "确 定" | (1010,39) | 85x36 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->label_216, 1010, 39);
-    lv_obj_set_size(pg->label_216, 85, 36);
-
-    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
+    /* ondelay: EN 英文图 + 加高; delay_on 时背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿覆盖 */
     lv_obj_set_pos(pg->ondelay, 983, 144);
-//     lv_obj_set_size(pg->ondelay, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
+    lv_obj_set_size(pg->ondelay, 135, 62);
+    if (!delay_on) {
+        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
+    {
+        lv_obj_t *dlbl = lv_obj_get_child(pg->ondelay, 0);
+        if (dlbl) {
+            lv_obj_set_style_text_font(dlbl, &c_aktivgroteskmedium_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_width(dlbl, 120);
+            lv_obj_align(dlbl, LV_ALIGN_CENTER, 0, 0);
+        }
+    }
 
     /* oncontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 260);
@@ -12899,12 +12953,27 @@ void slowcook_set_probe_lang_tune(void)
     lv_obj_add_flag(pg->image_5, LV_OBJ_FLAG_HIDDEN);   /* 延/迟标签已替代中文图 */
 
     /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
+    /* offdelay: EN 英文图 + 加高 53→62（中文模式早退不影响） */
     lv_obj_set_pos(pg->offdelay, 983, 144);
-//     lv_obj_set_size(pg->offdelay, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
+    lv_obj_set_size(pg->offdelay, 135, 62);
+    lv_obj_set_style_bg_img_src(pg->offdelay, LVGL_IMAGE_PATH(off_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(pg->offdelay, LVGL_IMAGE_PATH(focusoff_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
-    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
+    /* ondelay: EN 英文图 + 加高; delay_on 时背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿覆盖 */
     lv_obj_set_pos(pg->ondelay, 983, 144);
-//     lv_obj_set_size(pg->ondelay, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
+    lv_obj_set_size(pg->ondelay, 135, 62);
+    if (!delay_on) {
+        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
+    {
+        lv_obj_t *dlbl = lv_obj_get_child(pg->ondelay, 0);
+        if (dlbl) {
+            lv_obj_set_style_text_font(dlbl, &c_aktivgroteskmedium_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_width(dlbl, 120);
+            lv_obj_align(dlbl, LV_ALIGN_CENTER, 0, 0);
+        }
+    }
 
 }
 
@@ -13507,14 +13576,14 @@ void special_menu_tz_lang_tune(void)
 
     /* special_label: 标签 | "特殊功能" | (24,24) | 97x25 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->special_label, 24, 24);
-    lv_obj_set_size(pg->special_label, 97, 25);
+    lv_obj_set_size(pg->special_label, 250, 25);
 
     /* major_img: 图片 | (278,188) | img: manzhu.png */
     lv_obj_set_pos(pg->major_img, 278, 188);
 
     /* slowcook_label: 标签 | "慢煮" | (265,291) | 131x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->slowcook_label, 265, 291);
-    lv_obj_set_size(pg->slowcook_label, 131, 32);
+    lv_obj_set_pos(pg->slowcook_label, 200, 291);
+    lv_obj_set_size(pg->slowcook_label, 250, 32);
 
 }
 
@@ -13863,24 +13932,27 @@ void strudel_set_lang_tune(void)
     lv_obj_set_size(pg->label_700, 250, 32);
 
     /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
+    /* offdelay: EN 英文图 + 加高 53→62（中文模式早退不影响） */
     lv_obj_set_pos(pg->offdelay, 983, 144);
-//     lv_obj_set_size(pg->offdelay, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
+    lv_obj_set_size(pg->offdelay, 135, 62);
+    lv_obj_set_style_bg_img_src(pg->offdelay, LVGL_IMAGE_PATH(off_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(pg->offdelay, LVGL_IMAGE_PATH(focusoff_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
-    /* offcontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
-    lv_obj_set_pos(pg->offcontain, 983, 260);
-//     lv_obj_set_size(pg->offcontain, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
-
-    /* temp: 标签 | "200" | (315,141) | 83x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->temp, 268, 142);
-    lv_obj_set_size(pg->temp, 120, 53);
-
-    /* label_702: 标签 | "确 定" | (1010,39) | 85x36 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->label_702, 1010, 39);
-    lv_obj_set_size(pg->label_702, 85, 36);
-
-    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
+    /* ondelay: EN 英文图 + 加高; delay_on 时背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿覆盖 */
     lv_obj_set_pos(pg->ondelay, 983, 144);
-//     lv_obj_set_size(pg->ondelay, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
+    lv_obj_set_size(pg->ondelay, 135, 62);
+    if (!delay_on) {
+        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
+    {
+        lv_obj_t *dlbl = lv_obj_get_child(pg->ondelay, 0);
+        if (dlbl) {
+            lv_obj_set_style_text_font(dlbl, &c_aktivgroteskmedium_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_width(dlbl, 120);
+            lv_obj_align(dlbl, LV_ALIGN_CENTER, 0, 0);
+        }
+    }
 
     /* oncontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 260);
@@ -15708,9 +15780,11 @@ void updown_bbq_set_lang_tune(void)
     /* delay_button: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off_en.png */
     lv_obj_set_pos(pg->delay_button, 983, 260);
     lv_obj_set_size(pg->delay_button, 135, 62);
-
+    
     lv_obj_set_style_bg_img_src(pg->delay_button, LVGL_IMAGE_PATH(off_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(pg->delay_button, LVGL_IMAGE_PATH(focusoff_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);    
+    
+    
 
     /* contain_button: 按钮 | (983,372) | 135x53 | font montserratmedium_16 | bg: off_en.png */
     lv_obj_set_pos(pg->contain_button, 983, 372);
@@ -15755,11 +15829,13 @@ void updown_bbq_set_lang_tune(void)
     lv_obj_set_style_bg_img_src(pg->preheat_on_button, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
     /* delay_on_button: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: switchbg30.png */
+    if(!delay_on){
+    lv_obj_set_style_bg_img_src(pg->delay_on_button, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(pg->delay_on_button, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
     lv_obj_set_pos(pg->delay_on_button, 983, 260);
     lv_obj_set_size(pg->delay_on_button, 135, 62);
 
-    lv_obj_set_style_bg_img_src(pg->delay_on_button, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(pg->delay_on_button, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
     /* contain_on_button: 按钮 | (983,372) | 135x53 | font montserratmedium_16 | bg: on1_en.png */
     lv_obj_set_pos(pg->contain_on_button, 983, 372);
@@ -15855,12 +15931,27 @@ void updown_bbq_set_probe_lang_tune(void)
     lv_obj_set_size(pg->label_2, 100, 32);
 
     /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
+    /* offdelay: EN 英文图 + 加高 53→62（中文模式早退不影响） */
     lv_obj_set_pos(pg->offdelay, 983, 144);
-    lv_obj_set_size(pg->offdelay, 135, 53);
+    lv_obj_set_size(pg->offdelay, 135, 62);
+    lv_obj_set_style_bg_img_src(pg->offdelay, LVGL_IMAGE_PATH(off_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(pg->offdelay, LVGL_IMAGE_PATH(focusoff_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
-    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
+    /* ondelay: EN 英文图 + 加高; delay_on 时背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿覆盖 */
     lv_obj_set_pos(pg->ondelay, 983, 144);
-    lv_obj_set_size(pg->ondelay, 135, 53);
+    lv_obj_set_size(pg->ondelay, 135, 62);
+    if (!delay_on) {
+        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
+    {
+        lv_obj_t *dlbl = lv_obj_get_child(pg->ondelay, 0);
+        if (dlbl) {
+            lv_obj_set_style_text_font(dlbl, &c_aktivgroteskmedium_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_width(dlbl, 120);
+            lv_obj_align(dlbl, LV_ALIGN_CENTER, 0, 0);
+        }
+    }
 
     /* image_2: 图片 | (839,154) | img: delaytext.png */
     lv_obj_set_pos(pg->image_2, 839, 154);
@@ -16804,24 +16895,27 @@ void west_set_lang_tune(void)
     lv_obj_set_size(pg->label_166, 250, 32);
 
     /* offdelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
+    /* offdelay: EN 英文图 + 加高 53→62（中文模式早退不影响） */
     lv_obj_set_pos(pg->offdelay, 983, 144);
-//     lv_obj_set_size(pg->offdelay, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
+    lv_obj_set_size(pg->offdelay, 135, 62);
+    lv_obj_set_style_bg_img_src(pg->offdelay, LVGL_IMAGE_PATH(off_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(pg->offdelay, LVGL_IMAGE_PATH(focusoff_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
-    /* offcontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: off.png */
-    lv_obj_set_pos(pg->offcontain, 983, 260);
-//     lv_obj_set_size(pg->offcontain, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
-
-    /* temp: 标签 | "170" | (315,141) | 83x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->temp, 268, 141);
-    lv_obj_set_size(pg->temp, 120, 53);
-
-    /* label_168: 标签 | "确 定" | (1010,39) | 85x36 | font taiwanpearl_regular_36 */
-    lv_obj_set_pos(pg->label_168, 1010, 39);
-    lv_obj_set_size(pg->label_168, 85, 36);
-
-    /* ondelay: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: on1.png */
+    /* ondelay: EN 英文图 + 加高; delay_on 时背景由 mode_set_apply_delay_label 换 switchbg 滚动字底图,勿覆盖 */
     lv_obj_set_pos(pg->ondelay, 983, 144);
-//     lv_obj_set_size(pg->ondelay, 135, 53);   /* EN:开头统一块已设 62，此原始 53 行注释防覆盖 */
+    lv_obj_set_size(pg->ondelay, 135, 62);
+    if (!delay_on) {
+        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_img_src(pg->ondelay, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
+    {
+        lv_obj_t *dlbl = lv_obj_get_child(pg->ondelay, 0);
+        if (dlbl) {
+            lv_obj_set_style_text_font(dlbl, &c_aktivgroteskmedium_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_width(dlbl, 120);
+            lv_obj_align(dlbl, LV_ALIGN_CENTER, 0, 0);
+        }
+    }
 
     /* oncontain: 按钮 | (983,260) | 135x53 | font montserratmedium_16 | bg: on1.png */
     lv_obj_set_pos(pg->oncontain, 983, 260);
