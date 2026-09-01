@@ -5239,12 +5239,16 @@ void delayset_lang_tune(void)
 
     /* startline: 图片 | (842,325) | img: underline_95x4.png */
     lv_obj_set_pos(pg->startline, 842, 325);
+    lv_image_set_scale_x(pg->startline,290);
 
     /* image_9: 图片 | (537,325) | img: underline_76x4.png */
-    lv_obj_set_pos(pg->image_9, 537, 325);
+    lv_obj_set_pos(pg->image_9, 542, 325);
+    lv_image_set_scale_x(pg->image_9,280);
 
     /* image_10: 图片 | (668,325) | img: underline_76x4.png */
-    lv_obj_set_pos(pg->image_10, 668, 325);
+    lv_obj_set_pos(pg->image_10, 663, 325);
+    lv_image_set_scale_x(pg->image_10,270);
+
 
     /* name: 标签 | "上下烧烤" | (24,24) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->name, 24, 24);
@@ -5321,7 +5325,7 @@ void descriptionmenu_lang_tune(void)
 
     /* summary: 标签 | "小结：⏎有发酵阶段⏎" | (0,0) | 894x59 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->summary, 0, 0);
-    lv_obj_set_size(pg->summary, 894, 59);
+    lv_obj_set_size(pg->summary, 894, LV_SIZE_CONTENT);
 
     /* cookdescriptin: 标签 | "烹饪说明：⏎根据你最喜欢的食谱准备面团，放在烤盘上⏎现在将食物放在第…" | (0,0) | 894x122 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->cookdescriptin, 0, 0);
