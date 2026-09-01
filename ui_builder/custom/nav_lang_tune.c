@@ -17970,6 +17970,40 @@ void windchange_bbq_stop_back_lang_tune(void)
 
 }
 
+/* ===== 英文: degreeline 随 degree 文本(Light/Medium/Dark)宽度自适应 =====
+   中文单字 69px 固定线即文本宽;英文三词宽不同,按实际文本宽拉伸+居中(设计规则:线宽=文本宽) */
+static void sixset2_en_degree_line_set(sixset2_t *pg, int tw)
+{
+    if (!pg || !pg->degree || !pg->degreeline || tw <= 0) return;
+    lv_area_t ca;
+    lv_obj_get_coords(lv_obj_get_parent(pg->degree), &ca);   /* image_2 卡片,文本水平居中 */
+    lv_image_set_pivot(pg->degreeline, 0, 0);                /* 原 pivot(50,50) 拉伸会绕偏心点,归左上:x=左缘 */
+    lv_image_set_scale_x(pg->degreeline, tw * 256 / 69);     /* 256=100%,69=原始线宽 */
+    lv_obj_set_pos(pg->degreeline, (ca.x1 + ca.x2) / 2 - 1 - tw / 2, 328);  /* -1=对齐偏移 */
+}
+
+/* 进页初摆:tune 在屏幕 load+英文翻译之后执行,update_layout 后量实际宽 */
+static void sixset2_en_degree_line_apply(sixset2_t *pg)
+{
+    if (!pg || !pg->degree || !pg->degreeline) return;
+    lv_obj_update_layout(pg->degree);                        /* LV_SIZE_CONTENT 先算出英文实际宽 */
+    int tw = lv_obj_get_width(pg->degree);
+    if (tw <= 0) {                                           /* 布局未就绪:退回中文静态位 */
+        lv_obj_set_pos(pg->degreeline, 918, 328);
+        return;
+    }
+    sixset2_en_degree_line_set(pg, tw);
+}
+
+/* 编码器切程度:文本变宽/变窄 → LVGL 发 SIZE_CHANGED(coords 已按新宽更新),线随动。
+   tune 只在进页时跑一次,页面存活期的切换靠这个事件跟进 */
+static void sixset2_en_degree_line_sync(lv_event_t *e)
+{
+    sixset2_t *pg = (sixset2_t *)lv_event_get_user_data(e);
+    if (!pg || !pg->degree || !pg->degreeline) return;
+    sixset2_en_degree_line_set(pg, lv_obj_get_width(pg->degree));
+}
+
 /* ============ 排版微调函数注册表（页面 → 函数 → 动态偏移 dx/dy） ============
 /* dx/dy: 定时器重写对象(如 bartemp)的整体平移偏移，中文模式/0 = 零影响 */
 /* ==============================================================================
@@ -17996,7 +18030,7 @@ void sixset2_lang_tune(void)
     lv_obj_set_size(pg->label_13, 191, 32);
     lv_obj_set_pos(pg->degree, 915, 249);
     lv_obj_set_size(pg->degree, 84, 72);
-    lv_obj_set_pos(pg->degreeline, 918, 328);
+    /* degreeline:英文随 Light/Medium/Dark 文本宽自适应 —— 见下方 Eng modify 段 degree 对齐后统一处理 */
 
     if (six_chick_is_matdeg()) {
         /* 熟度模式: 中间区 = name1("成熟度") + maturity + maturityline2/3; weight 组隐藏不排 */
@@ -18044,6 +18078,10 @@ void sixset2_lang_tune(void)
     lv_obj_set_parent(obj, pg->image_2);
     lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
     lv_obj_align(obj, LV_ALIGN_CENTER, -1, 1);
+
+    /* degreeline:进页按当前程度初摆 + 文本尺寸变化随动(编码器切 Light/Medium/Dark) */
+    sixset2_en_degree_line_apply(pg);
+    lv_obj_add_event_cb(pg->degree, sixset2_en_degree_line_sync, LV_EVENT_SIZE_CHANGED, pg);
 
     if (six_chick_is_matdeg()) {
         // maturity
