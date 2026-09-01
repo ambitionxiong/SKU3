@@ -250,21 +250,41 @@ void air_set_lang_tune(void)
     lv_obj_set_size(pg->label_302, 175, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 62, 53);
+    if (set_hour == 0) {                       // 无小时
+      lv_obj_set_pos(pg->min, 307 + 27, 254 + 5);
+      lv_obj_set_size(pg->label_305, 30, 32);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    // lv_obj_set_pos(pg->min, 317, 258);
-    lv_obj_set_size(pg->min, 68, 66);
+      lv_obj_set_pos(pg->label_306, 368 + 21, 270 + 3);
+      lv_obj_set_size(pg->label_306, 30, 32);
+    } else {                                   // 有小时
+      lv_obj_set_pos(pg->min, 395 + 29, 254 + 3);
+      lv_obj_set_size(pg->label_305, 30, 32);
 
-    /* label_305: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_305, 368, 270);
-    lv_obj_set_size(pg->label_305, 30, 32);
+      lv_obj_set_pos(pg->label_306, 448 + 21, 270);
+      lv_obj_set_size(pg->label_306, 42, 32);
 
-    /* label_306: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->label_306, 42, 32);
+      lv_obj_set_pos(pg->hour, 307 + 23, 254 + 3);
+      lv_obj_set_size(pg->hour, 62, 53);
+
+      lv_obj_set_pos(pg->label_305, 368 + 18, 270);
+      lv_obj_set_size(pg->label_305, 30, 32);
+
+    }
+//     lv_obj_set_pos(pg->hour, 307, 254);
+//     lv_obj_set_size(pg->hour, 62, 53);
+
+//     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     // lv_obj_set_pos(pg->min, 317, 258);
+//     lv_obj_set_size(pg->min, 68, 66);
+
+//     /* label_305: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
+//     lv_obj_set_pos(pg->label_305, 368, 270);
+//     lv_obj_set_size(pg->label_305, 30, 32);
+
+//     /* label_306: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     lv_obj_set_size(pg->label_306, 42, 32);
 
     /* image_141: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_141, 164, 376);
@@ -857,22 +877,42 @@ void bottom_bbq_set_lang_tune(void)
     lv_obj_set_size(pg->label_122, 175, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 62, 53);
+    if (set_hour == 0) {                       // 无小时
+      lv_obj_set_pos(pg->min, 307 + 27, 254 + 5);
+      lv_obj_set_size(pg->label_125, 30, 32);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    // lv_obj_set_pos(pg->min, 317, 258);
-    lv_obj_set_size(pg->min, 68, 66);   /* 对齐 updown 系英文排版(A) */
+      lv_obj_set_pos(pg->label_126, 368 + 21, 270 + 3);
+      lv_obj_set_size(pg->label_126, 30, 32);
+    } else {                                   // 有小时
+      lv_obj_set_pos(pg->min, 395 + 29, 254 + 3);
+      lv_obj_set_size(pg->label_125, 30, 32);
 
-    /* label_125: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_125, 368, 270);
-    lv_obj_set_size(pg->label_125, 30, 32);
+      lv_obj_set_pos(pg->label_126, 448 + 21, 270);
+      lv_obj_set_size(pg->label_126, 42, 32);
 
-    /* label_126: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    // lv_obj_set_pos(pg->label_126, 371, 271);
-    lv_obj_set_size(pg->label_126, 42, 32);   /* 对齐 updown 系英文排版(A) */
+      lv_obj_set_pos(pg->hour, 307 + 23, 254 + 3);
+      lv_obj_set_size(pg->hour, 62, 53);
+
+      lv_obj_set_pos(pg->label_125, 368 + 18, 270);
+      lv_obj_set_size(pg->label_125, 30, 32);
+
+    }
+//     lv_obj_set_pos(pg->hour, 307, 254);
+//     lv_obj_set_size(pg->hour, 62, 53);
+
+//     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     // lv_obj_set_pos(pg->min, 317, 258);
+//     lv_obj_set_size(pg->min, 68, 66);   /* 对齐 updown 系英文排版(A) */
+
+//     /* label_125: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
+//     lv_obj_set_pos(pg->label_125, 368, 270);
+//     lv_obj_set_size(pg->label_125, 30, 32);
+
+//     /* label_126: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     // lv_obj_set_pos(pg->label_126, 371, 271);
+//     lv_obj_set_size(pg->label_126, 42, 32);   /* 对齐 updown 系英文排版(A) */
 
     /* image_62: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_62, 164, 376);
@@ -1525,20 +1565,40 @@ void bread_set_lang_tune(void)
     lv_obj_set_size(pg->label_733, 180, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 80, 53);
+    if (set_hour == 0) {                       // 无小时
+      lv_obj_set_pos(pg->min, 307 + 27, 254 + 5);
+      lv_obj_set_size(pg->label_736, 30, 32);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->min, 90, 53);
+      lv_obj_set_pos(pg->label_737, 368 + 21, 270 + 3);
+      lv_obj_set_size(pg->label_737, 30, 32);
+    } else {                                   // 有小时
+      lv_obj_set_pos(pg->min, 395 + 29, 254 + 3);
+      lv_obj_set_size(pg->label_736, 30, 32);
 
-    /* label_736: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_736, 368, 270);
-    lv_obj_set_size(pg->label_736, 30, 32);
+      lv_obj_set_pos(pg->label_737, 448 + 21, 270);
+      lv_obj_set_size(pg->label_737, 42, 32);
 
-    /* label_737: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->label_737, 64, 32);
+      lv_obj_set_pos(pg->hour, 307 + 23, 254 + 3);
+      lv_obj_set_size(pg->hour, 62, 53);
+
+      lv_obj_set_pos(pg->label_736, 368 + 18, 270);
+      lv_obj_set_size(pg->label_736, 30, 32);
+
+    }
+//     lv_obj_set_pos(pg->hour, 307, 254);
+//     lv_obj_set_size(pg->hour, 80, 53);
+
+//     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     lv_obj_set_size(pg->min, 90, 53);
+
+//     /* label_736: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
+//     lv_obj_set_pos(pg->label_736, 368, 270);
+//     lv_obj_set_size(pg->label_736, 30, 32);
+
+//     /* label_737: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     lv_obj_set_size(pg->label_737, 64, 32);
 
     /* image_343: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_343, 164, 376);
@@ -2011,22 +2071,42 @@ void central_bbq_set_lang_tune(void)
     lv_obj_set_size(pg->label_294, 175, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 62, 53);
+    if (set_hour == 0) {                       // 无小时
+      lv_obj_set_pos(pg->min, 307 + 27, 254 + 5);
+      lv_obj_set_size(pg->label_297, 30, 32);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    // lv_obj_set_pos(pg->min, 317, 258);
-    lv_obj_set_size(pg->min, 68, 66);   /* 对齐 updown 系英文排版(A) */
+      lv_obj_set_pos(pg->label_298, 368 + 21, 270 + 3);
+      lv_obj_set_size(pg->label_298, 30, 32);
+    } else {                                   // 有小时
+      lv_obj_set_pos(pg->min, 395 + 29, 254 + 3);
+      lv_obj_set_size(pg->label_297, 30, 32);
 
-    /* label_297: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_297, 368, 270);
-    lv_obj_set_size(pg->label_297, 30, 32);
+      lv_obj_set_pos(pg->label_298, 448 + 21, 270);
+      lv_obj_set_size(pg->label_298, 42, 32);
 
-    /* label_298: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    // lv_obj_set_pos(pg->label_298, 371, 271);
-    lv_obj_set_size(pg->label_298, 42, 32);   /* 对齐 updown 系英文排版(A) */
+      lv_obj_set_pos(pg->hour, 307 + 23, 254 + 3);
+      lv_obj_set_size(pg->hour, 62, 53);
+
+      lv_obj_set_pos(pg->label_297, 368 + 18, 270);
+      lv_obj_set_size(pg->label_297, 30, 32);
+
+    }
+//     lv_obj_set_pos(pg->hour, 307, 254);
+//     lv_obj_set_size(pg->hour, 62, 53);
+
+//     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     // lv_obj_set_pos(pg->min, 317, 258);
+//     lv_obj_set_size(pg->min, 68, 66);   /* 对齐 updown 系英文排版(A) */
+
+//     /* label_297: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
+//     lv_obj_set_pos(pg->label_297, 368, 270);
+//     lv_obj_set_size(pg->label_297, 30, 32);
+
+//     /* label_298: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     // lv_obj_set_pos(pg->label_298, 371, 271);
+//     lv_obj_set_size(pg->label_298, 42, 32);   /* 对齐 updown 系英文排版(A) */
 
     /* image_136: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_136, 164, 376);
@@ -2716,20 +2796,40 @@ void chip_set_lang_tune(void)
     lv_obj_set_size(pg->label_815, 180, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 80, 53);
+    if (set_hour == 0) {                       // 无小时
+      lv_obj_set_pos(pg->min, 307 + 27, 254 + 5);
+      lv_obj_set_size(pg->label_818, 30, 32);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->min, 90, 53);
+      lv_obj_set_pos(pg->label_819, 368 + 21, 270 + 3);
+      lv_obj_set_size(pg->label_819, 30, 32);
+    } else {                                   // 有小时
+      lv_obj_set_pos(pg->min, 395 + 29, 254 + 3);
+      lv_obj_set_size(pg->label_818, 30, 32);
 
-    /* label_818: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_818, 368, 270);
-    lv_obj_set_size(pg->label_818, 30, 32);
+      lv_obj_set_pos(pg->label_819, 448 + 21, 270);
+      lv_obj_set_size(pg->label_819, 42, 32);
 
-    /* label_819: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->label_819, 64, 32);
+      lv_obj_set_pos(pg->hour, 307 + 23, 254 + 3);
+      lv_obj_set_size(pg->hour, 62, 53);
+
+      lv_obj_set_pos(pg->label_818, 368 + 18, 270);
+      lv_obj_set_size(pg->label_818, 30, 32);
+
+    }
+//     lv_obj_set_pos(pg->hour, 307, 254);
+//     lv_obj_set_size(pg->hour, 80, 53);
+
+//     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     lv_obj_set_size(pg->min, 90, 53);
+
+//     /* label_818: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
+//     lv_obj_set_pos(pg->label_818, 368, 270);
+//     lv_obj_set_size(pg->label_818, 30, 32);
+
+//     /* label_819: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     lv_obj_set_size(pg->label_819, 64, 32);
 
     /* image_375: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_375, 164, 376);
@@ -3442,20 +3542,40 @@ void cookie_set_lang_tune(void)
     lv_obj_set_size(pg->label_101, 180, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 80, 53);
+    if (set_hour == 0) {                       // 无小时
+      lv_obj_set_pos(pg->min, 307 + 27, 254 + 5);
+      lv_obj_set_size(pg->label_104, 30, 32);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->min, 90, 53);
+      lv_obj_set_pos(pg->label_105, 368 + 21, 270 + 3);
+      lv_obj_set_size(pg->label_105, 30, 32);
+    } else {                                   // 有小时
+      lv_obj_set_pos(pg->min, 395 + 29, 254 + 3);
+      lv_obj_set_size(pg->label_104, 30, 32);
 
-    /* label_104: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_104, 368, 270);
-    lv_obj_set_size(pg->label_104, 30, 32);
+      lv_obj_set_pos(pg->label_105, 448 + 21, 270);
+      lv_obj_set_size(pg->label_105, 42, 32);
 
-    /* label_105: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->label_105, 64, 32);
+      lv_obj_set_pos(pg->hour, 307 + 23, 254 + 3);
+      lv_obj_set_size(pg->hour, 62, 53);
+
+      lv_obj_set_pos(pg->label_104, 368 + 18, 270);
+      lv_obj_set_size(pg->label_104, 30, 32);
+
+    }
+//     lv_obj_set_pos(pg->hour, 307, 254);
+//     lv_obj_set_size(pg->hour, 80, 53);
+
+//     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     lv_obj_set_size(pg->min, 90, 53);
+
+//     /* label_104: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
+//     lv_obj_set_pos(pg->label_104, 368, 270);
+//     lv_obj_set_size(pg->label_104, 30, 32);
+
+//     /* label_105: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     lv_obj_set_size(pg->label_105, 64, 32);
 
     /* image_57: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_57, 164, 376);
@@ -3989,21 +4109,41 @@ void corn_set_lang_tune(void)
     lv_obj_set_size(pg->label_547, 175, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 62, 53);
+    if (set_hour == 0) {                       // 无小时
+      lv_obj_set_pos(pg->min, 307 + 27, 254 + 5);
+      lv_obj_set_size(pg->label_550, 30, 32);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    // lv_obj_set_pos(pg->min, 317, 258);
-    lv_obj_set_size(pg->min, 68, 66);   /* 对齐 air_set */
+      lv_obj_set_pos(pg->label_551, 368 + 21, 270 + 3);
+      lv_obj_set_size(pg->label_551, 30, 32);
+    } else {                                   // 有小时
+      lv_obj_set_pos(pg->min, 395 + 29, 254 + 3);
+      lv_obj_set_size(pg->label_550, 30, 32);
 
-    /* label_550: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_550, 368, 270);
-    lv_obj_set_size(pg->label_550, 30, 32);
+      lv_obj_set_pos(pg->label_551, 448 + 21, 270);
+      lv_obj_set_size(pg->label_551, 42, 32);
 
-    /* label_551: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->label_551, 42, 32);   /* 对齐 air_set */
+      lv_obj_set_pos(pg->hour, 307 + 23, 254 + 3);
+      lv_obj_set_size(pg->hour, 62, 53);
+
+      lv_obj_set_pos(pg->label_550, 368 + 18, 270);
+      lv_obj_set_size(pg->label_550, 30, 32);
+
+    }
+//     lv_obj_set_pos(pg->hour, 307, 254);
+//     lv_obj_set_size(pg->hour, 62, 53);
+
+//     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     // lv_obj_set_pos(pg->min, 317, 258);
+//     lv_obj_set_size(pg->min, 68, 66);   /* 对齐 air_set */
+
+//     /* label_550: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
+//     lv_obj_set_pos(pg->label_550, 368, 270);
+//     lv_obj_set_size(pg->label_550, 30, 32);
+
+//     /* label_551: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     lv_obj_set_size(pg->label_551, 42, 32);   /* 对齐 air_set */
 
     /* image_246: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_246, 164, 376);
@@ -4421,20 +4561,40 @@ void custom_set_lang_tune(void)
     lv_obj_set_size(pg->label_856, 180, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 80, 53);
+    if (set_hour == 0) {                       // 无小时
+      lv_obj_set_pos(pg->min, 307 + 27, 254 + 5);
+      lv_obj_set_size(pg->label_859, 30, 32);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->min, 90, 53);
+      lv_obj_set_pos(pg->label_860, 368 + 21, 270 + 3);
+      lv_obj_set_size(pg->label_860, 30, 32);
+    } else {                                   // 有小时
+      lv_obj_set_pos(pg->min, 395 + 29, 254 + 3);
+      lv_obj_set_size(pg->label_859, 30, 32);
 
-    /* label_859: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_859, 368, 270);
-    lv_obj_set_size(pg->label_859, 30, 32);
+      lv_obj_set_pos(pg->label_860, 448 + 21, 270);
+      lv_obj_set_size(pg->label_860, 42, 32);
 
-    /* label_860: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->label_860, 64, 32);
+      lv_obj_set_pos(pg->hour, 307 + 23, 254 + 3);
+      lv_obj_set_size(pg->hour, 62, 53);
+
+      lv_obj_set_pos(pg->label_859, 368 + 18, 270);
+      lv_obj_set_size(pg->label_859, 30, 32);
+
+    }
+//     lv_obj_set_pos(pg->hour, 307, 254);
+//     lv_obj_set_size(pg->hour, 80, 53);
+
+//     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     lv_obj_set_size(pg->min, 90, 53);
+
+//     /* label_859: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
+//     lv_obj_set_pos(pg->label_859, 368, 270);
+//     lv_obj_set_size(pg->label_859, 30, 32);
+
+//     /* label_860: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     lv_obj_set_size(pg->label_860, 64, 32);
 
     /* image_391: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_391, 164, 376);
@@ -5122,21 +5282,41 @@ void heatcontain_set_lang_tune(void)
     lv_obj_set_size(pg->label_596, 175, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 62, 53);
+    if (set_hour == 0) {                       // 无小时
+      lv_obj_set_pos(pg->min, 307 + 27, 254 + 5);
+      lv_obj_set_size(pg->label_599, 30, 32);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    // lv_obj_set_pos(pg->min, 317, 258);
-    lv_obj_set_size(pg->min, 68, 66);   /* 对齐 air_set */
+      lv_obj_set_pos(pg->label_600, 368 + 21, 270 + 3);
+      lv_obj_set_size(pg->label_600, 30, 32);
+    } else {                                   // 有小时
+      lv_obj_set_pos(pg->min, 395 + 29, 254 + 3);
+      lv_obj_set_size(pg->label_599, 30, 32);
 
-    /* label_599: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_599, 368, 270);
-    lv_obj_set_size(pg->label_599, 30, 32);
+      lv_obj_set_pos(pg->label_600, 448 + 21, 270);
+      lv_obj_set_size(pg->label_600, 42, 32);
 
-    /* label_600: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->label_600, 42, 32);   /* 对齐 air_set */
+      lv_obj_set_pos(pg->hour, 307 + 23, 254 + 3);
+      lv_obj_set_size(pg->hour, 62, 53);
+
+      lv_obj_set_pos(pg->label_599, 368 + 18, 270);
+      lv_obj_set_size(pg->label_599, 30, 32);
+
+    }
+//     lv_obj_set_pos(pg->hour, 307, 254);
+//     lv_obj_set_size(pg->hour, 62, 53);
+
+//     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     // lv_obj_set_pos(pg->min, 317, 258);
+//     lv_obj_set_size(pg->min, 68, 66);   /* 对齐 air_set */
+
+//     /* label_599: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
+//     lv_obj_set_pos(pg->label_599, 368, 270);
+//     lv_obj_set_size(pg->label_599, 30, 32);
+
+//     /* label_600: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     lv_obj_set_size(pg->label_600, 42, 32);   /* 对齐 air_set */
 
     /* image_267: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_267, 164, 376);
@@ -5729,22 +5909,42 @@ void hot_bbq_set_lang_tune(void)
     lv_obj_set_size(pg->label_170, 175, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 62, 53);
+    if (set_hour == 0) {                       // 无小时
+      lv_obj_set_pos(pg->min, 307 + 27, 254 + 5);
+      lv_obj_set_size(pg->label_173, 30, 32);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    // lv_obj_set_pos(pg->min, 317, 258);
-    lv_obj_set_size(pg->min, 68, 66);   /* 对齐 updown 系英文排版(A) */
+      lv_obj_set_pos(pg->label_174, 368 + 21, 270 + 3);
+      lv_obj_set_size(pg->label_174, 30, 32);
+    } else {                                   // 有小时
+      lv_obj_set_pos(pg->min, 395 + 29, 254 + 3);
+      lv_obj_set_size(pg->label_173, 30, 32);
 
-    /* label_173: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_173, 368, 270);
-    lv_obj_set_size(pg->label_173, 30, 32);
+      lv_obj_set_pos(pg->label_174, 448 + 21, 270);
+      lv_obj_set_size(pg->label_174, 42, 32);
 
-    /* label_174: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    // lv_obj_set_pos(pg->label_174, 371, 271);
-    lv_obj_set_size(pg->label_174, 42, 32);   /* 对齐 updown 系英文排版(A) */
+      lv_obj_set_pos(pg->hour, 307 + 23, 254 + 3);
+      lv_obj_set_size(pg->hour, 62, 53);
+
+      lv_obj_set_pos(pg->label_173, 368 + 18, 270);
+      lv_obj_set_size(pg->label_173, 30, 32);
+
+    }
+//     lv_obj_set_pos(pg->hour, 307, 254);
+//     lv_obj_set_size(pg->hour, 62, 53);
+
+//     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     // lv_obj_set_pos(pg->min, 317, 258);
+//     lv_obj_set_size(pg->min, 68, 66);   /* 对齐 updown 系英文排版(A) */
+
+//     /* label_173: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
+//     lv_obj_set_pos(pg->label_173, 368, 270);
+//     lv_obj_set_size(pg->label_173, 30, 32);
+
+//     /* label_174: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     // lv_obj_set_pos(pg->label_174, 371, 271);
+//     lv_obj_set_size(pg->label_174, 42, 32);   /* 对齐 updown 系英文排版(A) */
 
     /* image_83: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_83, 164, 376);
@@ -7385,22 +7585,42 @@ void hotwind_bbq_set_lang_tune(void)
     lv_obj_set_size(pg->label_218, 175, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 62, 53);
+    if (set_hour == 0) {                       // 无小时
+      lv_obj_set_pos(pg->min, 307 + 27, 254 + 5);
+      lv_obj_set_size(pg->label_221, 30, 32);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    // lv_obj_set_pos(pg->min, 317, 258);
-    lv_obj_set_size(pg->min, 68, 66);   /* 对齐 updown 系英文排版(A) */
+      lv_obj_set_pos(pg->label_222, 368 + 21, 270 + 3);
+      lv_obj_set_size(pg->label_222, 30, 32);
+    } else {                                   // 有小时
+      lv_obj_set_pos(pg->min, 395 + 29, 254 + 3);
+      lv_obj_set_size(pg->label_221, 30, 32);
 
-    /* label_221: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_221, 368, 270);
-    lv_obj_set_size(pg->label_221, 30, 32);
+      lv_obj_set_pos(pg->label_222, 448 + 21, 270);
+      lv_obj_set_size(pg->label_222, 42, 32);
 
-    /* label_222: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    // lv_obj_set_pos(pg->label_222, 371, 271);
-    lv_obj_set_size(pg->label_222, 42, 32);   /* 对齐 updown 系英文排版(A) */
+      lv_obj_set_pos(pg->hour, 307 + 23, 254 + 3);
+      lv_obj_set_size(pg->hour, 62, 53);
+
+      lv_obj_set_pos(pg->label_221, 368 + 18, 270);
+      lv_obj_set_size(pg->label_221, 30, 32);
+
+    }
+//     lv_obj_set_pos(pg->hour, 307, 254);
+//     lv_obj_set_size(pg->hour, 62, 53);
+
+//     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     // lv_obj_set_pos(pg->min, 317, 258);
+//     lv_obj_set_size(pg->min, 68, 66);   /* 对齐 updown 系英文排版(A) */
+
+//     /* label_221: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
+//     lv_obj_set_pos(pg->label_221, 368, 270);
+//     lv_obj_set_size(pg->label_221, 30, 32);
+
+//     /* label_222: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     // lv_obj_set_pos(pg->label_222, 371, 271);
+//     lv_obj_set_size(pg->label_222, 42, 32);   /* 对齐 updown 系英文排版(A) */
 
     /* image_104: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_104, 164, 376);
@@ -7818,20 +8038,40 @@ void lasagna_set_lang_tune(void)
     lv_obj_set_size(pg->label_645, 180, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 80, 53);
+    if (set_hour == 0) {                       // 无小时
+      lv_obj_set_pos(pg->min, 307 + 27, 254 + 5);
+      lv_obj_set_size(pg->label_648, 30, 32);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->min, 90, 53);
+      lv_obj_set_pos(pg->label_649, 368 + 21, 270 + 3);
+      lv_obj_set_size(pg->label_649, 30, 32);
+    } else {                                   // 有小时
+      lv_obj_set_pos(pg->min, 395 + 29, 254 + 3);
+      lv_obj_set_size(pg->label_648, 30, 32);
 
-    /* label_648: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_648, 368, 270);
-    lv_obj_set_size(pg->label_648, 30, 32);
+      lv_obj_set_pos(pg->label_649, 448 + 21, 270);
+      lv_obj_set_size(pg->label_649, 42, 32);
 
-    /* label_649: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->label_649, 64, 32);
+      lv_obj_set_pos(pg->hour, 307 + 23, 254 + 3);
+      lv_obj_set_size(pg->hour, 62, 53);
+
+      lv_obj_set_pos(pg->label_648, 368 + 18, 270);
+      lv_obj_set_size(pg->label_648, 30, 32);
+
+    }
+//     lv_obj_set_pos(pg->hour, 307, 254);
+//     lv_obj_set_size(pg->hour, 80, 53);
+
+//     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     lv_obj_set_size(pg->min, 90, 53);
+
+//     /* label_648: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
+//     lv_obj_set_pos(pg->label_648, 368, 270);
+//     lv_obj_set_size(pg->label_648, 30, 32);
+
+//     /* label_649: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     lv_obj_set_size(pg->label_649, 64, 32);
 
     /* image_287: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_287, 164, 376);
@@ -8324,20 +8564,40 @@ void menu_set_lang_tune(void)
     lv_obj_set_size(pg->label_254, 180, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 80, 53);
+    if (set_hour == 0) {                       // 无小时
+      lv_obj_set_pos(pg->min, 307 + 27, 254 + 5);
+      lv_obj_set_size(pg->label_257, 30, 32);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->min, 90, 53);
+      lv_obj_set_pos(pg->label_258, 368 + 21, 270 + 3);
+      lv_obj_set_size(pg->label_258, 30, 32);
+    } else {                                   // 有小时
+      lv_obj_set_pos(pg->min, 395 + 29, 254 + 3);
+      lv_obj_set_size(pg->label_257, 30, 32);
 
-    /* label_257: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_257, 368, 270);
-    lv_obj_set_size(pg->label_257, 30, 32);
+      lv_obj_set_pos(pg->label_258, 448 + 21, 270);
+      lv_obj_set_size(pg->label_258, 42, 32);
 
-    /* label_258: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->label_258, 64, 32);
+      lv_obj_set_pos(pg->hour, 307 + 23, 254 + 3);
+      lv_obj_set_size(pg->hour, 62, 53);
+
+      lv_obj_set_pos(pg->label_257, 368 + 18, 270);
+      lv_obj_set_size(pg->label_257, 30, 32);
+
+    }
+//     lv_obj_set_pos(pg->hour, 307, 254);
+//     lv_obj_set_size(pg->hour, 80, 53);
+
+//     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     lv_obj_set_size(pg->min, 90, 53);
+
+//     /* label_257: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
+//     lv_obj_set_pos(pg->label_257, 368, 270);
+//     lv_obj_set_size(pg->label_257, 30, 32);
+
+//     /* label_258: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     lv_obj_set_size(pg->label_258, 64, 32);
 
     /* image_120: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_120, 164, 376);
@@ -8744,20 +9004,40 @@ void pizza3_set_lang_tune(void)
     lv_obj_set_size(pg->label_774, 180, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 80, 53);
+    if (set_hour == 0) {                       // 无小时
+      lv_obj_set_pos(pg->min, 307 + 27, 254 + 5);
+      lv_obj_set_size(pg->label_777, 30, 32);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->min, 90, 53);
+      lv_obj_set_pos(pg->label_778, 368 + 21, 270 + 3);
+      lv_obj_set_size(pg->label_778, 30, 32);
+    } else {                                   // 有小时
+      lv_obj_set_pos(pg->min, 395 + 29, 254 + 3);
+      lv_obj_set_size(pg->label_777, 30, 32);
 
-    /* label_777: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_777, 368, 270);
-    lv_obj_set_size(pg->label_777, 30, 32);
+      lv_obj_set_pos(pg->label_778, 448 + 21, 270);
+      lv_obj_set_size(pg->label_778, 42, 32);
 
-    /* label_778: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->label_778, 64, 32);
+      lv_obj_set_pos(pg->hour, 307 + 23, 254 + 3);
+      lv_obj_set_size(pg->hour, 62, 53);
+
+      lv_obj_set_pos(pg->label_777, 368 + 18, 270);
+      lv_obj_set_size(pg->label_777, 30, 32);
+
+    }
+//     lv_obj_set_pos(pg->hour, 307, 254);
+//     lv_obj_set_size(pg->hour, 80, 53);
+
+//     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     lv_obj_set_size(pg->min, 90, 53);
+
+//     /* label_777: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
+//     lv_obj_set_pos(pg->label_777, 368, 270);
+//     lv_obj_set_size(pg->label_777, 30, 32);
+
+//     /* label_778: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     lv_obj_set_size(pg->label_778, 64, 32);
 
     /* image_359: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_359, 164, 376);
@@ -9163,21 +9443,41 @@ void pizza_2_set_lang_tune(void)
     lv_obj_set_size(pg->label_351, 175, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 62, 53);
+    if (set_hour == 0) {                       // 无小时
+      lv_obj_set_pos(pg->min, 307 + 27, 254 + 5);
+      lv_obj_set_size(pg->label_354, 30, 32);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    // lv_obj_set_pos(pg->min, 317, 258);
-    lv_obj_set_size(pg->min, 68, 66);   /* 对齐 air_set */
+      lv_obj_set_pos(pg->label_355, 368 + 21, 270 + 3);
+      lv_obj_set_size(pg->label_355, 30, 32);
+    } else {                                   // 有小时
+      lv_obj_set_pos(pg->min, 395 + 29, 254 + 3);
+      lv_obj_set_size(pg->label_354, 30, 32);
 
-    /* label_354: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_354, 368, 270);
-    lv_obj_set_size(pg->label_354, 30, 32);
+      lv_obj_set_pos(pg->label_355, 448 + 21, 270);
+      lv_obj_set_size(pg->label_355, 42, 32);
 
-    /* label_355: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->label_355, 42, 32);   /* 对齐 air_set */
+      lv_obj_set_pos(pg->hour, 307 + 23, 254 + 3);
+      lv_obj_set_size(pg->hour, 62, 53);
+
+      lv_obj_set_pos(pg->label_354, 368 + 18, 270);
+      lv_obj_set_size(pg->label_354, 30, 32);
+
+    }
+//     lv_obj_set_pos(pg->hour, 307, 254);
+//     lv_obj_set_size(pg->hour, 62, 53);
+
+//     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     // lv_obj_set_pos(pg->min, 317, 258);
+//     lv_obj_set_size(pg->min, 68, 66);   /* 对齐 air_set */
+
+//     /* label_354: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
+//     lv_obj_set_pos(pg->label_354, 368, 270);
+//     lv_obj_set_size(pg->label_354, 30, 32);
+
+//     /* label_355: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     lv_obj_set_size(pg->label_355, 42, 32);   /* 对齐 air_set */
 
     /* image_162: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_162, 164, 376);
@@ -9617,21 +9917,41 @@ void pizza_set_lang_tune(void)
     lv_obj_set_size(pg->label_206, 180, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 80, 53);
+    if (set_hour == 0) {                       // 无小时
+      lv_obj_set_pos(pg->min, 307 + 27, 254 + 5);
+      lv_obj_set_size(pg->label_209, 30, 32);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    // lv_obj_set_pos(pg->min, 317, 258);
-    lv_obj_set_size(pg->min, 90, 53);   /* 对齐 air_set */
+      lv_obj_set_pos(pg->label_210, 368 + 21, 270 + 3);
+      lv_obj_set_size(pg->label_210, 30, 32);
+    } else {                                   // 有小时
+      lv_obj_set_pos(pg->min, 395 + 29, 254 + 3);
+      lv_obj_set_size(pg->label_209, 30, 32);
 
-    /* label_209: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_209, 368, 270);
-    lv_obj_set_size(pg->label_209, 30, 32);
+      lv_obj_set_pos(pg->label_210, 448 + 21, 270);
+      lv_obj_set_size(pg->label_210, 42, 32);
 
-    /* label_210: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->label_210, 64, 32);
+      lv_obj_set_pos(pg->hour, 307 + 23, 254 + 3);
+      lv_obj_set_size(pg->hour, 62, 53);
+
+      lv_obj_set_pos(pg->label_209, 368 + 18, 270);
+      lv_obj_set_size(pg->label_209, 30, 32);
+
+    }
+//     lv_obj_set_pos(pg->hour, 307, 254);
+//     lv_obj_set_size(pg->hour, 80, 53);
+
+//     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     // lv_obj_set_pos(pg->min, 317, 258);
+//     lv_obj_set_size(pg->min, 90, 53);   /* 对齐 air_set */
+
+//     /* label_209: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
+//     lv_obj_set_pos(pg->label_209, 368, 270);
+//     lv_obj_set_size(pg->label_209, 30, 32);
+
+//     /* label_210: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     lv_obj_set_size(pg->label_210, 64, 32);
 
     /* image_99: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_99, 164, 376);
@@ -10372,21 +10692,41 @@ void rising_set_lang_tune(void)
     lv_obj_set_size(pg->label_498, 175, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 62, 53);
+    if (set_hour == 0) {                       // 无小时
+      lv_obj_set_pos(pg->min, 307 + 27, 254 + 5);
+      lv_obj_set_size(pg->label_501, 30, 32);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    // lv_obj_set_pos(pg->min, 317, 258);
-    lv_obj_set_size(pg->min, 68, 66);   /* 对齐 air_set */
+      lv_obj_set_pos(pg->label_502, 368 + 21, 270 + 3);
+      lv_obj_set_size(pg->label_502, 30, 32);
+    } else {                                   // 有小时
+      lv_obj_set_pos(pg->min, 395 + 29, 254 + 3);
+      lv_obj_set_size(pg->label_501, 30, 32);
 
-    /* label_501: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_501, 368, 270);
-    lv_obj_set_size(pg->label_501, 30, 32);
+      lv_obj_set_pos(pg->label_502, 448 + 21, 270);
+      lv_obj_set_size(pg->label_502, 42, 32);
 
-    /* label_502: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->label_502, 42, 32);   /* 对齐 air_set */
+      lv_obj_set_pos(pg->hour, 307 + 23, 254 + 3);
+      lv_obj_set_size(pg->hour, 62, 53);
+
+      lv_obj_set_pos(pg->label_501, 368 + 18, 270);
+      lv_obj_set_size(pg->label_501, 30, 32);
+
+    }
+//     lv_obj_set_pos(pg->hour, 307, 254);
+//     lv_obj_set_size(pg->hour, 62, 53);
+
+//     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     // lv_obj_set_pos(pg->min, 317, 258);
+//     lv_obj_set_size(pg->min, 68, 66);   /* 对齐 air_set */
+
+//     /* label_501: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
+//     lv_obj_set_pos(pg->label_501, 368, 270);
+//     lv_obj_set_size(pg->label_501, 30, 32);
+
+//     /* label_502: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     lv_obj_set_size(pg->label_502, 42, 32);   /* 对齐 air_set */
 
     /* image_225: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_225, 164, 376);
@@ -10884,22 +11224,42 @@ void save_bbq_set_lang_tune(void)
     lv_obj_set_size(pg->label_256, 175, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 62, 53);
+    if (set_hour == 0) {                       // 无小时
+      lv_obj_set_pos(pg->min, 307 + 27, 254 + 5);
+      lv_obj_set_size(pg->label_259, 30, 32);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    // lv_obj_set_pos(pg->min, 317, 258);
-    lv_obj_set_size(pg->min, 68, 66);   /* 对齐 updown 系英文排版(A) */
+      lv_obj_set_pos(pg->label_260, 368 + 21, 270 + 3);
+      lv_obj_set_size(pg->label_260, 30, 32);
+    } else {                                   // 有小时
+      lv_obj_set_pos(pg->min, 395 + 29, 254 + 3);
+      lv_obj_set_size(pg->label_259, 30, 32);
 
-    /* label_259: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_259, 368, 270);
-    lv_obj_set_size(pg->label_259, 30, 32);
+      lv_obj_set_pos(pg->label_260, 448 + 21, 270);
+      lv_obj_set_size(pg->label_260, 42, 32);
 
-    /* label_260: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    // lv_obj_set_pos(pg->label_260, 371, 271);
-    lv_obj_set_size(pg->label_260, 42, 32);   /* 对齐 updown 系英文排版(A) */
+      lv_obj_set_pos(pg->hour, 307 + 23, 254 + 3);
+      lv_obj_set_size(pg->hour, 62, 53);
+
+      lv_obj_set_pos(pg->label_259, 368 + 18, 270);
+      lv_obj_set_size(pg->label_259, 30, 32);
+
+    }
+//     lv_obj_set_pos(pg->hour, 307, 254);
+//     lv_obj_set_size(pg->hour, 62, 53);
+
+//     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     // lv_obj_set_pos(pg->min, 317, 258);
+//     lv_obj_set_size(pg->min, 68, 66);   /* 对齐 updown 系英文排版(A) */
+
+//     /* label_259: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
+//     lv_obj_set_pos(pg->label_259, 368, 270);
+//     lv_obj_set_size(pg->label_259, 30, 32);
+
+//     /* label_260: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     // lv_obj_set_pos(pg->label_260, 371, 271);
+//     lv_obj_set_size(pg->label_260, 42, 32);   /* 对齐 updown 系英文排版(A) */
 
     /* image_120: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_120, 164, 376);
@@ -11778,21 +12138,41 @@ void slowcook_set_lang_tune(void)
     lv_obj_set_size(pg->label_400, 175, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 62, 53);
+    if (set_hour == 0) {                       // 无小时
+      lv_obj_set_pos(pg->min, 307 + 27, 254 + 5);
+      lv_obj_set_size(pg->label_403, 30, 32);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    // lv_obj_set_pos(pg->min, 317, 258);
-    lv_obj_set_size(pg->min, 68, 66);   /* 对齐 air_set */
+      lv_obj_set_pos(pg->label_404, 368 + 21, 270 + 3);
+      lv_obj_set_size(pg->label_404, 30, 32);
+    } else {                                   // 有小时
+      lv_obj_set_pos(pg->min, 395 + 29, 254 + 3);
+      lv_obj_set_size(pg->label_403, 30, 32);
 
-    /* label_403: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_403, 368, 270);
-    lv_obj_set_size(pg->label_403, 30, 32);
+      lv_obj_set_pos(pg->label_404, 448 + 21, 270);
+      lv_obj_set_size(pg->label_404, 42, 32);
 
-    /* label_404: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->label_404, 42, 32);   /* 对齐 air_set */
+      lv_obj_set_pos(pg->hour, 307 + 23, 254 + 3);
+      lv_obj_set_size(pg->hour, 62, 53);
+
+      lv_obj_set_pos(pg->label_403, 368 + 18, 270);
+      lv_obj_set_size(pg->label_403, 30, 32);
+
+    }
+//     lv_obj_set_pos(pg->hour, 307, 254);
+//     lv_obj_set_size(pg->hour, 62, 53);
+
+//     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     // lv_obj_set_pos(pg->min, 317, 258);
+//     lv_obj_set_size(pg->min, 68, 66);   /* 对齐 air_set */
+
+//     /* label_403: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
+//     lv_obj_set_pos(pg->label_403, 368, 270);
+//     lv_obj_set_size(pg->label_403, 30, 32);
+
+//     /* label_404: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     lv_obj_set_size(pg->label_404, 42, 32);   /* 对齐 air_set */
 
     /* image_183: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_183, 164, 376);
@@ -12834,20 +13214,40 @@ void strudel_set_lang_tune(void)
     lv_obj_set_size(pg->label_692, 180, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 80, 53);
+    if (set_hour == 0) {                       // 无小时
+      lv_obj_set_pos(pg->min, 307 + 27, 254 + 5);
+      lv_obj_set_size(pg->label_695, 30, 32);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->min, 90, 53);
+      lv_obj_set_pos(pg->label_696, 368 + 21, 270 + 3);
+      lv_obj_set_size(pg->label_696, 30, 32);
+    } else {                                   // 有小时
+      lv_obj_set_pos(pg->min, 395 + 29, 254 + 3);
+      lv_obj_set_size(pg->label_695, 30, 32);
 
-    /* label_695: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_695, 368, 270);
-    lv_obj_set_size(pg->label_695, 30, 32);
+      lv_obj_set_pos(pg->label_696, 448 + 21, 270);
+      lv_obj_set_size(pg->label_696, 42, 32);
 
-    /* label_696: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->label_696, 64, 32);
+      lv_obj_set_pos(pg->hour, 307 + 23, 254 + 3);
+      lv_obj_set_size(pg->hour, 62, 53);
+
+      lv_obj_set_pos(pg->label_695, 368 + 18, 270);
+      lv_obj_set_size(pg->label_695, 30, 32);
+
+    }
+//     lv_obj_set_pos(pg->hour, 307, 254);
+//     lv_obj_set_size(pg->hour, 80, 53);
+
+//     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     lv_obj_set_size(pg->min, 90, 53);
+
+//     /* label_695: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
+//     lv_obj_set_pos(pg->label_695, 368, 270);
+//     lv_obj_set_size(pg->label_695, 30, 32);
+
+//     /* label_696: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     lv_obj_set_size(pg->label_696, 64, 32);
 
     /* image_327: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_327, 164, 376);
@@ -13358,22 +13758,42 @@ void top_bbq_set_lang_tune(void)
     lv_obj_set_size(pg->label_55, 175, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 62, 53);
+    if (set_hour == 0) {                       // 无小时
+      lv_obj_set_pos(pg->min, 307 + 27, 254 + 5);
+      lv_obj_set_size(pg->label_58, 30, 32);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    // lv_obj_set_pos(pg->min, 317, 258);
-    lv_obj_set_size(pg->min, 68, 66);   /* 对齐 updown 系英文排版(A) */
+      lv_obj_set_pos(pg->label_59, 368 + 21, 270 + 3);
+      lv_obj_set_size(pg->label_59, 30, 32);
+    } else {                                   // 有小时
+      lv_obj_set_pos(pg->min, 395 + 29, 254 + 3);
+      lv_obj_set_size(pg->label_58, 30, 32);
 
-    /* label_58: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_58, 368, 270);
-    lv_obj_set_size(pg->label_58, 30, 32);
+      lv_obj_set_pos(pg->label_59, 448 + 21, 270);
+      lv_obj_set_size(pg->label_59, 42, 32);
 
-    /* label_59: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    // lv_obj_set_pos(pg->label_59, 371, 271);
-    lv_obj_set_size(pg->label_59, 42, 32);   /* 对齐 updown 系英文排版(A) */
+      lv_obj_set_pos(pg->hour, 307 + 23, 254 + 3);
+      lv_obj_set_size(pg->hour, 62, 53);
+
+      lv_obj_set_pos(pg->label_58, 368 + 18, 270);
+      lv_obj_set_size(pg->label_58, 30, 32);
+
+    }
+//     lv_obj_set_pos(pg->hour, 307, 254);
+//     lv_obj_set_size(pg->hour, 62, 53);
+
+//     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     // lv_obj_set_pos(pg->min, 317, 258);
+//     lv_obj_set_size(pg->min, 68, 66);   /* 对齐 updown 系英文排版(A) */
+
+//     /* label_58: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
+//     lv_obj_set_pos(pg->label_58, 368, 270);
+//     lv_obj_set_size(pg->label_58, 30, 32);
+
+//     /* label_59: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     // lv_obj_set_pos(pg->label_59, 371, 271);
+//     lv_obj_set_size(pg->label_59, 42, 32);   /* 对齐 updown 系英文排版(A) */
 
     /* image_35: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_35, 164, 376);
@@ -13814,21 +14234,41 @@ void unfrozen_set_lang_tune(void)
     lv_obj_set_size(pg->label_449, 175, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 62, 53);
+    if (set_hour == 0) {                       // 无小时
+      lv_obj_set_pos(pg->min, 307 + 27, 254 + 5);
+      lv_obj_set_size(pg->label_452, 30, 32);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    // lv_obj_set_pos(pg->min, 317, 258);
-    lv_obj_set_size(pg->min, 68, 66);   /* 对齐 air_set */
+      lv_obj_set_pos(pg->label_453, 368 + 21, 270 + 3);
+      lv_obj_set_size(pg->label_453, 30, 32);
+    } else {                                   // 有小时
+      lv_obj_set_pos(pg->min, 395 + 29, 254 + 3);
+      lv_obj_set_size(pg->label_452, 30, 32);
 
-    /* label_452: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_452, 368, 270);
-    lv_obj_set_size(pg->label_452, 30, 32);
+      lv_obj_set_pos(pg->label_453, 448 + 21, 270);
+      lv_obj_set_size(pg->label_453, 42, 32);
 
-    /* label_453: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->label_453, 42, 32);   /* 对齐 air_set */
+      lv_obj_set_pos(pg->hour, 307 + 23, 254 + 3);
+      lv_obj_set_size(pg->hour, 62, 53);
+
+      lv_obj_set_pos(pg->label_452, 368 + 18, 270);
+      lv_obj_set_size(pg->label_452, 30, 32);
+
+    }
+//     lv_obj_set_pos(pg->hour, 307, 254);
+//     lv_obj_set_size(pg->hour, 62, 53);
+
+//     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     // lv_obj_set_pos(pg->min, 317, 258);
+//     lv_obj_set_size(pg->min, 68, 66);   /* 对齐 air_set */
+
+//     /* label_452: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
+//     lv_obj_set_pos(pg->label_452, 368, 270);
+//     lv_obj_set_size(pg->label_452, 30, 32);
+
+//     /* label_453: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     lv_obj_set_size(pg->label_453, 42, 32);   /* 对齐 air_set */
 
     /* image_204: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_204, 164, 376);
@@ -15623,20 +16063,40 @@ void west_set_lang_tune(void)
     lv_obj_set_size(pg->label_157, 180, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 80, 53);
+    if (set_hour == 0) {                       // 无小时
+      lv_obj_set_pos(pg->min, 307 + 27, 254 + 5);
+      lv_obj_set_size(pg->label_160, 30, 32);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->min, 90, 53);
+      lv_obj_set_pos(pg->label_161, 368 + 21, 270 + 3);
+      lv_obj_set_size(pg->label_161, 30, 32);
+    } else {                                   // 有小时
+      lv_obj_set_pos(pg->min, 395 + 29, 254 + 3);
+      lv_obj_set_size(pg->label_160, 30, 32);
 
-    /* label_160: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_160, 368, 270);
-    lv_obj_set_size(pg->label_160, 30, 32);
+      lv_obj_set_pos(pg->label_161, 448 + 21, 270);
+      lv_obj_set_size(pg->label_161, 42, 32);
 
-    /* label_161: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->label_161, 64, 32);
+      lv_obj_set_pos(pg->hour, 307 + 23, 254 + 3);
+      lv_obj_set_size(pg->hour, 62, 53);
+
+      lv_obj_set_pos(pg->label_160, 368 + 18, 270);
+      lv_obj_set_size(pg->label_160, 30, 32);
+
+    }
+//     lv_obj_set_pos(pg->hour, 307, 254);
+//     lv_obj_set_size(pg->hour, 80, 53);
+
+//     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     lv_obj_set_size(pg->min, 90, 53);
+
+//     /* label_160: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
+//     lv_obj_set_pos(pg->label_160, 368, 270);
+//     lv_obj_set_size(pg->label_160, 30, 32);
+
+//     /* label_161: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     lv_obj_set_size(pg->label_161, 64, 32);
 
     /* image_78: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_78, 164, 376);
@@ -16064,22 +16524,42 @@ void windchange_bbq_set_lang_tune(void)
     lv_obj_set_size(pg->label_332, 175, 32);
 
     /* hour: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->hour, 307, 254);
-    lv_obj_set_size(pg->hour, 62, 53);
+    if (set_hour == 0) {                       // 无小时
+      lv_obj_set_pos(pg->min, 307 + 27, 254 + 5);
+      lv_obj_set_size(pg->label_335, 30, 32);
 
-    /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    // lv_obj_set_pos(pg->min, 317, 258);
-    lv_obj_set_size(pg->min, 68, 66);   /* 对齐 updown 系英文排版(A) */
+      lv_obj_set_pos(pg->label_336, 368 + 21, 270 + 3);
+      lv_obj_set_size(pg->label_336, 30, 32);
+    } else {                                   // 有小时
+      lv_obj_set_pos(pg->min, 395 + 29, 254 + 3);
+      lv_obj_set_size(pg->label_335, 30, 32);
 
-    /* label_335: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_335, 368, 270);
-    lv_obj_set_size(pg->label_335, 30, 32);
+      lv_obj_set_pos(pg->label_336, 448 + 21, 270);
+      lv_obj_set_size(pg->label_336, 42, 32);
 
-    /* label_336: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-    // lv_obj_set_pos(pg->label_336, 371, 271);
-    lv_obj_set_size(pg->label_336, 42, 32);   /* 对齐 updown 系英文排版(A) */
+      lv_obj_set_pos(pg->hour, 307 + 23, 254 + 3);
+      lv_obj_set_size(pg->hour, 62, 53);
+
+      lv_obj_set_pos(pg->label_335, 368 + 18, 270);
+      lv_obj_set_size(pg->label_335, 30, 32);
+
+    }
+//     lv_obj_set_pos(pg->hour, 307, 254);
+//     lv_obj_set_size(pg->hour, 62, 53);
+
+//     /* min: 标签 | "20" | (395,254) | 58x53 | font taiwanpearl_regular_48 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     // lv_obj_set_pos(pg->min, 317, 258);
+//     lv_obj_set_size(pg->min, 68, 66);   /* 对齐 updown 系英文排版(A) */
+
+//     /* label_335: 标签 | "时" | (368,270) | 30x32 | font taiwanpearl_regular_30 */
+//     lv_obj_set_pos(pg->label_335, 368, 270);
+//     lv_obj_set_size(pg->label_335, 30, 32);
+
+//     /* label_336: 标签 | "分钟" | (448,269) | 64x32 | font taiwanpearl_regular_30 | 动态定位(默认业务值, 直接改数字) */
+//     /* 位置由业务动态控制, 微调按文件头模板 */
+//     // lv_obj_set_pos(pg->label_336, 371, 271);
+//     lv_obj_set_size(pg->label_336, 42, 32);   /* 对齐 updown 系英文排版(A) */
 
     /* image_152: 图片 | (164,376) | img: place_1.png */
     lv_obj_set_pos(pg->image_152, 164, 376);
