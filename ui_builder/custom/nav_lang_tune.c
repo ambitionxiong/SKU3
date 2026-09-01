@@ -13477,6 +13477,7 @@ void somecook_lang_tune(void)
 
     /* image_1: 图片 | (184,138) | img: steptext.png */
     lv_obj_set_pos(pg->image_1, 184, 138);
+    lv_img_set_src(pg->image_1,LVGL_IMAGE_PATH(steptext_en.png));
 
     /* label_1: 标签 | "多段烹饪" | (24,24) | 103x22 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_1, 24, 24);
@@ -13498,7 +13499,7 @@ void somecook_lang_tune(void)
 
     /* modestatus: 标签 | "模式: 上下烧烤" | (26,77) | 264x27 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->modestatus, 26, 77);
-    lv_obj_set_size(pg->modestatus, 264, 27);
+    lv_obj_set_size(pg->modestatus, 350, 27);
 
     /* tempstatus: 标签 | "温度: ↑180°C/↓120℃" | (26,122) | 270x27 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->tempstatus, 26, 122);
@@ -13522,7 +13523,7 @@ void somecook_lang_tune(void)
 
     /* modestatus2: 标签 | "模式: 上下烧烤" | (26,77) | 264x27 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->modestatus2, 26, 77);
-    lv_obj_set_size(pg->modestatus2, 264, 27);
+    lv_obj_set_size(pg->modestatus2, 350, 27);
 
     /* tempstatus2: 标签 | "温度: ↑180°C/↓120℃" | (26,122) | 270x27 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->tempstatus2, 26, 122);
@@ -13546,7 +13547,7 @@ void somecook_lang_tune(void)
 
     /* modestatus3: 标签 | "模式: 上下烧烤" | (26,77) | 264x27 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->modestatus3, 26, 77);
-    lv_obj_set_size(pg->modestatus3, 264, 27);
+    lv_obj_set_size(pg->modestatus3, 350, 27);
 
     /* tempstatus3: 标签 | "温度: ↑180°C/↓120℃" | (26,122) | 270x27 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->tempstatus3, 26, 122);
@@ -13607,7 +13608,7 @@ static void somecook_cooking_common(void)
 
     /* activestatus: 标签 | "步骤一：发酵" | (289,232) | 161x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->activestatus, 289, 232);
-    lv_obj_set_size(pg->activestatus, 161, 39);
+    lv_obj_set_size(pg->activestatus, 161+65, 39);
 
     /* container_1: 容器 | (0,0) | 1280x480 */
     lv_obj_set_pos(pg->container_1, 0, 0);
@@ -13637,9 +13638,9 @@ static void somecook_cooking_common(void)
     lv_obj_set_pos(obj, 275, 232);
     lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
 
-    obj = pg->activestatus;
-    lv_obj_set_pos(obj, 275, 232);
-    lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+    // obj = pg->activestatus;
+    // lv_obj_set_pos(obj, 275, 232);
+    // lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
 
     obj = pg->timelabel;
     lv_obj_set_pos(obj, 902, 162);

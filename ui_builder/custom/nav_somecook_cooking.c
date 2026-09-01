@@ -79,21 +79,28 @@ void somecook_cooking_update_timer(somecook_cooking_t *sc)
     g_send.remaining_ms = (int32_t)(rem > INT32_MAX ? INT32_MAX : rem);
 }
 
-// activestatus / label_12 按小时规则显示
+// activestatus / label_12 按小时规则显示(英文仅热风对流段走动态填空,其余模式合并单行)
 static void somecook_cooking_apply_info(somecook_cooking_t *sc)
 {
     if (!sc || g_somecook_run_idx < 0 || g_somecook_run_idx > 2) return;
     static const char *cn[] = { "一", "二", "三" };
     int i = g_somecook_run_idx;
-    if (set_hour > 0) {
+    int dynamic = (set_hour > 0) && (!is_english() || g_send.cook_mode == MODE_WINDCHANGE_BBQ);
+    if (dynamic) {
         lv_obj_clear_flag(sc->activestatus, LV_OBJ_FLAG_HIDDEN);
         lv_label_set_text_fmt(sc->activestatus, tr("步骤%s：%s"), tr(cn[i]), mode_display_name());
         lv_label_set_text_fmt(sc->label_12, tr("|                         | %d℃ | %d小时%02d分钟"),
                               set_temp, set_hour, set_min);
     } else {
         lv_obj_add_flag(sc->activestatus, LV_OBJ_FLAG_HIDDEN);
-        lv_label_set_text_fmt(sc->label_12, tr("| 步骤%s：%s | %d℃ | %02d分钟"),
-                              tr(cn[i]), mode_display_name(), set_temp, set_min);
+        if (set_hour > 0) {
+            /* 英文非热风对流且小时>0:合并行但时间需带小时(中文走不到这,中文小时>0恒走动态分支) */
+            lv_label_set_text_fmt(sc->label_12, tr("| 步骤%s：%s | %d℃ | %d小时%02d分钟"),
+                                  tr(cn[i]), mode_display_name(), set_temp, set_hour, set_min);
+        } else {
+            lv_label_set_text_fmt(sc->label_12, tr("| 步骤%s：%s | %d℃ | %02d分钟"),
+                                  tr(cn[i]), mode_display_name(), set_temp, set_min);
+        }
     }
 }
 
