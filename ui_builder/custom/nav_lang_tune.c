@@ -709,8 +709,8 @@ void bottom_bbq_cooking_probe_lang_tune(void)
     lv_obj_set_size(pg->status, 490, 39);
 
     /* temp: 标签 | "36℃" | (919,156) | 134x60 | font taiwanpearl_regular_60 */
-    lv_obj_set_pos(pg->temp, 919, 156);
-    lv_obj_set_size(pg->temp, 134, 60);
+    lv_obj_set_pos(pg->temp, 851, 156+5);
+    lv_obj_set_size(pg->temp, 202, 60);
 
     /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
@@ -728,7 +728,7 @@ void bottom_bbq_cooking_probe_lang_tune(void)
 
     /* label_67: 标签 | "烹饪中..." | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_67, 273, 157);
-    lv_obj_set_size(pg->label_67, 235, 60);
+    lv_obj_set_size(pg->label_67, 280, 60);
 
     /* image_25: 图片 | (1068,180) | img: probeicon.png */
     lv_obj_set_pos(pg->image_25, 1068, 180);
@@ -1408,8 +1408,8 @@ void bottom_bbq_stop_probe_lang_tune(void)
     lv_obj_set_size(pg->label_68, 490, 39);
 
     /* temp: 标签 | "36℃" | (919,156) | 134x60 | font taiwanpearl_regular_60 */
-    lv_obj_set_pos(pg->temp, 919, 156);
-    lv_obj_set_size(pg->temp, 134, 60);
+    lv_obj_set_pos(pg->temp, 851, 156+5);
+    lv_obj_set_size(pg->temp, 202, 60);
 
     /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
@@ -1427,7 +1427,7 @@ void bottom_bbq_stop_probe_lang_tune(void)
 
     /* label_70: 标签 | "烹饪中..." | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_70, 273, 157);
-    lv_obj_set_size(pg->label_70, 235, 60);
+    lv_obj_set_size(pg->label_70, 280, 60);
 
     /* image_28: 图片 | (1068,180) | img: probeicon.png */
     lv_obj_set_pos(pg->image_28, 1068, 180);
@@ -6143,8 +6143,8 @@ void hot_bbq_cooking_probe_lang_tune(void)
     lv_obj_set_size(pg->status, 490, 39);
 
     /* temp: 标签 | "36℃" | (919,156) | 134x60 | font taiwanpearl_regular_60 */
-    lv_obj_set_pos(pg->temp, 919, 156);
-    lv_obj_set_size(pg->temp, 134, 60);
+    lv_obj_set_pos(pg->temp, 851, 156+5);
+    lv_obj_set_size(pg->temp, 202, 60);
 
     /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
@@ -6162,7 +6162,7 @@ void hot_bbq_cooking_probe_lang_tune(void)
 
     /* label_34: 标签 | "烹饪中..." | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_34, 273, 157);
-    lv_obj_set_size(pg->label_34, 235, 60);
+    lv_obj_set_size(pg->label_34, 280, 60);
 
     /* image_9: 图片 | (1068,180) | img: probeicon.png */
     lv_obj_set_pos(pg->image_9, 1068, 180);
@@ -6842,8 +6842,8 @@ void hot_bbq_stop_probe_lang_tune(void)
     lv_obj_set_size(pg->status, 490, 39);
 
     /* temp: 标签 | "36℃" | (919,156) | 134x60 | font taiwanpearl_regular_60 */
-    lv_obj_set_pos(pg->temp, 919, 156);
-    lv_obj_set_size(pg->temp, 134, 60);
+    lv_obj_set_pos(pg->temp, 851, 156+5);
+    lv_obj_set_size(pg->temp, 202, 60);
 
     /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
@@ -6861,7 +6861,7 @@ void hot_bbq_stop_probe_lang_tune(void)
 
     /* label_37: 标签 | "烹饪中..." | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_37, 273, 157);
-    lv_obj_set_size(pg->label_37, 235, 60);
+    lv_obj_set_size(pg->label_37, 280, 60);
 
     /* image_12: 图片 | (1068,180) | img: probeicon.png */
     lv_obj_set_pos(pg->image_12, 1068, 180);
@@ -12726,8 +12726,8 @@ void slowcook_cooking_probe_lang_tune(void)
     lv_obj_set_size(pg->status, 490, 39);
 
     /* temp: 标签 | "36℃" | (919,156) | 134x60 | font taiwanpearl_regular_60 */
-    lv_obj_set_pos(pg->temp, 919, 156);
-    lv_obj_set_size(pg->temp, 134, 60);
+    lv_obj_set_pos(pg->temp, 851, 156+5);
+    lv_obj_set_size(pg->temp, 202, 60);
 
     /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
@@ -12745,7 +12745,7 @@ void slowcook_cooking_probe_lang_tune(void)
 
     /* label_100: 标签 | "烹饪中..." | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_100, 273, 157);
-    lv_obj_set_size(pg->label_100, 235, 60);
+    lv_obj_set_size(pg->label_100, 280, 60);
 
     /* image_41: 图片 | (1068,180) | img: probeicon.png */
     lv_obj_set_pos(pg->image_41, 1068, 180);
@@ -13424,8 +13424,8 @@ void slowcook_stop_probe_lang_tune(void)
     lv_obj_set_size(pg->label_101, 490, 39);
 
     /* temp: 标签 | "36℃" | (919,156) | 134x60 | font taiwanpearl_regular_60 */
-    lv_obj_set_pos(pg->temp, 919, 156);
-    lv_obj_set_size(pg->temp, 134, 60);
+    lv_obj_set_pos(pg->temp, 851, 156+5);
+    lv_obj_set_size(pg->temp, 202, 60);
 
     /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
@@ -13443,7 +13443,7 @@ void slowcook_stop_probe_lang_tune(void)
 
     /* label_103: 标签 | "烹饪中..." | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_103, 273, 157);
-    lv_obj_set_size(pg->label_103, 235, 60);
+    lv_obj_set_size(pg->label_103, 280, 60);
 
     /* image_44: 图片 | (1068,180) | img: probeicon.png */
     lv_obj_set_pos(pg->image_44, 1068, 180);
@@ -15785,8 +15785,8 @@ void updown_bbq_cooking_probe_lang_tune(void)
     lv_obj_set_size(pg->status, 490, 39);
 
     /* temp: 标签 | "36℃" | (919,156) | 134x60 | font taiwanpearl_regular_60 */
-    lv_obj_set_pos(pg->temp, 919, 156);
-    lv_obj_set_size(pg->temp, 134, 60);
+    lv_obj_set_pos(pg->temp, 851, 156+5);
+    lv_obj_set_size(pg->temp, 202, 60);
 
     /* stop: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->stop, 959, 295);
@@ -15804,7 +15804,7 @@ void updown_bbq_cooking_probe_lang_tune(void)
 
     /* label_66: 标签 | "烹饪中..." | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_66, 273, 157);
-    lv_obj_set_size(pg->label_66, 235, 60);
+    lv_obj_set_size(pg->label_66, 280, 60);
 
     /* image_24: 图片 | (1068,180) | img: probeicon.png */
     lv_obj_set_pos(pg->image_24, 1068, 180);
@@ -16660,8 +16660,8 @@ void updown_bbq_stop_probe_lang_tune(void)
     lv_obj_set_size(pg->status, 490, 39);
 
     /* temp: 标签 | "36℃" | (919,156) | 134x60 | font taiwanpearl_regular_60 */
-    lv_obj_set_pos(pg->temp, 919, 156);
-    lv_obj_set_size(pg->temp, 134, 60);
+    lv_obj_set_pos(pg->temp, 851, 156+5);
+    lv_obj_set_size(pg->temp, 202, 60);
 
     /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
@@ -16679,7 +16679,7 @@ void updown_bbq_stop_probe_lang_tune(void)
 
     /* label_69: 标签 | "暂停中..." | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_69, 273, 157);
-    lv_obj_set_size(pg->label_69, 235, 60);
+    lv_obj_set_size(pg->label_69, 280, 60);
 
     /* image_27: 图片 | (1068,180) | img: probeicon.png */
     lv_obj_set_pos(pg->image_27, 1068, 180);

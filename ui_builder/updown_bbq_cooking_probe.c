@@ -43,8 +43,8 @@ void updown_bbq_cooking_probe_create(ui_manager_t *ui)
     scr->temp = lv_label_create(scr->obj);
     lv_label_set_text(scr->temp, "36℃");
     lv_label_set_long_mode(scr->temp, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->temp, 919, 156);
-    lv_obj_set_size(scr->temp, 134, 60);
+    lv_obj_set_pos(scr->temp, 851, 156);
+    lv_obj_set_size(scr->temp, 202, 60);
 
     // Set style of scr->temp
     lv_obj_set_style_text_font(scr->temp, &c_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
