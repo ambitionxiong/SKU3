@@ -13815,6 +13815,42 @@ void special_menu_tz_lang_tune(void)
 }
 
 
+/* ===== 英文: stepset 两 roller 选中项改为"原生 select 文字透明 + 覆盖标签" =====
+   roller 组件选中项无法两行显示(选项里 \n 会被当成新选项);英文长词条
+   (Cooking Functions/Convection Bake 等)需要两行 → 原生选中文字透明,
+   选中位叠标签读 get_selected_str,标签可自由换行/调样式 */
+static lv_obj_t *s_stepset_sel_lbl_main = NULL;   /* 覆盖标签:左大类滚轮 */
+static lv_obj_t *s_stepset_sel_lbl_mode = NULL;   /* 覆盖标签:右子类滚轮 */
+
+/* 标签刷新:读两个 roller 当前选中项 → 设文本 + 按滚轮居中(一行/两行都保持居中)。
+   注意时序:业务回调(stepset_on_main_change 切大类重置右滚轮)在建页时注册,
+   本文件 cb 在 tune 里注册 → 同一 VALUE_CHANGED 事件里业务先跑、这里后跑,
+   读到的必是重置后的新状态 */
+static void stepset_en_roller_sel_refresh(void)
+{
+    stepset_t *pg = stepset_get(&ui_manager);
+    if (!pg) return;
+    char buf[64];
+    if (s_stepset_sel_lbl_main && pg->roller_main) {
+        lv_roller_get_selected_str(pg->roller_main, buf, sizeof(buf));
+        lv_label_set_text(s_stepset_sel_lbl_main, buf);
+        lv_obj_update_layout(s_stepset_sel_lbl_main);
+        lv_obj_align_to(s_stepset_sel_lbl_main, pg->roller_main, LV_ALIGN_CENTER, 0, 0);
+    }
+    if (s_stepset_sel_lbl_mode && pg->roller_mode) {
+        lv_roller_get_selected_str(pg->roller_mode, buf, sizeof(buf));
+        lv_label_set_text(s_stepset_sel_lbl_mode, buf);
+        lv_obj_update_layout(s_stepset_sel_lbl_mode);
+        lv_obj_align_to(s_stepset_sel_lbl_mode, pg->roller_mode, LV_ALIGN_CENTER, 0, 0);
+    }
+}
+
+static void stepset_en_roller_sel_cb(lv_event_t *e)
+{
+    LV_UNUSED(e);
+    stepset_en_roller_sel_refresh();
+}
+
 /* ==============================================================================
  * stepset 英文布局基准（对应 PAGE_STEPSET ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
@@ -13834,6 +13870,28 @@ void stepset_lang_tune(void)
     /* roller_main: 滚轮 | (63,248) | 229x176 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->roller_main, 63, 248);
     lv_obj_set_size(pg->roller_main, 265, 176);
+
+    /* 英文: 原生选中文字透明(选中带底图保留) + 选中位覆盖标签(aktiv36,可两行) */
+    lv_obj_set_style_text_opa(pg->roller_main, LV_OPA_TRANSP, LV_PART_SELECTED);
+    lv_obj_set_style_text_opa(pg->roller_mode, LV_OPA_TRANSP, LV_PART_SELECTED);
+
+    s_stepset_sel_lbl_main = lv_label_create(pg->obj);        /* 挂页面根,不挂 roller(自滚会带动子对象) */
+    lv_label_set_long_mode(s_stepset_sel_lbl_main, LV_LABEL_LONG_WRAP);
+    lv_obj_set_width(s_stepset_sel_lbl_main, 265);            /* 与 roller 同宽,长词条自动断两行 */
+    lv_obj_set_style_text_font(s_stepset_sel_lbl_main, &c_aktivgroteskmedium_36, 0);
+    lv_obj_set_style_text_color(s_stepset_sel_lbl_main, lv_color_hex(0xffffff), 0);   /* 选中项白色(原生 SELECTED 走主题默认白) */
+    lv_obj_set_style_text_align(s_stepset_sel_lbl_main, LV_TEXT_ALIGN_CENTER, 0);
+
+    s_stepset_sel_lbl_mode = lv_label_create(pg->obj);
+    lv_label_set_long_mode(s_stepset_sel_lbl_mode, LV_LABEL_LONG_WRAP);
+    lv_obj_set_width(s_stepset_sel_lbl_mode, 265);
+    lv_obj_set_style_text_font(s_stepset_sel_lbl_mode, &c_aktivgroteskmedium_36, 0);
+    lv_obj_set_style_text_color(s_stepset_sel_lbl_mode, lv_color_hex(0xffffff), 0);
+    lv_obj_set_style_text_align(s_stepset_sel_lbl_mode, LV_TEXT_ALIGN_CENTER, 0);
+
+    stepset_en_roller_sel_refresh();   /* 进页初摆(选项已翻译、选中已恢复) */
+    lv_obj_add_event_cb(pg->roller_main, stepset_en_roller_sel_cb, LV_EVENT_VALUE_CHANGED, NULL);
+    lv_obj_add_event_cb(pg->roller_mode, stepset_en_roller_sel_cb, LV_EVENT_VALUE_CHANGED, NULL);
 
     /* next: 按钮 | (969,20) | 138x70 | font taiwanpearl_regular_36 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 969, 20);
