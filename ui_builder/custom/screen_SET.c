@@ -508,7 +508,7 @@ void screen_SET_create(ui_manager_t *ui)
     lv_label_set_text(scr->YY_Lb, tr("简体中文"));
     lv_label_set_long_mode(scr->YY_Lb, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->YY_Lb, 771, 398);
-    lv_obj_set_size(scr->YY_Lb, 125, 30);
+    lv_obj_set_size(scr->YY_Lb, 125, 64);   /* EN 模式值文本折两行(Eng-/lish),留足高度 */
 
     // Set style of scr->YY_Lb
     lv_obj_set_style_text_font(scr->YY_Lb, &c_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);

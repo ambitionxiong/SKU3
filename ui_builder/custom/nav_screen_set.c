@@ -21,7 +21,7 @@ volatile Setting_Data SET_Data = {
     .Set_Lock = 0, .Set_KeepWarm = 0, .Set_FanCooling = 0, .Set_6th = 0,
     .Set_Light = 0, .Set_TempUnit = 0, .Set_VolumeFlag = 1, .Set_VolumeHintTime = 0,
     .Set_VolumeKey = 7, .Set_VolumeWelcome = 1, .Set_Brightness = 7,
-    .Set_TimeType = 0, .Set_StandbyTime = 0, .Set_Language = 0, .Set_Power = 0,
+    .Set_TimeType = 0, .Set_StandbyTime = 0, .Set_Language = 2, .Set_Power = 0,
     .Set_DemoMode = 0,
 };
 
@@ -45,12 +45,18 @@ static void screen_set_del_cb(lv_event_t *e)
 #define SEL_WHERE_TS     4
 #define SEL_WHERE_DJ     5
 #define SEL_WHERE_DEMO   6
+#define SEL_WHERE_LANG   7
 static lv_obj_t *s_sel_cont = NULL;   /* 全屏遮罩容器(filter_Cont) */
 static lv_obj_t *s_sel_icons[4];     /* 选项选中图标(02=选中) */
 static lv_obj_t *s_sel_labels[4];    /* 选项文本 */
 static int s_sel_where = 0;          /* 0=关闭 1=风扇 2=炉灯 3=功率 */
 static int s_sel_flag = 0;           /* 弹窗内临时选择 */
 static int s_sel_n = 2;              /* 选项数 */
+static uint8_t s_sel_notrans = 0;    /* 选项文本不过翻译表(语言弹窗:语言名保持原文) */
+/* 语言弹窗选项/YY_Lb 回显名(下标与 SET_Data.Set_Language 0英语 1繁体 2简体 对应) */
+static const char *const s_lang_names[3] = { "English", "繁體中文", "简体中文" };
+/* YY_Lb 显示名:English 在 125 宽值标签里按设计稿折成 Eng-/lish 两行(与弹窗选项分开) */
+static const char *const s_lang_yy_names[3] = { "Eng-\nlish", "繁體中文", "简体中文" };
 
 static void sel_icons_refresh(void)
 {
@@ -151,7 +157,7 @@ static void sel_popup_create(int where, int flag, int n, const char *title_text,
         lv_img_set_pivot(s_sel_icons[i], 50, 50);   /* 同事:set_pos 即图标中心 */
         lv_obj_set_pos(s_sel_icons[i], L->ix[i], L->iy[i]);
         s_sel_labels[i] = lv_label_create(panel);
-        lv_label_set_text(s_sel_labels[i], tr(opts[i]));
+        lv_label_set_text(s_sel_labels[i], s_sel_notrans ? opts[i] : tr(opts[i]));
         lv_obj_set_pos(s_sel_labels[i], L->tx[i], L->ty[i]);
         lv_obj_set_size(s_sel_labels[i], (i == 2 && n == 4) ? 450 : 200, 32);
         lv_obj_set_style_text_font(s_sel_labels[i], &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -194,6 +200,25 @@ static void sel_popup_apply(void)
     case SEL_WHERE_DEMO:
         SET_Data.Set_DemoMode = s_sel_flag;
         if (ss && ss->Demo_Lb) lv_label_set_text(ss->Demo_Lb, tr(s_sel_flag ? "开" : "关"));
+        break;
+    case SEL_WHERE_LANG:
+        /* s_sel_flag: 0=English 1=繁體 2=简体(与 Set_Language 字段注释一致);繁體暂无词表,显示同简体 */
+        SET_Data.Set_Language = s_sel_flag;
+        g_lang_en = (s_sel_flag == 0) ? 1 : 0;
+        if (g_lang_en) {
+            lang_on_page_built();   /* 切英文:树遍历翻译+英文排版 */
+        } else {
+            /* 切中文:lang_on_page_built 对中文早退,重建覆盖层立即恢复中文布局
+               (弹窗是覆盖层子对象一并销毁;reset 清悬挂指针,函数尾部 close 变无害) */
+            if (screen_SET.obj) {
+                lv_obj_del(screen_SET.obj);
+                screen_SET.obj = NULL;
+            }
+            screen_set_rebuild();
+            screen_set_popup_reset();
+            if (ss && ss->YY_Btn) lv_group_focus_obj(ss->YY_Btn);   /* 焦点回语言按钮(与切英文行为一致) */
+        }
+        if (ss && ss->YY_Lb) lv_label_set_text(ss->YY_Lb, tr(s_lang_yy_names[s_sel_flag]));
         break;
     default: break;
     }
@@ -296,6 +321,15 @@ static void on_set_djtime_click(lv_event_t *e)
     sel_popup_create(SEL_WHERE_DJ, SET_Data.Set_StandbyTime, 3, "待机显示", opts);
 }
 
+/* 语言按钮:弹出语言三选项弹窗(English/繁體中文/简体中文),语言名保持原文不过翻译表 */
+static void on_set_yy_click(lv_event_t *e)
+{
+    (void)e;
+    s_sel_notrans = 1;
+    sel_popup_create(SEL_WHERE_LANG, SET_Data.Set_Language, 3, tr("语言"), s_lang_names);
+    s_sel_notrans = 0;
+}
+
 static void on_set_demo_click(lv_event_t *e)
 {
     (void)e;
@@ -378,6 +412,7 @@ void screen_set_rebuild(void)
     if (ss->Six_Lb) lv_label_set_text(ss->Six_Lb, tr(SET_Data.Set_6th ? "含猪肉" : "全部"));
     if (ss->WDDW_Lb) lv_label_set_text(ss->WDDW_Lb, tr(SET_Data.Set_TempUnit ? "°F" : "°C"));
     if (ss->Demo_Lb) lv_label_set_text(ss->Demo_Lb, tr(SET_Data.Set_DemoMode ? "开" : "关"));
+    screen_set_yy_lb_sync();   /* YY_Lb 语言值回显(按 Set_Language 显示语言原名) */
     lv_obj_add_event_cb(ss->ZDBW_Btn, on_set_zdbw_click, LV_EVENT_CLICKED, NULL);
     lv_obj_add_event_cb(ss->TFLQYX_Btn, on_set_tflqyx_click, LV_EVENT_CLICKED, NULL);
     lv_obj_add_event_cb(ss->LDG_Btn, on_set_ldg_click, LV_EVENT_CLICKED, NULL);
@@ -386,6 +421,7 @@ void screen_set_rebuild(void)
     lv_obj_add_event_cb(ss->Six_Btn, on_set_six_click, LV_EVENT_CLICKED, NULL);
     lv_obj_add_event_cb(ss->WDDW_Btn, on_set_wddw_click, LV_EVENT_CLICKED, NULL);
     lv_obj_add_event_cb(ss->DJ_Time_Btn, on_set_djtime_click, LV_EVENT_CLICKED, NULL);
+    lv_obj_add_event_cb(ss->YY_Btn, on_set_yy_click, LV_EVENT_CLICKED, NULL);
     lv_obj_add_event_cb(ss->Demo_Btn, on_set_demo_click, LV_EVENT_CLICKED, NULL);
     lv_obj_add_event_cb(ss->SYSZ_Btn, on_set_sysz_click, LV_EVENT_CLICKED, NULL);
     /* ③ 焦点 */
@@ -399,6 +435,15 @@ void screen_set_rebuild(void)
 int screen_set_was_running(void)
 {
     return s_was_running;
+}
+
+/* YY_Lb 语言值回显:按 Set_Language 显示语言原名(tr:EN 模式下"简体中文"译为 Simplified Chinese) */
+void screen_set_yy_lb_sync(void)
+{
+    screen_SET_t *ss = screen_SET_get(&ui_manager);
+    int lang = SET_Data.Set_Language;
+    if (lang < 0 || lang > 2) lang = 2;
+    if (ss && ss->YY_Lb) lv_label_set_text(ss->YY_Lb, tr(s_lang_yy_names[lang]));
 }
 
 void jump_to_screen_set(void)

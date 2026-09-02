@@ -12428,8 +12428,10 @@ void screen_SET_lang_tune(void)
     lv_obj_set_size(pg->WDDW_Lb, 65, 30);
 
     /* YY_Lb: 标签 | (771,398) | 125x30 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->YY_Lb, 771, 398);
-    lv_obj_set_size(pg->YY_Lb, 125, 30);
+    lv_obj_set_pos(pg->YY_Lb, 771+70, 390);
+    lv_obj_set_size(pg->YY_Lb, 125, LV_SIZE_CONTENT);   /* EN:Eng-/lish 两行自适应 */
+    // 将标签 label 的文本设置为左对齐
+    lv_obj_set_style_text_align(pg->YY_Lb, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN);
 
     /* Power_Lb: 标签 | "16A" | (1154,116) | 55x30 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->Power_Lb, 1154, 116);
