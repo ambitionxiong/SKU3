@@ -13821,6 +13821,83 @@ void special_menu_tz_lang_tune(void)
    选中位叠标签读 get_selected_str,标签可自由换行/调样式 */
 static lv_obj_t *s_stepset_sel_lbl_main = NULL;   /* 覆盖标签:左大类滚轮 */
 static lv_obj_t *s_stepset_sel_lbl_mode = NULL;   /* 覆盖标签:右子类滚轮 */
+static uint8_t   s_stepset_teardown = 0;          /* 拆屏中:任一 roller 发出 DELETE 即置位 */
+
+/* 量标签文本按实际字体/字距贪心断行后的最宽行宽(空格分词,与 LVGL 词换行规则一致) */
+static lv_coord_t stepset_en_label_max_line_w(const lv_obj_t *lbl)
+{
+    const lv_font_t *font = lv_obj_get_style_text_font((lv_obj_t *)lbl, LV_PART_MAIN);
+    lv_coord_t ls = lv_obj_get_style_text_letter_space((lv_obj_t *)lbl, LV_PART_MAIN);
+    lv_coord_t maxw = lv_obj_get_width(lbl);            /* 标签限宽(换行宽度) */
+    const char *p = lv_label_get_text(lbl);
+    if (!font || !p || maxw <= 0) return 0;
+
+    char line[64] = "", word[48], cand[80];
+    lv_coord_t widest = 0, cur = 0;                     /* 最宽行宽 / 当前行宽 */
+    while (*p) {
+        while (*p == ' ') p++;
+        if (!*p) break;
+        const char *ws = p;
+        while (*p && *p != ' ') p++;
+        snprintf(word, sizeof(word), "%.*s", (int)(p - ws), ws);
+        if (line[0]) {
+            snprintf(cand, sizeof(cand), "%s %s", line, word);
+            lv_point_t csz;
+            lv_text_get_size(&csz, cand, font, ls, 0, LV_COORD_MAX, LV_TEXT_FLAG_NONE);
+            if (csz.x <= maxw) { snprintf(line, sizeof(line), "%s", cand); cur = csz.x; }
+            else {
+                if (cur > widest) widest = cur;
+                snprintf(line, sizeof(line), "%s", word);
+                cur = lv_text_get_width(word, (uint32_t)strlen(word), font, ls);
+            }
+        } else {
+            snprintf(line, sizeof(line), "%s", word);
+            cur = lv_text_get_width(word, (uint32_t)strlen(word), font, ls);
+        }
+    }
+    return cur > widest ? cur : widest;
+}
+
+/* 英文: 焦点下划线随覆盖标签自适应 —— 宽=标签最宽行,pivot 归零 scale_x 拉伸,
+   水平居中于滚轮中心,y 固定 361(选中带底部) */
+static void stepset_en_line_fit(lv_obj_t *line, const lv_obj_t *roller, const lv_obj_t *lbl)
+{
+    /* 拆屏途中 roller/线/标签可能正被删(组重挂 FOCUSED 打进来):一律先验有效性 */
+    if (!line || !roller || !lbl ||
+        !lv_obj_is_valid(line) || !lv_obj_is_valid(roller) || !lv_obj_is_valid(lbl)) {
+        printf("[stepset-en] line_fit skip: line=%p roller=%p lbl=%p\n", (void *)line, (void *)roller, (void *)lbl);
+        return;
+    }
+    lv_obj_update_layout((lv_obj_t *)lbl);
+    lv_coord_t tw = stepset_en_label_max_line_w(lbl);
+    if (tw <= 0) return;
+    lv_area_t ra;
+    lv_obj_get_coords(roller, &ra);
+    lv_coord_t cx = (ra.x1 + ra.x2) / 2;
+    lv_image_set_pivot(line, 0, 0);                     /* 原 pivot(50,50) 拉伸绕偏心点,归左上:x=左缘 */
+    lv_image_set_scale_x(line, tw * 256 / 135);         /* 两张线源图都是 underline_135x4 */
+    lv_obj_set_pos(line, cx - tw / 2, 361 + 6);         /* 下移6px(原361) */
+}
+
+/* 页面拆除时标签先于滚轮被删(创建逆序删除),组重挂 FOCUSED 会在拆除途中触发 refresh;
+   DELETE 事件里清空静态指针,refresh 见空即退,避免踩已释放对象(英文模式返回闪退修复) */
+static void stepset_en_sel_lbl_del_cb(lv_event_t *e)
+{
+    lv_obj_t **slot = (lv_obj_t **)lv_event_get_user_data(e);
+    printf("[stepset-en] label delete -> clear %s\n",
+           slot == (lv_obj_t **)&s_stepset_sel_lbl_main ? "main" : "mode");
+    if (slot) *slot = NULL;
+}
+
+/* roller 的 DELETE 在 LVGL obj_delete_core 里先于析构/组移除发出:
+   此刻置拆除标志,随后析构内部的组重挂 FOCUSED 打进来时 refresh 见标志即退,
+   不会再碰半析构的 roller(options 已释放,is_valid 仍为 1 靠不住) */
+static void stepset_en_roller_del_cb(lv_event_t *e)
+{
+    LV_UNUSED(e);
+    s_stepset_teardown = 1;
+    printf("[stepset-en] roller DELETE -> teardown=1\n");
+}
 
 /* 标签刷新:读两个 roller 当前选中项 → 设文本 + 按滚轮居中(一行/两行都保持居中)。
    注意时序:业务回调(stepset_on_main_change 切大类重置右滚轮)在建页时注册,
@@ -13828,26 +13905,49 @@ static lv_obj_t *s_stepset_sel_lbl_mode = NULL;   /* 覆盖标签:右子类滚�
    读到的必是重置后的新状态 */
 static void stepset_en_roller_sel_refresh(void)
 {
+    if (s_stepset_teardown) {   /* 拆除期:roller DELETE 已发出,之后组重挂 FOCUSED 一律忽略 */
+        printf("[stepset-en] refresh skip: teardown\n");
+        return;
+    }
     stepset_t *pg = stepset_get(&ui_manager);
-    if (!pg) return;
+    if (!pg || !s_stepset_sel_lbl_main || !s_stepset_sel_lbl_mode) return;   /* 未建或标签已删:跳过 */
+    printf("[stepset-en] refresh: r_main=%p valid=%d r_mode=%p valid=%d\n",
+           (void *)pg->roller_main, pg->roller_main ? (int)lv_obj_is_valid(pg->roller_main) : -1,
+           (void *)pg->roller_mode, pg->roller_mode ? (int)lv_obj_is_valid(pg->roller_mode) : -1);
     char buf[64];
-    if (s_stepset_sel_lbl_main && pg->roller_main) {
+    if (s_stepset_sel_lbl_main && pg->roller_main && lv_obj_is_valid(pg->roller_main)) {
         lv_roller_get_selected_str(pg->roller_main, buf, sizeof(buf));
         lv_label_set_text(s_stepset_sel_lbl_main, buf);
         lv_obj_update_layout(s_stepset_sel_lbl_main);
         lv_obj_align_to(s_stepset_sel_lbl_main, pg->roller_main, LV_ALIGN_CENTER, 0, 0);
     }
-    if (s_stepset_sel_lbl_mode && pg->roller_mode) {
+    if (s_stepset_sel_lbl_mode && pg->roller_mode && lv_obj_is_valid(pg->roller_mode)) {
         lv_roller_get_selected_str(pg->roller_mode, buf, sizeof(buf));
         lv_label_set_text(s_stepset_sel_lbl_mode, buf);
         lv_obj_update_layout(s_stepset_sel_lbl_mode);
         lv_obj_align_to(s_stepset_sel_lbl_mode, pg->roller_mode, LV_ALIGN_CENTER, 0, 0);
     }
+
+    /* 焦点下划线随标签:英文统一用 mainline/modeline4 自适应;modeline2/3 不再使用。
+       业务 on_focus(先注册先跑)刚按三档点亮了某条线 → 这里收回统一到 4(显隐语义不变:业务亮过才亮) */
+    int mode_line_on = (pg->modeline2 && lv_obj_is_valid(pg->modeline2) && !lv_obj_has_flag(pg->modeline2, LV_OBJ_FLAG_HIDDEN)) ||
+                       (pg->modeline3 && lv_obj_is_valid(pg->modeline3) && !lv_obj_has_flag(pg->modeline3, LV_OBJ_FLAG_HIDDEN)) ||
+                       (pg->modeline4 && lv_obj_is_valid(pg->modeline4) && !lv_obj_has_flag(pg->modeline4, LV_OBJ_FLAG_HIDDEN));
+    if (pg->modeline2 && lv_obj_is_valid(pg->modeline2)) lv_obj_add_flag(pg->modeline2, LV_OBJ_FLAG_HIDDEN);
+    if (pg->modeline3 && lv_obj_is_valid(pg->modeline3)) lv_obj_add_flag(pg->modeline3, LV_OBJ_FLAG_HIDDEN);
+    if (pg->modeline4 && lv_obj_is_valid(pg->modeline4)) {
+        if (mode_line_on) lv_obj_clear_flag(pg->modeline4, LV_OBJ_FLAG_HIDDEN);
+        else              lv_obj_add_flag(pg->modeline4, LV_OBJ_FLAG_HIDDEN);
+    }
+    stepset_en_line_fit(pg->modeline4, pg->roller_mode, s_stepset_sel_lbl_mode);
+    stepset_en_line_fit(pg->mainline,  pg->roller_main, s_stepset_sel_lbl_main);
 }
 
 static void stepset_en_roller_sel_cb(lv_event_t *e)
 {
-    LV_UNUSED(e);
+    printf("[stepset-en] cb: ev=%s target=%p\n",
+           (int)lv_event_get_code(e) == (int)LV_EVENT_FOCUSED ? "FOCUSED" : "VALUE_CHANGED",
+           (void *)lv_event_get_target(e));
     stepset_en_roller_sel_refresh();
 }
 
@@ -13872,8 +13972,13 @@ void stepset_lang_tune(void)
     lv_obj_set_size(pg->roller_main, 265, 176);
 
     /* 英文: 原生选中文字透明(选中带底图保留) + 选中位覆盖标签(aktiv36,可两行) */
+    s_stepset_teardown = 0;   /* 进页复位拆除标志 */
     lv_obj_set_style_text_opa(pg->roller_main, LV_OPA_TRANSP, LV_PART_SELECTED);
     lv_obj_set_style_text_opa(pg->roller_mode, LV_OPA_TRANSP, LV_PART_SELECTED);
+
+    /* roller DELETE:拆除开始的第一事件(LVGL 先发 DELETE 再析构/组移除),置标志封死后续事件 */
+    lv_obj_add_event_cb(pg->roller_main, stepset_en_roller_del_cb, LV_EVENT_DELETE, NULL);
+    lv_obj_add_event_cb(pg->roller_mode, stepset_en_roller_del_cb, LV_EVENT_DELETE, NULL);
 
     s_stepset_sel_lbl_main = lv_label_create(pg->obj);        /* 挂页面根,不挂 roller(自滚会带动子对象) */
     lv_label_set_long_mode(s_stepset_sel_lbl_main, LV_LABEL_LONG_WRAP);
@@ -13881,6 +13986,7 @@ void stepset_lang_tune(void)
     lv_obj_set_style_text_font(s_stepset_sel_lbl_main, &c_aktivgroteskmedium_36, 0);
     lv_obj_set_style_text_color(s_stepset_sel_lbl_main, lv_color_hex(0xffffff), 0);   /* 选中项白色(原生 SELECTED 走主题默认白) */
     lv_obj_set_style_text_align(s_stepset_sel_lbl_main, LV_TEXT_ALIGN_CENTER, 0);
+    lv_obj_set_style_text_line_space(s_stepset_sel_lbl_main, -6, 0);   /* 两行时行距收紧,可调 */
 
     s_stepset_sel_lbl_mode = lv_label_create(pg->obj);
     lv_label_set_long_mode(s_stepset_sel_lbl_mode, LV_LABEL_LONG_WRAP);
@@ -13888,10 +13994,18 @@ void stepset_lang_tune(void)
     lv_obj_set_style_text_font(s_stepset_sel_lbl_mode, &c_aktivgroteskmedium_36, 0);
     lv_obj_set_style_text_color(s_stepset_sel_lbl_mode, lv_color_hex(0xffffff), 0);
     lv_obj_set_style_text_align(s_stepset_sel_lbl_mode, LV_TEXT_ALIGN_CENTER, 0);
+    lv_obj_set_style_text_line_space(s_stepset_sel_lbl_mode, -6, 0);   /* 两行时行距收紧,可调 */
+
+    /* 标签被删(拆屏)时自动清空静态指针,防止拆除途中重挂 FOCUSED 踩已释放对象 */
+    lv_obj_add_event_cb(s_stepset_sel_lbl_main, stepset_en_sel_lbl_del_cb, LV_EVENT_DELETE, &s_stepset_sel_lbl_main);
+    lv_obj_add_event_cb(s_stepset_sel_lbl_mode, stepset_en_sel_lbl_del_cb, LV_EVENT_DELETE, &s_stepset_sel_lbl_mode);
 
     stepset_en_roller_sel_refresh();   /* 进页初摆(选项已翻译、选中已恢复) */
     lv_obj_add_event_cb(pg->roller_main, stepset_en_roller_sel_cb, LV_EVENT_VALUE_CHANGED, NULL);
     lv_obj_add_event_cb(pg->roller_mode, stepset_en_roller_sel_cb, LV_EVENT_VALUE_CHANGED, NULL);
+    /* 焦点切到滚轮时业务 on_focus(先注册先跑)选线 → 这里重做几何归一+随标签 */
+    lv_obj_add_event_cb(pg->roller_main, stepset_en_roller_sel_cb, LV_EVENT_FOCUSED, NULL);
+    lv_obj_add_event_cb(pg->roller_mode, stepset_en_roller_sel_cb, LV_EVENT_FOCUSED, NULL);
 
     /* next: 按钮 | (969,20) | 138x70 | font taiwanpearl_regular_36 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 969, 20);
@@ -13934,17 +14048,9 @@ void stepset_lang_tune(void)
     lv_obj_set_pos(pg->label_9, 1133, 319);
     lv_obj_set_size(pg->label_9, 27, 24);
 
-    /* mainline: 图片 | (110,361) | img: underline_135x4.png */
-    lv_obj_set_pos(pg->mainline, 110, 361);
-
-    /* modeline4: 图片 | (420,361) | img: underline_135x4.png */
-    lv_obj_set_pos(pg->modeline4, 420, 361);
-
-    /* modeline2: 图片 | (451,361) | img: underline_73x4.png */
-    lv_obj_set_pos(pg->modeline2, 451, 361);
-
-    /* modeline3: 图片 | (433,361) | img: underline_108x4.png */
-    lv_obj_set_pos(pg->modeline3, 433, 361);
+    /* mainline/modeline2/3/4: 英文模式不再用静态位+三档选线,改由 stepset_en_roller_sel_refresh()
+       按覆盖标签实际显示自适应(mainline→左滚轮标签, modeline4→右滚轮标签, modeline2/3 永远隐藏),
+       这里不设位置以免覆盖自适应结果;中文模式仍走 nav_stepset.c 原逻辑 */
 
     /* templine3: 图片 | (739,361) | img: underline_114x4.png */
     lv_obj_set_pos(pg->templine3, 739, 361);
