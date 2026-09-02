@@ -14638,6 +14638,57 @@ static void toastcolor_en_mat_line_draw_cb(lv_event_t *e)
     }
 }
 
+/* ===== 英文: toastcolor 烤色程度下划线随文本(Light/Medium/Dark)宽度自适应 =====
+   同 mat 线规则(线宽=文本宽);degree 线为单根 settingline3_73x4(base 73) */
+static int s_toastcolor_deg_last_tw = -1;                /* 上次已应用的文本宽(绘制对账用) */
+
+static void toastcolor_en_deg_line_set(toastcolor_t *pg, int tw)
+{
+    if (!pg || !pg->degree || !pg->line || tw <= 0) return;
+    lv_area_t ca;
+    lv_obj_get_coords(lv_obj_get_parent(pg->degree), &ca);   /* scr->obj 全屏根,文本 CENTER(0,48) 水平居中 */
+    lv_image_set_pivot(pg->line, 0, 0);                      /* 原 pivot(50,50) 拉伸会绕偏心点,归左上:x=左缘 */
+    lv_image_set_scale_x(pg->line, tw * 256 / 73);           /* 256=100%,73=原始线宽 */
+    lv_obj_set_pos(pg->line, (ca.x1 + ca.x2) / 2 - tw / 2, 328);
+}
+
+/* 进页初摆:tune 在屏幕 load+英文翻译之后执行,update_layout 后量实际宽 */
+static void toastcolor_en_deg_line_apply(toastcolor_t *pg)
+{
+    if (!pg || !pg->degree) return;
+    lv_obj_update_layout(pg->degree);                        /* LV_SIZE_CONTENT 先算出英文实际宽 */
+    int tw = lv_obj_get_width(pg->degree);
+    if (tw <= 0) {                                           /* 布局未就绪:退回中文静态位 */
+        lv_obj_set_pos(pg->line, 606, 328);
+        s_toastcolor_deg_last_tw = -1;
+        return;
+    }
+    toastcolor_en_deg_line_set(pg, tw);
+    s_toastcolor_deg_last_tw = tw;
+}
+
+/* 编码器切烤色程度:文本变宽/变窄 → SIZE_CHANGED 线随动(同 mat 线机制) */
+static void toastcolor_en_deg_line_sync(lv_event_t *e)
+{
+    toastcolor_t *pg = (toastcolor_t *)lv_event_get_user_data(e);
+    if (!pg || !pg->degree) return;
+    int tw = lv_obj_get_width(pg->degree);
+    toastcolor_en_deg_line_set(pg, tw);
+    s_toastcolor_deg_last_tw = tw;
+}
+
+/* 兜底自愈:同 mat 线,实宽与上次已应用值不同才重摆 */
+static void toastcolor_en_deg_line_draw_cb(lv_event_t *e)
+{
+    toastcolor_t *pg = (toastcolor_t *)lv_event_get_user_data(e);
+    if (!pg || !pg->degree) return;
+    int tw = lv_obj_get_width(pg->degree);
+    if (tw > 0 && tw != s_toastcolor_deg_last_tw) {
+        toastcolor_en_deg_line_set(pg, tw);
+        s_toastcolor_deg_last_tw = tw;
+    }
+}
+
 /* ==============================================================================
  * toastcolor 英文布局基准（对应 PAGE_TOASTCOLOR ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
@@ -14796,6 +14847,11 @@ void toastcolor_lang_tune(void)
         obj = pg->degree;
         lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
         lv_obj_align(obj, LV_ALIGN_CENTER, 0, 48);
+
+        /* line:进页按当前程度文本宽初摆 + 文本尺寸变化随动(编码器切 Light/Medium/Dark) */
+        toastcolor_en_deg_line_apply(pg);
+        lv_obj_add_event_cb(pg->degree, toastcolor_en_deg_line_sync, LV_EVENT_SIZE_CHANGED, pg);
+        lv_obj_add_event_cb(pg->degree, toastcolor_en_deg_line_draw_cb, LV_EVENT_DRAW_MAIN, pg);
 
         // lv_obj_update_layout(obj);
         

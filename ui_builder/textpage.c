@@ -183,6 +183,18 @@ void textpage_create(ui_manager_t *ui)
     lv_obj_set_style_text_color(scr->label_3, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->label_3, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
+    // Init scr->label_4
+    scr->label_4 = lv_label_create(scr->obj);
+    lv_label_set_text(scr->label_4, "一三五七成全分");
+    lv_label_set_long_mode(scr->label_4, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->label_4, 911, 53);
+    lv_obj_set_size(scr->label_4, 142, 32);
+
+    // Set style of scr->label_4
+    lv_obj_set_style_text_font(scr->label_4, &c_taiwanpearl_regular_72, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->label_4, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->label_4, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
+
 
 }
 

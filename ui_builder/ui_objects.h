@@ -3999,6 +3999,7 @@ typedef struct {
     lv_obj_t *label_8;
     lv_obj_t *label_9;
     lv_obj_t *label_3;
+    lv_obj_t *label_4;
 } textpage_t;
 
 typedef struct {
