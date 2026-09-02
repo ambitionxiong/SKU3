@@ -13865,7 +13865,6 @@ static void stepset_en_line_fit(lv_obj_t *line, const lv_obj_t *roller, const lv
     /* 拆屏途中 roller/线/标签可能正被删(组重挂 FOCUSED 打进来):一律先验有效性 */
     if (!line || !roller || !lbl ||
         !lv_obj_is_valid(line) || !lv_obj_is_valid(roller) || !lv_obj_is_valid(lbl)) {
-        printf("[stepset-en] line_fit skip: line=%p roller=%p lbl=%p\n", (void *)line, (void *)roller, (void *)lbl);
         return;
     }
     lv_obj_update_layout((lv_obj_t *)lbl);
@@ -13879,13 +13878,10 @@ static void stepset_en_line_fit(lv_obj_t *line, const lv_obj_t *roller, const lv
     lv_obj_set_pos(line, cx - tw / 2, 361 + 6);         /* 下移6px(原361) */
 }
 
-/* 页面拆除时标签先于滚轮被删(创建逆序删除),组重挂 FOCUSED 会在拆除途中触发 refresh;
-   DELETE 事件里清空静态指针,refresh 见空即退,避免踩已释放对象(英文模式返回闪退修复) */
+/* 拆屏时标签对象被删:DELETE 事件里清空静态指针,refresh 见空即退(防御,防踩已释放对象) */
 static void stepset_en_sel_lbl_del_cb(lv_event_t *e)
 {
     lv_obj_t **slot = (lv_obj_t **)lv_event_get_user_data(e);
-    printf("[stepset-en] label delete -> clear %s\n",
-           slot == (lv_obj_t **)&s_stepset_sel_lbl_main ? "main" : "mode");
     if (slot) *slot = NULL;
 }
 
@@ -13896,7 +13892,6 @@ static void stepset_en_roller_del_cb(lv_event_t *e)
 {
     LV_UNUSED(e);
     s_stepset_teardown = 1;
-    printf("[stepset-en] roller DELETE -> teardown=1\n");
 }
 
 /* 标签刷新:读两个 roller 当前选中项 → 设文本 + 按滚轮居中(一行/两行都保持居中)。
@@ -13906,14 +13901,10 @@ static void stepset_en_roller_del_cb(lv_event_t *e)
 static void stepset_en_roller_sel_refresh(void)
 {
     if (s_stepset_teardown) {   /* 拆除期:roller DELETE 已发出,之后组重挂 FOCUSED 一律忽略 */
-        printf("[stepset-en] refresh skip: teardown\n");
         return;
     }
     stepset_t *pg = stepset_get(&ui_manager);
     if (!pg || !s_stepset_sel_lbl_main || !s_stepset_sel_lbl_mode) return;   /* 未建或标签已删:跳过 */
-    printf("[stepset-en] refresh: r_main=%p valid=%d r_mode=%p valid=%d\n",
-           (void *)pg->roller_main, pg->roller_main ? (int)lv_obj_is_valid(pg->roller_main) : -1,
-           (void *)pg->roller_mode, pg->roller_mode ? (int)lv_obj_is_valid(pg->roller_mode) : -1);
     char buf[64];
     if (s_stepset_sel_lbl_main && pg->roller_main && lv_obj_is_valid(pg->roller_main)) {
         lv_roller_get_selected_str(pg->roller_main, buf, sizeof(buf));
@@ -13945,9 +13936,7 @@ static void stepset_en_roller_sel_refresh(void)
 
 static void stepset_en_roller_sel_cb(lv_event_t *e)
 {
-    printf("[stepset-en] cb: ev=%s target=%p\n",
-           (int)lv_event_get_code(e) == (int)LV_EVENT_FOCUSED ? "FOCUSED" : "VALUE_CHANGED",
-           (void *)lv_event_get_target(e));
+    LV_UNUSED(e);
     stepset_en_roller_sel_refresh();
 }
 
@@ -15842,7 +15831,8 @@ void updown_bbq_complete_lang_tune(void)
     lv_obj_set_size(pg->complete_label, 330, 60);
 
     /* image_26: 图片 | (845,160) | img: hotcare.png */
-    lv_obj_set_pos(pg->image_26, 845, 160);
+    lv_obj_set_pos(pg->image_26, 820, 160);
+    lv_image_set_src(pg->image_26,LVGL_IMAGE_PATH(hotcare_en.png));
 
     /* little_button: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
     lv_obj_set_pos(pg->little_button, 609, 170);
