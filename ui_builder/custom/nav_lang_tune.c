@@ -13841,6 +13841,7 @@ void stepset_lang_tune(void)
 
     /* image_1: 图片 | (272,196) | img: modebg.png */
     lv_obj_set_pos(pg->image_1, 272, 196);
+    lv_image_set_src(pg->image_1,LVGL_IMAGE_PATH(modebg_en.png));
 
     /* label_1: 标签 | "多段烹饪" | (24,24) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_1, 24, 24);
@@ -13864,11 +13865,11 @@ void stepset_lang_tune(void)
     lv_obj_set_size(pg->min, 59, 49);
 
     /* label_7: 标签 | "℃" | (823,319) | 27x24 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_7, 823, 319);
+    lv_obj_set_pos(pg->label_7, 823-20, 319);
     lv_obj_set_size(pg->label_7, 50, 24);
 
     /* label_8: 标签 | "时" | (999,319) | 27x24 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_8, 999, 319);
+    lv_obj_set_pos(pg->label_8, 999-5, 319);
     lv_obj_set_size(pg->label_8, 27, 24);
 
     /* label_9: 标签 | "分" | (1133,319) | 27x24 | font taiwanpearl_regular_30 */
