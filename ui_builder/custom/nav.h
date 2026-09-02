@@ -668,6 +668,7 @@ extern lv_group_t *g_screen_set;
 void jump_to_screen_set(void);
 void screen_set_back(void);
 void screen_set_reset(void);
+int screen_set_was_running(void);   /* 进入设置页前是否运行态(英文排版底图分支用) */
 
 /* 声音设置子页（nav_loudness.c 实现，PAGE_LOUDNESS） */
 void jump_to_loudness(void);

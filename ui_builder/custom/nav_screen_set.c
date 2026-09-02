@@ -395,10 +395,17 @@ void screen_set_rebuild(void)
 
 }
 
+/* 运行态判定:进入设置页前是否烹饪/暂停/完成/预约(英文排版底图分支用) */
+int screen_set_was_running(void)
+{
+    return s_was_running;
+}
+
 void jump_to_screen_set(void)
 {
     screen_set_rebuild();   /* 含防重入/运行态记录/覆盖层构建 */
     page_push(PAGE_SCREEN_SET);
+    lang_on_page_built();   /* 覆盖层挂当前屏、无 screen load:进页补跑翻译+英文排版 */
     printf("[screen_set] enter (overlay, running=%d)\n", s_was_running);
 }
 

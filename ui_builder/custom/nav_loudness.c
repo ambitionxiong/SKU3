@@ -269,6 +269,7 @@ void return_Loudness_action()
 		/* 返回设置层：我方设置层为覆盖层（非同事独立页）——弹栈后重建覆盖层 */
 		depth--;
 		screen_set_rebuild();
+		lang_on_page_built();   /* 覆盖层重建不走 lang 出口:补跑树遍历翻译+英文排版 */
 	}
 	else
 	{
