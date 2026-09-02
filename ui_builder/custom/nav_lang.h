@@ -30,4 +30,8 @@ void lang_refresh_screen(void);
 int lang_dyn_dx(void);
 int lang_dyn_dy(void);
 
+/* topflag 顶层提示层摆位:tip1 高自适应(EN 三行/CN 单行),常驻 layer_top
+ * 不进 tune 注册表,由 nav_hint 显示提示时调用 */
+void topflagpage_lang_tune(void);
+
 #endif

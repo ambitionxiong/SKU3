@@ -12337,6 +12337,7 @@ void screen_SET_lang_tune(void)
 
     /* SET_bg_Img: 图片 | (24,80) | img: set_bg_IMG.png */
     lv_obj_set_pos(pg->SET_bg_Img, 24, 80);
+    
 
     /* DSQ_Btn: 按钮 | (34,95) | 282x67 | font montserratmedium_16 | bg: set_select_icon.png */
     lv_obj_set_pos(pg->DSQ_Btn, 34, 95);
@@ -12403,7 +12404,8 @@ void screen_SET_lang_tune(void)
     lv_obj_set_size(pg->GYJQ_Btn, 282, 67);
 
     /* TXT_Img: 图片 | (48,112) | img: set_bg_txt.png */
-    lv_obj_set_pos(pg->TXT_Img, 48, 112);
+    lv_obj_set_pos(pg->TXT_Img, 48, 112-17);
+    lv_image_set_src(pg->TXT_Img,LVGL_IMAGE_PATH(set_bg_txt_en.png));
 
     /* TS_Lb: 标签 | (215,210) | 65x30 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->TS_Lb, 215, 210);
@@ -18480,6 +18482,19 @@ void sixset2_lang_tune(void)
 
 }
 
+
+/* topflag 顶层提示层:常驻 lv_layer_top、不进 tune 注册表(nav_init 建一次,
+   nav_hint 按需显隐),由 nav_hint 显示提示时调用。
+   tip1 高度自适应:英文长句按 275 宽折成三行(Not available/when the oven/is running)
+   全部可见,中文单行与原布局一致;三行左对齐同设计稿 */
+void topflagpage_lang_tune(void)
+{
+    topflagpage_t *tf = topflagpage_get(&ui_manager);
+    if (!tf || !tf->tip1) return;
+    lv_obj_set_size(tf->tip1, 275, LV_SIZE_CONTENT);   /* 高随行数自适应(EN三行/CN单行) */
+    lv_obj_set_pos(tf->tip1, 885, 161);                /* 框中心x=1022.5,正对下方Pause按钮轴线 */
+    lv_obj_set_style_text_align(tf->tip1, LV_TEXT_ALIGN_CENTER, 0);   /* 每行居中,不显歪 */
+}
 
 const struct { page_id_t page; lang_tune_fn fn; int dx, dy; } s_tune_tab[] = {
     { PAGE_AIR_COMPLETE, air_complete_lang_tune, 0, 0 },   /*  */

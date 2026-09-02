@@ -361,7 +361,7 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "烤牛肉", "Roast Beef" },
         { "烤猪里脊肉", "Roast Pork Tenderloin" },
         { "烤生蚝", "Grilled Oysters" },
-        { "烤箱运行时不可用。", "Not available while oven is running." },
+        { "烤箱运行时不可用。", "Not available\nwhen the oven\nis running." },
         { "收藏成功", "Saved" },
         { "该烹调已有，", "Already saved," },
         { "需要覆盖原有烹调吗？", "Overwrite existing?" },

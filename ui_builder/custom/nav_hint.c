@@ -169,6 +169,7 @@ void nav_show_invalid_hint(void)
 
     /* 显示 topflag 遮罩 + tip1(文本每次设置,随语言切换) */
     lv_label_set_text(tf->tip1, tr("烤箱运行时不可用。"));
+    topflagpage_lang_tune();   /* 英文排版:tip1 三行折行+高度自适应(每次显示刷新) */
     lv_obj_clear_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);
     lv_obj_clear_flag(tf->tip1, LV_OBJ_FLAG_HIDDEN);
     g_hint_timer = lv_timer_create(hint_timer_cb, 3000, NULL);
