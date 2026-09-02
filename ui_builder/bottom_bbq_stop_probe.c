@@ -100,7 +100,7 @@ void bottom_bbq_stop_probe_create(ui_manager_t *ui)
 
     // Init scr->label_70
     scr->label_70 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_70, "烹饪中...");
+    lv_label_set_text(scr->label_70, "暂停中...");
     lv_label_set_long_mode(scr->label_70, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->label_70, 273, 157);
     lv_obj_set_size(scr->label_70, 235, 60);
