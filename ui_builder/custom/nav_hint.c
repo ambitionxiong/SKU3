@@ -112,6 +112,16 @@ static void nav_hint_collect(void)
     } else if (current_group == g_custom_cooking) {
         custom_cooking_t *c = custom_cooking_get(&ui_manager); if (c) g_hint_objs[g_hint_n++] = c->timelabel;
     }
+    /* 清洁四模式烹饪页:右侧只有 timelabel(倒计时),无 temp/探针图标 */
+    else if (current_group == g_wc_cooking) {
+        waterclean_cooking_t *c = waterclean_cooking_get(&ui_manager); if (c) g_hint_objs[g_hint_n++] = c->timelabel;
+    } else if (current_group == g_hcs_cooking) {
+        hotcleansave_cooking_t *c = hotcleansave_cooking_get(&ui_manager); if (c) g_hint_objs[g_hint_n++] = c->timelabel;
+    } else if (current_group == g_hcm_cooking) {
+        hotcleanmiddle_cooking_t *c = hotcleanmiddle_cooking_get(&ui_manager); if (c) g_hint_objs[g_hint_n++] = c->timelabel;
+    } else if (current_group == g_hch_cooking) {
+        hotcleanhigh_cooking_t *c = hotcleanhigh_cooking_get(&ui_manager); if (c) g_hint_objs[g_hint_n++] = c->timelabel;
+    }
     for (int i = 0; i < g_hint_n; i++)
         if (g_hint_objs[i]) {
             /* 先移除再挂:元素跨多次提示复用,防 DELETE 回调事件列表累积 */

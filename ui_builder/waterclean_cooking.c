@@ -30,7 +30,7 @@ void waterclean_cooking_create(ui_manager_t *ui)
 
     // Init scr->label_6
     scr->label_6 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_6, "| 水解自清洁 | 10分钟 |");
+    lv_label_set_text(scr->label_6, "| 水解自清洁 | 10分钟");
     lv_label_set_long_mode(scr->label_6, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->label_6, 274, 232);
     lv_obj_set_size(scr->label_6, 490, 39);

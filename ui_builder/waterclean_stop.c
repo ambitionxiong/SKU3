@@ -30,7 +30,7 @@ void waterclean_stop_create(ui_manager_t *ui)
 
     // Init scr->label_9
     scr->label_9 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_9, "| 水解自清洁 | 10分钟 |");
+    lv_label_set_text(scr->label_9, "| 水解自清洁 | 10分钟");
     lv_label_set_long_mode(scr->label_9, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->label_9, 274, 232);
     lv_obj_set_size(scr->label_9, 490, 39);

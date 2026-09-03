@@ -562,10 +562,15 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "发酵：是", "Fermentation: Yes" },
         { "发酵：否", "Fermentation: No" },
         { "探针温度：%d℃", "Probe Temp: %d°C" },
-        { "| 水解自清洁 | 10分钟 |", "| Smart Clean | 10m |" },
+        { "| 水解自清洁 | 10分钟", "| Smart Clean | 10m" },
         { "| 1小时15分钟 |", "| 1h 15m |" },
         { "| 1小时40分钟 |", "| 1h 40m |" },
         { "| 2小时 |", "| 2h |" },
+        /* 热解自清洁三档 cooking/stop/stop_back/cooling/complete 整串精确词条
+           (优先于模糊路径,单位用 m 与 565-568 一致) */
+        { "| 热解自清洁 | 1小时15分钟", "| Pyrolytic Self-Cleaning | 1h 15m" },
+        { "| 热解自清洁 | 1小时40分钟", "| Pyrolytic Self-Cleaning | 1h 40m" },
+        { "| 热解自清洁 | 2小时", "| Pyrolytic Self-Cleaning | 2h" },
     };
 static const int s_table_n = (int)(sizeof(s_table) / sizeof(s_table[0]));
 
