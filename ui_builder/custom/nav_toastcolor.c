@@ -8,13 +8,14 @@
 
 static void toastcolor_update_maturity(void);
 static void toastcolor_apply_maturity_line(void);
+static void toastcolor_apply_maturity_line_focused(lv_obj_t *focused);
 #include <string.h>
 
 /* ==============================
  * 第六感-烤色选择（toastcolor 页）
  * 页面包含三组互斥的设置信息，同一时间仅显示一组，由 label_23 标题标明当前组：
  *   1) 烤色程度：degree 标签(浅/中/深) + line（跟随 degree 聚焦显隐）
- *   2) 成熟度：  Maturity 标签 + 其下划线（maturityline2/3 按文字字数择一显示）
+ *   2) 成熟度：  Maturity 标签 + 其下划线（maturityline2/3 按字数择一,仅 Maturity 聚焦时显示）
  *   3) 份量/种类： weight 标签 + 其下划线（weightline3/4 按数值位数择一显示）
  * 编码器切换档位(默认中)；确定(PRESS)从当前组切到 next；next 点击进入下一步。
  * ============================== */
@@ -105,18 +106,16 @@ static void toastcolor_apply_mode_visibility(void)
         if (show_deg) lv_obj_clear_flag(tc->line, LV_OBJ_FLAG_HIDDEN);
         else lv_obj_add_flag(tc->line, LV_OBJ_FLAG_HIDDEN);
     }
-    /* 成熟度组 */
+    /* 成熟度组标签随模式显隐;下划线不在此点亮,交给焦点控制(apply_maturity_line_focused) */
     if (tc->Maturity) {
         if (show_mat) lv_obj_clear_flag(tc->Maturity, LV_OBJ_FLAG_HIDDEN);
         else lv_obj_add_flag(tc->Maturity, LV_OBJ_FLAG_HIDDEN);
     }
     if (tc->maturityline2) {
-        if (show_mat) lv_obj_clear_flag(tc->maturityline2, LV_OBJ_FLAG_HIDDEN);
-        else lv_obj_add_flag(tc->maturityline2, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(tc->maturityline2, LV_OBJ_FLAG_HIDDEN);
     }
     if (tc->maturityline3) {
-        if (show_mat) lv_obj_clear_flag(tc->maturityline3, LV_OBJ_FLAG_HIDDEN);
-        else lv_obj_add_flag(tc->maturityline3, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(tc->maturityline3, LV_OBJ_FLAG_HIDDEN);
     }
     /* 份量/种类组 */
     if (tc->weight) {
@@ -135,14 +134,6 @@ static void toastcolor_apply_mode_visibility(void)
     if (tc->weightline4) {
         if (!show_wt) lv_obj_add_flag(tc->weightline4, LV_OBJ_FLAG_HIDDEN);
     }
-    if (tc->maturityline2) {
-        if (!show_mat) lv_obj_add_flag(tc->maturityline2, LV_OBJ_FLAG_HIDDEN);
-    }
-    if (tc->maturityline3) {
-        if (!show_mat) lv_obj_add_flag(tc->maturityline3, LV_OBJ_FLAG_HIDDEN);
-    }
-    if (show_mat)
-        toastcolor_apply_maturity_line();   /* 成熟度下划线按字数择一(全熟2字→line2, 其余→line3) */
 
     /* 标题跟随当前组 */
     if (tc->label_23)
@@ -187,6 +178,8 @@ static void on_toastcolor_focus(lv_event_t *e)
 {
     if (g_toast_mode == TOAST_MODE_WEIGHT)
         toastcolor_apply_weight_line(lv_event_get_target(e));
+    else if (g_toast_mode == TOAST_MODE_MATURITY)
+        toastcolor_apply_maturity_line_focused(lv_event_get_target(e));
     else
         toastcolor_apply_line(lv_event_get_target(e));
 }
@@ -246,6 +239,8 @@ void jump_to_toastcolor(void)
             toastcolor_apply_line(tc->next);  /* 显式隐藏 line(不依赖事件时序) */
             if (g_toast_mode == TOAST_MODE_WEIGHT)
                 toastcolor_apply_weight_line(tc->next);   /* 初始焦点不在 weight:隐藏份量下划线 */
+            if (g_toast_mode == TOAST_MODE_MATURITY)
+                toastcolor_apply_maturity_line_focused(tc->next);   /* 初始焦点不在 Maturity:隐藏成熟度下划线 */
         }
         if (tc->degree) {
             lv_obj_add_event_cb(tc->degree, on_toastcolor_focus, LV_EVENT_FOCUSED, NULL);
@@ -304,6 +299,8 @@ void toastcolor_rebuild(page_id_t child)
             toastcolor_apply_line(tc->next);
             if (g_toast_mode == TOAST_MODE_WEIGHT)
                 toastcolor_apply_weight_line(tc->next);
+            if (g_toast_mode == TOAST_MODE_MATURITY)
+                toastcolor_apply_maturity_line_focused(tc->next);   /* 初始焦点不在 Maturity:隐藏成熟度下划线 */
         }
         if (tc->degree) {
             lv_obj_add_event_cb(tc->degree, on_toastcolor_focus, LV_EVENT_FOCUSED, NULL);
@@ -365,13 +362,25 @@ static void toastcolor_apply_maturity_line(void)
     }
 }
 
-// Maturity 标签显示当前成熟度(一/三/五/七成熟/全熟)；切换后刷新下划线
+// 成熟度组下划线:仅 Maturity 聚焦时显示(按字数择一)，其他情况隐藏(与 weight 组同规则)
+static void toastcolor_apply_maturity_line_focused(lv_obj_t *focused)
+{
+    toastcolor_t *tc = toastcolor_get(&ui_manager);
+    if (!tc) return;
+    if (focused == tc->Maturity) {
+        toastcolor_apply_maturity_line();   /* 聚焦:按字数择一显线(全熟2字→line2, 其余→line3) */
+    } else {
+        if (tc->maturityline2) lv_obj_add_flag(tc->maturityline2, LV_OBJ_FLAG_HIDDEN);
+        if (tc->maturityline3) lv_obj_add_flag(tc->maturityline3, LV_OBJ_FLAG_HIDDEN);
+    }
+}
+
+// Maturity 标签显示当前成熟度(一/三/五/七成熟/全熟)；下划线由焦点控制(见 apply_maturity_line_focused)
 static void toastcolor_update_maturity(void)
 {
     toastcolor_t *tc = toastcolor_get(&ui_manager);
     if (!tc || !tc->Maturity) return;
     lv_label_set_text(tc->Maturity, six_maturity_text());
-    toastcolor_apply_maturity_line();
 }
 
 // 编码器切换(CW/CCW 由 nav_key.c 调用)：按当前组切换档位或份量
@@ -383,6 +392,10 @@ void toastcolor_cycle(int dir)
         if (idx > 4) idx = 0;
         six_maturity_set(idx);
         toastcolor_update_maturity();
+        {
+            toastcolor_t *tc = toastcolor_get(&ui_manager);
+            if (tc) toastcolor_apply_maturity_line_focused(tc->Maturity);   /* 切档后刷新下划线（焦点在 Maturity 上） */
+        }
         printf("[toastcolor] maturity -> %d\n", six_maturity_idx());
         return;
     }

@@ -53,7 +53,9 @@ void nav_key1_long_press(void)
         waitmenu_24_create(&ui_manager);
         waitmenu_clock_cache_reset();   /* 强制刷新为真实时间 */
         current_group = NULL;
-        lv_scr_load(waitmenu_24_get(&ui_manager)->obj);
+        lang_scr_load_anim(waitmenu_24_get(&ui_manager)->obj,
+                         LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                         ui_manager.auto_del);   /* 统一出口:英文模式关机待机页翻译+排版 */
         waitmenu_apply_clock();   /* 立即刷新为真实时间 */
 #ifndef LV_USE_AIC_SIMULATOR
         backlight_set_level(10);
