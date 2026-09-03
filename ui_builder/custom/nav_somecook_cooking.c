@@ -195,6 +195,7 @@ static void somecook_cooking_exit(void)
     g_send.cook_mode = MODE_NONE;
     g_send.set_temp = 0; g_send.set_temp_lower = 0; g_send.remaining_ms = -1;
     depth = 2;
+    page_stack[depth - 1] = PAGE_MAJOR_MENU;   /* 收藏启动时栈[1]非主菜单:显式修正,防tune误派发/BACK错乱 */
     lv_obj_clean(lv_scr_act());
     major_menu_create(&ui_manager);
     groups_create();

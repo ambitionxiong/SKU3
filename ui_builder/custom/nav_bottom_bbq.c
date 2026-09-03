@@ -165,6 +165,7 @@ static void on_bottom_bbq_stop_back_sure_click(lv_event_t *e)
     set_temp = 180; set_temp_up = 180; set_temp_down = 180; set_hour = 0; set_min = 30;
     cook_elapsed_saved = 0; cook_bar_saved = 0;
     depth = 2;
+    page_stack[depth - 1] = PAGE_MAJOR_MENU;   /* 收藏启动时栈[1]非主菜单:显式修正,防tune误派发/BACK错乱 */
     lv_obj_clean(lv_scr_act());
     major_menu_create(&ui_manager);
     groups_create();

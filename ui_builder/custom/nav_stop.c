@@ -391,6 +391,7 @@ void on_stop_back_sure_click(lv_event_t *e)
     g_send.remaining_ms = -1;
 
     depth = 2;  /* 保留 WAITMENU_24 + MAJOR_MENU */
+    page_stack[depth - 1] = PAGE_MAJOR_MENU;   /* 收藏启动时栈[1]非主菜单:显式修正,防tune误派发/BACK错乱 */
     lv_obj_clean(lv_scr_act());
     major_menu_create(&ui_manager);
     groups_create();
