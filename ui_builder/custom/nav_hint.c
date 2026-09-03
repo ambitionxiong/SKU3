@@ -217,6 +217,20 @@ static void favtip_del_cb(lv_event_t *e)
         if (g_favtip_objs[i] == obj) g_favtip_objs[i] = NULL;
 }
 
+/* 登记并隐藏单个右侧组件(去重:几何收集可能已含同一对象,重复登记会污染 was[] 恢复标记) */
+static void favtip_collect_add(lv_obj_t *obj)
+{
+    if (!obj || g_favtip_n >= 8) return;
+    if (!lv_obj_is_valid(obj)) return;
+    for (int i = 0; i < g_favtip_n; i++)
+        if (g_favtip_objs[i] == obj) return;
+    g_favtip_was[g_favtip_n] = lv_obj_has_flag(obj, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(obj, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_remove_event_cb(obj, favtip_del_cb);
+    lv_obj_add_event_cb(obj, favtip_del_cb, LV_EVENT_DELETE, NULL);
+    g_favtip_objs[g_favtip_n++] = obj;
+}
+
 /* 收集并隐藏当前完成页右侧组件(防烫图标/文字等)。
  * 完成页 30+ 张、右侧组件字段名各异(image_3/6/26/70、text1/2...),
  * 按几何位置通用识别:屏幕直属子对象 x>=800 即右侧列(同 nav_hint_collect 思路) */
@@ -235,6 +249,15 @@ static void nav_favtip_collect_hide(void)
             lv_obj_remove_event_cb(ch, favtip_del_cb);
             lv_obj_add_event_cb(ch, favtip_del_cb, LV_EVENT_DELETE, NULL);
             g_favtip_objs[g_favtip_n++] = ch;
+        }
+    }
+    /* 多段/六感复用 somecook 页:英文 tune 把 text1/text2 挪到 x=725(<800),
+     * 上面的几何收集漏掉 → 收藏弹窗与"高温防烫"文字叠显;按页面结构显式补收 */
+    if (current_group == g_somecook_cooking || current_group == g_six_cooking) {
+        somecook_cooking_t *sc = somecook_cooking_get(&ui_manager);
+        if (sc) {
+            favtip_collect_add(sc->text1);
+            favtip_collect_add(sc->text2);
         }
     }
 }

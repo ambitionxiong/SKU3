@@ -108,13 +108,9 @@ const char *fav_mode_name(const Fun_favorites_Value *fav)
 void favorites_save_current(void)
 {
     Fav_Select_By_Probe();
-    if (Fav_Cur->has_favorites_byte == 0xFF) {
-        g_send.buzzer_req = BUZZER_KEY_INVALID;   /* 收藏已满 */
-        nav_show_fav_full();   /* 遮罩+收藏夹已满/请删除不太喜欢的烹调/确 定;确认进删除界面 */
-        return;
-    }
 
-    /* 收集当前参数（读进入 cooking 时快照，运行中 setting 改动不参与收藏） */
+    /* 收集当前参数（读进入 cooking 时快照，运行中 setting 改动不参与收藏）。
+     * 须在查重/满夹判定之前:Favorites_Check_Exists 读 input_* */
     /* 上下烧烤（非探针）以真实上腔温度收藏（menu_top 调整后的 set_temp_up 快照，
      * 此前存的 fav_init_temp=主温，卡片显示 180 而实调 175）；
      * 其他模式 up 与主温相等（set 页入口已默认）或六感/多段不消费温度，保持主温 */
@@ -158,12 +154,20 @@ void favorites_save_current(void)
         input_Cooking_Mode = g_send.cook_mode;
     }
 
+    /* 查重优先于满夹判定:重复收藏走覆盖确认（覆盖不占新卡位,夹满不影响覆盖）,
+     * 只有非重复的新增收藏才需要检查夹满 */
     if (Favorites_Check_Exists()) {
         /* 重复收藏:弹确认(tip1 该烹调已有 / tip2 需要覆盖原有烹调吗？/ sure 确 定)。
          * 不自动返回:确认(PRESS)→nav_favask_confirm 覆盖保存;BACK→关闭回完成页 */
         nav_show_fav_ask();
         return;
     }
+    if (Fav_Cur->has_favorites_byte == 0xFF) {
+        g_send.buzzer_req = BUZZER_KEY_INVALID;   /* 收藏已满 */
+        nav_show_fav_full();   /* 遮罩+收藏夹已满/请删除不太喜欢的烹调/确 定;确认进删除界面 */
+        return;
+    }
+
     if (input_Mode_name == FAV_MODE_MULTI) {
         Add_favorites_of_Multi(Func_SUM_Value_step);
         nav_show_fav_tip();       /* 正常收藏成功:顶层 tip3"收藏成功"2 秒 */

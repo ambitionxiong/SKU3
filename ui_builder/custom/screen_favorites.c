@@ -289,14 +289,15 @@ static void FAV_Six_Parse(const Fun_favorites_Value *fav, char *summary1, int s1
 }
 static void FAV_Set_FuncTemp_Lb(lv_obj_t *lb, const Fun_favorites_Value *fav)
 {
+	const char *deg = tr("℃");	/* 翻页重刷不走 lang 树遍历:单位在此过 tr(英文模式 ℃→°C),否则英文字体无 ℃ 字形成方块 */
 	if (fav->PengTiaoMode_name == FAV_MODE_MULTI || fav->PengTiaoMode_name == FAV_MODE_SIX)
 		lv_label_set_text(lb, " ");
 	else if (fav->PengTiaoMode_name == MODE_UPDOWN_BBQ)
-		if (is_probe_inserted()) lv_label_set_text_fmt(lb, "%d℃", fav->temperature);
-		else lv_label_set_text_fmt(lb, "↑%d℃/↓%d℃", fav->temperature,
-		                           (fav->temp_down > 0) ? fav->temp_down : fav->temperature);	//↓按卡读取（此前读全局残留值，多卡片串值；旧数据 temp_down=0 回退上温）
+		if (is_probe_inserted()) lv_label_set_text_fmt(lb, "%d%s", fav->temperature, deg);
+		else lv_label_set_text_fmt(lb, "↑%d%s/↓%d%s", fav->temperature, deg,
+		                           (fav->temp_down > 0) ? fav->temp_down : fav->temperature, deg);	//↓按卡读取（此前读全局残留值，多卡片串值；旧数据 temp_down=0 回退上温）
 	else
-		lv_label_set_text_fmt(lb, "%d℃", fav->temperature);
+		lv_label_set_text_fmt(lb, "%d%s", fav->temperature, deg);
 }
 static void FAV_Set_L1_Lb(lv_obj_t *lb, const Fun_favorites_Value *fav)
 {
@@ -337,16 +338,22 @@ static void FAV_Set_L2_Lb(lv_obj_t *lb, const Fun_favorites_Value *fav)
 	{
 		lv_label_set_text_fmt(lb, tr("探针温度：%d℃"), fav->Probe_temp);
 	}
-	else
-	{
-		if (fav->PengTiaoMode_name == FAV_MODE_MULTI)
-			FAV_Option_LB_str(lb, fav->PengTiaoMode_name);   /* 多段：第二行是"步骤二：xxx"（步骤取全局 Favorites_Value） */
 		else
-			/* 时间直接按传入项显示：FAV_Option_LB_str 固定读 val[0..3]，
-			 * 第二页卡片(val[4..7])的时间会串成第一页的值 */
-			lv_label_set_text_fmt(lb, tr("时间：%d小时%02d分钟"),
-			                      fav->Func_Hour, fav->Func_Minute);
-	}
+		{
+			if (fav->PengTiaoMode_name == FAV_MODE_MULTI)
+				FAV_Option_LB_str(lb, fav->PengTiaoMode_name);   /* 多段：第二行是"步骤二：xxx"（步骤取全局 Favorites_Value） */
+			else
+			{
+				/* 时间直接按传入项显示：FAV_Option_LB_str 固定读 val[0..3]，
+				 * 第二页卡片(val[4..7])的时间会串成第一页的值；小时为 0 只显分钟 */
+				if (fav->Func_Hour > 0)
+					lv_label_set_text_fmt(lb, tr("时间：%d小时%02d分钟"),
+					                      fav->Func_Hour, fav->Func_Minute);
+				else
+					lv_label_set_text_fmt(lb, tr("时间：%d分钟"),
+					                      fav->Func_Minute);
+			}
+		}
 }
 void Input_favorites(uint16_t temp, int8_t Hour, int8_t Minute, int8_t Is_Steam, int8_t Mode_name, uint8_t Cooking_Mode) 
 {
@@ -1008,9 +1015,13 @@ void FAV_Option_LB_str(lv_obj_t *obj, int8_t Cooking_FUN)
 				break;
             }
             else if (obj == label2) {
-                lv_label_set_text_fmt(obj, tr("时间：%d小时%02d分钟"),
-                    Fav_Cur->favorites_val[i].Func_Hour,
-                    Fav_Cur->favorites_val[i].Func_Minute);
+                if (Fav_Cur->favorites_val[i].Func_Hour > 0)
+                    lv_label_set_text_fmt(obj, tr("时间：%d小时%02d分钟"),
+                        Fav_Cur->favorites_val[i].Func_Hour,
+                        Fav_Cur->favorites_val[i].Func_Minute);
+                else
+                    lv_label_set_text_fmt(obj, tr("时间：%d分钟"),
+                        Fav_Cur->favorites_val[i].Func_Minute);   /* 小时为 0 只显分钟 */
                 break;
             }
             else if (obj == label3) {

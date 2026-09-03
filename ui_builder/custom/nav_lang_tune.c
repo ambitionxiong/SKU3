@@ -54,6 +54,7 @@
 #include "i18n.h"
 #include "protocol.h"   /* g_send 状态变量（icon/模式判断用） */
 #include "screen_SET.h"   /* 独立页面结构体（不挂 ui_manager） */
+#include "nav_favorites.h"   /* 收藏夹独立页面 g_fav_screen */
 
 typedef void (*lang_tune_fn)(void);
 
@@ -18563,6 +18564,24 @@ void topflagpage_lang_tune(void)
     lv_obj_set_style_text_align(tf->tip1, LV_TEXT_ALIGN_CENTER, 0);   /* 每行居中,不显歪 */
 }
 
+/* ==============================================================================
+ * favorites 英文布局基准（对应 PAGE_FAVORITES 收藏夹）
+ * 卡片标题(favo_Title_Lb_1..4)：英文名长单行放不下，高度随折行行数自适应
+ * （宽 200/位置 (50,25) 保持生成原值，先只验证两行折行效果）
+ * ============================================================================== */
+void favorites_lang_tune(void)
+{
+    if (depth <= 0 || page_stack[depth - 1] != PAGE_FAVORITES) return;
+    lv_obj_t *ts[4] = {
+        g_fav_screen.favo_Title_Lb_1, g_fav_screen.favo_Title_Lb_2,
+        g_fav_screen.favo_Title_Lb_3, g_fav_screen.favo_Title_Lb_4,
+    };
+    for (int i = 0; i < 4; i++) {
+        if (!ts[i]) continue;
+        lv_obj_set_size(ts[i], 200, LV_SIZE_CONTENT);   /* 宽不变,高随折行行数自适应 */
+    }
+}
+
 const struct { page_id_t page; lang_tune_fn fn; int dx, dy; } s_tune_tab[] = {
     { PAGE_AIR_COMPLETE, air_complete_lang_tune, 0, 0 },   /*  */
     { PAGE_AIR_COOKING, air_cooking_lang_tune, 0, 0 },   /*  */
@@ -18645,6 +18664,7 @@ const struct { page_id_t page; lang_tune_fn fn; int dx, dy; } s_tune_tab[] = {
     { PAGE_DESCRIPTIONMENU, descriptionmenu_lang_tune, 0, 0 },   /*  */
     { PAGE_DUCK6MENU, duckmenu_lang_tune, 0, 0 },   /*  */
     { PAGE_EXTRA_COLOR, extra_color_lang_tune, 0, 0 },   /*  */
+    { PAGE_FAVORITES, favorites_lang_tune, 0, 0 },   /* 收藏夹:卡片标题高度自适应折行 */
     { PAGE_FROZEN_COOK, frozencookpage_lang_tune, 0, 0 },   /*  */
     { PAGE_HEATCONTAIN_COMPLETE, heatcontain_complete_lang_tune, 0, 0 },   /*  */
     { PAGE_HEATCONTAIN_COOKING, heatcontain_cooking_lang_tune, 0, 0 },   /*  */
