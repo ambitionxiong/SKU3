@@ -99,6 +99,15 @@ void process_key(uint8_t key)
      * BACK取消,其余无效音),不影响覆盖层/下层页面 */
     if (loudness_popup_active() && loudness_popup_key(key))
         return;
+    /* ---- 客户版:设置页打开时功能键全部屏蔽(无效音),仅保留 BACK/编码器/语言按钮 ---- */
+    if (depth > 0 && page_stack[depth - 1] == PAGE_SCREEN_SET &&
+        (key == KEY_MENU || key == KEY_SIXMENU || key == KEY_PREHEAT ||
+         key == KEY_EXTRA_COLOR || key == KEY_CLEAN || key == KEY_FAV)) {
+        g_send.buzzer_req = BUZZER_KEY_INVALID;
+        uart_print();
+        return;
+    }
+#if 0   /* 恢复功能键跳离设置页:去掉本段 #if 0/#endif,并删除上方客户版屏蔽段 */
     /* 设置页覆盖层打开时按功能键:先关闭设置页(弹栈恢复下层页面),再按下层
      * 页面正常处理——功能键在设置页也能生效;键自身的白名单/防重入/运行态
      * 拦截(烹饪中等)由各 case 照常判断 */
@@ -109,6 +118,7 @@ void process_key(uint8_t key)
         depth--;              /* 弹掉 PAGE_SCREEN_SET,栈顶恢复下层页面 */
         topflag_update_visibility();   /* 与 page_pop 一致刷新 topflag 显隐 */
     }
+#endif
     /* 功能键离开收藏页:先安全清理收藏组/默认组引用——收藏页出口原只有 BACK 与
      * Fav_Start 走 favo_safety_group_delete,功能键直接跳转会留下僵尸默认组,
      * 污染后续页面首个控件的焦点事件(favo_safety_group_delete 注记载的同类问题)。

@@ -53,7 +53,13 @@ void uart_print(void)
            uart_data_send[SEND_BUZZER]);
 }
 #else
-#define uart_print() ((void)0)
+/* 真机:必须保持空函数!帧的填充+发送由 custom.c 的 handle_uart_send 定时器
+   (uart_send_fill + send_uart_param_array,100ms)统一完成;
+   此处绝不能再调 uart_send_fill——那是"填充即消费 buzzer_req"的语义,
+   提前消费会把按键音请求清零,导致实机无声(20260902 修过的坑) */
+void uart_print(void)
+{
+}
 #endif
 
 // === 各页面焦点组（NULL=未创建）===
@@ -726,8 +732,8 @@ void validate_constraints(void)
     }
 
     /* 纠正 minute 值（如果当前值超出新范围） */
-    if (set_hour == 0 && set_min < 1) {
-        set_min = 0;
+    if (set_hour == 0 && set_min < 5) {
+        set_min = 5;   /* hour=0 时最少 5 分钟(与 min_field->min 一致,对齐 SDK) */
         lv_label_set_text_fmt(min_field->label, min_field->fmt, set_min);
     } else if (set_hour == max_h && set_min != 0) {
         set_min = 0;

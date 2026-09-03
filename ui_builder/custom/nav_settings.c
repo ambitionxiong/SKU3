@@ -123,6 +123,19 @@ void on_cook_setting_click(lv_event_t *e)
 void update_setting_dir_icon(updown_bbq_setting_t *set)
 {
     if (!set) return;
+    /* BACK/SURE 清屏(lv_obj_clean 按创建序删控件)删到焦点控件时,LVGL 组 refocus
+       会同步触发本函数,此时创建更早的兄弟控件(dirup3/icon3_label1 等)已释放——
+       任一指针失效即页面拆除中,直接返回,防野指针(实机 CPU Exception 根因) */
+    if (!set->dirup2_label || !lv_obj_is_valid(set->dirup2_label) ||
+        !set->dirup3_label || !lv_obj_is_valid(set->dirup3_label) ||
+        !set->icon2_label1 || !lv_obj_is_valid(set->icon2_label1) ||
+        !set->icon3_label1 || !lv_obj_is_valid(set->icon3_label1) ||
+        !set->dirdown2_label || !lv_obj_is_valid(set->dirdown2_label) ||
+        !set->dirdown3_label || !lv_obj_is_valid(set->dirdown3_label) ||
+        !set->icon2_label2 || !lv_obj_is_valid(set->icon2_label2) ||
+        !set->icon3_label2 || !lv_obj_is_valid(set->icon3_label2)) {
+        return;
+    }
     lv_obj_add_flag(set->dirup2_label, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(set->dirup3_label, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(set->icon2_label1, LV_OBJ_FLAG_HIDDEN);

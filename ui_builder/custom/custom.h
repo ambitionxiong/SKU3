@@ -14,6 +14,7 @@ extern "C" {
 #include "ui_objects.h"
 #include "aic_ui.h"
 #include "ui_util.h"
+#include "custom_defs.h"
 
 void custom_init();
 

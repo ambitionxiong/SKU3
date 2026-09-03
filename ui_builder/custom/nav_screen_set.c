@@ -413,6 +413,8 @@ void screen_set_rebuild(void)
     if (ss->WDDW_Lb) lv_label_set_text(ss->WDDW_Lb, tr(SET_Data.Set_TempUnit ? "°F" : "°C"));
     if (ss->Demo_Lb) lv_label_set_text(ss->Demo_Lb, tr(SET_Data.Set_DemoMode ? "开" : "关"));
     screen_set_yy_lb_sync();   /* YY_Lb 语言值回显(按 Set_Language 显示语言原名) */
+    /* ---- 客户版:仅语言(YY_Btn)点击生效,其余设置项点击先关闭 ---- */
+#if 0   /* 恢复其它设置项点击:去掉本段 #if 0/#endif 即可 */
     lv_obj_add_event_cb(ss->ZDBW_Btn, on_set_zdbw_click, LV_EVENT_CLICKED, NULL);
     lv_obj_add_event_cb(ss->TFLQYX_Btn, on_set_tflqyx_click, LV_EVENT_CLICKED, NULL);
     lv_obj_add_event_cb(ss->LDG_Btn, on_set_ldg_click, LV_EVENT_CLICKED, NULL);
@@ -421,9 +423,10 @@ void screen_set_rebuild(void)
     lv_obj_add_event_cb(ss->Six_Btn, on_set_six_click, LV_EVENT_CLICKED, NULL);
     lv_obj_add_event_cb(ss->WDDW_Btn, on_set_wddw_click, LV_EVENT_CLICKED, NULL);
     lv_obj_add_event_cb(ss->DJ_Time_Btn, on_set_djtime_click, LV_EVENT_CLICKED, NULL);
-    lv_obj_add_event_cb(ss->YY_Btn, on_set_yy_click, LV_EVENT_CLICKED, NULL);
     lv_obj_add_event_cb(ss->Demo_Btn, on_set_demo_click, LV_EVENT_CLICKED, NULL);
     lv_obj_add_event_cb(ss->SYSZ_Btn, on_set_sysz_click, LV_EVENT_CLICKED, NULL);
+#endif
+    lv_obj_add_event_cb(ss->YY_Btn, on_set_yy_click, LV_EVENT_CLICKED, NULL);   /* 语言设置:客户版唯一可用项 */
     /* ③ 焦点 */
     s_prev_group = current_group;
     current_group = g_screen_set;

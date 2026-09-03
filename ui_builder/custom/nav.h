@@ -625,12 +625,11 @@ extern int preheat_start_cavity;
 extern int preheat_wait_door;
 void jump_to_preheat_complete(void);
 void jump_to_cook4_menu(void);
-#ifdef LV_USE_AIC_SIMULATOR
 extern uint16_t g_sim_cavity_temp;
 /* i18n 与英文排版层（全文件共享 tr()/lang_scr_load_anim 声明） */
 #include "i18n.h"
 #include "nav_lang.h"
-#endif
+
 void edit_clear(void);
 void edit_register(lv_obj_t *label, lv_obj_t *ind_s, lv_obj_t *ind_l,
                    int *value, int min, int max, int step, const char *fmt);

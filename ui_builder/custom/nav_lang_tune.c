@@ -3289,6 +3289,7 @@ void clean_menu_lang_tune(void)
 
     /* image_1: 图片 | (254,187) | img: clearfrt.png */
     lv_obj_set_pos(pg->image_1, 254, 187);
+    lv_image_set_src(pg->image_1,LVGL_IMAGE_PATH(clearfrt_en.png));
 
 }
 
@@ -7043,7 +7044,7 @@ void hotcleanhigh_cooling_lang_tune(void)
 
     /* status: 标签 | "| 热解自清洁 | 2小时 |" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
-    lv_obj_set_size(pg->status, 490, 39);
+    lv_obj_set_size(pg->status, 550, 39);
 
     /* bar_8: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_8, 122, 326);
@@ -7057,7 +7058,8 @@ void hotcleanhigh_cooling_lang_tune(void)
     lv_obj_set_size(pg->label_26, 235, 60);
 
     /* image_22: 图片 | (902,160) | img: hotcleantips.png */
-    lv_obj_set_pos(pg->image_22, 902, 160);
+    lv_obj_set_pos(pg->image_22, 902-50, 160);
+    lv_image_set_src(pg->image_22,LVGL_IMAGE_PATH(hotcleantips_en.png));
 
     /* button_12: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: lockicon.png */
     lv_obj_set_pos(pg->button_12, 609, 170);
@@ -7383,7 +7385,7 @@ void hotcleanmiddle_cooling_lang_tune(void)
 
     /* status: 标签 | "| 热解自清洁 | 1小时40分钟 |" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
-    lv_obj_set_size(pg->status, 490, 39);
+    lv_obj_set_size(pg->status, 550, 39);
 
     /* bar_4: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_4, 122, 326);
@@ -7397,7 +7399,8 @@ void hotcleanmiddle_cooling_lang_tune(void)
     lv_obj_set_size(pg->label_13, 235, 60);
 
     /* image_11: 图片 | (902,160) | img: hotcleantips.png */
-    lv_obj_set_pos(pg->image_11, 902, 160);
+    lv_obj_set_pos(pg->image_11, 902-50, 160);
+    lv_image_set_src(pg->image_11,LVGL_IMAGE_PATH(hotcleantips_en.png));
 
     /* button_6: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: lockicon.png */
     lv_obj_set_pos(pg->button_6, 609, 170);
@@ -7712,7 +7715,7 @@ void hotcleansave_cooling_lang_tune(void)
 
     /* status: 标签 | "| 热解自清洁 | 1小时15分钟 |" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
-    lv_obj_set_size(pg->status, 490, 39);
+    lv_obj_set_size(pg->status, 550, 39);
 
     /* bar_3: 进度条 | (122,326) | 637x20 */
     lv_obj_set_pos(pg->bar_3, 122, 326);
@@ -7726,7 +7729,8 @@ void hotcleansave_cooling_lang_tune(void)
     lv_obj_set_size(pg->label_13, 235, 60);
 
     /* image_8: 图片 | (902,160) | img: hotcleantips.png */
-    lv_obj_set_pos(pg->image_8, 902, 160);
+    lv_obj_set_pos(pg->image_8, 902-50, 160);
+    lv_image_set_src(pg->image_8,LVGL_IMAGE_PATH(hotcleantips_en.png));
 
     /* button_9: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: lockicon.png */
     lv_obj_set_pos(pg->button_9, 609, 170);
@@ -11098,9 +11102,9 @@ static void preheatmenu_common(void)
     lv_obj_set_pos(pg->label_63, 682, 280);
     lv_obj_set_size(pg->label_63, 38, 32);
 
-    /* label_69: 标签 | "预热" | (24,24) | 144x32 | font taiwanpearl_regular_24 */
+    /* label_69: 标签 | "预热" | (24,24) | 350x32 | font taiwanpearl_regular_24 (SDK 真机调宽) */
     lv_obj_set_pos(pg->label_69, 24, 24);
-    lv_obj_set_size(pg->label_69, 144, 32);
+    lv_obj_set_size(pg->label_69, 350, 32);
 
     /* label_70: 标签 | "下一步" | (996,39) | 117x32 | font taiwanpearl_regular_36 */
     lv_obj_set_pos(pg->label_70, 1009, 41);
@@ -16866,7 +16870,7 @@ void updown_bbq_stop_back_probe_lang_tune(void)
 
     /* label_71: 标签 | "暂停中..." | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_71, 273, 157);
-    lv_obj_set_size(pg->label_71, 235, 60);
+    lv_obj_set_size(pg->label_71, 280, 60);
 
     /* container_3: 容器 | (0,0) | 1280x480 */
     lv_obj_set_pos(pg->container_3, 0, 0);
@@ -17156,6 +17160,7 @@ void waterclean_set_lang_tune(void)
 
     /* image_1: 图片 | (117,155) | img: waterbg.png */
     lv_obj_set_pos(pg->image_1, 117, 155);
+    lv_image_set_src(pg->image_1,LVGL_IMAGE_PATH(waterbg_en.png));
 
     /* image_2: 图片 | (167,161) | img: watercleanicon.png */
     lv_obj_set_pos(pg->image_2, 167, 161);
