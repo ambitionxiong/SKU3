@@ -745,12 +745,12 @@ void rebuild_delaycooking(void)
                 int d = toastcolor_degree_value();
                 if (d < 1 || d > 3) d = 2;
                 const char *dt = (d == 1) ? "浅色" : (d == 3) ? "深色" : "中等色";
-                lv_label_set_text_fmt(dc->status, tr("| %s | %s | %d分钟 |"),
+                lv_label_set_text_fmt(dc->status, tr("| %s | %s | %d分钟"),
                                       six_chick_name(), dt, six_chick_degree_min(d));   /* 烤羊肉串:菜名+程度+时间 */
             } else if (six_chick_is_kind()) {
                 int w = toastcolor_weight_value();
                 if (w < 0) w = 800;
-                lv_label_set_text_fmt(dc->status, tr("| %s | %d%s | %d分钟 |"),
+                lv_label_set_text_fmt(dc->status, tr("| %s | %d%s | %d分钟"),
                                       six_chick_name(), w, tr(toastcolor_weight_unit()), six_chick_cook_min(w));   /* 烤鸡翅类:菜名+单位+时间 */
             } else if (six_chick_is_seafood()) {
                 const seafood_dish_t *sd = seafood_dish_cfg();

@@ -182,28 +182,28 @@ static void six_label_status(somecook_cooking_t *sc)
         int d = toastcolor_degree_value();
         if (d < 1 || d > 3) d = 2;
         const char *dt = (d == 1) ? "浅色" : (d == 3) ? "深色" : "中等色";
-        lv_label_set_text_fmt(sc->label_12, tr("| %s | %s | %d分钟 |"),
+        lv_label_set_text_fmt(sc->label_12, tr("| %s | %s | %d分钟"),
                               six_chick_name(), dt, six_chick_degree_min(d));
     } else if (six_chick_is_kind()) {
         int w = toastcolor_weight_value();
         if (w < 0) w = 800;   /* 兜底 */
-        lv_label_set_text_fmt(sc->label_12, tr("| %s | %d%s | %d分钟 |"),
+        lv_label_set_text_fmt(sc->label_12, tr("| %s | %d%s | %d分钟"),
                               six_chick_name(), w, tr(toastcolor_weight_unit()), six_chick_cook_min(w));   /* 烤鸡翅类:菜名+单位+时间 */
     } else if (six_chick_is_seafood()) {
         const seafood_dish_t *sd = seafood_dish_cfg();
-        lv_label_set_text_fmt(sc->label_12, tr("| %s | %d分钟 |"),
+        lv_label_set_text_fmt(sc->label_12, tr("| %s | %d分钟"),
                               six_chick_name(), sd ? sd->cook_min : 18);
 
     } else if (six_chick_is_veg()) {
         const seafood_dish_t *sd = veg_fixed_cfg();
-        lv_label_set_text_fmt(sc->label_12, tr("| %s | %d分钟 |"),
+        lv_label_set_text_fmt(sc->label_12, tr("| %s | %d分钟"),
                               six_chick_name(), sd ? sd->cook_min : 22);
     } else if (six_chick_is_pizza()) {
         const seafood_dish_t *sd = pizza_fixed_cfg();
-        lv_label_set_text_fmt(sc->label_12, tr("| %s | %d分钟 |"),
+        lv_label_set_text_fmt(sc->label_12, tr("| %s | %d分钟"),
                               six_chick_name(), sd ? sd->cook_min : 23);
     } else if (six_chick_is_2d()) {
-        lv_label_set_text_fmt(sc->label_12, tr("| %s | %dg | %s色 |"),
+        lv_label_set_text_fmt(sc->label_12, tr("| %s | %dg | %s色"),
                               six_chick_name(), six_2d_weight(), six_2d_deg_text());   /* 二维菜:菜名|克数|程度色 */
     } else {
         lv_label_set_text_fmt(sc->label_12, tr("| %s | %d分钟"), six_bread_name(), six_bread_cfg()->cook_min);
