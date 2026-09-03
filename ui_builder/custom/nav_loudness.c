@@ -9,6 +9,7 @@
 #include "protocol.h"
 #include "custom_defs.h"
 #include "nav_internal.h"
+#include "screen_SET.h"   /* 返回设置层后焦点定位 SYSZ_Btn 用 */
 
 /* ===== 页面结构体与存取器(本文件自持,不进 ui_objects) ===== */
 typedef struct {
@@ -47,43 +48,44 @@ static int8_t 	Set_Flag = -1;
 void TiShiYin_Cont_create();
 
 
-static void screen_Loudness_switch_bg_Btn_clicked (lv_event_t *e) {
+/* 开关(旋钮/开/关字/三行文字透明度)与开机欢迎曲(开/关字)可视状态
+ * 按 SET_Data 实际值刷新。点击回调与进页初始化共用——此前仅切换瞬间刷新,
+ * 进页显示的是生成默认状态,与实际开关状态不符 */
+static void loudness_state_sync(void)
+{
+	screen_loudness_page_t *scr = screen_Loudness_get(&ui_manager);
+	if (!scr || !scr->switch_bg_Btn) return;
 	if (SET_Data.Set_VolumeFlag)
 	{
 		//按钮开
-		lv_obj_t *screen_Loudness_switch_Knob_Img = screen_Loudness_get(&ui_manager)->switch_Knob_Img;
-		lv_obj_set_x(screen_Loudness_switch_Knob_Img, 102);
-		lv_obj_t *screen_Loudness_switch_guan_Lb = screen_Loudness_get(&ui_manager)->switch_guan_Lb;
-		lv_obj_add_flag(screen_Loudness_switch_guan_Lb, LV_OBJ_FLAG_HIDDEN);
-		lv_obj_t *screen_Loudness_switch_kai_Lb = screen_Loudness_get(&ui_manager)->switch_kai_Lb;
-		lv_obj_remove_flag(screen_Loudness_switch_kai_Lb, LV_OBJ_FLAG_HIDDEN);
+		lv_obj_set_x(scr->switch_Knob_Img, 102);
+		lv_obj_add_flag(scr->switch_guan_Lb, LV_OBJ_FLAG_HIDDEN);
+		lv_obj_remove_flag(scr->switch_kai_Lb, LV_OBJ_FLAG_HIDDEN);
 
 		//下方字体不透明度100%
-		lv_obj_t *screen_Loudness_tishiyin_CH_Lb = screen_Loudness_get(&ui_manager)->tishiyin_CH_Lb;
-		lv_obj_set_style_text_opa(screen_Loudness_tishiyin_CH_Lb, LV_OPA_100, LV_PART_MAIN | LV_STATE_DEFAULT);
-		lv_obj_t *screen_Loudness_anjianyin_CH_Lb = screen_Loudness_get(&ui_manager)->anjianyin_CH_Lb;
-		lv_obj_set_style_text_opa(screen_Loudness_anjianyin_CH_Lb, LV_OPA_100, LV_PART_MAIN | LV_STATE_DEFAULT);
-		lv_obj_t *screen_Loudness_kaijihuanyinqu_CH_Lb = screen_Loudness_get(&ui_manager)->kaijihuanyinqu_CH_Lb;
-		lv_obj_set_style_text_opa(screen_Loudness_kaijihuanyinqu_CH_Lb, LV_OPA_100, LV_PART_MAIN | LV_STATE_DEFAULT);
+		lv_obj_set_style_text_opa(scr->tishiyin_CH_Lb, LV_OPA_100, LV_PART_MAIN | LV_STATE_DEFAULT);
+		lv_obj_set_style_text_opa(scr->anjianyin_CH_Lb, LV_OPA_100, LV_PART_MAIN | LV_STATE_DEFAULT);
+		lv_obj_set_style_text_opa(scr->kaijihuanyinqu_CH_Lb, LV_OPA_100, LV_PART_MAIN | LV_STATE_DEFAULT);
 	}
 	else
 	{
 		//按钮关
-		lv_obj_t *screen_Loudness_switch_Knob_Img = screen_Loudness_get(&ui_manager)->switch_Knob_Img;
-		lv_obj_set_x(screen_Loudness_switch_Knob_Img, 24);
-		lv_obj_t *screen_Loudness_switch_guan_Lb = screen_Loudness_get(&ui_manager)->switch_guan_Lb;
-		lv_obj_remove_flag(screen_Loudness_switch_guan_Lb, LV_OBJ_FLAG_HIDDEN);
-		lv_obj_t *screen_Loudness_switch_kai_Lb = screen_Loudness_get(&ui_manager)->switch_kai_Lb;
-		lv_obj_add_flag(screen_Loudness_switch_kai_Lb, LV_OBJ_FLAG_HIDDEN);
+		lv_obj_set_x(scr->switch_Knob_Img, 24);
+		lv_obj_remove_flag(scr->switch_guan_Lb, LV_OBJ_FLAG_HIDDEN);
+		lv_obj_add_flag(scr->switch_kai_Lb, LV_OBJ_FLAG_HIDDEN);
 
 		//下方字体不透明度30%
-		lv_obj_t *screen_Loudness_tishiyin_CH_Lb = screen_Loudness_get(&ui_manager)->tishiyin_CH_Lb;
-		lv_obj_set_style_text_opa(screen_Loudness_tishiyin_CH_Lb, LV_OPA_30, LV_PART_MAIN | LV_STATE_DEFAULT);
-		lv_obj_t *screen_Loudness_anjianyin_CH_Lb = screen_Loudness_get(&ui_manager)->anjianyin_CH_Lb;
-		lv_obj_set_style_text_opa(screen_Loudness_anjianyin_CH_Lb, LV_OPA_30, LV_PART_MAIN | LV_STATE_DEFAULT);
-		lv_obj_t *screen_Loudness_kaijihuanyinqu_CH_Lb = screen_Loudness_get(&ui_manager)->kaijihuanyinqu_CH_Lb;
-		lv_obj_set_style_text_opa(screen_Loudness_kaijihuanyinqu_CH_Lb, LV_OPA_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+		lv_obj_set_style_text_opa(scr->tishiyin_CH_Lb, LV_OPA_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+		lv_obj_set_style_text_opa(scr->anjianyin_CH_Lb, LV_OPA_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+		lv_obj_set_style_text_opa(scr->kaijihuanyinqu_CH_Lb, LV_OPA_30, LV_PART_MAIN | LV_STATE_DEFAULT);
 	}
+	if (scr->KJHYQ_off_on_Lb)
+		lv_label_set_text(scr->KJHYQ_off_on_Lb, tr(SET_Data.Set_VolumeWelcome ? "开" : "关"));
+}
+
+static void screen_Loudness_switch_bg_Btn_clicked (lv_event_t *e) {
+	(void)e;
+	loudness_state_sync();
 }
 
 
@@ -266,10 +268,18 @@ void return_Loudness_action()
 
 	if (Set_Loudness_where == 0)
 	{
-		/* 返回设置层：我方设置层为覆盖层（非同事独立页）——弹栈后重建覆盖层 */
-		depth--;
-		screen_set_rebuild();
-		lang_on_page_built();   /* 覆盖层重建不走 lang 出口:补跑树遍历翻译+英文排版 */
+		/* 返回设置层：声音页是独立屏幕,进入时下层页面已被 clean+auto_del 顶掉。
+		 * 旧实现只 depth--+rebuild:①栈顶不是 PAGE_SCREEN_SET → 设置层 BACK 失效
+		 * (回不去主页);②覆盖层挂在声音页屏幕上,下层页面对象早已销毁,坏状态上
+		 * 再进设置/切语言 → 冻结闪退。改为:先 page_pop 弹掉 LOUDNESS 按新栈顶
+		 * 重建下层页面(恢复其屏幕/组),再按 KEY_SET 入口同款流程压回设置层栈项
+		 * 重建覆盖层,栈/组/运行态记录全部回到一致状态 */
+		page_pop();
+		jump_to_screen_set();
+		{   /* 焦点回到来源项"声音设置"行(rebuild 默认聚焦首个按钮 DSQ) */
+			screen_SET_t *ss = screen_SET_get(&ui_manager);
+			if (ss && ss->SYSZ_Btn) lv_group_focus_obj(ss->SYSZ_Btn);
+		}
 	}
 	else
 	{
@@ -728,21 +738,23 @@ void jump_to_loudness(void)
     lv_obj_clean(lv_scr_act());
     Set_Loudness_where = 0;
     Set_Flag = -1;
-    screen_Loudness_create(&ui_manager);
-    current_group = s_loud_page.group;
-    if (s_loud_page.switch_bg_Btn) lv_group_focus_obj(s_loud_page.switch_bg_Btn);
-    lang_scr_load_anim(s_loud_page.obj, LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
-    printf("[loudness] jump: screen_set -> loudness\n");
+	screen_Loudness_create(&ui_manager);
+	loudness_state_sync();   /* 开关/开机欢迎曲可视按实际状态回显(此前只在切换瞬间刷新) */
+	current_group = s_loud_page.group;
+	if (s_loud_page.switch_bg_Btn) lv_group_focus_obj(s_loud_page.switch_bg_Btn);
+	lang_scr_load_anim(s_loud_page.obj, LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
+	printf("[loudness] jump: screen_set -> loudness\n");
 }
 
 /* 供 page_pop 重建声音页（BACK 主路径走 return_Loudness_action，不经此） */
 void loudness_page_rebuild(void)
 {
-    lv_obj_clean(lv_scr_act());
-    screen_Loudness_create(&ui_manager);
-    current_group = s_loud_page.group;
-    if (s_loud_page.switch_bg_Btn) lv_group_focus_obj(s_loud_page.switch_bg_Btn);
-    lang_scr_load_anim(s_loud_page.obj, LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
+	lv_obj_clean(lv_scr_act());
+	screen_Loudness_create(&ui_manager);
+	loudness_state_sync();   /* 开关/开机欢迎曲可视按实际状态回显 */
+	current_group = s_loud_page.group;
+	if (s_loud_page.switch_bg_Btn) lv_group_focus_obj(s_loud_page.switch_bg_Btn);
+	lang_scr_load_anim(s_loud_page.obj, LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
 }
 
 
