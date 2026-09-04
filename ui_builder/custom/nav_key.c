@@ -645,6 +645,15 @@ void process_key(uint8_t key)
             else if (cur == PAGE_LOUDNESS) {
                 return_Loudness_action();   /* 声音页 BACK:弹窗开则关弹窗,否则回设置覆盖层 */
             }
+            else if (cur == PAGE_SET_VAL) {
+                set_val_return_action();    /* 数值条页 BACK:回声音页/设置层 */
+            }
+            else if (cur == PAGE_SET_COUNT) {
+                count_down_back_action();   /* 计时器 BACK:回设置层(运行中后台继续) */
+            }
+            else if (cur == PAGE_SET_SYSTIME) {
+                systime_back_action();      /* 日期时间 BACK:不写 RTC 回设置层 */
+            }
             else if (cur == PAGE_SCREEN_SET) {
                 screen_set_back();
             }
@@ -854,6 +863,12 @@ void process_key(uint8_t key)
             break;
         }
 #endif
+        /* 数值条页(按键音/亮度)无组:按栈分流,须在 current_group 空守卫之前 */
+        if (depth > 0 && page_stack[depth - 1] == PAGE_SET_VAL) {
+            set_val_encoder_action(KEY_ENCODER_CW);
+            uart_print();
+            break;
+        }
         if (!current_group) {
             g_send.buzzer_req = BUZZER_KEY_INVALID;
             uart_print();
@@ -868,6 +883,18 @@ void process_key(uint8_t key)
         if (current_group == loudness_page_group()) {
             encoder_Loudness_action(KEY_ENCODER_CW);   /* 声音页:行间移焦点 */
             g_send.buzzer_req = BUZZER_ENCODER;
+            uart_print();
+            break;
+        }
+        if (current_group == count_down_page_group()) {
+            g_send.buzzer_req = BUZZER_ENCODER;
+            encoder_count_down_action(KEY_ENCODER_CW);   /* 计时器页:移焦点/数值+ */
+            uart_print();
+            break;
+        }
+        if (current_group == systime_page_group()) {
+            g_send.buzzer_req = BUZZER_ENCODER;
+            encoder_systime_action(KEY_ENCODER_CW);   /* 日期时间页:移字段/数值+ */
             uart_print();
             break;
         }
@@ -994,6 +1021,12 @@ void process_key(uint8_t key)
             break;
         }
 #endif
+        /* 数值条页(按键音/亮度)无组:按栈分流,须在 current_group 空守卫之前 */
+        if (depth > 0 && page_stack[depth - 1] == PAGE_SET_VAL) {
+            set_val_encoder_action(KEY_ENCODER_CCW);
+            uart_print();
+            break;
+        }
         if (!current_group) {
             g_send.buzzer_req = BUZZER_KEY_INVALID;
             uart_print();
@@ -1008,6 +1041,18 @@ void process_key(uint8_t key)
         if (current_group == loudness_page_group()) {
             encoder_Loudness_action(KEY_ENCODER_CCW);   /* 声音页:行间移焦点 */
             g_send.buzzer_req = BUZZER_ENCODER;
+            uart_print();
+            break;
+        }
+        if (current_group == count_down_page_group()) {
+            g_send.buzzer_req = BUZZER_ENCODER;
+            encoder_count_down_action(KEY_ENCODER_CCW);   /* 计时器页:移焦点/数值- */
+            uart_print();
+            break;
+        }
+        if (current_group == systime_page_group()) {
+            g_send.buzzer_req = BUZZER_ENCODER;
+            encoder_systime_action(KEY_ENCODER_CCW);   /* 日期时间页:移字段/数值- */
             uart_print();
             break;
         }
@@ -1594,6 +1639,12 @@ void process_key(uint8_t key)
         break;
     }
     case KEY_ENCODER_PRESS: { // 51: 确认 / 跳到下一焦点
+        /* 数值条页(按键音/亮度)无组:按栈分流,须在 current_group 空守卫之前 */
+        if (depth > 0 && page_stack[depth - 1] == PAGE_SET_VAL) {
+            set_val_encoder_action(KEY_ENCODER_PRESS);   /* 返回声音页/设置层 */
+            uart_print();
+            break;
+        }
         if (!current_group) {
             g_send.buzzer_req = BUZZER_KEY_INVALID;
             break;
@@ -1627,6 +1678,18 @@ void process_key(uint8_t key)
         if (current_group == loudness_page_group()) {
             encoder_Loudness_action(KEY_ENCODER_PRESS);   /* 声音页:进弹窗/确认 */
             g_send.buzzer_req = BUZZER_KEY_VALID;
+            uart_print();
+            break;
+        }
+        if (current_group == count_down_page_group()) {
+            g_send.buzzer_req = BUZZER_KEY_VALID;
+            encoder_count_down_action(KEY_ENCODER_PRESS);   /* 计时器页:启动/清零/移光标 */
+            uart_print();
+            break;
+        }
+        if (current_group == systime_page_group()) {
+            g_send.buzzer_req = BUZZER_KEY_VALID;
+            encoder_systime_action(KEY_ENCODER_PRESS);   /* 日期时间页:写 RTC/移字段 */
             uart_print();
             break;
         }

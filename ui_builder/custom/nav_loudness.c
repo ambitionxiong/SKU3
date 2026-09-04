@@ -240,9 +240,7 @@ void encoder_Loudness_action(char key)
 		}
 		else if (scr->arrow_2_Btn == lv_group_get_focused(scr->group))	//按键音
 		{
-			/* TODO: Loudness_Set_Val 音量条页未移植（交接四.8），移植后接：
-			 * Set_Loudness_where = 2; screen_Loudness_or_Luminance_Set_Val_create(&ui_manager, 1); 跳转加载 */
-			g_send.buzzer_req = BUZZER_KEY_INVALID;
+			jump_to_set_val(1);   /* 数值条子页:Set_VolumeKey 0..7 档,旋转即时下发 */
 		}
 		else if (scr->arrow_3_Btn == lv_group_get_focused(scr->group))	//开机欢迎曲
 		{
@@ -290,8 +288,9 @@ void return_Loudness_action()
 		}
 		else if (Set_Loudness_where == 2)
 		{
-			lv_obj_delete(scr->filter_Cont);
-			lv_group_focus_obj(scr->arrow_1_Btn);
+			/* 从按键音数值条页防御性返回(正常路径由 set_val_return_action 处理) */
+			if (scr->filter_Cont) lv_obj_delete(scr->filter_Cont);
+			lv_group_focus_obj(scr->arrow_2_Btn);
 		}
 
 		Set_Loudness_where = 0;
@@ -758,3 +757,179 @@ void loudness_page_rebuild(void)
 }
 
 
+
+
+/* ============================== 数值条子页（PAGE_SET_VAL） ==============================
+ * 按键音音量 / 屏幕亮度共用（同事 screen_Loudness_Set_Val.c 移植）：
+ * 无组无焦点，编码器旋转即时写值即时生效（按键音发 MSt_KeyTone_LevelX，
+ * 亮度调 backlight_set_level），PRESS/BACK 仅返回。
+ * 入口 1=声音页按键音行（栈: [... LOUDNESS SET_VAL]，返回 page_pop 重建声音页）；
+ * 入口 2=设置页 LDXS 亮度行（栈: [... SET_VAL]，返回 page_pop+重建设置覆盖层）。 */
+
+typedef struct {
+    lv_obj_t *obj;
+    lv_obj_t *Title_Lb;
+    lv_obj_t *bar_icon_Img;
+    lv_obj_t *bar_var_1;
+    lv_obj_t *bar_var_2;
+    lv_obj_t *bar_var_3;
+    lv_obj_t *bar_var_4;
+    lv_obj_t *bar_var_5;
+    lv_obj_t *bar_var_6;
+    lv_obj_t *bar_var_7;
+} set_val_page_t;
+
+static set_val_page_t s_set_val;
+static uint8_t s_set_loud_lumin = 0;   /* 1=按键音音量 2=屏幕亮度 */
+static int8_t s_set_val_val = 0;       /* 当前档位 0..7 */
+
+static set_val_page_t *set_val_get(ui_manager_t *ui) { (void)ui; return &s_set_val; }
+
+/* 屏幕销毁:控件指针整体置空 */
+static void set_val_del_cb(lv_event_t *e)
+{
+    lv_obj_t *obj = lv_event_get_target(e);
+    if (obj != s_set_val.obj) return;
+    memset(&s_set_val, 0, sizeof(s_set_val));
+}
+
+/* 7 根条按档位点亮(≤档位 100%，>档位 30%) */
+static void set_val_up_ui(void)
+{
+    set_val_page_t *scr = set_val_get(&ui_manager);
+    lv_obj_t *bars[7] = { scr->bar_var_1, scr->bar_var_2, scr->bar_var_3, scr->bar_var_4,
+                          scr->bar_var_5, scr->bar_var_6, scr->bar_var_7 };
+    for (int i = 0; i < 7; i++)
+        if (bars[i])
+            lv_obj_set_style_img_opa(bars[i], (i < s_set_val_val) ? LV_OPA_100 : LV_OPA_30,
+                                     LV_PART_MAIN | LV_STATE_DEFAULT);
+}
+
+/* 档位写回:按键音发 MSt 宏，亮度调背光(sim 下背光为空操作) */
+static void set_val_apply(void)
+{
+    if (s_set_loud_lumin == 1) {
+        SET_Data.Set_VolumeKey = (int8_t)s_set_val_val;
+        switch (s_set_val_val) {
+        case 0: MSt_KeyTone_Level0; break;
+        case 1: MSt_KeyTone_Level1; break;
+        case 2: MSt_KeyTone_Level2; break;
+        case 3: MSt_KeyTone_Level3; break;
+        case 4: MSt_KeyTone_Level4; break;
+        case 5: MSt_KeyTone_Level5; break;
+        case 6: MSt_KeyTone_Level6; break;
+        case 7: MSt_KeyTone_Level7; break;
+        default: break;
+        }
+    } else {
+        SET_Data.Set_Brightness = (int8_t)s_set_val_val;
+        static const int lvl[8] = {12, 25, 37, 50, 62, 75, 87, 100};
+        if (s_set_val_val >= 0 && s_set_val_val <= 7) {
+#ifndef LV_USE_AIC_SIMULATOR
+            backlight_set_level(lvl[s_set_val_val]);
+#endif
+        }
+    }
+    uart_print();   /* 立即上报新状态帧(按键音档位/亮度位) */
+}
+
+/* 编码器处理(nav_key.c 按栈顶 PAGE_SET_VAL 分流)。越界旋转拒绝(无效音) */
+void set_val_encoder_action(uint8_t key)
+{
+    if (key == KEY_ENCODER_CW || key == KEY_ENCODER_CCW) {
+        int dir = (key == KEY_ENCODER_CW) ? 1 : -1;
+        if (s_set_val_val + dir > 7 || s_set_val_val + dir < 0) {
+            g_send.buzzer_req = BUZZER_KEY_INVALID;
+            return;
+        }
+        g_send.buzzer_req = BUZZER_ENCODER;
+        s_set_val_val = (int8_t)(s_set_val_val + dir);
+        set_val_up_ui();
+        set_val_apply();
+    }
+}
+
+/* 返回:按键音回声音页(page_pop 重建,Set_Loudness_where=2 焦点回按键音行)；
+ * 亮度回设置层(重建覆盖层,焦点回 LDXS 行)。PRESS 与 BACK 共用 */
+void set_val_return_action(void)
+{
+    if (s_set_loud_lumin == 1) {
+        page_pop();   /* 弹 SET_VAL,prev=LOUDNESS 走 page_pop 重建 */
+        return;
+    }
+    page_pop();
+    jump_to_screen_set();
+    {   /* 焦点回到来源项"亮度"行 */
+        screen_SET_t *ss = screen_SET_get(&ui_manager);
+        if (ss && ss->LDXS_Btn) lv_group_focus_obj(ss->LDXS_Btn);
+    }
+}
+
+/* @brief set_this：1、设置按键音大小，2、设置屏幕亮度 */
+void jump_to_set_val(uint8_t set_this)
+{
+    set_val_page_t *scr = set_val_get(&ui_manager);
+    s_set_loud_lumin = set_this;
+    s_set_val_val = (set_this == 1) ? SET_Data.Set_VolumeKey : SET_Data.Set_Brightness;
+    if (s_set_val_val < 0) s_set_val_val = 0;
+    if (s_set_val_val > 7) s_set_val_val = 7;
+
+    if (set_this == 1) {
+        /* 声音页→子页:不弹 LOUDNESS 栈项,返回 page_pop 走既有重建 */
+        Set_Loudness_where = 2;   /* 声音页重建时焦点回按键音行(create 尾部钩子) */
+        page_push(PAGE_SET_VAL);
+    } else {
+        /* 设置覆盖层→子页:清覆盖层弹栈(照 jump_to_loudness 模式) */
+        screen_set_reset();
+        depth--;
+        page_push(PAGE_SET_VAL);
+    }
+
+    scr->obj = lv_obj_create(NULL);
+    lv_obj_set_scrollbar_mode(scr->obj, LV_SCROLLBAR_MODE_OFF);
+    lv_obj_set_style_bg_color(scr->obj, lv_color_hex(0xfcfcfc), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(scr->obj, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->obj, LVGL_IMAGE_PATH(used/bg1.jpg), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_add_event_cb(scr->obj, set_val_del_cb, LV_EVENT_DELETE, NULL);
+
+    scr->Title_Lb = lv_label_create(scr->obj);
+    lv_label_set_text(scr->Title_Lb, tr(set_this == 1 ? "按键音" : "显示屏亮度"));
+    lv_label_set_long_mode(scr->Title_Lb, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->Title_Lb, 24, 24);
+    lv_obj_set_size(scr->Title_Lb, 220, 32);
+    lv_obj_set_style_text_font(scr->Title_Lb, &c_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->Title_Lb, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    scr->bar_icon_Img = lv_img_create(scr->obj);
+    if (set_this == 1)
+        lv_img_set_src(scr->bar_icon_Img, LVGL_IMAGE_PATH(used/loudness_bar_icon.png));
+    else
+        lv_img_set_src(scr->bar_icon_Img, LVGL_IMAGE_PATH(used/luminance_bar_icon.png));
+    lv_img_set_pivot(scr->bar_icon_Img, 50, 50);
+    lv_img_set_angle(scr->bar_icon_Img, 0);
+    lv_obj_set_style_img_opa(scr->bar_icon_Img, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(scr->bar_icon_Img, set_this == 1 ? 303 : 307, set_this == 1 ? 223 : 216);
+
+    /* 7 根条:1/7 用专用图,中间 5 根共用 var2(LVGL_IMAGE_PATH 为编译期拼接,只能传字面量) */
+    lv_obj_t **bars[7] = { &scr->bar_var_1, &scr->bar_var_2, &scr->bar_var_3, &scr->bar_var_4,
+                           &scr->bar_var_5, &scr->bar_var_6, &scr->bar_var_7 };
+    const int xs[7] = { 384, 460, 533, 606, 679, 752, 826 };
+    for (int i = 0; i < 7; i++) {
+        *bars[i] = lv_img_create(scr->obj);
+        if (i == 0)
+            lv_img_set_src(*bars[i], LVGL_IMAGE_PATH(used/loudness_bar_var1.png));
+        else if (i == 6)
+            lv_img_set_src(*bars[i], LVGL_IMAGE_PATH(used/loudness_bar_var3.png));
+        else
+            lv_img_set_src(*bars[i], LVGL_IMAGE_PATH(used/loudness_bar_var2.png));
+        lv_img_set_pivot(*bars[i], 50, 50);
+        lv_img_set_angle(*bars[i], 0);
+        lv_obj_set_style_img_opa(*bars[i], 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_pos(*bars[i], xs[i], 229);
+    }
+
+    current_group = NULL;   /* 数值条页无组:按键由 nav_key.c 按栈顶分流 */
+    lang_scr_load_anim(scr->obj, LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
+    set_val_up_ui();
+    printf("[set_val] jump mode=%d val=%d\n", set_this, s_set_val_val);
+}

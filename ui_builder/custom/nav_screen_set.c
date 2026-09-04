@@ -342,6 +342,24 @@ static void on_set_sysz_click(lv_event_t *e)
     (void)e;
     jump_to_loudness();
 }
+/* DSQ 计时器行：进入计时器子页（nav_count_down.c） */
+static void on_set_dsq_click(lv_event_t *e)
+{
+    (void)e;
+    jump_to_count_down();
+}
+/* LDXS 亮度行：进入数值条子页（nav_loudness.c，屏幕亮度 0..7 档即时生效） */
+static void on_set_ldxs_click(lv_event_t *e)
+{
+    (void)e;
+    jump_to_set_val(2);
+}
+/* Time 日期/时间行：进入日期时间子页（nav_systime.c） */
+static void on_set_time_click(lv_event_t *e)
+{
+    (void)e;
+    jump_to_systime();
+}
 
 void screen_set_rebuild(void)
 {
@@ -423,6 +441,9 @@ void screen_set_rebuild(void)
     lv_obj_add_event_cb(ss->DJ_Time_Btn, on_set_djtime_click, LV_EVENT_CLICKED, NULL);
     lv_obj_add_event_cb(ss->Demo_Btn, on_set_demo_click, LV_EVENT_CLICKED, NULL);
     lv_obj_add_event_cb(ss->SYSZ_Btn, on_set_sysz_click, LV_EVENT_CLICKED, NULL);
+    lv_obj_add_event_cb(ss->DSQ_Btn, on_set_dsq_click, LV_EVENT_CLICKED, NULL);     /* 计时器子页 */
+    lv_obj_add_event_cb(ss->LDXS_Btn, on_set_ldxs_click, LV_EVENT_CLICKED, NULL);   /* 亮度数值条 */
+    lv_obj_add_event_cb(ss->Time_Btn, on_set_time_click, LV_EVENT_CLICKED, NULL);   /* 日期/时间子页 */
     lv_obj_add_event_cb(ss->YY_Btn, on_set_yy_click, LV_EVENT_CLICKED, NULL);   /* 语言设置弹窗 */
     /* ③ 焦点 */
     s_prev_group = current_group;

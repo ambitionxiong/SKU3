@@ -304,6 +304,9 @@ typedef enum {
     PAGE_CHICKMENUTZ,       /* 第六感-探针版家禽菜单 */
     PAGE_FAVORITES,         /* 收藏页（独立页面，不依赖 ui_manager） */
     PAGE_LOUDNESS,          /* 声音设置子页（设置覆盖层的子页，独立屏幕） */
+    PAGE_SET_VAL,           /* 数值条子页（按键音音量/屏幕亮度共用，独立屏幕） */
+    PAGE_SET_COUNT,         /* 计时器子页（独立屏幕） */
+    PAGE_SET_SYSTIME,       /* 日期/时间子页（独立屏幕） */
 } page_id_t;
 
 extern page_id_t page_stack[];
@@ -679,6 +682,23 @@ void encoder_Loudness_action(char key);
 int loudness_popup_active(void);
 int loudness_popup_key(uint8_t key);
 void loudness_page_rebuild(void);
+
+/* 数值条子页（nav_loudness.c 实现，PAGE_SET_VAL，按键音音量/屏幕亮度共用） */
+void jump_to_set_val(uint8_t set_this);   /* 1=按键音音量 2=屏幕亮度 */
+void set_val_encoder_action(uint8_t key);
+void set_val_return_action(void);
+
+/* 计时器子页（nav_count_down.c 实现，PAGE_SET_COUNT） */
+void jump_to_count_down(void);
+lv_group_t *count_down_page_group(void);
+void encoder_count_down_action(uint8_t key);
+void count_down_back_action(void);
+
+/* 日期/时间子页（nav_systime.c 实现，PAGE_SET_SYSTIME） */
+void jump_to_systime(void);
+lv_group_t *systime_page_group(void);
+void encoder_systime_action(uint8_t key);
+void systime_back_action(void);
 
 /* 功能键无效提示（nav_hint.c 实现） */
 void nav_show_invalid_hint(void);
