@@ -836,14 +836,14 @@ void process_key(uint8_t key)
         break;
     case KEY_ENCODER_CW: {  // 31: 焦点下移 / 数值+
 #ifdef LV_USE_AIC_SIMULATOR
-        if (current_group == g_preheat_cooking) {
+        if (current_group && current_group == g_preheat_cooking) {
             g_sim_cavity_temp += 5;
             if (g_sim_cavity_temp > 300) g_sim_cavity_temp = 300;
             g_send.buzzer_req = BUZZER_ENCODER;
             uart_print();
             break;
         }
-        if (current_group == g_preheat_stop_back) {
+        if (current_group && current_group == g_preheat_stop_back) {
             g_sim_cavity_temp += 5;
             if (g_sim_cavity_temp > 300) g_sim_cavity_temp = 300;
             g_send.buzzer_req = BUZZER_ENCODER;
@@ -991,7 +991,7 @@ void process_key(uint8_t key)
     }
     case KEY_ENCODER_CCW: {  // 41: 焦点上移 / 数值-
 #ifdef LV_USE_AIC_SIMULATOR
-        if (current_group == g_preheat_cooking) {
+        if (current_group && current_group == g_preheat_cooking) {
             g_sim_cavity_temp -= 5;
             if (g_sim_cavity_temp > 300) g_sim_cavity_temp = 300;
             if (g_sim_cavity_temp < 0) g_sim_cavity_temp = 0;
@@ -999,7 +999,7 @@ void process_key(uint8_t key)
             uart_print();
             break;
         }
-        if (current_group == g_preheat_stop_back) {
+        if (current_group && current_group == g_preheat_stop_back) {
             g_sim_cavity_temp -= 5;
             if (g_sim_cavity_temp > 300) g_sim_cavity_temp = 300;
             if (g_sim_cavity_temp < 0) g_sim_cavity_temp = 0;
@@ -1641,7 +1641,7 @@ void process_key(uint8_t key)
     case KEY_ENCODER_PRESS: { // 51: 确认 / 跳到下一焦点
         /* 数值条页(按键音/亮度)无组:按栈分流,须在 current_group 空守卫之前 */
         if (depth > 0 && page_stack[depth - 1] == PAGE_SET_VAL) {
-            set_val_encoder_action(KEY_ENCODER_PRESS);   /* 返回声音页/设置层 */
+            set_val_return_action();   /* 数值条页 PRESS:返回声音页/设置层 */
             uart_print();
             break;
         }

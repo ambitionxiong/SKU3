@@ -302,12 +302,16 @@ void encoder_count_down_action(uint8_t key)
             g_send.buzzer_req = BUZZER_KEY_INVALID;   /* 0 秒不可启动 */
         }
     } else if (focused == scr->Underline_Btn) {
-        /* 下划线在 时→分→秒 间循环,秒后再按回 Yes */
-        s_set_where = (uint8_t)((s_set_where % 3) + 1);
-        if (s_set_where == 1) lv_obj_set_pos(scr->Underline_Btn, 588, 306);
-        else if (s_set_where == 2) lv_obj_set_pos(scr->Underline_Btn, 726, 306);
-        else {
+        /* 下划线 时→分→秒 循环,焦点留在横线(可编辑秒);秒后再按回时并跳 Yes */
+        if (s_set_where == 1) {
+            s_set_where = 2;
+            lv_obj_set_pos(scr->Underline_Btn, 726, 306);
+        } else if (s_set_where == 2) {
+            s_set_where = 3;
             lv_obj_set_pos(scr->Underline_Btn, 862, 306);
+        } else {
+            s_set_where = 1;
+            lv_obj_set_pos(scr->Underline_Btn, 588, 306);
             lv_group_focus_obj(scr->Yes_Btn);
         }
     } else if (focused == scr->Reset_icon_Btn) {
@@ -438,6 +442,7 @@ static void count_down_create(ui_manager_t *ui)
     scr->Count_Down_Arc = lv_arc_create(scr->Count_down_Cont);
     lv_arc_set_mode(scr->Count_Down_Arc, LV_ARC_MODE_NORMAL);
     lv_arc_set_range(scr->Count_Down_Arc, 0, 100);
+    lv_arc_set_bg_angles(scr->Count_Down_Arc, 0, 360);
     lv_arc_set_angles(scr->Count_Down_Arc, 0, 0);
     lv_arc_set_rotation(scr->Count_Down_Arc, 270);
     lv_obj_set_pos(scr->Count_Down_Arc, 0, 0);
@@ -455,7 +460,7 @@ static void count_down_create(ui_manager_t *ui)
     lv_label_set_text(scr->hour_CH_Lb, tr("小时"));
     lv_label_set_long_mode(scr->hour_CH_Lb, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->hour_CH_Lb, 659, 281);
-    lv_obj_set_size(scr->hour_CH_Lb, 40, 35);
+    lv_obj_set_size(scr->hour_CH_Lb, 70, 35);
     lv_obj_set_style_text_font(scr->hour_CH_Lb, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->hour_CH_Lb, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -463,7 +468,7 @@ static void count_down_create(ui_manager_t *ui)
     lv_label_set_text(scr->min_CH_Lb, tr("分钟"));
     lv_label_set_long_mode(scr->min_CH_Lb, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->min_CH_Lb, 796, 281);
-    lv_obj_set_size(scr->min_CH_Lb, 40, 35);
+    lv_obj_set_size(scr->min_CH_Lb, 70, 35);
     lv_obj_set_style_text_font(scr->min_CH_Lb, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->min_CH_Lb, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 

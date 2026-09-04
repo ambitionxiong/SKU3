@@ -67,6 +67,14 @@ void uart_send_fill(void)
     uart_data_send[SEND_SPECIAL_CMD]  = 0;
 
     uart_data_send[SEND_CHECKSUM] = CalculateChecksum(uart_data_send, SEND_CHECKSUM);
+
+    /* 调试:设置字节变化时打印一次(实机验证 BUF[15]/BUF[17] 发送值) */
+    static uint8_t s_last_set1 = 0xFF, s_last_set2 = 0xFF;
+    if (Machine_Set_num_1 != s_last_set1 || Machine_Set_num != s_last_set2) {
+        s_last_set1 = Machine_Set_num_1;
+        s_last_set2 = Machine_Set_num;
+        printf("[send] set1=0x%02X set2=0x%02X\n", s_last_set1, s_last_set2);
+    }
 }
 
 #ifdef LV_USE_AIC_SIMULATOR

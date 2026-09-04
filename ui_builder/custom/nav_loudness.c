@@ -836,6 +836,7 @@ static void set_val_apply(void)
 /* 编码器处理(nav_key.c 按栈顶 PAGE_SET_VAL 分流)。越界旋转拒绝(无效音) */
 void set_val_encoder_action(uint8_t key)
 {
+    printf("[set_val] enc key=%d val=%d\n", key, s_set_val_val);
     if (key == KEY_ENCODER_CW || key == KEY_ENCODER_CCW) {
         int dir = (key == KEY_ENCODER_CW) ? 1 : -1;
         if (s_set_val_val + dir > 7 || s_set_val_val + dir < 0) {

@@ -3906,6 +3906,11 @@ typedef struct {
     lv_obj_t *timer;
     lv_obj_t *light;
     lv_obj_t *container_1;
+    lv_obj_t *image_1;
+    lv_obj_t *image_2;
+    lv_obj_t *locktip1;
+    lv_obj_t *locktip2;
+    lv_obj_t *locktip3;
     lv_obj_t *tip1;
     lv_obj_t *tip2;
     lv_obj_t *tip3;

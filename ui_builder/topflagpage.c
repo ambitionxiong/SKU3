@@ -15,13 +15,11 @@ void topflagpage_create(ui_manager_t *ui)
 {
     topflagpage_t *scr = topflagpage_get(ui);
 
-    // NOTE: 本页面仅由 nav_init 调用一次（对象挂在 lv_layer_top 上，不会被屏幕加载回收）。
-    // auto_del=true 时下方守卫不生效——请勿二次调用本函数，否则顶层对象会泄漏。
     if (!ui->auto_del && scr->obj) {
         return;
     }
 
-    // Init scr->obj (hand-modified: created on lv_layer_top instead of a screen,
+// Init scr->obj (hand-modified: created on lv_layer_top instead of a screen,
     // so it stays on top of all pages; remove theme card style to avoid border/padding.
     // NOTE: remove_style_all must run BEFORE set_size, because size is a style in LVGL9)
     scr->obj = lv_obj_create(lv_layer_top());
@@ -71,7 +69,7 @@ void topflagpage_create(ui_manager_t *ui)
     lv_obj_set_style_img_opa(scr->light, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_pos(scr->light, 678, 24);
 
-    // Init scr->container_1 (同步自上机位:功能键无效提示遮罩,默认隐藏)
+    // Init scr->container_1
     scr->container_1 = lv_obj_create(scr->obj);
     lv_obj_set_pos(scr->container_1, 0, 0);
     lv_obj_set_size(scr->container_1, 1280, 480);
@@ -88,12 +86,69 @@ void topflagpage_create(ui_manager_t *ui)
     lv_obj_set_style_pad_bottom(scr->container_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_left(scr->container_1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->tip1 (文字"烤箱运行时不可用。"默认隐藏)
+    // Init scr->image_1
+    scr->image_1 = lv_img_create(scr->container_1);
+    lv_img_set_src(scr->image_1, LVGL_IMAGE_PATH(lockifr.png));
+    lv_img_set_pivot(scr->image_1, 50, 50);
+    lv_img_set_angle(scr->image_1, 0);
+    lv_obj_set_style_img_opa(scr->image_1, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(scr->image_1, 390, 119);
+    lv_obj_add_flag(scr->image_1, LV_OBJ_FLAG_HIDDEN);
+
+    // Init scr->image_2
+    scr->image_2 = lv_img_create(scr->container_1);
+    lv_img_set_src(scr->image_2, LVGL_IMAGE_PATH(childlock.png));
+    lv_img_set_pivot(scr->image_2, 50, 50);
+    lv_img_set_angle(scr->image_2, 0);
+    lv_obj_set_style_img_opa(scr->image_2, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(scr->image_2, 453, 143);
+    lv_obj_add_flag(scr->image_2, LV_OBJ_FLAG_HIDDEN);
+
+    // Init scr->locktip1
+    scr->locktip1 = lv_label_create(scr->container_1);
+    lv_label_set_text(scr->locktip1, "已锁定");
+    lv_label_set_long_mode(scr->locktip1, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->locktip1, 458, 170);
+    lv_obj_set_size(scr->locktip1, 370, 36);
+    lv_obj_add_flag(scr->locktip1, LV_OBJ_FLAG_HIDDEN);
+
+    // Set style of scr->locktip1
+    lv_obj_set_style_text_font(scr->locktip1, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->locktip1, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->locktip1, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // Init scr->locktip2
+    scr->locktip2 = lv_label_create(scr->container_1);
+    lv_label_set_text(scr->locktip2, "长按旋钮3秒进行解锁");
+    lv_label_set_long_mode(scr->locktip2, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->locktip2, 528, 211);
+    lv_obj_set_size(scr->locktip2, 370, 36);
+    lv_obj_add_flag(scr->locktip2, LV_OBJ_FLAG_HIDDEN);
+
+    // Set style of scr->locktip2
+    lv_obj_set_style_text_font(scr->locktip2, &c_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->locktip2, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->locktip2, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // Init scr->locktip3
+    scr->locktip3 = lv_label_create(scr->container_1);
+    lv_label_set_text(scr->locktip3, "上下烧烤烹饪中");
+    lv_label_set_long_mode(scr->locktip3, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->locktip3, 455, 297);
+    lv_obj_set_size(scr->locktip3, 370, 36);
+    lv_obj_add_flag(scr->locktip3, LV_OBJ_FLAG_HIDDEN);
+
+    // Set style of scr->locktip3
+    lv_obj_set_style_text_font(scr->locktip3, &c_taiwanpearl_regular_36, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->locktip3, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->locktip3, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // Init scr->tip1
     scr->tip1 = lv_label_create(scr->obj);
     lv_label_set_text(scr->tip1, "烤箱运行时不可用。");
     lv_label_set_long_mode(scr->tip1, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->tip1, 885, 161);
-    lv_obj_set_size(scr->tip1, 275, 36);
+    lv_obj_set_pos(scr->tip1, 797, 161);
+    lv_obj_set_size(scr->tip1, 450, 36);
     lv_obj_add_flag(scr->tip1, LV_OBJ_FLAG_HIDDEN);
 
     // Set style of scr->tip1
@@ -101,7 +156,7 @@ void topflagpage_create(ui_manager_t *ui)
     lv_obj_set_style_text_color(scr->tip1, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->tip1, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->tip2 (文字"请删除不太喜欢的烹调！",收藏夹已满提示,默认隐藏;同步自上位机 2026-08-30)
+    // Init scr->tip2
     scr->tip2 = lv_label_create(scr->obj);
     lv_label_set_text(scr->tip2, "请删除不太喜欢的烹调！");
     lv_label_set_long_mode(scr->tip2, LV_LABEL_LONG_WRAP);
@@ -114,7 +169,7 @@ void topflagpage_create(ui_manager_t *ui)
     lv_obj_set_style_text_color(scr->tip2, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->tip2, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->tip3 (文字"收藏成功",收藏成功提示,默认隐藏;同步自上位机 2026-08-30,显隐由 custom/nav_hint.c 控制)
+    // Init scr->tip3
     scr->tip3 = lv_label_create(scr->obj);
     lv_label_set_text(scr->tip3, "收藏成功");
     lv_label_set_long_mode(scr->tip3, LV_LABEL_LONG_WRAP);
@@ -127,7 +182,7 @@ void topflagpage_create(ui_manager_t *ui)
     lv_obj_set_style_text_color(scr->tip3, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(scr->tip3, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->sure (文字"确 定",已收藏覆盖确认按钮,默认隐藏;同步自上位机 2026-08-30)
+    // Init scr->sure
     scr->sure = lv_btn_create(scr->obj);
     lv_obj_t *sure_label = lv_label_create(scr->sure);
     lv_label_set_text(sure_label, "确 定");
