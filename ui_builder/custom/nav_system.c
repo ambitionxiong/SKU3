@@ -159,7 +159,8 @@ void topflag_update_visibility(void)
     topflagpage_t *tf = topflagpage_get(&ui_manager);
     if (!tf || !tf->obj) return;
     int is_wait = (depth > 0 && page_stack[depth - 1] == PAGE_WAITMENU_24);
-    if (is_wait) lv_obj_add_flag(tf->obj, LV_OBJ_FLAG_HIDDEN);
+    /* 童锁锁定时强制显示:锁层在 topflag 内,待机页也要能看见锁定提示 */
+    if (is_wait && !nav_childlock_active()) lv_obj_add_flag(tf->obj, LV_OBJ_FLAG_HIDDEN);
     else lv_obj_clear_flag(tf->obj, LV_OBJ_FLAG_HIDDEN);
 }
 

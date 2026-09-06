@@ -100,6 +100,18 @@ uint8_t nav_key1_hold_check(void)
     }
     return 0;
 }
+/* 供外部周期调用(模拟器 sim_scan_cb 100ms)：童锁激活时旋钮按住满 3s 解锁。
+   真机电平制喂键走 nav_handle_key KEY_PRESSED 分支同款判断,此轮询兜模拟器边缘喂数 */
+void nav_childlock_hold_poll(void)
+{
+    if (active_key == KEY_ENCODER_PRESS && key_state == KEY_PRESSED &&
+        nav_childlock_active()) {
+        if (lv_tick_get() - active_key_time >= 3000) {
+            active_key_time = lv_tick_get();   /* 防轮询周期内重复触发 */
+            nav_childlock_try_unlock();
+        }
+    }
+}
 /* 按键状态机：KEY_IDLE 首按→记键值+调 process_key；
    KEY_PRESSED 按住→编码器按 50ms 重复、KEY1 按 2s 长按；松开回 KEY_IDLE。 */
 void nav_handle_key(uint8_t key)
@@ -143,6 +155,11 @@ void nav_handle_key(uint8_t key)
             if (active_key == KEY1 && interval >= 2000) {
                 active_key_time = now;
                 nav_key1_long_press();
+            }
+            /* 童锁:旋钮按住 3s 解锁(真机路径;模拟器由 nav_childlock_hold_poll 轮询) */
+            if (active_key == KEY_ENCODER_PRESS && nav_childlock_active() && interval >= 3000) {
+                active_key_time = now;
+                nav_childlock_try_unlock();
             }
             // 触控键按住不重复（只有 KEY_IDLE 后的第一次触发）
         } else {

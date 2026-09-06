@@ -193,6 +193,7 @@ static void sel_popup_apply(void)
         /* 选项行序 开(row0)/关(row1):row0=开锁(row1 是关) */
         SET_Data.Set_Lock = (s_sel_flag == 0) ? 1 : 0;
         if (ss && ss->TS_Lb) lv_label_set_text(ss->TS_Lb, tr(SET_Data.Set_Lock ? "开" : "关"));
+        nav_childlock_set(SET_Data.Set_Lock);   /* 开→立即全屏锁定层;关→解锁 */
         break;
     case SEL_WHERE_DJ:
         SET_Data.Set_StandbyTime = s_sel_flag;

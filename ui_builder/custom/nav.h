@@ -715,6 +715,12 @@ int nav_favask_active(void);
 int nav_favask_get_mode(void); /* 1 重复收藏确认 2 收藏夹已满(nav_hint.c) */
 void nav_favask_confirm(void); /* 确认(PRESS):覆盖保存/进删除界面(nav_favorites.c) */
 
+/* 童锁（topflag 顶层弹窗级,nav_hint.c 实现） */
+void nav_childlock_set(int on);      /* 1=立即全屏锁定层 0=解锁(设置页童锁开关联动) */
+int  nav_childlock_active(void);     /* 锁定中:process_key 吞键+待机页强制显示 topflag */
+void nav_childlock_try_unlock(void); /* 长按旋钮3s解锁(幂等;keyio 两路调用) */
+void nav_childlock_hold_poll(void);  /* 模拟器 sim_scan_cb 100ms 轮询解锁(keyio.c) */
+
 /* 第六感菜单（nav_sixmenu.c 实现） */
 extern lv_group_t *g_sixmenu;
 extern lv_group_t *g_bread6menu;

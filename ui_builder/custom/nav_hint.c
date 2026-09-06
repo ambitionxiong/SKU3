@@ -6,6 +6,7 @@
 
 #include "nav.h"
 #include "protocol.h"
+#include "nav_internal.h"
 
 /* ==============================
  * 烹饪中功能键无效提示
@@ -406,4 +407,95 @@ int nav_favask_active(void)
 int nav_favask_get_mode(void)
 {
     return g_favask_mode;
+}
+
+/* ==============================
+ * 童锁（topflag 顶层弹窗级,任意界面生效）
+ * 素材/控件:9.4.2 已在 topflagpage.c 建好 image_1(lockifr 面板)
+ *   image_2(childlock 图标) locktip1(已锁定) locktip2(长按旋钮3秒)
+ *   locktip3(模式名+状态,五态动态),默认全隐藏。
+ * 开启:设置页"童锁→开"(nav_screen_set.c SEL_WHERE_TS)→nav_childlock_set(1)。
+ * 锁定中:process_key 守卫链最顶吞掉一切按键(nav_key.c)。
+ * 解锁:长按旋钮(KEY_ENCODER_PRESS)3秒——真机走 nav_handle_key
+ *   KEY_PRESSED 分支,模拟器(边缘喂数)走 sim_scan_cb 轮询
+ *   nav_childlock_hold_poll,两路都调 nav_childlock_try_unlock(幂等)。
+ * ============================== */
+static int g_childlock_active = 0;
+
+/* locktip3 显示时 icon/tip1/tip2 用原位,隐藏时下移 41px:
+   lockifr 面板 y 119..370(中心 244.5),icon 高 121 → 居中 y=184=143+41,tip 跟随 */
+#define LOCK_DY_HIDE 41
+
+static void childlock_apply_layout(topflagpage_t *tf)
+{
+    const char *word = NULL;
+    if (g_keepwarm_active)                        word = "保温中";   /* 完成态内保温,优先于已完成 */
+    else if (g_send.iface_status == IFACE_COOKING)      word = "烹饪中";
+    else if (g_send.iface_status == IFACE_PAUSE)        word = "暂停中";
+    else if (g_send.iface_status == IFACE_DELAY_RESERVE) word = "预约中";
+    else if (g_send.iface_status == IFACE_COMPLETE)     word = "已完成";
+
+    int dy = 0;
+    if (word && tf->locktip3 && mode_display_name()) {
+        /* 中文模式名+状态直连,英文中间补空格 */
+        lv_label_set_text_fmt(tf->locktip3, is_english() ? "%s %s" : "%s%s",
+                              mode_display_name(), tr(word));
+        lv_obj_clear_flag(tf->locktip3, LV_OBJ_FLAG_HIDDEN);
+    } else {
+        if (tf->locktip3) lv_obj_add_flag(tf->locktip3, LV_OBJ_FLAG_HIDDEN);
+        dy = LOCK_DY_HIDE;
+    }
+    if (tf->image_2)  lv_obj_set_pos(tf->image_2, 453, 143 + dy);
+    if (tf->locktip1) lv_obj_set_pos(tf->locktip1, 458, 170 + dy);
+    if (tf->locktip2) lv_obj_set_pos(tf->locktip2, 528, 211 + dy);
+}
+
+// 开启(on=1)/关闭童锁层;on=0 且未锁定时无操作(幂等)
+void nav_childlock_set(int on)
+{
+    topflagpage_t *tf = topflagpage_get(&ui_manager);
+    if (!tf || !tf->obj) return;
+
+    if (on) {
+        nav_favtip_hide();                    /* 收藏成功 toast 与锁层互斥 */
+        if (nav_favask_active()) nav_favask_cancel();   /* 确认弹层让位给锁层 */
+        if (tf->locktip1) lv_label_set_text(tf->locktip1, tr("已锁定"));
+        if (tf->locktip2) lv_label_set_text(tf->locktip2, tr("长按旋钮3秒进行解锁"));
+        childlock_apply_layout(tf);           /* 五态文案+布局(内部刷新 locktip3) */
+        if (tf->image_1) lv_obj_clear_flag(tf->image_1, LV_OBJ_FLAG_HIDDEN);
+        if (tf->image_2) lv_obj_clear_flag(tf->image_2, LV_OBJ_FLAG_HIDDEN);
+        if (tf->locktip1) lv_obj_clear_flag(tf->locktip1, LV_OBJ_FLAG_HIDDEN);
+        if (tf->locktip2) lv_obj_clear_flag(tf->locktip2, LV_OBJ_FLAG_HIDDEN);
+        if (tf->container_1) lv_obj_clear_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);   /* 原生 44% 黑遮罩,下层正常页面透出 */
+        if (tf->currenttime) lv_obj_move_to_index(tf->currenttime, -1);   /* 时钟提到锁层之上,锁定中也可见 */
+        g_childlock_active = 1;               /* 先置位再刷显隐:待机页特判依赖 active */
+        topflag_update_visibility();
+        printf("[hint] childlock on\n");
+    } else {
+        if (!g_childlock_active) return;
+        g_childlock_active = 0;
+        if (tf->image_1)   lv_obj_add_flag(tf->image_1, LV_OBJ_FLAG_HIDDEN);
+        if (tf->image_2)   lv_obj_add_flag(tf->image_2, LV_OBJ_FLAG_HIDDEN);
+        if (tf->locktip1)  lv_obj_add_flag(tf->locktip1, LV_OBJ_FLAG_HIDDEN);
+        if (tf->locktip2)  lv_obj_add_flag(tf->locktip2, LV_OBJ_FLAG_HIDDEN);
+        if (tf->locktip3)  lv_obj_add_flag(tf->locktip3, LV_OBJ_FLAG_HIDDEN);
+        if (tf->container_1) lv_obj_add_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);
+        /* 时钟放回遮罩之下(container_1 原在时钟之后创建,盖住它) */
+        if (tf->currenttime && tf->container_1)
+            lv_obj_move_to_index(tf->currenttime, lv_obj_get_index(tf->container_1));
+        topflag_update_visibility();
+        printf("[hint] childlock off\n");
+    }
+}
+
+int nav_childlock_active(void)
+{
+    return g_childlock_active;
+}
+
+// 长按 3 秒解锁(真机 KEY_PRESSED 分支/模拟器 hold_poll 两路调用,幂等)
+void nav_childlock_try_unlock(void)
+{
+    if (!g_childlock_active) return;
+    nav_childlock_set(0);
 }

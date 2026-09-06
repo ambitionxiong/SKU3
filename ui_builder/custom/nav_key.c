@@ -70,6 +70,9 @@ static int menu_clean_key_allowed(void)
    各 case 内再做白名单/防重入/运行态拦截，并设置 buzzer_req 反馈。 */
 void process_key(uint8_t key)
 {
+    /* 童锁锁定:最高优先级模态,吞掉一切按键(含 BACK/功能键/编码器);
+       解锁=长按旋钮3秒,由 nav_keyio 长按分支/hold_poll 处理,不经过这里 */
+    if (nav_childlock_active()) return;
     if (g_send.iface_status == IFACE_SLEEP) return;
     /* 重复收藏确认弹层:模态。PRESS=确认覆盖保存,BACK=取消回完成页,其余键忽略 */
     if (nav_favask_active()) {
