@@ -520,6 +520,7 @@ void screen_set_back(void)
 //       对象删除后组自动清空(空组安全),下次 jump_to_screen_set 会 lv_group_del 清理
 void screen_set_reset(void)
 {
+    nav_blink_forget();   /* 覆盖层对象即将销毁:先遗忘闪烁组(防悬空) */
     if (screen_SET.obj) {
         lv_obj_del(screen_SET.obj);
         screen_SET.obj = NULL;

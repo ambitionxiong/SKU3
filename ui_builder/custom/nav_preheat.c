@@ -264,6 +264,8 @@ void jump_to_preheat_menu(void)
         edit_clear();
         edit_register(menu->temp, menu->line2, menu->line3,
                       &set_temp, 120, 250, 5, "%d");
+        /* blink extras: 单位/方向箭头(离线推导,最近值归属) */
+        nav_blink_extra(menu->temp, menu->label_63);
 
         lv_obj_add_event_cb(menu->temp, on_edit_focus, LV_EVENT_FOCUSED, NULL);
         lv_obj_add_event_cb(menu->next, on_edit_focus, LV_EVENT_FOCUSED, NULL);
@@ -568,6 +570,8 @@ void preheat_rebuild_menu(page_id_t child)
         edit_clear();
         edit_register(menu->temp, menu->line2, menu->line3,
                       &set_temp, 120, 250, 5, "%d");
+        /* blink extras: 单位/方向箭头(离线推导,最近值归属) */
+        nav_blink_extra(menu->temp, menu->label_63);
 
         lv_obj_add_event_cb(menu->temp, on_edit_focus, LV_EVENT_FOCUSED, NULL);
         lv_obj_add_event_cb(menu->next, on_edit_focus, LV_EVENT_FOCUSED, NULL);

@@ -294,6 +294,17 @@ static void on_next_click(lv_event_t *e)
     jump_to_descriptionmenu();
 }
 
+/* 登记本页三字段的呼吸闪烁组(值+线+配套;隐藏对象闪了不可见,页面显哪套哪套闪) */
+static void sixset2_blink_register(sixset2_t *pg)
+{
+    lv_obj_t *g1[4] = { pg->weight, pg->weightline3, pg->weightline4, pg->weighticon };
+    nav_blink_group_register(pg->weight, g1, 4);
+    lv_obj_t *g2[3] = { pg->maturity, pg->maturityline2, pg->maturityline3 };
+    nav_blink_group_register(pg->maturity, g2, 3);
+    lv_obj_t *g3[2] = { pg->degree, pg->degreeline };
+    nav_blink_group_register(pg->degree, g3, 2);
+}
+
 void jump_to_sixset2(void)
 {
     s_show_maturity = six_chick_is_matdeg();   /* 牛肉/羊腿/羊排:中间区=成熟度; 带皮土豆/意面:份量 */
@@ -311,6 +322,7 @@ void jump_to_sixset2(void)
         if (g_sixset2) { lv_group_del(g_sixset2); g_sixset2 = NULL; }
         g_sixset2 = group_create_for_page(btns, n);
         clear_focus_states(btns, n);
+        sixset2_blink_register(pg);
 
         /* 中间区互斥:份量组(带皮土豆/意面) 与 成熟度组(烤牛肉) 二选一 */
         if (s_show_maturity) {
@@ -375,6 +387,7 @@ void sixset2_rebuild(page_id_t child)
         }
         g_sixset2 = group_create_for_page(btns, n);
         clear_focus_states(btns, n);
+        sixset2_blink_register(pg);
 
         if (s_show_maturity) {
             if (pg->weight)      lv_obj_add_flag(pg->weight, LV_OBJ_FLAG_HIDDEN);

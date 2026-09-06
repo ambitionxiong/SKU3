@@ -204,6 +204,17 @@ static void on_toastcolor_next_click(lv_event_t *e)
     page_pop();
 }
 
+/* 登记本页三字段的呼吸闪烁组(值+线+单位;隐藏对象闪了不可见,页面显哪套哪套闪) */
+static void toastcolor_blink_register(toastcolor_t *tc)
+{
+    lv_obj_t *g1[2] = { tc->degree, tc->line };
+    nav_blink_group_register(tc->degree, g1, 2);
+    lv_obj_t *g2[4] = { tc->weight, tc->weightline3, tc->weightline4, tc->weighticon };
+    nav_blink_group_register(tc->weight, g2, 4);
+    lv_obj_t *g3[3] = { tc->Maturity, tc->maturityline2, tc->maturityline3 };
+    nav_blink_group_register(tc->Maturity, g3, 3);
+}
+
 void jump_to_toastcolor(void)
 {
     s_degree_override = -1;   /* 正常流程重新选择，收藏恢复值失效 */
@@ -231,6 +242,7 @@ void jump_to_toastcolor(void)
         if (g_toastcolor) lv_group_del(g_toastcolor);
         g_toastcolor = group_create_for_page(btns, n);
         clear_focus_states(btns, n);
+        toastcolor_blink_register(tc);
 
         if (tc->next) {
             lv_obj_add_event_cb(tc->next, on_toastcolor_next_click, LV_EVENT_CLICKED, NULL);
@@ -291,6 +303,7 @@ void toastcolor_rebuild(page_id_t child)
         }
         g_toastcolor = group_create_for_page(btns, n);
         clear_focus_states(btns, n);
+        toastcolor_blink_register(tc);
 
         if (tc->next) {
             lv_obj_add_event_cb(tc->next, on_toastcolor_next_click, LV_EVENT_CLICKED, NULL);

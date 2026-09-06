@@ -49,6 +49,17 @@ void jump_to_updown_bbq_setting(void)
                       &set_hour, 0, 4, 1, "%02d");
         edit_register(set->min_label, set->minline_label, NULL,
                       &set_min, 0, 59, 1, "%02d");
+        /* blink extras: 单位/方向箭头(离线推导,最近值归属) */
+        nav_blink_extra(set->tempup_label, set->dirup3_label);
+        nav_blink_extra(set->tempup_label, set->icon2_label1);
+        nav_blink_extra(set->tempup_label, set->dirup2_label);
+        nav_blink_extra(set->tempup_label, set->icon3_label1);
+        nav_blink_extra(set->tempdown_label, set->dirdown3_label);
+        nav_blink_extra(set->tempdown_label, set->dirdown2_label);
+        nav_blink_extra(set->tempdown_label, set->icon2_label2);
+        nav_blink_extra(set->tempdown_label, set->icon3_label2);
+        nav_blink_extra(set->hour_label, set->shi_label);
+        nav_blink_extra(set->min_label, set->fen_label);
 
         lv_obj_add_event_cb(set->tempup_label, on_setting_edit_focus,
                             LV_EVENT_FOCUSED, NULL);

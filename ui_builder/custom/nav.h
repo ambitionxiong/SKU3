@@ -721,6 +721,14 @@ int  nav_childlock_active(void);     /* 锁定中:process_key 吞键+待机页�
 void nav_childlock_try_unlock(void); /* 长按旋钮3s解锁(幂等;keyio 两路调用) */
 void nav_childlock_hold_poll(void);  /* 模拟器 sim_scan_cb 100ms 轮询解锁(keyio.c) */
 
+/* 选中项呼吸闪烁（nav_core.c 实现）
+   字段组成来自权威注册:edit_register 自动登记 {值,长线,短线};
+   配套对象(单位/箭头)页面 build 时调 nav_blink_extra 追加;
+   非 edit 页面(sixset2/toastcolor)调 nav_blink_group_register 显式登记 */
+void nav_blink_forget(void);         /* 页面对象销毁路径入口遗忘全部注册(page_push/pop/screen_set_reset) */
+void nav_blink_extra(lv_obj_t *label, lv_obj_t *extra);            /* 字段追加配套对象 */
+void nav_blink_group_register(lv_obj_t *trigger, lv_obj_t **objs, int n); /* 显式登记闪烁组 */
+
 /* 第六感菜单（nav_sixmenu.c 实现） */
 extern lv_group_t *g_sixmenu;
 extern lv_group_t *g_bread6menu;

@@ -97,6 +97,10 @@ void stepset_apply_sel_mode(bool restore)
                   &set_hour, 0, r->hmax, 1, "%02d");
     edit_register(scr->min, scr->minline, NULL,
                   &set_min, 0, 59, 1, "%02d");
+    /* blink extras: 单位/方向箭头(离线推导,最近值归属) */
+    nav_blink_extra(scr->temp, scr->label_7);
+    nav_blink_extra(scr->hour, scr->label_8);
+    nav_blink_extra(scr->min, scr->label_9);
 
     lv_label_set_text_fmt(scr->temp, "%d", set_temp);
     lv_label_set_text_fmt(scr->hour, "%02d", set_hour);

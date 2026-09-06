@@ -210,6 +210,11 @@ void jump_to_air_menu(void)
         edit_register(menu->min, menu->minline, NULL,
                       &set_min, 0, 59, 1, "%02d");
 
+        /* blink extras: 单位(℃/时/分) */
+        nav_blink_extra(menu->temp, menu->label_291);
+        nav_blink_extra(menu->hour, menu->label_294);
+        nav_blink_extra(menu->min, menu->label_295);
+
         lv_obj_add_event_cb(menu->temp, on_air_edit_focus,
                             LV_EVENT_FOCUSED, NULL);
         lv_obj_add_event_cb(menu->hour, on_air_edit_focus,
@@ -416,6 +421,12 @@ void jump_to_air_setting(void)
                       &set_hour, 0, 4, 1, "%02d");
         edit_register(set->min, set->minline, NULL,
                       &set_min, 0, 59, 1, "%02d");
+
+        /* blink extras: 单位(℃双套/时/分) */
+        nav_blink_extra(set->temp, set->icon2);
+        nav_blink_extra(set->temp, set->icon3);
+        nav_blink_extra(set->hour, set->label_326);
+        nav_blink_extra(set->min, set->label_327);
 
         lv_obj_add_event_cb(set->temp, on_air_edit_focus,
                             LV_EVENT_FOCUSED, NULL);

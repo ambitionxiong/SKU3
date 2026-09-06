@@ -42,7 +42,8 @@ void page_pop(void)
 
     /* ②~④ 算出 child(子页) 和 prev(父页) */
     depth--;
-    edit_clear();   /* 离开当前页清编辑注册表,防止悬空 label 指针残留(UAF) */
+    edit_clear();       /* 离开当前页清编辑注册表,防止悬空 label 指针残留(UAF) */
+    nav_blink_forget(); /* 闪烁组同上:旧页对象即将销毁,先遗忘(防悬空) */
     page_id_t child = page_stack[depth];
     page_id_t prev = page_stack[depth - 1];
     printf("[nav] page pop: depth=%d, back to id=%d (from id=%d)\n", depth, prev, child);
@@ -615,6 +616,17 @@ void page_pop(void)
                               &set_hour, 0, 4, 1, "%02d");
                 edit_register(set->min_label, set->minline_label, NULL,
                               &set_min, 0, 59, 1, "%02d");
+                /* 配套对象:方向箭头+单位(双套全注册,隐藏套闪了不可见,页面显哪套哪套闪) */
+                nav_blink_extra(set->tempup_label, set->dirup3_label);
+                nav_blink_extra(set->tempup_label, set->dirup2_label);
+                nav_blink_extra(set->tempup_label, set->icon3_label1);
+                nav_blink_extra(set->tempup_label, set->icon2_label1);
+                nav_blink_extra(set->tempdown_label, set->dirdown3_label);
+                nav_blink_extra(set->tempdown_label, set->dirdown2_label);
+                nav_blink_extra(set->tempdown_label, set->icon3_label2);
+                nav_blink_extra(set->tempdown_label, set->icon2_label2);
+                nav_blink_extra(set->hour_label, set->shi_label);
+                nav_blink_extra(set->min_label, set->fen_label);
 
                 lv_obj_add_event_cb(set->tempup_label, on_setting_edit_focus,
                                     LV_EVENT_FOCUSED, NULL);

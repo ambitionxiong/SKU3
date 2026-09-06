@@ -434,6 +434,7 @@ void edit_clear(void)
 {
     edit_count = 0;
 }
+static void blink_group_add(lv_obj_t *trigger, lv_obj_t **objs, int n);   /* 前置:edit_register 自动登记闪烁组 */
 /* 注册一个可编辑字段：label 为显示标签，ind_s/ind_l 为温度<100/≥100 的指示条，
    value 指向实际存储值，min/max/step 为循环范围，fmt 为显示格式（"%d"/"%02d"） */
 void edit_register(lv_obj_t *label, lv_obj_t *ind_s, lv_obj_t *ind_l,
@@ -450,6 +451,10 @@ void edit_register(lv_obj_t *label, lv_obj_t *ind_s, lv_obj_t *ind_l,
         edit_fields[edit_count].fmt = fmt;
         edit_count++;
     }
+    /* 自动登记呼吸闪烁组:值 + 长短两根指示线(隐藏的闪了不可见,页面显哪根哪根闪)。
+       单位/方向箭头等配套对象由页面在 build 时追加 nav_blink_extra(label, obj) */
+    lv_obj_t *grp[3] = { label, ind_s, ind_l };
+    blink_group_add(label, grp, 3);
 }
 /* 按 label 查找已注册的可编辑字段（编码器加减时定位字段）。
  * lv_obj_is_valid 校验:残条目(所属页已销毁,如功能键跳离编辑页未清注册)的
@@ -836,6 +841,7 @@ void setup_set_temp_display(updown_bbq_set_t *set)
 // 跳转子页前调用，记录"当前页"到栈顶
 void page_push(page_id_t id)
 {
+    nav_blink_forget();   /* 旧页对象即将销毁:先遗忘闪烁组(防悬空,详见函数注释) */
     if (depth < MAX_STACK) {
         page_stack[depth++] = id;  // 写入栈顶，depth 自增
         printf("[nav] page push: depth=%d id=%d\n", depth, id);
@@ -883,12 +889,149 @@ void groups_create(void)
 
     printf("[nav] major_menu group created\n");
 }
+/* ==============================
+ * 选中项呼吸闪烁（数值+下划线+配套单位同步渐变显隐）
+ * 原理:每个对象一条 lv_anim 写 style opa(255→0 去程+playback 回程,无限重复);
+ * 同组对象同一时刻 start、参数一致→相位永远同步。
+ * 字段组成来自权威注册(不做任何几何猜测/素材名过滤):
+ *   1) edit_register(label, ind_s, ind_l, ...) 自动登记 {label, 长线, 短线}
+ *      ——全部设置页(34 文件 305 处)零改动自动生效;
+ *   2) 字段另有单位/箭头等配套对象时,build 时调 nav_blink_extra(label, obj) 追加;
+ *   3) 非 edit 体系页面(sixset2/toastcolor)调 nav_blink_group_register 显式登记。
+ * 隐藏对象闪了不可见,页面显哪套/哪根线,哪套就"在闪"——无需识别位数换套逻辑。
+ * 焦点命中 trigger → 整组同步闪;按钮/未登记对象 → 停。
+ * 生命周期:页面对象销毁路径(page_push/pop/screen_set_reset)调 nav_blink_forget,
+ *   组表与动画注册表一并遗忘(动画随对象销毁自动消亡,不触碰任何指针)。
+ * ============================== */
+#define BLINK_HALF_MS   450    /* 半程时长:255→去程 / 回程,一个呼吸周期 = 2x */
+#define BLINK_MIN_OPA   0      /* 最低透明度(0=完全隐藏;嫌闪得太狠可改 60~100) */
+#define BLINK_MAX_OBJS  8      /* 单组上限:值+长短线+单位+箭头 */
+#define BLINK_MAX_GROUPS 48    /* 全页组数上限 */
+
+typedef struct {
+    lv_obj_t *trigger;                    /* 焦点落到此对象上→整组闪 */
+    lv_obj_t *objs[BLINK_MAX_OBJS];
+    int n;
+} blink_group_t;
+
+static blink_group_t s_blink_groups[BLINK_MAX_GROUPS];
+static int s_blink_group_n = 0;
+static lv_obj_t *s_blink_objs[BLINK_MAX_OBJS];
+static int s_blink_n = 0;
+
+static void blink_exec_cb(void *var, int32_t v)
+{
+    lv_obj_set_style_opa((lv_obj_t *)var, v, 0);
+}
+
+/* 遗忘全部闪烁注册(组表+动画组,只清计数,不触碰指针)。在页面对象销毁路径的入口调用:
+   page_push/page_pop/screen_set_reset——对象一死动画随对象自动消亡,
+   注册表遗忘后不可能再摸到悬空指针(不做任何树遍历/有效性检查) */
+void nav_blink_forget(void)
+{
+    s_blink_n = 0;
+    s_blink_group_n = 0;
+}
+
+static void blink_stop(void)
+{
+    for (int i = 0; i < s_blink_n; i++) {
+        lv_obj_t *obj = s_blink_objs[i];
+        if (!obj) continue;
+        lv_anim_del(obj, blink_exec_cb);
+        lv_obj_set_style_opa(obj, LV_OPA_COVER, 0);   /* 恢复全显 */
+    }
+    s_blink_n = 0;
+}
+
+static void blink_obj_add(lv_obj_t *obj)
+{
+    for (int i = 0; i < s_blink_n; i++)
+        if (s_blink_objs[i] == obj) return;   /* 已在组内(值+线同对象不可能,防重) */
+    if (s_blink_n >= BLINK_MAX_OBJS) return;
+    lv_anim_t a;
+    lv_anim_init(&a);
+    lv_anim_set_var(&a, obj);
+    lv_anim_set_exec_cb(&a, blink_exec_cb);
+    lv_anim_set_values(&a, LV_OPA_COVER, BLINK_MIN_OPA);
+    lv_anim_set_time(&a, BLINK_HALF_MS);
+    lv_anim_set_playback_time(&a, BLINK_HALF_MS);
+    lv_anim_set_repeat_count(&a, LV_ANIM_REPEAT_INFINITE);
+    lv_anim_set_path_cb(&a, lv_anim_path_ease_in_out);
+    lv_anim_start(&a);
+    s_blink_objs[s_blink_n++] = obj;
+}
+
+/* ---- 闪烁组注册表 ---- */
+// 登记一个闪烁组(trigger 焦点命中→objs 整组同步闪;重复登记同一 trigger 覆盖旧组)
+static void blink_group_add(lv_obj_t *trigger, lv_obj_t **objs, int n)
+{
+    if (!trigger) return;
+    blink_group_t *g = NULL;
+    for (int i = 0; i < s_blink_group_n; i++)
+        if (s_blink_groups[i].trigger == trigger) { g = &s_blink_groups[i]; break; }   /* 重复登记:原位覆盖 */
+    if (!g) {
+        if (s_blink_group_n >= BLINK_MAX_GROUPS) return;
+        g = &s_blink_groups[s_blink_group_n++];
+        g->trigger = trigger;
+    }
+    g->n = 0;
+    for (int i = 0; i < n && g->n < BLINK_MAX_OBJS; i++)
+        if (objs[i]) g->objs[g->n++] = objs[i];
+}
+
+// 给已登记字段追加配套对象(单位/方向箭头等);无组则静默
+void nav_blink_extra(lv_obj_t *label, lv_obj_t *extra)
+{
+    if (!label || !extra) return;
+    for (int i = 0; i < s_blink_group_n; i++) {
+        if (s_blink_groups[i].trigger == label) {
+            if (s_blink_groups[i].n < BLINK_MAX_OBJS)
+                s_blink_groups[i].objs[s_blink_groups[i].n++] = extra;
+            return;
+        }
+    }
+}
+
+// 非 edit 体系页面(sixset2/toastcolor)build 时显式登记闪烁组(nav.h 导出)
+void nav_blink_group_register(lv_obj_t *trigger, lv_obj_t **objs, int n)
+{
+    blink_group_add(trigger, objs, n);
+}
+
+// 焦点命中查表:有登记组→整组同步闪;无→停闪
+static void blink_evaluate(lv_obj_t *focused)
+{
+    for (int i = 0; i < s_blink_group_n; i++) {
+        if (s_blink_groups[i].trigger == focused) {
+            blink_stop();       /* 换字段:停旧组起新组,重启即重新同步 */
+            for (int j = 0; j < s_blink_groups[i].n; j++)
+                blink_obj_add(s_blink_groups[i].objs[j]);
+            return;
+        }
+    }
+    blink_stop();   /* 焦点对象未登记闪烁组:停闪 */
+}
+
+/* 焦点落在新对象:查闪烁组登记表(按钮/未登记对象→停闪) */
+static void nav_blink_focus_cb(lv_event_t *e)
+{
+    lv_obj_t *focused = lv_event_get_target(e);
+    if (!focused || !lv_obj_check_type(focused, &lv_label_class)) {
+        blink_stop();   /* 焦点到按钮/图片:停闪 */
+        return;
+    }
+    blink_evaluate(focused);
+}
+
 // 将 buttons 数组中的非 NULL 对象全部加入 group（统一 NULL 检查）
 static void group_add_all_btns(lv_group_t *g, lv_obj_t **btns, int count)
 {
     for (int i = 0; i < count; i++) {
-        if (btns[i])
+        if (btns[i]) {
+            lv_obj_add_event_cb(btns[i], nav_blink_focus_cb, LV_EVENT_FOCUSED, NULL);
             lv_group_add_obj(g, btns[i]);
+        }
     }
 }
 // 创建 group 并加入所有按钮（跳转子页时调用）

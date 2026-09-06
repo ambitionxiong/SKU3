@@ -151,6 +151,10 @@ void jump_to_updown_bbq_menu(void)
                       &set_hour, 0, 4, 1, "%02d");
         edit_register(bbq->minnum_label, bbq->minline, NULL,
                       &set_min, 0, 59, 1, "%02d");
+        /* blink extras: 单位(℃/时/分) */
+        nav_blink_extra(bbq->tempnum_label, bbq->temp_label);
+        nav_blink_extra(bbq->hournum_label, bbq->hour_label);
+        nav_blink_extra(bbq->minnum_label, bbq->min_label);
 
         /* 绑定 focus 高亮 */
         lv_obj_add_event_cb(bbq->tempnum_label, on_edit_focus, LV_EVENT_FOCUSED, NULL);
@@ -438,6 +442,10 @@ void jump_to_updown_bbq_menu_top(void)
         edit_clear();
         edit_register(menu->temp, menu->line2, menu->line3,
                       &set_temp_up, 30, 300, 5, "%d");
+        /* blink extras: 方向箭头+单位 */
+        nav_blink_extra(menu->temp, menu->dir2);
+        nav_blink_extra(menu->temp, menu->dir3);
+        nav_blink_extra(menu->temp, menu->label_3);
 
         lv_obj_add_event_cb(menu->temp, on_edit_focus, LV_EVENT_FOCUSED, NULL);
         lv_obj_add_event_cb(menu->next, on_edit_focus, LV_EVENT_FOCUSED, NULL);
@@ -485,6 +493,10 @@ void jump_to_updown_bbq_menu_low(void)
         edit_clear();
         edit_register(menu->temp, menu->line2, menu->line3,
                       &set_temp_down, 30, 300, 5, "%d");
+        /* blink extras: 方向箭头+单位 */
+        nav_blink_extra(menu->temp, menu->dir2);
+        nav_blink_extra(menu->temp, menu->dir3);
+        nav_blink_extra(menu->temp, menu->label_9);
 
         lv_obj_add_event_cb(menu->temp, on_edit_focus, LV_EVENT_FOCUSED, NULL);
         lv_obj_add_event_cb(menu->next, on_edit_focus, LV_EVENT_FOCUSED, NULL);
@@ -530,6 +542,8 @@ static void color_menu_open(void)
         edit_clear();
         edit_register(menu->temp, menu->line2, menu->line3,
                       &set_temp, 30, 300, 5, "%d");
+        /* blink extras: 单位℃ */
+        nav_blink_extra(menu->temp, menu->label_63);
 
         lv_obj_add_event_cb(menu->temp, on_edit_focus, LV_EVENT_FOCUSED, NULL);
         lv_obj_add_event_cb(menu->next, on_edit_focus, LV_EVENT_FOCUSED, NULL);

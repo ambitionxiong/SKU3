@@ -162,6 +162,9 @@ void jump_to_strudel_menu(void)
                       &set_hour, 0, 4, 1, "%02d");
         edit_register(menu->min, menu->minline, NULL,
                       &set_min, 0, 59, 1, "%02d");
+        /* blink extras: 单位/方向箭头(离线推导,最近值归属) */
+        nav_blink_extra(menu->hour, menu->label_684);
+        nav_blink_extra(menu->min, menu->label_685);
 
         lv_obj_add_event_cb(menu->hour, on_strudel_edit_focus,
                             LV_EVENT_FOCUSED, NULL);
@@ -347,6 +350,9 @@ void jump_to_strudel_setting(void)
                       &set_hour, 0, 4, 1, "%02d");
         edit_register(set->min, set->minline, NULL,
                       &set_min, 0, 59, 1, "%02d");
+        /* blink extras: 单位/方向箭头(离线推导,最近值归属) */
+        nav_blink_extra(set->hour, set->label_711);
+        nav_blink_extra(set->min, set->label_713);
 
         lv_obj_add_event_cb(set->hour, on_strudel_edit_focus,
                             LV_EVENT_FOCUSED, NULL);
@@ -671,6 +677,9 @@ void strudel_rebuild_menu(page_id_t child)
                       &set_hour, 0, 4, 1, "%02d");
         edit_register(menu->min, menu->minline, NULL,
                       &set_min, 0, 59, 1, "%02d");
+        /* blink extras: 单位/方向箭头(离线推导,最近值归属) */
+        nav_blink_extra(menu->hour, menu->label_684);
+        nav_blink_extra(menu->min, menu->label_685);
 
         lv_obj_add_event_cb(menu->hour, on_strudel_edit_focus,
                             LV_EVENT_FOCUSED, NULL);
@@ -843,6 +852,9 @@ void strudel_rebuild_setting(void)
                       &set_hour, 0, 4, 1, "%02d");
         edit_register(set->min, set->minline, NULL,
                       &set_min, 0, 59, 1, "%02d");
+        /* blink extras: 单位/方向箭头(离线推导,最近值归属) */
+        nav_blink_extra(set->hour, set->label_711);
+        nav_blink_extra(set->min, set->label_713);
 
         lv_obj_add_event_cb(set->hour, on_strudel_edit_focus, LV_EVENT_FOCUSED, NULL);
         lv_obj_add_event_cb(set->min, on_strudel_edit_focus, LV_EVENT_FOCUSED, NULL);

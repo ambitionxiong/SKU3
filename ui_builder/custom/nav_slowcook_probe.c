@@ -150,6 +150,9 @@ void jump_to_slowcook_menu_probe(void)
                       &set_temp, 70, 120, 5, "%d");
         edit_register(menu->probetemp, menu->probetempline, NULL,
                       &probe_target_temp, 30, 99, 1, "%d");
+        /* blink extras: 单位/方向箭头(离线推导,最近值归属) */
+        nav_blink_extra(menu->temp, menu->label_81);
+        nav_blink_extra(menu->probetemp, menu->label_86);
 
         lv_obj_add_event_cb(menu->temp, on_slowcook_probe_edit_focus,
                             LV_EVENT_FOCUSED, NULL);
@@ -477,6 +480,9 @@ void slowcook_probe_rebuild_menu(page_id_t child)
                       &set_temp, 70, 120, 5, "%d");
         edit_register(menu->probetemp, menu->probetempline, NULL,
                       &probe_target_temp, 30, 99, 1, "%d");
+        /* blink extras: 单位/方向箭头(离线推导,最近值归属) */
+        nav_blink_extra(menu->temp, menu->label_81);
+        nav_blink_extra(menu->probetemp, menu->label_86);
 
         lv_obj_add_event_cb(menu->temp, on_slowcook_probe_edit_focus,
                             LV_EVENT_FOCUSED, NULL);

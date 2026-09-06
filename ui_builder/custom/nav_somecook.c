@@ -293,6 +293,10 @@ void jump_to_stepset(int i)
                       &set_hour, 0, 4, 1, "%02d");
         edit_register(ss->min, ss->minline, NULL,
                       &set_min, 0, 59, 1, "%02d");
+        /* blink extras: 单位/方向箭头(离线推导,最近值归属) */
+        nav_blink_extra(ss->temp, ss->label_7);
+        nav_blink_extra(ss->hour, ss->label_8);
+        nav_blink_extra(ss->min, ss->label_9);
 
         /* 事件绑定 */
         lv_obj_add_event_cb(ss->roller_main, stepset_on_focus, LV_EVENT_FOCUSED, NULL);

@@ -209,6 +209,10 @@ void jump_to_pizza_2_menu(void)
                       &set_hour, 0, 4, 1, "%02d");
         edit_register(menu->min, menu->minline, NULL,
                       &set_min, 0, 59, 1, "%02d");
+        /* blink extras: 单位/方向箭头(离线推导,最近值归属) */
+        nav_blink_extra(menu->temp, menu->label_340);
+        nav_blink_extra(menu->hour, menu->label_343);
+        nav_blink_extra(menu->min, menu->label_344);
 
         lv_obj_add_event_cb(menu->temp, on_pizza_2_edit_focus,
                             LV_EVENT_FOCUSED, NULL);
@@ -416,6 +420,11 @@ void jump_to_pizza_2_setting(void)
                       &set_hour, 0, 4, 1, "%02d");
         edit_register(set->min, set->minline, NULL,
                       &set_min, 0, 59, 1, "%02d");
+        /* blink extras: 单位/方向箭头(离线推导,最近值归属) */
+        nav_blink_extra(set->temp, set->icon2);
+        nav_blink_extra(set->temp, set->icon3);
+        nav_blink_extra(set->hour, set->label_375);
+        nav_blink_extra(set->min, set->label_376);
 
         lv_obj_add_event_cb(set->temp, on_pizza_2_edit_focus,
                             LV_EVENT_FOCUSED, NULL);
@@ -769,6 +778,10 @@ void pizza_2_rebuild_menu(page_id_t child)
                       &set_hour, 0, 4, 1, "%02d");
         edit_register(menu->min, menu->minline, NULL,
                       &set_min, 0, 59, 1, "%02d");
+        /* blink extras: 单位/方向箭头(离线推导,最近值归属) */
+        nav_blink_extra(menu->temp, menu->label_340);
+        nav_blink_extra(menu->hour, menu->label_343);
+        nav_blink_extra(menu->min, menu->label_344);
 
         lv_obj_add_event_cb(menu->temp, on_pizza_2_edit_focus,
                             LV_EVENT_FOCUSED, NULL);
@@ -965,6 +978,11 @@ void pizza_2_rebuild_setting(void)
                       &set_hour, 0, 4, 1, "%02d");
         edit_register(set->min, set->minline, NULL,
                       &set_min, 0, 59, 1, "%02d");
+        /* blink extras: 单位/方向箭头(离线推导,最近值归属) */
+        nav_blink_extra(set->temp, set->icon2);
+        nav_blink_extra(set->temp, set->icon3);
+        nav_blink_extra(set->hour, set->label_375);
+        nav_blink_extra(set->min, set->label_376);
 
         lv_obj_add_event_cb(set->temp, on_pizza_2_edit_focus, LV_EVENT_FOCUSED, NULL);
         lv_obj_add_event_cb(set->hour, on_pizza_2_edit_focus, LV_EVENT_FOCUSED, NULL);

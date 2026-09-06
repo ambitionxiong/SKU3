@@ -22,6 +22,116 @@
 #include <windows.h>
 /* 执行位置标志：各关键点打点，看门狗卡死时打印定位死循环（仅模拟器调试） */
 volatile int g_exec_mark = 0;
+static DWORD g_main_tid = 0;   /* 主线程 id:冻结时挂起取栈用 */
+
+/* 崩溃/冻结共用的符号化栈打印(帧地址数组) */
+static void print_frames(void *const *bt, WORD n)
+{
+    HMODULE dbg = LoadLibraryA("dbghelp.dll");
+    if (!dbg) { fflush(stdout); return; }
+    typedef DWORD  (WINAPI *fn_opt)(DWORD);
+    typedef BOOL   (WINAPI *fn_ini)(HANDLE, PCSTR, BOOL);
+    typedef BOOL   (WINAPI *fn_sym)(HANDLE, DWORD64, PDWORD64, void *);
+    fn_opt opt = (fn_opt)(void *)GetProcAddress(dbg, "SymSetOptions");
+    fn_ini ini = (fn_ini)(void *)GetProcAddress(dbg, "SymInitialize");
+    fn_sym symf = (fn_sym)(void *)GetProcAddress(dbg, "SymFromAddr");
+    if (!opt || !ini || !symf) { fflush(stdout); return; }
+    opt(0x00000002 | 0x00000004);   /* SYMOPT_UNDNAME | SYMOPT_DEFERRED_LOADS */
+    ini(GetCurrentProcess(), NULL, TRUE);
+    /* 与 dbghelp.h 的 SYMBOL_INFO 同布局(不 include dbghelp.h,手动定义) */
+    typedef struct {
+        ULONG SizeOfStruct; ULONG TypeIndex; ULONG64 Reserved[2]; ULONG64 Index;
+        ULONG Size; ULONG64 ModBase; ULONG Flags; ULONG64 Value; ULONG64 Address;
+        ULONG64 Register; ULONG64 Scope; ULONG Tag; ULONG NameLen; ULONG MaxNameLen;
+        char Name[1];
+    } CRASH_SYMBOL_INFO;
+    char sbuf[sizeof(CRASH_SYMBOL_INFO) + 256];
+    for (WORD i = 0; i < n; i++) {
+        DWORD64 addr = (DWORD64)bt[i];
+        HMODULE mod = NULL;
+        char modname[MAX_PATH] = "?";
+        GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+                           GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                           (LPCSTR)addr, &mod);
+        if (mod) GetModuleFileNameA(mod, modname, MAX_PATH);
+        const char *mb = modname, *p;
+        for (p = modname; *p; p++) if (*p == '\\' || *p == '/') mb = p + 1;
+        CRASH_SYMBOL_INFO *sym = (CRASH_SYMBOL_INFO *)sbuf;
+        sym->SizeOfStruct = sizeof(CRASH_SYMBOL_INFO);
+        sym->MaxNameLen = 255;
+        if (symf(GetCurrentProcess(), addr, 0, sym))
+            printf("[CRASH] #%u %s+0x%llx (%s)\n", (unsigned)i, sym->Name,
+                   (unsigned long long)(addr - sym->Address), mb);
+        else
+            printf("[CRASH] #%u %s+0x%llx\n", (unsigned)i, mb,
+                   mod ? (unsigned long long)(addr - (DWORD64)(size_t)mod) : (unsigned long long)addr);
+    }
+    fflush(stdout);
+}
+
+#ifdef _WIN64
+/* 冻结定位:挂起主线程,StackWalk64 逐帧回溯并符号化打印(卡死在哪一环直接见分晓)。
+   STACKFRAME64/KDHELP64 手动定义同布局(不 include dbghelp.h) */
+typedef struct { DWORD64 Offset; WORD Segment; int Mode; } CK_ADDR64;   /* 与 dbghelp ADDRESS64 同布局 */
+typedef struct {
+    DWORD64 Thread; DWORD ThCallbackStack; DWORD ThCallbackBStore;
+    DWORD NextCallback; DWORD FramePointer;
+    DWORD64 KernelFrame; DWORD64 KernelStack; DWORD64 Wow64Teb;
+    DWORD Reserved[16];   /* 比 SDK 版宽松,防 StackWalk64 越界写 */
+} CK_KDHELP64;
+typedef struct {
+    CK_ADDR64 AddrPC; CK_ADDR64 AddrReturn; CK_ADDR64 AddrFrame;
+    CK_ADDR64 AddrStack; CK_ADDR64 AddrBStore; void *FuncTableEntry;
+    DWORD64 Params[4]; BOOL Far; BOOL Virtual;
+    DWORD64 Reserved[3]; CK_KDHELP64 KdHelp;
+} CK_STACKFRAME64;
+#define CK_ADDRMODE_FLAT 3
+static void dump_frozen_stack(void)
+{
+    HMODULE dbg = LoadLibraryA("dbghelp.dll");
+    HMODULE ntdll = GetModuleHandleA("ntdll.dll");
+    if (!dbg || !ntdll) return;
+    typedef BOOL   (WINAPI *fn_sw)(DWORD, HANDLE, HANDLE, void *, void *,
+                                   void *, void *, void *, void *);
+    typedef void  *(WINAPI *fn_ftab)(HANDLE, DWORD64);
+    typedef DWORD64(WINAPI *fn_mbase)(HANDLE, DWORD64);
+    typedef DWORD  (WINAPI *fn_opt)(DWORD);
+    typedef BOOL   (WINAPI *fn_ini)(HANDLE, PCSTR, BOOL);
+    typedef BOOL   (WINAPI *fn_sym)(HANDLE, DWORD64, PDWORD64, void *);
+    fn_sw sw = (fn_sw)(void *)GetProcAddress(dbg, "StackWalk64");
+    fn_ftab ftab = (fn_ftab)(void *)GetProcAddress(dbg, "SymFunctionTableAccess64");
+    fn_mbase mbase = (fn_mbase)(void *)GetProcAddress(dbg, "SymGetModuleBase64");
+    fn_opt opt = (fn_opt)(void *)GetProcAddress(dbg, "SymSetOptions");
+    fn_ini ini = (fn_ini)(void *)GetProcAddress(dbg, "SymInitialize");
+    fn_sym symf = (fn_sym)(void *)GetProcAddress(dbg, "SymFromAddr");
+    HANDLE th = OpenThread(THREAD_SUSPEND_RESUME | THREAD_QUERY_INFORMATION, FALSE, g_main_tid);
+    if (!sw || !ftab || !mbase || !opt || !ini || !symf || !th) return;
+    opt(0x00000002 | 0x00000004);
+    ini(GetCurrentProcess(), NULL, TRUE);
+    if (SuspendThread(th) == (DWORD)-1) return;
+    CONTEXT ctx;
+    memset(&ctx, 0, sizeof(ctx));
+    ctx.ContextFlags = CONTEXT_FULL;
+    if (!GetThreadContext(th, &ctx)) { ResumeThread(th); return; }
+    printf("[WATCHDOG] frozen stack:\n");
+    CK_STACKFRAME64 frame;
+    memset(&frame, 0, sizeof(frame));
+    frame.AddrPC.Offset = ctx.Rip;      frame.AddrPC.Segment = ctx.SegCs;   frame.AddrPC.Mode = CK_ADDRMODE_FLAT;
+    frame.AddrFrame.Offset = ctx.Rbp;   frame.AddrFrame.Segment = ctx.SegSs; frame.AddrFrame.Mode = CK_ADDRMODE_FLAT;
+    frame.AddrStack.Offset = ctx.Rsp;   frame.AddrStack.Segment = ctx.SegSs; frame.AddrStack.Mode = CK_ADDRMODE_FLAT;
+    void *bt[24];
+    WORD n = 0;
+    bt[n++] = (void *)(size_t)ctx.Rip;
+    while (n < 24 && sw(IMAGE_FILE_MACHINE_AMD64, GetCurrentProcess(), th, &frame, &ctx,
+                        NULL, ftab, mbase, NULL)) {
+        if (frame.AddrPC.Offset == 0) break;
+        bt[n++] = (void *)(size_t)frame.AddrPC.Offset;
+    }
+    ResumeThread(th);
+    print_frames(bt, n);
+}
+#endif
+
 /* 看门狗线程（仅模拟器）：主循环卡死超 2 秒打印，用于定位死循环 */
 static DWORD WINAPI watchdog_proc(LPVOID param)
 {
@@ -39,6 +149,10 @@ static DWORD WINAPI watchdog_proc(LPVOID param)
                    (unsigned int)(now - last), last, now, g_exec_mark,
                    (unsigned int)(ms.ullAvailPhys / (1024 * 1024)),
                    (unsigned int)(ms.ullTotalPhys / (1024 * 1024)));
+#ifdef _WIN64
+            dump_frozen_stack();   /* 卡死现场符号化栈,打印完直接退出进程 */
+            ExitProcess(2);
+#endif
         }
     }
     return 0;
@@ -88,17 +202,40 @@ static lv_display_t * hal_init(int32_t w, int32_t h);
  *  STATIC PROTOTYPES
  **********************/
 
+#ifdef _WIN32
+static void print_frames(void *const *bt, WORD n);   /* 符号化栈打印(定义在 watchodg 段,_WIN32 内) */
+/* 崩溃现场打印（仅模拟器调试）：异常码/地址 + 符号化调用栈，控制台直接看闪退位置。
+   dbghelp/RtlCaptureStackBackTrace 全部 LoadLibrary 动态解析,不加链接依赖 */
+static LONG WINAPI crash_handler(EXCEPTION_POINTERS *ep)
+{
+    printf("\n[CRASH] code=0x%08lX addr=%p\n",
+           (unsigned long)ep->ExceptionRecord->ExceptionCode,
+           ep->ExceptionRecord->ExceptionAddress);
+    HMODULE ntdll = GetModuleHandleA("ntdll.dll");
+    if (!ntdll) { fflush(stdout); return EXCEPTION_CONTINUE_SEARCH; }
+    typedef USHORT (WINAPI *fn_cap)(ULONG, ULONG, PVOID *, PULONG);
+    fn_cap cap = (fn_cap)(void *)GetProcAddress(ntdll, "RtlCaptureStackBackTrace");
+    if (!cap) { fflush(stdout); return EXCEPTION_CONTINUE_SEARCH; }
+    void *bt[24];
+    WORD n = cap(0, 24, bt, NULL);
+    print_frames(bt, n);
+    return EXCEPTION_CONTINUE_SEARCH;
+}
+#endif
+
 /**********************
  *   GLOBAL FUNCTIONS
  **********************/
- 
+
 int main(int argc, char **argv)
 {
 	(void)argc; /*Unused*/
 	(void)argv; /*Unused*/
 
 #ifdef _WIN32
+	SetUnhandledExceptionFilter(crash_handler);
 	/* 看门狗（仅模拟器）：独立线程监测主循环心跳，卡死（lv_timer_handler 死循环/渲染卡住）时打印定位日志 */
+	g_main_tid = GetCurrentThreadId();
 	volatile unsigned int *heartbeat = malloc(sizeof(unsigned int));
 	*heartbeat = 0;
 	DWORD tid;
