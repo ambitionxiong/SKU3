@@ -673,6 +673,7 @@ void screen_set_reset(void);
 int screen_set_was_running(void);   /* 进入设置页前是否运行态(英文排版底图分支用) */
 void screen_set_rebuild(void);      /* 重建设置覆盖层(进入/声音子页返回) */
 void screen_set_yy_lb_sync(void);   /* YY_Lb 语言值回显(设置覆盖层重建/语言切换后调用) */
+void screen_set_ts_lb_sync(void);   /* TS_Lb 童锁值回显(重建/弹窗确认/长按解锁后调用,nav_screen_set.c) */
 
 /* 声音设置子页（nav_loudness.c 实现，PAGE_LOUDNESS） */
 void jump_to_loudness(void);
@@ -720,6 +721,7 @@ void nav_childlock_set(int on);      /* 1=立即全屏锁定层 0=解锁(设置�
 int  nav_childlock_active(void);     /* 锁定中:process_key 吞键+待机页强制显示 topflag */
 void nav_childlock_try_unlock(void); /* 长按旋钮3s解锁(幂等;keyio 两路调用) */
 void nav_childlock_hold_poll(void);  /* 模拟器 sim_scan_cb 100ms 轮询解锁(keyio.c) */
+void nav_childlock_refresh(void);    /* 下层状态变化时刷新锁层第三行(nav_system.c 时钟驱动) */
 
 /* 选中项呼吸闪烁（nav_core.c 实现）
    字段组成来自权威注册:edit_register 自动登记 {值,长线,短线};

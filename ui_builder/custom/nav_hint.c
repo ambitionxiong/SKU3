@@ -422,6 +422,18 @@ int nav_favask_get_mode(void)
  * ============================== */
 static int g_childlock_active = 0;
 
+/* 锁层第三行刷新签名:界面状态/保温标志/模式名任一变化才重排(由 topflag_clock_cb 驱动) */
+static int s_cl_sig_status = -1;
+static int s_cl_sig_keepwarm = -1;
+static const char *s_cl_sig_mode = NULL;
+
+static void childlock_sig_update(void)
+{
+    s_cl_sig_status = g_send.iface_status;
+    s_cl_sig_keepwarm = g_keepwarm_active;
+    s_cl_sig_mode = mode_display_name();
+}
+
 /* locktip3 显示时 icon/tip1/tip2 用原位,隐藏时下移 41px:
    lockifr 面板 y 119..370(中心 244.5),icon 高 121 → 居中 y=184=143+41,tip 跟随 */
 #define LOCK_DY_HIDE 41
@@ -462,6 +474,7 @@ void nav_childlock_set(int on)
         if (tf->locktip1) lv_label_set_text(tf->locktip1, tr("已锁定"));
         if (tf->locktip2) lv_label_set_text(tf->locktip2, tr("长按旋钮3秒进行解锁"));
         childlock_apply_layout(tf);           /* 五态文案+布局(内部刷新 locktip3) */
+        childlock_sig_update();               /* 记录开锁瞬间签名,后续靠 refresh 增量刷新 */
         if (tf->image_1) lv_obj_clear_flag(tf->image_1, LV_OBJ_FLAG_HIDDEN);
         if (tf->image_2) lv_obj_clear_flag(tf->image_2, LV_OBJ_FLAG_HIDDEN);
         if (tf->locktip1) lv_obj_clear_flag(tf->locktip1, LV_OBJ_FLAG_HIDDEN);
@@ -493,9 +506,26 @@ int nav_childlock_active(void)
     return g_childlock_active;
 }
 
+/* 下层状态变化时刷新锁层第三行(模式名+状态,五态)。
+ * 童锁下按键全被吞,状态只经自动流转变化(倒计时归零→完成/保温、预约到点→烹饪),
+ * 由常驻 500ms topflag_clock_cb 驱动,签名未变时零开销 */
+void nav_childlock_refresh(void)
+{
+    topflagpage_t *tf = topflagpage_get(&ui_manager);
+    if (!g_childlock_active || !tf || !tf->obj) return;
+    if (s_cl_sig_status == g_send.iface_status &&
+        s_cl_sig_keepwarm == g_keepwarm_active &&
+        s_cl_sig_mode == mode_display_name()) return;
+    childlock_sig_update();
+    childlock_apply_layout(tf);
+}
+
 // 长按 3 秒解锁(真机 KEY_PRESSED 分支/模拟器 hold_poll 两路调用,幂等)
 void nav_childlock_try_unlock(void)
 {
     if (!g_childlock_active) return;
+    SET_Data.Set_Lock = 0;    /* 长按解锁写回设置项:设置页回显跟随实际状态 */
+    screen_set_ts_lb_sync();  /* 覆盖层存活则同步 TS_Lb(锁定中进不了设置页,通常空操作) */
     nav_childlock_set(0);
+    uart_print();             /* 状态帧立即上报,与设置页改动路径一致 */
 }

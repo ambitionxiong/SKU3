@@ -45,6 +45,7 @@ void nav_key1_long_press(void)
     g_send.remaining_ms = -1;
 
     if (g_send.iface_status != IFACE_SLEEP) {
+        if (nav_childlock_active()) nav_childlock_set(0);   /* 关机不显示锁层(Set_Lock 保持 1,开机恢复) */
         g_send.buzzer_req = BUZZER_POWER_OFF;
         g_send.iface_status = IFACE_SLEEP;
         depth = 0;
@@ -76,6 +77,7 @@ void nav_key1_long_press(void)
             lang_scr_load_anim(major_menu_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0, 0);
         }
+        if (SET_Data.Set_Lock && !nav_childlock_active()) nav_childlock_set(1);   /* 关机前童锁开着:开机恢复锁层 */
         g_send.buzzer_req = BUZZER_POWER_ON;
         g_send.iface_status = IFACE_SETTING;
 #ifndef LV_USE_AIC_SIMULATOR

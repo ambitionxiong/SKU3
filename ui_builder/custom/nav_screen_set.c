@@ -9,6 +9,7 @@
 #include "custom_defs.h"
 #include "nav_internal.h"
 #include "screen_SET.h"
+#include <string.h>
 
 /* ==============================
  * 设置页（覆盖层）
@@ -30,10 +31,14 @@ static lv_group_t *s_prev_group = NULL;  /* 进入前焦点组 */
 static uint8_t s_was_running = 0;        /* 进入设置页前是否运行态(烹饪/暂停/完成/预约) */
 
 /* 覆盖层对象被任意 lv_obj_clean 销毁时同步置空指针(防悬空,同 nav_hint.c hint_del_cb。
- * 否则下次 jump_to_screen_set 的防御性 lv_obj_del 是对已释放内存的二次释放) */
+ * 否则下次 jump_to_screen_set 的防御性 lv_obj_del 是对已释放内存的二次释放)。
+ * 整组指针一并清零(TS_Lb/ZDBW_Lb 等):否则关机等路径删除覆盖层后,
+ * screen_set_ts_lb_sync 仍会摸到悬空字段指针(实测 UAF 闪退) */
 static void screen_set_del_cb(lv_event_t *e)
 {
-    if (lv_event_get_target(e) == screen_SET.obj) screen_SET.obj = NULL;
+    if (lv_event_get_target(e) == screen_SET.obj) {
+        memset(&screen_SET, 0, sizeof(screen_SET_t));
+    }
 }
 
 /* ===== 选项弹窗(移植同事 SET_Select_N2/N4:风扇二选一/炉灯四选一/功率二选一) =====
@@ -192,8 +197,13 @@ static void sel_popup_apply(void)
     case SEL_WHERE_TS:
         /* 选项行序 开(row0)/关(row1):row0=开锁(row1 是关) */
         SET_Data.Set_Lock = (s_sel_flag == 0) ? 1 : 0;
-        if (ss && ss->TS_Lb) lv_label_set_text(ss->TS_Lb, tr(SET_Data.Set_Lock ? "开" : "关"));
+        screen_set_ts_lb_sync();   /* TS_Lb 童锁值回显(按 Set_Lock 显示 开/关) */
         nav_childlock_set(SET_Data.Set_Lock);   /* 开→立即全屏锁定层;关→解锁 */
+        if (SET_Data.Set_Lock && s_was_running) {
+            /* 运行态开童锁:不留在设置页,覆盖层立即退回运行页,锁层(lv_layer_top)压在其上 */
+            screen_set_popup_reset();   /* 弹窗对象随覆盖层销毁,只清指针防悬空 */
+            screen_set_back();          /* 复用返回链:删覆盖层+恢复下层运行页焦点组 */
+        }
         break;
     case SEL_WHERE_DJ:
         SET_Data.Set_StandbyTime = s_sel_flag;
@@ -425,9 +435,9 @@ void screen_set_rebuild(void)
 
 
     /* 基础设置项:状态字节 → 标签回显 + PRESS 切换回调(运行态 3 键组仅含 ZDBW) */
-    if (ss->ZDBW_Lb) lv_label_set_text(ss->ZDBW_Lb, tr((Machine_Set_num & Send_MachineState_AutoKeepWarm) ? "关" : "开"));
+    if (ss->ZDBW_Lb) lv_label_set_text(ss->ZDBW_Lb, tr(SET_Data.Set_KeepWarm ? "开" : "关"));
     if (ss->Power_Lb) lv_label_set_text(ss->Power_Lb, (Machine_Set_num & Send_MachineState_Power_xxA) ? "16A" : "13A");
-    if (ss->TS_Lb) lv_label_set_text(ss->TS_Lb, tr(SET_Data.Set_Lock ? "开" : "关"));
+    screen_set_ts_lb_sync();   /* TS_Lb 童锁值回显(按 Set_Lock 显示 开/关) */
     if (ss->Six_Lb) lv_label_set_text(ss->Six_Lb, tr(SET_Data.Set_6th ? "含猪肉" : "全部"));
     if (ss->WDDW_Lb) lv_label_set_text(ss->WDDW_Lb, tr(SET_Data.Set_TempUnit ? "°F" : "°C"));
     if (ss->Demo_Lb) lv_label_set_text(ss->Demo_Lb, tr(SET_Data.Set_DemoMode ? "开" : "关"));
@@ -465,7 +475,15 @@ void screen_set_yy_lb_sync(void)
     screen_SET_t *ss = screen_SET_get(&ui_manager);
     int lang = SET_Data.Set_Language;
     if (lang < 0 || lang > 2) lang = 2;
-    if (ss && ss->YY_Lb) lv_label_set_text(ss->YY_Lb, tr(s_lang_yy_names[lang]));
+    if (ss && ss->obj && ss->YY_Lb) lv_label_set_text(ss->YY_Lb, tr(s_lang_yy_names[lang]));
+}
+
+/* TS_Lb 童锁值回显:按 Set_Lock 显示 开/关(覆盖层重建/弹窗确认/长按解锁统一走这里) */
+void screen_set_ts_lb_sync(void)
+{
+    screen_SET_t *ss = screen_SET_get(&ui_manager);
+    /* obj 存活校验:覆盖层已删(如童锁中关机)时 TS_Lb 悬空,直接跳过 */
+    if (ss && ss->obj && ss->TS_Lb) lv_label_set_text(ss->TS_Lb, tr(SET_Data.Set_Lock ? "开" : "关"));
 }
 
 void jump_to_screen_set(void)

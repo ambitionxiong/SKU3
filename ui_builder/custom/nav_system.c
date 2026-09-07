@@ -244,6 +244,7 @@ void waitmenu_apply_clock(void)
 // 同时刷新待机页 waitmenu_24 的 时间/星期/年月日
 void topflag_clock_cb(lv_timer_t *timer)
 {
+    nav_childlock_refresh();   /* 童锁激活时跟随下层状态刷新第三行(内部有签名守卫) */
     topflagpage_t *tf = topflagpage_get(&ui_manager);
     if (!tf || !tf->currenttime) return;
     rtc_time_t t;
