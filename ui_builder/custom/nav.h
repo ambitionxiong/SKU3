@@ -674,6 +674,8 @@ int screen_set_was_running(void);   /* 进入设置页前是否运行态(英文�
 void screen_set_rebuild(void);      /* 重建设置覆盖层(进入/声音子页返回) */
 void screen_set_yy_lb_sync(void);   /* YY_Lb 语言值回显(设置覆盖层重建/语言切换后调用) */
 void screen_set_ts_lb_sync(void);   /* TS_Lb 童锁值回显(重建/弹窗确认/长按解锁后调用,nav_screen_set.c) */
+int  screen_set_overlay_open(void); /* 设置覆盖层是否存活(外部位判定用,勿直接摸 screen_SET) */
+void nav_topflag_demo_sync(void);   /* 演示模式徽标显隐/定位(nav_system.c,500ms tick+切换后调用) */
 
 /* 声音设置子页（nav_loudness.c 实现，PAGE_LOUDNESS） */
 void jump_to_loudness(void);

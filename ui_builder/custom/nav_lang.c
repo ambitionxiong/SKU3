@@ -220,6 +220,7 @@ void lang_scr_load_anim(lv_obj_t *scr, lv_scr_load_anim_t anim_type,
 {
     lv_scr_load_anim(scr, anim_type, time, delay, auto_del);
     lang_on_page_built();
+    nav_topflag_demo_sync();   /* 新屏已激活:演示徽标立即重定位(否则500ms内旧位置与新页标题重叠) */
 }
 
 void lang_refresh_screen(void)

@@ -148,7 +148,7 @@ static void sel_popup_create(int where, int flag, int n, const char *title_text,
     lv_obj_set_style_shadow_width(panel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     lv_obj_t *title = lv_label_create(panel);
-    lv_label_set_text(title, title_text);
+    lv_label_set_text(title, tr(title_text));   /* 弹窗标题过翻译表(英文模式显示英译) */
     lv_obj_set_pos(title, 0, 46);
     lv_obj_set_size(title, 502, 32);
     lv_obj_set_style_text_font(title, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -164,7 +164,7 @@ static void sel_popup_create(int where, int flag, int n, const char *title_text,
         s_sel_labels[i] = lv_label_create(panel);
         lv_label_set_text(s_sel_labels[i], s_sel_notrans ? opts[i] : tr(opts[i]));
         lv_obj_set_pos(s_sel_labels[i], L->tx[i], L->ty[i]);
-        lv_obj_set_size(s_sel_labels[i], (i == 2 && n == 4) ? 450 : 200, 32);
+        lv_obj_set_width(s_sel_labels[i], LV_SIZE_CONTENT);   /* 宽度随文本自适应:英文长词(如 Temperature Control)不被截断 */
         lv_obj_set_style_text_font(s_sel_labels[i], &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_set_style_text_color(s_sel_labels[i], lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     }
@@ -211,6 +211,9 @@ static void sel_popup_apply(void)
     case SEL_WHERE_DEMO:
         SET_Data.Set_DemoMode = s_sel_flag;
         if (ss && ss->Demo_Lb) lv_label_set_text(ss->Demo_Lb, tr(s_sel_flag ? "开" : "关"));
+        g_send.cook_flag = s_sel_flag ? 4 : 0;   /* BUF[5]烹调标志位:演示模式=4,关=0(状态驱动,打包层只读) */
+        nav_topflag_demo_sync();        /* 徽标立即显隐/定位(不等 500ms tick) */
+        topflag_update_visibility();    /* 待机页下开/关演示需联动整层显隐(徽标放行/收回) */
         break;
     case SEL_WHERE_LANG:
         /* s_sel_flag: 0=English 1=繁體 2=简体(与 Set_Language 字段注释一致);繁體暂无词表,显示同简体 */
@@ -469,6 +472,12 @@ int screen_set_was_running(void)
     return s_was_running;
 }
 
+/* 覆盖层是否存活(供 nav_system.c 等外部判断左上角标题归属,避免直接摸 screen_SET 结构) */
+int screen_set_overlay_open(void)
+{
+    return screen_SET.obj != NULL;
+}
+
 /* YY_Lb 语言值回显:按 Set_Language 显示语言原名(tr:EN 模式下"简体中文"译为 Simplified Chinese) */
 void screen_set_yy_lb_sync(void)
 {
@@ -491,6 +500,7 @@ void jump_to_screen_set(void)
     screen_set_rebuild();   /* 含防重入/运行态记录/覆盖层构建 */
     page_push(PAGE_SCREEN_SET);
     lang_on_page_built();   /* 覆盖层挂当前屏、无 screen load:进页补跑翻译+英文排版 */
+    nav_topflag_demo_sync();   /* 覆盖层自带"设置"标题:徽标立即居中(无 screen load,不走统一出口) */
     printf("[screen_set] enter (overlay, running=%d)\n", s_was_running);
 }
 
@@ -531,6 +541,7 @@ void screen_set_back(void)
         g_send.iface_status = IFACE_STANDBY;
         printf("[screen_set] back -> waitmenu_24\n");
     }
+    nav_topflag_demo_sync();   /* 覆盖层关闭:徽标按底层页面立即重定位(运行态分支无 screen load) */
 }
 
 // 外部路径（长按关机/探针插入/功能键弹栈等重置页面）调用：清理覆盖层对象/焦点指针,防悬空 UAF

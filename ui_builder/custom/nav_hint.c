@@ -480,7 +480,6 @@ void nav_childlock_set(int on)
         if (tf->locktip1) lv_obj_clear_flag(tf->locktip1, LV_OBJ_FLAG_HIDDEN);
         if (tf->locktip2) lv_obj_clear_flag(tf->locktip2, LV_OBJ_FLAG_HIDDEN);
         if (tf->container_1) lv_obj_clear_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);   /* 原生 44% 黑遮罩,下层正常页面透出 */
-        if (tf->currenttime) lv_obj_move_to_index(tf->currenttime, -1);   /* 时钟提到锁层之上,锁定中也可见 */
         g_childlock_active = 1;               /* 先置位再刷显隐:待机页特判依赖 active */
         topflag_update_visibility();
         printf("[hint] childlock on\n");
@@ -493,9 +492,6 @@ void nav_childlock_set(int on)
         if (tf->locktip2)  lv_obj_add_flag(tf->locktip2, LV_OBJ_FLAG_HIDDEN);
         if (tf->locktip3)  lv_obj_add_flag(tf->locktip3, LV_OBJ_FLAG_HIDDEN);
         if (tf->container_1) lv_obj_add_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);
-        /* 时钟放回遮罩之下(container_1 原在时钟之后创建,盖住它) */
-        if (tf->currenttime && tf->container_1)
-            lv_obj_move_to_index(tf->currenttime, lv_obj_get_index(tf->container_1));
         topflag_update_visibility();
         printf("[hint] childlock off\n");
     }

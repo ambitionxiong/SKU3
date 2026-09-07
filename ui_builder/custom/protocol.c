@@ -41,7 +41,9 @@ void uart_send_fill(void)
     uart_data_send[SEND_FRAME2]       = 0x33;
     uart_data_send[SEND_IFACE_STATUS] = g_send.iface_status;
     uart_data_send[SEND_COOK_MODE]    = g_send.cook_mode;
-    uart_data_send[SEND_COOK_FLAG]    = g_send.cook_flag;
+    /* BUF[5] 烹调标志位:演示模式开启后锁定 4——探针烹饪/完成等任何其他操作都不改写,
+     * 保证电源板持续处于演示态;关演示后恢复透传 g_send.cook_flag */
+    uart_data_send[SEND_COOK_FLAG]    = SET_Data.Set_DemoMode ? 4 : g_send.cook_flag;
     uart_data_send[SEND_MICRO_POWER]  = 0;
 
     uart_data_send[SEND_TEMP_H]       = (uint8_t)(g_send.set_temp >> 8);

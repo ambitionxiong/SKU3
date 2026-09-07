@@ -123,6 +123,7 @@ extern uint8_t Machine_Set_num;     /* 机器设置字节2(保温/风扇/功率/
 
 // ===== 发送状态结构体 =====
 // uart_send_fill() 只读此结构体，不访问其他全局变量
+// (唯一例外:BUF[5] 烹调标志位在演示模式开启时锁定发送 4,见 uart_send_fill)
 typedef struct {
     uint8_t iface_status;    // BUF[3] 界面状态
     uint8_t cook_mode;       // BUF[4] 烹调模式

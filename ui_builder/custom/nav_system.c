@@ -160,8 +160,70 @@ void topflag_update_visibility(void)
     if (!tf || !tf->obj) return;
     int is_wait = (depth > 0 && page_stack[depth - 1] == PAGE_WAITMENU_24);
     /* 童锁锁定时强制显示:锁层在 topflag 内,待机页也要能看见锁定提示 */
-    if (is_wait && !nav_childlock_active()) lv_obj_add_flag(tf->obj, LV_OBJ_FLAG_HIDDEN);
-    else lv_obj_clear_flag(tf->obj, LV_OBJ_FLAG_HIDDEN);
+    if (is_wait && !nav_childlock_active()) {
+        /* 待机页默认整层隐藏(页面自带大时钟);演示模式例外:显示徽标(左上角),
+           小时钟仍藏避免与待机大时钟重复 */
+        if (SET_Data.Set_DemoMode) {
+            if (tf->currenttime) lv_obj_add_flag(tf->currenttime, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(tf->obj, LV_OBJ_FLAG_HIDDEN);
+            /* 放行瞬间即把徽标硬定左上角:wait 页徽标无条件 (24,24)。
+               page_push 先于 wait 页面加载触发本函数,此刻 lv_scr_act() 仍是旧页,
+               若不做硬写,徽标会以旧页留下的居中位置被放行,直到 wait 加载完
+               lang_scr_load_anim 里的 sync 才归位——中间帧可见从中间"移"到左上 */
+            if (tf->demo) lv_obj_set_pos(tf->demo, 24, 24);
+        } else {
+            if (tf->currenttime) lv_obj_clear_flag(tf->currenttime, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(tf->obj, LV_OBJ_FLAG_HIDDEN);
+        }
+    } else {
+        if (tf->currenttime) lv_obj_clear_flag(tf->currenttime, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(tf->obj, LV_OBJ_FLAG_HIDDEN);
+    }
+}
+
+/* 左上角是否有文字:设置覆盖层打开(自带"设置"标题)→有;
+ * 普通页只扫活动屏直接子对象(只读不递归):左上角(x≤120,y≤60)有可见非空文字标签→有 */
+static int nav_topleft_has_text(void)
+{
+    if (screen_set_overlay_open()) return 1;
+    lv_obj_t *scr = lv_scr_act();
+    if (!scr) return 0;
+    uint32_t n = lv_obj_get_child_count(scr);
+    for (uint32_t i = 0; i < n; i++) {
+        lv_obj_t *c = lv_obj_get_child(scr, i);
+        if (!c || lv_obj_has_flag(c, LV_OBJ_FLAG_HIDDEN)) continue;
+        if (!lv_obj_check_type(c, &lv_label_class)) continue;
+        if (lv_obj_get_x(c) > 120 || lv_obj_get_y(c) > 60) continue;
+        const char *txt = lv_label_get_text(c);
+        if (txt && txt[0]) return 1;
+    }
+    return 0;
+}
+
+/* 演示模式徽标(topflag demo/show.png 61x38):Set_DemoMode 开→显示。
+ * 左上角有文字→水平居中((1280-宽)/2);无文字→左边距 24。y 固定 24。
+ * 由 topflag_clock_cb 500ms 驱动,设置页切换后也立即调一次 */
+void nav_topflag_demo_sync(void)
+{
+    topflagpage_t *tf = topflagpage_get(&ui_manager);
+    if (!tf || !tf->obj || !tf->demo) return;
+    if (!SET_Data.Set_DemoMode) {
+        lv_obj_add_flag(tf->demo, LV_OBJ_FLAG_HIDDEN);
+        return;
+    }
+    lv_obj_clear_flag(tf->demo, LV_OBJ_FLAG_HIDDEN);
+    /* wait 页演示徽标无条件左上角(硬规则):不走扫描——覆盖层/尾部 sync 对 wait 的
+       误判会把它定到居中再等 tick 纠正,造成可见移动 */
+    if (depth > 0 && page_stack[depth - 1] == PAGE_WAITMENU_24) {
+        lv_obj_set_pos(tf->demo, 24, 24);
+        return;
+    }
+    if (nav_topleft_has_text()) {
+        lv_obj_update_layout(tf->demo);
+        lv_obj_set_pos(tf->demo, (1280 - lv_obj_get_width(tf->demo)) / 2, 24);
+    } else {
+        lv_obj_set_pos(tf->demo, 24, 24);
+    }
 }
 
 // 待机页时钟缓存（waitmenu_apply_clock 使用）
@@ -245,6 +307,7 @@ void waitmenu_apply_clock(void)
 void topflag_clock_cb(lv_timer_t *timer)
 {
     nav_childlock_refresh();   /* 童锁激活时跟随下层状态刷新第三行(内部有签名守卫) */
+    nav_topflag_demo_sync();   /* 演示模式徽标显隐/定位(纯读+属性写,2Hz 开销可忽略) */
     topflagpage_t *tf = topflagpage_get(&ui_manager);
     if (!tf || !tf->currenttime) return;
     rtc_time_t t;

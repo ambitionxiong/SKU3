@@ -116,6 +116,7 @@ static void count_down_timer_cb(lv_timer_t *timer)
                 lv_obj_t *back = s_return_scr;
                 s_return_scr = NULL;
                 lv_scr_load_anim(back, LV_SCR_LOAD_ANIM_NONE, 0, 0, true);   /* 删计时屏恢复原屏 */
+                nav_topflag_demo_sync();   /* 原屏已激活:演示徽标立即重定位(本调用未走统一出口) */
             } else {
                 s_return_scr = NULL;
                 page_pop();              /* 弹掉 COUNT,按栈顶重建下层页面 */
@@ -143,6 +144,7 @@ static void count_down_timer_cb(lv_timer_t *timer)
                 current_group = scr->group;           /* 抢屏后按键由本页消化(超时层分支) */
                 lv_scr_load_anim(scr->obj, LV_SCR_LOAD_ANIM_NONE, 0, 0, false);   /* false:保留原屏 */
                 screen_overtime_cont_create();
+                nav_topflag_demo_sync();   /* 抢屏后徽标按新屏立即定位(裸调未走统一出口) */
             }
         }
     }
@@ -212,6 +214,7 @@ static void overtime_dismiss(void)
         s_return_scr = NULL;
         lv_obj_clean(lv_scr_act());   /* 清掉计时页内容(含超时层) */
         lv_scr_load_anim(back, LV_SCR_LOAD_ANIM_NONE, 0, 0, true);
+        nav_topflag_demo_sync();   /* 原屏已激活:演示徽标立即重定位(本调用未走统一出口) */
     } else {
         s_return_scr = NULL;
         page_pop();
