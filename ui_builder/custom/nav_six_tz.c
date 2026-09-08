@@ -79,9 +79,11 @@ void sixmenutz_rebuild(page_id_t child)
         if (mz->meat) {
             lv_obj_add_event_cb(mz->meat, on_sixmenutz_meat_click, LV_EVENT_CLICKED, NULL);
         }
-        /* 焦点恢复:从肉菜单/牛肉菜单返回 → meat; 家禽返回 → chick */
+        /* 焦点恢复:从肉菜单/肉分类两栏页/牛肉菜单返回 → meat; 家禽返回 → chick */
         if (s_meat_tz_mode && child == PAGE_CHICKMENUTZ && mz->meat)
             lv_group_focus_obj(mz->meat);
+        else if (child == PAGE_CHICK6MENU && mz->meat)
+            lv_group_focus_obj(mz->meat);   /* 无猪肉:从肉分类两栏页(chick6menu 复用)返回 */
         else if (child == PAGE_SIXOP3PAGE && mz->meat)
             lv_group_focus_obj(mz->meat);
         else if (mz->chick)
@@ -106,6 +108,11 @@ static void on_sixmenutz_meat_click(lv_event_t *e)
 {
     if (screen_is_loading(lv_scr_act())) return;
     s_meat_tz_mode = 0;   /* 清牛肉二级模式(本次进入肉菜单) */
+    if (SET_Data.Set_6th) {
+        /* 无猪肉:肉分类换 chick6menu 两栏(牛肉/羊肉),猪肉二级不可达 */
+        jump_to_meatnp_menu();
+        return;
+    }
     jump_to_sixop3page_tz(tr("肉"), tr("牛肉"), tr("羊肉"), tr("猪肉"));
 }
 

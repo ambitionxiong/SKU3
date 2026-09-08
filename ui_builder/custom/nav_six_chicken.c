@@ -22,11 +22,13 @@ static uint8_t s_sidedish_mode = 0;   /* 1=配菜模式（复用 duckmenu,炸薯
 static uint8_t s_fish_home_focus = 0; /* 鱼首页返回焦点: 0=烤鱼(chicken) 1=烤海鲜(duck) */
 static uint8_t s_pasta_mode = 0;    /* 1=砂锅菜/烤意面首页（复用 chick6menu） */
 static uint8_t s_snack_mode = 0;    /* 1=零食模式（复用 duckmenu,炸鸡米花） */
+static uint8_t s_meattz_mode = 0;   /* 1=探针无猪肉肉分类首页（复用 chick6menu:牛肉/羊肉） */
+static uint8_t s_meattz_enter_duck = 0;   /* 肉分类本次进入的栏: 0=牛肉(左) 1=羊肉(右),返回焦点依据 */
 
 void six_chick_reset_fish_mode(void)
 {
     s_fish_mode = 0; s_seafood_mode = 0; s_fish_home_focus = 0; s_vegetable_mode = 0; s_pasta_mode = 0;
-    s_sidedish_mode = 0;
+    s_sidedish_mode = 0; s_meattz_mode = 0; s_meattz_enter_duck = 0;
 }
 int six_chick_get_fish_mode(void) { return s_fish_mode; }
 int six_chick_get_vegetable_mode(void) { return s_vegetable_mode; }
@@ -626,12 +628,22 @@ const char *six_current_desc(void)
 
 static void on_chick6menu_chicken_click(lv_event_t *e);
 static void on_chick6menu_duck_click(lv_event_t *e);
+static void on_meattz_beef_click(lv_event_t *e);
+static void on_meattz_mutton_click(lv_event_t *e);
 static void on_probe_dish_click(lv_event_t *e);
 static void on_chickenmenu_weight_dish_click(lv_event_t *e);
 static void on_duckmenu_wholeduck_click(lv_event_t *e);
 static void on_probeneedtip_sure_click(lv_event_t *e);
 
 /* ================= chick6menu（家禽：鸡/鸭） ================= */
+
+/* 探针无猪肉肉分类页:复用 chick6menu 两栏(左牛肉/右羊肉),二级流程与原探针路径同参 */
+void jump_to_meatnp_menu(void)
+{
+    six_chick_reset_fish_mode();
+    s_meattz_mode = 1;
+    jump_to_chick6menu();
+}
 
 void jump_to_chick6menu(void)
 {
@@ -658,6 +670,10 @@ void jump_to_chick6menu(void)
             if (cm->label_1) lv_label_set_text(cm->label_1, tr("烤鱼"));
             if (cm->chicken) { lv_obj_t *c = lv_obj_get_child(cm->chicken, 0); if (c) lv_label_set_text(c, tr("烤鳕鱼")); }
             if (cm->duck)    { lv_obj_t *c = lv_obj_get_child(cm->duck, 0);    if (c) lv_label_set_text(c, tr("烤全鱼")); }
+        } else if (s_meattz_mode) {
+            if (cm->label_1) lv_label_set_text(cm->label_1, tr("肉"));
+            if (cm->chicken) { lv_obj_t *c = lv_obj_get_child(cm->chicken, 0); if (c) lv_label_set_text(c, tr("牛肉")); }
+            if (cm->duck)    { lv_obj_t *c = lv_obj_get_child(cm->duck, 0);    if (c) lv_label_set_text(c, tr("羊肉")); }
         }
 
         lv_obj_t *btns[] = { cm->chicken, cm->duck };
@@ -694,6 +710,12 @@ void jump_to_chick6menu(void)
                 lv_group_focus_obj(cm->chicken);
             }
             if (cm->duck) lv_obj_add_event_cb(cm->duck, on_fish_wholefish_click, LV_EVENT_CLICKED, NULL);
+        } else if (s_meattz_mode) {
+            if (cm->chicken) {
+                lv_obj_add_event_cb(cm->chicken, on_meattz_beef_click, LV_EVENT_CLICKED, NULL);
+                lv_group_focus_obj(cm->chicken);
+            }
+            if (cm->duck) lv_obj_add_event_cb(cm->duck, on_meattz_mutton_click, LV_EVENT_CLICKED, NULL);
         } else {
             if (cm->chicken) {
                 lv_obj_add_event_cb(cm->chicken, on_chick6menu_chicken_click, LV_EVENT_CLICKED, NULL);
@@ -735,6 +757,10 @@ void chick6menu_rebuild(page_id_t child)
             if (cm->label_1) lv_label_set_text(cm->label_1, tr("烤鱼"));
             if (cm->chicken) { lv_obj_t *c = lv_obj_get_child(cm->chicken, 0); if (c) lv_label_set_text(c, tr("烤鳕鱼")); }
             if (cm->duck)    { lv_obj_t *c = lv_obj_get_child(cm->duck, 0);    if (c) lv_label_set_text(c, tr("烤全鱼")); }
+        } else if (s_meattz_mode) {
+            if (cm->label_1) lv_label_set_text(cm->label_1, tr("肉"));
+            if (cm->chicken) { lv_obj_t *c = lv_obj_get_child(cm->chicken, 0); if (c) lv_label_set_text(c, tr("牛肉")); }
+            if (cm->duck)    { lv_obj_t *c = lv_obj_get_child(cm->duck, 0);    if (c) lv_label_set_text(c, tr("羊肉")); }
         }
 
         lv_obj_t *btns[] = { cm->chicken, cm->duck };
@@ -758,6 +784,9 @@ void chick6menu_rebuild(page_id_t child)
         } else if (s_fish_mode == 2) {
             if (cm->chicken) lv_obj_add_event_cb(cm->chicken, on_fish_cod_click, LV_EVENT_CLICKED, NULL);
             if (cm->duck)    lv_obj_add_event_cb(cm->duck, on_fish_wholefish_click, LV_EVENT_CLICKED, NULL);
+        } else if (s_meattz_mode) {
+            if (cm->chicken) lv_obj_add_event_cb(cm->chicken, on_meattz_beef_click, LV_EVENT_CLICKED, NULL);
+            if (cm->duck)    lv_obj_add_event_cb(cm->duck, on_meattz_mutton_click, LV_EVENT_CLICKED, NULL);
         } else {
             if (cm->chicken) lv_obj_add_event_cb(cm->chicken, on_chick6menu_chicken_click, LV_EVENT_CLICKED, NULL);
             if (cm->duck)    lv_obj_add_event_cb(cm->duck, on_chick6menu_duck_click, LV_EVENT_CLICKED, NULL);
@@ -769,6 +798,13 @@ void chick6menu_rebuild(page_id_t child)
             lv_group_focus_obj(cm->duck);                 /* 鱼首页:从"烤海鲜"返回 */
         else if (s_fish_mode == 2 && g_six_bread_type == SIX_FISH_WHOLEFISH && cm->duck)
             lv_group_focus_obj(cm->duck);                 /* 烤鱼子页:从"烤全鱼"返回 */
+        else if (s_meattz_mode) {
+            /* 探针无猪肉肉分类:按本次进入的栏恢复(不用全局 bread_type,防残留误聚焦) */
+            if (s_meattz_enter_duck && cm->duck)
+                lv_group_focus_obj(cm->duck);             /* 从羊肉返回 */
+            else if (cm->chicken)
+                lv_group_focus_obj(cm->chicken);          /* 从牛肉返回 */
+        }
         else if (child == PAGE_DUCK6MENU && cm->duck)
             lv_group_focus_obj(cm->duck);                 /* 鸭菜单返回 */
         else if (cm->chicken)
@@ -792,6 +828,23 @@ static void on_chick6menu_duck_click(lv_event_t *e)
 {
     if (screen_is_loading(lv_scr_act())) return;
     jump_to_duckmenu();
+}
+
+/* 探针无猪肉肉分类:左牛肉/右羊肉 → 各自二级菜单(chickmenutz,与原探针路径同参) */
+static void on_meattz_beef_click(lv_event_t *e)
+{
+    (void)e;
+    if (screen_is_loading(lv_scr_act())) return;
+    s_meattz_enter_duck = 0;   /* 左栏牛肉 */
+    jump_to_beefmenutz();
+}
+
+static void on_meattz_mutton_click(lv_event_t *e)
+{
+    (void)e;
+    if (screen_is_loading(lv_scr_act())) return;
+    s_meattz_enter_duck = 1;   /* 右栏羊肉 */
+    jump_to_muttonmenutz();
 }
 
 /* ================= chickenmenu（鸡：烤全鸡/烤鸡翅/炸鸡翅/炸鸡腿/烤鸡胸） ================= */

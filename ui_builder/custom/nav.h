@@ -752,6 +752,7 @@ extern lv_group_t *g_chick6menu;
 extern lv_group_t *g_chickenmenu;
 extern lv_group_t *g_duckmenu;
 void jump_to_chick6menu(void);
+void jump_to_meatnp_menu(void);          /* 探针无猪肉肉分类页(复用 chick6menu:牛肉/羊肉) */
 void chick6menu_rebuild(page_id_t child);
 void jump_to_chickenmenu(void);
 void chickenmenu_rebuild(page_id_t child);

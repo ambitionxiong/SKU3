@@ -24,7 +24,20 @@ static const char *s_op3_ops[3] = { NULL, NULL, NULL };
 static const char *s_op3_bts[3] = { NULL, NULL, NULL };   /* 按钮内文字(探针版用;NULL=保持生成) */
 static int s_op3_probe_mask = 0;   /* probe 图标显隐掩码: bit0=p1 bit1=p2 bit2=p3 */
 static int s_op3_kind = SIX_OP3_KIND_BEEF;   /* 当前菜父类别（牛肉/羊肉/…） */
-static int s_op3_enter_bt = 0;   /* 探针版:本次进入的按钮(1/2/3),返回焦点依据(不用全局 bread_type 防残留) */
+/* 同页 ID 嵌套(无猪肉:MEAT 分类页→BEEF/MUTTON 菜品页):与 nav_core.c
+   page_stack(MAX_STACK 16)平行的按层槽位,jump 写入/返回重建读取,互不串层 */
+#define SIXOP3_STACK_MAX 16
+static int      s_op3_kind_slot[SIXOP3_STACK_MAX] = { SIX_OP3_KIND_BEEF };
+static const char *s_op3_name_slot[SIXOP3_STACK_MAX];
+static const char *s_op3_ops_slot[SIXOP3_STACK_MAX][3];
+static const char *s_op3_bts_slot[SIXOP3_STACK_MAX][3];
+static int      s_op3_probe_slot[SIXOP3_STACK_MAX];
+static int      s_op3_enter_slot[SIXOP3_STACK_MAX];   /* 本层被点击的按钮(1/2/3),返回焦点依据 */
+/* 记录"本层被点击的按钮"——点击发生在跳转前,depth 还是本层,直接写本层槽位 */
+static void op3_enter_mark(int bt)
+{
+    if (depth >= 1 && depth <= SIXOP3_STACK_MAX) s_op3_enter_slot[depth - 1] = bt;
+}
 int six_op3_get_kind(void)       { return s_op3_kind; }   /* tune 排版分支用(探针版/非探针版布局不同) */
 
 /* bt 按钮点击（按菜类别分发） */
@@ -32,7 +45,8 @@ static void on_sixop3page_bt1_click(lv_event_t *e)
 {
     (void)e;
     if (screen_is_loading(lv_scr_act())) return;
-    if (s_op3_kind == SIX_OP3_KIND_MEAT_TZ) { s_op3_enter_bt = 1; jump_to_beefmenutz(); return; }   /* 探针版:牛肉→牛肉二级菜单 */
+    if (s_op3_kind == SIX_OP3_KIND_MEAT)   { op3_enter_mark(1); jump_to_sixop3page(tr("牛肉"), tr("烤牛排"), tr("炸牛排"), tr("烤牛肉"), (1 | 4), SIX_OP3_KIND_BEEF); return; }   /* 无猪肉:肉分类→牛肉菜品页 */
+    if (s_op3_kind == SIX_OP3_KIND_MEAT_TZ) { op3_enter_mark(1); jump_to_beefmenutz(); return; }   /* 探针版:牛肉→牛肉二级菜单 */
     if (s_op3_kind == SIX_OP3_KIND_MUTTON)  { g_six_bread_type = SIX_MEAT_GRILL_LEG; jump_to_probeneedtip(); return; }
     if (s_op3_kind == SIX_OP3_KIND_PORK)    { g_six_bread_type = SIX_MEAT_GRILL_TENDERLOIN; jump_to_probeneedtip(); return; }
     g_six_bread_type = SIX_MEAT_GRILL_STEAK;   /* 烤牛排 */
@@ -42,7 +56,8 @@ static void on_sixop3page_bt2_click(lv_event_t *e)
 {
     (void)e;
     if (screen_is_loading(lv_scr_act())) return;
-    if (s_op3_kind == SIX_OP3_KIND_MEAT_TZ) { s_op3_enter_bt = 2; jump_to_muttonmenutz(); return; }   /* 探针版:羊肉→羊肉二级菜单 */
+    if (s_op3_kind == SIX_OP3_KIND_MEAT)   { op3_enter_mark(2); jump_to_sixop3page(tr("羊肉"), tr("烤羊腿"), tr("烤羊排"), tr("烤羊肉串"), (1 | 2), SIX_OP3_KIND_MUTTON); return; }   /* 无猪肉:肉分类→羊肉菜品页 */
+    if (s_op3_kind == SIX_OP3_KIND_MEAT_TZ) { op3_enter_mark(2); jump_to_muttonmenutz(); return; }   /* 探针版:羊肉→羊肉二级菜单 */
     if (s_op3_kind == SIX_OP3_KIND_MUTTON)  { g_six_bread_type = SIX_MEAT_GRILL_LAMBS; jump_to_probeneedtip(); return; }
     if (s_op3_kind == SIX_OP3_KIND_PORK)    { g_six_bread_type = SIX_MEAT_GRILL_BELLY; jump_to_probeneedtip(); return; }
     g_six_bread_type = SIX_MEAT_FRIED_STEAK;   /* 炸牛排:份量驱动 */
@@ -54,7 +69,8 @@ static void on_sixop3page_bt3_click(lv_event_t *e)
 {
     (void)e;
     if (screen_is_loading(lv_scr_act())) return;
-    if (s_op3_kind == SIX_OP3_KIND_MEAT_TZ) { s_op3_enter_bt = 3; jump_to_porkmenutz(); return; }   /* 探针版:猪肉→猪肉二级菜单 */
+    if (s_op3_kind == SIX_OP3_KIND_MEAT)   { op3_enter_mark(3); jump_to_meatdish_menu(); return; }   /* 无猪肉:肉分类→肉菜页(烤香肠) */
+    if (s_op3_kind == SIX_OP3_KIND_MEAT_TZ) { op3_enter_mark(3); jump_to_porkmenutz(); return; }   /* 探针版:猪肉→猪肉二级菜单 */
     if (s_op3_kind == SIX_OP3_KIND_MUTTON) {
         g_six_bread_type = SIX_MEAT_GRILL_SKEWER;
         g_toast_mode = TOAST_MODE_DEGREE;
@@ -132,11 +148,12 @@ static void sixop3page_setup_groups(sixop3page_t *sp)
 static void sixop3page_restore_focus(sixop3page_t *sp)
 {
     if (!sp) return;
-    if (s_op3_kind == SIX_OP3_KIND_MEAT_TZ && sp->bt1) {
-        /* 探针版:按本次进入的按钮恢复(不依赖全局 bread_type,防上次残留误聚焦) */
-        if (s_op3_enter_bt == 2)
+    if ((s_op3_kind == SIX_OP3_KIND_MEAT_TZ || s_op3_kind == SIX_OP3_KIND_MEAT) && sp->bt1) {
+        /* 探针版/无猪肉肉分类:按本层进入按钮恢复(不用全局 bread_type,防残留误聚焦) */
+        int enter = (depth >= 1 && depth <= SIXOP3_STACK_MAX) ? s_op3_enter_slot[depth - 1] : 0;
+        if (enter == 2)
             lv_group_focus_obj(sp->bt2 ? sp->bt2 : sp->bt1);
-        else if (s_op3_enter_bt == 3)
+        else if (enter == 3)
             lv_group_focus_obj(sp->bt3 ? sp->bt3 : sp->bt1);
         else
             lv_group_focus_obj(sp->bt1);
@@ -175,8 +192,27 @@ void jump_to_sixop3page(const char *name, const char *op1, const char *op2, cons
     s_op3_bts[2] = NULL;
     s_op3_probe_mask = probe_mask;
     s_op3_kind = kind;
+    if (kind == SIX_OP3_KIND_MEAT) {
+        /* 无猪肉肉分类页:文字写按钮内标签(按钮居中),固定 op 标签隐藏
+           (op 标签位置为带探针图标设计,无图标时文字不居中) */
+        s_op3_bts[0] = op1;
+        s_op3_bts[1] = op2;
+        s_op3_bts[2] = op3;
+        s_op3_ops[0] = NULL;
+        s_op3_ops[1] = NULL;
+        s_op3_ops[2] = NULL;
+    }
 
     page_push(PAGE_SIXOP3PAGE);
+    if (depth >= 1 && depth <= SIXOP3_STACK_MAX) {   /* 按层记全套参数(分类/菜品同 ID 嵌套,返回各恢复各的) */
+        s_op3_kind_slot[depth - 1] = kind;
+        s_op3_name_slot[depth - 1] = s_op3_name;
+        for (int i = 0; i < 3; i++) {
+            s_op3_ops_slot[depth - 1][i] = s_op3_ops[i];
+            s_op3_bts_slot[depth - 1][i] = s_op3_bts[i];
+        }
+        s_op3_probe_slot[depth - 1] = s_op3_probe_mask;
+    }
     lv_obj_clean(lv_scr_act());
     sixop3page_create(&ui_manager);
 
@@ -210,6 +246,15 @@ void jump_to_sixop3page_tz(const char *name, const char *bt1, const char *bt2, c
     s_op3_kind = SIX_OP3_KIND_MEAT_TZ;
 
     page_push(PAGE_SIXOP3PAGE);
+    if (depth >= 1 && depth <= SIXOP3_STACK_MAX) {
+        s_op3_kind_slot[depth - 1] = SIX_OP3_KIND_MEAT_TZ;
+        s_op3_name_slot[depth - 1] = s_op3_name;
+        for (int i = 0; i < 3; i++) {
+            s_op3_ops_slot[depth - 1][i] = NULL;
+            s_op3_bts_slot[depth - 1][i] = s_op3_bts[i];
+        }
+        s_op3_probe_slot[depth - 1] = 0;
+    }
     lv_obj_clean(lv_scr_act());
     sixop3page_create(&ui_manager);
 
@@ -231,6 +276,15 @@ void jump_to_sixop3page_tz(const char *name, const char *bt1, const char *bt2, c
 void sixop3page_rebuild(page_id_t child)
 {
     if (g_sixop3page) { lv_group_del(g_sixop3page); g_sixop3page = NULL; }
+    if (depth >= 1 && depth <= SIXOP3_STACK_MAX) {   /* 恢复本层全套参数(分类页/菜品页嵌套返回互不串层) */
+        s_op3_kind = s_op3_kind_slot[depth - 1];
+        s_op3_name = s_op3_name_slot[depth - 1];
+        for (int i = 0; i < 3; i++) {
+            s_op3_ops[i] = s_op3_ops_slot[depth - 1][i];
+            s_op3_bts[i] = s_op3_bts_slot[depth - 1][i];
+        }
+        s_op3_probe_mask = s_op3_probe_slot[depth - 1];
+    }
     lv_obj_clean(lv_scr_act());
     sixop3page_create(&ui_manager);
 

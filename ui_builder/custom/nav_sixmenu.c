@@ -149,8 +149,8 @@ void sixmenu_rebuild(page_id_t child)
         }
 
         /* 焦点恢复：按 child + 模式恢复到进入时的按钮 */
-        if (s_six_meat_mode && child == PAGE_BREAD6MENU && sm->meat)
-            lv_group_focus_obj(sm->meat);
+        if (s_six_meat_mode && (child == PAGE_BREAD6MENU || child == PAGE_SIXOP3PAGE) && sm->meat)
+            lv_group_focus_obj(sm->meat);   /* 从肉分类页返回(bread6menu 四按钮/sixop3 三栏两路径) */
         else if (six_chick_get_fish_mode() && child == PAGE_CHICK6MENU && sm->fish)
             lv_group_focus_obj(sm->fish);      /* 从鱼/海鲜菜单返回 */
         else if (six_chick_get_vegetable_mode() && child == PAGE_CHICK6MENU && sm->vegetable)
@@ -209,6 +209,13 @@ static void on_sixmenu_meat_click(lv_event_t *e)
 {
     if (screen_is_loading(lv_scr_act())) return;
     six_chick_reset_fish_mode();
+    if (SET_Data.Set_6th) {
+        /* 无猪肉:肉分类页换 sixop3 三栏(牛肉/羊肉/肉菜),猪肉分类不可达;
+           s_six_meat_mode 置位供 sixmenu_rebuild 焦点回肉(与 bread6menu 路径一致) */
+        s_six_meat_mode = 1;
+        jump_to_sixop3page(tr("肉"), tr("牛肉"), tr("羊肉"), tr("肉菜"), 0, SIX_OP3_KIND_MEAT);
+        return;
+    }
     jump_to_meat6menu();
 }
 
