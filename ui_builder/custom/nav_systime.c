@@ -194,6 +194,7 @@ void encoder_systime_action(uint8_t key)
                             s_day, s_hour, s_min) == 0) {
             SET_Data.Set_TimeType = (int8_t)s_timetype;
             uart_print();   /* 立即上报新状态帧(时制位) */
+            nav_topflag_clock_force();   /* 右上角时制排版立即切换(不等 500ms tick) */
             page_pop();
             jump_to_screen_set();
             {   /* 焦点回到来源项"日期/时间"行 */

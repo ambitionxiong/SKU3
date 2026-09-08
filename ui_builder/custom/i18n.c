@@ -13,6 +13,8 @@ extern const lv_font_t c_aktivgroteskmedium_24;
     typedef struct { const char *zh; const char *en; } i18n_t;
     static const i18n_t s_table[] = {
         { "%s%02d:%02d开始", "%s %02d:%02d start" },
+        { "%s%s%02d:%02d开始", "%s %s %02d:%02d start" },
+        { "%s%s%02d:%02d", "%s %s %02d:%02d" },
         { "%s, %d年%d月%d日", "%s, %d/%d/%d" },
         { "1.将除垢剂放入水箱内", "1. Add descaler to the water tank" },
         { "24小时制", "24-hour format" },

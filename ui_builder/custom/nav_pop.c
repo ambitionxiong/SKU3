@@ -979,6 +979,10 @@ void page_pop(void)
         rebuild_delaycooking();
         break;
     case PAGE_DELAYSET:
+        /* systime YES/BACK 揭示 delayset:重建 delayset 本页(原误建 set 页,
+           英文 tune 按栈顶 delayset 摸已销毁对象而崩溃);不重置已调的预约时间 */
+        delayset_page_build();
+        break;
     case PAGE_UPDOWN_BBQ_SET:
     rebuild_updown_bbq_set:
         if (child == PAGE_UPDOWN_BBQ_MENU_TOP)

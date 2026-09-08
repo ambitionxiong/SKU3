@@ -239,6 +239,9 @@ static lv_obj_t *lw_obj = NULL;
 static uint8_t lw_hour = 0xFF, lw_min = 0xFF;
 static uint8_t lw_year = 0, lw_month = 0, lw_day = 0;
 static int lw_wday = -1;
+static lv_obj_t *lw_ampm = NULL;      /* 12 小时制上午/下午后缀(随待机页实例重建) */
+static uint8_t lw_timetype = 0xFF;    /* 时制参与变更判定:设置页切换后立即重排 */
+static uint8_t lw_lang_en = 0xFF;     /* 语言参与变更判定:切换后时间/星期/年月日全部重刷 */
 
 // 显式重置缓存：waitmenu_24_create 后调用，强制刷新为真实时间。
 // 不依赖指针相等判定——auto_del 下 malloc 地址复用会导致缓存不失效（显示默认假文本/陈旧星期）
@@ -247,6 +250,7 @@ void waitmenu_clock_cache_reset(void)
     lw_obj = NULL;
     lw_hour = 0xFF; lw_min = 0xFF;
     lw_year = 0; lw_month = 0; lw_day = 0; lw_wday = -1;
+    lw_ampm = NULL; lw_timetype = 0xFF;
 }
 
 // 待机页 waitmenu_24 时间/星期/年月日 实时刷新：
@@ -265,12 +269,57 @@ void waitmenu_apply_clock(void)
         lw_obj = wait->obj;
         lw_hour = 0xFF; lw_min = 0xFF;
         lw_year = 0; lw_month = 0; lw_day = 0; lw_wday = -1;
+        lw_ampm = NULL;   /* 旧页后缀标签随页销毁,新实例重建 */
     }
-    if (t.hour != lw_hour || t.min != lw_min) {
-        lw_hour = t.hour; lw_min = t.min;
+    if (lw_lang_en != (is_english() ? 1 : 0)) {   /* 切语言:周/日缓存不感知语言,整体作废重刷 */
+        lw_lang_en = is_english() ? 1 : 0;
+        lw_hour = 0xFF; lw_min = 0xFF;
+        lw_year = 0; lw_month = 0; lw_day = 0; lw_wday = -1;
+    }
+    if (t.hour != lw_hour || t.min != lw_min || lw_timetype != SET_Data.Set_TimeType) {
+        lw_hour = t.hour; lw_min = t.min; lw_timetype = SET_Data.Set_TimeType;
         char buf[6];
-        snprintf(buf, sizeof(buf), "%02d:%02d", t.hour, t.min);
+        uint8_t disp_hour = t.hour;
+        if (SET_Data.Set_TimeType == 1) {
+            disp_hour = t.hour % 12;
+            if (disp_hour == 0) disp_hour = 12;
+        }
+        snprintf(buf, sizeof(buf), "%02d:%02d", disp_hour, t.min);
         if (wait->time_label) lv_label_set_text(wait->time_label, buf);
+
+        /* 12 小时制:时间右侧"上午/下午"后缀(48px)。
+           中文:时间标签 438 宽居中盒,后缀 x=盒左+(盒宽+文本宽)/2;
+           英文:tune 层把时间标签改 SIZE_CONTENT+屏幕居中,后缀 x=标签右缘。
+           y 统一贴时间标签下缘(与数字底部对齐) */
+        if (SET_Data.Set_TimeType == 1 && wait->time_label && wait->obj) {
+            if (lw_ampm == NULL) {
+                lw_ampm = lv_label_create(wait->obj);
+                lv_obj_set_style_text_color(lw_ampm, lv_color_hex(0xffffff), 0);
+            }
+            const lv_font_t *big = is_english() ? &c_aktivgroteskmedium_125 : &c_taiwanpearl_regular_128;
+            const lv_font_t *amf = is_english() ? &c_aktivgroteskmedium_48 : &c_taiwanpearl_regular_48;
+            lv_obj_set_style_text_font(lw_ampm, amf, 0);
+            lv_label_set_text(lw_ampm, tr(t.hour < 12 ? "上午" : "下午"));
+            int txt_w = lv_txt_get_width(buf, (uint32_t)strlen(buf), big, 4);   /* 时间标签 letter_space=4 */
+            const char *am_txt = lv_label_get_text(lw_ampm);
+            int am_w = lv_txt_get_width(am_txt, (uint32_t)strlen(am_txt), amf, 0);
+            int gap = 3;
+            int dx = (am_w + gap) / 2;   /* 时间左移半后缀宽:"时间+后缀"整体居中(原时间单独居中) */
+            lv_obj_set_style_translate_x(wait->time_label, -dx, 0);
+            /* 时间文本右缘:中文=421 固定盒内居中;英文=tune 层标签屏幕居中。
+               不读 lv_obj_get_x——translate 会算进坐标,分钟刷新时后缀会二次左移 */
+            int text_right = is_english() ? (1280 - txt_w) / 2 + txt_w
+                                          : 421 + (438 + txt_w) / 2;
+            /* 后缀与时间数字基线对齐(数字无降部,基线即数字下缘)。
+               先强制布局:进页瞬间标签坐标未算,get_y 会拿到 0 导致后缀飞到顶部 */
+            lv_obj_update_layout(wait->time_label);
+            int base_y = lv_obj_get_y(wait->time_label) + big->line_height - big->base_line;
+            lv_obj_set_pos(lw_ampm, text_right + gap - dx, base_y - (amf->line_height - amf->base_line));
+            lv_obj_clear_flag(lw_ampm, LV_OBJ_FLAG_HIDDEN);
+        } else if (lw_ampm) {
+            lv_obj_add_flag(lw_ampm, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_set_style_translate_x(wait->time_label, 0, 0);
+        }
     }
     /* week_label = 星期 + 年月日 合并文本（生成默认："星期日, 2025年12月15日"） */
     if (t.wday != lw_wday || t.year != lw_year || t.month != lw_month || t.day != lw_day) {
@@ -310,27 +359,83 @@ void waitmenu_apply_clock(void)
     }
 }
 
-// topflag 时间走动：每 500ms 刷新 currenttime 为 "HH:MM"（分钟变化才更新）；
-// 同时刷新待机页 waitmenu_24 的 时间/星期/年月日
-void topflag_clock_cb(lv_timer_t *timer)
+// topflag 右上角时间刷新体(500ms tick 与强制刷新共用);
+// 时/分/时制/语言任一变化才重建文本(12 小时制:小时转 12 制,标签左移给后缀让位)
+static uint8_t tf_last_hour = 0xFF, tf_last_min = 0xFF;
+static uint8_t tf_last_timetype = 0xFF, tf_last_lang_en = 0xFF;
+static lv_obj_t *s_ct_ampm = NULL;   /* 上午/下午后缀(顶层常驻,只建一次) */
+static void topflag_clock_update(void)
 {
-    nav_childlock_refresh();   /* 童锁激活时跟随下层状态刷新第三行(内部有签名守卫) */
-    nav_topflag_demo_sync();   /* 演示模式徽标显隐/定位(纯读+属性写,2Hz 开销可忽略) */
     topflagpage_t *tf = topflagpage_get(&ui_manager);
     if (!tf || !tf->currenttime) return;
     rtc_time_t t;
     if (rtc_get_time(&t) != 0) return;
 
-    /* topflag 右上角时间 */
-    static uint8_t last_hour = 0xFF, last_min = 0xFF;
-    if (t.hour != last_hour || t.min != last_min) {
-        last_hour = t.hour; last_min = t.min;
+    uint8_t lang_en = is_english() ? 1 : 0;
+    if (t.hour != tf_last_hour || t.min != tf_last_min ||
+        tf_last_timetype != SET_Data.Set_TimeType || tf_last_lang_en != lang_en) {
+        tf_last_hour = t.hour; tf_last_min = t.min;
+        tf_last_timetype = SET_Data.Set_TimeType; tf_last_lang_en = lang_en;
         char buf[6];
-        snprintf(buf, sizeof(buf), "%02d:%02d", t.hour, t.min);
+        uint8_t disp_hour = t.hour;
+        if (SET_Data.Set_TimeType == 1) {
+            disp_hour = t.hour % 12;
+            if (disp_hour == 0) disp_hour = 12;
+        }
+        snprintf(buf, sizeof(buf), "%02d:%02d", disp_hour, t.min);
         lv_label_set_text(tf->currenttime, buf);
+        if (SET_Data.Set_TimeType == 1) {
+            /* 后缀:24px 字体 transform 缩半≈12px(字库无 12px 档),pivot 左上角便于定位 */
+            if (s_ct_ampm == NULL) {
+                s_ct_ampm = lv_label_create(tf->obj);
+                lv_obj_set_style_text_color(s_ct_ampm, lv_color_hex(0xffffff), 0);
+                lv_obj_set_style_transform_pivot_x(s_ct_ampm, 0, 0);
+                lv_obj_set_style_transform_pivot_y(s_ct_ampm, 0, 0);
+                lv_obj_set_style_transform_scale_x(s_ct_ampm, 128, 0);
+                lv_obj_set_style_transform_scale_y(s_ct_ampm, 128, 0);
+            }
+            const lv_font_t *amf = is_english() ? &c_aktivgroteskmedium_24 : &c_taiwanpearl_regular_24;
+            lv_obj_set_style_text_font(s_ct_ampm, amf, 0);
+            lv_label_set_text(s_ct_ampm, tr(t.hour < 12 ? "上午" : "下午"));
+            /* 与时间数字基线对齐:currenttime 标签顶 y=25(taiwan24 基线 25+28-8=45);
+               后缀缩放 50%,基线偏移随之减半 */
+            int base_y = 25 + c_taiwanpearl_regular_24.line_height - c_taiwanpearl_regular_24.base_line;
+            lv_obj_set_pos(s_ct_ampm, 1226, base_y - (amf->line_height - amf->base_line) / 2);
+            lv_obj_clear_flag(s_ct_ampm, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_set_x(tf->currenttime, 1164);
+        } else {
+            lv_obj_set_x(tf->currenttime, 1196);
+            if (s_ct_ampm) lv_obj_add_flag(s_ct_ampm, LV_OBJ_FLAG_HIDDEN);
+        }
     }
+    /* 后缀可见性与 currenttime 同步(待机页 currenttime 隐藏避免与大时钟重复);
+       仅 12 小时制才允许显示,否则会把变更分支里刚隐藏的后缀又刷回来 */
+    if (s_ct_ampm) {
+        if (SET_Data.Set_TimeType == 1 && !lv_obj_has_flag(tf->currenttime, LV_OBJ_FLAG_HIDDEN))
+            lv_obj_clear_flag(s_ct_ampm, LV_OBJ_FLAG_HIDDEN);
+        else
+            lv_obj_add_flag(s_ct_ampm, LV_OBJ_FLAG_HIDDEN);
+    }
+}
+
+// topflag 时间走动：每 500ms 刷新 currenttime 为 "HH:MM"（分钟变化才更新）；
+// 同时刷新待机页 waitmenu_24 的 时间/星期/年月日
+void topflag_clock_cb(lv_timer_t *timer)
+{
+    (void)timer;
+    nav_childlock_refresh();   /* 童锁激活时跟随下层状态刷新第三行(内部有签名守卫) */
+    nav_topflag_demo_sync();   /* 演示模式徽标显隐/定位(纯读+属性写,2Hz 开销可忽略) */
+    topflag_clock_update();
 
     /* 待机页三标签（独立缓存，分钟/跨天/星期变化才更新） */
     waitmenu_apply_clock();
+}
+
+// 切语言/切 12-24 时制后立即刷新右上角时钟(设置弹窗 YES、时制页 YES 处调用,不等 500ms tick)
+void nav_topflag_clock_force(void)
+{
+    tf_last_hour = 0xFF; tf_last_min = 0xFF;
+    tf_last_timetype = 0xFF; tf_last_lang_en = 0xFF;
+    topflag_clock_update();
 }
 

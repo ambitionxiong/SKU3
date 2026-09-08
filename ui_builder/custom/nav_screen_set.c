@@ -234,6 +234,7 @@ static void sel_popup_apply(void)
         }
         if (ss && ss->YY_Lb) lv_label_set_text(ss->YY_Lb, tr(s_lang_yy_names[s_sel_flag]));
         nav_topflag_demo_sync();   /* 演示徽标图/位置立即跟随语言(覆盖层路径不经过 lang_scr_load_anim,否则等 500ms tick) */
+        nav_topflag_clock_force();   /* 右上角 PM/下午立即跟随语言(时钟变更判定不感知弹窗切语言) */
         break;
     default: break;
     }

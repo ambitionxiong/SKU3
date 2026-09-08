@@ -528,6 +528,7 @@ extern lv_group_t *g_color_stop_back;
 
 void jump_to_updown_bbq_menu(void);
 void jump_to_delayset(void);
+void delayset_page_build(void);   /* delayset 页构建(jump 与 pop 回退共用,不重置 delay_hour) */
 void jump_to_delaycooking(void);
 const char *mode_display_name(void);          // 按 g_send.cook_mode 返回模式名
 void mode_apply_icon(lv_obj_t *icon);         // 按 g_send.cook_mode 设置模式图标
@@ -677,6 +678,7 @@ void screen_set_yy_lb_sync(void);   /* YY_Lb 语言值回显(设置覆盖层重�
 void screen_set_ts_lb_sync(void);   /* TS_Lb 童锁值回显(重建/弹窗确认/长按解锁后调用,nav_screen_set.c) */
 int  screen_set_overlay_open(void); /* 设置覆盖层是否存活(外部位判定用,勿直接摸 screen_SET) */
 void nav_topflag_demo_sync(void);   /* 演示模式徽标显隐/定位(nav_system.c,500ms tick+切换后调用) */
+void nav_topflag_clock_force(void); /* 右上角时钟立即重刷(切语言/切 12-24 时制后调用,不等 500ms tick) */
 
 /* 声音设置子页（nav_loudness.c 实现，PAGE_LOUDNESS） */
 void jump_to_loudness(void);

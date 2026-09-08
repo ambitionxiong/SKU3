@@ -132,7 +132,16 @@ static void dump_frozen_stack(void)
 }
 #endif
 
-/* 看门狗线程（仅模拟器）：主循环卡死超 2 秒打印，用于定位死循环 */
+/* 事件喂狗:拖动/缩放窗口时 Windows 模态消息循环会停掉主循环(心跳停更),
+   但 SDL 事件仍在窗口过程里持续入队——任意事件到达即刷新心跳,看门狗不误杀 */
+static int SDLCALL watchdog_event_feed(void *userdata, SDL_Event *e)
+{
+    (void)e;
+    *(volatile unsigned int *)userdata = SDL_GetTicks();
+    return 1;
+}
+
+/* 看门狗线程（仅模拟器）：主循环冻结超 2 秒打印提示(拖动窗口属正常),超 10 秒判死循环打栈退出 */
 static DWORD WINAPI watchdog_proc(LPVOID param)
 {
     volatile unsigned int *heartbeat = (volatile unsigned int *)param;
@@ -140,7 +149,7 @@ static DWORD WINAPI watchdog_proc(LPVOID param)
         Sleep(1000);
         unsigned int now = SDL_GetTicks();
         unsigned int last = *heartbeat;
-        if (last != 0 && (int)(now - last) > 2000) {
+        if (last != 0 && (int)(now - last) > 10000) {
             MEMORYSTATUSEX ms;
             ms.dwLength = sizeof(ms);
             GlobalMemoryStatusEx(&ms);
@@ -153,6 +162,9 @@ static DWORD WINAPI watchdog_proc(LPVOID param)
             dump_frozen_stack();   /* 卡死现场符号化栈,打印完直接退出进程 */
             ExitProcess(2);
 #endif
+        } else if (last != 0 && (int)(now - last) > 2000) {
+            printf("[WATCHDOG] frozen %u ms (窗口拖动/空闲属正常,>10s 才判卡死)\n",
+                   (unsigned int)(now - last));
         }
     }
     return 0;
@@ -250,6 +262,7 @@ int main(int argc, char **argv)
 
 	/*Initialize the HAL (display, input devices, tick) for LVGL*/
     hal_init(1280, 480);
+	SDL_AddEventWatch(watchdog_event_feed, heartbeat);   /* 事件喂狗:覆盖窗口拖动/缩放的模态循环 */
 
 	/*Initialize UI*/
     ui_init();

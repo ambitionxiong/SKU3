@@ -297,6 +297,10 @@ int delay_min = 0;
 static int delayset_enter_hour = -1;
 static int delayset_enter_min = 0;
 
+// 12 小时制后缀标签缓存(随 delayset 页实例重建,防悬空)
+static lv_obj_t *s_delay_ampm = NULL;
+static void *s_delay_ampm_host = NULL;
+
 // 刷新 delayset 页的时间显示（hour 显示 0-23，超 23:59 切换明天）
 // 今天/明天标签：调节期按"进入时刻"双向比较（已过→明天），确定后 delay_hour>=24 恒明天。
 // 刷新 delayset 页的时间显示（hour 显示 0-23，min 0-59）
@@ -304,7 +308,14 @@ static int delayset_enter_min = 0;
 void delayset_refresh_display(delayset_t *ds)
 {
     if (!ds) return;
-    lv_label_set_text_fmt(ds->hour, "%02d", delay_hour);
+    uint8_t h24 = (uint8_t)(delay_hour % 24);
+    if (SET_Data.Set_TimeType == 1) {
+        int h12 = h24 % 12;
+        if (h12 == 0) h12 = 12;
+        lv_label_set_text_fmt(ds->hour, "%02d", h12);
+    } else {
+        lv_label_set_text_fmt(ds->hour, "%02d", delay_hour);
+    }
     lv_label_set_text_fmt(ds->min, "%02d", delay_min);
     const char *day;
     if (delayset_enter_hour >= 0 &&
@@ -314,6 +325,54 @@ void delayset_refresh_display(delayset_t *ds)
     else
         day = tr("今天");   /* 大于或相等 → 今天 */
     lv_label_set_text(ds->day, day);
+
+    /* 12 小时制:min 右侧"上午/下午"后缀。
+       英文:后缀由 delayset_lang_tune 挂在 flex 时间组尾(第 4 子),这里只翻文字(跨 12 点 AM/PM);
+       中文:绝对定位+基线对齐+时间组 translate 左移半后缀宽(整体居中) */
+    if (SET_Data.Set_TimeType == 1 && ds->obj && is_english()) {
+        lv_obj_t *tc = lv_obj_get_parent(ds->hour);
+        lv_obj_t *sfx = (tc && tc != ds->obj) ? lv_obj_get_child(tc, 3) : NULL;
+        if (sfx)
+            lv_label_set_text(sfx, tr(h24 < 12 ? "上午" : "下午"));
+    } else if (SET_Data.Set_TimeType == 1 && ds->obj) {
+        if (s_delay_ampm_host != (void *)ds->obj ||
+            (s_delay_ampm && !lv_obj_is_valid(s_delay_ampm))) {
+            s_delay_ampm_host = (void *)ds->obj;
+            s_delay_ampm = NULL;
+        }
+        if (s_delay_ampm == NULL) {
+            s_delay_ampm = lv_label_create(ds->obj);
+            lv_obj_set_style_text_color(s_delay_ampm, lv_color_hex(0xffffff), 0);
+        }
+        const lv_font_t *amf = is_english() ? &c_aktivgroteskmedium_36 : &c_taiwanpearl_regular_36;
+        const lv_font_t *big72 = is_english() ? &c_aktivgroteskmedium_72 : &c_taiwanpearl_regular_72;
+        lv_obj_set_style_text_font(s_delay_ampm, amf, 0);
+        lv_label_set_text(s_delay_ampm, tr(h24 < 12 ? "上午" : "下午"));
+        int min_w = lv_txt_get_width("00", 2, big72, 0);
+        const char *am_txt = lv_label_get_text(s_delay_ampm);
+        int am_w = lv_txt_get_width(am_txt, (uint32_t)strlen(am_txt), amf, 0);
+        int gap = 3;
+        int dx = (am_w + gap) / 2;   /* 时间组(hour+冒号+min)左移半后缀宽:"时间+后缀"整体居中 */
+        lv_obj_set_style_translate_x(ds->hour, -dx, 0);
+        lv_obj_set_style_translate_x(ds->label_10, -dx, 0);
+        lv_obj_set_style_translate_x(ds->min, -dx, 0);
+        lv_obj_set_style_translate_x(ds->image_9, -dx, 0);
+        lv_obj_set_style_translate_x(ds->image_10, -dx, 0);
+        /* 后缀与时间数字基线对齐(数字无降部,基线即数字下缘);min 标签顶 y=248 */
+        int base_y = 248 + big72->line_height - big72->base_line;
+        lv_obj_set_pos(s_delay_ampm, 651 + (111 + min_w) / 2 + gap - dx,
+                       base_y - (amf->line_height - amf->base_line));
+        lv_obj_clear_flag(s_delay_ampm, LV_OBJ_FLAG_HIDDEN);
+    } else if (s_delay_ampm) {
+        if (lv_obj_is_valid(s_delay_ampm))
+            lv_obj_add_flag(s_delay_ampm, LV_OBJ_FLAG_HIDDEN);
+        s_delay_ampm = NULL;   /* 失效即弃,防地址复用后误写悬空指针 */
+        lv_obj_set_style_translate_x(ds->hour, 0, 0);
+        lv_obj_set_style_translate_x(ds->label_10, 0, 0);
+        lv_obj_set_style_translate_x(ds->min, 0, 0);
+        lv_obj_set_style_translate_x(ds->image_9, 0, 0);
+        lv_obj_set_style_translate_x(ds->image_10, 0, 0);
+    }
 }
 // delayset 焦点切换：显示对应字段的下划线
 void on_delayset_focus(lv_event_t *e)
@@ -359,7 +418,7 @@ void on_delayset_start_click(lv_event_t *e)
     else
         page_pop();               /* 其他模式:回 set 页 */
 }
-// 设置 updown set 页 ondelay 按钮文字（"今天19:00开始"，taiwan 字体滚动显示）
+// 设置 updown set 页 ondelay 按钮文字（"今天19:00开始"，taiwan 字体滚动显示；12 小时制带上午/下午）
 void updown_set_apply_delay_label(updown_bbq_set_t *set)
 {
     if (!set) return;
@@ -368,9 +427,18 @@ void updown_set_apply_delay_label(updown_bbq_set_t *set)
         lv_obj_set_style_text_font(lbl, &c_taiwanpearl_regular_24,
                                    LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_label_set_long_mode(lbl, LV_LABEL_LONG_SCROLL_CIRCULAR);
-        lv_label_set_text_fmt(lbl, tr("%s%02d:%02d开始"),
-                              delay_hour >= 24 ? tr("明天") : tr("今天"),
-                              delay_hour % 24, delay_min);
+        if (SET_Data.Set_TimeType == 1) {
+            int h12 = (delay_hour % 24) % 12;
+            if (h12 == 0) h12 = 12;
+            lv_label_set_text_fmt(lbl, tr("%s%s%02d:%02d开始"),
+                                  delay_hour >= 24 ? tr("明天") : tr("今天"),
+                                  tr(delay_hour % 24 < 12 ? "上午" : "下午"),
+                                  h12, delay_min);
+        } else {
+            lv_label_set_text_fmt(lbl, tr("%s%02d:%02d开始"),
+                                  delay_hour >= 24 ? tr("明天") : tr("今天"),
+                                  delay_hour % 24, delay_min);
+        }
         lv_obj_set_width(lbl, 110);
     }
 }
@@ -438,25 +506,14 @@ static void apply_delay_cook_mode(page_id_t src)
     default: break;
     }
 }
-void jump_to_delayset(void)
+/* delayset 页面构建（进入与 pop 回退共用）：清屏+建页+焦点组+刷新+加载动画。
+   单独抽出是因为 pop 揭示 delayset 时也要重建（原误建 set 页，英文 tune 摸悬空对象崩溃）；
+   pop 路径不走 jump 的 delay_hour 默认值重置，用户已调的预约时间得以保留 */
+void delayset_page_build(void)
 {
-    edit_clear();
-    /* 记录预约来源页（cook4 多组共用 MODE_COOK4，靠来源页区分） */
-    if (depth > 0)
-        g_delay_source_page = page_stack[depth - 1];
-    apply_delay_cook_mode(g_delay_source_page);
-    /* 记录进入时刻（今天/明天切换基准）+ 默认当前时间+5 分钟（当前 23:59 → 明天 00:04） */
-    rtc_time_t now;
-    if (rtc_get_time(&now) == 0) {
-        delayset_enter_hour = now.hour;
-        delayset_enter_min = now.min;
-        delay_hour = now.hour;
-        delay_min = now.min + 5;
-        if (delay_min > 59) { delay_min -= 60; delay_hour++; }
-        if (delay_hour > 23) delay_hour = 0;   /* 23:59+5min → 00:04,内部回 0,标签自动"明天" */
-    }
-    page_push(PAGE_DELAYSET);
     lv_obj_clean(lv_scr_act());
+    s_delay_ampm = NULL;          /* 新页实例:12h 后缀缓存一律作废(malloc 地址复用防悬空) */
+    s_delay_ampm_host = NULL;
     delayset_create(&ui_manager);
 
     delayset_t *ds = delayset_get(&ui_manager);
@@ -487,6 +544,27 @@ void jump_to_delayset(void)
     lang_scr_load_anim(delayset_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
+}
+
+void jump_to_delayset(void)
+{
+    edit_clear();
+    /* 记录预约来源页（cook4 多组共用 MODE_COOK4，靠来源页区分） */
+    if (depth > 0)
+        g_delay_source_page = page_stack[depth - 1];
+    apply_delay_cook_mode(g_delay_source_page);
+    /* 记录进入时刻（今天/明天切换基准）+ 默认当前时间+5 分钟（当前 23:59 → 明天 00:04） */
+    rtc_time_t now;
+    if (rtc_get_time(&now) == 0) {
+        delayset_enter_hour = now.hour;
+        delayset_enter_min = now.min;
+        delay_hour = now.hour;
+        delay_min = now.min + 5;
+        if (delay_min > 59) { delay_min -= 60; delay_hour++; }
+        if (delay_hour > 23) delay_hour = 0;   /* 23:59+5min → 00:04,内部回 0,标签自动"明天" */
+    }
+    page_push(PAGE_DELAYSET);
+    delayset_page_build();
     printf("[nav] jump: updown_bbq_set -> delayset\n");
 }
 // delaycooking 取消：取消延时 → 跳 stop_back 确认（预约中态）
@@ -794,9 +872,18 @@ void rebuild_delaycooking(void)
         if (g_delay_source_page != PAGE_DESCRIPTIONMENU)
             mode_apply_icon(dc->icon);   /* 六感已单独设 sixicon */
         lv_label_set_text(dc->label_14, tr("预约中..."));
-        lv_label_set_text_fmt(dc->tip2, tr("%s%02d:%02d"),
-                              delay_hour >= 24 ? tr("明天") : tr("今天"),
-                              delay_hour % 24, delay_min);
+        if (SET_Data.Set_TimeType == 1) {
+            int h12 = (delay_hour % 24) % 12;
+            if (h12 == 0) h12 = 12;
+            lv_label_set_text_fmt(dc->tip2, tr("%s%s%02d:%02d"),
+                                  delay_hour >= 24 ? tr("明天") : tr("今天"),
+                                  tr(delay_hour % 24 < 12 ? "上午" : "下午"),
+                                  h12, delay_min);
+        } else {
+            lv_label_set_text_fmt(dc->tip2, tr("%s%02d:%02d"),
+                                  delay_hour >= 24 ? tr("明天") : tr("今天"),
+                                  delay_hour % 24, delay_min);
+        }
     }
     current_group = g_delaycooking;
 

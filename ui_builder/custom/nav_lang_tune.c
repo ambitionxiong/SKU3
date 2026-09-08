@@ -5180,10 +5180,19 @@ void delaycooking_lang_tune(void)
     /* tip3: 标签 | "开始" | (907,230) | 230x34 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->tip3, 907-60, 230);
     lv_obj_set_size(pg->tip3, 350, 34);
-    /* tip3: Today/Tomorrow at HH:MM（英文，根据预约是否跨天） */
-    lv_label_set_text_fmt(pg->tip3, "%s at %02d:%02d",
-                      delay_hour >= 24 ? tr("明天") : tr("今天"),
-                      delay_hour % 24, delay_min);
+    /* tip3: Today/Tomorrow at HH:MM（英文，根据预约是否跨天；12 小时制带 AM/PM） */
+    if (SET_Data.Set_TimeType == 1) {
+        int h12 = (delay_hour % 24) % 12;
+        if (h12 == 0) h12 = 12;
+        lv_label_set_text_fmt(pg->tip3, "%s at %02d:%02d %s",
+                          delay_hour >= 24 ? tr("明天") : tr("今天"),
+                          h12, delay_min,
+                          tr((delay_hour % 24) < 12 ? "上午" : "下午"));
+    } else {
+        lv_label_set_text_fmt(pg->tip3, "%s at %02d:%02d",
+                          delay_hour >= 24 ? tr("明天") : tr("今天"),
+                          delay_hour % 24, delay_min);
+    }
 
 
     // /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Eng modify ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -5277,6 +5286,13 @@ void delayset_lang_tune(void)
     // lv_obj_set_style_text_letter_space(obj, 0, 0);
     lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
     lv_obj_align(obj, LV_ALIGN_CENTER, -248, 51);
+    /* day 改右对齐:盒宽固定 260,盒右缘锚在 1280-820=460(Today 当前显示右缘)——
+       Today→Tomorrow 变宽只向左长,不压居中的时间组。
+       注意 LVGL9 align 是样式保留式:对齐过的对象再用 set_x 是"中心偏移"不是绝对坐标,
+       所以这里用换锚点(RIGHT_MID)而不是 set_x */
+    lv_obj_set_width(obj, 260);
+    lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_RIGHT, 0);
+    lv_obj_align(obj, LV_ALIGN_RIGHT_MID, -820, 51);
     
 
     obj = pg->start;
@@ -5307,6 +5323,39 @@ void delayset_lang_tune(void)
     obj = pg->min;
     lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
     lv_obj_set_parent(obj, cont);
+
+    /* 12 小时制:时间组尾补 AM/PM 后缀(flex 第 4 子)——容器 SIZE_CONTENT 居中,
+       "时间+后缀"整体居中;cross 轴 END 下缘齐平,基线差用 pad_bottom 补 */
+    if (SET_Data.Set_TimeType == 1) {
+        lv_obj_t *sfx = lv_label_create(cont);
+        lv_obj_set_style_text_color(sfx, lv_color_hex(0xffffff), 0);
+        lv_obj_set_style_text_font(sfx, &c_aktivgroteskmedium_36, 0);
+        lv_obj_set_style_pad_left(sfx, 3, 0);
+        /* 数字字面右空隙让 PM 看着远(设计稿留 ~8px),渲染左移拉紧,不影响 flex 布局 */
+        lv_obj_set_style_translate_x(sfx, -14, 0);
+        int pad_b = (int)c_aktivgroteskmedium_72.base_line - (int)c_aktivgroteskmedium_36.base_line;
+        if (pad_b > 0) lv_obj_set_style_pad_bottom(sfx, pad_b, 0);
+        /* 盒宽固定为 AM/PM 中较宽者+8、文字居中:两词共用等宽盒,
+           12 点边界翻转时组宽不变,时间数字不再微动。
+           字距显式置 0(默认会继承父级 letter_space,渲染比 lv_txt_get_width 量值宽,会把 M 挤折行) */
+        int w_am = lv_txt_get_width("AM", 2, &c_aktivgroteskmedium_36, 0);
+        int w_pm = lv_txt_get_width("PM", 2, &c_aktivgroteskmedium_36, 0);
+        lv_obj_set_width(sfx, (w_am > w_pm ? w_am : w_pm) + 8);
+        lv_obj_set_style_text_letter_space(sfx, 0, 0);
+        lv_obj_set_style_text_align(sfx, LV_TEXT_ALIGN_CENTER, 0);
+        lv_label_set_text(sfx, tr((uint8_t)(delay_hour % 24) < 12 ? "上午" : "下午"));
+    }
+
+    /* 焦点下划线跟随数字实际渲染位置:数字在 flex 居中组里,写死的 542/663 不再对应,
+       布局后按 hour/min 实际坐标各摆一次(带不带 PM 自动适应,24h/12h 都对)。
+       下划线渲染宽 = 原宽 × scale_x/256;y 不动,startline 不动(Start 未挪) */
+    lv_obj_update_layout(cont);
+    int uw9  = lv_obj_get_width(pg->image_9)  * lv_image_get_scale_x(pg->image_9)  / 256;
+    int uw10 = lv_obj_get_width(pg->image_10) * lv_image_get_scale_x(pg->image_10) / 256;
+    lv_obj_set_x(pg->image_9,  lv_obj_get_x(cont) + lv_obj_get_x(pg->hour)
+                 + (lv_obj_get_width(pg->hour)  - uw9)  / 2);
+    lv_obj_set_x(pg->image_10, lv_obj_get_x(cont) + lv_obj_get_x(pg->min)
+                 + (lv_obj_get_width(pg->min)   - uw10) / 2);
 }
 
 
