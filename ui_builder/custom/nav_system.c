@@ -203,6 +203,7 @@ static int nav_topleft_has_text(void)
 /* 演示模式徽标(topflag demo/show.png 61x38):Set_DemoMode 开→显示。
  * 左上角有文字→水平居中((1280-宽)/2);无文字→左边距 24。y 固定 24。
  * 由 topflag_clock_cb 500ms 驱动,设置页切换后也立即调一次 */
+static int s_demo_src_en = -1;   /* 徽标图当前语言(-1=未知,首次必设);避免 500ms tick 重复 set_src */
 void nav_topflag_demo_sync(void)
 {
     topflagpage_t *tf = topflagpage_get(&ui_manager);
@@ -212,6 +213,13 @@ void nav_topflag_demo_sync(void)
         return;
     }
     lv_obj_clear_flag(tf->demo, LV_OBJ_FLAG_HIDDEN);
+    /* 英文模式换英文版徽标图(show_en 76x44 / 中文 show 61x38);
+       必须先于下方取宽居中;语言切换经 lang_scr_load_anim 与 500ms tick 双路到达 */
+    if (is_english() != s_demo_src_en) {
+        lv_img_set_src(tf->demo, is_english() ? LVGL_IMAGE_PATH(show_en.png)
+                                              : LVGL_IMAGE_PATH(show.png));
+        s_demo_src_en = is_english();
+    }
     /* wait 页演示徽标无条件左上角(硬规则):不走扫描——覆盖层/尾部 sync 对 wait 的
        误判会把它定到居中再等 tick 纠正,造成可见移动 */
     if (depth > 0 && page_stack[depth - 1] == PAGE_WAITMENU_24) {

@@ -259,7 +259,7 @@ void jump_to_heatcontain_set(void)
     lv_obj_clean(lv_scr_act());
     heatcontain_set_create(&ui_manager);
 
-    preheat_on = 0; delay_on = 0; contain_on = 0;
+    preheat_on = 0; delay_on = 0; contain_on = contain_default();
 
     heatcontain_set_t *set = heatcontain_set_get(&ui_manager);
     if (set) {

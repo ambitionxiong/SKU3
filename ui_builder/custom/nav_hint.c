@@ -458,8 +458,52 @@ static void childlock_apply_layout(topflagpage_t *tf)
         dy = LOCK_DY_HIDE;
     }
     if (tf->image_2)  lv_obj_set_pos(tf->image_2, 453, 143 + dy);
-    if (tf->locktip1) lv_obj_set_pos(tf->locktip1, 458, 170 + dy);
-    if (tf->locktip2) lv_obj_set_pos(tf->locktip2, 528, 211 + dy);
+    if (is_english()) {
+        /* 英文版式(9.8 设计稿+9.9 上机反馈):字号与中文一致(30/24/36)仅换
+           Aktiv 字库;图标不动,标题/副标题左对齐排在图标右侧(x=600=图标
+           右缘574+26,y 各上移 7px 使文字块与图标垂直居中);副标题高度随
+           内容放开(原 36 高装不下两行,第二行被截断);第三行面板居中,
+           宽 380=设计稿红框(图标左缘453→标题块右缘),超出则循环滚动 */
+        if (tf->locktip1) {
+            lv_obj_set_style_text_font(tf->locktip1, &c_aktivgroteskmedium_30, 0);
+            lv_obj_set_style_text_align(tf->locktip1, LV_TEXT_ALIGN_LEFT, 0);
+            lv_obj_set_pos(tf->locktip1, 600, 163 + dy);
+        }
+        if (tf->locktip2) {
+            lv_obj_set_style_text_font(tf->locktip2, &c_aktivgroteskmedium_24, 0);
+            lv_obj_set_style_text_align(tf->locktip2, LV_TEXT_ALIGN_LEFT, 0);
+            lv_obj_set_pos(tf->locktip2, 600, 204 + dy);
+            lv_obj_set_height(tf->locktip2, LV_SIZE_CONTENT);
+        }
+        if (tf->locktip3) {
+            lv_obj_set_style_text_font(tf->locktip3, &c_aktivgroteskmedium_36, 0);
+            lv_obj_set_style_text_align(tf->locktip3, LV_TEXT_ALIGN_CENTER, 0);
+            lv_label_set_long_mode(tf->locktip3, LV_LABEL_LONG_SCROLL_CIRCULAR);
+            lv_obj_set_pos(tf->locktip3, 450, 297);
+            lv_obj_set_size(tf->locktip3, 380, LV_SIZE_CONTENT);
+        }
+    } else {
+        /* 中文恢复生成页原版式(370x36 居中,珍珠体;含尺寸/换行模式回写,
+           防英文会话残留) */
+        if (tf->locktip1) {
+            lv_obj_set_style_text_font(tf->locktip1, &c_taiwanpearl_regular_30, 0);
+            lv_obj_set_style_text_align(tf->locktip1, LV_TEXT_ALIGN_CENTER, 0);
+            lv_obj_set_pos(tf->locktip1, 458, 170 + dy);
+        }
+        if (tf->locktip2) {
+            lv_obj_set_style_text_font(tf->locktip2, &c_taiwanpearl_regular_24, 0);
+            lv_obj_set_style_text_align(tf->locktip2, LV_TEXT_ALIGN_CENTER, 0);
+            lv_obj_set_pos(tf->locktip2, 528, 211 + dy);
+            lv_obj_set_height(tf->locktip2, 36);
+        }
+        if (tf->locktip3) {
+            lv_obj_set_style_text_font(tf->locktip3, &c_taiwanpearl_regular_36, 0);
+            lv_obj_set_style_text_align(tf->locktip3, LV_TEXT_ALIGN_CENTER, 0);
+            lv_label_set_long_mode(tf->locktip3, LV_LABEL_LONG_WRAP);
+            lv_obj_set_pos(tf->locktip3, 455, 297);
+            lv_obj_set_size(tf->locktip3, 370, 36);
+        }
+    }
 }
 
 // 开启(on=1)/关闭童锁层;on=0 且未锁定时无操作(幂等)

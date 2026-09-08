@@ -504,6 +504,7 @@ extern uint8_t delay_on;
 extern int delay_hour;
 extern int delay_min;
 extern uint8_t contain_on;
+int contain_default(void);           /* set 页保温开关初值=设置页"自动保温"(总默认值) */
 extern int cook_total_ms;
 extern uint32_t cook_start_time;
 extern uint8_t cook_is_color;

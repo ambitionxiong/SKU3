@@ -255,7 +255,7 @@ void jump_to_cookie_set(void)
     lv_obj_clean(lv_scr_act());
     cookie_set_create(&ui_manager);
 
-    preheat_on = 0; delay_on = 0; contain_on = 0;
+    preheat_on = 0; delay_on = 0; contain_on = contain_default();
 
     cookie_set_t *set = cookie_set_get(&ui_manager);
     if (set) {

@@ -255,7 +255,7 @@ void jump_to_pizza_set(void)
     lv_obj_clean(lv_scr_act());
     pizza_set_create(&ui_manager);
 
-    preheat_on = 0; delay_on = 0; contain_on = 0;
+    preheat_on = 0; delay_on = 0; contain_on = contain_default();
 
     pizza_set_t *set = pizza_set_get(&ui_manager);
     if (set) {

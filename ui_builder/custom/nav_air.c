@@ -260,7 +260,7 @@ void jump_to_air_set(void)
     lv_obj_clean(lv_scr_act());
     air_set_create(&ui_manager);
 
-    preheat_on = 0; delay_on = 0; contain_on = 0;
+    preheat_on = 0; delay_on = 0; contain_on = contain_default();
 
     air_set_t *set = air_set_get(&ui_manager);
     if (set) {

@@ -259,7 +259,7 @@ void jump_to_unfrozen_set(void)
     lv_obj_clean(lv_scr_act());
     unfrozen_set_create(&ui_manager);
 
-    preheat_on = 0; delay_on = 0; contain_on = 0;
+    preheat_on = 0; delay_on = 0; contain_on = contain_default();
 
     unfrozen_set_t *set = unfrozen_set_get(&ui_manager);
     if (set) {

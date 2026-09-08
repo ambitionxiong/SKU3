@@ -199,7 +199,7 @@ void jump_to_bread_set(void)
     g_delay_source_page = PAGE_BREAD_SET;   /* 记录来源子类：收藏卡片名/启动分发依赖 */
     page_push(PAGE_BREAD_SET);
 
-    preheat_on = 0; delay_on = 0; contain_on = 0;
+    preheat_on = 0; delay_on = 0; contain_on = contain_default();
     lv_obj_clean(lv_scr_act());
     bread_set_create(&ui_manager);
 

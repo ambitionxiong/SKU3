@@ -233,6 +233,7 @@ static void sel_popup_apply(void)
             if (ss && ss->YY_Btn) lv_group_focus_obj(ss->YY_Btn);   /* 焦点回语言按钮(与切英文行为一致) */
         }
         if (ss && ss->YY_Lb) lv_label_set_text(ss->YY_Lb, tr(s_lang_yy_names[s_sel_flag]));
+        nav_topflag_demo_sync();   /* 演示徽标图/位置立即跟随语言(覆盖层路径不经过 lang_scr_load_anim,否则等 500ms tick) */
         break;
     default: break;
     }
@@ -317,7 +318,7 @@ static void on_set_six_click(lv_event_t *e)
     (void)e;
     SET_Data.Set_6th = !SET_Data.Set_6th;
     screen_SET_t *ss = screen_SET_get(&ui_manager);
-    if (ss && ss->Six_Lb) lv_label_set_text(ss->Six_Lb, tr(SET_Data.Set_6th ? "含猪肉" : "全部"));
+    if (ss && ss->Six_Lb) lv_label_set_text(ss->Six_Lb, tr(SET_Data.Set_6th ? "无猪肉" : "全部"));
 }
 
 static void on_set_wddw_click(lv_event_t *e)
@@ -441,7 +442,7 @@ void screen_set_rebuild(void)
     if (ss->ZDBW_Lb) lv_label_set_text(ss->ZDBW_Lb, tr(SET_Data.Set_KeepWarm ? "开" : "关"));
     if (ss->Power_Lb) lv_label_set_text(ss->Power_Lb, (Machine_Set_num & Send_MachineState_Power_xxA) ? "16A" : "13A");
     screen_set_ts_lb_sync();   /* TS_Lb 童锁值回显(按 Set_Lock 显示 开/关) */
-    if (ss->Six_Lb) lv_label_set_text(ss->Six_Lb, tr(SET_Data.Set_6th ? "含猪肉" : "全部"));
+    if (ss->Six_Lb) lv_label_set_text(ss->Six_Lb, tr(SET_Data.Set_6th ? "无猪肉" : "全部"));
     if (ss->WDDW_Lb) lv_label_set_text(ss->WDDW_Lb, tr(SET_Data.Set_TempUnit ? "°F" : "°C"));
     if (ss->Demo_Lb) lv_label_set_text(ss->Demo_Lb, tr(SET_Data.Set_DemoMode ? "开" : "关"));
     screen_set_yy_lb_sync();   /* YY_Lb 语言值回显(按 Set_Language 显示语言原名) */

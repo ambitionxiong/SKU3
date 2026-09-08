@@ -889,6 +889,15 @@ void groups_create(void)
 
     printf("[nav] major_menu group created\n");
 }
+
+/* 设置页"自动保温"(SET_Data.Set_KeepWarm)是总默认值:各模式 set 页进入时
+   保温开关(contain_on)初值跟随它;页内仍可手动改,仅本次烹饪会话有效。
+   停止/初始化清理路径仍复位为 0,下次进 set 页再取默认 */
+int contain_default(void)
+{
+    return SET_Data.Set_KeepWarm ? 1 : 0;
+}
+
 /* ==============================
  * 选中项呼吸闪烁（数值+下划线+配套单位同步渐变显隐）
  * 原理:每个对象一条 lv_anim 写 style opa(255→0 去程+playback 回程,无限重复);
@@ -903,7 +912,7 @@ void groups_create(void)
  * 生命周期:页面对象销毁路径(page_push/pop/screen_set_reset)调 nav_blink_forget,
  *   组表与动画注册表一并遗忘(动画随对象销毁自动消亡,不触碰任何指针)。
  * ============================== */
-#define BLINK_HALF_MS   450    /* 半程时长:255→去程 / 回程,一个呼吸周期 = 2x */
+#define BLINK_HALF_MS   700    /* 半程时长:255→去程 / 回程,一个呼吸周期 = 2x */
 #define BLINK_MIN_OPA   0      /* 最低透明度(0=完全隐藏;嫌闪得太狠可改 60~100) */
 #define BLINK_MAX_OBJS  8      /* 单组上限:值+长短线+单位+箭头 */
 #define BLINK_MAX_GROUPS 48    /* 全页组数上限 */

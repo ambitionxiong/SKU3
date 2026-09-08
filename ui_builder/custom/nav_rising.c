@@ -259,7 +259,7 @@ void jump_to_rising_set(void)
     lv_obj_clean(lv_scr_act());
     rising_set_create(&ui_manager);
 
-    preheat_on = 0; delay_on = 0; contain_on = 0;
+    preheat_on = 0; delay_on = 0; contain_on = contain_default();
 
     rising_set_t *set = rising_set_get(&ui_manager);
     if (set) {

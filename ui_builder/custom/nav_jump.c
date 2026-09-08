@@ -205,10 +205,10 @@ void jump_to_updown_bbq_set(void)
     lv_obj_clean(lv_scr_act());
     updown_bbq_set_create(&ui_manager);
 
-    /* 复位 toggle 状态（全新进入，默认全关） */
+    /* 复位 toggle 状态（全新进入：预约/预热默认关，保温跟随设置页总默认值） */
     preheat_on = 0;
     delay_on = 0;
-    contain_on = 0;
+    contain_on = contain_default();
 
     updown_bbq_set_t *set = updown_bbq_set_get(&ui_manager);
     if (set) {

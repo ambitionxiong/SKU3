@@ -12424,9 +12424,10 @@ void screen_SET_lang_tune(void)
     lv_obj_set_pos(pg->ZDBW_Lb, 215, 304);
     lv_obj_set_size(pg->ZDBW_Lb, 65, 30);
 
-    /* Six_Lb: 标签 | (508,116) | 80x30 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->Six_Lb, 508, 116);
-    lv_obj_set_size(pg->Six_Lb, 80, 30);
+    /* Six_Lb: 标签 | (468,116) | 120x30 | EN:"No Pork"约95px,原80宽折行且30高截断;
+       右缘保持588(右对齐)不变,中文不走此层 */
+    lv_obj_set_pos(pg->Six_Lb, 468, 116);
+    lv_obj_set_size(pg->Six_Lb, 120, 30);
 
     /* WDDW_Lb: 标签 | "℃" | (523,304) | 65x30 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->WDDW_Lb, 523, 304);
