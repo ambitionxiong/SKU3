@@ -83,6 +83,9 @@ static void auto_pause_on_door(void)
 }
 void cooking_timer_cb(lv_timer_t *timer)
 {
+    /* 计时器超时层抢屏期间:挂起烹饪推进/完成判定(层撤后下一秒自然补上),
+       防止完成跳转把超时屏删掉 */
+    if (count_down_overtime_active() && g_send.iface_status == IFACE_COOKING) return;
     /* complete 结束态：timer 仅服务保温计数，其他页面不驱动任何完成检测 */
     if (g_send.iface_status == IFACE_COMPLETE) {
         /* 按当前 complete 组取"已完成/保温中"标签 */

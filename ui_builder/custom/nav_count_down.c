@@ -54,9 +54,13 @@ static uint16_t s_overtime_sec = 1;
 static uint8_t  s_reset_flag = 0;     /* Reset 清零后抑制到期弹层 */
 static uint8_t  s_get_out_scr = 1;    /* 同事语义:跑过一次倒计时后为 0 */
 static lv_obj_t *s_return_scr = NULL; /* 抢屏前所在屏幕(auto_del=false 保留,可恢复) */
+static lv_group_t *s_return_group = NULL;   /* 抢屏前所在页面的焦点组(取消超时层时恢复,防悬空) */
+static lv_obj_t *s_below_scr = NULL;  /* 进入计时页时的下层屏幕(auto_del=false 保屏返回,免重建) */
+static lv_group_t *s_below_group = NULL;   /* 下层屏幕的焦点组(返回时恢复) */
 static lv_timer_t *s_cd_timer = NULL;
 
 static void count_down_create(ui_manager_t *ui);
+static void count_down_leave_fast(void);
 void screen_overtime_cont_create(void);
 
 /* 屏幕销毁:删组+控件指针整体置空(定时器仍在跑,靠空指针守卫跳过显示刷新) */
@@ -116,10 +120,11 @@ static void count_down_timer_cb(lv_timer_t *timer)
                 lv_obj_t *back = s_return_scr;
                 s_return_scr = NULL;
                 lv_scr_load_anim(back, LV_SCR_LOAD_ANIM_NONE, 0, 0, true);   /* 删计时屏恢复原屏 */
+                current_group = s_return_group;   /* 恢复被抢屏页面的组(计时屏删除连带删组,防悬空) */
+                s_return_group = NULL;
                 nav_topflag_demo_sync();   /* 原屏已激活:演示徽标立即重定位(本调用未走统一出口) */
             } else {
-                s_return_scr = NULL;
-                page_pop();              /* 弹掉 COUNT,按栈顶重建下层页面 */
+                count_down_leave_fast(); /* 到期在本页:快速返回(不重建,下层烹饪倒计时不重置) */
                 jump_to_screen_set();    /* 回设置覆盖层(同 KEY_SET 入口) */
             }
         } else if (scr->Over_Time_Lb && scr->obj && lv_obj_is_valid(scr->Over_Time_Lb)) {
@@ -141,6 +146,7 @@ static void count_down_timer_cb(lv_timer_t *timer)
             if (!scr->obj || !lv_obj_is_valid(scr->obj))
                 count_down_create(&ui_manager);       /* 屏幕已被 auto_del:重建 */
             if (scr->obj) {
+                s_return_group = current_group;       /* 记录被抢屏页面的组,取消超时层时恢复 */
                 current_group = scr->group;           /* 抢屏后按键由本页消化(超时层分支) */
                 lv_scr_load_anim(scr->obj, LV_SCR_LOAD_ANIM_NONE, 0, 0, false);   /* false:保留原屏 */
                 screen_overtime_cont_create();
@@ -214,11 +220,12 @@ static void overtime_dismiss(void)
         s_return_scr = NULL;
         lv_obj_clean(lv_scr_act());   /* 清掉计时页内容(含超时层) */
         lv_scr_load_anim(back, LV_SCR_LOAD_ANIM_NONE, 0, 0, true);
+        current_group = s_return_group;   /* 恢复被抢屏页面的组(计时屏删除连带删组,防悬空) */
+        s_return_group = NULL;
         nav_topflag_demo_sync();   /* 原屏已激活:演示徽标立即重定位(本调用未走统一出口) */
     } else {
-        s_return_scr = NULL;
-        page_pop();
-        jump_to_screen_set();
+        count_down_leave_fast();   /* 到期在本页:用记录的下层屏切回(免 page_pop 重建) */
+        jump_to_screen_set();      /* 计时器从设置层进入:回设置覆盖层 */
     }
 }
 
@@ -290,8 +297,9 @@ void encoder_count_down_action(uint8_t key)
     lv_obj_t *focused = lv_group_get_focused(scr->group);
     if (focused == scr->Yes_Btn) {
         if (s_run) {
-            /* 运行中确认:离开页面,计时器后台继续(定时器不停) */
-            page_pop();
+            /* 运行中确认:离开页面,计时器后台继续(定时器不停);
+               快速返回:下层页面未销毁,直接切回,不重建(下层烹饪倒计时不重置) */
+            count_down_leave_fast();
             jump_to_screen_set();
             return;
         }
@@ -342,8 +350,29 @@ void count_down_back_action(void)
         return;
     }
     if (s_cd_left == 0 && !s_run) count_down_timer_stop();   /* 无后台任务才停表 */
-    page_pop();
-    jump_to_screen_set();
+    count_down_leave_fast();   /* 下层页面保屏返回(不重建,下层烹饪倒计时不重置) */
+    jump_to_screen_set();      /* 回设置层(计时器从设置进入) */
+}
+
+/* 快速返回:进入计时页时下层页面以 auto_del=false 保留,此处直接切回并删计时屏。
+ * 不走 page_pop 的逐模式重建——重建路径把下层烹饪页当全新开始,倒计时会清零重启。
+ * 记录屏已失效(如关机清场)才兜底走 page_pop 老路 */
+static void count_down_leave_fast(void)
+{
+    edit_clear();
+    nav_blink_forget();        /* 计时屏对象即将销毁:先遗忘闪烁组(防悬空) */
+    if (s_below_scr && lv_obj_is_valid(s_below_scr)) {
+        depth--;               /* 弹掉 PAGE_SET_COUNT(仅栈记帐,无重建) */
+        topflag_update_visibility();
+        lv_obj_t *back = s_below_scr;
+        s_below_scr = NULL;
+        current_group = s_below_group;
+        s_below_group = NULL;
+        lv_scr_load_anim(back, LV_SCR_LOAD_ANIM_NONE, 0, 0, true);   /* true:删计时屏 */
+        nav_topflag_demo_sync();   /* 原屏已激活:徽标立即重定位(未走统一出口) */
+    } else {
+        page_pop();            /* 兜底:记录屏已失效,按老路弹栈+重建 */
+    }
 }
 
 lv_group_t *count_down_page_group(void) { return s_cd.group; }
@@ -361,9 +390,13 @@ void jump_to_count_down(void)
         s_return_scr = NULL;
     }
     screen_set_reset();          /* 清设置覆盖层对象/指针 */
+    /* 记录下层页面(此时 current_group 已被 screen_set_reset 还原为下层页组):
+       载入计时屏用 auto_del=false 保留下层页面对象,返回时 count_down_leave_fast
+       直接切回,不走 page_pop 逐模式重建(重建会把下层烹饪倒计时清零重启) */
+    s_below_scr = lv_scr_act();
+    s_below_group = current_group;
     depth--;                     /* 弹掉 PAGE_SCREEN_SET */
     page_push(PAGE_SET_COUNT);
-    lv_obj_clean(lv_scr_act());
     count_down_create(&ui_manager);
     if (restore_run) {
         lv_arc_set_range(s_cd.Count_Down_Arc, 0, (int32_t)s_cd_total);
@@ -372,7 +405,7 @@ void jump_to_count_down(void)
     }
     current_group = s_cd.group;
     if (s_cd.Yes_Btn) lv_group_focus_obj(s_cd.Yes_Btn);
-    lang_scr_load_anim(s_cd.obj, LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
+    lang_scr_load_anim(s_cd.obj, LV_SCR_LOAD_ANIM_NONE, 0, 0, false);   /* false:保留下层页面(返回免重建) */
     if (s_cd_timer == NULL)
         s_cd_timer = lv_timer_create(count_down_timer_cb, 1000, NULL);   /* 秒节拍(离开页面仍跑) */
     printf("[count_down] jump (run=%d left=%u)\n", restore_run, (unsigned)s_cd_left);
@@ -580,4 +613,31 @@ static void count_down_create(ui_manager_t *ui)
     lv_group_add_obj(scr->group, scr->Yes_Btn);
     lv_group_add_obj(scr->group, scr->Underline_Btn);
     lv_group_add_obj(scr->group, scr->Reset_icon_Btn);
+}
+
+/* 设置计时器后台运行中(topflag timer 图标显隐用):已启动且尚有剩余秒数 */
+int count_down_running(void)
+{
+    return s_run && s_cd_left > 0;
+}
+
+/* 超时层显示中(process_key 模态守卫/cooking_timer_cb 挂起判定用) */
+int count_down_overtime_active(void)
+{
+    return s_overtime;
+}
+
+/* 长按关机:清计时器全部后台状态(表/超时层/抢屏与下层记录),
+ * 防止关机后到期自动退出把人拽回关机前页面 */
+void count_down_poweroff_reset(void)
+{
+    count_down_timer_stop();
+    s_overtime = 0;
+    s_overtime_sec = 1;
+    s_run = 0;
+    s_cd_total = s_cd_left = 0;
+    s_return_scr = NULL;
+    s_return_group = NULL;
+    s_below_scr = NULL;
+    s_below_group = NULL;
 }

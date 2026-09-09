@@ -460,7 +460,10 @@ void page_pop(void)
                 int rem = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);
                 g_send.remaining_ms = rem;
             }
-        } else if (child == PAGE_UPDOWN_BBQ_STOP_BACK) {
+        } else {
+            /* STOP_BACK / SET_COUNT(计时器,设置覆盖层子页) / FAVORITES 等子页:
+               重建 cooking 恢复现场(倒计时/进度按已走时间续走,cook_timer 未删沿用)。
+               原兜底误跳 rebuild_updown_bbq_set:计时器 BACK 落到 set 页且倒计时被删 */
             g_on_stop_back = 0;
             updown_bbq_cooking_create(&ui_manager);
             {
@@ -502,15 +505,13 @@ void page_pop(void)
             lang_scr_load_anim(updown_bbq_cooking_get(&ui_manager)->obj,
                              LV_SCR_LOAD_ANIM_NONE, 0, 0,
                              ui_manager.auto_del);
-            printf("[nav] back from stop_back -> updown_bbq_cooking\n");
+            printf("[nav] back to updown_bbq_cooking (child=%d)\n", child);
             g_send.iface_status = IFACE_COOKING;
             {
                 uint32_t e = lv_tick_get() - cook_start_time;
                 int rem = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);
                 g_send.remaining_ms = rem;
             }
-        } else {
-            goto rebuild_updown_bbq_set;
         }
         break;
 

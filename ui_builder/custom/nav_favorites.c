@@ -178,6 +178,7 @@ void favorites_save_current(void)
 
     fav_succeed_no_repetitive = 1;
     g_send.buzzer_req = BUZZER_KEY_VALID;
+    nav_topflag_like_show();   /* 收藏成功:topflag like 徽标点亮到当前完成页(离页自动收回) */
 }
 
 /* 收藏启动：按菜类恢复各设置页状态变量（份量/烤色/成熟度/探针目标温度）。
@@ -280,6 +281,7 @@ void nav_favask_confirm(void)
     Favorites_Cover_Func();
     fav_succeed_no_repetitive = 1;
     g_send.buzzer_req = BUZZER_KEY_VALID;
+    nav_topflag_like_show();   /* 覆盖保存成功:同样点亮 like 徽标 */
 }
 
 /* ===================== 收藏页导航 ===================== */

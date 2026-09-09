@@ -141,10 +141,11 @@ void nav_init(void)
     {
         topflagpage_t *tf = topflagpage_get(&ui_manager);
         if (tf) {
-            /* 暂时只显示 currenttime */
+            /* 状态图标先全隐:500ms tick 的 nav_topflag_demo_sync 按状态放行/排布 */
             if (tf->demo)   lv_obj_add_flag(tf->demo, LV_OBJ_FLAG_HIDDEN);
             if (tf->timer)  lv_obj_add_flag(tf->timer, LV_OBJ_FLAG_HIDDEN);
             if (tf->light)  lv_obj_add_flag(tf->light, LV_OBJ_FLAG_HIDDEN);
+            if (tf->like)   lv_obj_add_flag(tf->like, LV_OBJ_FLAG_HIDDEN);
         }
     }
     topflag_update_visibility();
@@ -200,38 +201,104 @@ static int nav_topleft_has_text(void)
     return 0;
 }
 
-/* 演示模式徽标(topflag demo/show.png 61x38):Set_DemoMode 开→显示。
- * 左上角有文字→水平居中((1280-宽)/2);无文字→左边距 24。y 固定 24。
- * 由 topflag_clock_cb 500ms 驱动,设置页切换后也立即调一次 */
+/* 顶栏状态图标(demo/timer/light/like)统一显隐与排布:
+ * 显隐:demo=Set_DemoMode;timer=设置计时器后台运行中(count_down_running);
+ *      light=炉灯开启(接收 BUF[14] BIT0,20260618 协议);like=收藏成功后停留在完成页期间。
+ * 排布:待机页仅演示徽标硬定左上角(原规则);普通页按 demo→timer→light→like 顺序
+ *      链式排布,相邻图标边缘间隔 24px;左上角有文字→可见图标组整体水平居中(y=24);
+ *      无文字→从左边距 24 起。like 例外:只出现在左上角——组居中时它不参与,固定 (24,24)。
+ * 由 topflag_clock_cb 500ms 驱动,切语言/设置页切换后也立即调用 */
+static int s_topflag_like = 0;        /* 收藏成功徽标:置位到离页期间显示 */
+static int s_topflag_like_page = -1;  /* 置位时的页面栈顶(离页自动收回) */
 static int s_demo_src_en = -1;   /* 徽标图当前语言(-1=未知,首次必设);避免 500ms tick 重复 set_src */
 void nav_topflag_demo_sync(void)
 {
     topflagpage_t *tf = topflagpage_get(&ui_manager);
     if (!tf || !tf->obj || !tf->demo) return;
-    if (!SET_Data.Set_DemoMode) {
-        lv_obj_add_flag(tf->demo, LV_OBJ_FLAG_HIDDEN);
-        return;
-    }
-    lv_obj_clear_flag(tf->demo, LV_OBJ_FLAG_HIDDEN);
+
+    /* like:离开置位页自动收回 */
+    if (s_topflag_like && (depth <= 0 || page_stack[depth - 1] != s_topflag_like_page))
+        s_topflag_like = 0;
+
     /* 英文模式换英文版徽标图(show_en 76x44 / 中文 show 61x38);
-       必须先于下方取宽居中;语言切换经 lang_scr_load_anim 与 500ms tick 双路到达 */
+       必须先于下方取宽排布;语言切换经 lang_scr_load_anim 与 500ms tick 双路到达 */
     if (is_english() != s_demo_src_en) {
         lv_img_set_src(tf->demo, is_english() ? LVGL_IMAGE_PATH(show_en.png)
                                               : LVGL_IMAGE_PATH(show.png));
         s_demo_src_en = is_english();
     }
+
+    int is_wait = (depth > 0 && page_stack[depth - 1] == PAGE_WAITMENU_24);
+    int v_demo  = SET_Data.Set_DemoMode ? 1 : 0;
+    int v_timer = count_down_running();
+    int v_light = is_lamp_on();
+    int v_like  = s_topflag_like;
+    /* 待机页保持干净:仅演示徽标(整层显隐已由 topflag_update_visibility 处理) */
+    if (is_wait) v_timer = v_light = v_like = 0;
+
+    if (v_demo)  lv_obj_clear_flag(tf->demo, LV_OBJ_FLAG_HIDDEN);
+    else         lv_obj_add_flag(tf->demo, LV_OBJ_FLAG_HIDDEN);
+    if (v_timer) lv_obj_clear_flag(tf->timer, LV_OBJ_FLAG_HIDDEN);
+    else         lv_obj_add_flag(tf->timer, LV_OBJ_FLAG_HIDDEN);
+    if (v_light) lv_obj_clear_flag(tf->light, LV_OBJ_FLAG_HIDDEN);
+    else         lv_obj_add_flag(tf->light, LV_OBJ_FLAG_HIDDEN);
+    if (v_like)  lv_obj_clear_flag(tf->like, LV_OBJ_FLAG_HIDDEN);
+    else         lv_obj_add_flag(tf->like, LV_OBJ_FLAG_HIDDEN);
+
     /* wait 页演示徽标无条件左上角(硬规则):不走扫描——覆盖层/尾部 sync 对 wait 的
        误判会把它定到居中再等 tick 纠正,造成可见移动 */
-    if (depth > 0 && page_stack[depth - 1] == PAGE_WAITMENU_24) {
-        lv_obj_set_pos(tf->demo, 24, 24);
+    if (is_wait) {
+        if (v_demo) lv_obj_set_pos(tf->demo, 24, 24);
         return;
     }
-    if (nav_topleft_has_text()) {
-        lv_obj_update_layout(tf->demo);
-        lv_obj_set_pos(tf->demo, (1280 - lv_obj_get_width(tf->demo)) / 2, 24);
-    } else {
-        lv_obj_set_pos(tf->demo, 24, 24);
+
+    /* 链式排布:取各可见图宽,相邻边缘间隔 24px;左上角有文字→整组居中 */
+    int centered = nav_topleft_has_text();
+    lv_obj_t *chain[4];
+    int w[4], n = 0, total = 0;
+    if (v_demo) {
+        chain[n] = tf->demo;
+        lv_obj_update_layout(chain[n]);
+        total += w[n] = (int)lv_obj_get_width(chain[n]);
+        n++;
     }
+    if (v_timer) {
+        chain[n] = tf->timer;
+        lv_obj_update_layout(chain[n]);
+        total += w[n] = (int)lv_obj_get_width(chain[n]);
+        n++;
+    }
+    if (v_light) {
+        chain[n] = tf->light;
+        lv_obj_update_layout(chain[n]);
+        total += w[n] = (int)lv_obj_get_width(chain[n]);
+        n++;
+    }
+    /* like 不进居中组;链式在左上角时按排序收尾 */
+    int like_in_chain = (v_like && !centered);
+    if (like_in_chain) {
+        chain[n] = tf->like;
+        lv_obj_update_layout(chain[n]);
+        total += w[n] = (int)lv_obj_get_width(chain[n]);
+        n++;
+    }
+    if (n) total += 24 * (n - 1);
+
+    int x = centered ? (1280 - total) / 2 : 24;
+    for (int i = 0; i < n; i++) {
+        lv_obj_set_pos(chain[i], (lv_coord_t)x, 24);
+        x += w[i] + 24;
+    }
+    if (v_like && !like_in_chain)
+        lv_obj_set_pos(tf->like, 24, 24);
+}
+
+/* 收藏成功:like 徽标显示到当前完成页,离页自动收回(nav_favorites.c 两处成功路径调用) */
+void nav_topflag_like_show(void)
+{
+    s_topflag_like = 1;
+    s_topflag_like_page = (depth > 0) ? page_stack[depth - 1] : -1;
+    nav_topflag_demo_sync();   /* 立即显形,不等 500ms tick */
 }
 
 // 待机页时钟缓存（waitmenu_apply_clock 使用）

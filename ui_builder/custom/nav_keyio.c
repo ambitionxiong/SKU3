@@ -21,6 +21,7 @@ void nav_key1_long_press(void)
 {
     probetip_cancel_auto_dismiss();   /* 取消陈旧的探针提示自动关闭定时器,防止跨会话误触发 */
     screen_set_reset();               /* 覆盖层若打开:清理对象/组/焦点指针,防悬空 */
+    count_down_poweroff_reset();      /* 计时器后台/超时状态一并清:防关机后到期自动退出拽屏 */
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
     g_on_stop_back = 0;
     g_complete_to_stop_back = 0;

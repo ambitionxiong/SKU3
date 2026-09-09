@@ -80,6 +80,14 @@ void process_key(uint8_t key)
         else if (key == KEY_BACK) nav_favask_cancel();
         return;
     }
+    /* 计时器超时层:模态。BACK/PRESS=取消超时层,CW/CCW=响一声(均由计时页组路由处理),
+       其余功能键吞掉——防在超时屏底下翻页/开覆盖层 */
+    if (count_down_overtime_active() &&
+        key != KEY_BACK && key != KEY_ENCODER_PRESS &&
+        key != KEY_ENCODER_CW && key != KEY_ENCODER_CCW) {
+        g_send.buzzer_req = BUZZER_KEY_INVALID;
+        return;
+    }
     /* 无效提示弹窗/收藏结果提示:仅 BACK 有效(KEY_BACK 分支关闭弹窗);长按关机由
        nav_handle_key 独立检测不受影响;其余键静默忽略,避免主动操作 */
     if ((nav_hint_active() || nav_favtip_active()) && key != KEY_BACK)
@@ -356,8 +364,9 @@ void process_key(uint8_t key)
         uart_print();
         break;
     case KEY_SET:           // 11: 进入设置页（覆盖层）
-        if (depth > 0 && page_stack[depth - 1] == PAGE_SCREEN_SET) {
-            g_send.buzzer_req = BUZZER_KEY_INVALID;   /* 防重入 */
+        if (depth > 0 && (page_stack[depth - 1] == PAGE_SCREEN_SET ||
+                          page_stack[depth - 1] == PAGE_SET_COUNT)) {
+            g_send.buzzer_req = BUZZER_KEY_INVALID;   /* 防重入(计时页为设置子页:SET 再进会让覆盖层叠在计时屏上) */
             break;
         }
         /* 与其他功能键相同入口限制(菜单白名单),运行态放行 */
@@ -480,6 +489,12 @@ void process_key(uint8_t key)
         uart_print();
         break;
     case KEY_BACK:          // 21: 返回
+        if (current_group && current_group == count_down_page_group()) {
+            count_down_back_action();   /* 计时页/抢屏超时层:BACK=回设置层/取消超时层
+                                           (先于页面栈路由:抢屏时栈顶不是计时页) */
+            uart_print();
+            break;
+        }
         if (nav_favtip_active()) {
             /* 收藏结果提示中:BACK 直接关闭提示,不执行返回 */
             nav_favtip_cancel();

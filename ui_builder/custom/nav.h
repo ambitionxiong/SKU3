@@ -677,7 +677,7 @@ void screen_set_rebuild(void);      /* 重建设置覆盖层(进入/声音子页
 void screen_set_yy_lb_sync(void);   /* YY_Lb 语言值回显(设置覆盖层重建/语言切换后调用) */
 void screen_set_ts_lb_sync(void);   /* TS_Lb 童锁值回显(重建/弹窗确认/长按解锁后调用,nav_screen_set.c) */
 int  screen_set_overlay_open(void); /* 设置覆盖层是否存活(外部位判定用,勿直接摸 screen_SET) */
-void nav_topflag_demo_sync(void);   /* 演示模式徽标显隐/定位(nav_system.c,500ms tick+切换后调用) */
+void nav_topflag_demo_sync(void);   /* 顶栏状态图标 demo/timer/light/like 显隐与链式排布(nav_system.c,500ms tick+切换后调用) */
 void nav_topflag_clock_force(void); /* 右上角时钟立即重刷(切语言/切 12-24 时制后调用,不等 500ms tick) */
 
 /* 声音设置子页（nav_loudness.c 实现，PAGE_LOUDNESS） */
@@ -699,6 +699,9 @@ void jump_to_count_down(void);
 lv_group_t *count_down_page_group(void);
 void encoder_count_down_action(uint8_t key);
 void count_down_back_action(void);
+int  count_down_running(void);   /* 设置计时器后台运行中(topflag timer 图标显隐用,nav_count_down.c) */
+int  count_down_overtime_active(void);   /* 计时器超时层显示中(process_key 模态守卫,nav_count_down.c) */
+void count_down_poweroff_reset(void);    /* 长按关机:清计时器后台/超时状态(nav_keyio 调用,nav_count_down.c) */
 
 /* 日期/时间子页（nav_systime.c 实现，PAGE_SET_SYSTIME） */
 void jump_to_systime(void);
@@ -711,6 +714,7 @@ void nav_show_invalid_hint(void);
 void nav_hint_cancel(void);
 int nav_hint_active(void);
 void nav_show_fav_tip(void);   /* 收藏保存成功提示:topflag 顶层 tip3,2 秒自动消失(nav_hint.c) */
+void nav_topflag_like_show(void);   /* 收藏成功:topflag like 徽标显示到当前完成页,离页自动收回(nav_system.c) */
 void nav_show_state_tip(const char *text);   /* 通用状态提示:右侧 tip3 显示文本 2 秒(nav_hint.c) */
 void nav_favtip_cancel(void);  /* BACK 提前关闭收藏提示 */
 int nav_favtip_active(void);

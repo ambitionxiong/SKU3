@@ -52,7 +52,7 @@ typedef enum {
 #define Receive_data_Power_ALL_State         11
 #define Receive_data_Power_ALL_Error         12
 #define Receive_data_Power_Versions          13
-#define Receive_data_CiKongGuan_Temp         14
+#define Receive_data_Power_ALL_State2        14   // 整机状态-2：BIT0 炉灯 0关 1开（20260618 协议更新，原磁控管温度位已删）
 #define Receive_data_Touch_Key               15
 
 // ===== 设置参数结构体 =====
@@ -135,6 +135,10 @@ static inline int is_door_open(void) {
 
 static inline int is_probe_inserted(void) {
     return (uart_data_receive[Receive_data_Power_ALL_State] & (1 << 2)) != 0;
+}
+
+static inline int is_lamp_on(void) {
+    return (uart_data_receive[Receive_data_Power_ALL_State2] & (1 << 0)) != 0;
 }
 
 static inline int get_probe_temp(void) {

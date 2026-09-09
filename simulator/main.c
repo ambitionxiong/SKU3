@@ -275,6 +275,7 @@ int main(int argc, char **argv)
 		static uint8_t prev_key = 0;
 		static uint8_t prev_door = 0;
 		static uint8_t prev_8 = 0, prev_9 = 0, prev_minus = 0, prev_lang = 0, prev_c = 0;
+		static uint8_t prev_l = 0;
 		SDL_PumpEvents();
 		const Uint8 *keys = SDL_GetKeyboardState(NULL);
 		uint8_t sim_key = 0;
@@ -284,6 +285,7 @@ int main(int argc, char **argv)
 		uint8_t cur_minus = keys[SDL_SCANCODE_MINUS];
 		uint8_t cur_lang = keys[SDL_SCANCODE_6];   /* 6=中英切换（原F8） */
 		uint8_t cur_c = keys[SDL_SCANCODE_C];      /* C=烹饪立即完成（调试） */
+		uint8_t cur_l = keys[SDL_SCANCODE_L];      /* L=炉灯开/关（模拟电源板发 BUF[14] BIT0） */
 		if      (keys[SDL_SCANCODE_TAB])       sim_key = KEY_MENU;
 		else if (keys[SDL_SCANCODE_5])         sim_key = KEY_EXTRA_COLOR;
 		else if (keys[SDL_SCANCODE_ESCAPE])    sim_key = KEY_BACK;
@@ -329,6 +331,15 @@ int main(int argc, char **argv)
 				(uart_data_receive[Receive_data_Power_ALL_State] & (1 << 1)) ? "OPEN" : "CLOSED");
 		}
 		prev_door = cur_door;
+
+		if (cur_l && !prev_l) {
+			uart_data_receive[Receive_data_Power_ALL_State2] ^= (1 << 0);
+			printf("[sim] lamp %s\n",
+				(uart_data_receive[Receive_data_Power_ALL_State2] & (1 << 0)) ? "ON" : "OFF");
+			extern void nav_topflag_demo_sync(void);
+			nav_topflag_demo_sync();   /* 立即显/隐 light 图标,不等 500ms tick */
+		}
+		prev_l = cur_l;
 
 		if (cur_c && !prev_c) {
 			extern void sim_force_cook_done(void);
