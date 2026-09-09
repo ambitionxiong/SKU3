@@ -215,13 +215,13 @@ void jump_to_custom_set(void)
         clear_focus_states(btns, 5);
         lv_group_focus_obj(set->sure);
 
-        lv_label_set_text_fmt(set->temp, "%d", set_temp);
+        lv_label_set_text_fmt(set->temp, "%d", temp_disp_c(set_temp));
         lv_label_set_text_fmt(set->hour, "%02d", set_hour);
         lv_label_set_text_fmt(set->min, "%02d", set_min);
 
         lv_obj_add_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->icon2, LV_OBJ_FLAG_HIDDEN);
-        if (set_temp < 100)
+        if (temp_disp_c(set_temp) < 100)
             lv_obj_clear_flag(set->icon2, LV_OBJ_FLAG_HIDDEN);
         else
             lv_obj_clear_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
@@ -719,13 +719,13 @@ void custom_rebuild_set(page_id_t child)
         clear_focus_states(btns, 5);
         lv_group_focus_obj(set->sure);
 
-        lv_label_set_text_fmt(set->temp, "%d", set_temp);
+        lv_label_set_text_fmt(set->temp, "%d", temp_disp_c(set_temp));
         lv_label_set_text_fmt(set->hour, "%02d", set_hour);
         lv_label_set_text_fmt(set->min, "%02d", set_min);
 
         lv_obj_add_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->icon2, LV_OBJ_FLAG_HIDDEN);
-        if (set_temp < 100)
+        if (temp_disp_c(set_temp) < 100)
             lv_obj_clear_flag(set->icon2, LV_OBJ_FLAG_HIDDEN);
         else
             lv_obj_clear_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);

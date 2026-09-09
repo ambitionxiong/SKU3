@@ -289,15 +289,15 @@ static void FAV_Six_Parse(const Fun_favorites_Value *fav, char *summary1, int s1
 }
 static void FAV_Set_FuncTemp_Lb(lv_obj_t *lb, const Fun_favorites_Value *fav)
 {
-	const char *deg = tr("℃");	/* 翻页重刷不走 lang 树遍历:单位在此过 tr(英文模式 ℃→°C),否则英文字体无 ℃ 字形成方块 */
+	const char *deg = tr("℃");	/* 翻页重刷不走 lang 树遍历:单位在此过 tr(℃ 模式英文转 °C,℉ 模式转 °F),否则英文字体无 ℃ 字形成方块 */
 	if (fav->PengTiaoMode_name == FAV_MODE_MULTI || fav->PengTiaoMode_name == FAV_MODE_SIX)
 		lv_label_set_text(lb, " ");
 	else if (fav->PengTiaoMode_name == MODE_UPDOWN_BBQ)
-		if (is_probe_inserted()) lv_label_set_text_fmt(lb, "%d%s", fav->temperature, deg);
-		else lv_label_set_text_fmt(lb, "↑%d%s/↓%d%s", fav->temperature, deg,
-		                           (fav->temp_down > 0) ? fav->temp_down : fav->temperature, deg);	//↓按卡读取（此前读全局残留值，多卡片串值；旧数据 temp_down=0 回退上温）
+		if (is_probe_inserted()) lv_label_set_text_fmt(lb, "%d%s", temp_disp_c(fav->temperature), deg);
+		else lv_label_set_text_fmt(lb, "↑%d%s/↓%d%s", temp_disp_c(fav->temperature), deg,
+		                           temp_disp_c((fav->temp_down > 0) ? fav->temp_down : fav->temperature), deg);	//↓按卡读取（此前读全局残留值，多卡片串值；旧数据 temp_down=0 回退上温）；数值按显示单位换算（存储恒摄氏）
 	else
-		lv_label_set_text_fmt(lb, "%d%s", fav->temperature, deg);
+		lv_label_set_text_fmt(lb, "%d%s", temp_disp_c(fav->temperature), deg);
 }
 static void FAV_Set_L1_Lb(lv_obj_t *lb, const Fun_favorites_Value *fav)
 {

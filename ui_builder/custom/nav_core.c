@@ -16,6 +16,7 @@
 #include "nav.h"
 #include "nav_lang.h"
 #include "nav_internal.h"
+#include <stdarg.h>
 
 // === 页面栈 ===
 #define MAX_STACK 16
@@ -434,6 +435,151 @@ void edit_clear(void)
 {
     edit_count = 0;
 }
+
+/* ==================== 温度显示单位（℉）====================
+ * 内部值/编码器范围/协议恒为摄氏，仅显示层换算。总注见 nav.h */
+/* 摄氏 → 显示值：℉ 模式四舍五入(71℃→160℉，截断会丢 0.8)，℃ 模式原样 */
+int temp_disp_c(int c)
+{
+    if (SET_Data.Set_TempUnit != 1) return c;
+    return (c * 9 + 2) / 5 + 32;
+}
+/* 显示值 → 摄氏（遍历兜底回切 ℃ 时用）：86℉→30℃ */
+static int temp_inv_c(int f)
+{
+    if (f < 32) return f;
+    return ((f - 32) * 5 + 4) / 9;
+}
+/* 原地把 buf 内 "紧邻数字+单位符号" 重写为当前显示单位。
+   to_f=1: ℃/°C→°F；=0: °F→℃。纯符号(无数字)只换符号；
+   已是目标单位的跳过——遍历可重复执行，幂等 */
+void ui_temp_rewrite(char *buf, int cap, int to_f)
+{
+    char *p = buf;
+    while (*p) {
+        int mark = 0;
+        if (strncmp(p, "\xE2\x84\x83", 3) == 0 ||      /* ℃ */
+            strncmp(p, "\xC2\xB0" "C", 3) == 0 ||      /* °C */
+            strncmp(p, "\xC2\xB0" "F", 3) == 0)        /* °F */
+            mark = 3;
+        if (!mark) { p++; continue; }
+        int cur_f = (p[2] == 'F');
+        if (to_f == cur_f) { p += 3; continue; }
+        const char *sym = to_f ? "\xC2\xB0" "F" : "\xE2\x84\x83";
+        char *d = p;
+        while (d > buf && d[-1] >= '0' && d[-1] <= '9') d--;
+        if (d == p) {                       /* 纯单位标签(生成层 icon):只换符号 */
+            memcpy(d, sym, 3);
+            p = d + 3;
+            continue;
+        }
+        int val = 0;
+        for (char *q = d; q < p; q++) val = val * 10 + (*q - '0');
+        char num[12];
+        int nlen = snprintf(num, sizeof(num), "%d", to_f ? temp_disp_c(val) : temp_inv_c(val));
+        int delta = nlen - (int)(p - d);
+        char *tail = p + 3;                 /* 旧符号(3字节)之后 */
+        if (delta != 0) {
+            int tlen = (int)strlen(tail) + 1;
+            if ((int)(tail - buf) + tlen + delta > cap) return;   /* 放不下:放弃本次重写 */
+            memmove(p + 3 + delta, tail, (size_t)tlen);
+        }
+        memcpy(d, num, (size_t)nlen);
+        memcpy(d + nlen, sym, 3);
+        p = d + nlen + 3;
+    }
+}
+/* lv_label_set_text_fmt 出口（nav.h 宏重定向到这）：fmt 含 ℃/°C/°F 标记时，
+   "紧跟标记的整数参数"按显示单位换算后输出，其余照常格式化（数字换算在此收口，
+   各页面写点无需逐处包换算） */
+void ui_label_fmt_impl(lv_obj_t *obj, const char *fmt, ...)
+{
+    char buf[256];
+    va_list ap;
+    va_start(ap, fmt);
+    if (fmt && (strstr(fmt, "\xE2\x84\x83") || strstr(fmt, "\xC2\xB0"))) {
+        char *o = buf;
+        char *oend = buf + (int)sizeof(buf) - 1;
+        const char *p = fmt;
+        while (*p && o <= oend - 24) {
+            if (*p != '%') { *o++ = *p++; continue; }
+            const char *spec = p;
+            p++;                                    /* 跳过 '%' */
+            while (*p && strchr("-+ #0123456789.hl", *p)) p++;
+            if (!*p) break;
+            char conv = *p++;
+            int conv_temp = 0;
+            if ((conv == 'd' || conv == 'i') &&
+                (strncmp(p, "\xE2\x84\x83", 3) == 0 ||
+                 strncmp(p, "\xC2\xB0" "C", 3) == 0 ||
+                 strncmp(p, "\xC2\xB0" "F", 3) == 0))
+                conv_temp = 1;
+            char sp[24];
+            size_t slen = (size_t)(p - spec);
+            if (slen >= sizeof(sp)) break;
+            memcpy(sp, spec, slen);
+            sp[slen] = '\0';
+            if (conv_temp) {
+                int v = temp_disp_c(va_arg(ap, int));
+                sp[slen - 1] = 'd';
+                o += snprintf(o, (size_t)(oend - o), sp, v);
+            } else {
+                switch (conv) {
+                case 'd': case 'i': o += snprintf(o, (size_t)(oend - o), sp, va_arg(ap, int)); break;
+                case 'u': o += snprintf(o, (size_t)(oend - o), sp, va_arg(ap, unsigned int)); break;
+                case 's': o += snprintf(o, (size_t)(oend - o), sp, va_arg(ap, const char *)); break;
+                case 'c': o += snprintf(o, (size_t)(oend - o), sp, va_arg(ap, int)); break;
+                case '%': *o++ = '%'; break;
+                default: break;   /* 项目 fmt 未用到其它转换符 */
+                }
+            }
+        }
+        *o = '\0';
+    } else {
+        vsnprintf(buf, sizeof(buf), fmt ? fmt : "", ap);
+    }
+    va_end(ap);
+    lv_label_set_text(obj, buf);
+}
+/* 遍历兜底：把树里生成层烙死的温度文本（单位标签 "℃"、占位 "180℃"）重写为
+   当前单位。页面构建出口（lang_scr_load_anim）与设置页切单位时调用；
+   运行时写入已由出口宏/编辑字段实时换算，本遍历幂等可重复跑 */
+static lv_obj_tree_walk_res_t tempunit_walk_cb(lv_obj_t *obj, void *user_data)
+{
+    (void)user_data;
+    if (lv_obj_check_type(obj, &lv_label_class)) {
+        const char *txt = lv_label_get_text(obj);
+        if (txt && (strstr(txt, "\xE2\x84\x83") || strstr(txt, "\xC2\xB0"))) {
+            char buf[256];
+            strncpy(buf, txt, sizeof(buf) - 1);   /* 标签最长为状态条 ~128 字节，256 够 */
+            buf[sizeof(buf) - 1] = '\0';
+            ui_temp_rewrite(buf, (int)sizeof(buf), SET_Data.Set_TempUnit == 1);
+            int pure = (strcmp(txt, "\xE2\x84\x83") == 0 ||
+                        strcmp(txt, "\xC2\xB0" "C") == 0 ||
+                        strcmp(txt, "\xC2\xB0" "F") == 0);
+            if (strcmp(buf, txt) != 0)
+                lv_label_set_text(obj, buf);
+            /* 生成层的单位小盒只有 26px 级固定宽(updown set/stepset 等):WRAP 模式下
+               "°F" 在 ° 后折行、F 被盒子高度裁没(℃ 单字形无断行点故没事)。
+               ℉ 下宽度不够就按实际宽度加宽——生成层标签都是左上角 set_pos 锚定,
+               向右长几 px 无副作用;宽盒(如设置页 WDDW_Lb)自动跳过;重复遍历幂等 */
+            if (pure && SET_Data.Set_TempUnit == 1) {
+                lv_coord_t w = lv_obj_get_style_width(obj, 0);
+                int need = lv_txt_get_width("°F", 3, lv_obj_get_style_text_font(obj, 0),
+                                            lv_obj_get_style_text_letter_space(obj, 0)) + 2;
+                if ((int)w != LV_SIZE_CONTENT && (int)w < need)
+                    lv_obj_set_width(obj, (lv_coord_t)need);
+            }
+        }
+    }
+    return LV_OBJ_TREE_WALK_NEXT;
+}
+void nav_tempunit_refresh_screen(lv_obj_t *root)
+{
+    if (root)
+        lv_obj_tree_walk(root, tempunit_walk_cb, NULL);
+}
+
 static void blink_group_add(lv_obj_t *trigger, lv_obj_t **objs, int n);   /* 前置:edit_register 自动登记闪烁组 */
 /* 注册一个可编辑字段：label 为显示标签，ind_s/ind_l 为温度<100/≥100 的指示条，
    value 指向实际存储值，min/max/step 为循环范围，fmt 为显示格式（"%d"/"%02d"） */
@@ -449,12 +595,24 @@ void edit_register(lv_obj_t *label, lv_obj_t *ind_s, lv_obj_t *ind_l,
         edit_fields[edit_count].max = max;
         edit_fields[edit_count].step = step;
         edit_fields[edit_count].fmt = fmt;
+        edit_fields[edit_count].is_temp = 0;   /* 槽位复用必须清残留:上页温度字段的
+                                                  is_temp=1 若不清,本页时分字段会被
+                                                  当温度渲染(edit_register_temp 再置 1) */
         edit_count++;
     }
     /* 自动登记呼吸闪烁组:值 + 长短两根指示线(隐藏的闪了不可见,页面显哪根哪根闪)。
        单位/方向箭头等配套对象由页面在 build 时追加 nav_blink_extra(label, obj) */
     lv_obj_t *grp[3] = { label, ind_s, ind_l };
     blink_group_add(label, grp, 3);
+}
+/* 温度字段注册：同 edit_register，另置 is_temp——渲染值与长短指示线阈值按
+   显示单位(℉)换算，内部值恒摄氏；漏置标记则编码器调温时显示回摄氏 */
+void edit_register_temp(lv_obj_t *label, lv_obj_t *ind_s, lv_obj_t *ind_l,
+                        int *value, int min, int max, int step, const char *fmt)
+{
+    edit_register(label, ind_s, ind_l, value, min, max, step, fmt);
+    if (edit_count > 0)
+        edit_fields[edit_count - 1].is_temp = 1;
 }
 /* 按 label 查找已注册的可编辑字段（编码器加减时定位字段）。
  * lv_obj_is_valid 校验:残条目(所属页已销毁,如功能键跳离编辑页未清注册)的
@@ -473,6 +631,12 @@ edit_field_t *find_edit_field(lv_obj_t *obj)
     }
     return NULL;
 }
+/* 编辑字段渲染值：温度字段按显示单位(℉)，时间字段原样。
+   供 adjust_value 与 on_edit_focus(nav_events.c，聚焦瞬间选线)共用 */
+int edit_disp(const edit_field_t *f, int v)
+{
+    return f->is_temp ? temp_disp_c(v) : v;
+}
 /* 编码器加减：循环调整数值、刷新标签与温度指示线、
    执行各设置页的温差约束(上下≤20℃)与 dir/icon 即时更新 */
 void adjust_value(edit_field_t *f, int delta)
@@ -485,13 +649,13 @@ void adjust_value(edit_field_t *f, int delta)
     if (new_val < f->min) new_val = f->max;
 
     *f->value = new_val;
-    lv_label_set_text_fmt(f->label, f->fmt, new_val);
+    lv_label_set_text_fmt(f->label, f->fmt, edit_disp(f, new_val));
 
-    /* 温度线切换 */
+    /* 温度线切换(按显示值位数) */
     if (f->ind_short && f->ind_long) {
         lv_obj_add_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
-        if (new_val < 100)
+        if (edit_disp(f, new_val) < 100)
             lv_obj_clear_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
         else
             lv_obj_clear_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
@@ -515,11 +679,11 @@ void adjust_value(edit_field_t *f, int delta)
             if (new_v > 300) new_v = 300;
             if (new_v < 30) new_v = 30;
             *f->value = new_v;
-            lv_label_set_text_fmt(f->label, f->fmt, new_v);
+            lv_label_set_text_fmt(f->label, f->fmt, edit_disp(f, new_v));
             if (f->ind_short && f->ind_long) {
                 lv_obj_add_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
                 lv_obj_add_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
-                if (new_v < 100)
+                if (edit_disp(f, new_v) < 100)
                     lv_obj_clear_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
                 else
                     lv_obj_clear_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
@@ -536,11 +700,11 @@ void adjust_value(edit_field_t *f, int delta)
             if (new_v > 300) new_v = 300;
             if (new_v < 30) new_v = 30;
             *f->value = new_v;
-            lv_label_set_text_fmt(f->label, f->fmt, new_v);
+            lv_label_set_text_fmt(f->label, f->fmt, edit_disp(f, new_v));
             if (f->ind_short && f->ind_long) {
                 lv_obj_add_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
                 lv_obj_add_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
-                if (new_v < 100)
+                if (edit_disp(f, new_v) < 100)
                     lv_obj_clear_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
                 else
                     lv_obj_clear_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
@@ -550,7 +714,7 @@ void adjust_value(edit_field_t *f, int delta)
                 if (m) {
                     if (m->dir3) lv_obj_add_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
                     if (m->dir2) lv_obj_add_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
-                    if (new_v < 100)
+                    if (edit_disp(f, new_v) < 100)
                         if (m->dir2) lv_obj_clear_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
                     else
                         if (m->dir3) lv_obj_clear_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
@@ -563,7 +727,7 @@ void adjust_value(edit_field_t *f, int delta)
             if (m2) {
                 if (m2->dir3) lv_obj_add_flag(m2->dir3, LV_OBJ_FLAG_HIDDEN);
                 if (m2->dir2) lv_obj_add_flag(m2->dir2, LV_OBJ_FLAG_HIDDEN);
-                if (set_temp_up < 100) { if (m2->dir2) lv_obj_clear_flag(m2->dir2, LV_OBJ_FLAG_HIDDEN); }
+                if (temp_disp_c(set_temp_up) < 100) { if (m2->dir2) lv_obj_clear_flag(m2->dir2, LV_OBJ_FLAG_HIDDEN); }
                 else { if (m2->dir3) lv_obj_clear_flag(m2->dir3, LV_OBJ_FLAG_HIDDEN); }
             }
             lv_obj_invalidate(lv_scr_act());
@@ -578,11 +742,11 @@ void adjust_value(edit_field_t *f, int delta)
             if (new_v > 300) new_v = 300;
             if (new_v < 30) new_v = 30;
             *f->value = new_v;
-            lv_label_set_text_fmt(f->label, f->fmt, new_v);
+            lv_label_set_text_fmt(f->label, f->fmt, edit_disp(f, new_v));
             if (f->ind_short && f->ind_long) {
                 lv_obj_add_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
                 lv_obj_add_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
-                if (new_v < 100)
+                if (edit_disp(f, new_v) < 100)
                     lv_obj_clear_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
                 else
                     lv_obj_clear_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
@@ -592,7 +756,7 @@ void adjust_value(edit_field_t *f, int delta)
                 if (m) {
                     if (m->dir3) lv_obj_add_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
                     if (m->dir2) lv_obj_add_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
-                    if (new_v < 100)
+                    if (edit_disp(f, new_v) < 100)
                         if (m->dir2) lv_obj_clear_flag(m->dir2, LV_OBJ_FLAG_HIDDEN);
                     else
                         if (m->dir3) lv_obj_clear_flag(m->dir3, LV_OBJ_FLAG_HIDDEN);
@@ -605,7 +769,7 @@ void adjust_value(edit_field_t *f, int delta)
             if (m2) {
                 if (m2->dir3) lv_obj_add_flag(m2->dir3, LV_OBJ_FLAG_HIDDEN);
                 if (m2->dir2) lv_obj_add_flag(m2->dir2, LV_OBJ_FLAG_HIDDEN);
-                if (set_temp_down < 100) { if (m2->dir2) lv_obj_clear_flag(m2->dir2, LV_OBJ_FLAG_HIDDEN); }
+                if (temp_disp_c(set_temp_down) < 100) { if (m2->dir2) lv_obj_clear_flag(m2->dir2, LV_OBJ_FLAG_HIDDEN); }
                 else { if (m2->dir3) lv_obj_clear_flag(m2->dir3, LV_OBJ_FLAG_HIDDEN); }
             }
             lv_obj_invalidate(lv_scr_act());
@@ -811,24 +975,24 @@ void setup_set_temp_display(updown_bbq_set_t *set)
     lv_obj_add_flag(set->down3_dir_label, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(set->down3_icon_label, LV_OBJ_FLAG_HIDDEN);
 
-    if (set_temp_up < 100) {
-        lv_label_set_text_fmt(set->up2_tempnum_label, "%d", set_temp_up);
+    if (temp_disp_c(set_temp_up) < 100) {
+        lv_label_set_text_fmt(set->up2_tempnum_label, "%d", temp_disp_c(set_temp_up));
         lv_obj_clear_flag(set->up2_tempnum_label, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->up2_dir_label, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->up2_icon_label, LV_OBJ_FLAG_HIDDEN);
     } else {
-        lv_label_set_text_fmt(set->up3_tempnum_label, "%d", set_temp_up);
+        lv_label_set_text_fmt(set->up3_tempnum_label, "%d", temp_disp_c(set_temp_up));
         lv_obj_clear_flag(set->up3_tempnum_label, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->up3_dir_label, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->up3_icon_label, LV_OBJ_FLAG_HIDDEN);
     }
-    if (set_temp_down < 100) {
-        lv_label_set_text_fmt(set->down2_tempnum_label, "%d", set_temp_down);
+    if (temp_disp_c(set_temp_down) < 100) {
+        lv_label_set_text_fmt(set->down2_tempnum_label, "%d", temp_disp_c(set_temp_down));
         lv_obj_clear_flag(set->down2_tempnum_label, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->down2_dir_label, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->down2_icon_label, LV_OBJ_FLAG_HIDDEN);
     } else {
-        lv_label_set_text_fmt(set->down3_tempnum_label, "%d", set_temp_down);
+        lv_label_set_text_fmt(set->down3_tempnum_label, "%d", temp_disp_c(set_temp_down));
         lv_obj_clear_flag(set->down3_tempnum_label, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->down3_dir_label, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->down3_icon_label, LV_OBJ_FLAG_HIDDEN);
@@ -933,6 +1097,13 @@ static void blink_exec_cb(void *var, int32_t v)
     lv_obj_set_style_opa((lv_obj_t *)var, v, 0);
 }
 
+/* roller 专用:呼吸 LV_PART_SELECTED 的 text_opa——roller 选中行在 DRAW_POST 用
+   SELECTED part 的 label 描述重绘(lv_roller.c),只闪选中值;整轮 opa 会全部选项一起呼吸 */
+static void blink_exec_sel_cb(void *var, int32_t v)
+{
+    lv_obj_set_style_text_opa((lv_obj_t *)var, v, LV_PART_SELECTED);
+}
+
 /* 遗忘全部闪烁注册(组表+动画组,只清计数,不触碰指针)。在页面对象销毁路径的入口调用:
    page_push/page_pop/screen_set_reset——对象一死动画随对象自动消亡,
    注册表遗忘后不可能再摸到悬空指针(不做任何树遍历/有效性检查) */
@@ -948,7 +1119,9 @@ static void blink_stop(void)
         lv_obj_t *obj = s_blink_objs[i];
         if (!obj) continue;
         lv_anim_del(obj, blink_exec_cb);
+        lv_anim_del(obj, blink_exec_sel_cb);
         lv_obj_set_style_opa(obj, LV_OPA_COVER, 0);   /* 恢复全显 */
+        lv_obj_set_style_text_opa(obj, LV_OPA_COVER, LV_PART_SELECTED);   /* roller 选中行恢复全显 */
     }
     s_blink_n = 0;
 }
@@ -961,7 +1134,7 @@ static void blink_obj_add(lv_obj_t *obj)
     lv_anim_t a;
     lv_anim_init(&a);
     lv_anim_set_var(&a, obj);
-    lv_anim_set_exec_cb(&a, blink_exec_cb);
+    lv_anim_set_exec_cb(&a, lv_obj_has_class(obj, &lv_roller_class) ? blink_exec_sel_cb : blink_exec_cb);
     lv_anim_set_values(&a, LV_OPA_COVER, BLINK_MIN_OPA);
     lv_anim_set_time(&a, BLINK_HALF_MS);
     lv_anim_set_playback_time(&a, BLINK_HALF_MS);
@@ -1009,25 +1182,37 @@ void nav_blink_group_register(lv_obj_t *trigger, lv_obj_t **objs, int n)
 }
 
 // 焦点命中查表:有登记组→整组同步闪;无→停闪
+static blink_group_t *blink_group_find(lv_obj_t *trigger)
+{
+    for (int i = 0; i < s_blink_group_n; i++)
+        if (s_blink_groups[i].trigger == trigger)
+            return &s_blink_groups[i];
+    return NULL;
+}
+
 static void blink_evaluate(lv_obj_t *focused)
 {
-    for (int i = 0; i < s_blink_group_n; i++) {
-        if (s_blink_groups[i].trigger == focused) {
-            blink_stop();       /* 换字段:停旧组起新组,重启即重新同步 */
-            for (int j = 0; j < s_blink_groups[i].n; j++)
-                blink_obj_add(s_blink_groups[i].objs[j]);
-            return;
-        }
+    blink_group_t *g = blink_group_find(focused);
+    if (g) {
+        blink_stop();       /* 换字段:停旧组起新组,重启即重新同步 */
+        for (int j = 0; j < g->n; j++)
+            blink_obj_add(g->objs[j]);
+        return;
     }
     blink_stop();   /* 焦点对象未登记闪烁组:停闪 */
 }
 
-/* 焦点落在新对象:查闪烁组登记表(按钮/未登记对象→停闪) */
+/* 焦点落在新对象:查闪烁组登记表(按钮/未登记对象→停闪)。
+   非 label 触发器(roller)已登记组同样起闪——roller 选中值经 SELECTED text_opa 呼吸 */
 static void nav_blink_focus_cb(lv_event_t *e)
 {
     lv_obj_t *focused = lv_event_get_target(e);
-    if (!focused || !lv_obj_check_type(focused, &lv_label_class)) {
-        blink_stop();   /* 焦点到按钮/图片:停闪 */
+    if (!focused) {
+        blink_stop();
+        return;
+    }
+    if (!lv_obj_check_type(focused, &lv_label_class) && !blink_group_find(focused)) {
+        blink_stop();   /* 焦点到按钮/图片/未登记的 roller:停闪 */
         return;
     }
     blink_evaluate(focused);

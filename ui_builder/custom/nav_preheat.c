@@ -262,7 +262,7 @@ void jump_to_preheat_menu(void)
         g_preheat_menu = group_create_for_page(btns, 2);
 
         edit_clear();
-        edit_register(menu->temp, menu->line2, menu->line3,
+        edit_register_temp(menu->temp, menu->line2, menu->line3,
                       &set_temp, 120, 250, 5, "%d");
         /* blink extras: 单位/方向箭头(离线推导,最近值归属) */
         nav_blink_extra(menu->temp, menu->label_63);
@@ -270,11 +270,11 @@ void jump_to_preheat_menu(void)
         lv_obj_add_event_cb(menu->temp, on_edit_focus, LV_EVENT_FOCUSED, NULL);
         lv_obj_add_event_cb(menu->next, on_edit_focus, LV_EVENT_FOCUSED, NULL);
 
-        lv_label_set_text_fmt(menu->temp, "%d", set_temp);
+        lv_label_set_text_fmt(menu->temp, "%d", temp_disp_c(set_temp));
 
         lv_obj_add_flag(menu->line2, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(menu->line3, LV_OBJ_FLAG_HIDDEN);
-        if (set_temp < 100)
+        if (temp_disp_c(set_temp) < 100)
             lv_obj_clear_flag(menu->line2, LV_OBJ_FLAG_HIDDEN);
         else
             lv_obj_clear_flag(menu->line3, LV_OBJ_FLAG_HIDDEN);
@@ -568,7 +568,7 @@ void preheat_rebuild_menu(page_id_t child)
         g_preheat_menu = group_create_for_page(btns, 2);
 
         edit_clear();
-        edit_register(menu->temp, menu->line2, menu->line3,
+        edit_register_temp(menu->temp, menu->line2, menu->line3,
                       &set_temp, 120, 250, 5, "%d");
         /* blink extras: 单位/方向箭头(离线推导,最近值归属) */
         nav_blink_extra(menu->temp, menu->label_63);
@@ -576,11 +576,11 @@ void preheat_rebuild_menu(page_id_t child)
         lv_obj_add_event_cb(menu->temp, on_edit_focus, LV_EVENT_FOCUSED, NULL);
         lv_obj_add_event_cb(menu->next, on_edit_focus, LV_EVENT_FOCUSED, NULL);
 
-        lv_label_set_text_fmt(menu->temp, "%d", set_temp);
+        lv_label_set_text_fmt(menu->temp, "%d", temp_disp_c(set_temp));
 
         lv_obj_add_flag(menu->line2, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(menu->line3, LV_OBJ_FLAG_HIDDEN);
-        if (set_temp < 100)
+        if (temp_disp_c(set_temp) < 100)
             lv_obj_clear_flag(menu->line2, LV_OBJ_FLAG_HIDDEN);
         else
             lv_obj_clear_flag(menu->line3, LV_OBJ_FLAG_HIDDEN);

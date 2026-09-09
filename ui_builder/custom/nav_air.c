@@ -94,7 +94,7 @@ void update_air_dir_icon(air_setting_t *set)
     if (!set) return;
     lv_obj_add_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(set->icon2, LV_OBJ_FLAG_HIDDEN);
-    if (set_temp < 100)
+    if (temp_disp_c(set_temp) < 100)
         lv_obj_clear_flag(set->icon2, LV_OBJ_FLAG_HIDDEN);
     else
         lv_obj_clear_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
@@ -203,7 +203,7 @@ void jump_to_air_menu(void)
         g_air_menu = group_create_for_page(btns, 4);
 
         edit_clear();
-        edit_register(menu->temp, menu->templine2, menu->templine3,
+        edit_register_temp(menu->temp, menu->templine2, menu->templine3,
                       &set_temp, 30, 300, 5, "%d");
         edit_register(menu->hour, menu->hourline, NULL,
                       &set_hour, 0, 4, 1, "%02d");
@@ -228,13 +228,13 @@ void jump_to_air_menu(void)
             lv_obj_add_event_cb(menu->next, on_air_menu_next_click,
                                 LV_EVENT_CLICKED, NULL);
 
-        lv_label_set_text_fmt(menu->temp, "%d", set_temp);
+        lv_label_set_text_fmt(menu->temp, "%d", temp_disp_c(set_temp));
         lv_label_set_text_fmt(menu->hour, "%02d", set_hour);
         lv_label_set_text_fmt(menu->min, "%02d", set_min);
 
         lv_obj_add_flag(menu->templine3, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(menu->templine2, LV_OBJ_FLAG_HIDDEN);
-        if (set_temp < 100)
+        if (temp_disp_c(set_temp) < 100)
             lv_obj_clear_flag(menu->templine2, LV_OBJ_FLAG_HIDDEN);
         else
             lv_obj_clear_flag(menu->templine3, LV_OBJ_FLAG_HIDDEN);
@@ -275,10 +275,10 @@ void jump_to_air_set(void)
         clear_focus_states(btns, 7);
         lv_group_focus_obj(set->sure);
 
-        lv_label_set_text_fmt(set->temp, "%d", set_temp);
+        lv_label_set_text_fmt(set->temp, "%d", temp_disp_c(set_temp));
         lv_obj_add_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->icon2, LV_OBJ_FLAG_HIDDEN);
-        if (set_temp < 100)
+        if (temp_disp_c(set_temp) < 100)
             lv_obj_clear_flag(set->icon2, LV_OBJ_FLAG_HIDDEN);
         else
             lv_obj_clear_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
@@ -415,7 +415,7 @@ void jump_to_air_setting(void)
         g_air_setting = group_create_for_page(btns, 4);
 
         edit_clear();
-        edit_register(set->temp, set->templine2, set->templine3,
+        edit_register_temp(set->temp, set->templine2, set->templine3,
                       &set_temp, 30, 300, 5, "%d");
         edit_register(set->hour, set->hourline, NULL,
                       &set_hour, 0, 4, 1, "%02d");
@@ -452,10 +452,10 @@ void jump_to_air_setting(void)
         lv_label_set_text_fmt(set->timelabel, "%02d:%02d:%02d", h, m, s);
         lv_label_set_text_fmt(set->hour, "%02d", set_hour);
         lv_label_set_text_fmt(set->min, "%02d", set_min);
-        lv_label_set_text_fmt(set->temp, "%d", set_temp);
+        lv_label_set_text_fmt(set->temp, "%d", temp_disp_c(set_temp));
         lv_obj_add_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->icon2, LV_OBJ_FLAG_HIDDEN);
-        if (set_temp < 100)
+        if (temp_disp_c(set_temp) < 100)
             lv_obj_clear_flag(set->icon2, LV_OBJ_FLAG_HIDDEN);
         else
             lv_obj_clear_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
@@ -765,12 +765,16 @@ void air_rebuild_menu(page_id_t child)
         g_air_menu = group_create_for_page(btns, 4);
 
         edit_clear();
-        edit_register(menu->temp, menu->templine2, menu->templine3,
+        edit_register_temp(menu->temp, menu->templine2, menu->templine3,
                       &set_temp, 30, 300, 5, "%d");
         edit_register(menu->hour, menu->hourline, NULL,
                       &set_hour, 0, 4, 1, "%02d");
         edit_register(menu->min, menu->minline, NULL,
                       &set_min, 0, 59, 1, "%02d");
+        /* blink extras: 单位(℃/时/分)——与 jump_to_air_menu 对齐(pop 重建路径) */
+        nav_blink_extra(menu->temp, menu->label_291);
+        nav_blink_extra(menu->hour, menu->label_294);
+        nav_blink_extra(menu->min, menu->label_295);
 
         lv_obj_add_event_cb(menu->temp, on_air_edit_focus,
                             LV_EVENT_FOCUSED, NULL);
@@ -784,13 +788,13 @@ void air_rebuild_menu(page_id_t child)
             lv_obj_add_event_cb(menu->next, on_air_menu_next_click,
                                 LV_EVENT_CLICKED, NULL);
 
-        lv_label_set_text_fmt(menu->temp, "%d", set_temp);
+        lv_label_set_text_fmt(menu->temp, "%d", temp_disp_c(set_temp));
         lv_label_set_text_fmt(menu->hour, "%02d", set_hour);
         lv_label_set_text_fmt(menu->min, "%02d", set_min);
 
         lv_obj_add_flag(menu->templine3, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(menu->templine2, LV_OBJ_FLAG_HIDDEN);
-        if (set_temp < 100)
+        if (temp_disp_c(set_temp) < 100)
             lv_obj_clear_flag(menu->templine2, LV_OBJ_FLAG_HIDDEN);
         else
             lv_obj_clear_flag(menu->templine3, LV_OBJ_FLAG_HIDDEN);
@@ -821,10 +825,10 @@ void air_rebuild_set(page_id_t child)
         clear_focus_states(btns, 7);
         lv_group_focus_obj(set->sure);
 
-        lv_label_set_text_fmt(set->temp, "%d", set_temp);
+        lv_label_set_text_fmt(set->temp, "%d", temp_disp_c(set_temp));
         lv_obj_add_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->icon2, LV_OBJ_FLAG_HIDDEN);
-        if (set_temp < 100)
+        if (temp_disp_c(set_temp) < 100)
             lv_obj_clear_flag(set->icon2, LV_OBJ_FLAG_HIDDEN);
         else
             lv_obj_clear_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
@@ -961,12 +965,17 @@ void air_rebuild_setting(void)
         g_air_setting = group_create_for_page(btns, 4);
 
         edit_clear();
-        edit_register(set->temp, set->templine2, set->templine3,
+        edit_register_temp(set->temp, set->templine2, set->templine3,
                       &set_temp, 30, 300, 5, "%d");
         edit_register(set->hour, set->hourline, NULL,
                       &set_hour, 0, 4, 1, "%02d");
         edit_register(set->min, set->minline, NULL,
                       &set_min, 0, 59, 1, "%02d");
+        /* blink extras: 单位(℃双套/时/分)——与 jump_to_air_setting 对齐(pop 重建路径) */
+        nav_blink_extra(set->temp, set->icon2);
+        nav_blink_extra(set->temp, set->icon3);
+        nav_blink_extra(set->hour, set->label_326);
+        nav_blink_extra(set->min, set->label_327);
 
         lv_obj_add_event_cb(set->temp, on_air_edit_focus, LV_EVENT_FOCUSED, NULL);
         lv_obj_add_event_cb(set->hour, on_air_edit_focus, LV_EVENT_FOCUSED, NULL);
@@ -987,10 +996,10 @@ void air_rebuild_setting(void)
         lv_label_set_text_fmt(set->timelabel, "%02d:%02d:%02d", h, m, s);
         lv_label_set_text_fmt(set->hour, "%02d", set_hour);
         lv_label_set_text_fmt(set->min, "%02d", set_min);
-        lv_label_set_text_fmt(set->temp, "%d", set_temp);
+        lv_label_set_text_fmt(set->temp, "%d", temp_disp_c(set_temp));
         lv_obj_add_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->icon2, LV_OBJ_FLAG_HIDDEN);
-        if (set_temp < 100)
+        if (temp_disp_c(set_temp) < 100)
             lv_obj_clear_flag(set->icon2, LV_OBJ_FLAG_HIDDEN);
         else
             lv_obj_clear_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);

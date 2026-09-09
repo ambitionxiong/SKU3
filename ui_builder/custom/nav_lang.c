@@ -131,11 +131,16 @@ static int lang_fuzzy_status(lv_obj_t *obj, const char *txt, char *buf, int buf_
         memmove(bp + 4, bp + 6, strlen(bp + 6) + 1);
         bp += 4;
     }
-    /* ℃→°C（等长替换，与 tr() 输出一致） */
-    bp = buf;
-    while ((bp = strstr(bp, "\xE2\x84\x83")) != NULL) {
-        bp[0] = (char)0xC2; bp[1] = (char)0xB0; bp[2] = 'C';
-        bp += 3;
+    /* 单位出口：℉ 模式 ℃/°C→°F 且烙死的数值一并换算(ui_temp_rewrite)；
+       ℃ 模式维持 ℃→°C 等长替换（与 tr() 输出一致） */
+    if (SET_Data.Set_TempUnit == 1)
+        ui_temp_rewrite(buf, buf_len, 1);
+    else {
+        bp = buf;
+        while ((bp = strstr(bp, "\xE2\x84\x83")) != NULL) {
+            bp[0] = (char)0xC2; bp[1] = (char)0xB0; bp[2] = 'C';
+            bp += 3;
+        }
     }
     return 1;
 }
@@ -220,6 +225,7 @@ void lang_scr_load_anim(lv_obj_t *scr, lv_scr_load_anim_t anim_type,
 {
     lv_scr_load_anim(scr, anim_type, time, delay, auto_del);
     lang_on_page_built();
+    nav_tempunit_refresh_screen(scr);   /* 温度单位兜底:新屏烙死的 ℃ 标签/占位值重写(中英文都要跑) */
     nav_topflag_demo_sync();   /* 新屏已激活:演示徽标立即重定位(否则500ms内旧位置与新页标题重叠) */
 }
 

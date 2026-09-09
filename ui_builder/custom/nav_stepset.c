@@ -91,7 +91,7 @@ void stepset_apply_sel_mode(bool restore)
     }
 
     edit_clear();
-    edit_register(scr->temp, scr->templine2, scr->templine3,
+    edit_register_temp(scr->temp, scr->templine2, scr->templine3,
                   &set_temp, r->tmin, r->tmax, 5, "%d");
     edit_register(scr->hour, scr->hourline, NULL,
                   &set_hour, 0, r->hmax, 1, "%02d");
@@ -102,7 +102,7 @@ void stepset_apply_sel_mode(bool restore)
     nav_blink_extra(scr->hour, scr->label_8);
     nav_blink_extra(scr->min, scr->label_9);
 
-    lv_label_set_text_fmt(scr->temp, "%d", set_temp);
+    lv_label_set_text_fmt(scr->temp, "%d", temp_disp_c(set_temp));
     lv_label_set_text_fmt(scr->hour, "%02d", set_hour);
     lv_label_set_text_fmt(scr->min, "%02d", set_min);
     /* line 显隐统一由 stepset_on_focus 按当前焦点控制 */
@@ -173,15 +173,21 @@ void stepset_on_focus(lv_event_t *e)
         lv_roller_get_selected_str(scr->roller_mode, buf, sizeof(buf));
         int n = 0;   /* 显示宽度单位：汉字=2、ASCII=1（英文约半字宽） */
         for (char *p = buf; *p; p++) {
-            if ((unsigned char)*p >= 0x80) n += 2;
-            else n += 1;
+            if ((unsigned char)*p >= 0x80) {
+                /* UTF-8 汉字 3 字节:跳过 2 个续字节,1 个汉字计 2(原按字节统计,
+                   任何中文选项都算出 n>4 恒选 line4,下划线看起来不切换) */
+                n += 2;
+                p += 2;
+            } else {
+                n += 1;
+            }
         }
         n = n / 2;
         if (n <= 2)        lv_obj_clear_flag(scr->modeline2, LV_OBJ_FLAG_HIDDEN);
-        else if (n <= 4)   lv_obj_clear_flag(scr->modeline3, LV_OBJ_FLAG_HIDDEN);
+        else if (n <= 3)   lv_obj_clear_flag(scr->modeline3, LV_OBJ_FLAG_HIDDEN);
         else               lv_obj_clear_flag(scr->modeline4, LV_OBJ_FLAG_HIDDEN);
     } else if (f == scr->temp) {
-        if (set_temp < 100)
+        if (temp_disp_c(set_temp) < 100)
             lv_obj_clear_flag(scr->templine2, LV_OBJ_FLAG_HIDDEN);
         else
             lv_obj_clear_flag(scr->templine3, LV_OBJ_FLAG_HIDDEN);

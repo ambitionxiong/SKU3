@@ -146,9 +146,9 @@ void jump_to_slowcook_menu_probe(void)
         g_slowcook_menu_probe = group_create_for_page(btns, 3);
 
         edit_clear();
-        edit_register(menu->temp, menu->templine2, menu->templine3,
+        edit_register_temp(menu->temp, menu->templine2, menu->templine3,
                       &set_temp, 70, 120, 5, "%d");
-        edit_register(menu->probetemp, menu->probetempline, NULL,
+        edit_register_temp(menu->probetemp, menu->probetempline, NULL,
                       &probe_target_temp, 30, 99, 1, "%d");
         /* blink extras: 单位/方向箭头(离线推导,最近值归属) */
         nav_blink_extra(menu->temp, menu->label_81);
@@ -165,12 +165,12 @@ void jump_to_slowcook_menu_probe(void)
             lv_obj_add_event_cb(menu->next, on_slowcook_probe_next_click,
                                 LV_EVENT_CLICKED, NULL);
 
-        lv_label_set_text_fmt(menu->temp, "%d", set_temp);
-        lv_label_set_text_fmt(menu->probetemp, "%d", probe_target_temp);
+        lv_label_set_text_fmt(menu->temp, "%d", temp_disp_c(set_temp));
+        lv_label_set_text_fmt(menu->probetemp, "%d", temp_disp_c(probe_target_temp));
 
         lv_obj_add_flag(menu->templine3, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(menu->templine2, LV_OBJ_FLAG_HIDDEN);
-        if (set_temp < 100)
+        if (temp_disp_c(set_temp) < 100)
             lv_obj_clear_flag(menu->templine2, LV_OBJ_FLAG_HIDDEN);
         else
             lv_obj_clear_flag(menu->templine3, LV_OBJ_FLAG_HIDDEN);
@@ -204,14 +204,14 @@ void jump_to_slowcook_set_probe(void)
         g_slowcook_set_probe = group_create_for_page(btns, 3);
         clear_focus_states(btns, 3);
 
-        lv_label_set_text_fmt(set->temp, "%d", set_temp);
+        lv_label_set_text_fmt(set->temp, "%d", temp_disp_c(set_temp));
         lv_obj_add_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->icon2, LV_OBJ_FLAG_HIDDEN);
-        if (set_temp < 100)
+        if (temp_disp_c(set_temp) < 100)
             lv_obj_clear_flag(set->icon2, LV_OBJ_FLAG_HIDDEN);
         else
             lv_obj_clear_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
-        lv_label_set_text_fmt(set->probetemp, "%d", probe_target_temp);
+        lv_label_set_text_fmt(set->probetemp, "%d", temp_disp_c(probe_target_temp));
 
         apply_toggle_state(set->offdelay, set->ondelay, delay_on);
         mode_set_apply_delay_label(set->ondelay);
@@ -476,9 +476,9 @@ void slowcook_probe_rebuild_menu(page_id_t child)
         g_slowcook_menu_probe = group_create_for_page(btns, 3);
 
         edit_clear();
-        edit_register(menu->temp, menu->templine2, menu->templine3,
+        edit_register_temp(menu->temp, menu->templine2, menu->templine3,
                       &set_temp, 70, 120, 5, "%d");
-        edit_register(menu->probetemp, menu->probetempline, NULL,
+        edit_register_temp(menu->probetemp, menu->probetempline, NULL,
                       &probe_target_temp, 30, 99, 1, "%d");
         /* blink extras: 单位/方向箭头(离线推导,最近值归属) */
         nav_blink_extra(menu->temp, menu->label_81);
@@ -494,12 +494,12 @@ void slowcook_probe_rebuild_menu(page_id_t child)
             lv_obj_add_event_cb(menu->next, on_slowcook_probe_next_click,
                                 LV_EVENT_CLICKED, NULL);
 
-        lv_label_set_text_fmt(menu->temp, "%d", set_temp);
-        lv_label_set_text_fmt(menu->probetemp, "%d", probe_target_temp);
+        lv_label_set_text_fmt(menu->temp, "%d", temp_disp_c(set_temp));
+        lv_label_set_text_fmt(menu->probetemp, "%d", temp_disp_c(probe_target_temp));
 
         lv_obj_add_flag(menu->templine3, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(menu->templine2, LV_OBJ_FLAG_HIDDEN);
-        if (set_temp < 100)
+        if (temp_disp_c(set_temp) < 100)
             lv_obj_clear_flag(menu->templine2, LV_OBJ_FLAG_HIDDEN);
         else
             lv_obj_clear_flag(menu->templine3, LV_OBJ_FLAG_HIDDEN);
@@ -525,14 +525,14 @@ void slowcook_probe_rebuild_set(page_id_t child)
         g_slowcook_set_probe = group_create_for_page(btns, 3);
         clear_focus_states(btns, 3);
 
-        lv_label_set_text_fmt(set->temp, "%d", set_temp);
+        lv_label_set_text_fmt(set->temp, "%d", temp_disp_c(set_temp));
         lv_obj_add_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->icon2, LV_OBJ_FLAG_HIDDEN);
-        if (set_temp < 100)
+        if (temp_disp_c(set_temp) < 100)
             lv_obj_clear_flag(set->icon2, LV_OBJ_FLAG_HIDDEN);
         else
             lv_obj_clear_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
-        lv_label_set_text_fmt(set->probetemp, "%d", probe_target_temp);
+        lv_label_set_text_fmt(set->probetemp, "%d", temp_disp_c(probe_target_temp));
 
         apply_toggle_state(set->offdelay, set->ondelay, delay_on);
         mode_set_apply_delay_label(set->ondelay);

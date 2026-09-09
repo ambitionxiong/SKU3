@@ -352,12 +352,17 @@ void page_pop(void)
 
                 /* 注册编辑字段 */
                 edit_clear();
-                edit_register(bbq->tempnum_label, bbq->templine_short, bbq->temeline_long,
+                edit_register_temp(bbq->tempnum_label, bbq->templine_short, bbq->temeline_long,
                               &set_temp, 30, 300, 5, "%d");
                 edit_register(bbq->hournum_label, bbq->hourline, NULL,
                               &set_hour, 0, 4, 1, "%02d");
                 edit_register(bbq->minnum_label, bbq->minline, NULL,
                               &set_min, 0, 59, 1, "%02d");
+                /* blink extras: 单位(℃/时/分)——与 jump_to_updown_bbq_menu 对齐,
+                   漏了则从 set 返回重建后只有数字+指示线闪、单位不闪 */
+                nav_blink_extra(bbq->tempnum_label, bbq->temp_label);
+                nav_blink_extra(bbq->hournum_label, bbq->hour_label);
+                nav_blink_extra(bbq->minnum_label, bbq->min_label);
 
                 /* 绑定 focus 高亮 */
                 lv_obj_add_event_cb(bbq->tempnum_label, on_edit_focus, LV_EVENT_FOCUSED, NULL);
@@ -366,14 +371,14 @@ void page_pop(void)
                 lv_obj_add_event_cb(bbq->next_button, on_edit_focus, LV_EVENT_FOCUSED, NULL);
 
                 /* 初始化数值显示 */
-                lv_label_set_text_fmt(bbq->tempnum_label, "%d", set_temp);
+                lv_label_set_text_fmt(bbq->tempnum_label, "%d", temp_disp_c(set_temp));
                 lv_label_set_text_fmt(bbq->hournum_label, "%02d", set_hour);
                 lv_label_set_text_fmt(bbq->minnum_label, "%02d", set_min);
 
                 /* 初始显示温度线 */
                 lv_obj_add_flag(bbq->templine_short, LV_OBJ_FLAG_HIDDEN);
                 lv_obj_add_flag(bbq->temeline_long, LV_OBJ_FLAG_HIDDEN);
-                if (set_temp < 100)
+                if (temp_disp_c(set_temp) < 100)
                     lv_obj_clear_flag(bbq->templine_short, LV_OBJ_FLAG_HIDDEN);
                 else
                     lv_obj_clear_flag(bbq->temeline_long, LV_OBJ_FLAG_HIDDEN);
@@ -608,9 +613,9 @@ void page_pop(void)
                 g_updown_bbq_setting = group_create_for_page(btns, 5);
 
                 edit_clear();
-                edit_register(set->tempup_label, set->shortup_templine_img, set->longup_templine_img,
+                edit_register_temp(set->tempup_label, set->shortup_templine_img, set->longup_templine_img,
                               &set_temp_up, 30, 300, 5, "%d");
-                edit_register(set->tempdown_label, set->shordown_templine_img, set->longdown_templine_img,
+                edit_register_temp(set->tempdown_label, set->shordown_templine_img, set->longdown_templine_img,
                               &set_temp_down, 30, 300, 5, "%d");
                 edit_register(set->hour_label, set->hourline_img, NULL,
                               &set_hour, 0, 4, 1, "%02d");
@@ -653,8 +658,8 @@ void page_pop(void)
                 lv_label_set_text_fmt(set->time_label, "%02d:%02d:%02d", h, m, s);
                 lv_label_set_text_fmt(set->hour_label, "%02d", set_hour);
                 lv_label_set_text_fmt(set->min_label, "%02d", set_min);
-                lv_label_set_text_fmt(set->tempup_label, "%d", set_temp_up);
-                lv_label_set_text_fmt(set->tempdown_label, "%d", set_temp_down);
+                lv_label_set_text_fmt(set->tempup_label, "%d", temp_disp_c(set_temp_up));
+                lv_label_set_text_fmt(set->tempdown_label, "%d", temp_disp_c(set_temp_down));
 
                 lv_obj_add_flag(set->shortup_templine_img, LV_OBJ_FLAG_HIDDEN);
                 lv_obj_add_flag(set->longup_templine_img, LV_OBJ_FLAG_HIDDEN);

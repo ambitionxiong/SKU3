@@ -69,6 +69,15 @@ void topflagpage_create(ui_manager_t *ui)
     lv_obj_set_style_img_opa(scr->light, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_pos(scr->light, 678, 24);
 
+    // Init scr->like (synced from base project 2026-09-09: default hidden, wiring TBD)
+    scr->like = lv_img_create(scr->obj);
+    lv_img_set_src(scr->like, LVGL_IMAGE_PATH(like.png));
+    lv_img_set_pivot(scr->like, 50, 50);
+    lv_img_set_angle(scr->like, 0);
+    lv_obj_set_style_img_opa(scr->like, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(scr->like, 740, 24);
+    lv_obj_add_flag(scr->like, LV_OBJ_FLAG_HIDDEN);
+
     // Init scr->container_1
     scr->container_1 = lv_obj_create(scr->obj);
     lv_obj_set_pos(scr->container_1, 0, 0);

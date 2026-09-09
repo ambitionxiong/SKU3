@@ -1617,4 +1617,20 @@ void hch_rebuild_cooling(void);
 void hch_rebuild_complete(void);
 void hch_resume_cooking(void);
 
+/* ==================== 温度显示单位（℉）====================
+ * 内部存储/编码器范围/协议全部保持摄氏，仅标签渲染层按 Set_TempUnit 换算显示。
+ * 三条通道：
+ *   1) lv_label_set_text_fmt 出口宏：fmt 中紧跟 ℃/°C/°F 的整数参数自动换算；
+ *   2) 温度编辑字段（edit_register_temp + adjust_value）：渲染值与长短指示线阈值按显示值；
+ *   3) nav_tempunit_refresh_screen 遍历兜底：生成层烙死的 "℃" 单位标签与占位数字。 */
+int temp_disp_c(int c);                                /* 摄氏 → 显示值(℉ 四舍五入，℃ 原样) */
+int edit_disp(const edit_field_t *f, int v);           /* 编辑字段渲染值:温度按显示单位，时间原样 */
+void ui_temp_rewrite(char *buf, int cap, int to_f);    /* 原地把 ℃/°C↔°F 的符号+紧邻数字重写 */
+void nav_tempunit_refresh_screen(lv_obj_t *root);      /* 遍历兜底：页面构建/切单位后调用 */
+void ui_label_fmt_impl(lv_obj_t *obj, const char *fmt, ...);
+void edit_register_temp(lv_obj_t *label, lv_obj_t *ind_s, lv_obj_t *ind_l,
+                        int *value, int min, int max, int step, const char *fmt);
+/* 标签格式化出口：温度参数级换算（实现见 nav_core.c）。仅 custom 层生效，生成层保持原函数 */
+#define lv_label_set_text_fmt(obj, fmt, ...) ui_label_fmt_impl(obj, fmt, ##__VA_ARGS__)
+
 #endif

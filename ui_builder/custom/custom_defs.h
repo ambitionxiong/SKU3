@@ -126,6 +126,7 @@ typedef struct {
     int max;
     int step;
     const char *fmt;     // 显示格式："%d" 或 "%02d"
+    uint8_t is_temp;     // 温度字段：渲染值与长短指示线阈值按显示单位(℉)换算(edit_register_temp 置位)，内部值恒摄氏
 } edit_field_t;
 
 static inline int is_door_open(void) {

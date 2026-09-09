@@ -288,7 +288,7 @@ static void six_cook_apply_display(void)
     switch (g_six_phase) {
     case SIX_PHASE_RISING:
         lv_label_set_text(sc->cookstatus, g_six_paused ? tr("暂停中...") : tr("发酵中..."));
-        lv_label_set_text_fmt(sc->label_12, tr("| %s | 45℃ | 45分钟"), six_bread_name());
+        lv_label_set_text_fmt(sc->label_12, tr("| %s | %d℃ | 45分钟"), six_bread_name(), temp_disp_c(45));
         if (bl) lv_label_set_text(bl, g_six_paused ? tr("开 始") : tr("暂 停"));
         break;
     case SIX_PHASE_COOKING:

@@ -328,6 +328,7 @@ static void on_set_wddw_click(lv_event_t *e)
     SET_Data.Set_TempUnit = !SET_Data.Set_TempUnit;
     screen_SET_t *ss = screen_SET_get(&ui_manager);
     if (ss && ss->WDDW_Lb) lv_label_set_text(ss->WDDW_Lb, tr(SET_Data.Set_TempUnit ? "°F" : "°C"));
+    nav_tempunit_refresh_screen(lv_scr_act());   /* 全屏立即换算:覆盖层+下层页面的温度文本一次重写 */
 }
 
 static void on_set_djtime_click(lv_event_t *e)
@@ -556,6 +557,10 @@ void screen_set_reset(void)
         lv_obj_del(screen_SET.obj);
         screen_SET.obj = NULL;
     }
+    /* 恢复进入前焦点组:功能键弹层(nav_key.c)后按键可能在下层页面静默结束
+       (如 KEY_MENU 发现已 在主菜单),current_group 若仍指已空的覆盖层组,
+       编码器/确认键全部失效;其余调用方随后都会重建页面并自行赋 current_group */
+    current_group = s_prev_group;
     s_prev_group = NULL;
     screen_set_popup_reset();   /* 覆盖层销毁时弹窗对象随之消亡,复位状态 */
 }

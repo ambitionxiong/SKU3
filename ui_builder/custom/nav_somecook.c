@@ -287,7 +287,7 @@ void jump_to_stepset(int i)
         lv_group_focus_obj(ss->next);
 
         /* 编辑注册（范围/默认按当前选中模式，由 stepset_apply_sel_mode 设置） */
-        edit_register(ss->temp, ss->templine2, ss->templine3,
+        edit_register_temp(ss->temp, ss->templine2, ss->templine3,
                       &set_temp, 30, 300, 5, "%d");
         edit_register(ss->hour, ss->hourline, NULL,
                       &set_hour, 0, 4, 1, "%02d");
@@ -297,6 +297,13 @@ void jump_to_stepset(int i)
         nav_blink_extra(ss->temp, ss->label_7);
         nav_blink_extra(ss->hour, ss->label_8);
         nav_blink_extra(ss->min, ss->label_9);
+        /* roller 闪烁组:聚焦滚轮时选中行(SELECTED text_opa 呼吸)+当前下划线一起闪;
+           线的显隐由 stepset_on_focus 按选中项字宽决定,blink 只管"显哪根闪哪根";
+           英文模式由 stepset_lang_tune 改注册为覆盖标签+下划线(滚轮本体不进组) */
+        lv_obj_t *roller_g1[2] = { ss->roller_main, ss->mainline };
+        nav_blink_group_register(ss->roller_main, roller_g1, 2);
+        lv_obj_t *roller_g2[4] = { ss->roller_mode, ss->modeline2, ss->modeline3, ss->modeline4 };
+        nav_blink_group_register(ss->roller_mode, roller_g2, 4);
 
         /* 事件绑定 */
         lv_obj_add_event_cb(ss->roller_main, stepset_on_focus, LV_EVENT_FOCUSED, NULL);

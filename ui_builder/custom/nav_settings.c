@@ -41,9 +41,9 @@ void jump_to_updown_bbq_setting(void)
         g_updown_bbq_setting = group_create_for_page(btns, 5);
 
         edit_clear();
-        edit_register(set->tempup_label, set->shortup_templine_img, set->longup_templine_img,
+        edit_register_temp(set->tempup_label, set->shortup_templine_img, set->longup_templine_img,
                       &set_temp_up, 30, 300, 5, "%d");
-        edit_register(set->tempdown_label, set->shordown_templine_img, set->longdown_templine_img,
+        edit_register_temp(set->tempdown_label, set->shordown_templine_img, set->longdown_templine_img,
                       &set_temp_down, 30, 300, 5, "%d");
         edit_register(set->hour_label, set->hourline_img, NULL,
                       &set_hour, 0, 4, 1, "%02d");
@@ -88,8 +88,8 @@ void jump_to_updown_bbq_setting(void)
         lv_label_set_text_fmt(set->time_label, "%02d:%02d:%02d", h, m, s);
         lv_label_set_text_fmt(set->hour_label, "%02d", set_hour);
         lv_label_set_text_fmt(set->min_label, "%02d", set_min);
-        lv_label_set_text_fmt(set->tempup_label, "%d", set_temp_up);
-        lv_label_set_text_fmt(set->tempdown_label, "%d", set_temp_down);
+        lv_label_set_text_fmt(set->tempup_label, "%d", temp_disp_c(set_temp_up));
+        lv_label_set_text_fmt(set->tempdown_label, "%d", temp_disp_c(set_temp_down));
 
         /* 初始隐藏所有指示线 + dir/icon */
         lv_obj_add_flag(set->shortup_templine_img, LV_OBJ_FLAG_HIDDEN);
@@ -156,14 +156,14 @@ void update_setting_dir_icon(updown_bbq_setting_t *set)
     lv_obj_add_flag(set->icon2_label2, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(set->icon3_label2, LV_OBJ_FLAG_HIDDEN);
 
-    if (set_temp_up < 100) {
+    if (temp_disp_c(set_temp_up) < 100) {
         lv_obj_clear_flag(set->dirup2_label, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->icon2_label1, LV_OBJ_FLAG_HIDDEN);
     } else {
         lv_obj_clear_flag(set->dirup3_label, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->icon3_label1, LV_OBJ_FLAG_HIDDEN);
     }
-    if (set_temp_down < 100) {
+    if (temp_disp_c(set_temp_down) < 100) {
         lv_obj_clear_flag(set->dirdown2_label, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->icon2_label2, LV_OBJ_FLAG_HIDDEN);
     } else {

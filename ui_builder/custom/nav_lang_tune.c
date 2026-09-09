@@ -14074,6 +14074,14 @@ void stepset_lang_tune(void)
     lv_obj_add_event_cb(s_stepset_sel_lbl_main, stepset_en_sel_lbl_del_cb, LV_EVENT_DELETE, &s_stepset_sel_lbl_main);
     lv_obj_add_event_cb(s_stepset_sel_lbl_mode, stepset_en_sel_lbl_del_cb, LV_EVENT_DELETE, &s_stepset_sel_lbl_mode);
 
+    /* 英文闪烁组:覆盖标签+下划线一起呼吸;滚轮本体不进组——原生选中文字已被上面设为
+       透明,若进组会被 text_opa 动画点亮成"第二个选中值"。此处覆盖 build 时的中文组
+       (同 trigger 原位覆盖);切回中文时页面重建、重新登记中文组 */
+    lv_obj_t *en_g1[2] = { s_stepset_sel_lbl_main, pg->mainline };
+    nav_blink_group_register(pg->roller_main, en_g1, 2);
+    lv_obj_t *en_g2[2] = { s_stepset_sel_lbl_mode, pg->modeline4 };
+    nav_blink_group_register(pg->roller_mode, en_g2, 2);
+
     stepset_en_roller_sel_refresh();   /* 进页初摆(选项已翻译、选中已恢复) */
     lv_obj_add_event_cb(pg->roller_main, stepset_en_roller_sel_cb, LV_EVENT_VALUE_CHANGED, NULL);
     lv_obj_add_event_cb(pg->roller_mode, stepset_en_roller_sel_cb, LV_EVENT_VALUE_CHANGED, NULL);

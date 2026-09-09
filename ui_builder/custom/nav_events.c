@@ -260,7 +260,7 @@ void on_edit_focus(lv_event_t *e)
     edit_field_t *f = find_edit_field(target);
     if (f) {
         if (f->ind_short && f->ind_long) {
-            if (*f->value < 100)
+            if (edit_disp(f, *f->value) < 100)   /* 按显示值位数选线:℉ 下 80℃ 显 176 三位走长线 */
                 lv_obj_clear_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
             else
                 lv_obj_clear_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);

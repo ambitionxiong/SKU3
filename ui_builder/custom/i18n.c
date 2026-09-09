@@ -26,7 +26,7 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "| %s | %d分钟", "| %s | %dm" },
         { "| %s | %d分钟", "| %s | %dm" },
         { "| %s | %s | %d分钟", "| %s | %s | %dm" },
-        { "| %s | 45℃ | 45分钟", "| %s | 45℃ | 45 min" },
+        { "| %s | %d℃ | 45分钟", "| %s | %d°C | 45 min" },
         { "| %s | 额外上色 | %d分钟", "| %s | Extra Browning | %d min" },
         { "| 5分钟 |", "| 5 min |" },
         { "| 上下烧烤 |", "| Conventional |" },
@@ -614,9 +614,42 @@ static const char *tr_celsius(const char *en)
     return tbuf;
 }
 
+/* 华氏模式出口：℃/°C → °F（同 3 字节等长替换；数值换算在标签写入层，
+   这里只统一单位符号，词条表与动态格式串全覆盖） */
+static const char *tr_unit_f(const char *s)
+{
+    if (!strstr(s, "\xE2\x84\x83") && !strstr(s, "\xC2\xB0" "C")) return s;
+    static char ubuf[256];
+    size_t len = strlen(s);
+    if (len >= sizeof(ubuf)) return s;
+    memcpy(ubuf, s, len + 1);
+    char *p = ubuf;
+    while ((p = strstr(p, "\xE2\x84\x83")) != NULL) {
+        p[0] = (char)0xC2; p[1] = (char)0xB0; p[2] = 'F';
+        p += 3;
+    }
+    p = ubuf;
+    while ((p = strstr(p, "\xC2\xB0" "C")) != NULL) {
+        p[2] = 'F';
+        p += 3;
+    }
+    return ubuf;
+}
+
 const char *tr(const char *zh)
 {
     if (!zh) return zh;
+    if (SET_Data.Set_TempUnit == 1) {   /* 华氏:中英文都出口换 °F(词条/动态串只换符号) */
+        const char *s = zh;
+        if (is_english()) {
+            for (int i = 0; i < s_table_n; i++)
+                if (s_table[i].zh[0] == zh[0] && strcmp(s_table[i].zh, zh) == 0) {
+                    s = s_table[i].en;
+                    break;
+                }
+        }
+        return tr_unit_f(s);
+    }
     if (is_english()) {
         for (int i = 0; i < s_table_n; i++)
             if (s_table[i].zh[0] == zh[0] && strcmp(s_table[i].zh, zh) == 0)

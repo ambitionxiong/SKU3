@@ -3905,6 +3905,7 @@ typedef struct {
     lv_obj_t *demo;
     lv_obj_t *timer;
     lv_obj_t *light;
+    lv_obj_t *like;
     lv_obj_t *container_1;
     lv_obj_t *image_1;
     lv_obj_t *image_2;

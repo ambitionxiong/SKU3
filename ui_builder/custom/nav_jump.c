@@ -145,7 +145,7 @@ void jump_to_updown_bbq_menu(void)
 
         /* 注册编辑字段 */
         edit_clear();
-        edit_register(bbq->tempnum_label, bbq->templine_short, bbq->temeline_long,
+        edit_register_temp(bbq->tempnum_label, bbq->templine_short, bbq->temeline_long,
                       &set_temp, 30, 300, 5, "%d");
         edit_register(bbq->hournum_label, bbq->hourline, NULL,
                       &set_hour, 0, 4, 1, "%02d");
@@ -163,14 +163,14 @@ void jump_to_updown_bbq_menu(void)
         lv_obj_add_event_cb(bbq->next_button, on_edit_focus, LV_EVENT_FOCUSED, NULL);
 
         /* 初始化数值显示（覆盖 UiBuilder 默认值） */
-        lv_label_set_text_fmt(bbq->tempnum_label, "%d", set_temp);
+        lv_label_set_text_fmt(bbq->tempnum_label, "%d", temp_disp_c(set_temp));
         lv_label_set_text_fmt(bbq->hournum_label, "%02d", set_hour);
         lv_label_set_text_fmt(bbq->minnum_label, "%02d", set_min);
 
         /* 初始显示温度线 */
         lv_obj_add_flag(bbq->templine_short, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(bbq->temeline_long, LV_OBJ_FLAG_HIDDEN);
-        if (set_temp < 100)
+        if (temp_disp_c(set_temp) < 100)
             lv_obj_clear_flag(bbq->templine_short, LV_OBJ_FLAG_HIDDEN);
         else
             lv_obj_clear_flag(bbq->temeline_long, LV_OBJ_FLAG_HIDDEN);
@@ -440,7 +440,7 @@ void jump_to_updown_bbq_menu_top(void)
         g_updown_bbq_menu_top = group_create_for_page(btns, 2);
 
         edit_clear();
-        edit_register(menu->temp, menu->line2, menu->line3,
+        edit_register_temp(menu->temp, menu->line2, menu->line3,
                       &set_temp_up, 30, 300, 5, "%d");
         /* blink extras: 方向箭头+单位 */
         nav_blink_extra(menu->temp, menu->dir2);
@@ -450,13 +450,13 @@ void jump_to_updown_bbq_menu_top(void)
         lv_obj_add_event_cb(menu->temp, on_edit_focus, LV_EVENT_FOCUSED, NULL);
         lv_obj_add_event_cb(menu->next, on_edit_focus, LV_EVENT_FOCUSED, NULL);
 
-        lv_label_set_text_fmt(menu->temp, "%d", set_temp_up);
+        lv_label_set_text_fmt(menu->temp, "%d", temp_disp_c(set_temp_up));
 
         lv_obj_add_flag(menu->line2, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(menu->line3, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(menu->dir3, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(menu->dir2, LV_OBJ_FLAG_HIDDEN);
-        if (set_temp_up < 100) {
+        if (temp_disp_c(set_temp_up) < 100) {
             lv_obj_clear_flag(menu->line2, LV_OBJ_FLAG_HIDDEN);
             lv_obj_clear_flag(menu->dir2, LV_OBJ_FLAG_HIDDEN);
         } else {
@@ -491,7 +491,7 @@ void jump_to_updown_bbq_menu_low(void)
         g_updown_bbq_menu_low = group_create_for_page(btns, 2);
 
         edit_clear();
-        edit_register(menu->temp, menu->line2, menu->line3,
+        edit_register_temp(menu->temp, menu->line2, menu->line3,
                       &set_temp_down, 30, 300, 5, "%d");
         /* blink extras: 方向箭头+单位 */
         nav_blink_extra(menu->temp, menu->dir2);
@@ -501,13 +501,13 @@ void jump_to_updown_bbq_menu_low(void)
         lv_obj_add_event_cb(menu->temp, on_edit_focus, LV_EVENT_FOCUSED, NULL);
         lv_obj_add_event_cb(menu->next, on_edit_focus, LV_EVENT_FOCUSED, NULL);
 
-        lv_label_set_text_fmt(menu->temp, "%d", set_temp_down);
+        lv_label_set_text_fmt(menu->temp, "%d", temp_disp_c(set_temp_down));
 
         lv_obj_add_flag(menu->line2, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(menu->line3, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(menu->dir3, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(menu->dir2, LV_OBJ_FLAG_HIDDEN);
-        if (set_temp_down < 100) {
+        if (temp_disp_c(set_temp_down) < 100) {
             lv_obj_clear_flag(menu->line2, LV_OBJ_FLAG_HIDDEN);
             lv_obj_clear_flag(menu->dir2, LV_OBJ_FLAG_HIDDEN);
         } else {
@@ -540,7 +540,7 @@ static void color_menu_open(void)
         g_preheat_menu = group_create_for_page(btns, 2);
 
         edit_clear();
-        edit_register(menu->temp, menu->line2, menu->line3,
+        edit_register_temp(menu->temp, menu->line2, menu->line3,
                       &set_temp, 30, 300, 5, "%d");
         /* blink extras: 单位℃ */
         nav_blink_extra(menu->temp, menu->label_63);
@@ -548,11 +548,11 @@ static void color_menu_open(void)
         lv_obj_add_event_cb(menu->temp, on_edit_focus, LV_EVENT_FOCUSED, NULL);
         lv_obj_add_event_cb(menu->next, on_edit_focus, LV_EVENT_FOCUSED, NULL);
 
-        lv_label_set_text_fmt(menu->temp, "%d", set_temp);
+        lv_label_set_text_fmt(menu->temp, "%d", temp_disp_c(set_temp));
 
         lv_obj_add_flag(menu->line2, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(menu->line3, LV_OBJ_FLAG_HIDDEN);
-        if (set_temp < 100)
+        if (temp_disp_c(set_temp) < 100)
             lv_obj_clear_flag(menu->line2, LV_OBJ_FLAG_HIDDEN);
         else
             lv_obj_clear_flag(menu->line3, LV_OBJ_FLAG_HIDDEN);
