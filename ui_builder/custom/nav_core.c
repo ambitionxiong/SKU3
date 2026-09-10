@@ -1078,6 +1078,7 @@ int contain_default(void)
  * ============================== */
 #define BLINK_HALF_MS   700    /* 半程时长:255→去程 / 回程,一个呼吸周期 = 2x */
 #define BLINK_MIN_OPA   0      /* 最低透明度(0=完全隐藏;嫌闪得太狠可改 60~100) */
+#define BLINK_STEP_OPA  24     /* 呼吸量化步长:量化值不变不写样式不失效,刷屏 ~60Hz→~15Hz(治实机卡顿) */
 #define BLINK_MAX_OBJS  8      /* 单组上限:值+长短线+单位+箭头 */
 #define BLINK_MAX_GROUPS 48    /* 全页组数上限 */
 
@@ -1091,24 +1092,61 @@ static blink_group_t s_blink_groups[BLINK_MAX_GROUPS];
 static int s_blink_group_n = 0;
 static lv_obj_t *s_blink_objs[BLINK_MAX_OBJS];
 static int s_blink_n = 0;
+/* 每对象存档:起闪前的原始透明度(收线按存档恢复,不再硬编码全显);
+   last_v 为上次写入的量化值(-1=未写),量化值不变就不写样式不失效——刷屏降 4 倍 */
+static int32_t s_blink_opa[BLINK_MAX_OBJS];
+static int32_t s_blink_img_opa[BLINK_MAX_OBJS];
+static int32_t s_blink_sel_opa[BLINK_MAX_OBJS];
+static int32_t s_blink_last_v[BLINK_MAX_OBJS];
+
+static int blink_idx(const void *var)
+{
+    for (int i = 0; i < s_blink_n; i++)
+        if (s_blink_objs[i] == var) return i;
+    return -1;
+}
+
+static int32_t blink_quantize(int32_t v)
+{
+    v += BLINK_STEP_OPA / 2;                       /* 四舍五入到台阶,端点 0/255 保留 */
+    int32_t q = (v / BLINK_STEP_OPA) * BLINK_STEP_OPA;
+    if (q > LV_OPA_COVER) q = LV_OPA_COVER;
+    if (q < BLINK_MIN_OPA) q = BLINK_MIN_OPA;
+    return q;
+}
 
 static void blink_exec_cb(void *var, int32_t v)
 {
-    lv_obj_set_style_opa((lv_obj_t *)var, v, 0);
+    int i = blink_idx(var);
+    int32_t q = blink_quantize(v);
+    if (i < 0 || q == s_blink_last_v[i]) return;   /* 台阶没变:不写样式不触发重绘 */
+    s_blink_last_v[i] = q;
+    lv_obj_t *obj = (lv_obj_t *)var;
+    lv_obj_set_style_opa(obj, q, 0);
+    if (lv_obj_has_class(obj, &lv_image_class))    /* 线是 lv_img:设备上 img_opa 通道才真正呼吸 */
+        lv_obj_set_style_img_opa(obj, q, 0);
 }
 
 /* roller 专用:呼吸 LV_PART_SELECTED 的 text_opa——roller 选中行在 DRAW_POST 用
    SELECTED part 的 label 描述重绘(lv_roller.c),只闪选中值;整轮 opa 会全部选项一起呼吸 */
 static void blink_exec_sel_cb(void *var, int32_t v)
 {
-    lv_obj_set_style_text_opa((lv_obj_t *)var, v, LV_PART_SELECTED);
+    int i = blink_idx(var);
+    int32_t q = blink_quantize(v);
+    if (i < 0 || q == s_blink_last_v[i]) return;
+    s_blink_last_v[i] = q;
+    lv_obj_set_style_text_opa((lv_obj_t *)var, q, LV_PART_SELECTED);
 }
 
-/* 遗忘全部闪烁注册(组表+动画组,只清计数,不触碰指针)。在页面对象销毁路径的入口调用:
-   page_push/page_pop/screen_set_reset——对象一死动画随对象自动消亡,
-   注册表遗忘后不可能再摸到悬空指针(不做任何树遍历/有效性检查) */
+static void blink_stop(void);
+static void blink_obj_add(lv_obj_t *obj);
+
+/* 遗忘全部闪烁注册(组表+动画组)。在页面对象销毁路径的入口调用:
+   page_push/page_pop/screen_set_reset——先停活动画(防孤儿动画在对象死后继续刷屏),
+   再清注册表;不做任何树遍历/有效性检查 */
 void nav_blink_forget(void)
 {
+    blink_stop();
     s_blink_n = 0;
     s_blink_group_n = 0;
 }
@@ -1120,8 +1158,10 @@ static void blink_stop(void)
         if (!obj) continue;
         lv_anim_del(obj, blink_exec_cb);
         lv_anim_del(obj, blink_exec_sel_cb);
-        lv_obj_set_style_opa(obj, LV_OPA_COVER, 0);   /* 恢复全显 */
-        lv_obj_set_style_text_opa(obj, LV_OPA_COVER, LV_PART_SELECTED);   /* roller 选中行恢复全显 */
+        lv_obj_set_style_opa(obj, s_blink_opa[i], 0);                      /* 按存档恢复 */
+        if (lv_obj_has_class(obj, &lv_image_class))
+            lv_obj_set_style_img_opa(obj, s_blink_img_opa[i], 0);
+        lv_obj_set_style_text_opa(obj, s_blink_sel_opa[i], LV_PART_SELECTED);   /* roller 选中行 */
     }
     s_blink_n = 0;
 }
@@ -1131,6 +1171,12 @@ static void blink_obj_add(lv_obj_t *obj)
     for (int i = 0; i < s_blink_n; i++)
         if (s_blink_objs[i] == obj) return;   /* 已在组内(值+线同对象不可能,防重) */
     if (s_blink_n >= BLINK_MAX_OBJS) return;
+    int i = s_blink_n;
+    /* 起闪前存档原透明度,收线时按存档恢复 */
+    s_blink_opa[i] = lv_obj_get_style_opa(obj, 0);
+    s_blink_img_opa[i] = lv_obj_get_style_img_opa(obj, 0);
+    s_blink_sel_opa[i] = lv_obj_get_style_text_opa(obj, LV_PART_SELECTED);
+    s_blink_last_v[i] = -1;                   /* 强制首帧写入 */
     lv_anim_t a;
     lv_anim_init(&a);
     lv_anim_set_var(&a, obj);
@@ -1138,10 +1184,12 @@ static void blink_obj_add(lv_obj_t *obj)
     lv_anim_set_values(&a, LV_OPA_COVER, BLINK_MIN_OPA);
     lv_anim_set_time(&a, BLINK_HALF_MS);
     lv_anim_set_playback_time(&a, BLINK_HALF_MS);
+    lv_anim_set_repeat_delay(&a, 200);        /* 周期之间 200ms 停顿:呼吸间隙降平均负载 */
     lv_anim_set_repeat_count(&a, LV_ANIM_REPEAT_INFINITE);
     lv_anim_set_path_cb(&a, lv_anim_path_ease_in_out);
     lv_anim_start(&a);
-    s_blink_objs[s_blink_n++] = obj;
+    s_blink_objs[i] = obj;
+    s_blink_n = i + 1;
 }
 
 /* ---- 闪烁组注册表 ---- */
