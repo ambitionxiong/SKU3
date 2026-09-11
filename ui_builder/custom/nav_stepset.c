@@ -101,6 +101,10 @@ void stepset_apply_sel_mode(bool restore)
     nav_blink_extra(scr->temp, scr->label_7);
     nav_blink_extra(scr->hour, scr->label_8);
     nav_blink_extra(scr->min, scr->label_9);
+    /* 两态会话:两个 roller 是可编辑对象(浏览模式确认进编辑)。
+       放在本函数 edit_clear 之后:模式切换重注册时 extras 表刚被清空,这里补回 */
+    nav_editable_extra_register(scr->roller_main);
+    nav_editable_extra_register(scr->roller_mode);
 
     lv_label_set_text_fmt(scr->temp, "%d", temp_disp_c(set_temp));
     lv_label_set_text_fmt(scr->hour, "%02d", set_hour);

@@ -430,10 +430,22 @@ int updown_setting_saved_hour, updown_setting_saved_min;
 edit_field_t edit_fields[MAX_EDIT_FIELDS];
 int edit_count = 0;
 
+/* ---- 编辑/浏览两态会话(2026-09-11) ----
+   编辑态(默认,进页即编辑=原单态行为):编码器改值,确认切下一焦点,BACK 退浏览;
+   浏览模式:编码器移焦点,确认进编辑/点按钮,BACK 才真正返回上一页。
+   只有 nav_edit_session_exit(BACK 退浏览)会置 1,edit_clear 切页复位 0——
+   进页默认态无需按焦点推导:焦点在按钮上时两态的转/按行为本来就一致 */
+#define MAX_EDIT_EXTRAS 8
+static uint8_t s_edit_browse = 0;                /* 0=编辑态 1=浏览模式 */
+static lv_obj_t *s_edit_extras[MAX_EDIT_EXTRAS]; /* 非 edit_register 体系可编辑对象登记表 */
+static int s_edit_extra_n = 0;
+
 /* 清空可编辑字段注册表（切页前调用，防止 find_edit_field 指针复用误判） */
 void edit_clear(void)
 {
     edit_count = 0;
+    s_edit_extra_n = 0;
+    s_edit_browse = 0;   /* 新页面一律从编辑态开始(对象销毁前先复位,防悬空状态带过页) */
 }
 
 /* ==================== 温度显示单位（℉）====================
@@ -1153,6 +1165,9 @@ void nav_blink_forget(void)
     blink_stop();
     s_blink_n = 0;
     s_blink_group_n = 0;
+    s_edit_extra_n = 0;   /* 页面对象销毁路径:extras 登记表随之清空(防悬空指针复用误判) */
+    s_edit_browse = 0;    /* 页面入口统一复位编辑态——sixset2/toastcolor 等不走
+                             edit_clear 的页面也能从浏览模式残留中恢复 */
 }
 
 static void blink_stop(void)
@@ -1239,6 +1254,54 @@ void nav_blink_refresh(lv_obj_t *focused)
     blink_evaluate(focused);
 }
 
+/* ---- 编辑/浏览两态会话 API ---- */
+// 登记非 edit_register 体系的可编辑对象(delayset 时/分、sixset2/toastcolor 档位、stepset roller)。
+// build 时登记,edit_clear 统一清表
+void nav_editable_extra_register(lv_obj_t *obj)
+{
+    if (!obj || s_edit_extra_n >= MAX_EDIT_EXTRAS) return;
+    for (int i = 0; i < s_edit_extra_n; i++)
+        if (s_edit_extras[i] == obj) return;
+    s_edit_extras[s_edit_extra_n++] = obj;
+}
+
+// 焦点对象是否可编辑(字段注册表或 extras 登记表)。BACK 退浏览守卫与按键门控共用判定;
+// 指针只比较不解引用,失效对象靠 lv_obj_is_valid 挡
+uint8_t nav_editable_target(lv_obj_t *obj)
+{
+    if (!obj) return 0;
+    if (find_edit_field(obj)) return 1;
+    for (int i = 0; i < s_edit_extra_n; i++)
+        if (s_edit_extras[i] == obj && lv_obj_is_valid(s_edit_extras[i])) return 1;
+    return 0;
+}
+
+// 当前是否编辑态(浏览模式返回 0)
+uint8_t nav_edit_session_active(void)
+{
+    return !s_edit_browse;
+}
+
+// 浏览模式按确认进入编辑:焦点不动,起闪
+void nav_edit_session_enter(lv_obj_t *focused)
+{
+    s_edit_browse = 0;
+    if (focused)
+        nav_blink_refresh(focused);
+}
+
+// 编辑态 BACK 退回浏览模式:数值保留、焦点留在原字段、停闪常亮(下划线常亮=焦点指示)。
+// 焦点移走后下划线的清理由各页字段/按钮的 FOCUSED 回调自然完成,此处不动焦点
+void nav_edit_session_exit(void)
+{
+    s_edit_browse = 1;
+    lv_obj_t *focused = current_group ? lv_group_get_focused(current_group) : NULL;
+    if (focused)
+        nav_blink_refresh(focused);
+    else
+        blink_stop();
+}
+
 // 焦点命中查表:有登记组→整组同步闪;无→停闪
 static blink_group_t *blink_group_find(lv_obj_t *trigger)
 {
@@ -1250,6 +1313,13 @@ static blink_group_t *blink_group_find(lv_obj_t *trigger)
 
 static void blink_evaluate(lv_obj_t *focused)
 {
+    /* 两态门控(2026-09-11):浏览模式一律常亮;编辑态只闪可编辑对象(按钮常亮)。
+       计时器/日期时间页自管编辑位(编辑位即闪、Yes 位自然停闪),不受会话态约束 */
+    if (current_group != count_down_page_group() && current_group != systime_page_group() &&
+        (!nav_edit_session_active() || !nav_editable_target(focused))) {
+        blink_stop();
+        return;
+    }
     blink_group_t *g = blink_group_find(focused);
     if (g) {
         blink_stop();       /* 换字段:停旧组起新组,重启即重新同步 */

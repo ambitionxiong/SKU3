@@ -303,6 +303,10 @@ static void sixset2_blink_register(sixset2_t *pg)
     nav_blink_group_register(pg->maturity, g2, 3);
     lv_obj_t *g3[2] = { pg->degree, pg->degreeline };
     nav_blink_group_register(pg->degree, g3, 2);
+    /* 两态会话:三个档位是可编辑对象(浏览模式确认进编辑) */
+    nav_editable_extra_register(pg->weight);
+    nav_editable_extra_register(pg->maturity);
+    nav_editable_extra_register(pg->degree);
 }
 
 void jump_to_sixset2(void)
@@ -314,7 +318,9 @@ void jump_to_sixset2(void)
 
     sixset2_t *pg = sixset2_get(&ui_manager);
     if (pg) {
-        lv_obj_t *btns[] = { pg->degree, mid_obj(pg), pg->next };
+        /* 组顺序=浏览模式移焦点顺序:份量/成熟度→烤色程度→下一步
+           (与编辑推进 sixset2_press_focus 一致;初始焦点 next,右转回绕落在份量) */
+        lv_obj_t *btns[] = { mid_obj(pg), pg->degree, pg->next };
         const int n = 3;
         for (int k = 0; k < n; k++) {
             if (btns[k]) lv_group_remove_obj(btns[k]);
@@ -350,10 +356,12 @@ void jump_to_sixset2(void)
 
         if (pg->next) lv_obj_add_event_cb(pg->next, on_next_click, LV_EVENT_CLICKED, NULL);
 
-        /* 三个选择对象绑 FOCUSED → 下划线跟随焦点 */
+        /* 三个选择对象 + next 绑 FOCUSED → 下划线跟随焦点
+           (next 落焦时 apply_line_for 走全隐藏分支:编辑态 BACK 退浏览落在 next,线全清) */
         if (pg->weight)   lv_obj_add_event_cb(pg->weight,   sixset2_focus_cb, LV_EVENT_FOCUSED, NULL);
         if (pg->maturity) lv_obj_add_event_cb(pg->maturity, sixset2_focus_cb, LV_EVENT_FOCUSED, NULL);
         if (pg->degree)   lv_obj_add_event_cb(pg->degree,   sixset2_focus_cb, LV_EVENT_FOCUSED, NULL);
+        if (pg->next)     lv_obj_add_event_cb(pg->next,     sixset2_focus_cb, LV_EVENT_FOCUSED, NULL);
 
         six_2d_select();   /* 按菜选择份量/时间表 */
         s_widx = six_chick_is_pasta() ? 2 : 1;   /* 意面默认1500g, 带皮土豆默认1000g */
@@ -380,7 +388,9 @@ void sixset2_rebuild(page_id_t child)
 
     sixset2_t *pg = sixset2_get(&ui_manager);
     if (pg) {
-        lv_obj_t *btns[] = { pg->degree, mid_obj(pg), pg->next };
+        /* 组顺序=浏览模式移焦点顺序:份量/成熟度→烤色程度→下一步
+           (与编辑推进 sixset2_press_focus 一致;初始焦点 next,右转回绕落在份量) */
+        lv_obj_t *btns[] = { mid_obj(pg), pg->degree, pg->next };
         const int n = 3;
         for (int k = 0; k < n; k++) {
             if (btns[k]) lv_group_remove_obj(btns[k]);
@@ -415,6 +425,7 @@ void sixset2_rebuild(page_id_t child)
         if (pg->weight)   lv_obj_add_event_cb(pg->weight,   sixset2_focus_cb, LV_EVENT_FOCUSED, NULL);
         if (pg->maturity) lv_obj_add_event_cb(pg->maturity, sixset2_focus_cb, LV_EVENT_FOCUSED, NULL);
         if (pg->degree)   lv_obj_add_event_cb(pg->degree,   sixset2_focus_cb, LV_EVENT_FOCUSED, NULL);
+        if (pg->next)     lv_obj_add_event_cb(pg->next,     sixset2_focus_cb, LV_EVENT_FOCUSED, NULL);
 
         six_2d_select();
         apply_display();

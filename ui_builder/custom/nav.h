@@ -741,6 +741,15 @@ void nav_blink_extra(lv_obj_t *label, lv_obj_t *extra);            /* 字段追�
 void nav_blink_group_register(lv_obj_t *trigger, lv_obj_t **objs, int n); /* 显式登记闪烁组 */
 void nav_blink_refresh(lv_obj_t *focused);  /* 组表变化后按焦点强制重评(停旧组起新组) */
 
+/* 编辑/浏览两态会话（nav_core.c 实现，2026-09-11）
+   编辑态(进页默认=原单态行为):编码器改值、确认切下一焦点、BACK 退浏览;
+   浏览模式:编码器移焦点、确认进编辑/点按钮、BACK 才返回上一页 */
+uint8_t nav_edit_session_active(void);                 /* 当前是否编辑态 */
+void nav_edit_session_enter(lv_obj_t *focused);        /* 浏览→编辑:焦点不动起闪 */
+void nav_edit_session_exit(void);                      /* 编辑→浏览:数值保留停闪 */
+uint8_t nav_editable_target(lv_obj_t *obj);            /* 焦点对象是否可编辑(字段+extras) */
+void nav_editable_extra_register(lv_obj_t *obj);       /* 特殊页登记可编辑对象(build 时) */
+
 /* 第六感菜单（nav_sixmenu.c 实现） */
 extern lv_group_t *g_sixmenu;
 extern lv_group_t *g_bread6menu;

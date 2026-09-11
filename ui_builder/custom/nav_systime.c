@@ -217,6 +217,15 @@ void encoder_systime_action(uint8_t key)
 
 void systime_back_action(void)
 {
+    if (s_where_time != 0) {
+        /* 编辑中 BACK:先退编辑位回 Yes(数值保留),不弹页——与设值页两态一致 */
+        systime_page_t *scr = systime_get(&ui_manager);
+        s_where_time = 0;
+        systime_underline_pos(0);   /* 0=回 Yes 态 */
+        if (scr && scr->Yes_Btn)
+            lv_group_focus_obj(scr->Yes_Btn);
+        return;
+    }
     page_pop();
     jump_to_screen_set();
     {   /* 焦点回到来源项"日期/时间"行 */

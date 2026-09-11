@@ -213,6 +213,10 @@ static void toastcolor_blink_register(toastcolor_t *tc)
     nav_blink_group_register(tc->weight, g2, 4);
     lv_obj_t *g3[3] = { tc->Maturity, tc->maturityline2, tc->maturityline3 };
     nav_blink_group_register(tc->Maturity, g3, 3);
+    /* 两态会话:三个档位是可编辑对象(浏览模式确认进编辑) */
+    nav_editable_extra_register(tc->degree);
+    nav_editable_extra_register(tc->weight);
+    nav_editable_extra_register(tc->Maturity);
 }
 
 void jump_to_toastcolor(void)

@@ -539,6 +539,9 @@ void delayset_page_build(void)
         nav_blink_group_register(ds->min, g_min, 2);
         lv_obj_t *g_start[2] = { ds->start, ds->startline };
         nav_blink_group_register(ds->start, g_start, 2);
+        /* 两态会话:时/分是可编辑对象(浏览模式确认进编辑),start 是按钮不登记 */
+        nav_editable_extra_register(ds->hour);
+        nav_editable_extra_register(ds->min);
 
         lv_group_focus_obj(ds->start);
 

@@ -373,6 +373,18 @@ void count_down_back_action(void)
         overtime_dismiss();
         return;
     }
+    if (s_set_where != 0) {
+        /* 编辑中 BACK:先退编辑位回 Yes(数值保留),不弹页——与设值页两态一致。
+           复用 PRESS 秒→时回绕的复位动作:下划线移回"时"位,焦点交还 Yes */
+        count_down_page_t *scr = count_down_get(&ui_manager);
+        s_set_where = 1;
+        if (scr && scr->Underline_Btn)
+            lv_obj_set_pos(scr->Underline_Btn, 588, 306);
+        cd_blink_register(0);   /* 焦点即将离开下划线:只换组,由 Yes 的停闪接管 */
+        if (scr && scr->Yes_Btn)
+            lv_group_focus_obj(scr->Yes_Btn);
+        return;
+    }
     if (s_cd_left == 0 && !s_run) count_down_timer_stop();   /* 无后台任务才停表 */
     count_down_leave_fast();   /* 下层页面保屏返回(不重建,下层烹饪倒计时不重置) */
     jump_to_screen_set();      /* 回设置层(计时器从设置进入) */
