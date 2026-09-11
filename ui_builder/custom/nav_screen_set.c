@@ -5,6 +5,7 @@
  * 返回:运行态回原页面,非运行态回待机页。功能键入口防御/跳转在此判定。
  */
 #include "nav.h"
+#include "nav_idle.h"
 #include "protocol.h"
 #include "custom_defs.h"
 #include "nav_internal.h"
@@ -530,19 +531,10 @@ void screen_set_back(void)
         cooking_timer_cb(NULL);
         printf("[screen_set] back (restore prev)\n");
     } else {
-        /* 非运行态:回待机页 */
-        depth = 0;
-        page_push(PAGE_WAITMENU_24);
-        lv_obj_clean(lv_scr_act());
-        waitmenu_24_create(&ui_manager);
-        waitmenu_clock_cache_reset();   /* 强制刷新为真实时间 */
-        current_group = NULL;
-        lang_scr_load_anim(waitmenu_24_get(&ui_manager)->obj,
-                         LV_SCR_LOAD_ANIM_NONE, 0, 0,
-                         ui_manager.auto_del);
-        waitmenu_apply_clock();   /* 立即刷新为真实时间 */
-        g_send.iface_status = IFACE_STANDBY;
-        printf("[screen_set] back -> waitmenu_24\n");
+        /* 非运行态:回主菜单(返回链终点=主菜单,不再回待机页;
+           栈重置为 [WAITMENU_24, MAJOR_MENU(_TZ)],IFACE_SETTING) */
+        nav_goto_major_menu();
+        printf("[screen_set] back -> major_menu\n");
     }
     nav_topflag_demo_sync();   /* 覆盖层关闭:徽标按底层页面立即重定位(运行态分支无 screen load) */
 }

@@ -13,11 +13,12 @@
  */
 
 #include "nav.h"
+#include "nav_idle.h"
 #include "nav_internal.h"
 
-/* KEY1 长按(2s)：开关机。开机=回主菜单，关机=清状态+进入 SLEEP 待机暗屏。
-   执行前清理所有残留(定时器/标志/覆盖层)，避免跨会话悬空。 */
-void nav_key1_long_press(void)
+/* 关机：清全部运行状态 → SLEEP 待机暗屏。
+   KEY1 长按与待机页 20 分钟无操作超时(nav_idle)共用，行为完全一致 */
+void nav_power_off(void)
 {
     probetip_cancel_auto_dismiss();   /* 取消陈旧的探针提示自动关闭定时器,防止跨会话误触发 */
     screen_set_reset();               /* 覆盖层若打开:清理对象/组/焦点指针,防悬空 */
@@ -39,30 +40,37 @@ void nav_key1_long_press(void)
     g_somecook_running = 0;
     g_somecook_run_idx = 0;
     six_cook_reset();   /* 六感运行:清理状态(定时器已由上面 cook_timer 删除覆盖) */
-    set_temp = 180; set_temp_up = 180; set_temp_down = 180; set_hour = 0; set_min = 30;
+    set_temp = 180; set_temp_up = 180; set_temp_down = 180;
     g_send.cook_mode = MODE_NONE;
     g_send.set_temp = 0;
     g_send.set_temp_lower = 0;
     g_send.remaining_ms = -1;
 
-    if (g_send.iface_status != IFACE_SLEEP) {
-        if (nav_childlock_active()) nav_childlock_set(0);   /* 关机不显示锁层(Set_Lock 保持 1,开机恢复) */
-        g_send.buzzer_req = BUZZER_POWER_OFF;
-        g_send.iface_status = IFACE_SLEEP;
-        depth = 0;
-        page_push(PAGE_WAITMENU_24);
-        lv_obj_clean(lv_scr_act());
-        waitmenu_24_create(&ui_manager);
-        waitmenu_clock_cache_reset();   /* 强制刷新为真实时间 */
-        current_group = NULL;
-        lang_scr_load_anim(waitmenu_24_get(&ui_manager)->obj,
-                         LV_SCR_LOAD_ANIM_NONE, 0, 0,
-                         ui_manager.auto_del);   /* 统一出口:英文模式关机待机页翻译+排版 */
-        waitmenu_apply_clock();   /* 立即刷新为真实时间 */
+    if (nav_childlock_active()) nav_childlock_set(0);   /* 关机不显示锁层(Set_Lock 保持 1,开机恢复) */
+    g_send.buzzer_req = BUZZER_POWER_OFF;
+    g_send.iface_status = IFACE_SLEEP;
+    depth = 0;
+    page_push(PAGE_WAITMENU_24);
+    lv_obj_clean(lv_scr_act());
+    waitmenu_24_create(&ui_manager);
+    waitmenu_clock_cache_reset();   /* 强制刷新为真实时间 */
+    current_group = NULL;
+    lang_scr_load_anim(waitmenu_24_get(&ui_manager)->obj,
+                     LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                     ui_manager.auto_del);   /* 统一出口:英文模式关机待机页翻译+排版 */
+    waitmenu_apply_clock();   /* 立即刷新为真实时间 */
 #ifndef LV_USE_AIC_SIMULATOR
-        backlight_set_level(10);
+    backlight_set_level(10);
 #endif
-        printf("[KEY] KEY1 long press -> SLEEP (dim waitmenu)\n");
+    printf("[KEY] power off -> SLEEP (dim waitmenu)\n");
+}
+
+/* KEY1 长按(2s)：开关机。开机=回主菜单，关机=nav_power_off()。
+   唤醒分支不重复清理——SLEEP 进入前已清理，SLEEP 期间按键全部被吞，状态保持干净 */
+void nav_key1_long_press(void)
+{
+    if (g_send.iface_status != IFACE_SLEEP) {
+        nav_power_off();
     } else {
         depth = 0;
         page_push(PAGE_WAITMENU_24);
@@ -120,6 +128,8 @@ void nav_childlock_hold_poll(void)
 void nav_handle_key(uint8_t key)
 {
     uint32_t now = lv_tick_get();
+
+    if (key != 0) nav_idle_touch();   /* 任何实际按键都算用户活动(含被模态吞掉的) */
 
     switch (key_state) {
     case KEY_IDLE:

@@ -515,6 +515,13 @@ void process_key(uint8_t key)
         g_send.buzzer_req = BUZZER_KEY_VALID;
         {
             page_id_t cur = page_stack[depth - 1];
+            if (depth == 2 && page_stack[0] == PAGE_WAITMENU_24 &&
+                (cur == PAGE_MAJOR_MENU || cur == PAGE_MAJOR_MENU_TZ)) {
+                /* 主菜单 BACK 无效:返回链终点=主菜单,待机页只能由关机/空闲 5 分钟进入 */
+                g_send.buzzer_req = BUZZER_KEY_INVALID;
+                uart_print();
+                break;
+            }
             if (cur == PAGE_CHICK6MENU && six_chick_get_fish_mode() == 2) {
                 six_chick_fish_go_back();   /* 烤鱼子页:原地重绘回鱼/海鲜首页,不弹页 */
                 g_send.buzzer_req = BUZZER_KEY_VALID;

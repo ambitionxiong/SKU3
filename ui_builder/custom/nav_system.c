@@ -12,6 +12,7 @@
  */
 
 #include "nav.h"
+#include "nav_idle.h"
 #include "nav_internal.h"
 
 /* 文件内前向声明(定义在后方) */
@@ -85,21 +86,14 @@ static void system_timer_cb(lv_timer_t *timer)
     g_somecook_run_idx = 0;
     six_cook_reset();   /* 六感运行:清理状态 */
     probe_target_temp = 80;
-    g_send.iface_status = IFACE_STANDBY;
     g_send.cook_mode = MODE_NONE;
     g_send.cook_flag = 0;
     g_send.set_temp = 0;
     g_send.set_temp_lower = 0;
     g_send.remaining_ms = -1;
 
-    depth = 0;
-    page_push(PAGE_WAITMENU_24);
-    lv_obj_clean(lv_scr_act());
-    waitmenu_24_create(&ui_manager);
-    waitmenu_clock_cache_reset();   /* 强制刷新为真实时间 */
-    current_group = NULL;
-    lv_scr_load(waitmenu_24_get(&ui_manager)->obj);
-    waitmenu_apply_clock();   /* 立即刷新为真实时间 */
+    /* 探针状态复位落点=主菜单(返回链终点,不再落待机页),其上弹探针提示页 */
+    nav_goto_major_menu();
     jump_to_probetip(probe_now ? tr("探针已插入") : tr("探针已拔出"));
 }
 
@@ -150,6 +144,7 @@ void nav_init(void)
     }
     topflag_update_visibility();
     lv_timer_create(topflag_clock_cb, 500, NULL);
+    nav_idle_init();   /* 空闲策略:烹饪 1 分钟回页/非烹饪 5 分钟待机/待机 20 分钟关机 */
     printf("[nav] init done -> major_menu\n");
 }
 

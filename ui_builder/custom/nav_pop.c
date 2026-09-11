@@ -18,6 +18,7 @@
 
 #include "nav.h"
 #include "nav_lang.h"
+#include "nav_idle.h"
 #include "nav_internal.h"
 #include "nav_favorites.h"
 
@@ -3010,24 +3011,19 @@ void page_pop(void)
 
     case PAGE_PROBETIP:
         probetip_cancel_auto_dismiss();
-        goto pop_to_waitmenu;
+        goto pop_to_majormenu;
 
     case PAGE_WAITMENU_24:
-    pop_to_waitmenu:
-        waitmenu_24_create(&ui_manager);
-        waitmenu_clock_cache_reset();   /* 强制刷新为真实时间 */
-        current_group = NULL;
-        lang_scr_load_anim(waitmenu_24_get(&ui_manager)->obj,
-                         LV_SCR_LOAD_ANIM_NONE, 0, 0,
-                         ui_manager.auto_del);
-        waitmenu_apply_clock();   /* 立即刷新为真实时间，不等 500ms 定时器 */
-        g_send.iface_status = IFACE_STANDBY;
-        printf("[nav] back to waitmenu_24\n");
+    pop_to_majormenu:
+        /* 返回链终点=主菜单:栈底 WAITMENU_24 仅作哨兵根页,不再显示待机页。
+           待机页只能由关机(KEY1 长按)与非烹饪空闲 5 分钟(nav_idle)进入 */
+        nav_goto_major_menu();
+        printf("[nav] back to major_menu\n");
         break;
 
     default:
-        printf("[nav] unknown page to restore: %d, fallback to waitmenu_24\n", prev);
-        goto pop_to_waitmenu;
+        printf("[nav] unknown page to restore: %d, fallback to major_menu\n", prev);
+        goto pop_to_majormenu;
     }
 }
 

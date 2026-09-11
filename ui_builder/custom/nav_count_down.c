@@ -493,7 +493,7 @@ static void count_down_create(ui_manager_t *ui)
 
     /* 时/分/秒 单位标签 */
     scr->hour_CH_Lb = lv_label_create(scr->obj);
-    lv_label_set_text(scr->hour_CH_Lb, tr("小时"));
+    lv_label_set_text(scr->hour_CH_Lb, tr("时"));
     lv_label_set_long_mode(scr->hour_CH_Lb, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->hour_CH_Lb, 659, 281);
     lv_obj_set_size(scr->hour_CH_Lb, 70, 35);
@@ -501,7 +501,7 @@ static void count_down_create(ui_manager_t *ui)
     lv_obj_set_style_text_color(scr->hour_CH_Lb, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     scr->min_CH_Lb = lv_label_create(scr->obj);
-    lv_label_set_text(scr->min_CH_Lb, tr("分钟"));
+    lv_label_set_text(scr->min_CH_Lb, tr("分"));
     lv_label_set_long_mode(scr->min_CH_Lb, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->min_CH_Lb, 796, 281);
     lv_obj_set_size(scr->min_CH_Lb, 70, 35);
