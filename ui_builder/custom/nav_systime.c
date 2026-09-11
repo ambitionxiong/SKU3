@@ -99,6 +99,28 @@ static void systime_underline_pos(int field)   /* 0..6,0=回 Yes 态(年份位) 
     }
 }
 
+/* 按当前编辑位(s_where_time)重登记呼吸组:下划线+当前位数值。
+   时/分共用 HH:MM span(无独立对象),随下划线一起呼吸 */
+static void systime_blink_register(int focused)
+{
+    systime_page_t *scr = systime_get(&ui_manager);
+    if (!scr->Underline_Btn) return;
+    lv_obj_t *g[2];
+    int n = 0;
+    g[n++] = scr->Underline_Btn;
+    switch (s_where_time) {
+    case 1: if (scr->Set_Year_Lb) g[n++] = scr->Set_Year_Lb; break;
+    case 2: if (scr->Set_Month_Lb) g[n++] = scr->Set_Month_Lb; break;
+    case 3: if (scr->Set_Day_Lb) g[n++] = scr->Set_Day_Lb; break;
+    case 4: if (scr->Set_Time_Type_Lb) g[n++] = scr->Set_Time_Type_Lb; break;
+    case 5:
+    case 6: if (scr->Set_Time_span) g[n++] = scr->Set_Time_span; break;
+    default: return;
+    }
+    nav_blink_group_register(scr->Underline_Btn, g, n);
+    if (focused) nav_blink_refresh(scr->Underline_Btn);
+}
+
 /* 时间 span 刷新(12h 制用 12 小时表示) */
 static void systime_time_span_refresh(void)
 {
@@ -148,6 +170,7 @@ void encoder_systime_action(uint8_t key)
             s_where_time = 1;
             lv_group_focus_obj(scr->Underline_Btn);
             systime_underline_pos(1);
+            systime_blink_register(1);   /* 进入"年"编辑:起呼吸 */
             return;
         }
         switch (s_where_time) {
@@ -188,8 +211,9 @@ void encoder_systime_action(uint8_t key)
     }
 
     /* ---- PRESS ---- */
-    if (s_where_time == 0) {
-        /* Yes:写 RTC,成功保存时制偏好回设置层,失败错误音光标回"年" */
+    lv_obj_t *focused = lv_group_get_focused(scr->group);
+    if (focused == scr->Yes_Btn) {
+        /* Yes:写 RTC,成功保存时制偏好回设置层,失败错误音回"年"编辑态 */
         if (systime_rtc_set(s_year, s_month, systime_weekday(s_year + 2000, s_month, s_day),
                             s_day, s_hour, s_min) == 0) {
             SET_Data.Set_TimeType = (int8_t)s_timetype;
@@ -206,26 +230,70 @@ void encoder_systime_action(uint8_t key)
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         s_where_time = 1;
         systime_underline_pos(1);
+        if (scr->Underline_Btn) lv_group_focus_obj(scr->Underline_Btn);
+        systime_blink_register(1);   /* 回"年"编辑态:起呼吸 */
         return;
     }
-    /* 编辑中:字段循环 1..6→0(回 Yes 态) */
-    s_where_time = (uint8_t)((s_where_time + 1) % 7);
+    if (!nav_edit_session_active()) {
+        nav_edit_session_enter(focused);   /* 浏览态按确认:重新进编辑(起改当前位) */
+        return;
+    }
+    /* 编辑中:字段循环 年→月→日→时制→时→分→回"年",保持编辑
+       (两态统一:确认=推进编辑位,写 RTC 走浏览态 Yes;原推进到分后跳 Yes 已移除) */
+    s_where_time = (uint8_t)((s_where_time >= 6) ? 1 : s_where_time + 1);
     systime_underline_pos(s_where_time);
-    if (s_where_time == 0)
-        lv_group_focus_obj(scr->Yes_Btn);
+    systime_blink_register(1);   /* 换位重登记呼吸组:只闪当前位 */
+}
+
+/* ---- 浏览模式:确定→年→月→日→时制→时→分→确定 环游 ----
+   数字位以 s_where_time 表示,焦点留在下划线、下划线随位移动 */
+static void systime_browse_to_underline(systime_page_t *scr)
+{
+    if (scr->Underline_Btn) {
+        systime_underline_pos(s_where_time);
+        systime_blink_register(0);   /* 换位同步呼吸组(浏览态不刷新=不闪,按下确认才起闪) */
+        lv_group_focus_obj(scr->Underline_Btn);
+    }
+}
+
+void systime_browse_action(uint8_t key)
+{
+    systime_page_t *scr = systime_get(&ui_manager);
+    if (!scr->obj || !lv_obj_is_valid(scr->obj) || !scr->group) return;
+    lv_obj_t *focused = lv_group_get_focused(scr->group);
+    uint8_t fwd = (key == KEY_ENCODER_CW);
+
+    if (focused == scr->Yes_Btn) {
+        s_where_time = fwd ? 1 : 6;
+        systime_browse_to_underline(scr);   /* 确定→年 / 确定→分 */
+    } else {
+        if (fwd) {
+            if (s_where_time >= 6) { if (scr->Yes_Btn) lv_group_focus_obj(scr->Yes_Btn); }  /* 分→确定 */
+            else { s_where_time++; systime_browse_to_underline(scr); }
+        } else {
+            if (s_where_time <= 1) { if (scr->Yes_Btn) lv_group_focus_obj(scr->Yes_Btn); }  /* 年→确定 */
+            else { s_where_time--; systime_browse_to_underline(scr); }
+        }
+    }
+}
+
+/* 浏览模式 PRESS:下划线→进该位编辑;确定→写 RTC */
+void systime_browse_press(void)
+{
+    systime_page_t *scr = systime_get(&ui_manager);
+    if (!scr->obj || !lv_obj_is_valid(scr->obj) || !scr->group) return;
+    lv_obj_t *focused = lv_group_get_focused(scr->group);
+    if (focused == scr->Underline_Btn) {
+        nav_edit_session_enter(focused);
+        return;
+    }
+    encoder_systime_action(KEY_ENCODER_PRESS);   /* Yes:写 RTC */
 }
 
 void systime_back_action(void)
 {
-    if (s_where_time != 0) {
-        /* 编辑中 BACK:先退编辑位回 Yes(数值保留),不弹页——与设值页两态一致 */
-        systime_page_t *scr = systime_get(&ui_manager);
-        s_where_time = 0;
-        systime_underline_pos(0);   /* 0=回 Yes 态 */
-        if (scr && scr->Yes_Btn)
-            lv_group_focus_obj(scr->Yes_Btn);
-        return;
-    }
+    /* 编辑态 BACK 由 nav_key.c 通用守卫接管(下划线已登记 extras:退浏览,焦点留原地)。
+       走到这里即浏览模式:离开页面回设置层 */
     page_pop();
     jump_to_screen_set();
     {   /* 焦点回到来源项"日期/时间"行 */
@@ -239,7 +307,7 @@ lv_group_t *systime_page_group(void) { return s_st.group; }
 void jump_to_systime(void)
 {
     rtc_time_t t;
-    s_where_time = 0;
+    s_where_time = 0;   /* 进页停在"确定",会话为编辑态:转旋钮直接进入"年"编辑 */
     if (rtc_get_time(&t) == 0) {
         s_year = t.year % 100;
         s_month = t.month;
@@ -380,7 +448,7 @@ void jump_to_systime(void)
         lv_obj_set_pos(scr->Set_Time_Type_Lb, 761, 260);
         lv_obj_set_pos(scr->Set_Time_span, 991, 260);
     }
-    systime_underline_pos(0);
+    systime_underline_pos(0);   /* 0=Yes 态,下划线隐藏待编辑位选定 */
     systime_time_span_refresh();
     systime_ampm_refresh();
 
@@ -393,9 +461,10 @@ void jump_to_systime(void)
     }
     lv_group_add_obj(scr->group, scr->Yes_Btn);
     lv_group_add_obj(scr->group, scr->Underline_Btn);
+    nav_editable_extra_register(scr->Underline_Btn);   /* 两态:下划线=可编辑对象(page_push 已清表,此处补登记) */
 
     current_group = scr->group;
-    if (scr->Yes_Btn) lv_group_focus_obj(scr->Yes_Btn);
+    if (scr->Yes_Btn) lv_group_focus_obj(scr->Yes_Btn);   /* 进页聚焦确定;会话=编辑态,转旋钮直接进"年"编辑 */
     lang_scr_load_anim(scr->obj, LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
     printf("[systime] jump\n");
 }

@@ -1313,10 +1313,9 @@ static blink_group_t *blink_group_find(lv_obj_t *trigger)
 
 static void blink_evaluate(lv_obj_t *focused)
 {
-    /* 两态门控(2026-09-11):浏览模式一律常亮;编辑态只闪可编辑对象(按钮常亮)。
-       计时器/日期时间页自管编辑位(编辑位即闪、Yes 位自然停闪),不受会话态约束 */
-    if (current_group != count_down_page_group() && current_group != systime_page_group() &&
-        (!nav_edit_session_active() || !nav_editable_target(focused))) {
+    /* 两态门控(2026-09-11):浏览模式一律常亮;编辑态只闪可编辑对象(按钮/未登记对象常亮)。
+       计时器/日期时间页不再豁免:下划线已登记 extras,编辑位呼吸、浏览态/按钮位停闪 */
+    if (!nav_edit_session_active() || !nav_editable_target(focused)) {
         blink_stop();
         return;
     }

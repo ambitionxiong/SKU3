@@ -333,7 +333,8 @@ void encoder_count_down_action(uint8_t key)
             g_send.buzzer_req = BUZZER_KEY_INVALID;   /* 0 秒不可启动 */
         }
     } else if (focused == scr->Underline_Btn) {
-        /* 下划线 时→分→秒 循环,焦点留在横线(可编辑秒);秒后再按回时并跳 Yes。
+        /* 下划线 时→分→秒 循环,焦点留在横线;秒后回绕到"时"保持编辑
+           (两态统一:确认=推进编辑位,启动走浏览态选 Yes)。
            每次换位重登记呼吸组:只闪当前编辑位(数值+单位+下划线) */
         if (s_set_where == 1) {
             s_set_where = 2;
@@ -347,7 +348,7 @@ void encoder_count_down_action(uint8_t key)
             s_set_where = 1;
             lv_obj_set_pos(scr->Underline_Btn, 588, 306);
             cd_blink_register(0);   /* 焦点即将离开下划线:只换组,由 Yes 的停闪接管 */
-            lv_group_focus_obj(scr->Yes_Btn);
+            lv_group_focus_obj(scr->Yes_Btn);   /* 秒后确认:跳到确定(再按即启动) */
         }
     } else if (focused == scr->Reset_icon_Btn) {
         s_reset_flag = 1;
@@ -365,6 +366,62 @@ void encoder_count_down_action(uint8_t key)
     }
 }
 
+/* ---- 浏览模式环游 ----
+   未运行:确定→时→分→秒→确定(重置无意义,清零不可选中);
+   数字位以编辑位 where 表示,焦点留在下划线、下划线随位移动(不闪);
+   运行中沿用原保护:数字位不可选,仅在 确定/清零 间切换 */
+static void cd_browse_to_underline(count_down_page_t *scr)
+{
+    static const int x[4] = {0, 588, 726, 862};   /* 时/分/秒 下划线横坐标 */
+    if (scr->Underline_Btn) {
+        lv_obj_set_pos(scr->Underline_Btn, x[s_set_where], 306);
+        cd_blink_register(0);   /* 换位同步呼吸组(浏览态不刷新=不闪,按下确认才起闪) */
+        lv_group_focus_obj(scr->Underline_Btn);
+    }
+}
+
+void count_down_browse_action(uint8_t key)
+{
+    count_down_page_t *scr = count_down_get(&ui_manager);
+    if (!scr->obj || !lv_obj_is_valid(scr->obj) || !scr->group) return;
+    lv_obj_t *focused = lv_group_get_focused(scr->group);
+    uint8_t fwd = (key == KEY_ENCODER_CW);
+
+    if (s_run) {
+        if (focused == scr->Yes_Btn) lv_group_focus_obj(scr->Reset_icon_Btn);
+        else if (scr->Yes_Btn) lv_group_focus_obj(scr->Yes_Btn);
+        return;
+    }
+    /* 未运行:重置无意义不可选中,环游不含清零——确定→时→分→秒→确定 */
+    if (focused == scr->Yes_Btn) {
+        if (fwd) { s_set_where = 1; cd_browse_to_underline(scr); }   /* 确定→时 */
+        else { s_set_where = 3; cd_browse_to_underline(scr); }       /* 确定→秒 */
+    } else {   /* 下划线:数字位间走,两端接确定 */
+        uint8_t w = s_set_where;
+        if (w < 1 || w > 3) w = 1;
+        if (fwd) {
+            if (w < 3) { s_set_where = w + 1; cd_browse_to_underline(scr); }
+            else if (scr->Yes_Btn) lv_group_focus_obj(scr->Yes_Btn);   /* 秒→确定 */
+        } else {
+            if (w > 1) { s_set_where = w - 1; cd_browse_to_underline(scr); }
+            else if (scr->Yes_Btn) lv_group_focus_obj(scr->Yes_Btn);   /* 时→确定 */
+        }
+    }
+}
+
+/* 浏览模式 PRESS:下划线(未在跑)→进该位编辑;确定/清零→原点击语义(启动/离开/清零) */
+void count_down_browse_press(void)
+{
+    count_down_page_t *scr = count_down_get(&ui_manager);
+    if (!scr->obj || !lv_obj_is_valid(scr->obj) || !scr->group) return;
+    lv_obj_t *focused = lv_group_get_focused(scr->group);
+    if (focused == scr->Underline_Btn && !s_run) {
+        nav_edit_session_enter(focused);
+        return;
+    }
+    encoder_count_down_action(KEY_ENCODER_PRESS);
+}
+
 /* BACK:回设置层(运行中计时器后台继续)。同事版还处理超时层,本端超时层
  * 的退出在 encoder PRESS/定时器自动退出里完成,BACK 与 PRESS 同路径 */
 void count_down_back_action(void)
@@ -373,17 +430,15 @@ void count_down_back_action(void)
         overtime_dismiss();
         return;
     }
-    if (s_set_where != 0) {
-        /* 编辑中 BACK:先退编辑位回 Yes(数值保留),不弹页——与设值页两态一致。
-           复用 PRESS 秒→时回绕的复位动作:下划线移回"时"位,焦点交还 Yes */
+    {   /* 编辑态(焦点在下划线)BACK:退浏览模式,数值保留不弹页。
+           判定用焦点而非 s_set_where——"回 Yes 位"约定 where=1,
+           按 where!=0 判会死锁(BACK 永远退不出本页) */
         count_down_page_t *scr = count_down_get(&ui_manager);
-        s_set_where = 1;
-        if (scr && scr->Underline_Btn)
-            lv_obj_set_pos(scr->Underline_Btn, 588, 306);
-        cd_blink_register(0);   /* 焦点即将离开下划线:只换组,由 Yes 的停闪接管 */
-        if (scr && scr->Yes_Btn)
-            lv_group_focus_obj(scr->Yes_Btn);
-        return;
+        lv_obj_t *focused = (current_group && scr) ? lv_group_get_focused(current_group) : NULL;
+        if (nav_edit_session_active() && scr && focused == scr->Underline_Btn) {
+            nav_edit_session_exit();
+            return;
+        }
     }
     if (s_cd_left == 0 && !s_run) count_down_timer_stop();   /* 无后台任务才停表 */
     count_down_leave_fast();   /* 下层页面保屏返回(不重建,下层烹饪倒计时不重置) */
@@ -420,7 +475,7 @@ void jump_to_count_down(void)
     if (!restore_run) {
         s_cd_total = s_cd_left = 0;
         s_dhour = s_dmin = s_dsec = 0;
-        s_set_where = 0;
+        s_set_where = 1;   /* 两态:进页即编辑"时"(原 0=停在 Yes) */
         s_run = 0;
         s_get_out_scr = 1;
         s_return_scr = NULL;
@@ -434,13 +489,14 @@ void jump_to_count_down(void)
     depth--;                     /* 弹掉 PAGE_SCREEN_SET */
     page_push(PAGE_SET_COUNT);
     count_down_create(&ui_manager);
+    nav_editable_extra_register(s_cd.Underline_Btn);   /* 两态:下划线=可编辑对象(page_push 已清表,此处补登记) */
     if (restore_run) {
         lv_arc_set_range(s_cd.Count_Down_Arc, 0, (int32_t)s_cd_total);
         count_down_running_visual();
         count_down_edit_visual(1);
     }
     current_group = s_cd.group;
-    if (s_cd.Yes_Btn) lv_group_focus_obj(s_cd.Yes_Btn);
+    if (s_cd.Yes_Btn) lv_group_focus_obj(s_cd.Yes_Btn);   /* 进页聚焦确定;会话=编辑态,转旋钮直接进"时"编辑 */
     lang_scr_load_anim(s_cd.obj, LV_SCR_LOAD_ANIM_NONE, 0, 0, false);   /* false:保留下层页面(返回免重建) */
     if (s_cd_timer == NULL)
         s_cd_timer = lv_timer_create(count_down_timer_cb, 1000, NULL);   /* 秒节拍(离开页面仍跑) */

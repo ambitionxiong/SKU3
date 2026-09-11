@@ -922,13 +922,19 @@ void process_key(uint8_t key)
         }
         if (current_group == count_down_page_group()) {
             g_send.buzzer_req = BUZZER_ENCODER;
-            encoder_count_down_action(KEY_ENCODER_CW);   /* 计时器页:移焦点/数值+ */
+            if (nav_edit_session_active())
+                encoder_count_down_action(KEY_ENCODER_CW);   /* 编辑态:改当前位值 */
+            else
+                count_down_browse_action(KEY_ENCODER_CW);   /* 浏览态:确定/数字位/清零环游 */
             uart_print();
             break;
         }
         if (current_group == systime_page_group()) {
             g_send.buzzer_req = BUZZER_ENCODER;
-            encoder_systime_action(KEY_ENCODER_CW);   /* 日期时间页:移字段/数值+ */
+            if (nav_edit_session_active())
+                encoder_systime_action(KEY_ENCODER_CW);   /* 编辑态:改当前位值 */
+            else
+                systime_browse_action(KEY_ENCODER_CW);   /* 浏览态:确定/数字位环游 */
             uart_print();
             break;
         }
@@ -1093,13 +1099,19 @@ void process_key(uint8_t key)
         }
         if (current_group == count_down_page_group()) {
             g_send.buzzer_req = BUZZER_ENCODER;
-            encoder_count_down_action(KEY_ENCODER_CCW);   /* 计时器页:移焦点/数值- */
+            if (nav_edit_session_active())
+                encoder_count_down_action(KEY_ENCODER_CCW);   /* 编辑态:改当前位值 */
+            else
+                count_down_browse_action(KEY_ENCODER_CCW);   /* 浏览态:确定/数字位/清零环游 */
             uart_print();
             break;
         }
         if (current_group == systime_page_group()) {
             g_send.buzzer_req = BUZZER_ENCODER;
-            encoder_systime_action(KEY_ENCODER_CCW);   /* 日期时间页:移字段/数值- */
+            if (nav_edit_session_active())
+                encoder_systime_action(KEY_ENCODER_CCW);   /* 编辑态:改当前位值 */
+            else
+                systime_browse_action(KEY_ENCODER_CCW);   /* 浏览态:确定/数字位环游 */
             uart_print();
             break;
         }
@@ -1749,13 +1761,19 @@ void process_key(uint8_t key)
         }
         if (current_group == count_down_page_group()) {
             g_send.buzzer_req = BUZZER_KEY_VALID;
-            encoder_count_down_action(KEY_ENCODER_PRESS);   /* 计时器页:启动/清零/移光标 */
+            if (nav_edit_session_active())
+                encoder_count_down_action(KEY_ENCODER_PRESS);   /* 编辑:推进编辑位 */
+            else
+                count_down_browse_press();   /* 浏览:下划线进该位编辑/确定启动/清零 */
             uart_print();
             break;
         }
         if (current_group == systime_page_group()) {
             g_send.buzzer_req = BUZZER_KEY_VALID;
-            encoder_systime_action(KEY_ENCODER_PRESS);   /* 日期时间页:写 RTC/移字段 */
+            if (nav_edit_session_active())
+                encoder_systime_action(KEY_ENCODER_PRESS);   /* 编辑:推进编辑位 */
+            else
+                systime_browse_press();   /* 浏览:下划线进该位编辑/确定写 RTC */
             uart_print();
             break;
         }
