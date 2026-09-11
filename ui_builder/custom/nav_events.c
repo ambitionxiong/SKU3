@@ -532,6 +532,14 @@ void delayset_page_build(void)
         lv_obj_add_event_cb(ds->min, on_delayset_focus, LV_EVENT_FOCUSED, NULL);
         lv_obj_add_event_cb(ds->start, on_delayset_focus, LV_EVENT_FOCUSED, NULL);
 
+        /* 数值字段呼吸组:焦点落 时/分/开始 时,字段+对应下划线整组呼吸显隐(与其它数值页一致) */
+        lv_obj_t *g_hour[2] = { ds->hour, ds->image_9 };
+        nav_blink_group_register(ds->hour, g_hour, 2);
+        lv_obj_t *g_min[2] = { ds->min, ds->image_10 };
+        nav_blink_group_register(ds->min, g_min, 2);
+        lv_obj_t *g_start[2] = { ds->start, ds->startline };
+        nav_blink_group_register(ds->start, g_start, 2);
+
         lv_group_focus_obj(ds->start);
 
         /* 六感已设"面包卷",其他模式显示模式名 */

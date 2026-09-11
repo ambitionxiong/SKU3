@@ -21,6 +21,7 @@
 // cooking little_button → 设置页（计时器继续运行，实时更新 time_label）
 void jump_to_updown_bbq_setting(void)
 {
+    if (g_send.iface_status == IFACE_COMPLETE) { set_hour = 0; set_min = 1; }   /* 完成页小按钮进设置:烹饪时间默认 1 分钟 */
     updown_setting_saved_temp_up = set_temp_up;
     updown_setting_saved_temp_down = set_temp_down;
     updown_setting_saved_hour = set_hour;

@@ -189,7 +189,7 @@ static void on_central_bbq_stop_back_sure_click(lv_event_t *e)
 
 void jump_to_central_bbq_menu(void)
 {
-    set_temp = 300; set_hour = 0; set_min = 30;
+    set_temp = 180; set_hour = 0; set_min = 30;   /* 集中烧烤默认温度 180℃ */
     page_push(PAGE_CENTRAL_BBQ_MENU);
     lv_obj_clean(lv_scr_act());
     central_bbq_menu_create(&ui_manager);
@@ -403,6 +403,7 @@ void jump_to_central_bbq_cooking(void)
 // cooking → setting（不暂停 timer）
 void jump_to_central_bbq_setting(void)
 {
+    if (g_send.iface_status == IFACE_COMPLETE) { set_hour = 0; set_min = 1; }   /* 完成页小按钮进设置:烹饪时间默认 1 分钟 */
     central_bbq_setting_saved_temp = set_temp; central_bbq_setting_saved_hour = set_hour; central_bbq_setting_saved_min = set_min;
     page_push(PAGE_CENTRAL_BBQ_SETTING);
     lv_obj_clean(lv_scr_act());

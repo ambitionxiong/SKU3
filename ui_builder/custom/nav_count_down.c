@@ -245,6 +245,25 @@ static void count_down_edit_visual(int running)
     lv_obj_set_style_text_opa(scr->Second_Lb, edit_opa, LV_PART_MAIN | LV_STATE_DEFAULT);
 }
 
+/* 按当前编辑位(s_set_where:1时/2分/3秒)重登记呼吸组。
+   focused=1:焦点正落在下划线上,立即停旧组起新组(换字段无缝切换呼吸对象) */
+static void cd_blink_register(int focused)
+{
+    count_down_page_t *scr = count_down_get(&ui_manager);
+    if (!scr->Underline_Btn) return;
+    if (s_set_where == 1) {
+        lv_obj_t *g[3] = { scr->Underline_Btn, scr->Hour_Lb, scr->hour_CH_Lb };
+        nav_blink_group_register(scr->Underline_Btn, g, 3);
+    } else if (s_set_where == 2) {
+        lv_obj_t *g[3] = { scr->Underline_Btn, scr->Min_Lb, scr->min_CH_Lb };
+        nav_blink_group_register(scr->Underline_Btn, g, 3);
+    } else {
+        lv_obj_t *g[3] = { scr->Underline_Btn, scr->Second_Lb, scr->second_CH_Lb };
+        nav_blink_group_register(scr->Underline_Btn, g, 3);
+    }
+    if (focused) nav_blink_refresh(scr->Underline_Btn);
+}
+
 /* 编码器处理(CW/CCW/PRESS 由 nav_key.c 按组分流)
  * 拒绝路径(24h 禁改分秒/0 秒启动/超时层只响一声)内部改无效/提示音 */
 void encoder_count_down_action(uint8_t key)
@@ -264,6 +283,7 @@ void encoder_count_down_action(uint8_t key)
             else {
                 lv_group_focus_obj(scr->Underline_Btn);    /* 待编辑:转去时长 */
                 s_set_where = 1;
+                cd_blink_register(1);   /* 下划线已聚焦:立即起"时"呼吸组 */
             }
         } else if (focused == scr->Underline_Btn) {
             if (s_set_where == 1) {
@@ -313,16 +333,20 @@ void encoder_count_down_action(uint8_t key)
             g_send.buzzer_req = BUZZER_KEY_INVALID;   /* 0 秒不可启动 */
         }
     } else if (focused == scr->Underline_Btn) {
-        /* 下划线 时→分→秒 循环,焦点留在横线(可编辑秒);秒后再按回时并跳 Yes */
+        /* 下划线 时→分→秒 循环,焦点留在横线(可编辑秒);秒后再按回时并跳 Yes。
+           每次换位重登记呼吸组:只闪当前编辑位(数值+单位+下划线) */
         if (s_set_where == 1) {
             s_set_where = 2;
             lv_obj_set_pos(scr->Underline_Btn, 726, 306);
+            cd_blink_register(1);
         } else if (s_set_where == 2) {
             s_set_where = 3;
             lv_obj_set_pos(scr->Underline_Btn, 862, 306);
+            cd_blink_register(1);
         } else {
             s_set_where = 1;
             lv_obj_set_pos(scr->Underline_Btn, 588, 306);
+            cd_blink_register(0);   /* 焦点即将离开下划线:只换组,由 Yes 的停闪接管 */
             lv_group_focus_obj(scr->Yes_Btn);
         }
     } else if (focused == scr->Reset_icon_Btn) {
@@ -603,16 +627,19 @@ static void count_down_create(ui_manager_t *ui)
         lv_obj_set_pos(scr->Second_Lb, 851, 255);
     }
 
-    /* 组:Yes → 下划线 → Reset */
-    if (scr->group == NULL) {
-        scr->group = lv_group_create();
-    } else {
-        lv_group_del(scr->group);
-        scr->group = lv_group_create();
+    /* 组:Yes → 下划线 → Reset。
+       用 group_create_for_page 统一挂 blink 焦点回调(裸 lv_group_add_obj 不挂,
+       呼吸既起不来也停不下来) */
+    {
+        lv_obj_t *btns[3] = { scr->Yes_Btn, scr->Underline_Btn, scr->Reset_icon_Btn };
+        if (scr->group) lv_group_del(scr->group);
+        scr->group = group_create_for_page(btns, 3);
     }
-    lv_group_add_obj(scr->group, scr->Yes_Btn);
-    lv_group_add_obj(scr->group, scr->Underline_Btn);
-    lv_group_add_obj(scr->group, scr->Reset_icon_Btn);
+
+    /* 时长编辑呼吸组:按编辑位只闪当前字段(数值+单位+下划线);焦点回 Yes/Reset 自动停闪。
+       build 时下划线落在"时"位,编辑位归位 1(修复上次离开时残留位与横线位置不一致) */
+    s_set_where = 1;
+    cd_blink_register(0);
 }
 
 /* 设置计时器后台运行中(topflag timer 图标显隐用):已启动且尚有剩余秒数 */

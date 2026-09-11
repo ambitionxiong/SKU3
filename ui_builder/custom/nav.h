@@ -739,6 +739,7 @@ void nav_childlock_refresh(void);    /* 下层状态变化时刷新锁层第三�
 void nav_blink_forget(void);         /* 页面对象销毁路径入口遗忘全部注册(page_push/pop/screen_set_reset) */
 void nav_blink_extra(lv_obj_t *label, lv_obj_t *extra);            /* 字段追加配套对象 */
 void nav_blink_group_register(lv_obj_t *trigger, lv_obj_t **objs, int n); /* 显式登记闪烁组 */
+void nav_blink_refresh(lv_obj_t *focused);  /* 组表变化后按焦点强制重评(停旧组起新组) */
 
 /* 第六感菜单（nav_sixmenu.c 实现） */
 extern lv_group_t *g_sixmenu;

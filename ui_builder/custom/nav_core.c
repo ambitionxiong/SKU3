@@ -888,9 +888,12 @@ void validate_constraints(void)
         }
     }
 
-    /* 根据 hour 动态调整 minute 的循环范围 */
+    /* 根据 hour 动态调整 minute 的循环范围。
+       SETTING 小按钮页(完成页进入默认 1 分钟)下限 1;其余页面(菜单数值页等)
+       维持 hour=0 最少 5 分钟的产品钳制 */
+    int min_floor = (depth > 0 && is_cook_setting_page(page_stack[depth - 1])) ? 1 : 5;
     if (set_hour == 0) {
-        min_field->min = 5;    // hour=0时，最少5分钟
+        min_field->min = min_floor;
         min_field->max = 59;
     } else if (set_hour == max_h) {
         min_field->min = 0;    // 最大小时时 minute 不可调
@@ -901,8 +904,8 @@ void validate_constraints(void)
     }
 
     /* 纠正 minute 值（如果当前值超出新范围） */
-    if (set_hour == 0 && set_min < 5) {
-        set_min = 5;   /* hour=0 时最少 5 分钟(与 min_field->min 一致,对齐 SDK) */
+    if (set_hour == 0 && set_min < min_floor) {
+        set_min = min_floor;
         lv_label_set_text_fmt(min_field->label, min_field->fmt, set_min);
     } else if (set_hour == max_h && set_min != 0) {
         set_min = 0;
@@ -1140,6 +1143,7 @@ static void blink_exec_sel_cb(void *var, int32_t v)
 
 static void blink_stop(void);
 static void blink_obj_add(lv_obj_t *obj);
+static void blink_evaluate(lv_obj_t *focused);   /* 前置:nav_blink_refresh 在定义前引用 */
 
 /* 遗忘全部闪烁注册(组表+动画组)。在页面对象销毁路径的入口调用:
    page_push/page_pop/screen_set_reset——先停活动画(防孤儿动画在对象死后继续刷屏),
@@ -1227,6 +1231,12 @@ void nav_blink_extra(lv_obj_t *label, lv_obj_t *extra)
 void nav_blink_group_register(lv_obj_t *trigger, lv_obj_t **objs, int n)
 {
     blink_group_add(trigger, objs, n);
+}
+
+/* 组表变化后按指定焦点强制重评:停旧组起新组(同触发器分态换组,如计时器 时/分/秒) */
+void nav_blink_refresh(lv_obj_t *focused)
+{
+    blink_evaluate(focused);
 }
 
 // 焦点命中查表:有登记组→整组同步闪;无→停闪

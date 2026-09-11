@@ -332,6 +332,7 @@ void jump_to_lasagna_cooking(void)
 
 void jump_to_lasagna_setting(void)
 {
+    if (g_send.iface_status == IFACE_COMPLETE) { set_hour = 0; set_min = 1; }   /* 完成页小按钮进设置:烹饪时间默认 1 分钟 */
     lasagna_setting_saved_hour = set_hour;
     lasagna_setting_saved_min = set_min;
 
