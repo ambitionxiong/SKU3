@@ -16,6 +16,8 @@
 
 static int s_alarm_code = 0;   /* 当前报警序号(0=无);触发后与 BUF[12] 同步跟踪 */
 
+#define NAV_ALARM_ENABLE 0   /* 异常报警暂关(2026-09-12 用户要求):置 1 恢复触发;页面/按键逻辑均保留 */
+
 /* 全部停止:与关机(nav_power_off)同套运行状态清理,但不清屏幕落警报页 */
 static void alarm_stop_all(void)
 {
@@ -108,6 +110,10 @@ void nav_alarm_tick_check(void)
 {
     int code = uart_data_receive[Receive_data_Power_ALL_Error];   /* BUF[12] 报警序号 */
 
+    if (!NAV_ALARM_ENABLE) {
+        s_alarm_code = 0;         /* 关闭期间不触发不跟踪;BUF[12] 仍被读取以备恢复 */
+        return;
+    }
     if (depth > 0 && page_stack[depth - 1] == PAGE_ALARM)
         return;                       /* 警报页存续:无视 BUF[12] 任何变化,仅长按开关机可离 */
     if (code && code != s_alarm_code)

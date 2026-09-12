@@ -7456,6 +7456,12 @@ void hotcleanmiddle_cooling_lang_tune(void)
     lv_obj_set_pos(pg->button_6, 609, 170);
     lv_obj_set_size(pg->button_6, 50, 43);
 
+    /* Eng modify:与高温冷却页英文排版一致(自适应内容+同锚点),原缺此段致 EN 错位 */
+    lv_obj_set_pos(pg->label_13, 272, 161);
+    lv_obj_set_size(pg->label_13, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+
+    lv_obj_set_pos(pg->status, 275, 232);
+    lv_obj_set_size(pg->status, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
 }
 
 
@@ -7786,6 +7792,12 @@ void hotcleansave_cooling_lang_tune(void)
     lv_obj_set_pos(pg->button_9, 609, 170);
     lv_obj_set_size(pg->button_9, 50, 43);
 
+    /* Eng modify:与高温冷却页英文排版一致(自适应内容+同锚点),原缺此段致 EN 错位 */
+    lv_obj_set_pos(pg->label_13, 272, 161);
+    lv_obj_set_size(pg->label_13, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+
+    lv_obj_set_pos(pg->status, 275, 232);
+    lv_obj_set_size(pg->status, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
 }
 
 

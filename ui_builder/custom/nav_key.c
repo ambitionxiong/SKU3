@@ -303,10 +303,13 @@ void process_key(uint8_t key)
             break;
         }
         if (g_send.iface_status == IFACE_COMPLETE) {
-            /* 排除：预热/额外上色/保温（这三种完成态不支持收藏） */
+            /* 排除：预热/额外上色/保温/清洁两族（这几种完成态不支持收藏,
+             * 清洁此前会误入收藏且卡片显示成上下烧烤） */
             if (g_send.cook_mode == MODE_PREHEAT ||
                 g_send.cook_mode == MODE_EXTRA_COLOR ||
-                g_send.cook_mode == MODE_HEATCONTAIN) {
+                g_send.cook_mode == MODE_HEATCONTAIN ||
+                g_send.cook_mode == MODE_HOT_CLEAN ||
+                g_send.cook_mode == MODE_WATER_CLEAN) {
                 g_send.buzzer_req = BUZZER_KEY_INVALID;
                 uart_print();
                 break;

@@ -84,9 +84,9 @@ void jump_to_about(void)
         char buf[5][96];
         snprintf(buf[0], sizeof(buf[0]), "%s: " ABOUT_MODEL, tr("型号"));
         snprintf(buf[1], sizeof(buf[1]), "12NC: " ABOUT_12NC);
-        snprintf(buf[2], sizeof(buf[2]), "%s: " ABOUT_TFT_VERSION, tr("TFT版本号"));
-        snprintf(buf[3], sizeof(buf[3]), "%s: %d", tr("按键板版本号"), keypad_ver);
-        snprintf(buf[4], sizeof(buf[4]), "%s: %d", tr("电源板版本号"), power_ver);
+        snprintf(buf[2], sizeof(buf[2]), "%s: V" ABOUT_TFT_VERSION, tr("TFT版本号"));
+        snprintf(buf[3], sizeof(buf[3]), "%s: V%02d", tr("按键板版本号"), keypad_ver);
+        snprintf(buf[4], sizeof(buf[4]), "%s: V%02d", tr("电源板版本号"), power_ver);
         for (int i = 0; i < 5; i++) {
             scr->Line_Lb[i] = lv_label_create(scr->panel);
             lv_label_set_text(scr->Line_Lb[i], buf[i]);
