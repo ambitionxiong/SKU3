@@ -63,7 +63,8 @@ static int menu_clean_key_allowed(void)
         return 0;
     if (is_cook_setting_page(page_stack[depth - 1]))
         return 0;
-    return (g_send.iface_status == IFACE_SETTING || g_send.iface_status == IFACE_STANDBY);
+    return (g_send.iface_status == IFACE_SETTING || g_send.iface_status == IFACE_STANDBY ||
+            g_send.iface_status == IFACE_VERSION_QUERY);   /* 关于机器页(版本查询态)功能键照常可用 */
 }
 /* 核心按键分发：按 key 值进入各功能分支。
    入口统一处理：SLEEP 拦截 → 重复收藏确认模态 → 无效提示弹窗屏蔽 → 设置页先关后处理。
@@ -102,6 +103,13 @@ void process_key(uint8_t key)
     if (depth > 0 && page_stack[depth - 1] == PAGE_PROBENEEDTIP &&
         key != KEY_BACK && key != KEY_ENCODER_PRESS)
         return;
+    /* 离开关于机器页(功能键/SET):先把界面状态从版本查询态(7)恢复设置界面态(1)。
+     * 各目标页入口多假定来自设置态而不自行置标志,从 7 直接跳会把 7 带进目标页 */
+    if (depth > 0 && page_stack[depth - 1] == PAGE_ABOUT &&
+        (key == KEY_MENU || key == KEY_SIXMENU || key == KEY_PREHEAT ||
+         key == KEY_EXTRA_COLOR || key == KEY_FAV || key == KEY_CLEAN || key == KEY_SET)) {
+        g_send.iface_status = IFACE_SETTING;
+    }
     /* 设置层选项弹窗激活:按键全部由弹窗消化(编码器切选项/PRESS确认/BACK取消,
      * 其余键无效音),不触发覆盖层的功能键关层 */
     if (screen_set_popup_active() && screen_set_popup_key(key))
@@ -687,6 +695,12 @@ void process_key(uint8_t key)
             }
             else if (cur == PAGE_SET_SYSTIME) {
                 systime_back_action();      /* 日期时间 BACK:不写 RTC 回设置层 */
+            }
+            else if (cur == PAGE_FACTORY_RESET) {
+                factory_back_action();      /* 出厂设置 BACK:不复位回设置层 */
+            }
+            else if (cur == PAGE_ABOUT) {
+                about_back_action();        /* 关于机器 BACK:回设置层 */
             }
             else if (cur == PAGE_SCREEN_SET) {
                 screen_set_back();

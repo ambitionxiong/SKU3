@@ -307,6 +307,8 @@ typedef enum {
     PAGE_SET_VAL,           /* 数值条子页（按键音音量/屏幕亮度共用，独立屏幕） */
     PAGE_SET_COUNT,         /* 计时器子页（独立屏幕） */
     PAGE_SET_SYSTIME,       /* 日期/时间子页（独立屏幕） */
+    PAGE_FACTORY_RESET,     /* 出厂设置确认页（独立屏幕） */
+    PAGE_ABOUT,             /* 关于机器页（独立屏幕，无按钮） */
 } page_id_t;
 
 extern page_id_t page_stack[];
@@ -712,6 +714,14 @@ void encoder_systime_action(uint8_t key);
 void systime_back_action(void);
 void systime_browse_action(uint8_t key);   /* 浏览模式编码器:确定/数字位环游 */
 void systime_browse_press(void);           /* 浏览模式确认:下划线进编辑/确定写 RTC */
+
+/* 出厂设置确认页（nav_factory.c 实现，PAGE_FACTORY_RESET） */
+void jump_to_factory(void);              /* 设置页 RESET 行进入 */
+void factory_back_action(void);          /* BACK:回设置层,焦点回 RESET 行 */
+
+/* 关于机器页（nav_about.c 实现，PAGE_ABOUT，无按钮纯展示） */
+void jump_to_about(void);                /* 设置页 GYJQ 行进入 */
+void about_back_action(void);            /* BACK:回设置层,焦点回 GYJQ 行 */
 
 /* 功能键无效提示（nav_hint.c 实现） */
 void nav_show_invalid_hint(void);

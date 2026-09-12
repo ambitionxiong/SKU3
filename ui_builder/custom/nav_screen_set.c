@@ -378,6 +378,18 @@ static void on_set_time_click(lv_event_t *e)
     (void)e;
     jump_to_systime();
 }
+/* RESET 出厂设置行：进入出厂设置确认页（nav_factory.c） */
+static void on_set_reset_click(lv_event_t *e)
+{
+    (void)e;
+    jump_to_factory();
+}
+/* GYJQ 关于机器行：进入关于机器页（nav_about.c） */
+static void on_set_gyjq_click(lv_event_t *e)
+{
+    (void)e;
+    jump_to_about();
+}
 
 void screen_set_rebuild(void)
 {
@@ -462,6 +474,8 @@ void screen_set_rebuild(void)
     lv_obj_add_event_cb(ss->DSQ_Btn, on_set_dsq_click, LV_EVENT_CLICKED, NULL);     /* 计时器子页 */
     lv_obj_add_event_cb(ss->LDXS_Btn, on_set_ldxs_click, LV_EVENT_CLICKED, NULL);   /* 亮度数值条 */
     lv_obj_add_event_cb(ss->Time_Btn, on_set_time_click, LV_EVENT_CLICKED, NULL);   /* 日期/时间子页 */
+    lv_obj_add_event_cb(ss->RESET_Btn, on_set_reset_click, LV_EVENT_CLICKED, NULL); /* 出厂设置确认页 */
+    lv_obj_add_event_cb(ss->GYJQ_Btn, on_set_gyjq_click, LV_EVENT_CLICKED, NULL);   /* 关于机器页 */
     lv_obj_add_event_cb(ss->YY_Btn, on_set_yy_click, LV_EVENT_CLICKED, NULL);   /* 语言设置弹窗 */
     /* ③ 焦点 */
     s_prev_group = current_group;
