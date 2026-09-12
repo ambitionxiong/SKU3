@@ -38,6 +38,7 @@
 #define IFACE_SLEEP      5
 #define IFACE_DELAY_RESERVE 6   // 延时预约
 #define IFACE_VERSION_QUERY 7   // 版本查询（关于机器页期间发送,20260618 协议 buf[3] 状态表）
+#define IFACE_ALARM         8   // 报警界面（警报页期间发送,buf[3] 状态表）
 
 /* ===== 机器设置状态字节(移植自同事 screen_SET.c,BUF[15]/BUF[16]/BUF[17]) =====
  * Machine_Set_num_1 → SEND_SETTINGS1(15);Machine_Set_num → SEND_SETTINGS2(17),

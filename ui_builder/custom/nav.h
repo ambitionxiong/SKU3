@@ -309,6 +309,7 @@ typedef enum {
     PAGE_SET_SYSTIME,       /* 日期/时间子页（独立屏幕） */
     PAGE_FACTORY_RESET,     /* 出厂设置确认页（独立屏幕） */
     PAGE_ABOUT,             /* 关于机器页（独立屏幕，无按钮） */
+    PAGE_ALARM,             /* 警报页（独立屏幕,吞全部键仅长按开关机） */
 } page_id_t;
 
 extern page_id_t page_stack[];
@@ -722,6 +723,10 @@ void factory_back_action(void);          /* BACK:回设置层,焦点回 RESET �
 /* 关于机器页（nav_about.c 实现，PAGE_ABOUT，无按钮纯展示） */
 void jump_to_about(void);                /* 设置页 GYJQ 行进入 */
 void about_back_action(void);            /* BACK:回设置层,焦点回 GYJQ 行 */
+
+/* 警报页（nav_alarm.c 实现，PAGE_ALARM） */
+void jump_to_alarm(int code);            /* 收到报警协议触发(code=BUF[12] 报警序号) */
+void nav_alarm_tick_check(void);         /* 常驻 tick 调:BUF[12] 边沿触发/解除检测 */
 
 /* 功能键无效提示（nav_hint.c 实现） */
 void nav_show_invalid_hint(void);

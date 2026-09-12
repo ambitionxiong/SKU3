@@ -112,6 +112,9 @@ static void nav_idle_timer_cb(lv_timer_t *t)
     idle_s = (uint32_t)((lv_tick_get() - g_last_activity_ms) / 1000);
     top = page_stack[depth - 1];
 
+    /* 警报页:空闲策略不生效(待机/关机都不允许拽走警报),仅长按开关机 */
+    if (top == PAGE_ALARM) return;
+
     /* 规则3:待机页无操作 20 分钟关机 */
     if (top == PAGE_WAITMENU_24 && g_send.iface_status == IFACE_STANDBY &&
         idle_s >= NAV_IDLE_TO_POWEROFF_S) {

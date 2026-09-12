@@ -276,6 +276,7 @@ int main(int argc, char **argv)
 		static uint8_t prev_door = 0;
 		static uint8_t prev_8 = 0, prev_9 = 0, prev_minus = 0, prev_lang = 0, prev_c = 0;
 		static uint8_t prev_l = 0;
+		static uint8_t prev_e = 0;
 		SDL_PumpEvents();
 		const Uint8 *keys = SDL_GetKeyboardState(NULL);
 		uint8_t sim_key = 0;
@@ -286,6 +287,7 @@ int main(int argc, char **argv)
 		uint8_t cur_lang = keys[SDL_SCANCODE_6];   /* 6=中英切换（原F8） */
 		uint8_t cur_c = keys[SDL_SCANCODE_C];      /* C=烹饪立即完成（调试） */
 		uint8_t cur_l = keys[SDL_SCANCODE_L];      /* L=炉灯开/关（模拟电源板发 BUF[14] BIT0） */
+		uint8_t cur_e = keys[SDL_SCANCODE_E];      /* E=故障注入/解除（模拟电源板发 BUF[12] 报警序号 0<->3） */
 		if      (keys[SDL_SCANCODE_TAB])       sim_key = KEY_MENU;
 		else if (keys[SDL_SCANCODE_5])         sim_key = KEY_EXTRA_COLOR;
 		else if (keys[SDL_SCANCODE_ESCAPE])    sim_key = KEY_BACK;
@@ -346,6 +348,15 @@ int main(int argc, char **argv)
 			sim_force_cook_done();
 		}
 		prev_c = cur_c;
+
+		if (cur_e && !prev_e) {
+			uart_data_receive[Receive_data_Power_ALL_Error] =
+				uart_data_receive[Receive_data_Power_ALL_Error] ? 0 : 3;   /* 注入 E-3/解除 */
+			printf("[sim] alarm %s (BUF[12]=%d)\n",
+				uart_data_receive[Receive_data_Power_ALL_Error] ? "INJECT E-3" : "CLEARED",
+				uart_data_receive[Receive_data_Power_ALL_Error]);
+		}
+		prev_e = cur_e;
 
 		if (sim_key != prev_key) {
 			nav_handle_key(sim_key);

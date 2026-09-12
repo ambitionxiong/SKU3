@@ -28,6 +28,8 @@ static void system_timer_cb(lv_timer_t *timer)
 {
     static int probe_last = 0;
     static uint32_t probe_last_time = 0;
+
+    nav_alarm_tick_check();   /* 警报边沿检测优先:BUF[12] 非 0 立即抢屏 */
     int probe_now = is_probe_inserted();
 
     // 门状态边沿检测（预热完成等待放食材阶段：门开又关 → 重建 complete 显示 sure）

@@ -256,6 +256,7 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "TFT版本号", "TFT Version Number" },
         { "按键板版本号", "Keypad version number" },
         { "电源板版本号", "Power Board Version Number" },
+        { "请联系最近的售后服务点", "Please contact the nearest after-sales service" },
         { "所有自定义配置都将丢失，重置完成后，\n这些设置将无法恢复，您确定要重置吗？",
           "All custom configurations will be lost.\nThere is no way to recover these settings after the reset is complete.\nAre you sure you want to reset?" },
         { "慢煮", "Slow Cooking" },

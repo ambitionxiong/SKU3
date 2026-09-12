@@ -91,6 +91,13 @@ void process_key(uint8_t key)
     }
     /* 无效提示弹窗/收藏结果提示:仅 BACK 有效(KEY_BACK 分支关闭弹窗);长按关机由
        nav_handle_key 独立检测不受影响;其余键静默忽略,避免主动操作 */
+    /* 警报页:吞掉全部按键,仅 KEY1 长按开关机可用(长按在 nav_handle_key 状态机
+     * 里处理,不经本函数;电源板解除 BUF[12] 归 0 由 nav_alarm_tick_check 收页) */
+    if (depth > 0 && page_stack[depth - 1] == PAGE_ALARM) {
+        g_send.buzzer_req = BUZZER_KEY_INVALID;
+        uart_print();
+        return;
+    }
     if ((nav_hint_active() || nav_favtip_active()) && key != KEY_BACK)
         return;
     /* 探针提示页:仅 BACK 有效(probetip_dismiss_now 提前结束),功能键静默忽略 */
