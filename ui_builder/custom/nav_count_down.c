@@ -137,6 +137,7 @@ static void count_down_timer_cb(lv_timer_t *timer)
 
     /* 刚归零:本页弹超时层;已离开页面则重建抢屏(auto_del=false 保留原屏) */
     s_run = 0;
+    g_send.buzzer_req = BUZZER_COOK_DONE;   /* 定时器结束音=烹调结束音(6),原漏发 */
     if (s_get_out_scr == 0 && s_reset_flag == 0) {
         if (scr->obj && lv_obj_is_valid(scr->obj) && scr->obj == lv_scr_act()) {
             s_return_scr = NULL;                      /* 在本页到期 */
@@ -273,7 +274,7 @@ void encoder_count_down_action(uint8_t key)
 
     if (key == KEY_ENCODER_CW || key == KEY_ENCODER_CCW) {
         if (s_overtime) {
-            g_send.buzzer_req = BUZZER_KEY_VALID;   /* 超时层:只响一声不做事 */
+            g_send.buzzer_req = BUZZER_ENCODER;   /* 超时层转旋钮:旋钮音(11),只响一声不做事 */
             return;
         }
         lv_obj_t *focused = lv_group_get_focused(scr->group);

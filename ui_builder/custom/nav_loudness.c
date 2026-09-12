@@ -748,11 +748,15 @@ void jump_to_loudness(void)
 /* 供 page_pop 重建声音页（BACK 主路径走 return_Loudness_action，不经此） */
 void loudness_page_rebuild(void)
 {
+	int where = Set_Loudness_where;   /* create 尾部会清 where,先取 */
 	lv_obj_clean(lv_scr_act());
 	screen_Loudness_create(&ui_manager);
 	loudness_state_sync();   /* 开关/开机欢迎曲可视按实际状态回显 */
 	current_group = s_loud_page.group;
-	if (s_loud_page.switch_bg_Btn) lv_group_focus_obj(s_loud_page.switch_bg_Btn);
+	if (where == 2 && s_loud_page.arrow_2_Btn)
+		lv_group_focus_obj(s_loud_page.arrow_2_Btn);   /* 按键音数值条 BACK:焦点回按键音行(原固定回总开关行) */
+	else if (s_loud_page.switch_bg_Btn)
+		lv_group_focus_obj(s_loud_page.switch_bg_Btn);
 	lang_scr_load_anim(s_loud_page.obj, LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
 }
 

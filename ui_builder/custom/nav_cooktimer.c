@@ -744,7 +744,7 @@ void cooking_timer_cb(lv_timer_t *timer)
             if (p >= 100 && cook_timer) {
                 lv_timer_del(cook_timer);
                 cook_timer = NULL;
-                g_send.buzzer_req = BUZZER_COOK_DONE;
+                g_send.buzzer_req = BUZZER_PREHEAT_DONE;   /* 预热完成音(4),原错发烹调结束音 */
                 jump_to_preheat_complete();
             }
         }
@@ -768,7 +768,7 @@ void cooking_timer_cb(lv_timer_t *timer)
             if (p >= 100 && cook_timer) {
                 lv_timer_del(cook_timer);
                 cook_timer = NULL;
-                g_send.buzzer_req = BUZZER_COOK_DONE;
+                g_send.buzzer_req = BUZZER_PREHEAT_DONE;   /* 预热完成音(4),原错发烹调结束音 */
                 jump_to_preheat_complete();
             }
         }

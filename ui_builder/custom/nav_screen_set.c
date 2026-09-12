@@ -176,6 +176,7 @@ static void sel_popup_create(int where, int flag, int n, const char *title_text,
 static void sel_popup_apply(void)
 {
     screen_SET_t *ss = screen_SET_get(&ui_manager);
+    g_send.buzzer_req = BUZZER_KEY_VALID;   /* 弹窗确认:按键有效音(原漏发) */
     switch (s_sel_where) {
     case SEL_WHERE_FAN:
         SET_Data.Set_FanCooling = s_sel_flag;
@@ -250,8 +251,8 @@ int screen_set_popup_key(uint8_t key)
     switch (key) {
     case KEY_ENCODER_CW:  s_sel_flag = (s_sel_flag + 1) % s_sel_n; sel_icons_refresh(); g_send.buzzer_req = BUZZER_KEY_VALID; break;
     case KEY_ENCODER_CCW: s_sel_flag = (s_sel_flag + s_sel_n - 1) % s_sel_n; sel_icons_refresh(); g_send.buzzer_req = BUZZER_KEY_VALID; break;
-    case KEY_ENCODER_PRESS: sel_popup_apply(); break;
-    case KEY_BACK: sel_popup_close(); break;
+    case KEY_ENCODER_PRESS: g_send.buzzer_req = BUZZER_KEY_VALID; sel_popup_apply(); break;
+    case KEY_BACK: g_send.buzzer_req = BUZZER_KEY_VALID; sel_popup_close(); break;   /* 弹窗取消:有效音(原漏发) */
     default: g_send.buzzer_req = BUZZER_KEY_INVALID; break;   /* 其余键无效音,弹窗保持 */
     }
     uart_print();
@@ -275,6 +276,7 @@ void screen_set_popup_reset(void)
 static void on_set_zdbw_click(lv_event_t *e)
 {
     (void)e;
+    g_send.buzzer_req = BUZZER_KEY_VALID;   /* 切换行:有效音(编码器路径通用尾已发,触摸路径由此补) */
     int on = !(Machine_Set_num & Send_MachineState_AutoKeepWarm);
     SET_Data.Set_KeepWarm = on;
     if (on) MSt_AutoKeepWarm_EN; else MSt_AutoKeepWarm_UN;
@@ -318,6 +320,7 @@ static void on_set_ts_click(lv_event_t *e)
 static void on_set_six_click(lv_event_t *e)
 {
     (void)e;
+    g_send.buzzer_req = BUZZER_KEY_VALID;   /* 切换行:有效音 */
     SET_Data.Set_6th = !SET_Data.Set_6th;
     screen_SET_t *ss = screen_SET_get(&ui_manager);
     if (ss && ss->Six_Lb) lv_label_set_text(ss->Six_Lb, tr(SET_Data.Set_6th ? "无猪肉" : "全部"));
@@ -326,6 +329,7 @@ static void on_set_six_click(lv_event_t *e)
 static void on_set_wddw_click(lv_event_t *e)
 {
     (void)e;
+    g_send.buzzer_req = BUZZER_KEY_VALID;   /* 切换行:有效音 */
     SET_Data.Set_TempUnit = !SET_Data.Set_TempUnit;
     screen_SET_t *ss = screen_SET_get(&ui_manager);
     if (ss && ss->WDDW_Lb) lv_label_set_text(ss->WDDW_Lb, tr(SET_Data.Set_TempUnit ? "°F" : "°C"));
