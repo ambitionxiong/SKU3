@@ -182,6 +182,8 @@ void topflag_update_visibility(void)
 static int nav_topleft_has_text(void)
 {
     if (screen_set_overlay_open()) return 1;
+    /* 日期/时间子页标题烙在底图无标签:视为有文字,图标组居中 */
+    if (depth > 0 && page_stack[depth - 1] == PAGE_SET_SYSTIME) return 1;
     lv_obj_t *scr = lv_scr_act();
     if (!scr) return 0;
     uint32_t n = lv_obj_get_child_count(scr);

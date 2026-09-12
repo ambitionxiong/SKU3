@@ -21,9 +21,9 @@
 #include "nav_idle.h"
 #include "nav_internal.h"
 
-#define NAV_IDLE_TO_COOKING_S   10    /* 烹饪会话无操作回烹饪层 */
-#define NAV_IDLE_TO_STANDBY_S   10   /* 非烹饪无操作进待机 */
-#define NAV_IDLE_TO_POWEROFF_S  10  /* 待机页无操作关机 */
+#define NAV_IDLE_TO_COOKING_S   100    /* 烹饪会话无操作回烹饪层 */
+#define NAV_IDLE_TO_STANDBY_S   100   /* 非烹饪无操作进待机 */
+#define NAV_IDLE_TO_POWEROFF_S  100  /* 待机页无操作关机 */
 
 static uint32_t g_last_activity_ms = 0;
 

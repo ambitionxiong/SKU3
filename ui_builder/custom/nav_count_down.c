@@ -346,9 +346,9 @@ void encoder_count_down_action(uint8_t key)
             cd_blink_register(1);
         } else {
             s_set_where = 1;
+            lv_group_focus_obj(scr->Yes_Btn);   /* 秒后确认:先移焦点(线随 FOCUSED 消失+停闪),再挪线不闪影 */
             lv_obj_set_pos(scr->Underline_Btn, 588, 306);
-            cd_blink_register(0);   /* 焦点即将离开下划线:只换组,由 Yes 的停闪接管 */
-            lv_group_focus_obj(scr->Yes_Btn);   /* 秒后确认:跳到确定(再按即启动) */
+            cd_blink_register(0);   /* 只换组:下次进"时"编辑前预登记 */
         }
     } else if (focused == scr->Reset_icon_Btn) {
         s_reset_flag = 1;
