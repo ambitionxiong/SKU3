@@ -115,6 +115,15 @@ static void nav_idle_timer_cb(lv_timer_t *t)
     /* 警报页:空闲策略不生效(待机/关机都不允许拽走警报),仅长按开关机 */
     if (top == PAGE_ALARM) return;
 
+    /* 烹饪会话进行中且已坐在烹饪层:机器工作视为用户活动,持续刷新活动时钟——
+       烹饪时长不计入闲时(修 30 分钟烹饪结束瞬间按累积闲时直接进待机的 bug),
+       完成后 5 分钟待机倒计时从结束时刻重新起算;
+       覆盖层/子页上不刷新(规则1 的无操作 1 分钟回烹饪层照常累积)。
+       完成态(IFACE_COMPLETE)一律不进闲时:完成页无限期停留,由用户手动离开 */
+    if (g_send.iface_status == IFACE_COMPLETE ||
+        (cook_session_active() && !is_cook_above_page(top)))
+        g_last_activity_ms = lv_tick_get();
+
     /* 规则3:待机页无操作 20 分钟关机 */
     if (top == PAGE_WAITMENU_24 && g_send.iface_status == IFACE_STANDBY &&
         idle_s >= NAV_IDLE_TO_POWEROFF_S) {

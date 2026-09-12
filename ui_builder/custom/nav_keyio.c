@@ -60,9 +60,30 @@ void nav_power_off(void)
                      ui_manager.auto_del);   /* 统一出口:英文模式关机待机页翻译+排版 */
     waitmenu_apply_clock();   /* 立即刷新为真实时间 */
 #ifndef LV_USE_AIC_SIMULATOR
-    backlight_set_level(10);
+    backlight_set_level(nav_standby_backlight_level());   /* 待机显示:开=正常/关=黑屏/夜间=最低 */
 #endif
     printf("[KEY] power off -> SLEEP (dim waitmenu)\n");
+}
+
+/* 待机显示亮度等级:Set_StandbyTime 0开/1关/2夜间(18:00-6:00 最低,其余正常)。
+   关=0 黑屏;开/夜间白天=设置亮度档(Set_Brightness 0~7,档位表与 nav_loudness.c
+   亮度数值条同一映射);夜间 18-6=最低档 lvl[0] */
+static int standby_night_now(void)
+{
+    rtc_time_t t;
+    if (rtc_get_time(&t) != 0) return 0;
+    return (t.hour >= 18 || t.hour < 6);
+}
+
+int nav_standby_backlight_level(void)
+{
+    static const int lvl[8] = {12, 25, 37, 50, 62, 75, 87, 100};   /* 与 nav_loudness.c 亮度条同表 */
+    int v = SET_Data.Set_Brightness;
+    if (v < 0 || v > 7) v = 7;
+    if (SET_Data.Set_StandbyTime == 1) return 0;              /* 关:黑屏 */
+    if (SET_Data.Set_StandbyTime == 2)                        /* 夜间模式 */
+        return standby_night_now() ? lvl[0] : lvl[v];
+    return lvl[v];                                            /* 开:设置亮度档 */
 }
 
 /* KEY1 长按(2s)：开关机。开机=回主菜单，关机=nav_power_off()。

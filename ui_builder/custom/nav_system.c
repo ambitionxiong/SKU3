@@ -30,6 +30,18 @@ static void system_timer_cb(lv_timer_t *timer)
     static uint32_t probe_last_time = 0;
 
     nav_alarm_tick_check();   /* 警报边沿检测优先:BUF[12] 非 0 立即抢屏 */
+
+#ifndef LV_USE_AIC_SIMULATOR
+    /* 待机(关机)显示亮度跟随:夜间模式跨 18:00/6:00 边界时自动切最低/正常 */
+    if (g_send.iface_status == IFACE_SLEEP) {
+        static int s_last_bl = -1;
+        int bl = nav_standby_backlight_level();
+        if (bl != s_last_bl) {
+            s_last_bl = bl;
+            backlight_set_level(bl);
+        }
+    }
+#endif
     int probe_now = is_probe_inserted();
 
     // 门状态边沿检测（预热完成等待放食材阶段：门开又关 → 重建 complete 显示 sure）

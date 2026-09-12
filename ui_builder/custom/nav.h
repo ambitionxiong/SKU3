@@ -728,6 +728,9 @@ void about_back_action(void);            /* BACK:回设置层,焦点回 GYJQ 行
 void jump_to_alarm(int code);            /* 收到报警协议触发(code=BUF[12] 报警序号) */
 void nav_alarm_tick_check(void);         /* 常驻 tick 调:BUF[12] 边沿触发/解除检测 */
 
+/* 待机显示亮度(nav_keyio.c):Set_StandbyTime 0开=设置亮度档/1关=0 黑屏/2夜间=18-6 点最低档 其余设置档 */
+int nav_standby_backlight_level(void);
+
 /* 功能键无效提示（nav_hint.c 实现） */
 void nav_show_invalid_hint(void);
 void nav_hint_cancel(void);
