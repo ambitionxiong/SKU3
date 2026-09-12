@@ -605,6 +605,12 @@ int is_english(void)
     return g_lang_en;
 }
 
+/* 繁體模式: Set_Language 0=英语 1=繁體 2=简体(custom_defs.h), 简繁共用 taiwanpearl 字体 */
+int is_trad(void)
+{
+    return !g_lang_en && SET_Data.Set_Language == 1;
+}
+
 /* ℃(U+2103, UTF-8 E2 84 83, 3字节) → °C(C2 B0 43, 3字节)：等长替换，英文模式统一输出 */
 static const char *tr_celsius(const char *en)
 {
@@ -646,7 +652,7 @@ static const char *tr_unit_f(const char *s)
 const char *tr(const char *zh)
 {
     if (!zh) return zh;
-    if (SET_Data.Set_TempUnit == 1) {   /* 华氏:中英文都出口换 °F(词条/动态串只换符号) */
+    if (SET_Data.Set_TempUnit == 1) {   /* 华氏:中英繁都出口换 °F(词条/动态串只换符号) */
         const char *s = zh;
         if (is_english()) {
             for (int i = 0; i < s_table_n; i++)
@@ -654,6 +660,8 @@ const char *tr(const char *zh)
                     s = s_table[i].en;
                     break;
                 }
+        } else if (is_trad()) {
+            s = tr_tw(zh);   /* 先简转繁再换单位符号 */
         }
         return tr_unit_f(s);
     }
@@ -663,6 +671,7 @@ const char *tr(const char *zh)
                 return tr_celsius(s_table[i].en);
         return tr_celsius(zh);   /* 英文模式未命中: ℃ 仍统一转 °C（如动态格式串 "%d℃"） */
     }
+    if (is_trad()) return tr_tw(zh);   /* 繁體: 词组+字表转换(℃ 保留; 未命中/已繁文本原样) */
     return zh;   /* 非英文或未查到的中文,原样返回 */
 }
 

@@ -9,6 +9,7 @@
 #include "aic_ui.h"
 #include "ui_util.h"
 #include "i18n.h"
+#include "nav_lang.h"
 
 
 
@@ -437,7 +438,7 @@ void screen_SET_create(ui_manager_t *ui)
 
     // Init scr->TXT_Img
     scr->TXT_Img = lv_img_create(scr->obj);
-    lv_img_set_src(scr->TXT_Img, LVGL_IMAGE_PATH(set_bg_txt.png));
+    lv_img_set_src(scr->TXT_Img, lang_img_src("set_bg_txt.png"));   /* 繁體换 _tw 图 */
     lv_img_set_pivot(scr->TXT_Img, 50, 50);
     lv_img_set_angle(scr->TXT_Img, 0);
     lv_obj_set_style_img_opa(scr->TXT_Img, 255, LV_PART_MAIN | LV_STATE_DEFAULT);

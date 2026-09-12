@@ -655,7 +655,7 @@ void mode_apply_icon(lv_obj_t *icon)
         case PAGE_PIZZA3_SET:  lv_img_set_src(icon, LVGL_IMAGE_PATH(pizza3icon.png)); break;
         case PAGE_CHIP_SET:    lv_img_set_src(icon, LVGL_IMAGE_PATH(chipicon.png)); break;
         case PAGE_CUSTOM_SET:  lv_img_set_src(icon, LVGL_IMAGE_PATH(customicon.png)); break;
-        default:               lv_img_set_src(icon, LVGL_IMAGE_PATH(frozencookfr.png)); break;
+        default:               lv_img_set_src(icon, lang_img_src("frozencookfr.png")); break;   /* 繁體换 _tw 图 */
         }
         break;
     case MODE_COOK4:

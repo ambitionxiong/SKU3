@@ -34,4 +34,9 @@ int lang_dyn_dy(void);
  * 不进 tune 注册表,由 nav_hint 显示提示时调用 */
 void topflagpage_lang_tune(void);
 
+/* 语言相关图片统一出口:传简体文件名(如 "frozencookfr.png")
+ * 繁體模式返回 _tw 版完整路径(素材存在时), 其余模式返回简体完整路径
+ * (建页/运行时切图都走这里, 配合 lang_refresh_screen 的繁体树遍历兜底) */
+const char *lang_img_src(const char *cn_fname);
+
 #endif

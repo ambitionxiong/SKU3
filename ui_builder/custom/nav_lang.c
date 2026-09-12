@@ -1,5 +1,7 @@
 #include "nav_lang.h"
 #include "i18n.h"
+#include <string.h>
+#include <stdio.h>
 
 /* =====================================================================
  * 英文排版调整层（nav_lang.c）
@@ -72,6 +74,43 @@ int lang_dyn_dy(void)
     return 0;
 }
 
+
+/* ============ 繁體图片替换表(素材在 ui_builder/assets/image/) ============
+ * 繁體模式树遍历: 简体图 src 精确命中 → 换 _tw 版;
+ * 素材缺失的图(tips/hotcare/hotcleantips/steptext/modebg/waterbg/show)不在表内,
+ * 繁體暂显示简体版, 出图后在表里补一行即可。 */
+typedef struct { const char *tail; const char *cn_src; const char *tw_src; } tw_img_t;
+static const tw_img_t s_tw_imgs[] = {
+    { "off.png",              LVGL_IMAGE_PATH(off.png),              LVGL_IMAGE_PATH(off_tw.png) },
+    { "on1.png",              LVGL_IMAGE_PATH(on1.png),              LVGL_IMAGE_PATH(on1_tw.png) },
+    { "on2.png",              LVGL_IMAGE_PATH(on2.png),              LVGL_IMAGE_PATH(on2_tw.png) },
+    { "focusoff.png",         LVGL_IMAGE_PATH(focusoff.png),         LVGL_IMAGE_PATH(focusoff_tw.png) },
+    { "clearfrt.png",         LVGL_IMAGE_PATH(clearfrt.png),         LVGL_IMAGE_PATH(clearfrt_tw.png) },
+    { "six.png",              LVGL_IMAGE_PATH(six.png),              LVGL_IMAGE_PATH(six_tw.png) },
+    { "set_bg_txt.png",       LVGL_IMAGE_PATH(set_bg_txt.png),       LVGL_IMAGE_PATH(set_bg_txt_tw.png) },
+    { "set_work_bg_txt.png",  LVGL_IMAGE_PATH(set_work_bg_txt.png),  LVGL_IMAGE_PATH(set_work_bg_txt_tw.png) },
+    { "frozencookfr.png",     LVGL_IMAGE_PATH(frozencookfr.png),     LVGL_IMAGE_PATH(frozencookfr_tw.png) },
+};
+#define TW_IMGS_N (int)(sizeof(s_tw_imgs) / sizeof(s_tw_imgs[0]))
+
+/* 运行时切图统一出口(nav_events 冻结菜单图标等): 繁體返回 _tw 完整路径 */
+const char *lang_img_src(const char *cn_fname)
+{
+    static char s_fb[2][160];   /* 表外文件名兜底路径(环形 2 块) */
+    static int  s_fb_idx = 0;
+    if (is_trad()) {
+        for (int i = 0; i < TW_IMGS_N; i++)
+            if (strcmp(cn_fname, s_tw_imgs[i].tail) == 0)
+                return s_tw_imgs[i].tw_src;
+    }
+    for (int i = 0; i < TW_IMGS_N; i++)
+        if (strcmp(cn_fname, s_tw_imgs[i].tail) == 0)
+            return s_tw_imgs[i].cn_src;
+    char *b = s_fb[s_fb_idx];
+    s_fb_idx = (s_fb_idx + 1) & 1;
+    snprintf(b, sizeof(s_fb[0]), LVGL_DIR "image/%s", cn_fname);
+    return b;
+}
 
 /* 取 opts 中 s 起 len 字节的子串查表（临时缓冲） */
 static const char *tr_line(const char *s, size_t len)
@@ -149,6 +188,19 @@ static int lang_fuzzy_status(lv_obj_t *obj, const char *txt, char *buf, int buf_
 static lv_obj_tree_walk_res_t lang_apply_obj(lv_obj_t *obj, void *user_data)
 {
     (void)user_data;
+    /* 繁體: 简体图 → _tw 图(精确命中 s_tw_imgs 才换, 表外素材缺失保持简体) */
+    if (is_trad() && lv_obj_has_class(obj, &lv_image_class)) {
+        const void *src = lv_image_get_src(obj);
+        if (src && lv_image_src_get_type(src) == LV_IMAGE_SRC_FILE) {
+            for (int i = 0; i < TW_IMGS_N; i++) {
+                if (strcmp((const char *)src, s_tw_imgs[i].cn_src) == 0) {
+                    lv_image_set_src(obj, s_tw_imgs[i].tw_src);
+                    break;
+                }
+            }
+        }
+        return LV_OBJ_TREE_WALK_NEXT;
+    }
     /* roller 选项翻译：逐行查表替换（树遍历能看到当前选中项，但需覆盖全部选项） */
     if (lv_obj_check_type(obj, &lv_roller_class)) {
         const char *opts = lv_roller_get_options(obj);
@@ -179,21 +231,23 @@ static lv_obj_tree_walk_res_t lang_apply_obj(lv_obj_t *obj, void *user_data)
 
     /* 只处理 label（button 的子 label 由 LV_OBJ_FLAG_CLICKABLE 区分，直接遍历叶子） */
     if (lv_obj_check_type(obj, &lv_label_class)) {
-        /* pass 1: 文本翻译——先精确查表，命中不了再模糊匹配状态条结构 */
+        /* pass 1: 文本翻译——先精确查表，命中不了再模糊匹配状态条结构
+         * 繁體: tr() 出口即词组+字表转换(数字已填充的状态条也能整串转换), 无需模糊匹配 */
         const char *txt = lv_label_get_text(obj);
         if (txt && txt[0]) {
             const char *en = tr(txt);
-            if (en != txt) {
+            if (en != txt && strcmp(en, txt) != 0) {
                 lv_label_set_text(obj, en);
-            } else {
-                char fbuf[128];
+            } else if (!is_trad()) {
+                char fbuf[256];
                 if (lang_fuzzy_status(obj, txt, fbuf, (int)sizeof(fbuf)))
                     lv_label_set_text(obj, fbuf);
             }
         }
         /* pass 2: 字体切换（taiwanpearl → aktivgrotesk，按字号一一映射）
-         * 英文模式: 不含中文(CJK)的文本全部切换 aktivgrotesk（含 °↑↓，℃ 已替换为 °C）；
-         * 未翻译中文残留(CJK, UTF-8 首字节 E4-E9)不切，保持 taiwanpearl 防方块 */
+         * 仅英文模式执行; 繁體排版/字体与简体完全一致, 纯数字/单位标签也不切,
+         * 否则数字变 Aktiv 变宽、℃ 等符号在 Aktiv 缺字变豆腐, 布局整体偏移 */
+        if (is_trad()) return LV_OBJ_TREE_WALK_NEXT;
         const lv_font_t *f = lv_obj_get_style_text_font(obj, 0);
         const char *tp = lv_label_get_text(obj);
         bool has_cjk = false;
@@ -231,18 +285,21 @@ void lang_scr_load_anim(lv_obj_t *scr, lv_scr_load_anim_t anim_type,
 
 void lang_refresh_screen(void)
 {
-    if (!is_english()) return;
+    if (!is_english() && !is_trad()) return;   /* 简体零开销 */
     lv_obj_tree_walk(lv_scr_act(), lang_apply_obj, NULL);
 }
 
 void lang_on_page_built(void)
 {
-    if (!is_english()) return;
     if (depth <= 0) return;
 
-    /* 静态标签翻译 + 字体切换 */
-    lang_refresh_screen();
-
-    /* 当前页排版微调（同事注册的函数） */
-    lang_tune_for_page(page_stack[depth - 1])();
+    if (is_english()) {
+        /* 英文: 静态标签翻译 + 字体切换 + 排版微调 */
+        lang_refresh_screen();
+        lang_tune_for_page(page_stack[depth - 1])();
+    } else if (is_trad()) {
+        /* 繁體: 树遍历翻译(tr→简转繁) + _tw 图片替换;
+         * 排版与字体与简体一致(taiwanpearl), 不跑 lang_tune/字体映射 */
+        lang_refresh_screen();
+    }
 }

@@ -321,10 +321,13 @@ int main(int argc, char **argv)
 		prev_8 = cur_8; prev_9 = cur_9; prev_minus = cur_minus;
 
 		if (cur_lang && !prev_lang) {
-			g_lang_en = !g_lang_en;   /* 语言标志；切后立即刷新当前页（i18n） */
+			/* 语言循环 简→英→繁→简(测试键): EN/繁走树遍历刷新, 回简体靠翻页重建 */
+			SET_Data.Set_Language = (SET_Data.Set_Language + 1) % 3;
+			g_lang_en = (SET_Data.Set_Language == 0) ? 1 : 0;
 			extern void lang_on_page_built(void);
 			lang_on_page_built();
-			printf("[sim] lang %s\n", g_lang_en ? "EN" : "CN");
+			printf("[sim] lang %s\n", SET_Data.Set_Language == 0 ? "EN" :
+			       (SET_Data.Set_Language == 1 ? "TW(繁體)" : "CN(简体)"));
 		}
 		prev_lang = cur_lang;
 		if (cur_door && !prev_door) {

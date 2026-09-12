@@ -218,21 +218,23 @@ static void sel_popup_apply(void)
         topflag_update_visibility();    /* 待机页下开/关演示需联动整层显隐(徽标放行/收回) */
         break;
     case SEL_WHERE_LANG:
-        /* s_sel_flag: 0=English 1=繁體 2=简体(与 Set_Language 字段注释一致);繁體暂无词表,显示同简体 */
+        /* s_sel_flag: 0=English 1=繁體 2=简体(与 Set_Language 字段注释一致)
+         * 繁體: tr() 出口简转繁(i18n_tw.c 词组+字表), 排版/字体同简体, 图片走 _tw 素材 */
         SET_Data.Set_Language = s_sel_flag;
         g_lang_en = (s_sel_flag == 0) ? 1 : 0;
         if (g_lang_en) {
             lang_on_page_built();   /* 切英文:树遍历翻译+英文排版 */
         } else {
-            /* 切中文:lang_on_page_built 对中文早退,重建覆盖层立即恢复中文布局
-               (弹窗是覆盖层子对象一并销毁;reset 清悬挂指针,函数尾部 close 变无害) */
+            /* 切简体/繁體:重建覆盖层恢复简体文本(英→繁/英→简无法按 zh 键逆向翻译)。
+             * 繁體重建后再树遍历:文本简→繁 + 简体图换 _tw 图 */
             if (screen_SET.obj) {
                 lv_obj_del(screen_SET.obj);
                 screen_SET.obj = NULL;
             }
             screen_set_rebuild();
             screen_set_popup_reset();
-            if (ss && ss->YY_Btn) lv_group_focus_obj(ss->YY_Btn);   /* 焦点回语言按钮(与切英文行为一致) */
+            if (SET_Data.Set_Language == 1) lang_on_page_built();
+            if (ss && ss->YY_Btn) lv_group_focus_obj(ss->YY_Btn);   /* 焦点回语言按钮 */
         }
         if (ss && ss->YY_Lb) lv_label_set_text(ss->YY_Lb, tr(s_lang_yy_names[s_sel_flag]));
         nav_topflag_demo_sync();   /* 演示徽标图/位置立即跟随语言(覆盖层路径不经过 lang_scr_load_anim,否则等 500ms tick) */
@@ -450,7 +452,7 @@ void screen_set_rebuild(void)
     if (s_was_running) {
         n = 3;
         /* 运行态:文字框换 set_work_bg_txt */
-        lv_img_set_src(ss->TXT_Img, LVGL_IMAGE_PATH(set_work_bg_txt.png));
+        lv_img_set_src(ss->TXT_Img, lang_img_src("set_work_bg_txt.png"));   /* 繁體换 _tw 图 */
     }
     if (g_screen_set) lv_group_del(g_screen_set);
     g_screen_set = group_create_for_page(btns, n);
