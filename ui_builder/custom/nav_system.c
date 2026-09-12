@@ -24,12 +24,60 @@ void topflag_update_visibility(void);
 // 系统定时器（每500ms，常驻检测）
 // ==============================
 
+/* ===== 提示音重复引擎（协议顶部注释 3.x）=====
+ * 提示音类:4 预热完成 / 5 自动暂停翻面 / 6 烹调结束(含定时器结束) / 7 异常报警 / 9 缺水提示。
+ * 首响由各触发点照旧写 buzzer_req（不改动任何既有发送点）,uart_send_fill 发送时 arm 登记;
+ * 之后每 5 秒(协议强制间隔)重发一次,总次数=Set_VolumeHintTime {0,1,2,3}→{1,2,3,7};
+ * 3.1 用户操作(按键/触摸/门开关/水盒/旋钮)取消后续;3.2 新提示音覆盖前一次。 */
+static int s_hint_code = 0;          /* 待重复的提示音(0=无) */
+static int s_hint_left = 0;          /* 剩余重发次数 */
+static uint32_t s_hint_next_ms = 0;
+
+void nav_hint_tone_arm(int code)
+{
+    static const int cnt[4] = {1, 2, 3, 7};   /* 1次/5秒/10秒/30秒 → 总响次数 */
+    int idx;
+    if (code != BUZZER_PREHEAT_DONE && code != BUZZER_PAUSE && code != BUZZER_COOK_DONE &&
+        code != BUZZER_ALARM && code != BUZZER_NO_WATER)
+        return;                               /* 非提示音类(按键/开关机/旋钮):单次,不登记 */
+    if (code == s_hint_code)
+        return;                               /* 引擎自己的重发回填,不重置计数 */
+    idx = SET_Data.Set_VolumeHintTime;
+    if (idx < 0 || idx > 3) idx = 0;
+    if (cnt[idx] <= 1) return;                /* 1 次档:无后续 */
+    s_hint_code = code;
+    s_hint_left = cnt[idx] - 1;               /* 首响已含在总数内 */
+    s_hint_next_ms = lv_tick_get() + 5000;
+}
+
+static void nav_hint_tone_tick(void)
+{
+    if (!s_hint_code) return;
+    if ((int32_t)(lv_tick_get() - s_hint_next_ms) >= 0) {
+        if (s_hint_left > 0) {
+            s_hint_left--;
+            g_send.buzzer_req = (int8_t)s_hint_code;
+            s_hint_next_ms = lv_tick_get() + 5000;
+            uart_print();                     /* 模拟器即时出帧;真机 100ms 定时统一发送 */
+        } else {
+            s_hint_code = 0;                  /* 次数用完 */
+        }
+    }
+}
+
+void nav_hint_tone_cancel(void)
+{
+    s_hint_code = 0;
+    s_hint_left = 0;
+}
+
 static void system_timer_cb(lv_timer_t *timer)
 {
     static int probe_last = 0;
     static uint32_t probe_last_time = 0;
 
     nav_alarm_tick_check();   /* 警报边沿检测优先:BUF[12] 非 0 立即抢屏 */
+    nav_hint_tone_tick();     /* 提示音 5 秒重发调度 */
 
 #ifndef LV_USE_AIC_SIMULATOR
     /* 待机(关机)显示亮度跟随:夜间模式跨 18:00/6:00 边界时自动切最低/正常 */
@@ -49,6 +97,7 @@ static void system_timer_cb(lv_timer_t *timer)
     int door_now = is_door_open();
     if (door_now != door_last) {
         door_last = door_now;
+        nav_hint_tone_cancel();   /* 协议 3.1:门开关属用户操作,取消后续提示音 */
         if (preheat_wait_door && !door_now) {
             preheat_wait_door = 0;
             if (depth > 0 && (page_stack[depth - 1] == PAGE_PREHEAT_COMPLETE ||

@@ -56,6 +56,7 @@ void uart_send_fill(void)
     uart_data_send[SEND_AUTO_MENU_ID] = 0;
 
     uart_data_send[SEND_BUZZER]       = g_send.buzzer_req;
+    nav_hint_tone_arm(g_send.buzzer_req);   /* 提示音类登记 5 秒重发(引擎内部识别,按键/开关机类不登记) */
     g_send.buzzer_req = 0;
 
     uart_data_send[SEND_SETTINGS1]    = Machine_Set_num_1;

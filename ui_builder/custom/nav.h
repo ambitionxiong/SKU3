@@ -731,6 +731,9 @@ void nav_alarm_tick_check(void);         /* 常驻 tick 调:BUF[12] 边沿触发
 /* 待机显示亮度(nav_keyio.c):Set_StandbyTime 0开=设置亮度档/1关=0 黑屏/2夜间=18-6 点最低档 其余设置档 */
 int nav_standby_backlight_level(void);
 
+/* 提示音重复引擎(nav_system.c):用户操作取消后续提示音(协议 3.1,按键/门开关等) */
+void nav_hint_tone_cancel(void);
+
 /* 功能键无效提示（nav_hint.c 实现） */
 void nav_show_invalid_hint(void);
 void nav_hint_cancel(void);

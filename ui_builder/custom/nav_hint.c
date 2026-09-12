@@ -123,6 +123,14 @@ static void nav_hint_collect(void)
     } else if (current_group == g_hch_cooking) {
         hotcleanhigh_cooking_t *c = hotcleanhigh_cooking_get(&ui_manager); if (c) g_hint_objs[g_hint_n++] = c->timelabel;
     }
+    /* 热解清洁冷却页:右侧提示图标(x902),无效弹窗时一并隐藏 */
+    else if (current_group == g_hcs_cooling) {
+        hotcleansave_cooling_t *c = hotcleansave_cooling_get(&ui_manager); if (c) g_hint_objs[g_hint_n++] = c->image_8;
+    } else if (current_group == g_hcm_cooling) {
+        hotcleanmiddle_cooling_t *c = hotcleanmiddle_cooling_get(&ui_manager); if (c) g_hint_objs[g_hint_n++] = c->image_11;
+    } else if (current_group == g_hch_cooling) {
+        hotcleanhigh_cooling_t *c = hotcleanhigh_cooling_get(&ui_manager); if (c) g_hint_objs[g_hint_n++] = c->image_22;
+    }
     for (int i = 0; i < g_hint_n; i++)
         if (g_hint_objs[i]) {
             /* 先移除再挂:元素跨多次提示复用,防 DELETE 回调事件列表累积 */

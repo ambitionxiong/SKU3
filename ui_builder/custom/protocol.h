@@ -123,6 +123,11 @@ extern uint8_t Machine_Set_num;     /* 机器设置字节2(保温/风扇/功率/
 #define BUZZER_NO_WATER       9
 #define BUZZER_ENCODER        11
 
+/* 提示音重复引擎(协议顶部注释 3.x):提示音类 4/5/6/7/9 首响后每 5 秒重发,
+ * 总次数按 Set_VolumeHintTime {0,1,2,3}→{1,2,3,7};用户操作取消后续;
+ * 新提示音覆盖前一次。uart_send_fill 发送时 arm 登记,nav_system 500ms tick 驱动 */
+void nav_hint_tone_arm(int code);
+
 // ===== 发送状态结构体 =====
 // uart_send_fill() 只读此结构体，不访问其他全局变量
 // (唯一例外:BUF[5] 烹调标志位在演示模式开启时锁定发送 4,见 uart_send_fill)

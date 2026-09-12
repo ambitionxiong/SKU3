@@ -20,6 +20,7 @@
    KEY1 长按与待机页 20 分钟无操作超时(nav_idle)共用，行为完全一致 */
 void nav_power_off(void)
 {
+    nav_hint_tone_cancel();           /* 提示音重复引擎随关机停止 */
     probetip_cancel_auto_dismiss();   /* 取消陈旧的探针提示自动关闭定时器,防止跨会话误触发 */
     screen_set_reset();               /* 覆盖层若打开:清理对象/组/焦点指针,防悬空 */
     count_down_poweroff_reset();      /* 计时器后台/超时状态一并清:防关机后到期自动退出拽屏 */
@@ -150,7 +151,10 @@ void nav_handle_key(uint8_t key)
 {
     uint32_t now = lv_tick_get();
 
-    if (key != 0) nav_idle_touch();   /* 任何实际按键都算用户活动(含被模态吞掉的) */
+    if (key != 0) {
+        nav_idle_touch();          /* 任何实际按键都算用户活动(含被模态吞掉的) */
+        nav_hint_tone_cancel();    /* 协议 3.1:用户操作取消后续提示音(按键/旋钮) */
+    }
 
     switch (key_state) {
     case KEY_IDLE:
