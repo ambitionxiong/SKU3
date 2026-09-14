@@ -430,10 +430,10 @@ void sixset2_rebuild(page_id_t child)
         six_2d_select();
         apply_display();
 
-        /* 返回时焦点恢复到进入前的维(jacket:degree 在后,先回中间组) */
-        if (mid_obj(pg)) {
-            lv_group_focus_obj(mid_obj(pg));
-            apply_line_for(mid_obj(pg));   /* 恢复时直接亮线 */
+        /* 返回焦点=下一步:离开本页唯一出口是 next→描述页,与初始进入(373 行)一致 */
+        if (pg->next) {
+            lv_group_focus_obj(pg->next);
+            apply_line_for(pg->next);   /* next 无线,全隐藏 */
         }
     }
     current_group = g_sixset2;

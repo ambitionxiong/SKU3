@@ -18,19 +18,26 @@ static const int w_fsteak_t[] = { 18, 21, 24 };
 
 lv_group_t *g_sixop3page = NULL;
 
-/* 重建时需要恢复的标签 */
-static const char *s_op3_name  = NULL;
-static const char *s_op3_ops[3] = { NULL, NULL, NULL };
-static const char *s_op3_bts[3] = { NULL, NULL, NULL };   /* 按钮内文字(探针版用;NULL=保持生成) */
+/* 重建时需要恢复的标签:存值拷贝而非 tr() 返回指针——繁体模式 tr() 走 4×512 环形缓冲
+   (i18n_tw.c),指针跨页面存活必被覆写(简体返回字面量无此问题,曾致繁体菜卡串位);
+   jump 时拷快照,本页文字即与后续任何 tr() 调用无关 */
+#define SIXOP3_STR_MAX 96
+static char s_op3_name_s[SIXOP3_STR_MAX];
+static char s_op3_ops_s[3][SIXOP3_STR_MAX];
+static char s_op3_bts_s[3][SIXOP3_STR_MAX];   /* 按钮内文字(探针版用;空串=保持生成) */
+static void op3_str_set(char *dst, const char *src)
+{
+    snprintf(dst, SIXOP3_STR_MAX, "%s", src ? src : "");
+}
 static int s_op3_probe_mask = 0;   /* probe 图标显隐掩码: bit0=p1 bit1=p2 bit2=p3 */
 static int s_op3_kind = SIX_OP3_KIND_BEEF;   /* 当前菜父类别（牛肉/羊肉/…） */
 /* 同页 ID 嵌套(无猪肉:MEAT 分类页→BEEF/MUTTON 菜品页):与 nav_core.c
    page_stack(MAX_STACK 16)平行的按层槽位,jump 写入/返回重建读取,互不串层 */
 #define SIXOP3_STACK_MAX 16
 static int      s_op3_kind_slot[SIXOP3_STACK_MAX] = { SIX_OP3_KIND_BEEF };
-static const char *s_op3_name_slot[SIXOP3_STACK_MAX];
-static const char *s_op3_ops_slot[SIXOP3_STACK_MAX][3];
-static const char *s_op3_bts_slot[SIXOP3_STACK_MAX][3];
+static char s_op3_name_slot_s[SIXOP3_STACK_MAX][SIXOP3_STR_MAX];
+static char s_op3_ops_slot_s[SIXOP3_STACK_MAX][3][SIXOP3_STR_MAX];
+static char s_op3_bts_slot_s[SIXOP3_STACK_MAX][3][SIXOP3_STR_MAX];
 static int      s_op3_probe_slot[SIXOP3_STACK_MAX];
 static int      s_op3_enter_slot[SIXOP3_STACK_MAX];   /* 本层被点击的按钮(1/2/3),返回焦点依据 */
 /* 记录"本层被点击的按钮"——点击发生在跳转前,depth 还是本层,直接写本层槽位 */
@@ -91,14 +98,14 @@ static void on_sixop3page_bt3_click(lv_event_t *e)
 static void sixop3page_apply_labels(sixop3page_t *sp)
 {
     if (!sp) return;
-    if (sp->name && s_op3_name)  lv_label_set_text(sp->name, s_op3_name);
+    if (sp->name && s_op3_name_s[0])  lv_label_set_text(sp->name, s_op3_name_s);
 
-    /* op 标签:传入文字则设置;探针版(全 NULL)隐藏 */
+    /* op 标签:传入文字则设置;探针版(全空串)隐藏 */
     lv_obj_t *ops[3] = { sp->op1, sp->op2, sp->op3 };
     for (int i = 0; i < 3; i++) {
         if (!ops[i]) continue;
-        if (s_op3_ops[i])
-            lv_label_set_text(ops[i], s_op3_ops[i]);
+        if (s_op3_ops_s[i][0])
+            lv_label_set_text(ops[i], s_op3_ops_s[i]);
         else
             lv_obj_add_flag(ops[i], LV_OBJ_FLAG_HIDDEN);
     }
@@ -106,9 +113,9 @@ static void sixop3page_apply_labels(sixop3page_t *sp)
     /* bt 按钮文字(探针版用):子 label 设置 */
     lv_obj_t *bts[3] = { sp->bt1, sp->bt2, sp->bt3 };
     for (int i = 0; i < 3; i++) {
-        if (!bts[i] || !s_op3_bts[i]) continue;
+        if (!bts[i] || !s_op3_bts_s[i][0]) continue;
         lv_obj_t *bl = lv_obj_get_child(bts[i], 0);
-        if (bl) lv_label_set_text(bl, s_op3_bts[i]);
+        if (bl) lv_label_set_text(bl, s_op3_bts_s[i]);
     }
 }
 
@@ -183,33 +190,33 @@ static void sixop3page_restore_focus(sixop3page_t *sp)
 
 void jump_to_sixop3page(const char *name, const char *op1, const char *op2, const char *op3, int probe_mask, int kind)
 {
-    s_op3_name  = name;
-    s_op3_ops[0] = op1;
-    s_op3_ops[1] = op2;
-    s_op3_ops[2] = op3;
-    s_op3_bts[0] = NULL;   /* 非探针版:按钮文字用生成默认 */
-    s_op3_bts[1] = NULL;
-    s_op3_bts[2] = NULL;
+    op3_str_set(s_op3_name_s, name);
+    op3_str_set(s_op3_ops_s[0], op1);
+    op3_str_set(s_op3_ops_s[1], op2);
+    op3_str_set(s_op3_ops_s[2], op3);
+    s_op3_bts_s[0][0] = '\0';   /* 非探针版:按钮文字用生成默认 */
+    s_op3_bts_s[1][0] = '\0';
+    s_op3_bts_s[2][0] = '\0';
     s_op3_probe_mask = probe_mask;
     s_op3_kind = kind;
     if (kind == SIX_OP3_KIND_MEAT) {
         /* 无猪肉肉分类页:文字写按钮内标签(按钮居中),固定 op 标签隐藏
            (op 标签位置为带探针图标设计,无图标时文字不居中) */
-        s_op3_bts[0] = op1;
-        s_op3_bts[1] = op2;
-        s_op3_bts[2] = op3;
-        s_op3_ops[0] = NULL;
-        s_op3_ops[1] = NULL;
-        s_op3_ops[2] = NULL;
+        op3_str_set(s_op3_bts_s[0], s_op3_ops_s[0]);
+        op3_str_set(s_op3_bts_s[1], s_op3_ops_s[1]);
+        op3_str_set(s_op3_bts_s[2], s_op3_ops_s[2]);
+        s_op3_ops_s[0][0] = '\0';
+        s_op3_ops_s[1][0] = '\0';
+        s_op3_ops_s[2][0] = '\0';
     }
 
     page_push(PAGE_SIXOP3PAGE);
     if (depth >= 1 && depth <= SIXOP3_STACK_MAX) {   /* 按层记全套参数(分类/菜品同 ID 嵌套,返回各恢复各的) */
         s_op3_kind_slot[depth - 1] = kind;
-        s_op3_name_slot[depth - 1] = s_op3_name;
+        op3_str_set(s_op3_name_slot_s[depth - 1], s_op3_name_s);
         for (int i = 0; i < 3; i++) {
-            s_op3_ops_slot[depth - 1][i] = s_op3_ops[i];
-            s_op3_bts_slot[depth - 1][i] = s_op3_bts[i];
+            op3_str_set(s_op3_ops_slot_s[depth - 1][i], s_op3_ops_s[i]);
+            op3_str_set(s_op3_bts_slot_s[depth - 1][i], s_op3_bts_s[i]);
         }
         s_op3_probe_slot[depth - 1] = s_op3_probe_mask;
     }
@@ -235,23 +242,23 @@ void jump_to_sixop3page(const char *name, const char *op1, const char *op2, cons
 /* 探针版肉菜单:name=肉,op/probe 全隐藏,bt1-3=牛肉/羊肉/猪肉 */
 void jump_to_sixop3page_tz(const char *name, const char *bt1, const char *bt2, const char *bt3)
 {
-    s_op3_name  = name;
-    s_op3_ops[0] = NULL;   /* op 标签全隐藏 */
-    s_op3_ops[1] = NULL;
-    s_op3_ops[2] = NULL;
-    s_op3_bts[0] = bt1;
-    s_op3_bts[1] = bt2;
-    s_op3_bts[2] = bt3;
+    op3_str_set(s_op3_name_s, name);
+    s_op3_ops_s[0][0] = '\0';   /* op 标签全隐藏 */
+    s_op3_ops_s[1][0] = '\0';
+    s_op3_ops_s[2][0] = '\0';
+    op3_str_set(s_op3_bts_s[0], bt1);
+    op3_str_set(s_op3_bts_s[1], bt2);
+    op3_str_set(s_op3_bts_s[2], bt3);
     s_op3_probe_mask = 0;                    /* probe 图标全隐藏 */
     s_op3_kind = SIX_OP3_KIND_MEAT_TZ;
 
     page_push(PAGE_SIXOP3PAGE);
     if (depth >= 1 && depth <= SIXOP3_STACK_MAX) {
         s_op3_kind_slot[depth - 1] = SIX_OP3_KIND_MEAT_TZ;
-        s_op3_name_slot[depth - 1] = s_op3_name;
+        op3_str_set(s_op3_name_slot_s[depth - 1], s_op3_name_s);
         for (int i = 0; i < 3; i++) {
-            s_op3_ops_slot[depth - 1][i] = NULL;
-            s_op3_bts_slot[depth - 1][i] = s_op3_bts[i];
+            s_op3_ops_slot_s[depth - 1][i][0] = '\0';
+            op3_str_set(s_op3_bts_slot_s[depth - 1][i], s_op3_bts_s[i]);
         }
         s_op3_probe_slot[depth - 1] = 0;
     }
@@ -278,10 +285,10 @@ void sixop3page_rebuild(page_id_t child)
     if (g_sixop3page) { lv_group_del(g_sixop3page); g_sixop3page = NULL; }
     if (depth >= 1 && depth <= SIXOP3_STACK_MAX) {   /* 恢复本层全套参数(分类页/菜品页嵌套返回互不串层) */
         s_op3_kind = s_op3_kind_slot[depth - 1];
-        s_op3_name = s_op3_name_slot[depth - 1];
+        op3_str_set(s_op3_name_s, s_op3_name_slot_s[depth - 1]);
         for (int i = 0; i < 3; i++) {
-            s_op3_ops[i] = s_op3_ops_slot[depth - 1][i];
-            s_op3_bts[i] = s_op3_bts_slot[depth - 1][i];
+            op3_str_set(s_op3_ops_s[i], s_op3_ops_slot_s[depth - 1][i]);
+            op3_str_set(s_op3_bts_s[i], s_op3_bts_slot_s[depth - 1][i]);
         }
         s_op3_probe_mask = s_op3_probe_slot[depth - 1];
     }

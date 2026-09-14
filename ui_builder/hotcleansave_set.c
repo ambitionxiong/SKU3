@@ -58,7 +58,7 @@ void hotcleansave_set_create(ui_manager_t *ui)
     lv_label_set_text(scr->label_14, "热解自清洁 — 节能");
     lv_label_set_long_mode(scr->label_14, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->label_14, 276, 157);
-    lv_obj_set_size(scr->label_14, 512, 60);
+    lv_obj_set_size(scr->label_14, 588, 60);
 
     // Set style of scr->label_14
     lv_obj_set_style_text_font(scr->label_14, &c_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);

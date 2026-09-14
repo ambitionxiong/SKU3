@@ -1189,7 +1189,7 @@ void process_key(uint8_t key)
         if (current_group == g_stepset) {
             lv_obj_t *df = lv_group_get_focused(current_group);
             stepset_t *ss = stepset_get(&ui_manager);
-            if (ss && df == ss->next) {
+            if (ss && df == ss->next && nav_edit_session_active()) {
                 /* 仿 updown menu:从 next 左转跳到 mainroller */
                 lv_group_focus_obj(ss->roller_main);
                 g_send.buzzer_req = BUZZER_ENCODER;
@@ -1242,7 +1242,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_updown_bbq_menu) {
             updown_bbq_menu_t *bbq = updown_bbq_menu_get(&ui_manager);
-            if (bbq && focused == bbq->next_button) {
+            if (bbq && focused == bbq->next_button && nav_edit_session_active()) {
                 lv_group_focus_obj(bbq->tempnum_label);
                 printf("[nav] focus wrap to tempnum\n");
             } else {
@@ -1251,7 +1251,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_updown_bbq_menu_probe) {
             updown_bbq_menu_probe_t *menu = updown_bbq_menu_probe_get(&ui_manager);
-            if (menu && focused == menu->next) {
+            if (menu && focused == menu->next && nav_edit_session_active()) {
                 lv_group_focus_obj(menu->temp);
                 printf("[updown_bbq_probe] focus wrap to temp\n");
             } else {
@@ -1260,7 +1260,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_hot_bbq_menu_probe) {
             hot_bbq_menu_probe_t *menu = hot_bbq_menu_probe_get(&ui_manager);
-            if (menu && focused == menu->next) {
+            if (menu && focused == menu->next && nav_edit_session_active()) {
                 lv_group_focus_obj(menu->temp);
                 printf("[hot_bbq_probe] focus wrap to temp\n");
             } else {
@@ -1269,7 +1269,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_bottom_bbq_menu_probe) {
             bottom_bbq_menu_probe_t *menu = bottom_bbq_menu_probe_get(&ui_manager);
-            if (menu && focused == menu->next) {
+            if (menu && focused == menu->next && nav_edit_session_active()) {
                 lv_group_focus_obj(menu->temp);
                 printf("[bottom_bbq_probe] focus wrap to temp\n");
             } else {
@@ -1278,7 +1278,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_slowcook_menu_probe) {
             slowcook_menu_probe_t *menu = slowcook_menu_probe_get(&ui_manager);
-            if (menu && focused == menu->next) {
+            if (menu && focused == menu->next && nav_edit_session_active()) {
                 lv_group_focus_obj(menu->temp);
                 printf("[slowcook_probe] focus wrap to temp\n");
             } else {
@@ -1287,7 +1287,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_updown_bbq_setting) {
             updown_bbq_setting_t *set = updown_bbq_setting_get(&ui_manager);
-            if (set && focused == set->sure_button) {
+            if (set && focused == set->sure_button && nav_edit_session_active()) {
                 lv_group_focus_obj(set->tempup_label);
                 printf("[nav] setting focus wrap to tempup\n");
             } else {
@@ -1296,7 +1296,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_top_bbq_menu) {
             top_bbq_menu_t *menu = top_bbq_menu_get(&ui_manager);
-            if (menu && focused == menu->next_button) {
+            if (menu && focused == menu->next_button && nav_edit_session_active()) {
                 lv_group_focus_obj(menu->temp_label);
                 printf("[top_bbq] focus wrap to temp_label\n");
             } else {
@@ -1305,7 +1305,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_top_bbq_setting) {
             top_bbq_setting_t *set = top_bbq_setting_get(&ui_manager);
-            if (set && focused == set->surebutton) {
+            if (set && focused == set->surebutton && nav_edit_session_active()) {
                 lv_group_focus_obj(set->temp);
                 printf("[top_bbq] setting focus wrap to temp\n");
             } else {
@@ -1314,7 +1314,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_bottom_bbq_menu) {
             bottom_bbq_menu_t *menu = bottom_bbq_menu_get(&ui_manager);
-            if (menu && focused == menu->next) {
+            if (menu && focused == menu->next && nav_edit_session_active()) {
                 lv_group_focus_obj(menu->temp);
                 printf("[bottom_bbq] focus wrap to temp\n");
             } else {
@@ -1323,7 +1323,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_bottom_bbq_setting) {
             bottom_bbq_setting_t *set = bottom_bbq_setting_get(&ui_manager);
-            if (set && focused == set->surebutton) {
+            if (set && focused == set->surebutton && nav_edit_session_active()) {
                 lv_group_focus_obj(set->temp);
                 printf("[bottom_bbq] setting focus wrap to temp\n");
             } else {
@@ -1332,7 +1332,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_hot_bbq_menu) {
             hot_bbq_menu_t *menu = hot_bbq_menu_get(&ui_manager);
-            if (menu && focused == menu->next) {
+            if (menu && focused == menu->next && nav_edit_session_active()) {
                 lv_group_focus_obj(menu->temp);
                 printf("[hot_bbq] focus wrap to temp\n");
             } else {
@@ -1341,7 +1341,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_hot_bbq_setting) {
             hot_bbq_setting_t *set = hot_bbq_setting_get(&ui_manager);
-            if (set && focused == set->sure) {
+            if (set && focused == set->sure && nav_edit_session_active()) {
                 lv_group_focus_obj(set->temp);
                 printf("[hot_bbq] setting focus wrap to temp\n");
             } else {
@@ -1350,7 +1350,7 @@ void process_key(uint8_t key)
         }
     } else if (current_group == g_hotwind_bbq_menu) {
         hotwind_bbq_menu_t *menu = hotwind_bbq_menu_get(&ui_manager);
-        if (menu && focused == menu->next) {
+        if (menu && focused == menu->next && nav_edit_session_active()) {
             lv_group_focus_obj(menu->temp);
             printf("[hotwind_bbq] focus wrap to temp\n");
         } else {
@@ -1359,7 +1359,7 @@ void process_key(uint8_t key)
         }
     } else if (current_group == g_hotwind_bbq_setting) {
         hotwind_bbq_setting_t *set = hotwind_bbq_setting_get(&ui_manager);
-        if (set && focused == set->sure) {
+        if (set && focused == set->sure && nav_edit_session_active()) {
             lv_group_focus_obj(set->temp);
             printf("[hotwind_bbq] setting focus wrap to temp\n");
         } else {
@@ -1368,7 +1368,7 @@ void process_key(uint8_t key)
         }
     } else if (current_group == g_save_bbq_menu) {
         save_bbq_menu_t *menu = save_bbq_menu_get(&ui_manager);
-        if (menu && focused == menu->next) {
+        if (menu && focused == menu->next && nav_edit_session_active()) {
             lv_group_focus_obj(menu->temp);
             printf("[save_bbq] focus wrap to temp\n");
         } else {
@@ -1377,7 +1377,7 @@ void process_key(uint8_t key)
         }
     } else if (current_group == g_save_bbq_setting) {
         save_bbq_setting_t *set = save_bbq_setting_get(&ui_manager);
-        if (set && focused == set->sure) {
+        if (set && focused == set->sure && nav_edit_session_active()) {
             lv_group_focus_obj(set->temp);
             printf("[save_bbq] setting focus wrap to temp\n");
         } else {
@@ -1386,7 +1386,7 @@ void process_key(uint8_t key)
         }
     } else if (current_group == g_central_bbq_menu) {
         central_bbq_menu_t *menu = central_bbq_menu_get(&ui_manager);
-        if (menu && focused == menu->next) {
+        if (menu && focused == menu->next && nav_edit_session_active()) {
             lv_group_focus_obj(menu->temp);
             printf("[central_bbq] focus wrap to temp\n");
         } else {
@@ -1395,7 +1395,7 @@ void process_key(uint8_t key)
         }
     } else if (current_group == g_central_bbq_setting) {
         central_bbq_setting_t *set = central_bbq_setting_get(&ui_manager);
-        if (set && focused == set->sure) {
+        if (set && focused == set->sure && nav_edit_session_active()) {
             lv_group_focus_obj(set->temp);
             printf("[central_bbq] setting focus wrap to temp\n");
         } else {
@@ -1404,7 +1404,7 @@ void process_key(uint8_t key)
         }
     } else if (current_group == g_windchange_bbq_menu) {
         windchange_bbq_menu_t *menu = windchange_bbq_menu_get(&ui_manager);
-        if (menu && focused == menu->next) {
+        if (menu && focused == menu->next && nav_edit_session_active()) {
             lv_group_focus_obj(menu->temp);
             printf("[windchange_bbq] focus wrap to temp\n");
         } else {
@@ -1413,7 +1413,7 @@ void process_key(uint8_t key)
         }
     } else if (current_group == g_windchange_bbq_setting) {
         windchange_bbq_setting_t *set = windchange_bbq_setting_get(&ui_manager);
-        if (set && focused == set->sure) {
+        if (set && focused == set->sure && nav_edit_session_active()) {
             lv_group_focus_obj(set->temp);
             printf("[windchange_bbq] setting focus wrap to temp\n");
         } else {
@@ -1422,7 +1422,7 @@ void process_key(uint8_t key)
         }
         } else if (current_group == g_cookie_menu) {
             cookie_menu_t *menu = cookie_menu_get(&ui_manager);
-            if (menu && focused == menu->next) {
+            if (menu && focused == menu->next && nav_edit_session_active()) {
                 lv_group_focus_obj(menu->temp);
                 printf("[cookie] focus wrap to temp\n");
             } else {
@@ -1431,7 +1431,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_cookie_setting) {
             cookie_setting_t *set = cookie_setting_get(&ui_manager);
-            if (set && focused == set->sure) {
+            if (set && focused == set->sure && nav_edit_session_active()) {
                 lv_group_focus_obj(set->temp);
                 printf("[cookie] setting focus wrap to temp\n");
             } else {
@@ -1440,7 +1440,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_west_menu) {
             west_menu_t *menu = west_menu_get(&ui_manager);
-            if (menu && focused == menu->next) {
+            if (menu && focused == menu->next && nav_edit_session_active()) {
                 lv_group_focus_obj(menu->temp);
                 printf("[west] focus wrap to temp\n");
             } else {
@@ -1449,7 +1449,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_west_setting) {
             west_setting_t *set = west_setting_get(&ui_manager);
-            if (set && focused == set->sure) {
+            if (set && focused == set->sure && nav_edit_session_active()) {
                 lv_group_focus_obj(set->temp);
                 printf("[west] setting focus wrap to temp\n");
             } else {
@@ -1458,7 +1458,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_pizza_menu) {
             pizza_menu_t *menu = pizza_menu_get(&ui_manager);
-            if (menu && focused == menu->next) {
+            if (menu && focused == menu->next && nav_edit_session_active()) {
                 lv_group_focus_obj(menu->temp);
                 printf("[pizza] focus wrap to temp\n");
             } else {
@@ -1467,7 +1467,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_pizza_setting) {
             pizza_setting_t *set = pizza_setting_get(&ui_manager);
-            if (set && focused == set->sure) {
+            if (set && focused == set->sure && nav_edit_session_active()) {
                 lv_group_focus_obj(set->temp);
                 printf("[pizza] setting focus wrap to temp\n");
             } else {
@@ -1476,7 +1476,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_menu_cook_menu) {
             menu_menu_t *menu = menu_menu_get(&ui_manager);
-            if (menu && focused == menu->next) {
+            if (menu && focused == menu->next && nav_edit_session_active()) {
                 lv_group_focus_obj(menu->temp);
                 printf("[menu] focus wrap to temp\n");
             } else {
@@ -1485,7 +1485,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_menu_cook_setting) {
             menu_setting_t *set = menu_setting_get(&ui_manager);
-            if (set && focused == set->sure) {
+            if (set && focused == set->sure && nav_edit_session_active()) {
                 lv_group_focus_obj(set->temp);
                 printf("[menu] setting focus wrap to temp\n");
             } else {
@@ -1494,7 +1494,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_air_menu) {
             air_menu_t *menu = air_menu_get(&ui_manager);
-            if (menu && focused == menu->next) {
+            if (menu && focused == menu->next && nav_edit_session_active()) {
                 lv_group_focus_obj(menu->temp);
                 printf("[air] focus wrap to temp\n");
             } else {
@@ -1503,7 +1503,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_air_setting) {
             air_setting_t *set = air_setting_get(&ui_manager);
-            if (set && focused == set->sure) {
+            if (set && focused == set->sure && nav_edit_session_active()) {
                 lv_group_focus_obj(set->temp);
                 printf("[air] setting focus wrap to temp\n");
             } else {
@@ -1512,7 +1512,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_pizza_2_menu) {
             pizza_2_menu_t *menu = pizza_2_menu_get(&ui_manager);
-            if (menu && focused == menu->next) {
+            if (menu && focused == menu->next && nav_edit_session_active()) {
                 lv_group_focus_obj(menu->temp);
                 printf("[pizza_2] focus wrap to temp\n");
             } else {
@@ -1521,7 +1521,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_pizza_2_setting) {
             pizza_2_setting_t *set = pizza_2_setting_get(&ui_manager);
-            if (set && focused == set->sure) {
+            if (set && focused == set->sure && nav_edit_session_active()) {
                 lv_group_focus_obj(set->temp);
                 printf("[pizza_2] setting focus wrap to temp\n");
             } else {
@@ -1530,7 +1530,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_slowcook_menu) {
             slowcook_menu_t *menu = slowcook_menu_get(&ui_manager);
-            if (menu && focused == menu->next) {
+            if (menu && focused == menu->next && nav_edit_session_active()) {
                 lv_group_focus_obj(menu->temp);
                 printf("[slowcook] focus wrap to temp\n");
             } else {
@@ -1539,7 +1539,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_slowcook_setting) {
             slowcook_setting_t *set = slowcook_setting_get(&ui_manager);
-            if (set && focused == set->sure) {
+            if (set && focused == set->sure && nav_edit_session_active()) {
                 lv_group_focus_obj(set->temp);
                 printf("[slowcook] setting focus wrap to temp\n");
             } else {
@@ -1548,7 +1548,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_unfrozen_menu) {
             unfrozen_menu_t *menu = unfrozen_menu_get(&ui_manager);
-            if (menu && focused == menu->next) {
+            if (menu && focused == menu->next && nav_edit_session_active()) {
                 lv_group_focus_obj(menu->temp);
                 printf("[unfrozen] focus wrap to temp\n");
             } else {
@@ -1557,7 +1557,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_unfrozen_setting) {
             unfrozen_setting_t *set = unfrozen_setting_get(&ui_manager);
-            if (set && focused == set->sure) {
+            if (set && focused == set->sure && nav_edit_session_active()) {
                 lv_group_focus_obj(set->temp);
                 printf("[unfrozen] setting focus wrap to temp\n");
             } else {
@@ -1566,7 +1566,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_rising_menu) {
             rising_menu_t *menu = rising_menu_get(&ui_manager);
-            if (menu && focused == menu->next) {
+            if (menu && focused == menu->next && nav_edit_session_active()) {
                 lv_group_focus_obj(menu->temp);
                 printf("[rising] focus wrap to temp\n");
             } else {
@@ -1575,7 +1575,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_rising_setting) {
             rising_setting_t *set = rising_setting_get(&ui_manager);
-            if (set && focused == set->sure) {
+            if (set && focused == set->sure && nav_edit_session_active()) {
                 lv_group_focus_obj(set->temp);
                 printf("[rising] setting focus wrap to temp\n");
             } else {
@@ -1584,7 +1584,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_corn_menu) {
             corn_menu_t *menu = corn_menu_get(&ui_manager);
-            if (menu && focused == menu->next) {
+            if (menu && focused == menu->next && nav_edit_session_active()) {
                 lv_group_focus_obj(menu->temp);
                 printf("[corn] focus wrap to temp\n");
             } else {
@@ -1593,7 +1593,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_corn_setting) {
             corn_setting_t *set = corn_setting_get(&ui_manager);
-            if (set && focused == set->sure) {
+            if (set && focused == set->sure && nav_edit_session_active()) {
                 lv_group_focus_obj(set->temp);
                 printf("[corn] setting focus wrap to temp\n");
             } else {
@@ -1602,7 +1602,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_heatcontain_menu) {
             heatcontain_menu_t *menu = heatcontain_menu_get(&ui_manager);
-            if (menu && focused == menu->next) {
+            if (menu && focused == menu->next && nav_edit_session_active()) {
                 lv_group_focus_obj(menu->temp);
                 printf("[heatcontain] focus wrap to temp\n");
             } else {
@@ -1611,7 +1611,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_heatcontain_setting) {
             heatcontain_setting_t *set = heatcontain_setting_get(&ui_manager);
-            if (set && focused == set->sure) {
+            if (set && focused == set->sure && nav_edit_session_active()) {
                 lv_group_focus_obj(set->temp);
                 printf("[heatcontain] setting focus wrap to temp\n");
             } else {
@@ -1620,7 +1620,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_lasagna_menu) {
             lasagna_menu_t *menu = lasagna_menu_get(&ui_manager);
-            if (menu && focused == menu->next) {
+            if (menu && focused == menu->next && nav_edit_session_active()) {
                 lv_group_focus_obj(menu->hour);
                 printf("[lasagna] focus wrap to hour\n");
             } else {
@@ -1629,7 +1629,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_lasagna_setting) {
             lasagna_setting_t *set = lasagna_setting_get(&ui_manager);
-            if (set && focused == set->button_200) {
+            if (set && focused == set->button_200 && nav_edit_session_active()) {
                 lv_group_focus_obj(set->hour);
                 printf("[lasagna] setting focus wrap to hour\n");
             } else {
@@ -1638,7 +1638,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_strudel_menu) {
             strudel_menu_t *menu = strudel_menu_get(&ui_manager);
-            if (menu && focused == menu->next) {
+            if (menu && focused == menu->next && nav_edit_session_active()) {
                 lv_group_focus_obj(menu->hour);
                 printf("[strudel] focus wrap to hour\n");
             } else {
@@ -1647,7 +1647,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_strudel_setting) {
             strudel_setting_t *set = strudel_setting_get(&ui_manager);
-            if (set && focused == set->sure) {
+            if (set && focused == set->sure && nav_edit_session_active()) {
                 lv_group_focus_obj(set->hour);
                 printf("[strudel] setting focus wrap to hour\n");
             } else {
@@ -1656,7 +1656,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_bread_menu) {
             bread_menu_t *menu = bread_menu_get(&ui_manager);
-            if (menu && focused == menu->next) {
+            if (menu && focused == menu->next && nav_edit_session_active()) {
                 lv_group_focus_obj(menu->hour);
                 printf("[bread] focus wrap to hour\n");
             } else {
@@ -1665,7 +1665,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_bread_setting) {
             bread_setting_t *set = bread_setting_get(&ui_manager);
-            if (set && focused == set->sure) {
+            if (set && focused == set->sure && nav_edit_session_active()) {
                 lv_group_focus_obj(set->hour);
                 printf("[bread] setting focus wrap to hour\n");
             } else {
@@ -1674,7 +1674,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_pizza3_menu) {
             pizza3_menu_t *menu = pizza3_menu_get(&ui_manager);
-            if (menu && focused == menu->next) {
+            if (menu && focused == menu->next && nav_edit_session_active()) {
                 lv_group_focus_obj(menu->hour);
                 printf("[pizza3] focus wrap to hour\n");
             } else {
@@ -1683,7 +1683,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_pizza3_setting) {
             pizza3_setting_t *set = pizza3_setting_get(&ui_manager);
-            if (set && focused == set->sure) {
+            if (set && focused == set->sure && nav_edit_session_active()) {
                 lv_group_focus_obj(set->hour);
                 printf("[pizza3] setting focus wrap to hour\n");
             } else {
@@ -1692,7 +1692,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_chip_menu) {
             chip_menu_t *menu = chip_menu_get(&ui_manager);
-            if (menu && focused == menu->next) {
+            if (menu && focused == menu->next && nav_edit_session_active()) {
                 lv_group_focus_obj(menu->hour);
                 printf("[chip] focus wrap to hour\n");
             } else {
@@ -1701,7 +1701,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_chip_setting) {
             chip_setting_t *set = chip_setting_get(&ui_manager);
-            if (set && focused == set->sure) {
+            if (set && focused == set->sure && nav_edit_session_active()) {
                 lv_group_focus_obj(set->hour);
                 printf("[chip] setting focus wrap to hour\n");
             } else {
@@ -1710,7 +1710,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_custom_menu) {
             custom_menu_t *menu = custom_menu_get(&ui_manager);
-            if (menu && focused == menu->next) {
+            if (menu && focused == menu->next && nav_edit_session_active()) {
                 lv_group_focus_obj(menu->hour);
                 printf("[custom] focus wrap to hour\n");
             } else {
@@ -1719,7 +1719,7 @@ void process_key(uint8_t key)
             }
         } else if (current_group == g_custom_setting) {
             custom_setting_t *set = custom_setting_get(&ui_manager);
-            if (set && focused == set->sure) {
+            if (set && focused == set->sure && nav_edit_session_active()) {
                 lv_group_focus_obj(set->hour);
                 printf("[custom] setting focus wrap to hour\n");
             } else {

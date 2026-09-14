@@ -77,8 +77,7 @@ int lang_dyn_dy(void)
 
 /* ============ 繁體图片替换表(素材在 ui_builder/assets/image/) ============
  * 繁體模式树遍历: 简体图 src 精确命中 → 换 _tw 版;
- * 素材缺失的图(tips/hotcare/hotcleantips/steptext/modebg/waterbg/show)不在表内,
- * 繁體暂显示简体版, 出图后在表里补一行即可。 */
+ * 素材缺失的图(show)不在表内, 繁體暂显示简体版, 出图后在表里补一行即可。 */
 typedef struct { const char *tail; const char *cn_src; const char *tw_src; } tw_img_t;
 static const tw_img_t s_tw_imgs[] = {
     { "off.png",              LVGL_IMAGE_PATH(off.png),              LVGL_IMAGE_PATH(off_tw.png) },
@@ -90,6 +89,12 @@ static const tw_img_t s_tw_imgs[] = {
     { "set_bg_txt.png",       LVGL_IMAGE_PATH(set_bg_txt.png),       LVGL_IMAGE_PATH(set_bg_txt_tw.png) },
     { "set_work_bg_txt.png",  LVGL_IMAGE_PATH(set_work_bg_txt.png),  LVGL_IMAGE_PATH(set_work_bg_txt_tw.png) },
     { "frozencookfr.png",     LVGL_IMAGE_PATH(frozencookfr.png),     LVGL_IMAGE_PATH(frozencookfr_tw.png) },
+    { "steptext.png",         LVGL_IMAGE_PATH(steptext.png),         LVGL_IMAGE_PATH(steptext_tw.png) },
+    { "hotcare.png",          LVGL_IMAGE_PATH(hotcare.png),          LVGL_IMAGE_PATH(hotcare_tw.png) },
+    { "modebg.png",           LVGL_IMAGE_PATH(modebg.png),           LVGL_IMAGE_PATH(modebg_tw.png) },
+    { "tips.png",             LVGL_IMAGE_PATH(tips.png),             LVGL_IMAGE_PATH(tips_tw.png) },
+    { "hotcleantips.png",     LVGL_IMAGE_PATH(hotcleantips.png),     LVGL_IMAGE_PATH(hotcleantips_tw.png) },
+    { "waterbg.png",          LVGL_IMAGE_PATH(waterbg.png),          LVGL_IMAGE_PATH(waterbg_tw.png) },
 };
 #define TW_IMGS_N (int)(sizeof(s_tw_imgs) / sizeof(s_tw_imgs[0]))
 
