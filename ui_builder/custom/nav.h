@@ -757,6 +757,7 @@ void nav_favask_confirm(void); /* 确认(PRESS):覆盖保存/进删除界面(nav
 /* 童锁（topflag 顶层弹窗级,nav_hint.c 实现） */
 void nav_childlock_set(int on);      /* 1=立即全屏锁定层 0=解锁(设置页童锁开关联动) */
 int  nav_childlock_active(void);     /* 锁定中:process_key 吞键+待机页强制显示 topflag */
+int  nav_childlock_hold_armed(void); /* 上锁后已松开过一次(keyio 解锁判定与圆环计段同门) */
 void nav_childlock_try_unlock(void); /* 长按旋钮3s解锁(幂等;keyio 两路调用) */
 void nav_childlock_hold_poll(void);  /* 模拟器 sim_scan_cb 100ms 轮询解锁(keyio.c) */
 void nav_childlock_refresh(void);    /* 下层状态变化时刷新锁层第三行(nav_system.c 时钟驱动) */

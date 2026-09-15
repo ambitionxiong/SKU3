@@ -446,6 +446,77 @@ static void childlock_sig_update(void)
    lockifr 面板 y 119..370(中心 244.5),icon 高 121 → 居中 y=184=143+41,tip 跟随 */
 #define LOCK_DY_HIDE 41
 
+/* 解锁进度圆环+中心图标(替代生成层静态 childlock.png;custom 层自建,防上位机
+ * 重生成 topflagpage 覆盖)。三段步进:按住旋钮每满 1s 进 1/3(range 0-30 每秒
+ * +10),满 3s 由 try_unlock 解锁;提前松开回 0。真机旋钮按下无 KEY 重复事件,
+ * 同事 UnLock_Anim(Is_repeat) 的步进驱动不可用 → 时间驱动,100ms 轮询按秒量化 */
+static lv_obj_t *s_cl_arc = NULL;
+static lv_timer_t *s_cl_tick_timer = NULL;
+static const void *s_cl_icon_cur = NULL;
+static uint8_t s_cl_hold_armed = 0;   /* 上锁后须先见松开,按住才计段/可解锁(防上锁那一下的旧按住误判) */
+
+static void childlock_ring_tick_cb(lv_timer_t *t);
+
+static void childlock_ring_create(topflagpage_t *tf)
+{
+    if (s_cl_arc && lv_obj_is_valid(s_cl_arc)) return;
+    if (!tf->container_1) return;
+
+    s_cl_arc = lv_arc_create(tf->container_1);
+    lv_obj_set_pos(s_cl_arc, 453, 143);
+    lv_obj_set_size(s_cl_arc, 120, 120);
+    lv_arc_set_range(s_cl_arc, 0, 30);
+    lv_arc_set_bg_angles(s_cl_arc, 0, 360);
+    lv_arc_set_rotation(s_cl_arc, 270);
+    lv_arc_set_value(s_cl_arc, 0);
+    lv_obj_set_style_shadow_opa(s_cl_arc, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_arc_color(s_cl_arc, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_arc_width(s_cl_arc, 4, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_arc_opa(s_cl_arc, 77, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_arc_color(s_cl_arc, lv_color_hex(0xffffff), LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_arc_width(s_cl_arc, 5, LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_arc_opa(s_cl_arc, 255, LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_arc_rounded(s_cl_arc, false, LV_PART_INDICATOR);
+    lv_obj_set_style_bg_opa(s_cl_arc, 0, LV_PART_KNOB | LV_STATE_DEFAULT);
+    lv_obj_clear_flag(s_cl_arc, LV_OBJ_FLAG_CLICKABLE);   /* 纯指示,不挡键 */
+
+    lv_obj_t *ic = lv_img_create(s_cl_arc);
+    s_cl_icon_cur = LVGL_IMAGE_PATH(lock_icon.png);
+    lv_img_set_src(ic, s_cl_icon_cur);
+    lv_obj_align(ic, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_clear_flag(ic, LV_OBJ_FLAG_CLICKABLE);
+}
+
+/* 100ms 轮询:value 按秒量化(每秒 10/30,共三段跳变);松开即回 0+lock 图标。
+   armed 门:上锁瞬间多半还按着确认弹窗的旋钮,须先见松开一次,之后的按住才算 */
+static void childlock_ring_tick_cb(lv_timer_t *t)
+{
+    (void)t;
+    if (!g_childlock_active || !s_cl_arc || !lv_obj_is_valid(s_cl_arc)) return;
+
+    int pressed = (active_key == KEY_ENCODER_PRESS && key_state == KEY_PRESSED);
+    if (!pressed) s_cl_hold_armed = 1;
+    int counting = (pressed && s_cl_hold_armed);
+    uint32_t held = counting ? (lv_tick_get() - active_key_time) : 0;
+    int seg = (int)(held / 1000) * 10;
+    if (seg > 30) seg = 30;
+    lv_arc_set_value(s_cl_arc, seg);
+
+    const void *want = counting ? (const void *)LVGL_IMAGE_PATH(unlock_icon.png)
+                                : (const void *)LVGL_IMAGE_PATH(lock_icon.png);
+    if (s_cl_icon_cur != want) {
+        s_cl_icon_cur = want;
+        lv_obj_t *ic = lv_obj_get_child(s_cl_arc, 0);
+        if (ic) lv_img_set_src(ic, want);
+    }
+}
+
+/* 上锁后是否已松开过一次(nav_keyio 两处解锁判定用,与圆环计段同门) */
+int nav_childlock_hold_armed(void)
+{
+    return s_cl_hold_armed;
+}
+
 static void childlock_apply_layout(topflagpage_t *tf)
 {
     const char *word = NULL;
@@ -466,6 +537,7 @@ static void childlock_apply_layout(topflagpage_t *tf)
         dy = LOCK_DY_HIDE;
     }
     if (tf->image_2)  lv_obj_set_pos(tf->image_2, 453, 143 + dy);
+    if (s_cl_arc && lv_obj_is_valid(s_cl_arc)) lv_obj_set_pos(s_cl_arc, 453, 143 + dy);   /* 圆环与原锁图同位同 dy */
     if (is_english()) {
         /* 英文版式(9.8 设计稿+9.9 上机反馈):字号与中文一致(30/24/36)仅换
            Aktiv 字库;图标不动,标题/副标题左对齐排在图标右侧(x=600=图标
@@ -525,19 +597,36 @@ void nav_childlock_set(int on)
         if (nav_favask_active()) nav_favask_cancel();   /* 确认弹层让位给锁层 */
         if (tf->locktip1) lv_label_set_text(tf->locktip1, tr("已锁定"));
         if (tf->locktip2) lv_label_set_text(tf->locktip2, tr("长按旋钮3秒进行解锁"));
-        childlock_apply_layout(tf);           /* 五态文案+布局(内部刷新 locktip3) */
+        childlock_ring_create(tf);            /* 圆环懒创建(须在 apply_layout 前,首建即落位) */
+        childlock_apply_layout(tf);           /* 五态文案+布局(内部刷新 locktip3+圆环坐标) */
         childlock_sig_update();               /* 记录开锁瞬间签名,后续靠 refresh 增量刷新 */
         if (tf->image_1) lv_obj_clear_flag(tf->image_1, LV_OBJ_FLAG_HIDDEN);
-        if (tf->image_2) lv_obj_clear_flag(tf->image_2, LV_OBJ_FLAG_HIDDEN);
+        if (s_cl_arc) {
+            lv_arc_set_value(s_cl_arc, 0);    /* 静态 childlock.png 退役,圆环+图标组合上位 */
+            s_cl_icon_cur = LVGL_IMAGE_PATH(lock_icon.png);   /* 强制回 lock:解锁时正按着,
+                                                                 残留的 unlock 图标不能带进下次锁定 */
+            lv_img_set_src(lv_obj_get_child(s_cl_arc, 0), s_cl_icon_cur);
+            lv_obj_clear_flag(s_cl_arc, LV_OBJ_FLAG_HIDDEN);
+        }
         if (tf->locktip1) lv_obj_clear_flag(tf->locktip1, LV_OBJ_FLAG_HIDDEN);
         if (tf->locktip2) lv_obj_clear_flag(tf->locktip2, LV_OBJ_FLAG_HIDDEN);
         if (tf->container_1) lv_obj_clear_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);   /* 原生 44% 黑遮罩,下层正常页面透出 */
         g_childlock_active = 1;               /* 先置位再刷显隐:待机页特判依赖 active */
         topflag_update_visibility();
+        if (s_cl_tick_timer == NULL)
+            s_cl_tick_timer = lv_timer_create(childlock_ring_tick_cb, 100, NULL);
+        s_cl_hold_armed = 0;                  /* 上锁那一下的按住不算解锁尝试 */
         printf("[hint] childlock on\n");
     } else {
         if (!g_childlock_active) return;
         g_childlock_active = 0;
+        if (s_cl_arc) {
+            lv_arc_set_value(s_cl_arc, 0);
+            s_cl_icon_cur = LVGL_IMAGE_PATH(lock_icon.png);   /* 收层即复位:隐藏态=干净 lock */
+            lv_img_set_src(lv_obj_get_child(s_cl_arc, 0), s_cl_icon_cur);
+            lv_obj_add_flag(s_cl_arc, LV_OBJ_FLAG_HIDDEN);
+        }
+        if (s_cl_tick_timer) { lv_timer_del(s_cl_tick_timer); s_cl_tick_timer = NULL; }
         if (tf->image_1)   lv_obj_add_flag(tf->image_1, LV_OBJ_FLAG_HIDDEN);
         if (tf->image_2)   lv_obj_add_flag(tf->image_2, LV_OBJ_FLAG_HIDDEN);
         if (tf->locktip1)  lv_obj_add_flag(tf->locktip1, LV_OBJ_FLAG_HIDDEN);
@@ -574,6 +663,7 @@ void nav_childlock_try_unlock(void)
     if (!g_childlock_active) return;
     SET_Data.Set_Lock = 0;    /* 长按解锁写回设置项:设置页回显跟随实际状态 */
     screen_set_ts_lb_sync();  /* 覆盖层存活则同步 TS_Lb(锁定中进不了设置页,通常空操作) */
+    g_send.buzzer_req = BUZZER_KEY_VALID;   /* 解锁反馈音(对齐同事参考代码的 Buzzer_num=2) */
     nav_childlock_set(0);
     uart_print();             /* 状态帧立即上报,与设置页改动路径一致 */
 }

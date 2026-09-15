@@ -157,7 +157,7 @@ uint8_t nav_key1_hold_check(void)
 void nav_childlock_hold_poll(void)
 {
     if (active_key == KEY_ENCODER_PRESS && key_state == KEY_PRESSED &&
-        nav_childlock_active()) {
+        nav_childlock_active() && nav_childlock_hold_armed()) {
         if (lv_tick_get() - active_key_time >= 3000) {
             active_key_time = lv_tick_get();   /* 防轮询周期内重复触发 */
             nav_childlock_try_unlock();
@@ -213,8 +213,10 @@ void nav_handle_key(uint8_t key)
                 active_key_time = now;
                 nav_key1_long_press();
             }
-            /* 童锁:旋钮按住 3s 解锁(真机路径;模拟器由 nav_childlock_hold_poll 轮询) */
-            if (active_key == KEY_ENCODER_PRESS && nav_childlock_active() && interval >= 3000) {
+    /* 童锁:旋钮按住 3s 解锁(真机路径;模拟器由 nav_childlock_hold_poll 轮询)。
+       armed 门:上锁那一下的按住不算,须先松开一次(与圆环计段一致) */
+    if (active_key == KEY_ENCODER_PRESS && nav_childlock_active() &&
+        nav_childlock_hold_armed() && interval >= 3000) {
                 active_key_time = now;
                 nav_childlock_try_unlock();
             }
