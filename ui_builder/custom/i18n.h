@@ -14,7 +14,7 @@ int  is_english(void);                 /* g_lang_en == 1 */
 int  is_trad(void);                    /* 繁體模式(SET_Data.Set_Language == 1) */
 const char *tr(const char *zh);        /* 中文→当前语言文本 */
 
-/* 繁体转换(i18n_tw.c 自动生成): 简→繁 词组最长匹配+字映射, 环形缓冲返回 */
+/* 繁体查表(i18n_tw.c): s_tw_table 精确命中返回永久指针, 未命中原样返回 */
 const char *tr_tw(const char *zh);
 void tw_convert_into(char *dst, int dst_len, const char *src);   /* 拷贝并转换到指定缓冲 */
 

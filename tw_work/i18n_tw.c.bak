@@ -1,9 +1,7 @@
 /* =====================================================================
- * 简体→繁体(台) 查表模式 — s_tw_table 由 tw_work/gen_tw_table.py 生成
- * 表内容 = 转换器对全部语料的输出 + 中英繁对照表xlsx人工值(过滤后覆盖)
- * tr_tw() 精确命中返回永久指针; 未命中原样返回(动态串, 与英文查表同策略)
- * 人工改译文: 直接改标记块内的表行; 或改 xlsx 后重跑 gen_tw_table.py 再生成
- * 下方词组表/字映射/转换器: 仅供生成器宿主工具复用, 固件已无人调用
+ * 简体→繁体(台) 运行时转换 — 由 tw_work/gen_tw.py 自动生成, 勿手改
+ * 词组表: 手工覆盖(中英繁对照表xlsx权威) + OpenCC STPhrases/TWVariants(语料过滤)
+ * 字映射: OpenCC STCharacters 首选字 + TWVariants 二段(啓→啟 裏→裡 麪→麵)
  * 查找: 词组首字节桶内最长匹配 → 字映射二分; 未命中原样保留(幂等, 已繁文本不变)
  * ===================================================================== */
 #include "i18n.h"
@@ -4636,6 +4634,10 @@ static unsigned short tw_char_map(unsigned short cp)
     return 0;
 }
 
+/* 环形输出缓冲: 兼容一次 snprintf 内多个 tr()/tr_tw() 结果同时存活 */
+static char s_tw_buf[4][512];
+static int  s_tw_buf_idx = 0;
+
 void tw_convert_into(char *dst, int dst_len, const char *src)
 {
     int o = 0;
@@ -4680,17 +4682,10 @@ void tw_convert_into(char *dst, int dst_len, const char *src)
     dst[o] = '\0';
 }
 
-/* 查表数据在 i18n_tw_table.c — 由 tw_work/gen_tw_table.py 生成 */
-typedef struct { const char *zh; const char *tw; } tw_ent_t;
-extern const tw_ent_t s_tw_table[];
-extern const int s_tw_table_n;
-
 const char *tr_tw(const char *zh)
 {
-    if (zh) {
-        for (int i = 0; i < s_tw_table_n; i++)
-            if (s_tw_table[i].zh[0] == zh[0] && strcmp(s_tw_table[i].zh, zh) == 0)
-                return s_tw_table[i].tw;
-    }
-    return zh;   /* 未收录(动态拼串等):原样返回, 与英文查表未命中同策略 */
+    char *b = s_tw_buf[s_tw_buf_idx];
+    s_tw_buf_idx = (s_tw_buf_idx + 1) & 3;
+    tw_convert_into(b, (int)sizeof(s_tw_buf[0]), zh ? zh : "");
+    return b;
 }

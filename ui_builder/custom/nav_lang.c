@@ -95,6 +95,7 @@ static const tw_img_t s_tw_imgs[] = {
     { "tips.png",             LVGL_IMAGE_PATH(tips.png),             LVGL_IMAGE_PATH(tips_tw.png) },
     { "hotcleantips.png",     LVGL_IMAGE_PATH(hotcleantips.png),     LVGL_IMAGE_PATH(hotcleantips_tw.png) },
     { "waterbg.png",          LVGL_IMAGE_PATH(waterbg.png),          LVGL_IMAGE_PATH(waterbg_tw.png) },
+    { "delaytext.png",        LVGL_IMAGE_PATH(delaytext.png),        LVGL_IMAGE_PATH(delaytext_tw.png) },
 };
 #define TW_IMGS_N (int)(sizeof(s_tw_imgs) / sizeof(s_tw_imgs[0]))
 
@@ -200,6 +201,25 @@ static lv_obj_tree_walk_res_t lang_apply_obj(lv_obj_t *obj, void *user_data)
             for (int i = 0; i < TW_IMGS_N; i++) {
                 if (strcmp((const char *)src, s_tw_imgs[i].cn_src) == 0) {
                     lv_image_set_src(obj, s_tw_imgs[i].tw_src);
+                    break;
+                }
+            }
+        }
+        return LV_OBJ_TREE_WALK_NEXT;
+    }
+    /* 繁體: lv_btn 状态背景图(开关按钮 off/focusoff/on1/on2 等) → _tw 图
+     * 生成层用 lv_obj_set_style_bg_img_src 把图烙在 DEFAULT/FOCUSED 两个状态,
+     * 运行时只切显隐不改图, 这里逐状态读出比对 s_tw_imgs, 命中才覆写本地样式;
+     * 表外图(如 switchbg30/80 无 _tw 素材)查不中自动原样保留 */
+    if (is_trad() && lv_obj_has_class(obj, &lv_button_class)) {
+        const lv_state_t sts[2] = { LV_STATE_DEFAULT, LV_STATE_FOCUSED };
+        for (int k = 0; k < 2; k++) {
+            const void *bsrc = lv_obj_get_style_bg_img_src(obj, LV_PART_MAIN | sts[k]);
+            if (!bsrc || lv_image_src_get_type(bsrc) != LV_IMAGE_SRC_FILE) continue;
+            for (int i = 0; i < TW_IMGS_N; i++) {
+                if (strcmp((const char *)bsrc, s_tw_imgs[i].cn_src) == 0) {
+                    lv_obj_set_style_bg_img_src(obj, s_tw_imgs[i].tw_src,
+                                                LV_PART_MAIN | sts[k]);
                     break;
                 }
             }
