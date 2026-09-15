@@ -441,8 +441,8 @@ void air_setting_lang_tune(void)
     lv_obj_set_pos(pg->hour, 377, 217);   /* 对齐 top_bbq 系排版 */
     lv_obj_set_size(pg->hour, 102, 46);
 
-    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 | 动态定位(需微调见文件头模板) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
+    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 */
+    lv_obj_set_pos(pg->min, 537, 217);   /* y 213→217 与 hour 对齐 */
     lv_obj_set_size(pg->min, 102, 46);
 
     /* label_326: 标签 | "时" | (449,229) | 37x30 | font taiwanpearl_regular_30 */
@@ -1218,8 +1218,8 @@ void bottom_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->hour, 377, 217);   /* 对齐 top_bbq 系排版 */
     lv_obj_set_size(pg->hour, 102, 46);
 
-    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 | 动态定位(需微调见文件头模板) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
+    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 */
+    lv_obj_set_pos(pg->min, 537, 217);   /* y 213→217 与 hour 对齐 */
     lv_obj_set_size(pg->min, 102, 46);
 
     /* label_145: 标签 | "时" | (449,229) | 37x30 | font taiwanpearl_regular_30 */
@@ -1819,8 +1819,8 @@ void bread_setting_lang_tune(void)
     /* hourline: 图片 | (291,269) | img: settingline3.png */
     lv_obj_set_pos(pg->hourline, 288, 269);
 
-    /* min: 标签 | "00" | (483,212) | 102x46 | font taiwanpearl_regular_48 | 动态定位(需微调见文件头模板) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
+    /* min: 标签 | "00" | (483,212) | 102x46 | font taiwanpearl_regular_48 */
+    lv_obj_set_pos(pg->min, 483, 214);   /* y 212→214 与 hour 对齐(此族 hour 仅 +2 不移 x) */
     lv_obj_set_size(pg->min, 102, 46);
 
     /* label_754: 标签 | "分" | (558,229) | 37x30 | font taiwanpearl_regular_30 */
@@ -2385,8 +2385,8 @@ void central_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->hour, 377, 217);   /* 对齐 top_bbq 系排版 */
     lv_obj_set_size(pg->hour, 102, 46);
 
-    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 | 动态定位(需微调见文件头模板) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
+    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 */
+    lv_obj_set_pos(pg->min, 537, 217);   /* y 213→217 与 hour 对齐 */
     lv_obj_set_size(pg->min, 102, 46);
 
     /* label_28: 标签 | "时" | (449,229) | 37x30 | font taiwanpearl_regular_30 */
@@ -3148,8 +3148,8 @@ void chip_setting_lang_tune(void)
     /* hourline: 图片 | (291,269) | img: settingline3.png */
     lv_obj_set_pos(pg->hourline, 288, 269);
 
-    /* min: 标签 | "00" | (483,212) | 102x46 | font taiwanpearl_regular_48 | 动态定位(需微调见文件头模板) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
+    /* min: 标签 | "00" | (483,212) | 102x46 | font taiwanpearl_regular_48 */
+    lv_obj_set_pos(pg->min, 483, 214);   /* y 212→214 与 hour 对齐(此族 hour 仅 +2 不移 x) */
     lv_obj_set_size(pg->min, 102, 46);
 
     /* label_836: 标签 | "分" | (558,229) | 37x30 | font taiwanpearl_regular_30 */
@@ -3945,8 +3945,8 @@ void cookie_setting_lang_tune(void)
     lv_obj_set_pos(pg->hour, 377, 217);   /* 对齐 top_bbq 系排版 */
     lv_obj_set_size(pg->hour, 102, 46);
 
-    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 | 动态定位(需微调见文件头模板) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
+    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 */
+    lv_obj_set_pos(pg->min, 537, 217);   /* y 213→217 与 hour 对齐 */
     lv_obj_set_size(pg->min, 102, 46);
 
     /* label_132: 标签 | "时" | (449,229) | 37x30 | font taiwanpearl_regular_30 */
@@ -4559,8 +4559,8 @@ void corn_setting_lang_tune(void)
     lv_obj_set_pos(pg->hour, 377, 217);   /* 对齐 top_bbq 系排版 */
     lv_obj_set_size(pg->hour, 102, 46);
 
-    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 | 动态定位(需微调见文件头模板) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
+    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 */
+    lv_obj_set_pos(pg->min, 537, 217);   /* y 213→217 与 hour 对齐 */
     lv_obj_set_size(pg->min, 102, 46);
 
     /* label_571: 标签 | "时" | (449,229) | 37x30 | font taiwanpearl_regular_30 */
@@ -5023,8 +5023,8 @@ void custom_setting_lang_tune(void)
     /* hourline: 图片 | (291,269) | img: settingline3.png */
     lv_obj_set_pos(pg->hourline, 288, 269);
 
-    /* min: 标签 | "00" | (483,212) | 102x46 | font taiwanpearl_regular_48 | 动态定位(需微调见文件头模板) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
+    /* min: 标签 | "00" | (483,212) | 102x46 | font taiwanpearl_regular_48 */
+    lv_obj_set_pos(pg->min, 483, 214);   /* y 212→214 与 hour 对齐(此族 hour 仅 +2 不移 x) */
     lv_obj_set_size(pg->min, 102, 46);
 
     /* label_877: 标签 | "分" | (558,229) | 37x30 | font taiwanpearl_regular_30 */
@@ -5934,8 +5934,8 @@ void heatcontain_setting_lang_tune(void)
     lv_obj_set_pos(pg->hour, 377, 217);   /* 对齐 top_bbq 系排版 */
     lv_obj_set_size(pg->hour, 102, 46);
 
-    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 | 动态定位(需微调见文件头模板) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
+    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 */
+    lv_obj_set_pos(pg->min, 537, 217);   /* y 213→217 与 hour 对齐 */
     lv_obj_set_size(pg->min, 102, 46);
 
     /* label_620: 标签 | "时" | (449,229) | 37x30 | font taiwanpearl_regular_30 */
@@ -6711,8 +6711,8 @@ void hot_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->hour, 377, 217);   /* 对齐 top_bbq 系排版 */
     lv_obj_set_size(pg->hour, 102, 46);
 
-    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 | 动态定位(需微调见文件头模板) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
+    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 */
+    lv_obj_set_pos(pg->min, 537, 217);   /* y 213→217 与 hour 对齐 */
     lv_obj_set_size(pg->min, 102, 46);
 
     /* label_193: 标签 | "时" | (449,229) | 37x30 | font taiwanpearl_regular_30 */
@@ -8363,8 +8363,8 @@ void hotwind_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->hour, 377, 217);   /* 对齐 top_bbq 系排版 */
     lv_obj_set_size(pg->hour, 102, 46);
 
-    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 | 动态定位(需微调见文件头模板) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
+    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 */
+    lv_obj_set_pos(pg->min, 537, 217);   /* y 213→217 与 hour 对齐 */
     lv_obj_set_size(pg->min, 102, 46);
 
     /* label_8: 标签 | "时" | (449,229) | 37x30 | font taiwanpearl_regular_30 */
@@ -8828,8 +8828,8 @@ void lasagna_setting_lang_tune(void)
     /* hourline: 图片 | (291,269) | img: settingline3.png */
     lv_obj_set_pos(pg->hourline, 288, 269);
 
-    /* min: 标签 | "00" | (483,212) | 102x46 | font taiwanpearl_regular_48 | 动态定位(需微调见文件头模板) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
+    /* min: 标签 | "00" | (483,212) | 102x46 | font taiwanpearl_regular_48 */
+    lv_obj_set_pos(pg->min, 483, 214);   /* y 212→214 与 hour 对齐(此族 hour 仅 +2 不移 x) */
     lv_obj_set_size(pg->min, 102, 46);
 
     /* label_669: 标签 | "分" | (558,229) | 37x30 | font taiwanpearl_regular_30 */
@@ -9403,8 +9403,8 @@ void menu_setting_lang_tune(void)
     lv_obj_set_pos(pg->hour, 377, 217);   /* 对齐 top_bbq 系排版 */
     lv_obj_set_size(pg->hour, 102, 46);
 
-    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 | 动态定位(需微调见文件头模板) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
+    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 */
+    lv_obj_set_pos(pg->min, 537, 217);   /* y 213→217 与 hour 对齐 */
     lv_obj_set_size(pg->min, 102, 46);
 
     /* label_277: 标签 | "时" | (449,229) | 37x30 | font taiwanpearl_regular_30 */
@@ -9867,8 +9867,8 @@ void pizza3_setting_lang_tune(void)
     /* hourline: 图片 | (291,269) | img: settingline3.png */
     lv_obj_set_pos(pg->hourline, 288, 269);
 
-    /* min: 标签 | "00" | (483,212) | 102x46 | font taiwanpearl_regular_48 | 动态定位(需微调见文件头模板) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
+    /* min: 标签 | "00" | (483,212) | 102x46 | font taiwanpearl_regular_48 */
+    lv_obj_set_pos(pg->min, 483, 214);   /* y 212→214 与 hour 对齐(此族 hour 仅 +2 不移 x) */
     lv_obj_set_size(pg->min, 102, 46);
 
     /* label_795: 标签 | "分" | (558,229) | 37x30 | font taiwanpearl_regular_30 */
@@ -10365,8 +10365,8 @@ void pizza_2_setting_lang_tune(void)
     lv_obj_set_pos(pg->hour, 377, 217);   /* 对齐 top_bbq 系排版 */
     lv_obj_set_size(pg->hour, 102, 46);
 
-    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 | 动态定位(需微调见文件头模板) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
+    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 */
+    lv_obj_set_pos(pg->min, 537, 217);   /* y 213→217 与 hour 对齐 */
     lv_obj_set_size(pg->min, 102, 46);
 
     /* label_375: 标签 | "时" | (449,229) | 37x30 | font taiwanpearl_regular_30 */
@@ -10863,8 +10863,8 @@ void pizza_setting_lang_tune(void)
     lv_obj_set_pos(pg->hour, 377, 217);   /* 对齐 top_bbq 系排版 */
     lv_obj_set_size(pg->hour, 102, 46);
 
-    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 | 动态定位(需微调见文件头模板) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
+    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 */
+    lv_obj_set_pos(pg->min, 537, 217);   /* y 213→217 与 hour 对齐 */
     lv_obj_set_size(pg->min, 102, 46);
 
     /* label_229: 标签 | "时" | (449,229) | 37x30 | font taiwanpearl_regular_30 */
@@ -11686,8 +11686,8 @@ void rising_setting_lang_tune(void)
     lv_obj_set_pos(pg->hour, 377, 217);   /* 对齐 top_bbq 系排版 */
     lv_obj_set_size(pg->hour, 102, 46);
 
-    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 | 动态定位(需微调见文件头模板) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
+    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 */
+    lv_obj_set_pos(pg->min, 537, 217);   /* y 213→217 与 hour 对齐 */
     lv_obj_set_size(pg->min, 102, 46);
 
     /* label_522: 标签 | "时" | (449,229) | 37x30 | font taiwanpearl_regular_30 */
@@ -12254,8 +12254,8 @@ void save_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->hour, 377, 217);   /* 对齐 top_bbq 系排版 */
     lv_obj_set_size(pg->hour, 102, 46);
 
-    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 | 动态定位(需微调见文件头模板) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
+    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 */
+    lv_obj_set_pos(pg->min, 537, 217);   /* y 213→217 与 hour 对齐 */
     lv_obj_set_size(pg->min, 102, 46);
 
     /* label_18: 标签 | "时" | (449,229) | 37x30 | font taiwanpearl_regular_30 */
@@ -13328,8 +13328,8 @@ void slowcook_setting_lang_tune(void)
     lv_obj_set_pos(pg->hour, 377, 217);   /* 对齐 top_bbq 系排版 */
     lv_obj_set_size(pg->hour, 102, 46);
 
-    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 | 动态定位(需微调见文件头模板) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
+    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 */
+    lv_obj_set_pos(pg->min, 537, 217);   /* y 213→217 与 hour 对齐 */
     lv_obj_set_size(pg->min, 102, 46);
 
     /* label_424: 标签 | "时" | (449,229) | 37x30 | font taiwanpearl_regular_30 */
@@ -14502,8 +14502,8 @@ void strudel_setting_lang_tune(void)
     /* hourline: 图片 | (291,269) | img: settingline3.png */
     lv_obj_set_pos(pg->hourline, 288, 269);
 
-    /* min: 标签 | "00" | (483,212) | 102x46 | font taiwanpearl_regular_48 | 动态定位(需微调见文件头模板) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
+    /* min: 标签 | "00" | (483,212) | 102x46 | font taiwanpearl_regular_48 */
+    lv_obj_set_pos(pg->min, 483, 214);   /* y 212→214 与 hour 对齐(此族 hour 仅 +2 不移 x) */
     lv_obj_set_size(pg->min, 102, 46);
 
     /* label_713: 标签 | "分" | (558,229) | 37x30 | font taiwanpearl_regular_30 */
@@ -15327,9 +15327,8 @@ void top_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->hour, 377, 217);
     lv_obj_set_size(pg->hour, 102, 46);
 
-    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 | 动态定位(需微调见文件头模板) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
-	// TODO 位置对齐参考 hour: 标签
+    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 */
+    lv_obj_set_pos(pg->min, 537, 217);   /* y 213→217 与 hour 对齐 */
     lv_obj_set_size(pg->min, 102, 46);
 
     /* label_93: 标签 | "时" | (449,229) | 37x30 | font taiwanpearl_regular_30 */
@@ -15837,8 +15836,8 @@ void unfrozen_setting_lang_tune(void)
     lv_obj_set_pos(pg->hour, 377, 217);   /* 对齐 top_bbq 系排版 */
     lv_obj_set_size(pg->hour, 102, 46);
 
-    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 | 动态定位(需微调见文件头模板) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
+    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 */
+    lv_obj_set_pos(pg->min, 537, 217);   /* y 213→217 与 hour 对齐 */
     lv_obj_set_size(pg->min, 102, 46);
 
     /* label_473: 标签 | "时" | (449,229) | 37x30 | font taiwanpearl_regular_30 */
@@ -16758,8 +16757,8 @@ void updown_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->hour_label, 451, 217);
     lv_obj_set_size(pg->hour_label, 102, 46);
 
-    /* min_label: 标签 | "00" | (599,213) | 102x46 | font taiwanpearl_regular_48 | 动态定位(需微调见文件头模板) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
+    /* min_label: 标签 | "00" | (599,213) | 102x46 | font taiwanpearl_regular_48 */
+    lv_obj_set_pos(pg->min_label, 599, 217);   /* y 213→217 与 00/180 对齐 */
     lv_obj_set_size(pg->min_label, 102, 46);
 
     /* shi_label: 标签 | "时" | (524,229) | 37x30 | font taiwanpearl_regular_30 */
@@ -17732,8 +17731,8 @@ void west_setting_lang_tune(void)
     lv_obj_set_pos(pg->hour, 377, 217);   /* 对齐 top_bbq 系排版 */
     lv_obj_set_size(pg->hour, 102, 46);
 
-    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 | 动态定位(需微调见文件头模板) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
+    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 */
+    lv_obj_set_pos(pg->min, 537, 217);   /* y 213→217 与 hour 对齐 */
     lv_obj_set_size(pg->min, 102, 46);
 
     /* label_181: 标签 | "时" | (449,229) | 37x30 | font taiwanpearl_regular_30 */
@@ -18242,8 +18241,8 @@ void windchange_bbq_setting_lang_tune(void)
     lv_obj_set_pos(pg->hour, 377, 217);   /* 对齐 top_bbq 系排版 */
     lv_obj_set_size(pg->hour, 102, 46);
 
-    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 | 动态定位(需微调见文件头模板) */
-    /* 位置由业务动态控制, 微调按文件头模板 */
+    /* min: 标签 | "00" | (537,213) | 102x46 | font taiwanpearl_regular_48 */
+    lv_obj_set_pos(pg->min, 537, 217);   /* y 213→217 与 hour 对齐 */
     lv_obj_set_size(pg->min, 102, 46);
 
     /* label_38: 标签 | "时" | (449,229) | 37x30 | font taiwanpearl_regular_30 */

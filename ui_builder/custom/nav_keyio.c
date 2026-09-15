@@ -87,6 +87,21 @@ int nav_standby_backlight_level(void)
     return lvl[v];                                            /* 开:设置亮度档 */
 }
 
+#ifndef LV_USE_AIC_SIMULATOR
+/* 延 50ms(≥3 个 vsync)抬满背光:refr_now 完成渲染+翻转入队,但面板出新帧要等
+   vsync——立刻抬亮会先照亮面板上的待机页旧帧(闪一下待机页才出菜单) */
+static void wake_backlight_timer_cb(lv_timer_t *t)
+{
+    lv_timer_del(t);
+    backlight_set_level(100);
+}
+
+void nav_backlight_100_defer(void)
+{
+    lv_timer_create(wake_backlight_timer_cb, 50, NULL);
+}
+#endif
+
 /* KEY1 长按(2s)：开关机。开机=回主菜单，关机=nav_power_off()。
    唤醒分支不重复清理——SLEEP 进入前已清理，SLEEP 期间按键全部被吞，状态保持干净 */
 void nav_key1_long_press(void)
@@ -112,7 +127,11 @@ void nav_key1_long_press(void)
         g_send.buzzer_req = BUZZER_POWER_ON;
         g_send.iface_status = IFACE_SETTING;
 #ifndef LV_USE_AIC_SIMULATOR
-        backlight_set_level(100);
+        /* 先把新页整帧刷到面板、等翻转落屏后再抬背光(顺序:刷帧→延→抬),
+         * 避免抬亮照亮的是待机页旧帧 */
+        lv_obj_invalidate(lv_scr_act());
+        lv_refr_now(NULL);
+        nav_backlight_100_defer();
 #endif
         printf("[KEY] KEY1 long press -> WAKE (major_menu)\n");
     }

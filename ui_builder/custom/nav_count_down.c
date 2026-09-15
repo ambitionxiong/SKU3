@@ -135,23 +135,27 @@ static void count_down_timer_cb(lv_timer_t *timer)
         return;
     }
 
-    /* 刚归零:本页弹超时层;已离开页面则重建抢屏(auto_del=false 保留原屏) */
-    s_run = 0;
-    g_send.buzzer_req = BUZZER_COOK_DONE;   /* 定时器结束音=烹调结束音(6),原漏发 */
-    if (s_get_out_scr == 0 && s_reset_flag == 0) {
-        if (scr->obj && lv_obj_is_valid(scr->obj) && scr->obj == lv_scr_act()) {
-            s_return_scr = NULL;                      /* 在本页到期 */
-            screen_overtime_cont_create();
-        } else {
-            s_return_scr = lv_scr_act();              /* 在别的页到期:记住原屏 */
-            if (!scr->obj || !lv_obj_is_valid(scr->obj))
-                count_down_create(&ui_manager);       /* 屏幕已被 auto_del:重建 */
-            if (scr->obj) {
-                s_return_group = current_group;       /* 记录被抢屏页面的组,取消超时层时恢复 */
-                current_group = scr->group;           /* 抢屏后按键由本页消化(超时层分支) */
-                lv_scr_load_anim(scr->obj, LV_SCR_LOAD_ANIM_NONE, 0, 0, false);   /* false:保留原屏 */
+    /* 归零瞬间(仅"运行中→0"的边沿,s_run 守卫):本页弹超时层;已离开页面则重建抢屏。
+     * 无守卫时空闲编辑态(进页未启动/Reset 后/超时层取消后)每秒跌到这里,
+     * 完成音被当电平每秒重发,提示音重复引擎再叠加=持续响不停 */
+    if (s_run) {
+        s_run = 0;
+        g_send.buzzer_req = BUZZER_COOK_DONE;   /* 定时器结束音=烹调结束音(6),原漏发 */
+        if (s_get_out_scr == 0 && s_reset_flag == 0) {
+            if (scr->obj && lv_obj_is_valid(scr->obj) && scr->obj == lv_scr_act()) {
+                s_return_scr = NULL;                      /* 在本页到期 */
                 screen_overtime_cont_create();
-                nav_topflag_demo_sync();   /* 抢屏后徽标按新屏立即定位(裸调未走统一出口) */
+            } else {
+                s_return_scr = lv_scr_act();              /* 在别的页到期:记住原屏 */
+                if (!scr->obj || !lv_obj_is_valid(scr->obj))
+                    count_down_create(&ui_manager);       /* 屏幕已被 auto_del:重建 */
+                if (scr->obj) {
+                    s_return_group = current_group;       /* 记录被抢屏页面的组,取消超时层时恢复 */
+                    current_group = scr->group;           /* 抢屏后按键由本页消化(超时层分支) */
+                    lv_scr_load_anim(scr->obj, LV_SCR_LOAD_ANIM_NONE, 0, 0, false);   /* false:保留原屏 */
+                    screen_overtime_cont_create();
+                    nav_topflag_demo_sync();   /* 抢屏后徽标按新屏立即定位(裸调未走统一出口) */
+                }
             }
         }
     }

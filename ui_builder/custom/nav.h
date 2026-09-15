@@ -731,6 +731,10 @@ void nav_alarm_tick_check(void);         /* 常驻 tick 调:BUF[12] 边沿触发
 /* 待机显示亮度(nav_keyio.c):Set_StandbyTime 0开=设置亮度档/1关=0 黑屏/2夜间=18-6 点最低档 其余设置档 */
 int nav_standby_backlight_level(void);
 
+/* 延 50ms 抬满背光(nav_keyio.c,仅真机):开机/报警唤醒先把新页整帧刷出去并等翻转
+ * 落屏(≥3 个 vsync),再抬亮度——立刻抬亮会先照亮面板上的待机页旧帧 */
+void nav_backlight_100_defer(void);
+
 /* 提示音重复引擎(nav_system.c):用户操作取消后续提示音(协议 3.1,按键/门开关等) */
 void nav_hint_tone_cancel(void);
 
