@@ -197,7 +197,7 @@ void sixset2_create(ui_manager_t *ui)
     lv_img_set_pivot(scr->weightline3, 50, 50);
     lv_img_set_angle(scr->weightline3, 0);
     lv_obj_set_style_img_opa(scr->weightline3, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->weightline3, 264, 328);
+    lv_obj_set_pos(scr->weightline3, 262, 328);
     lv_obj_add_flag(scr->weightline3, LV_OBJ_FLAG_HIDDEN);
 
 

@@ -128,7 +128,7 @@ void toastcolor_create(ui_manager_t *ui)
     lv_img_set_pivot(scr->weightline3, 50, 50);
     lv_img_set_angle(scr->weightline3, 0);
     lv_obj_set_style_img_opa(scr->weightline3, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_pos(scr->weightline3, 569, 328);
+    lv_obj_set_pos(scr->weightline3, 568, 328);
 
     // Init scr->weightline4
     scr->weightline4 = lv_img_create(scr->obj);
