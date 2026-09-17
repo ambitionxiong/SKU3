@@ -55,6 +55,7 @@
 #include "protocol.h"   /* g_send 状态变量（icon/模式判断用） */
 #include "screen_SET.h"   /* 独立页面结构体（不挂 ui_manager） */
 #include "nav_favorites.h"   /* 收藏夹独立页面 g_fav_screen */
+#include <string.h>
 
 typedef void (*lang_tune_fn)(void);
 
@@ -14870,6 +14871,22 @@ void toastcolor_lang_tune(void)
         lv_obj_set_style_pad_top(obj, 20, 0);
         lv_obj_set_style_pad_left(obj, -11, 0);
         lv_obj_set_parent(obj, cont);
+
+        /* 烤玉米特判(仅英文):单位 corns 比中文"根"宽,中文窄版线位(590+110)对不齐
+           居中的数字+单位 组——量 flex 组宽把 line3 拉到组宽并居中;其余菜维持中文静态位 */
+        if (strcmp(lv_label_get_text(pg->weighticon), "corns") == 0) {
+            enum { LINE_X_OFF = 7 };   /* 视觉微调:字形墨迹中心较逻辑宽中心偏右(数字侧边距),可按效果调 */
+            lv_obj_update_layout(cont);
+            int tw = lv_obj_get_width(cont);
+            if (tw > 0) {
+                tw += 11;   /* 补回 weighticon 负 pad(-11) 的 SIZE_CONTENT 收缩,线=数字+单位字形总宽 */
+                lv_area_t ca;
+                lv_obj_get_coords(cont, &ca);
+                lv_obj_set_pos(pg->weightline3, (ca.x1 + ca.x2) / 2 - tw / 2 + LINE_X_OFF, 328);
+                lv_image_set_inner_align(pg->weightline3, LV_IMAGE_ALIGN_STRETCH);
+                lv_obj_set_size(pg->weightline3, tw, 4);
+            }
+        }
 
         // lv_obj_update_layout(cont);
         

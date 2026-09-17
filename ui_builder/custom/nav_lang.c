@@ -210,11 +210,20 @@ static lv_obj_tree_walk_res_t lang_apply_obj(lv_obj_t *obj, void *user_data)
     /* 繁體: lv_btn 状态背景图(开关按钮 off/focusoff/on1/on2 等) → _tw 图
      * 生成层用 lv_obj_set_style_bg_img_src 把图烙在 DEFAULT/FOCUSED 两个状态,
      * 运行时只切显隐不改图, 这里逐状态读出比对 s_tw_imgs, 命中才覆写本地样式;
-     * 表外图(如 switchbg30/80 无 _tw 素材)查不中自动原样保留 */
+     * 表外图(如 switchbg30/80 无 _tw 素材)查不中自动原样保留。
+     * 读必须走 lv_obj_get_local_style_prop(精确 selector 只读本地样式):
+     * 普通 getter 按对象活状态解析(lv_obj_style.c: selector=part|obj->state,
+     * 传入状态位被丢弃), 从 delayset 返回时先恢复焦点再进遍历, 按钮正聚焦,
+     * 读 DEFAULT 会拿到 FOCUSED 的聚焦图并误写进 DEFAULT 态 → 焦点移走后
+     * 聚焦框残留; 未聚焦按钮则反向把 DEFAULT 图写进 FOCUSED 态(聚焦框丢失) */
     if (is_trad() && lv_obj_has_class(obj, &lv_button_class)) {
         const lv_state_t sts[2] = { LV_STATE_DEFAULT, LV_STATE_FOCUSED };
         for (int k = 0; k < 2; k++) {
-            const void *bsrc = lv_obj_get_style_bg_img_src(obj, LV_PART_MAIN | sts[k]);
+            lv_style_value_t v;
+            if (lv_obj_get_local_style_prop(obj, LV_STYLE_BG_IMAGE_SRC, &v,
+                                            LV_PART_MAIN | sts[k]) != LV_STYLE_RES_FOUND)
+                continue;
+            const void *bsrc = v.ptr;
             if (!bsrc || lv_image_src_get_type(bsrc) != LV_IMAGE_SRC_FILE) continue;
             for (int i = 0; i < TW_IMGS_N; i++) {
                 if (strcmp((const char *)bsrc, s_tw_imgs[i].cn_src) == 0) {

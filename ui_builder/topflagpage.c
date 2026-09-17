@@ -35,7 +35,7 @@ void topflagpage_create(ui_manager_t *ui)
 
     // Init scr->currenttime
     scr->currenttime = lv_label_create(scr->obj);
-    lv_label_set_text(scr->currenttime, "12:00");
+    lv_label_set_text(scr->currenttime, "00:00");   /* RTC 就绪前占位:断电默认时间即 00:00,原 12:00 上电会闪一下假时间 */
     lv_label_set_long_mode(scr->currenttime, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->currenttime, 1196, 25);
     lv_obj_set_size(scr->currenttime, 60, 22);

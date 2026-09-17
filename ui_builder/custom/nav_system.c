@@ -18,6 +18,7 @@
 /* 文件内前向声明(定义在后方) */
 void topflag_clock_cb(lv_timer_t *timer);
 void topflag_update_visibility(void);
+static void topflag_clock_render(uint8_t hour, uint8_t min);   /* nav init 创建时预渲染用 */
 
 
 // ==============================
@@ -203,6 +204,10 @@ void nav_init(void)
             if (tf->timer)  lv_obj_add_flag(tf->timer, LV_OBJ_FLAG_HIDDEN);
             if (tf->light)  lv_obj_add_flag(tf->light, LV_OBJ_FLAG_HIDDEN);
             if (tf->like)   lv_obj_add_flag(tf->like, LV_OBJ_FLAG_HIDDEN);
+            /* RTC 就绪前按断电默认时间(00:00)预渲染一次完整形态(数字+上午/下午
+             * 后缀+标签让位), 与 500ms 扫描共用 topflag_clock_render:
+             * 12 时制首帧即"12:00 上午", RTC 就绪前后零跳变 */
+            topflag_clock_render(0, 0);
         }
     }
     topflag_update_visibility();
@@ -491,50 +496,64 @@ void waitmenu_apply_clock(void)
 static uint8_t tf_last_hour = 0xFF, tf_last_min = 0xFF;
 static uint8_t tf_last_timetype = 0xFF, tf_last_lang_en = 0xFF;
 static lv_obj_t *s_ct_ampm = NULL;   /* 上午/下午后缀(顶层常驻,只建一次) */
+
+// 按给定时/分+当前时制渲染右上角时钟(数字+上午/下午后缀+标签让位)。
+// 500ms 扫描与 nav init 创建时预渲染共用:创建时用断电默认时间(0,0)先渲染一次,
+// RTC 就绪前后显示形态一致,12 时制不再出现 00:00→12:00 的数字跳变
+static void topflag_clock_render(uint8_t hour, uint8_t min)
+{
+    topflagpage_t *tf = topflagpage_get(&ui_manager);
+    if (!tf || !tf->currenttime) return;
+
+    uint8_t lang_en = is_english() ? 1 : 0;
+    if (hour == tf_last_hour && min == tf_last_min &&
+        tf_last_timetype == SET_Data.Set_TimeType && tf_last_lang_en == lang_en)
+        return;   /* 无变化 */
+
+    tf_last_hour = hour; tf_last_min = min;
+    tf_last_timetype = SET_Data.Set_TimeType; tf_last_lang_en = lang_en;
+    char buf[6];
+    uint8_t disp_hour = hour;
+    if (SET_Data.Set_TimeType == 1) {
+        disp_hour = hour % 12;
+        if (disp_hour == 0) disp_hour = 12;
+    }
+    snprintf(buf, sizeof(buf), "%02d:%02d", disp_hour, min);
+    lv_label_set_text(tf->currenttime, buf);
+    if (SET_Data.Set_TimeType == 1) {
+        /* 后缀:24px 字体 transform 缩半≈12px(字库无 12px 档),pivot 左上角便于定位 */
+        if (s_ct_ampm == NULL) {
+            s_ct_ampm = lv_label_create(tf->obj);
+            lv_obj_set_style_text_color(s_ct_ampm, lv_color_hex(0xffffff), 0);
+            lv_obj_set_style_transform_pivot_x(s_ct_ampm, 0, 0);
+            lv_obj_set_style_transform_pivot_y(s_ct_ampm, 0, 0);
+            lv_obj_set_style_transform_scale_x(s_ct_ampm, 128, 0);
+            lv_obj_set_style_transform_scale_y(s_ct_ampm, 128, 0);
+        }
+        const lv_font_t *amf = is_english() ? &c_aktivgroteskmedium_24 : &c_taiwanpearl_regular_24;
+        lv_obj_set_style_text_font(s_ct_ampm, amf, 0);
+        lv_label_set_text(s_ct_ampm, tr(hour < 12 ? "上午" : "下午"));
+        /* 与时间数字基线对齐:currenttime 标签顶 y=25(taiwan24 基线 25+28-8=45);
+           后缀缩放 50%,基线偏移随之减半 */
+        int base_y = 25 + c_taiwanpearl_regular_24.line_height - c_taiwanpearl_regular_24.base_line;
+        lv_obj_set_pos(s_ct_ampm, 1226, base_y - (amf->line_height - amf->base_line) / 2);
+        lv_obj_clear_flag(s_ct_ampm, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_set_x(tf->currenttime, 1164);
+    } else {
+        lv_obj_set_x(tf->currenttime, 1196);
+        if (s_ct_ampm) lv_obj_add_flag(s_ct_ampm, LV_OBJ_FLAG_HIDDEN);
+    }
+}
+
 static void topflag_clock_update(void)
 {
     topflagpage_t *tf = topflagpage_get(&ui_manager);
     if (!tf || !tf->currenttime) return;
     rtc_time_t t;
-    if (rtc_get_time(&t) != 0) return;
+    if (rtc_get_time(&t) != 0) return;   /* RTC 未就绪:保持创建时的预渲染占位 */
 
-    uint8_t lang_en = is_english() ? 1 : 0;
-    if (t.hour != tf_last_hour || t.min != tf_last_min ||
-        tf_last_timetype != SET_Data.Set_TimeType || tf_last_lang_en != lang_en) {
-        tf_last_hour = t.hour; tf_last_min = t.min;
-        tf_last_timetype = SET_Data.Set_TimeType; tf_last_lang_en = lang_en;
-        char buf[6];
-        uint8_t disp_hour = t.hour;
-        if (SET_Data.Set_TimeType == 1) {
-            disp_hour = t.hour % 12;
-            if (disp_hour == 0) disp_hour = 12;
-        }
-        snprintf(buf, sizeof(buf), "%02d:%02d", disp_hour, t.min);
-        lv_label_set_text(tf->currenttime, buf);
-        if (SET_Data.Set_TimeType == 1) {
-            /* 后缀:24px 字体 transform 缩半≈12px(字库无 12px 档),pivot 左上角便于定位 */
-            if (s_ct_ampm == NULL) {
-                s_ct_ampm = lv_label_create(tf->obj);
-                lv_obj_set_style_text_color(s_ct_ampm, lv_color_hex(0xffffff), 0);
-                lv_obj_set_style_transform_pivot_x(s_ct_ampm, 0, 0);
-                lv_obj_set_style_transform_pivot_y(s_ct_ampm, 0, 0);
-                lv_obj_set_style_transform_scale_x(s_ct_ampm, 128, 0);
-                lv_obj_set_style_transform_scale_y(s_ct_ampm, 128, 0);
-            }
-            const lv_font_t *amf = is_english() ? &c_aktivgroteskmedium_24 : &c_taiwanpearl_regular_24;
-            lv_obj_set_style_text_font(s_ct_ampm, amf, 0);
-            lv_label_set_text(s_ct_ampm, tr(t.hour < 12 ? "上午" : "下午"));
-            /* 与时间数字基线对齐:currenttime 标签顶 y=25(taiwan24 基线 25+28-8=45);
-               后缀缩放 50%,基线偏移随之减半 */
-            int base_y = 25 + c_taiwanpearl_regular_24.line_height - c_taiwanpearl_regular_24.base_line;
-            lv_obj_set_pos(s_ct_ampm, 1226, base_y - (amf->line_height - amf->base_line) / 2);
-            lv_obj_clear_flag(s_ct_ampm, LV_OBJ_FLAG_HIDDEN);
-            lv_obj_set_x(tf->currenttime, 1164);
-        } else {
-            lv_obj_set_x(tf->currenttime, 1196);
-            if (s_ct_ampm) lv_obj_add_flag(s_ct_ampm, LV_OBJ_FLAG_HIDDEN);
-        }
-    }
+    topflag_clock_render(t.hour, t.min);
+
     /* 后缀可见性与 currenttime 同步(待机页 currenttime 隐藏避免与大时钟重复);
        仅 12 小时制才允许显示,否则会把变更分支里刚隐藏的后缀又刷回来 */
     if (s_ct_ampm) {

@@ -708,17 +708,24 @@ int loudness_popup_active(void)
     return (current_group == s_loud_page.group && Set_Loudness_where == 1);
 }
 
-/* 弹窗激活时消化按键：编码器切选项 / PRESS 确认 / BACK 取消，其余无效音 */
+/* 弹窗激活时消化按键：编码器切选项 / PRESS 确认 / BACK 取消，其余无效音。
+ * 声音在本函数预设(旋转=编码器音,确定/取消=有效音);总开关关闭时
+ * encoder_Loudness_action 内部会改判无效音,预设被覆盖,语义保留 */
 int loudness_popup_key(uint8_t key)
 {
     if (!loudness_popup_active()) return 0;
     switch (key) {
     case KEY_ENCODER_CW:
     case KEY_ENCODER_CCW:
+        g_send.buzzer_req = BUZZER_ENCODER;
+        encoder_Loudness_action((char)key);
+        return 1;
     case KEY_ENCODER_PRESS:
+        g_send.buzzer_req = BUZZER_KEY_VALID;
         encoder_Loudness_action((char)key);
         return 1;
     case KEY_BACK:
+        g_send.buzzer_req = BUZZER_KEY_VALID;
         return_Loudness_action();   /* else 分支：关弹窗回箭头行 */
         return 1;
     default:

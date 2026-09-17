@@ -438,6 +438,8 @@ void toastcolor_cycle(int dir)
    须在页面创建后调用(on_veg_corn_click 中);坐标与长度可按效果微调 */
 void toastcolor_apply_corn_layout(void)
 {
+    if (is_english()) return;   /* 英文:数字+单位重挂 flex 居中,下划线由 toastcolor_lang_tune 烤玉米特判摆位;
+                                   本函数在 jump_to_toastcolor() 之后调用,勿覆盖 tune 的摆位 */
     toastcolor_t *tc = toastcolor_get(&ui_manager);
     if (!tc) return;
     lv_obj_set_pos(tc->weight,      484, 248);   /* weight 位置(原 519) */

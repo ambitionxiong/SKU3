@@ -122,9 +122,12 @@ void process_key(uint8_t key)
     if (screen_set_popup_active() && screen_set_popup_key(key))
         return;
     /* 声音设置页提示音弹窗激活:按键全部由弹窗消化(编码器切选项/PRESS确认/
-     * BACK取消,其余无效音),不影响覆盖层/下层页面 */
-    if (loudness_popup_active() && loudness_popup_key(key))
+     * BACK取消,其余无效音),不影响覆盖层/下层页面;
+     * 消化后必须发帧:buzzer_req 只在 uart_print 里随帧下发并清零 */
+    if (loudness_popup_active() && loudness_popup_key(key)) {
+        uart_print();
         return;
+    }
     /* 设置页覆盖层打开时按功能键:先关闭设置页(弹栈恢复下层页面),再按下层
      * 页面正常处理——功能键在设置页也能生效;键自身的白名单/防重入/运行态
      * 拦截(烹饪中等)由各 case 照常判断 */
@@ -508,6 +511,7 @@ void process_key(uint8_t key)
         break;
     case KEY_BACK:          // 21: 返回
         if (current_group && current_group == count_down_page_group()) {
+            g_send.buzzer_req = BUZZER_KEY_VALID;   /* 计时页按键有声(空闲自动返回走 nav_idle 直调,不经此) */
             count_down_back_action();   /* 计时页/抢屏超时层:BACK=回设置层/取消超时层
                                            (先于页面栈路由:抢屏时栈顶不是计时页) */
             uart_print();
@@ -1737,6 +1741,7 @@ void process_key(uint8_t key)
     case KEY_ENCODER_PRESS: { // 51: 确认 / 跳到下一焦点
         /* 数值条页(按键音/亮度)无组:按栈分流,须在 current_group 空守卫之前 */
         if (depth > 0 && page_stack[depth - 1] == PAGE_SET_VAL) {
+            g_send.buzzer_req = BUZZER_KEY_VALID;   /* 数值条页"确定"有声(旋转在 set_val_encoder_action 内) */
             set_val_return_action();   /* 数值条页 PRESS:返回声音页/设置层 */
             uart_print();
             break;
