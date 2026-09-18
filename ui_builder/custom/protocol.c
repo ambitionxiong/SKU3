@@ -14,9 +14,9 @@ send_state_t g_send = {
 };
 
 /* 机器设置状态字节(设置覆盖层改动,通信帧 BUF[15]/16/17 持续上报)。
- * 默认:声音开/按键音7档/开机音开;自动保温关/风扇温度控制/13A/炉灯常亮 */
+ * 默认:声音开/按键音7档/开机音开;自动保温关/风扇温度控制/16A/炉灯常亮 */
 uint8_t Machine_Set_num_1 = 0x00;
-uint8_t Machine_Set_num   = 0x00;
+uint8_t Machine_Set_num   = Send_MachineState_Power_xxA;   /* BIT3 置位=16A(默认),清位=13A */
 
 uint8_t CalculateChecksum(uint8_t *data, int length)
 {

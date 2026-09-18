@@ -23,7 +23,7 @@ volatile Setting_Data SET_Data = {
     .Set_Lock = 0, .Set_KeepWarm = 0, .Set_FanCooling = 0, .Set_6th = 0,
     .Set_Light = 0, .Set_TempUnit = 0, .Set_VolumeFlag = 1, .Set_VolumeHintTime = 0,
     .Set_VolumeKey = 7, .Set_VolumeWelcome = 1, .Set_Brightness = 7,
-    .Set_TimeType = 0, .Set_StandbyTime = 0, .Set_Language = 2, .Set_Power = 0,
+    .Set_TimeType = 0, .Set_StandbyTime = 0, .Set_Language = 2, .Set_Power = 1,
     .Set_DemoMode = 0,
 };
 

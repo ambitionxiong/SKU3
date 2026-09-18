@@ -247,7 +247,9 @@ void jump_to_preheat_menu(void)
 {
     g_preheat_fast = (depth <= 2);   /* 按键4入口(depth=1)vs cookmenu 入口(depth=3),须在 push 前判断 */
     g_send.cook_mode = MODE_PREHEAT;
-    g_send.cook_flag = 1;
+    /* BUF[5] 预热标志不在菜单页置位:菜单/设置阶段的所有出口(BACK/功能键跳走)都
+     * 没有清零点,板上会持续收到 flag=1 持续预热(升温异常)。唯一置位点在
+     * jump_to_preheat_cooking() 的 (mode==MODE_PREHEAT)?1:0,烹饪真正开始才置 1 */
     set_temp = 180;   /* 单独进入预热:重置默认温度(预热无时间概念) */
 
     page_push(PAGE_PREHEAT_MENU);

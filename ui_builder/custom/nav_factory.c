@@ -14,6 +14,9 @@
 #include "nav_internal.h"
 #include "screen_SET.h"       /* 返回设置层后焦点定位 RESET_Btn 用 */
 #include "nav_favorites.h"    /* Fav_Cur/双收藏集/空模板/收藏计数 */
+#ifndef LV_USE_AIC_SIMULATOR
+#include "test_data.h"        /* config_save/settings_mirror_rebuild(SDK 掉电保存,模拟器无持久化) */
+#endif
 
 typedef struct {
     lv_obj_t *obj;
@@ -46,7 +49,7 @@ static void factory_reset_apply(void)
     SET_Data.Set_TimeType = 0;
     SET_Data.Set_StandbyTime = 0;
     SET_Data.Set_Language = 2;
-    SET_Data.Set_Power = 0;
+    SET_Data.Set_Power = 1;
     SET_Data.Set_DemoMode = 0;
 
     /* 收藏双集合清空(普通+探针;Fav_Cur 停回普通集) */
@@ -56,6 +59,11 @@ static void factory_reset_apply(void)
     *Fav_Cur = Func_favorites_Value_NULL;
     Fav_Cur = &Func_favorites_Value;
     favorites_how_many = 0;
+
+#ifndef LV_USE_AIC_SIMULATOR
+    settings_mirror_rebuild();   /* 重建 BUF[15..17] 设置字节镜像:复位后当前会话立即按复位值上报 */
+    config_save();               /* 立即全量落盘清掉旧内容,不等 persist 线程 1s 轮询 */
+#endif
 
     g_lang_en = (SET_Data.Set_Language == 0);   /* 默认简体:同步 tr 语言标志 */
     uart_print();               /* 立即上报复位后的状态帧 */

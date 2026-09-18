@@ -71,7 +71,7 @@ typedef struct {
     int8_t Set_TimeType;       // 时制           0 24小时 1 12小时
     int8_t Set_StandbyTime;    // 待机时间显示   0开 1关 2夜间模式
     int8_t Set_Language;       // 语言           0英语 1繁体 2简体
-    int8_t Set_Power;          // 电源管理       0 16A 1 13A
+    int8_t Set_Power;          // 电源管理       0 13A 1 16A
     int8_t Set_DemoMode;       // 演示模式       0关   1开
 } Setting_Data;
 
