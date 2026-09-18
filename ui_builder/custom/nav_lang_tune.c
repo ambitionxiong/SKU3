@@ -3555,20 +3555,23 @@ void cook_menu_tz_lang_tune(void)
     lv_obj_set_pos(pg->major_img, 175, 188);
 
     /* cook_label: 标签 | "烹饪功能" | (24,24) | 96x22 | font taiwanpearl_regular_24 */
+    /* EN: 标题 "Cooking Functions" 在 96 宽内折行只露 "Cooking"，加宽单行放下(左对齐,位置不变) */
     lv_obj_set_pos(pg->cook_label, 24, 24);
-    lv_obj_set_size(pg->cook_label, 96, 22);
+    lv_obj_set_size(pg->cook_label, 240, 22);
 
     /* updown_label: 标签 | "上下烧烤" | (153,291) | 147x28 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->updown_label, 153, 291);
-    lv_obj_set_size(pg->updown_label, 147, 28);
+    /* EN: "Conventional" 单词超宽被硬折行只露 "Conventio"，照 major_menu 先例
+     * 三张卡标签统一加宽 260x30，中心(226/640/1054)不变保持卡片居中 */
+    lv_obj_set_pos(pg->updown_label, 96, 291);
+    lv_obj_set_size(pg->updown_label, 260, 30);
 
     /* hot_label: 标签 | "热风烧烤" | (567,291) | 147x28 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->hot_label, 567, 291);
-    lv_obj_set_size(pg->hot_label, 147, 28);
+    lv_obj_set_pos(pg->hot_label, 510, 291);
+    lv_obj_set_size(pg->hot_label, 260, 30);
 
     /* bottom_label: 标签 | "底部烧烤" | (981,291) | 147x30 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->bottom_label, 965, 291);
-    lv_obj_set_size(pg->bottom_label, 180, 30);
+    lv_obj_set_pos(pg->bottom_label, 924, 291);
+    lv_obj_set_size(pg->bottom_label, 260, 30);
 
 }
 
@@ -8977,8 +8980,10 @@ void major_menu_lang_tune(void)
     lv_obj_set_size(pg->menu_label, 80, 22);
 
     /* cook_label: 标签 | "烹饪功能" | (153,291) | 147x28 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->cook_label, 153, 291);
-    lv_obj_set_size(pg->cook_label, 147, 28);
+    /* EN: "Cooking Functions" 在 147x28 内折行只露首行(显示成 "Cooking")，
+     * 照 special_label 同页先例加宽 260x30，中心(226)不变保持卡片居中 */
+    lv_obj_set_pos(pg->cook_label, 96, 291);
+    lv_obj_set_size(pg->cook_label, 260, 30);
 
     /* cook4_label: 标签 | "COOK 4" | (567,291) | 147x28 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->cook4_label, 567, 291);
@@ -9022,12 +9027,14 @@ void major_menu_tz_lang_tune(void)
     lv_obj_set_pos(pg->major_img, 300, 185);
 
     /* cook_label: 标签 | "烹饪功能" | (270,291) | 120x28 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->cook_label, 270, 291);
-    lv_obj_set_size(pg->cook_label, 120, 28);
+    /* EN: 两卡菜单同根缺陷，"Cooking Functions"/"Special Functions" 在 120x28
+     * 内折行被裁，各加宽 260x30，中心(330/951)不变 */
+    lv_obj_set_pos(pg->cook_label, 200, 291);
+    lv_obj_set_size(pg->cook_label, 260, 30);
 
     /* special_label: 标签 | "特殊功能" | (891,291) | 120x28 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->special_label, 891, 291);
-    lv_obj_set_size(pg->special_label, 120, 28);
+    lv_obj_set_pos(pg->special_label, 821, 291);
+    lv_obj_set_size(pg->special_label, 260, 30);
 
 }
 
@@ -16049,7 +16056,7 @@ void updown_bbq_complete_probe_lang_tune(void)
 
     /* label_75: 标签 | "已完成" | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_75, 273, 157);
-    lv_obj_set_size(pg->label_75, 235, 60);
+    lv_obj_set_size(pg->label_75, 350, 60);
 
     /* image_2: 图片 | (845,160) | img: hotcare.png */
     lv_obj_set_pos(pg->image_2, 820, 160);
@@ -16957,7 +16964,7 @@ void updown_bbq_stop_back_probe_lang_tune(void)
 
     /* label_71: 标签 | "暂停中..." | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_71, 273, 157);
-    lv_obj_set_size(pg->label_71, 280, 60);
+    lv_obj_set_size(pg->label_71, 350, 60);
 
     /* container_3: 容器 | (0,0) | 1280x480 */
     lv_obj_set_pos(pg->container_3, 0, 0);
