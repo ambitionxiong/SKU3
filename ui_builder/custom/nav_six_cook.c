@@ -181,7 +181,7 @@ static void six_label_status(somecook_cooking_t *sc)
     if (six_chick_is_degree_time()) {
         int d = toastcolor_degree_value();
         if (d < 1 || d > 3) d = 2;
-        const char *dt = (d == 1) ? "浅色" : (d == 3) ? "深色" : "中等色";
+        const char *dt = (d == 1) ? tr("浅色") : (d == 3) ? tr("深色") : tr("中等色");   /* 逐项 tr,与 nav_stop.c 六感分支一致 */
         lv_label_set_text_fmt(sc->label_12, tr("| %s | %s | %d分钟"),
                               six_chick_name(), dt, six_chick_degree_min(d));
     } else if (six_chick_is_kind()) {

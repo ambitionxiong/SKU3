@@ -1768,10 +1768,10 @@ static void six_chick_apply_display(void)
         if (six_chick_is_matdeg()) {
             const char *dc = (six_2d_deg_idx() == 0) ? tr("浅色") :
                              (six_2d_deg_idx() == 2) ? tr("深色") : tr("中等色");
-            lv_label_set_text_fmt(ck->status, tr("| %s | %s | %s |"),
+            lv_label_set_text_fmt(ck->status, tr("| %s | %s | %s"),
                                   six_chick_name(), dc, six_2d_mat_text());   /* 牛肉/羊腿/羊排:菜名+颜色+成熟度 */
         } else {
-            lv_label_set_text_fmt(ck->status, tr("| %s | %s |"), six_chick_name(), six_chick_degree_text());
+            lv_label_set_text_fmt(ck->status, tr("| %s | %s"), six_chick_name(), six_chick_degree_text());
         }
     }
 

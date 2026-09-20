@@ -130,9 +130,15 @@ void jump_to_updown_bbq_stop_back(void)
             lv_label_set_text(back->label_8, tr("预约中..."));
             if (g_delay_source_page == PAGE_DESCRIPTIONMENU) {
                 /* 六感:status/图标/位置与六感运行页一致 */
-                if (six_chick_is_probe())
-                    lv_label_set_text_fmt(back->statu_label, tr("| %s | %s |"),
-                                          six_chick_name(), six_chick_degree_text());   /* 探针菜:菜名+烤色程度 */
+                if (six_chick_is_probe()) {
+                    if (six_chick_is_matdeg())
+                        lv_label_set_text_fmt(back->statu_label, tr("| %s | %s | %s"),
+                                              six_chick_name(), six_2d_deg_text(),
+                                              six_2d_mat_text());   /* 牛肉/羊腿/羊排:菜名+烤色+成熟度(与烹饪页一致) */
+                    else
+                        lv_label_set_text_fmt(back->statu_label, tr("| %s | %s"),
+                                              six_chick_name(), six_chick_degree_text());   /* 探针菜:菜名+烤色程度 */
+                }
                 else if (six_chick_is_degree_time()) {
                     int d = toastcolor_degree_value();
                     if (d < 1 || d > 3) d = 2;
@@ -155,7 +161,7 @@ void jump_to_updown_bbq_stop_back(void)
                                           sd ? sd->cook_min : 23);   /* 披萨:菜名+固定时间 */
 
                 } else if (six_chick_is_2d()) {
-                    lv_label_set_text_fmt(back->statu_label, tr("| %s | %dg | %s色 |"),
+                    lv_label_set_text_fmt(back->statu_label, tr("| %s | %dg | %s色"),
                                           six_chick_name(), six_2d_weight(), six_2d_deg_text());   /* 二维菜:菜名|克数|程度色 */
                 } else
                     lv_label_set_text_fmt(back->statu_label, tr("| %s | %d分钟"), six_bread_name(), six_bread_cook_min());
@@ -357,8 +363,11 @@ static void six_delay_exit_to_sixmenu(void)
     g_delay_source_page = PAGE_WAITMENU_24;   /* 防残留误走六感分支 */
     depth = 0;
     page_push(PAGE_WAITMENU_24);
-    jump_to_sixmenu();
-    printf("[six_cook] delay cancel -> sixmenu\n");
+    if (is_probe_inserted())
+        jump_to_sixmenutz();   /* 探针模式:回探针版第六感菜单(与 KEY_SIXMENU 进页路由一致) */
+    else
+        jump_to_sixmenu();
+    printf("[six_cook] delay cancel -> %s\n", is_probe_inserted() ? "sixmenutz" : "sixmenu");
 }
 void on_stop_back_sure_click(lv_event_t *e)
 {

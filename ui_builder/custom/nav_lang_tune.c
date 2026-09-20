@@ -1999,6 +1999,10 @@ void cake6menu_lang_tune(void)
      /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ En modify ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
      lv_obj_t *obj = pg->chocolatecake;
      obj = lv_obj_get_child(obj, 0);
+     /* 收窄强制 "Chocolate"/"Cake" 换行:标签是内容尺寸+创建时烙下的持久 CENTER 对齐,
+      * 不约束宽度时翻译变宽仍按整串宽重新居中,左右溢出卡片(整串约220px>卡205px);
+      * 170 保证 Chocolate 约140px 单行放下,换行后的两行居中由持久对齐自动完成 */
+     lv_obj_set_width(obj, 170);
      lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_CENTER, 0);
 }
 
@@ -5157,7 +5161,7 @@ void delaycooking_lang_tune(void)
 
     /* status: 标签 | "| 上下烧烤 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
-    lv_obj_set_size(pg->status, 490, 39);
+    lv_obj_set_size(pg->status, 570, 39);
 
     /* icon: 图片 | (115,161) | img: updown_img.png | 动态定位(默认业务值, 直接改数字) */
     /* 位置由业务动态控制, 微调按文件头模板 */
@@ -11850,7 +11854,7 @@ void risingpage_lang_tune(void)
 
     /* label_17: 标签 | "面包卷" | (24,24) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_17, 24, 24);
-    lv_obj_set_size(pg->label_17, 144, 32);
+    lv_obj_set_size(pg->label_17, 250, 32);
 
      /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ En modify ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
      lv_obj_t *obj = lv_screen_active();
@@ -12663,13 +12667,14 @@ void sixop3page_lang_tune(void)
         /* TODO: 英文实测后调整(bt 文字字号/位置) */
     } else {
         /* 非探针: 第六感→肉菜单 */
-        /* op1: 标签 | "烹饪功能" | (153,274) | 147x28 | font taiwanpearl_regular_30 */
-        lv_obj_set_pos(pg->op1, 153, 274);
-        lv_obj_set_size(pg->op1, 147, 28);
+        /* op1: 标签 | "烹饪功能" | (153,274) | 147x28 | font taiwanpearl_regular_30
+         * 加宽 350 与 op3 同款(卡心 226 不变):147 折行只露首行(Grilled Steak→Grilled) */
+        lv_obj_set_pos(pg->op1, 51, 274);
+        lv_obj_set_size(pg->op1, 350, 28);
 
         /* op2: 标签 | "COOK 4" | (567,274) | 147x28 | font taiwanpearl_regular_30 */
-        lv_obj_set_pos(pg->op2, 567, 274);
-        lv_obj_set_size(pg->op2, 147, 28);
+        lv_obj_set_pos(pg->op2, 465, 274);
+        lv_obj_set_size(pg->op2, 350, 28);
 
         /* op3: 标签 | "特殊功能" | (981,274) | 147x30 | font taiwanpearl_regular_30 */
         lv_obj_set_pos(pg->op3, 981-100, 274);
@@ -16892,11 +16897,11 @@ void updown_bbq_stop_back_lang_tune(void)
     /* statu_label: 标签 | "| 上下烧烤 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->statu_label, 274, 232);
     if (g_delay_source_page == PAGE_DESCRIPTIONMENU) {
-        /* 六感场景: 文本格式不同 */
-        lv_obj_set_size(pg->statu_label, 490, 39);
-        /* TODO: 英文实测后调整(如 "Roast Leg of Lamb | Mid | Medium Well" 宽度) */
+        /* 六感场景: 文本格式不同;加宽到 570 与 delaycooking status 同宽,
+         * 六感长菜名 EN 整串约 545px,右缘 844 距右列标签(895)留 51px */
+        lv_obj_set_size(pg->statu_label, 570, 39);
     } else {
-        lv_obj_set_size(pg->statu_label, 490, 39);
+        lv_obj_set_size(pg->statu_label, 570, 39);
     }
 
     /* image_6: 图片 | (115,320) | img: bar.png */

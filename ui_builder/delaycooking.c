@@ -33,7 +33,7 @@ void delaycooking_create(ui_manager_t *ui)
     lv_label_set_text(scr->status, "| 上下烧烤 | 180℃ | 1小时20分钟");
     lv_label_set_long_mode(scr->status, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->status, 274, 232);
-    lv_obj_set_size(scr->status, 490, 39);
+    lv_obj_set_size(scr->status, 570, 39);
 
     // Set style of scr->status
     lv_obj_set_style_text_font(scr->status, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);

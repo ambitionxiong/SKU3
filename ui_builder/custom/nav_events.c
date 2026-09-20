@@ -827,13 +827,19 @@ void rebuild_delaycooking(void)
 
         if (g_delay_source_page == PAGE_DESCRIPTIONMENU) {
             /* 六感:status 显示菜+信息,icon 用 sixicon(与运行页一致) */
-            if (six_chick_is_probe())
-                lv_label_set_text_fmt(dc->status, tr("| %s | %s |"),
-                                      six_chick_name(), six_chick_degree_text());   /* 探针菜:菜名+烤色程度 */
+            if (six_chick_is_probe()) {
+                if (six_chick_is_matdeg())
+                    lv_label_set_text_fmt(dc->status, tr("| %s | %s | %s"),
+                                          six_chick_name(), six_2d_deg_text(),
+                                          six_2d_mat_text());   /* 牛肉/羊腿/羊排:菜名+烤色+成熟度(与烹饪页一致) */
+                else
+                    lv_label_set_text_fmt(dc->status, tr("| %s | %s"),
+                                          six_chick_name(), six_chick_degree_text());   /* 探针菜:菜名+烤色程度 */
+            }
             else if (six_chick_is_degree_time()) {
                 int d = toastcolor_degree_value();
                 if (d < 1 || d > 3) d = 2;
-                const char *dt = (d == 1) ? "浅色" : (d == 3) ? "深色" : "中等色";
+                const char *dt = (d == 1) ? tr("浅色") : (d == 3) ? tr("深色") : tr("中等色");   /* 逐项 tr,与 nav_stop.c 六感分支一致 */
                 lv_label_set_text_fmt(dc->status, tr("| %s | %s | %d分钟"),
                                       six_chick_name(), dt, six_chick_degree_min(d));   /* 烤羊肉串:菜名+程度+时间 */
             } else if (six_chick_is_kind()) {
