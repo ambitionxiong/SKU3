@@ -290,11 +290,14 @@ static void fav_screen_reset(void)
 {
     favo_safety_group_delete();
     if (g_fav_screen.obj) {
-        /* obj 仅在仍是当前活动屏时才可能存活；若其他页面已激活，
-         * 说明 obj 已被该页 auto_del 加载删除，只清指针即可——
-         * 对悬空指针 lv_obj_del 会破坏堆，表现为画面错乱/叠加/冻结 */
+        /* 收藏页仍可能是当前活动屏（如：收藏页上开设置覆盖层后直接按收藏键）。
+         * 活动屏绝不可 lv_obj_del：删后 lv_scr_act() 悬空，jump_to_favorites 随后的
+         * lv_obj_clean(lv_scr_act()) 与尾部 auto_del 全部 UAF（实机必现死机）。
+         * 只清空子女（含其上挂着的设置覆盖层），壳留给尾部
+         * lang_scr_load_anim(auto_del=1) 在新屏激活后由 LVGL 安全删除。
+         * 若已不是活动屏，说明 obj 已被其他页面加载删除，悬空指针只清引用 */
         if (g_fav_screen.obj == lv_scr_act())
-            lv_obj_del(g_fav_screen.obj);
+            lv_obj_clean(g_fav_screen.obj);
         g_fav_screen.obj = NULL;
     }
     /* 根治：清零整个页面结构（64 个控件/组指针全为 NULL）。

@@ -137,6 +137,15 @@ void process_key(uint8_t key)
         screen_set_reset();   /* 清覆盖层对象/指针,防悬空 */
         depth--;              /* 弹掉 PAGE_SCREEN_SET,栈顶恢复下层页面 */
         topflag_update_visibility();   /* 与 page_pop 一致刷新 topflag 显隐 */
+        if (key == KEY_FAV && depth > 0 && page_stack[depth - 1] == PAGE_FAVORITES) {
+            /* 覆盖层底下就是收藏页:整页重建(按当前语言全新渲染)。不能落回 KEY_FAV
+             * 守卫——current_group 已被 screen_set_reset 恢复成收藏组,会被
+             * "已在收藏页"拦截成无效音+透出旧屏(卡片动态文本仍是切语言前的中文) */
+            g_send.buzzer_req = BUZZER_KEY_VALID;
+            favorites_rebuild(PAGE_SCREEN_SET);
+            uart_print();
+            return;
+        }
     }
     /* 功能键离开收藏页:先安全清理收藏组/默认组引用——收藏页出口原只有 BACK 与
      * Fav_Start 走 favo_safety_group_delete,功能键直接跳转会留下僵尸默认组,
@@ -152,8 +161,19 @@ void process_key(uint8_t key)
     uart_data_receive[Receive_data_Touch_Key] = 0;
 
     switch (key) {
-    case KEY1:              // 1: 开关机键，短按无操作
+    case KEY1: {            // 1: 开关机键:短按无操作;双击(600ms 内两次)=一键完成(测试钩子)
+        static uint32_t s_last_key1_click = 0;
+        uint32_t now = lv_tick_get();
+        if (now - s_last_key1_click < 600) {
+            s_last_key1_click = 0;
+            g_send.buzzer_req = BUZZER_KEY_VALID;   /* 成功=有效音;门开被内部改判无效音 */
+            sim_force_cook_done();   /* 非烹饪态静默忽略;走与真实到点相同的完成分发 */
+            uart_print();
+        } else {
+            s_last_key1_click = now;
+        }
         break;
+    }
     case KEY_MENU:          // 3: 进入主菜单
         if (g_send.iface_status == IFACE_COOKING) {
             g_send.buzzer_req = BUZZER_KEY_INVALID;
@@ -331,6 +351,8 @@ void process_key(uint8_t key)
         }
         g_send.buzzer_req = BUZZER_KEY_VALID;
         if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
+        screen_set_reset();   /* 覆盖层若开着(可挂在收藏页独立屏上):先正规清对象/指针,
+                                 否则 fav_screen_reset 会删到正活动着的收藏屏 → UAF */
         g_on_stop_back = 0;
         g_complete_to_stop_back = 0;
         g_cooling_to_stop_back = 0;

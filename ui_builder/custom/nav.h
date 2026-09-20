@@ -1135,6 +1135,7 @@ void groups_create(void);
 void bind_events(void);
 void anim_bar_set_value(void *obj, int32_t v);
 void cooking_timer_cb(lv_timer_t *timer);
+void sim_force_cook_done(void);   /* 一键完成测试钩子(模拟器 C 键/实机电源键双击共用) */
 
 void jump_to_top_bbq_menu(void);
 void jump_to_top_bbq_set(void);
