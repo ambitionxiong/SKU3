@@ -162,8 +162,8 @@ static int lang_fuzzy_status(lv_obj_t *obj, const char *txt, char *buf, int buf_
     snprintf(buf, (size_t)buf_len, "| %s %s", en_mode, p2);
 
     /* 尾部单位转换：小时→h、分钟→min（先小时后分钟）
-     * "小时"=6字节→" h "=3字节；"分钟"=6字节→" min"=4字节。
-     * memmove 源从偏移6取（保留尾串），替换后指针前进避免死循环。 */
+     * "小时"=6字节→" h"=2字节；"分钟"=6字节→"min"=3字节（数字紧贴无空格）。
+     * memmove 源从偏移取（保留尾串），替换后指针前进避免死循环。 */
     char *bp = buf;
     while ((bp = strstr(bp, "小时")) != NULL) {
         *bp = ' '; bp[1] = 'h';
@@ -172,9 +172,9 @@ static int lang_fuzzy_status(lv_obj_t *obj, const char *txt, char *buf, int buf_
     }
     bp = buf;
     while ((bp = strstr(bp, "分钟")) != NULL) {
-        *bp = ' '; bp[1] = 'm'; bp[2] = 'i'; bp[3] = 'n';
-        memmove(bp + 4, bp + 6, strlen(bp + 6) + 1);
-        bp += 4;
+        *bp = 'm'; bp[1] = 'i'; bp[2] = 'n';
+        memmove(bp + 3, bp + 6, strlen(bp + 6) + 1);
+        bp += 3;
     }
     /* 单位出口：℉ 模式 ℃/°C→°F 且烙死的数值一并换算(ui_temp_rewrite)；
        ℃ 模式维持 ℃→°C 等长替换（与 tr() 输出一致） */
@@ -323,6 +323,27 @@ void lang_refresh_screen(void)
     lv_obj_tree_walk(lv_scr_act(), lang_apply_obj, NULL);
 }
 
+/* EN 单位标签宽度兜底:树遍历把"分"译成 "min" 后,生成层窄单位标签(27-64px,73 页
+ * menu/set/setting 同构)装不下三字符,折行被标签高度裁成 "m"/"mi"。整串恰为 "min"
+ * 的只有独立单位标签(状态条/正文不可能是这个形态)。放开为内容宽、位置/高度不动。
+ * 必须在 tune 之后跑:部分页 tune 会把单位标签压回窄宽(updown_bbq_set fen 42/30px)。
+ * 注:数字与单位的间距补偿(pad/translate/x 平移)经多轮实测用户仍不满意,已整体回退,
+ * 间距维持各页原状,后续如需另立方案再议。 */
+static lv_obj_tree_walk_res_t lang_fit_min_unit_cb(lv_obj_t *obj, void *user_data)
+{
+    (void)user_data;
+    if (!lv_obj_check_type(obj, &lv_label_class)) return LV_OBJ_TREE_WALK_NEXT;
+    const char *txt = lv_label_get_text(obj);
+    if (!txt || strcmp(txt, "min") != 0) return LV_OBJ_TREE_WALK_NEXT;
+    lv_obj_set_width(obj, LV_SIZE_CONTENT);
+    return LV_OBJ_TREE_WALK_NEXT;
+}
+
+static void lang_fit_unit_labels(void)
+{
+    lv_obj_tree_walk(lv_scr_act(), lang_fit_min_unit_cb, NULL);
+}
+
 void lang_on_page_built(void)
 {
     if (depth <= 0) return;
@@ -331,6 +352,7 @@ void lang_on_page_built(void)
         /* 英文: 静态标签翻译 + 字体切换 + 排版微调 */
         lang_refresh_screen();
         lang_tune_for_page(page_stack[depth - 1])();
+        lang_fit_unit_labels();   /* 单位标签宽度兜底:tune 压窄后放开装不下 "min" 的 */
     } else if (is_trad()) {
         /* 繁體: 树遍历翻译(tr→简转繁) + _tw 图片替换;
          * 排版与字体与简体一致(taiwanpearl), 不跑 lang_tune/字体映射 */

@@ -67,6 +67,14 @@ const char *toastcolor_weight_unit(void)
     return s_weight_unit;
 }
 
+/* 玉米单位按根数单复数(仅英文):1 根 "corn",其余 "corns";g 等其他单位与中/繁原样 */
+const char *toastcolor_weight_unit_n(int n)
+{
+    if (n == 1 && is_english() && strcmp(s_weight_unit, "根") == 0)
+        return "corn";
+    return tr(s_weight_unit);
+}
+
 /* 当前选中份量克数（或玉米根数）；收藏恢复值优先，非份量组/未设置返回 -1 */
 int toastcolor_weight_value(void)
 {
@@ -123,7 +131,7 @@ static void toastcolor_apply_mode_visibility(void)
         else lv_obj_add_flag(tc->weight, LV_OBJ_FLAG_HIDDEN);
     }
     if (tc->weighticon) {
-        lv_label_set_text(tc->weighticon, tr(s_weight_unit));   /* 单位随菜切换(g/根),英文翻译(根→corns) */
+        lv_label_set_text(tc->weighticon, toastcolor_weight_unit_n(toastcolor_weight_value()));   /* 单位随菜切换(g/根),英文翻译(根→corn/corns 按根数) */
         if (show_wt) lv_obj_clear_flag(tc->weighticon, LV_OBJ_FLAG_HIDDEN);
         else lv_obj_add_flag(tc->weighticon, LV_OBJ_FLAG_HIDDEN);
     }
@@ -361,6 +369,8 @@ static void toastcolor_update_weight(void)
     if (s_weight_count <= 0 || !s_weight_opts) return;
 
     lv_label_set_text_fmt(tc->weight, "%d", s_weight_opts[s_weight_index]);
+    if (tc->weighticon)
+        lv_label_set_text(tc->weighticon, toastcolor_weight_unit_n(s_weight_opts[s_weight_index]));   /* 玉米英文 1 根 corn 其余 corns */
 }
 
 // 成熟度下划线:按当前成熟度字数择一(全熟2字→line2, 其余3字→line3)

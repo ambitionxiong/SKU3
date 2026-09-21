@@ -202,7 +202,7 @@ static void FAV_Six_Parse(const Fun_favorites_Value *fav, char *summary1, int s1
 		int w = fav->Six_KG;
 		if (w <= 0) w = 800;   /* 旧数据/异常兜底（与描述页一致） */
 		snprintf(summary1, s1_sz, "%s%d%s", tr("份量/种类："), w,
-		         (g_six_bread_type == SIX_VEG_CORN) ? tr("根") : "g");
+		         (g_six_bread_type == SIX_VEG_CORN) ? ((w == 1 && is_english()) ? "corn" : tr("根")) : "g");   /* 玉米英文 1 根 corn 其余 corns */
 		total = six_chick_cook_min(w);
 		*lines = 1;
 		*has_cook_time = 1;

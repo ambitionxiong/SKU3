@@ -932,6 +932,7 @@ int sixset2_cycle(int dir);             /* 编码器:按焦点切份量/程度 *
 void sixset2_press_focus(void);         /* PRESS:焦点推进(weight→maturity→next) */
 void toastcolor_set_weight_unit(const char *unit);   /* 份量单位(g/根),进入份量菜时设置 */
 const char *toastcolor_weight_unit(void);
+const char *toastcolor_weight_unit_n(int n);   /* 单位按数量单复数(玉米英文 1 根 corn 其余 corns) */
 void toastcolor_apply_corn_layout(void);   /* 玉米窄版排版(页面建好后调用) */
 extern int g_six_probe_temp;        /* 烤全鸡所选探针目标温度（浅75/中80/深85℃），默认中 */
 extern lv_group_t *g_probeneedtip;
