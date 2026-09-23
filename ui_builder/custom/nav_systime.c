@@ -11,9 +11,11 @@
 #include "protocol.h"
 #include "custom_defs.h"
 #include "nav_internal.h"
+#include "nav_idle.h"     /* nav_enter_standby:首次上电链路 OK 后进 waitmenu */
 #include "screen_SET.h"   /* 返回设置层后焦点定位 Time_Btn 用 */
 #ifndef LV_USE_AIC_SIMULATOR
 #include "sd8568.h"       /* 真机 RTC 写入（rt_err_t 接口） */
+#include "test_data.h"    /* config_save(首次上电链路完成标志立即落盘) */
 #endif
 
 typedef struct {
@@ -227,6 +229,18 @@ void encoder_systime_action(uint8_t key)
             SET_Data.Set_TimeType = (int8_t)s_timetype;
             uart_print();   /* 立即上报新状态帧(时制位) */
             nav_topflag_clock_force();   /* 右上角时制排版立即切换(不等 500ms tick) */
+            if (g_langpick_date_mode) {
+                /* 首次上电链路:语言+日期至此全部完成,完成标志在此刻才落盘
+                 * (此前断电 firstboot= 仍 0,重上电重新进设置),然后进 waitmenu 待机页 */
+                g_langpick_date_mode = 0;
+                g_langpick_done = 1;
+#ifndef LV_USE_AIC_SIMULATOR
+                config_save();   /* firstboot=1 立即落盘,不等 persist 线程 1s 轮询 */
+#endif
+                printf("[systime] firstboot setup done -> waitmenu\n");
+                nav_enter_standby();
+                return;
+            }
             page_pop();
             jump_to_screen_set();
             {   /* 焦点回到来源项"日期/时间"行 */
@@ -331,9 +345,14 @@ void jump_to_systime(void)
     }
     s_timetype = SET_Data.Set_TimeType;
 
-    screen_set_reset();          /* 清设置覆盖层对象/指针 */
-    depth--;                     /* 弹掉 PAGE_SCREEN_SET */
-    page_push(PAGE_SET_SYSTIME);
+    if (g_langpick_date_mode) {
+        /* 首次上电链路:语言页确认后进入,栈下无设置覆盖层可弹,直接入栈 */
+        page_push(PAGE_SET_SYSTIME);
+    } else {
+        screen_set_reset();          /* 清设置覆盖层对象/指针 */
+        depth--;                     /* 弹掉 PAGE_SCREEN_SET */
+        page_push(PAGE_SET_SYSTIME);
+    }
     lv_obj_clean(lv_scr_act());
 
     systime_page_t *scr = &s_st;
@@ -360,7 +379,7 @@ void jump_to_systime(void)
     /* Init scr->Yes_Btn */
     scr->Yes_Btn = lv_btn_create(scr->obj);
     lv_obj_t *Yes_Btn_label = lv_label_create(scr->Yes_Btn);
-    lv_label_set_text(Yes_Btn_label, tr("确 定"));
+    lv_label_set_text(Yes_Btn_label, g_langpick_date_mode ? "OK" : tr("确 定"));   /* 首次上电链路固定 OK(共享词条不动) */
     lv_obj_set_pos(scr->Yes_Btn, 975, 22);
     lv_obj_set_size(scr->Yes_Btn, 150, 70);
     lv_obj_set_style_bg_opa(scr->Yes_Btn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);

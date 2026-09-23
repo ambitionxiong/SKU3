@@ -75,6 +75,37 @@ void process_key(uint8_t key)
        解锁=长按旋钮3秒,由 nav_keyio 长按分支/hold_poll 处理,不经过这里 */
     if (nav_childlock_active()) return;
     if (g_send.iface_status == IFACE_SLEEP) return;
+    /* 首次上电设置链路:两页不能进链路外任何界面,走完进 waitmenu 才算进入系统。
+       两页都只放行编码器三键(滚动/确认);语言页 BACK/功能键全吞(BACK 不退编辑态,
+       滚轮呼吸不受影响),日期页另放行 BACK(回语言页,见 BACK 链 SYSTIME 臂)。
+       语言页守卫只认本页,日期页守卫只认 date_mode:正常设置入口零影响 */
+    if (depth > 0 && page_stack[depth - 1] == PAGE_LANG_PICK &&
+        key != KEY_ENCODER_CW && key != KEY_ENCODER_CCW && key != KEY_ENCODER_PRESS) {
+        g_send.buzzer_req = BUZZER_KEY_INVALID;
+        uart_print();
+        return;
+    }
+    if (depth > 0 && page_stack[depth - 1] == PAGE_SET_SYSTIME && g_langpick_date_mode &&
+        key != KEY_ENCODER_CW && key != KEY_ENCODER_CCW &&
+        key != KEY_ENCODER_PRESS && key != KEY_BACK) {
+        g_send.buzzer_req = BUZZER_KEY_INVALID;
+        uart_print();
+        return;
+    }
+    /* 首设未完成却停在待机页(设置页 5 分钟无操作被拽回/恢复出厂后):除关机外
+       任意键都改道回语言设置页——没走完设置就不算进入系统。KEY1 短按不拦
+       (一键完成测试钩子),长按开关机在 nav_keyio 状态机层不经此处;关机态
+       (IFACE_SLEEP)已在上方提前 return:关机 wait 页保持全键无反应 */
+    if (!g_langpick_done && depth > 0 && page_stack[depth - 1] == PAGE_WAITMENU_24 &&
+        (key == KEY_MENU || key == KEY_SIXMENU || key == KEY_PREHEAT ||
+         key == KEY_EXTRA_COLOR || key == KEY_FAV || key == KEY_CLEAN ||
+         key == KEY_SET || key == KEY_BACK ||
+         key == KEY_ENCODER_CW || key == KEY_ENCODER_CCW || key == KEY_ENCODER_PRESS)) {
+        g_send.buzzer_req = BUZZER_KEY_VALID;
+        langpick_enter_from_standby();
+        uart_print();
+        return;
+    }
     /* 重复收藏确认弹层:模态。PRESS=确认覆盖保存,BACK=取消回完成页,其余键忽略 */
     if (nav_favask_active()) {
         if (key == KEY_ENCODER_PRESS) nav_favask_confirm();
@@ -730,7 +761,11 @@ void process_key(uint8_t key)
                 count_down_back_action();   /* 计时器 BACK:回设置层(运行中后台继续) */
             }
             else if (cur == PAGE_SET_SYSTIME) {
-                systime_back_action();      /* 日期时间 BACK:不写 RTC 回设置层 */
+                if (g_langpick_date_mode) {
+                    langpick_reenter();   /* 首次上电链路:BACK 回语言设置页(链路内往返) */
+                } else {
+                    systime_back_action();  /* 日期时间 BACK:不写 RTC 回设置层 */
+                }
             }
             else if (cur == PAGE_FACTORY_RESET) {
                 factory_back_action();      /* 出厂设置 BACK:不复位回设置层 */
@@ -953,6 +988,13 @@ void process_key(uint8_t key)
             uart_print();
             break;
         }
+        /* 语言选择页(首次上电)无组焦点分流:按栈分流,须在 current_group 空守卫之前;
+         * 蜂鸣由 langpick_encoder_action 按端点/可动决定(stepset roller 同语义) */
+        if (depth > 0 && page_stack[depth - 1] == PAGE_LANG_PICK) {
+            langpick_encoder_action(KEY_ENCODER_CW);
+            uart_print();
+            break;
+        }
         if (!current_group) {
             g_send.buzzer_req = BUZZER_KEY_INVALID;
             uart_print();
@@ -1127,6 +1169,12 @@ void process_key(uint8_t key)
         /* 数值条页(按键音/亮度)无组:按栈分流,须在 current_group 空守卫之前 */
         if (depth > 0 && page_stack[depth - 1] == PAGE_SET_VAL) {
             set_val_encoder_action(KEY_ENCODER_CCW);
+            uart_print();
+            break;
+        }
+        /* 语言选择页(首次上电):按栈分流,蜂鸣由 langpick_encoder_action 决定 */
+        if (depth > 0 && page_stack[depth - 1] == PAGE_LANG_PICK) {
+            langpick_encoder_action(KEY_ENCODER_CCW);
             uart_print();
             break;
         }
@@ -1768,6 +1816,13 @@ void process_key(uint8_t key)
             uart_print();
             break;
         }
+        /* 语言选择页(首次上电)PRESS:确认语言+进主菜单 */
+        if (depth > 0 && page_stack[depth - 1] == PAGE_LANG_PICK) {
+            g_send.buzzer_req = BUZZER_KEY_VALID;
+            langpick_confirm();
+            uart_print();
+            break;
+        }
         if (!current_group) {
             g_send.buzzer_req = BUZZER_KEY_INVALID;
             break;
@@ -1859,6 +1914,28 @@ void process_key(uint8_t key)
         if (current_group == g_favorites) {
             g_send.buzzer_req = BUZZER_KEY_VALID;
             encoder_favorites_action(KEY_ENCODER_PRESS);   /* 收藏页：选中卡片/启动/删除 */
+            uart_print();
+            break;
+        }
+        /* updown 上/下加热 menu 页:右上角"下一步"按键已隐藏,编辑态按确认直接等同下一步 */
+        if (depth > 0 && (page_stack[depth - 1] == PAGE_UPDOWN_BBQ_MENU_TOP ||
+                          page_stack[depth - 1] == PAGE_UPDOWN_BBQ_MENU_LOW)) {
+            lv_obj_t *focused = lv_group_get_focused(current_group);
+            edit_field_t *ef = find_edit_field(focused);
+            if (ef && !nav_edit_session_active()) {
+                g_send.buzzer_req = BUZZER_KEY_VALID;
+                nav_edit_session_enter(focused);   /* 兜底:浏览态先进编辑(正常进页已是编辑态) */
+                printf("[nav] press -> edit\n");
+            } else if (ef) {
+                g_send.buzzer_req = BUZZER_KEY_VALID;
+                if (page_stack[depth - 1] == PAGE_UPDOWN_BBQ_MENU_TOP)
+                    on_updown_top_next_click(NULL);   /* 存温度+返回 set 页(原下一步按键动作) */
+                else
+                    on_updown_low_next_click(NULL);
+                printf("[nav] press -> updown next\n");
+            } else {
+                g_send.buzzer_req = BUZZER_KEY_INVALID;
+            }
             uart_print();
             break;
         }

@@ -435,9 +435,10 @@ void jump_to_updown_bbq_menu_top(void)
 
     updown_bbq_menu_top_t *menu = updown_bbq_menu_top_get(&ui_manager);
     if (menu) {
-        lv_obj_t *btns[] = { menu->temp, menu->next };
+        /* 右上角"下一步"按键已隐藏:组只剩温度一项,焦点进组后直接进编辑态 */
+        lv_obj_t *btns[] = { menu->temp };
         if (g_updown_bbq_menu_top) lv_group_del(g_updown_bbq_menu_top);
-        g_updown_bbq_menu_top = group_create_for_page(btns, 2);
+        g_updown_bbq_menu_top = group_create_for_page(btns, 1);
 
         edit_clear();
         edit_register_temp(menu->temp, menu->line2, menu->line3,
@@ -464,7 +465,8 @@ void jump_to_updown_bbq_menu_top(void)
             lv_obj_clear_flag(menu->dir3, LV_OBJ_FLAG_HIDDEN);
         }
 
-        lv_group_focus_obj(menu->next);
+        lv_group_focus_obj(menu->temp);
+        nav_edit_session_enter(menu->temp);   /* 进页直接编辑态:旋转即调值,确认=下一步 */
     }
     current_group = g_updown_bbq_menu_top;
 
@@ -486,9 +488,10 @@ void jump_to_updown_bbq_menu_low(void)
 
     updown_bbq_menu_low_t *menu = updown_bbq_menu_low_get(&ui_manager);
     if (menu) {
-        lv_obj_t *btns[] = { menu->temp, menu->next };
+        /* 右上角"下一步"按键已隐藏:组只剩温度一项,焦点进组后直接进编辑态 */
+        lv_obj_t *btns[] = { menu->temp };
         if (g_updown_bbq_menu_low) lv_group_del(g_updown_bbq_menu_low);
-        g_updown_bbq_menu_low = group_create_for_page(btns, 2);
+        g_updown_bbq_menu_low = group_create_for_page(btns, 1);
 
         edit_clear();
         edit_register_temp(menu->temp, menu->line2, menu->line3,
@@ -515,7 +518,8 @@ void jump_to_updown_bbq_menu_low(void)
             lv_obj_clear_flag(menu->dir3, LV_OBJ_FLAG_HIDDEN);
         }
 
-        lv_group_focus_obj(menu->next);
+        lv_group_focus_obj(menu->temp);
+        nav_edit_session_enter(menu->temp);   /* 进页直接编辑态:旋转即调值,确认=下一步 */
     }
     current_group = g_updown_bbq_menu_low;
 

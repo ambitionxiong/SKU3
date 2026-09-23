@@ -51,6 +51,7 @@ static void factory_reset_apply(void)
     SET_Data.Set_Language = 2;
     SET_Data.Set_Power = 1;
     SET_Data.Set_DemoMode = 0;
+    g_langpick_done = 0;   /* 恢复出厂后下次上电重新出现语言选择页 */
 
     /* 收藏双集合清空(普通+探针;Fav_Cur 停回普通集) */
     Fav_Cur = &Func_favorites_Value;

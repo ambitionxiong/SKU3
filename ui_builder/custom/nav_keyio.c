@@ -111,7 +111,11 @@ void nav_key1_long_press(void)
     } else {
         depth = 0;
         page_push(PAGE_WAITMENU_24);
-        if (is_probe_inserted()) {
+        if (!g_langpick_done) {
+            /* 首设未完成:唤醒/开机一律回语言设置页,不得进主菜单(设置链封闭,
+             * 与上电 nav_init !g_langpick_done 分支同语义) */
+            langpick_enter_from_standby();
+        } else if (is_probe_inserted()) {
             jump_to_major_menu_tz();
         } else {
             page_push(PAGE_MAJOR_MENU);
@@ -133,7 +137,7 @@ void nav_key1_long_press(void)
         lv_refr_now(NULL);
         nav_backlight_100_defer();
 #endif
-        printf("[KEY] KEY1 long press -> WAKE (major_menu)\n");
+        printf("[KEY] KEY1 long press -> WAKE (%s)\n", g_langpick_done ? "major_menu" : "langpick");
     }
 #ifdef LV_USE_AIC_SIMULATOR
     uart_print();

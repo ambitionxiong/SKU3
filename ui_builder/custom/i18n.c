@@ -521,7 +521,7 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "预热中...", "Preheating..." },
         { "预热中…", "Preheating" },
         { "预热完成", "Completed" },
-        { "预约中...", "Delayed..." },
+        { "预约中...", "Delayed Start..." },
         { "预约中…", "Delay" },
         { "预约中", "Delayed" },
         { "预约程序将在", "Cooking will start at" },

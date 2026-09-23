@@ -348,6 +348,10 @@ void lang_on_page_built(void)
 {
     if (depth <= 0) return;
 
+    /* 语言选择页:三项/标题为固定原文,任何语言下都不过翻译/字体树遍历
+     * ("简体中文"是 i18n 英文表词条键,遍历会把它改写成英译/繁体化) */
+    if (page_stack[depth - 1] == PAGE_LANG_PICK) return;
+
     if (is_english()) {
         /* 英文: 静态标签翻译 + 字体切换 + 排版微调 */
         lang_refresh_screen();

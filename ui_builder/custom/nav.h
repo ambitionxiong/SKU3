@@ -310,6 +310,7 @@ typedef enum {
     PAGE_FACTORY_RESET,     /* 出厂设置确认页（独立屏幕） */
     PAGE_ABOUT,             /* 关于机器页（独立屏幕，无按钮） */
     PAGE_ALARM,             /* 警报页（独立屏幕,吞全部键仅长按开关机） */
+    PAGE_LANG_PICK,         /* 首次上电语言选择页（独立屏幕,确认后进主菜单） */
 } page_id_t;
 
 extern page_id_t page_stack[];
@@ -538,6 +539,8 @@ void mode_apply_icon(lv_obj_t *icon);         // 按 g_send.cook_mode 设置模�
 void mode_set_apply_delay_label(lv_obj_t *ondelay_btn);  // 14 模式 set 页 ondelay 按钮文字
 void jump_to_updown_bbq_menu_probe(void);
 void jump_to_updown_bbq_set_probe(void);
+void on_updown_top_next_click(lv_event_t *e);   /* 上/下加热 menu 页"下一步"动作:存温度+返回 set 页(按键已隐藏,编码器确认直调) */
+void on_updown_low_next_click(lv_event_t *e);
 void jump_to_updown_bbq_cooking_probe(void);
 void jump_to_updown_bbq_cooking(void);
 void jump_to_updown_bbq_stop_probe(void);
@@ -696,6 +699,17 @@ void loudness_page_rebuild(void);
 void jump_to_set_val(uint8_t set_this);   /* 1=按键音音量 2=屏幕亮度 */
 void set_val_encoder_action(uint8_t key);
 void set_val_return_action(void);
+
+/* 首次上电语言选择页（nav_langpick.c 实现，PAGE_LANG_PICK） */
+extern uint8_t g_langpick_done;           /* 首次设置流程(语言+日期)已完成;日期页 OK 才置 1,SDK firstboot= 持久化 */
+extern uint8_t g_langpick_date_mode;      /* 首次上电链路:语言已确认进入日期页(RAM 态,断电即失) */
+void screen_Langpick_create(ui_manager_t *ui);
+lv_obj_t *screen_Langpick_obj(void);
+lv_group_t *langpick_page_group(void);
+void langpick_reenter(void);              /* 日期页 BACK 返回语言页(首次上电链路内往返) */
+void langpick_enter_from_standby(void);   /* 首设未完成:从待机页改道重进语言页(wait 页非关机键/KEY1 长按唤醒共用) */
+void langpick_encoder_action(char key);
+void langpick_confirm(void);
 
 /* 计时器子页（nav_count_down.c 实现，PAGE_SET_COUNT） */
 void jump_to_count_down(void);
