@@ -768,6 +768,13 @@ int nav_favask_active(void);
 int nav_favask_get_mode(void); /* 1 重复收藏确认 2 收藏夹已满(nav_hint.c) */
 void nav_favask_confirm(void); /* 确认(PRESS):覆盖保存/进删除界面(nav_favorites.c) */
 
+/* 关机确认弹层（topflag 顶层遮罩+tip1+sure,nav_hint.c 实现）
+ * 运行中单触电源键弹出:PRESS=结束运行并关机 BACK=取消继续运行 */
+void nav_poweroff_ask_show(void);
+void nav_poweroff_ask_cancel(void);   /* BACK 取消/关机·警报清理共用 */
+int  nav_poweroff_ask_active(void);
+void nav_poweroff_ask_confirm(void);  /* 确认(PRESS):收起+nav_power_off */
+
 /* 童锁（topflag 顶层弹窗级,nav_hint.c 实现） */
 void nav_childlock_set(int on);      /* 1=立即全屏锁定层 0=解锁(设置页童锁开关联动) */
 int  nav_childlock_active(void);     /* 锁定中:process_key 吞键+待机页强制显示 topflag */
@@ -1150,7 +1157,7 @@ void groups_create(void);
 void bind_events(void);
 void anim_bar_set_value(void *obj, int32_t v);
 void cooking_timer_cb(lv_timer_t *timer);
-void sim_force_cook_done(void);   /* 一键完成测试钩子(模拟器 C 键/实机电源键双击共用) */
+void sim_force_cook_done(void);   /* 一键完成测试钩子(模拟器 C 键;原实机电源键双击钩子随单触关机移除) */
 
 void jump_to_top_bbq_menu(void);
 void jump_to_top_bbq_set(void);

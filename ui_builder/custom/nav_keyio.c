@@ -5,9 +5,10 @@
  *   1. nav_handle_key：按键状态机（KEY_IDLE/KEY_PRESSED），
  *      首按触发 process_key，编码器长按按 ENC_REPEAT_MS 重复触发，
  *      松开回空闲。由底层按键回调(硬件/模拟器)逐次调用。
- *   2. nav_key1_long_press：KEY1 长按(2s)开关机——
- *      关机:清理全部运行状态→SLEEP 待机暗屏；开机:回主菜单(探针则探针主菜单)。
- *   3. nav_key1_hold_check：供外部周期查询 KEY1 是否已长按 2s。
+ *   2. KEY1 电源键:单触(松开沿)开关机——SLEEP 开机/运行中弹关机确认/其余直接
+ *      关机(nav_key1_short_press)；长按 3s=强制复位重启(nav_key1_long_press,
+ *      真机 rt_hw_cpu_reset,模拟器只打印)。
+ *   3. nav_key1_hold_check：供外部周期查询 KEY1 是否已长按 3s(模拟器轮询)。
  *
  * 状态变量(key_state/active_key/active_key_time)定义在 nav_key.c。
  */
@@ -15,6 +16,10 @@
 #include "nav.h"
 #include "nav_idle.h"
 #include "nav_internal.h"
+
+#define KEY1_LONG_PRESS_MS 3000   /* 电源键长按阈值:强制复位重启(维修用) */
+
+static uint8_t s_key1_long_fired = 0;   /* 本次按压长按已触发:释放沿不再触发单触动作 */
 
 /* 关机：清全部运行状态 → SLEEP 待机暗屏。
    KEY1 长按与待机页 20 分钟无操作超时(nav_idle)共用，行为完全一致 */
@@ -24,6 +29,8 @@ void nav_power_off(void)
     probetip_cancel_auto_dismiss();   /* 取消陈旧的探针提示自动关闭定时器,防止跨会话误触发 */
     screen_set_reset();               /* 覆盖层若打开:清理对象/组/焦点指针,防悬空 */
     count_down_poweroff_reset();      /* 计时器后台/超时状态一并清:防关机后到期自动退出拽屏 */
+    if (nav_favask_active()) nav_favask_cancel();   /* 收藏确认弹层随关机收起(标志残留会吞键) */
+    nav_poweroff_ask_cancel();        /* 关机确认弹层同款卫生 */
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
     g_on_stop_back = 0;
     g_complete_to_stop_back = 0;
@@ -102,45 +109,69 @@ void nav_backlight_100_defer(void)
 }
 #endif
 
-/* KEY1 长按(2s)：开关机。开机=回主菜单，关机=nav_power_off()。
-   唤醒分支不重复清理——SLEEP 进入前已清理，SLEEP 期间按键全部被吞，状态保持干净 */
+/* 开机(SLEEP 唤醒)：回主菜单/探针主菜单/首设语言页(原 KEY1 长按唤醒分支原样迁移)。
+   不重复清理——SLEEP 进入前已清理，SLEEP 期间按键全部被吞，状态保持干净 */
+static void nav_power_on(void)
+{
+    depth = 0;
+    page_push(PAGE_WAITMENU_24);
+    if (!g_langpick_done) {
+        /* 首设未完成:开机一律回语言设置页,不得进主菜单(设置链封闭,
+         * 与上电 nav_init !g_langpick_done 分支同语义) */
+        langpick_enter_from_standby();
+    } else if (is_probe_inserted()) {
+        jump_to_major_menu_tz();
+    } else {
+        page_push(PAGE_MAJOR_MENU);
+        lv_obj_clean(lv_scr_act());
+        major_menu_create(&ui_manager);
+        groups_create();
+        bind_events();
+        current_group = g_major_menu;
+        lang_scr_load_anim(major_menu_get(&ui_manager)->obj,
+                         LV_SCR_LOAD_ANIM_NONE, 0, 0, 0);
+    }
+    if (SET_Data.Set_Lock && !nav_childlock_active()) nav_childlock_set(1);   /* 关机前童锁开着:开机恢复锁层 */
+    g_send.buzzer_req = BUZZER_POWER_ON;
+    g_send.iface_status = IFACE_SETTING;
+#ifndef LV_USE_AIC_SIMULATOR
+    /* 先把新页整帧刷到面板、等翻转落屏后再抬背光(顺序:刷帧→延→抬),
+     * 避免抬亮照亮的是待机页旧帧 */
+    lv_obj_invalidate(lv_scr_act());
+    lv_refr_now(NULL);
+    nav_backlight_100_defer();
+#endif
+    printf("[KEY] power on -> %s\n", g_langpick_done ? "major_menu" : "langpick");
+}
+
+/* KEY1 单触(按下后 3s 内松开,松开沿生效,响应 0~0.25s)：
+   SLEEP=开机;运行中(烹饪/暂停/预约/完成+保温)=弹"结束当前任务并关机"确认;
+   其余(待机/菜单/设置/首设两页/警报页等)=直接关机 */
+static void nav_key1_short_press(void)
+{
+    if (g_send.iface_status == IFACE_SLEEP) {
+        nav_power_on();
+    } else if (nav_cook_session_active()) {
+        g_send.buzzer_req = BUZZER_KEY_VALID;
+        nav_poweroff_ask_show();
+    } else {
+        nav_power_off();
+    }
+    uart_print();
+}
+
+/* KEY1 长按 3s：强制复位重启(维修说明书场景:卡机强启;全页面统一含警报页)。
+ * 真机 rt_hw_cpu_reset()=看门狗复位,调用返回后约 1.2s 内重启(照抄 SDK
+ * test_ota.c 直调先例);模拟器无复位硬件,打印即止 */
 void nav_key1_long_press(void)
 {
-    if (g_send.iface_status != IFACE_SLEEP) {
-        nav_power_off();
-    } else {
-        depth = 0;
-        page_push(PAGE_WAITMENU_24);
-        if (!g_langpick_done) {
-            /* 首设未完成:唤醒/开机一律回语言设置页,不得进主菜单(设置链封闭,
-             * 与上电 nav_init !g_langpick_done 分支同语义) */
-            langpick_enter_from_standby();
-        } else if (is_probe_inserted()) {
-            jump_to_major_menu_tz();
-        } else {
-            page_push(PAGE_MAJOR_MENU);
-            lv_obj_clean(lv_scr_act());
-            major_menu_create(&ui_manager);
-            groups_create();
-            bind_events();
-            current_group = g_major_menu;
-            lang_scr_load_anim(major_menu_get(&ui_manager)->obj,
-                             LV_SCR_LOAD_ANIM_NONE, 0, 0, 0);
-        }
-        if (SET_Data.Set_Lock && !nav_childlock_active()) nav_childlock_set(1);   /* 关机前童锁开着:开机恢复锁层 */
-        g_send.buzzer_req = BUZZER_POWER_ON;
-        g_send.iface_status = IFACE_SETTING;
+    s_key1_long_fired = 1;   /* 本次按压已消费:释放沿不再触发单触动作 */
 #ifndef LV_USE_AIC_SIMULATOR
-        /* 先把新页整帧刷到面板、等翻转落屏后再抬背光(顺序:刷帧→延→抬),
-         * 避免抬亮照亮的是待机页旧帧 */
-        lv_obj_invalidate(lv_scr_act());
-        lv_refr_now(NULL);
-        nav_backlight_100_defer();
-#endif
-        printf("[KEY] KEY1 long press -> WAKE (%s)\n", g_langpick_done ? "major_menu" : "langpick");
-    }
-#ifdef LV_USE_AIC_SIMULATOR
-    uart_print();
+    extern void rt_hw_cpu_reset(void);   /* rthw.h:65 */
+    printf("[KEY] KEY1 long press %dms -> force reset\n", KEY1_LONG_PRESS_MS);
+    rt_hw_cpu_reset();
+#else
+    printf("[KEY] KEY1 long press %dms -> force reset (sim: no-op)\n", KEY1_LONG_PRESS_MS);
 #endif
 }
 /* 供外部周期调用：KEY1 按住已持续 2s 则触发长按并返回 1（用于长按防抖） */
@@ -148,7 +179,7 @@ uint8_t nav_key1_hold_check(void)
 {
     if (active_key == KEY1 && key_state == KEY_PRESSED) {
         uint32_t interval = lv_tick_get() - active_key_time;
-        if (interval >= 2000) {
+        if (interval >= KEY1_LONG_PRESS_MS) {
             active_key_time = lv_tick_get();
             nav_key1_long_press();
             return 1;
@@ -192,7 +223,14 @@ void nav_handle_key(uint8_t key)
             active_key = key;
             active_key_time = now;
             key_state = KEY_PRESSED;
-            process_key(key);
+            if (key == KEY1) {
+                /* 电源键不进 process_key 分发(按下沿不响、不受守卫拦截):
+                 * 单触动作挂释放沿,长按 3s 在同键分支/hold_check 触发 */
+                s_key1_long_fired = 0;   /* 新按压:清上次长按已消费标志 */
+                uart_data_receive[Receive_data_Touch_Key] = 0;   /* 消费键值(同 process_key 尾惯例) */
+            } else {
+                process_key(key);
+            }
         }
         break;
 
@@ -202,8 +240,11 @@ void nav_handle_key(uint8_t key)
 #ifdef LV_USE_AIC_SIMULATOR
             printf("[KEY] release\n");
 #endif
+            uint8_t released = active_key;
             key_state = KEY_IDLE;
             active_key = 0;
+            if (released == KEY1 && !s_key1_long_fired)
+                nav_key1_short_press();   /* 单触:按下后 3s 内松开即生效 */
         } else if (key == active_key) {
             // 同键按住
             uint32_t interval = now - active_key_time;
@@ -213,7 +254,7 @@ void nav_handle_key(uint8_t key)
                 active_key_time = now;
                 process_key(key);
             }
-            if (active_key == KEY1 && interval >= 2000) {
+            if (active_key == KEY1 && interval >= KEY1_LONG_PRESS_MS) {
                 active_key_time = now;
                 nav_key1_long_press();
             }
@@ -229,7 +270,12 @@ void nav_handle_key(uint8_t key)
             // 键值变化（如编码器方向切换）
             active_key = key;
             active_key_time = now;
-            process_key(key);
+            if (key == KEY1) {
+                s_key1_long_fired = 0;
+                uart_data_receive[Receive_data_Touch_Key] = 0;
+            } else {
+                process_key(key);
+            }
         }
         break;
     }

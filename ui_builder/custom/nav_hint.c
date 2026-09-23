@@ -7,6 +7,7 @@
 #include "nav.h"
 #include "protocol.h"
 #include "nav_internal.h"
+#include "nav_idle.h"     /* nav_power_off:关机确认弹层 PRESS 用 */
 
 /* ==============================
  * 烹饪中功能键无效提示
@@ -415,6 +416,76 @@ int nav_favask_active(void)
 int nav_favask_get_mode(void)
 {
     return g_favask_mode;
+}
+
+/* ==============================
+ * 关机确认弹层（topflag 顶层遮罩+tip1+tip2+sure,不自动消失）
+ * 运行中(烹饪/暂停/预约/完成+保温)单触电源键弹出
+ * (nav_keyio.c nav_key1_short_press):tip1="目前正在烹饪中，"
+ * tip2="停止烹饪并关机吗？"(设计稿两行) sure="关 机"
+ * PRESS=确认(nav_power_off 清全部运行状态落 SLEEP 待机)
+ * BACK=取消继续运行;其余键忽略(nav_key.c 模态守卫)。
+ * ============================== */
+static int g_pwroff_ask_active = 0;
+
+void nav_poweroff_ask_show(void)
+{
+    topflagpage_t *tf = topflagpage_get(&ui_manager);
+    if (!tf || !tf->obj || !tf->tip1 || !tf->sure) return;
+    nav_favtip_hide();                              /* 关掉可能存在的成功提示 */
+    if (nav_favask_active()) nav_favask_cancel();   /* 收藏确认弹层让位 */
+    lv_label_set_text(tf->tip1, tr("目前正在烹饪中，"));
+    if (tf->tip2) {
+        lv_label_set_text(tf->tip2, tr("停止烹饪并关机吗？"));
+        /* EN 第二行 27 字符 30 号 ≈380px 超生成宽 370:加宽到与 tip1 同宽同轴
+         * (中心 x≈1021 不变,中文居中显示零差异,favask 复用同控件不受影响) */
+        lv_obj_set_size(tf->tip2, 450, 36);
+        lv_obj_set_pos(tf->tip2, 796, 198);
+        lv_obj_clear_flag(tf->tip2, LV_OBJ_FLAG_HIDDEN);
+    }
+    {
+        lv_obj_t *lbl = lv_obj_get_child(tf->sure, 0);   /* 按钮文字随语言切换 */
+        if (lbl) lv_label_set_text(lbl, tr("关 机"));
+        lv_obj_add_state(tf->sure, LV_STATE_FOCUSED);    /* 常亮聚焦底图,提示可按 */
+    }
+    lv_obj_clear_flag(tf->tip1, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(tf->sure, LV_OBJ_FLAG_HIDDEN);
+    if (tf->container_1) lv_obj_clear_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);   /* 遮罩 */
+    nav_favtip_collect_hide();   /* 完成页+保温时 tip1 与右侧防烫组件同位,藏掉关闭时恢复 */
+    g_pwroff_ask_active = 1;
+    printf("[hint] poweroff ask show\n");
+}
+
+/* 关闭确认弹层(BACK 取消与关机/警报清理共用) */
+void nav_poweroff_ask_cancel(void)
+{
+    topflagpage_t *tf;
+    if (!g_pwroff_ask_active) return;
+    g_pwroff_ask_active = 0;
+    tf = topflagpage_get(&ui_manager);
+    if (!tf || !tf->obj) return;
+    if (tf->tip1) lv_obj_add_flag(tf->tip1, LV_OBJ_FLAG_HIDDEN);
+    if (tf->tip2) lv_obj_add_flag(tf->tip2, LV_OBJ_FLAG_HIDDEN);   /* 两行文案后 tip2 已显示,取消必须同藏 */
+    if (tf->sure) {
+        lv_obj_add_flag(tf->sure, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_state(tf->sure, LV_STATE_FOCUSED);
+    }
+    if (tf->container_1) lv_obj_add_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);
+    nav_favtip_restore_elems();
+    printf("[hint] poweroff ask cancel\n");
+}
+
+int nav_poweroff_ask_active(void)
+{
+    return g_pwroff_ask_active;
+}
+
+/* 确认:收起弹层并关机(nav_power_off 清全部运行状态+SLEEP 暗屏待机页) */
+void nav_poweroff_ask_confirm(void)
+{
+    nav_poweroff_ask_cancel();
+    nav_power_off();
+    uart_print();
 }
 
 /* ==============================

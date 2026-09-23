@@ -93,8 +93,8 @@ void process_key(uint8_t key)
         return;
     }
     /* 首设未完成却停在待机页(设置页 5 分钟无操作被拽回/恢复出厂后):除关机外
-       任意键都改道回语言设置页——没走完设置就不算进入系统。KEY1 短按不拦
-       (一键完成测试钩子),长按开关机在 nav_keyio 状态机层不经此处;关机态
+       任意键都改道回语言设置页——没走完设置就不算进入系统。KEY1 不经本分发
+       (nav_handle_key 状态机直处理:单触开关机/长按 3s 重启);关机态
        (IFACE_SLEEP)已在上方提前 return:关机 wait 页保持全键无反应 */
     if (!g_langpick_done && depth > 0 && page_stack[depth - 1] == PAGE_WAITMENU_24 &&
         (key == KEY_MENU || key == KEY_SIXMENU || key == KEY_PREHEAT ||
@@ -104,6 +104,13 @@ void process_key(uint8_t key)
         g_send.buzzer_req = BUZZER_KEY_VALID;
         langpick_enter_from_standby();
         uart_print();
+        return;
+    }
+    /* 关机确认弹层(运行中单触电源键弹出):模态。PRESS=确认结束运行并关机,
+       BACK=取消继续运行,其余键忽略 */
+    if (nav_poweroff_ask_active()) {
+        if (key == KEY_ENCODER_PRESS) nav_poweroff_ask_confirm();
+        else if (key == KEY_BACK) nav_poweroff_ask_cancel();
         return;
     }
     /* 重复收藏确认弹层:模态。PRESS=确认覆盖保存,BACK=取消回完成页,其余键忽略 */
@@ -120,10 +127,11 @@ void process_key(uint8_t key)
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         return;
     }
-    /* 无效提示弹窗/收藏结果提示:仅 BACK 有效(KEY_BACK 分支关闭弹窗);长按关机由
-       nav_handle_key 独立检测不受影响;其余键静默忽略,避免主动操作 */
-    /* 警报页:吞掉全部按键,仅 KEY1 长按开关机可用(长按在 nav_handle_key 状态机
-     * 里处理,不经本函数;电源板解除 BUF[12] 归 0 由 nav_alarm_tick_check 收页) */
+    /* 无效提示弹窗/收藏结果提示:仅 BACK 有效(KEY_BACK 分支关闭弹窗);电源键由
+       nav_handle_key 独立处理(单触关机/长按 3s 重启)不受影响;其余键静默忽略 */
+    /* 警报页:吞掉全部按键,仅电源键可用——单触关机/长按 3s 重启(均在
+     * nav_handle_key 状态机层处理,不经本函数;警报一旦触发只能电源键解除,
+     * BUF[12] 变化不收页,关机后同码不重弹) */
     if (depth > 0 && page_stack[depth - 1] == PAGE_ALARM) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         uart_print();
@@ -192,19 +200,8 @@ void process_key(uint8_t key)
     uart_data_receive[Receive_data_Touch_Key] = 0;
 
     switch (key) {
-    case KEY1: {            // 1: 开关机键:短按无操作;双击(600ms 内两次)=一键完成(测试钩子)
-        static uint32_t s_last_key1_click = 0;
-        uint32_t now = lv_tick_get();
-        if (now - s_last_key1_click < 600) {
-            s_last_key1_click = 0;
-            g_send.buzzer_req = BUZZER_KEY_VALID;   /* 成功=有效音;门开被内部改判无效音 */
-            sim_force_cook_done();   /* 非烹饪态静默忽略;走与真实到点相同的完成分发 */
-            uart_print();
-        } else {
-            s_last_key1_click = now;
-        }
-        break;
-    }
+    /* KEY1 已移出本分发(nav_handle_key 状态机直处理:单触开关机/长按 3s 重启);
+     * 原 600ms 双击一键完成测试钩子随单触关机上线移除(模拟器 C 键保留) */
     case KEY_MENU:          // 3: 进入主菜单
         if (g_send.iface_status == IFACE_COOKING) {
             g_send.buzzer_req = BUZZER_KEY_INVALID;

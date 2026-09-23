@@ -33,8 +33,9 @@ void nav_idle_touch(void)
 }
 
 /* 烹饪会话进行中(运行/暂停/预约/完成+保温未结束)。
-   与 screen_set 的运行态口径一致；完成态以保温流程收尾为准 */
-static int cook_session_active(void)
+   与 screen_set 的运行态口径一致；完成态以保温流程收尾为准。
+   导出给电源键单触复用("运行中弹关机确认"与空闲策略同口径) */
+int nav_cook_session_active(void)
 {
     if (g_send.iface_status == IFACE_COOKING ||
         g_send.iface_status == IFACE_PAUSE ||
@@ -121,7 +122,7 @@ static void nav_idle_timer_cb(lv_timer_t *t)
        覆盖层/子页上不刷新(规则1 的无操作 1 分钟回烹饪层照常累积)。
        完成态(IFACE_COMPLETE)一律不进闲时:完成页无限期停留,由用户手动离开 */
     if (g_send.iface_status == IFACE_COMPLETE ||
-        (cook_session_active() && !is_cook_above_page(top)))
+        (nav_cook_session_active() && !is_cook_above_page(top)))
         g_last_activity_ms = lv_tick_get();
 
     /* 规则3:待机页无操作 20 分钟关机 */
@@ -134,13 +135,13 @@ static void nav_idle_timer_cb(lv_timer_t *t)
 
     /* 规则2:非烹饪无操作 5 分钟进待机 */
     if (top != PAGE_WAITMENU_24 && g_send.iface_status != IFACE_SLEEP &&
-        !cook_session_active() && idle_s >= NAV_IDLE_TO_STANDBY_S) {
+        !nav_cook_session_active() && idle_s >= NAV_IDLE_TO_STANDBY_S) {
         nav_enter_standby();
         return;
     }
 
     /* 规则1:烹饪会话无操作 1 分钟逐层退出覆盖层/子页回烹饪层 */
-    if (cook_session_active() && idle_s >= NAV_IDLE_TO_COOKING_S &&
+    if (nav_cook_session_active() && idle_s >= NAV_IDLE_TO_COOKING_S &&
         is_cook_above_page(top)) {
         switch (top) {
         case PAGE_SCREEN_SET:

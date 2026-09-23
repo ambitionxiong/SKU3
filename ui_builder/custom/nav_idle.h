@@ -16,6 +16,8 @@ void nav_goto_major_menu(void); /* 栈重置为 [WAITMENU_24, MAJOR_MENU(_TZ)] �
                                    ——返回链终点统一入口(主菜单按 BACK 不再回待机页) */
 void nav_enter_standby(void);   /* 进待机页(waitmenu + IFACE_STANDBY),空闲 5 分钟等共用 */
 void nav_power_off(void);       /* 关机(清理运行状态+IFACE_SLEEP+暗屏待机),
-                                   KEY1 长按与待机 20 分钟超时共用 */
+                                   电源键单触与待机 20 分钟超时共用 */
+int  nav_cook_session_active(void);  /* 烹饪会话进行中(运行/暂停/预约/完成+保温未结束);
+                                   空闲策略与电源键"运行中弹关机确认"同口径 */
 
 #endif /*NAV_IDLE_H*/
