@@ -126,6 +126,17 @@ static void nav_idle_timer_cb(lv_timer_t *t)
     /* 警报页:空闲策略不生效(待机/关机都不允许拽走警报),仅长按开关机 */
     if (top == PAGE_ALARM) return;
 
+    /* 关机确认弹窗:无操作 1 分钟自动取消回烹饪层(2026-09-24)。
+     * 弹窗非页面,栈顶仍是烹饪层,下面的活动刷新会每秒重置闲时——
+     * 必须在其之前拦截并冻结活动时钟(弹窗期间任何按键 nav_idle_touch 重打点) */
+    if (nav_poweroff_ask_active()) {
+        if (idle_s >= NAV_IDLE_TO_COOKING_S) {
+            printf("[idle] poweroff ask no-op %ds -> cancel\n", NAV_IDLE_TO_COOKING_S);
+            nav_poweroff_ask_cancel();
+        }
+        return;
+    }
+
     /* 烹饪会话进行中且已坐在烹饪层:机器工作视为用户活动,持续刷新活动时钟——
        烹饪时长不计入闲时(修 30 分钟烹饪结束瞬间按累积闲时直接进待机的 bug),
        完成后 5 分钟待机倒计时从结束时刻重新起算;

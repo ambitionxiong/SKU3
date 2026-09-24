@@ -440,12 +440,24 @@ static uint8_t s_edit_browse = 0;                /* 0=编辑态 1=浏览模式 *
 static lv_obj_t *s_edit_extras[MAX_EDIT_EXTRAS]; /* 非 edit_register 体系可编辑对象登记表 */
 static int s_edit_extra_n = 0;
 
+/* 进页编辑/浏览默认(用户定稿):menu/setting 编辑字段族页面进页即浏览,
+ * 其余页面维持进页即编辑。edit_clear/nav_blink_forget 两处复位点统一走此,
+ * 按当前栈顶页面族判定(push 建页/pop 返回时栈顶即目标页) */
+static void edit_browse_reset(void)
+{
+    if (depth > 0 && (is_cook_setting_page(page_stack[depth - 1]) ||
+                      is_menu_edit_page(page_stack[depth - 1])))
+        s_edit_browse = 1;
+    else
+        s_edit_browse = 0;
+}
+
 /* 清空可编辑字段注册表（切页前调用，防止 find_edit_field 指针复用误判） */
 void edit_clear(void)
 {
     edit_count = 0;
     s_edit_extra_n = 0;
-    s_edit_browse = 0;   /* 新页面一律从编辑态开始(对象销毁前先复位,防悬空状态带过页) */
+    edit_browse_reset();   /* 族页面进浏览/其余进编辑(新页面从默认态开始,防悬空状态带过页) */
 }
 
 /* ==================== 温度显示单位（℉）====================
@@ -924,6 +936,25 @@ void validate_constraints(void)
         lv_label_set_text_fmt(min_field->label, min_field->fmt, set_min);
     }
 }
+
+/* 上限态分钟借位(用户定稿):小时==上限(分钟字段被钉 0..0)时,分钟位 CCW
+   → 59 分+小时减一,validate 后分钟恢复 0-59 正常循环;CW 仍无效保持。
+   返回 1=已借位(调用方给编码器音),0=不适用(调用方维持无效音) */
+int edit_minute_borrow(void)
+{
+    edit_field_t *min_ef = NULL, *hour_ef = NULL;
+    for (int i = 0; i < edit_count; i++) {
+        if (edit_fields[i].value == &set_min)  min_ef  = &edit_fields[i];
+        if (edit_fields[i].value == &set_hour) hour_ef = &edit_fields[i];
+    }
+    if (!min_ef || !hour_ef || set_hour <= 0) return 0;
+    set_hour -= 1;
+    set_min = 59;
+    lv_label_set_text_fmt(hour_ef->label, hour_ef->fmt, set_hour);
+    lv_label_set_text_fmt(min_ef->label, min_ef->fmt, set_min);
+    validate_constraints();   /* 小时不再==上限:分钟范围恢复 0..59 */
+    return 1;
+}
 // ==============================
 // 公共 helper
 // ==============================
@@ -1018,6 +1049,13 @@ void setup_set_temp_display(updown_bbq_set_t *set)
 // ==============================
 
 // 跳转子页前调用，记录"当前页"到栈顶
+/* menu/setting 编辑字段族页面进页默认浏览态(用户定稿):push/pop 落栈后调用,
+ * 与两处复位点(edit_clear/nav_blink_forget)的 edit_browse_reset 同口径 */
+void nav_edit_browse_family_default(void)
+{
+    edit_browse_reset();
+}
+
 void page_push(page_id_t id)
 {
     nav_blink_forget();   /* 旧页对象即将销毁:先遗忘闪烁组(防悬空,详见函数注释) */
@@ -1028,6 +1066,7 @@ void page_push(page_id_t id)
         printf("[nav] ERROR: page_stack overflow! depth=%d id=%d\n", depth, id);
     }
     topflag_update_visibility();
+    nav_edit_browse_family_default();   /* menu/setting 编辑字段族:进页落浏览态 */
 }
 
 // ==============================
@@ -1166,8 +1205,8 @@ void nav_blink_forget(void)
     s_blink_n = 0;
     s_blink_group_n = 0;
     s_edit_extra_n = 0;   /* 页面对象销毁路径:extras 登记表随之清空(防悬空指针复用误判) */
-    s_edit_browse = 0;    /* 页面入口统一复位编辑态——sixset2/toastcolor 等不走
-                             edit_clear 的页面也能从浏览模式残留中恢复 */
+    edit_browse_reset();  /* 页面入口统一复位——sixset2/toastcolor 等不走 edit_clear 的
+                             页面也能从残留中恢复;menu/setting 族按族落浏览 */
 }
 
 static void blink_stop(void)

@@ -433,6 +433,9 @@ void nav_poweroff_ask_show(void)
     topflagpage_t *tf = topflagpage_get(&ui_manager);
     if (!tf || !tf->obj || !tf->tip1 || !tf->sure) return;
     nav_favtip_hide();                              /* 关掉可能存在的成功提示 */
+    /* 无效提示让位(2026-09-24):电源键不受无效提示期间吞键守卫影响仍能到这,
+     * 其 3s 定时器到点会藏 tip1+遮罩、恢复其藏的组件,把本弹窗拆散 */
+    if (nav_hint_active()) nav_hint_cancel();
     if (nav_favask_active()) nav_favask_cancel();   /* 收藏确认弹层让位 */
     /* 弹窗文案按状态对应(2026-09-23):预约看 buf3,保温看 buf4(保温模式)/完成页自动保温 */
     {
@@ -450,6 +453,12 @@ void nav_poweroff_ask_show(void)
             l2 = "停止保温并关机吗？";
         }
         lv_label_set_text(tf->tip1, tr(l1));
+        /* tip1 几何显式复位(2026-09-24):无效提示的 EN 调优 topflagpage_lang_tune
+         * 把 tip1 改 275 宽+高自适应后跨弹窗残留,EN 首行 ≈324px 在 275 内折成两行,
+         * 第二行 y≈198 正压 tip2 叠字;恢复生成默认 450x36@(797,161) 单行居中
+         * (与 tip2 同轴中心 x≈1022,中文零差异;无效提示每次显示会重新 tune 不受影响) */
+        lv_obj_set_size(tf->tip1, 450, 36);
+        lv_obj_set_pos(tf->tip1, 797, 161);
         if (tf->tip2) {
             lv_label_set_text(tf->tip2, tr(l2));
             /* EN 第二行 27 字符 30 号 ≈380px 超生成宽 370:加宽到与 tip1 同宽同轴

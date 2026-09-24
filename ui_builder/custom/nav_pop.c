@@ -51,6 +51,7 @@ void page_pop(void)
 
     /* 页面栈变化后立即刷新 topflag 显隐（等值栈顶已是目标页） */
     topflag_update_visibility();
+    nav_edit_browse_family_default();   /* 返回 menu/setting 编辑字段族:落浏览态(用户定稿) */
 
     /* 从 stop_back 确认页退出时清除暂停确认状态（防止残留导致 cooking 定时器走错分支） */
     if (g_on_stop_back) {

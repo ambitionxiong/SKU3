@@ -50,6 +50,30 @@ int is_cook_setting_page(page_id_t cur)
     }
 }
 
+/* 是否为各模式 MENU 菜单设置页(模式入口 Temp/CookTime/Next 编辑字段页,含探针
+ * 变体与预热/额外上色菜单;单字段 updown menu_top/low 不在列——它们保持进页即编辑)。
+ * 与 SETTING 族同用通用编辑字段管线:进页即浏览(用户定稿,nav_core push/pop 族检查) */
+int is_menu_edit_page(page_id_t cur)
+{
+    switch (cur) {
+    case PAGE_UPDOWN_BBQ_MENU: case PAGE_PREHEAT_MENU: case PAGE_COLOR_MENU:
+    case PAGE_COOKIE_MENU: case PAGE_WEST_MENU: case PAGE_PIZZA_MENU:
+    case PAGE_MENU_COOK_MENU: case PAGE_AIR_MENU:
+    case PAGE_UPDOWN_BBQ_MENU_PROBE: case PAGE_HOT_BBQ_MENU_PROBE:
+    case PAGE_BOTTOM_BBQ_MENU_PROBE: case PAGE_SLOWCOOK_MENU_PROBE:
+    case PAGE_TOP_BBQ_MENU: case PAGE_BOTTOM_BBQ_MENU: case PAGE_HOT_BBQ_MENU:
+    case PAGE_HOTWIND_BBQ_MENU: case PAGE_SAVE_BBQ_MENU: case PAGE_CENTRAL_BBQ_MENU:
+    case PAGE_WINDCHANGE_BBQ_MENU: case PAGE_PIZZA_2_MENU: case PAGE_SLOWCOOK_MENU:
+    case PAGE_UNFROZEN_MENU: case PAGE_RISING_MENU: case PAGE_CORN_MENU:
+    case PAGE_HEATCONTAIN_MENU: case PAGE_LASAGNA_MENU: case PAGE_STRUDEL_MENU:
+    case PAGE_BREAD_MENU: case PAGE_PIZZA3_MENU: case PAGE_CHIP_MENU:
+    case PAGE_CUSTOM_MENU:
+        return 1;
+    default:
+        return 0;
+    }
+}
+
 /* 是否停在完成页(nav.h 全部 35 个 *_COMPLETE 家族页面,与 KEY_BACK 链全集一致):
  * 完成页按键直通用——BACK 不再经 stop_back 确认页,功能键白名单放行 */
 static int nav_on_complete_page(void)
@@ -373,7 +397,7 @@ void process_key(uint8_t key)
             }
         }
         if (g_send.iface_status == IFACE_COMPLETE) {
-            /* 完成状态：特定模式完成页可再次上色（进 extra_color 确认页） */
+            /* 完成状态：特定模式完成页可再次上色（直接开始上色，不进确认页） */
             if (depth > 0 && page_stack[depth - 1] == PAGE_EXTRA_COLOR) {
                 /* 已在 extra_color 确认页，防重复入栈 */
                 g_send.buzzer_req = BUZZER_KEY_INVALID;
@@ -391,26 +415,11 @@ void process_key(uint8_t key)
             g_send.buzzer_req = BUZZER_KEY_VALID;
             g_color_from_probe = is_probe_inserted();   /* 记录进入时的探针状态 */
             cook_elapsed_saved = 0; cook_bar_saved = 0;  /* 新一轮上色，清旧会话保存值 */
-            page_push(PAGE_EXTRA_COLOR);
-            lv_obj_clean(lv_scr_act());
-            extra_color_create(&ui_manager);
-        {
-            extra_color_t *ec = extra_color_get(&ui_manager);
-            if (ec) {
-                lv_obj_t *btns[] = { ec->start_button };
-                if (g_extra_color) lv_group_del(g_extra_color);
-                g_extra_color = group_create_for_page(btns, 1);
-                lv_obj_add_event_cb(ec->start_button, on_color_start_click,
-                                    LV_EVENT_CLICKED, NULL);
-            }
-            current_group = g_extra_color;
-        }
-        lang_scr_load_anim(extra_color_get(&ui_manager)->obj,
-                         LV_SCR_LOAD_ANIM_NONE, 0, 0,
-                         ui_manager.auto_del);
-        printf("[nav] jump: -> extra_color\n");
-        uart_print();
-        break;
+            /* 完成页直接开始上色,不再进 extra_color 确认页(门开由
+               jump_to_color_cookoing 内部拦截:置无效音,留在完成页) */
+            jump_to_color_cookoing();
+            uart_print();
+            break;
         }
         /* 非完成状态:重置栈式功能键入口(与其他功能键一致,返回回待机页;不拦截探针) */
         if (depth > 0) {
@@ -1453,7 +1462,13 @@ void process_key(uint8_t key)
         g_send.buzzer_req = BUZZER_ENCODER;
         if (ef && nav_edit_session_active()) {
             if (ef->min == ef->max) {
-                g_send.buzzer_req = BUZZER_KEY_INVALID;
+                if (edit_minute_borrow()) {
+                    /* 上限态分钟借位(用户定稿):59 分+小时减一,此后分钟 0-59 正常循环 */
+                    g_send.buzzer_req = BUZZER_ENCODER;
+                    printf("[nav] adjust -: borrow to %dh %02dm\n", set_hour, set_min);
+                } else {
+                    g_send.buzzer_req = BUZZER_KEY_INVALID;
+                }
             } else {
                 g_send.buzzer_req = BUZZER_ENCODER;
                 adjust_value(ef, -1);
@@ -2092,8 +2107,9 @@ void process_key(uint8_t key)
             printf("[nav] press -> edit\n");
         } else if (ef) {
             g_send.buzzer_req = BUZZER_KEY_VALID;
-            lv_group_focus_next(current_group);   /* 编辑中:确认切下一焦点 */
-            printf("[nav] press -> next focus\n");
+            nav_edit_session_exit();   /* 编辑完成确定:提交数值+回浏览(停闪常亮) */
+            lv_group_focus_next(current_group);   /* 焦点移到下一个(下一字段/Next·OK 按钮) */
+            printf("[nav] press -> commit, next focus\n");
         } else if (focused) {
             g_send.buzzer_req = BUZZER_KEY_VALID;
             lv_obj_send_event(focused, LV_EVENT_CLICKED, NULL);

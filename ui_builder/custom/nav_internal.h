@@ -64,6 +64,8 @@ extern int custom_setting_saved_hour, custom_setting_saved_min;
 
 // ===== 跨文件函数声明(去 static, 原 nav.c 内部函数) =====
 void adjust_value(edit_field_t *f, int delta);
+int edit_minute_borrow(void);   /* 上限态分钟借位:59 分+小时减一(分钟恢复 0-59 循环);不适用返回 0 */
+void nav_edit_browse_family_default(void);   /* menu/setting 族页面 push/pop 后落浏览态 */
 void anim_bar_set_value(void *obj, int32_t v);
 void apply_toggle_state(lv_obj_t *btn_off, lv_obj_t *btn_on, int on);
 void bind_events(void);
