@@ -34,7 +34,7 @@ void nav_idle_touch(void)
 
 /* 烹饪会话进行中(运行/暂停/预约/完成+保温未结束)。
    与 screen_set 的运行态口径一致；完成态以保温流程收尾为准。
-   导出给电源键单触复用("运行中弹关机确认"与空闲策略同口径) */
+   空闲策略口径(电源键弹确认用 nav_poweroff_ask_needed,完成页不弹) */
 int nav_cook_session_active(void)
 {
     if (g_send.iface_status == IFACE_COOKING ||
@@ -44,6 +44,16 @@ int nav_cook_session_active(void)
     if (g_send.iface_status == IFACE_COMPLETE && (cook_timer != NULL || g_keepwarm_active))
         return 1;
     return 0;
+}
+
+/* 电源键单触是否弹关机确认(2026-09-23 完成页直通):
+ * 完成态仅保温中仍弹(弹窗文案"保温中"),纯完成/完成倒计时直接关机;
+ * 其余状态与空闲策略同口径 */
+int nav_poweroff_ask_needed(void)
+{
+    if (g_send.iface_status == IFACE_COMPLETE)
+        return g_keepwarm_active ? 1 : 0;
+    return nav_cook_session_active();
 }
 
 /* 烹饪会话中可出现在烹饪层之上的页面：设置覆盖层/其子页/各模式 SETTING 小按钮页。

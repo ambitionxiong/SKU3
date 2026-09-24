@@ -8,7 +8,7 @@
  *      （主菜单/清洁/快速预热/额外上色/第六感/设置页/BACK/编码器/确认）
  *
  * 按键状态机(key_state/active_key/active_key_time)定义于此，
- * 由 nav_keyio.c 的 nav_handle_key 驱动、nav_key1_long_press 处理长按。
+ * 由 nav_keyio.c 的 nav_handle_key 驱动、nav_key1_hold_trigger 处理电源键按住 0.25s。
  *
  * 注意：process_key 不做输入防抖（那是 nav_keyio.c 的职责），
  *   仅按"当前键 + 当前页面状态"决定有效动作与蜂鸣器反馈。
@@ -50,6 +50,100 @@ int is_cook_setting_page(page_id_t cur)
     }
 }
 
+/* 是否停在完成页(nav.h 全部 35 个 *_COMPLETE 家族页面,与 KEY_BACK 链全集一致):
+ * 完成页按键直通用——BACK 不再经 stop_back 确认页,功能键白名单放行 */
+static int nav_on_complete_page(void)
+{
+    if (depth <= 0 || g_send.iface_status != IFACE_COMPLETE)
+        return 0;
+    switch (page_stack[depth - 1]) {
+    case PAGE_PREHEAT_COMPLETE:
+    case PAGE_COOKIE_COMPLETE:
+    case PAGE_WEST_COMPLETE:
+    case PAGE_PIZZA_COMPLETE:
+    case PAGE_MENU_COOK_COMPLETE:
+    case PAGE_AIR_COMPLETE:
+    case PAGE_UPDOWN_BBQ_COMPLETE:
+    case PAGE_UPDOWN_BBQ_COMPLETE_PROBE:
+    case PAGE_HOT_BBQ_COMPLETE_PROBE:
+    case PAGE_BOTTOM_BBQ_COMPLETE_PROBE:
+    case PAGE_SLOWCOOK_COMPLETE_PROBE:
+    case PAGE_COLOR_COOKING_COMPLETE:
+    case PAGE_TOP_BBQ_COMPLETE:
+    case PAGE_BOTTOM_BBQ_COMPLETE:
+    case PAGE_HOT_BBQ_COMPLETE:
+    case PAGE_HOTWIND_BBQ_COMPLETE:
+    case PAGE_SAVE_BBQ_COMPLETE:
+    case PAGE_CENTRAL_BBQ_COMPLETE:
+    case PAGE_WINDCHANGE_BBQ_COMPLETE:
+    case PAGE_PIZZA_2_COMPLETE:
+    case PAGE_SLOWCOOK_COMPLETE:
+    case PAGE_UNFROZEN_COMPLETE:
+    case PAGE_RISING_COMPLETE:
+    case PAGE_CORN_COMPLETE:
+    case PAGE_HEATCONTAIN_COMPLETE:
+    case PAGE_LASAGNA_COMPLETE:
+    case PAGE_STRUDEL_COMPLETE:
+    case PAGE_BREAD_COMPLETE:
+    case PAGE_PIZZA3_COMPLETE:
+    case PAGE_CHIP_COMPLETE:
+    case PAGE_CUSTOM_COMPLETE:
+    case PAGE_WATER_CLEAN_COMPLETE:
+    case PAGE_HOTCLEANSAVE_COMPLETE:
+    case PAGE_HOTCLEANMIDDLE_COMPLETE:
+    case PAGE_HOTCLEANHIGH_COMPLETE:
+    /* 原地完成页(单页五态,完成不跳转):上方 IFACE_COMPLETE 状态位是
+     * "完成"区别于同页"烹饪/暂停"的唯一判据——第六感烹饪 nav_six_cook.c、
+     * 多步烹饪 nav_somecook_cooking.c、烤全鸡 nav_six_chicken.c */
+    case PAGE_SIX_COOKING:
+    case PAGE_SOMECOOK_COOKING:
+    case PAGE_CHICKENCOOKING:
+        return 1;
+    default:
+        return 0;
+    }
+}
+
+/* 完成态清理:杀计时器/清保温与 stop_back 标志组,栈重置为 [WAITMENU_24]。
+ * BACK 分流(回主菜单/清洁菜单/六感菜单)共用的前置清理 */
+static void nav_complete_cleanup(void)
+{
+    if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
+    g_on_stop_back = 0;
+    g_complete_to_stop_back = 0;
+    g_cooling_to_stop_back = 0;
+    g_extra_color_to_stop_back = 0;
+    g_keepwarm_active = 0;
+    cook_is_color = 0;
+    g_stop_back_complete = NULL;
+    depth = 0;
+    page_push(PAGE_WAITMENU_24);
+}
+
+/* 完成页 BACK 直回主菜单(KEY_MENU 完成路径同款;清洁/六感由守卫分流到各自菜单) */
+static void nav_complete_back_to_main(void)
+{
+    nav_complete_cleanup();
+    if (is_probe_inserted()) {
+        jump_to_major_menu_tz();
+    } else {
+        page_push(PAGE_MAJOR_MENU);
+        lv_obj_clean(lv_scr_act());
+        major_menu_create(&ui_manager);
+        groups_create();
+        bind_events();
+        current_group = g_major_menu;
+        lang_scr_load_anim(major_menu_get(&ui_manager)->obj,
+                         LV_SCR_LOAD_ANIM_NONE, 0, 0,
+                         ui_manager.auto_del);
+    }
+    g_send.iface_status = IFACE_SETTING;
+    g_send.cook_mode = MODE_NONE;
+    g_send.set_temp = 0;
+    g_send.set_temp_lower = 0;
+    g_send.remaining_ms = -1;
+}
+
 static int menu_clean_key_allowed(void)
 {
     /* 2026-08-30:以运行状态取代页面白名单——待机/设置浏览态(IFACE_STANDBY/
@@ -57,12 +151,16 @@ static int menu_clean_key_allowed(void)
      * 预约态(IFACE_DELAY_RESERVE,含预约等待页)功能键保持无效音,完成态的收藏
      * 保存/再次上色由各 case 自身逻辑先行处理。
      * 例外:各模式 SETTING 页(烹饪中/完成后小按钮进入)属 cooking 家族,
-     * 显式排除,功能键无效音 */
+     * 显式排除,功能键无效音。
+     * 2026-09-23:完成页例外——nav_on_complete_page() 时功能键放行直跳,
+     * 各 case 放行路径自带完整清理(删 cook_timer/清保温与 stop_back 标志) */
     if (depth <= 0) return 0;
     if (page_stack[depth - 1] == PAGE_DELAYCOOKING)   /* 预约等待(DELAY_RESERVE 态,防御性排除) */
         return 0;
     if (is_cook_setting_page(page_stack[depth - 1]))
         return 0;
+    if (nav_on_complete_page())
+        return 1;
     return (g_send.iface_status == IFACE_SETTING || g_send.iface_status == IFACE_STANDBY ||
             g_send.iface_status == IFACE_VERSION_QUERY);   /* 关于机器页(版本查询态)功能键照常可用 */
 }
@@ -75,34 +173,43 @@ void process_key(uint8_t key)
        解锁=长按旋钮3秒,由 nav_keyio 长按分支/hold_poll 处理,不经过这里 */
     if (nav_childlock_active()) return;
     if (g_send.iface_status == IFACE_SLEEP) return;
-    /* 首次上电设置链路:两页不能进链路外任何界面,走完进 waitmenu 才算进入系统。
-       两页都只放行编码器三键(滚动/确认);语言页 BACK/功能键全吞(BACK 不退编辑态,
-       滚轮呼吸不受影响),日期页另放行 BACK(回语言页,见 BACK 链 SYSTIME 臂)。
-       语言页守卫只认本页,日期页守卫只认 date_mode:正常设置入口零影响 */
+    /* 首次上电设置链路/断电重启开机日期页:不能进链路外任何界面,走完进
+       waitmenu 才算进入系统。只放行编码器三键(滚动/确认);语言页 BACK/功能键
+       全吞(BACK 不退编辑态,滚轮呼吸不受影响),日期页另放行 BACK(首设回语言页,
+       开机页在 BACK 链 SYSTIME 臂吞掉只给错误音)。
+       语言页守卫只认本页,日期页守卫认 date_mode 或 boot_mode:正常设置入口零影响 */
     if (depth > 0 && page_stack[depth - 1] == PAGE_LANG_PICK &&
         key != KEY_ENCODER_CW && key != KEY_ENCODER_CCW && key != KEY_ENCODER_PRESS) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         uart_print();
         return;
     }
-    if (depth > 0 && page_stack[depth - 1] == PAGE_SET_SYSTIME && g_langpick_date_mode &&
+    if (depth > 0 && page_stack[depth - 1] == PAGE_SET_SYSTIME &&
+        (g_langpick_date_mode || g_systime_boot_mode) &&
         key != KEY_ENCODER_CW && key != KEY_ENCODER_CCW &&
         key != KEY_ENCODER_PRESS && key != KEY_BACK) {
         g_send.buzzer_req = BUZZER_KEY_INVALID;
         uart_print();
         return;
     }
-    /* 首设未完成却停在待机页(设置页 5 分钟无操作被拽回/恢复出厂后):除关机外
-       任意键都改道回语言设置页——没走完设置就不算进入系统。KEY1 不经本分发
-       (nav_handle_key 状态机直处理:单触开关机/长按 3s 重启);关机态
+    /* 首设未完成/断电重启日期页没设完却停在待机页(设置页 5 分钟无操作被拽回/
+       恢复出厂后/开机日期页空闲拽回):任意键改道回对应设置页——没走完设置就
+       不算进入系统。两标志都清零(已走完)时整个守卫跳过,按键正常路由。
+       KEY1 不经本分发(nav_handle_key 状态机直处理:按住 0.25s 开关机);关机态
        (IFACE_SLEEP)已在上方提前 return:关机 wait 页保持全键无反应 */
-    if (!g_langpick_done && depth > 0 && page_stack[depth - 1] == PAGE_WAITMENU_24 &&
+    if ((!g_langpick_done || g_systime_boot_mode) && depth > 0 &&
+        page_stack[depth - 1] == PAGE_WAITMENU_24 &&
         (key == KEY_MENU || key == KEY_SIXMENU || key == KEY_PREHEAT ||
          key == KEY_EXTRA_COLOR || key == KEY_FAV || key == KEY_CLEAN ||
          key == KEY_SET || key == KEY_BACK ||
          key == KEY_ENCODER_CW || key == KEY_ENCODER_CCW || key == KEY_ENCODER_PRESS)) {
-        g_send.buzzer_req = BUZZER_KEY_VALID;
-        langpick_enter_from_standby();
+        if (!g_langpick_done) {
+            g_send.buzzer_req = BUZZER_KEY_VALID;
+            langpick_enter_from_standby();
+        } else {
+            g_send.buzzer_req = BUZZER_KEY_VALID;
+            systime_enter_boot_mode();
+        }
         uart_print();
         return;
     }
@@ -510,10 +617,16 @@ void process_key(uint8_t key)
                 cur == PAGE_DUCK6MENU || cur == PAGE_VEGETABLEMENU ||
                 cur == PAGE_SIXMENUTZ || cur == PAGE_CHICKMENUTZ ||
                 cur == PAGE_RISINGPAGE || cur == PAGE_DESCRIPTIONMENU ||
-                cur == PAGE_SIX_COOKING || cur == PAGE_TOASTCOLOR) {
+                cur == PAGE_TOASTCOLOR) {
                 g_send.buzzer_req = BUZZER_KEY_INVALID;   /* 防重入 */
-                /* 六感运行页(非遮罩确认态):与烹饪中行为一致,弹无效提示 */
-                if (cur == PAGE_SIX_COOKING && g_send.iface_status == IFACE_COOKING)
+                uart_print();
+                break;
+            }
+            if (cur == PAGE_SIX_COOKING && g_send.iface_status != IFACE_COMPLETE) {
+                /* 六感烹饪/暂停防重入:烹饪中保持"与烹饪中一致弹无效提示";
+                 * 完成态不再拦(原地完成,2026-09-23 六感完成功能键可直跳) */
+                g_send.buzzer_req = BUZZER_KEY_INVALID;
+                if (g_send.iface_status == IFACE_COOKING)
                     nav_show_invalid_hint();
                 uart_print();
                 break;
@@ -596,6 +709,37 @@ void process_key(uint8_t key)
         g_send.buzzer_req = BUZZER_KEY_VALID;
         {
             page_id_t cur = page_stack[depth - 1];
+            /* 完成页 BACK:清洁/六感回各自菜单,其余直回主菜单(跳过 stop_back,2026-09-23)。
+             * 下方链内 *_COMPLETE 分支保留作兜底(由本守卫预占不再触达);
+             * preheat 完成 cook_mode==MODE_PREHEAT 走 preheat_complete_exit,仍在链内分支 */
+            if (nav_on_complete_page() &&
+                !(cur == PAGE_PREHEAT_COMPLETE && g_send.cook_mode == MODE_PREHEAT)) {
+                switch (cur) {
+                case PAGE_WATER_CLEAN_COMPLETE: case PAGE_HOTCLEANSAVE_COMPLETE:
+                case PAGE_HOTCLEANMIDDLE_COMPLETE: case PAGE_HOTCLEANHIGH_COMPLETE:
+                    nav_complete_cleanup();
+                    jump_to_clean_menu();   /* 自带建页+IFACE_SETTING/协议复位 */
+                    break;
+                case PAGE_SIX_COOKING:
+                case PAGE_CHICKENCOOKING:   /* 六感家族(非探针菜/探针菜):回六感菜单 */
+                    nav_complete_cleanup();
+                    if (is_probe_inserted())
+                        jump_to_sixmenutz();
+                    else
+                        jump_to_sixmenu();
+                    g_send.iface_status = IFACE_SETTING;
+                    g_send.cook_mode = MODE_NONE;
+                    g_send.set_temp = 0;
+                    g_send.set_temp_lower = 0;
+                    g_send.remaining_ms = -1;
+                    break;
+                default:
+                    nav_complete_back_to_main();
+                    break;
+                }
+                uart_print();
+                break;
+            }
             if (depth == 2 && page_stack[0] == PAGE_WAITMENU_24 &&
                 (cur == PAGE_MAJOR_MENU || cur == PAGE_MAJOR_MENU_TZ)) {
                 /* 主菜单 BACK 无效:返回链终点=主菜单,待机页只能由关机/空闲 5 分钟进入 */
@@ -760,6 +904,10 @@ void process_key(uint8_t key)
             else if (cur == PAGE_SET_SYSTIME) {
                 if (g_langpick_date_mode) {
                     langpick_reenter();   /* 首次上电链路:BACK 回语言设置页(链路内往返) */
+                } else if (g_systime_boot_mode) {
+                    /* 断电重启开机日期页:BACK 不放行(时间必须设完;编辑态 BACK
+                       已由通用编辑守卫接管退编辑,走不到这里)。错误音由链尾统一上报 */
+                    g_send.buzzer_req = BUZZER_KEY_INVALID;
                 } else {
                     systime_back_action();  /* 日期时间 BACK:不写 RTC 回设置层 */
                 }

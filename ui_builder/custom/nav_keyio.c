@@ -5,10 +5,10 @@
  *   1. nav_handle_key：按键状态机（KEY_IDLE/KEY_PRESSED），
  *      首按触发 process_key，编码器长按按 ENC_REPEAT_MS 重复触发，
  *      松开回空闲。由底层按键回调(硬件/模拟器)逐次调用。
- *   2. KEY1 电源键:单触(松开沿)开关机——SLEEP 开机/运行中弹关机确认/其余直接
- *      关机(nav_key1_short_press)；长按 3s=强制复位重启(nav_key1_long_press,
- *      真机 rt_hw_cpu_reset,模拟器只打印)。
- *   3. nav_key1_hold_check：供外部周期查询 KEY1 是否已长按 3s(模拟器轮询)。
+ *   2. KEY1 电源键:按住 0.25s 触发电源动作——SLEEP 开机/运行中弹关机确认/其余
+ *      直接关机(nav_key1_power_action);松开沿无动作,快触(<0.25s)不响应。
+ *      3s 复位重启由电源板自带逻辑直接断电,显示侧不复位。
+ *   3. nav_key1_hold_check：供外部周期查询 KEY1 是否已按住满 0.25s(模拟器轮询)。
  *
  * 状态变量(key_state/active_key/active_key_time)定义在 nav_key.c。
  */
@@ -17,12 +17,12 @@
 #include "nav_idle.h"
 #include "nav_internal.h"
 
-#define KEY1_LONG_PRESS_MS 3000   /* 电源键长按阈值:强制复位重启(维修用) */
+#define KEY1_HOLD_MS 250   /* 电源键动作阈值:按住满 0.25s 触发(电源板 3s 复位自行处理) */
 
-static uint8_t s_key1_long_fired = 0;   /* 本次按压长按已触发:释放沿不再触发单触动作 */
+static uint8_t s_key1_fired = 0;   /* 本次按压电源动作已触发:按住不重复触发,松开沿无动作 */
 
 /* 关机：清全部运行状态 → SLEEP 待机暗屏。
-   KEY1 长按与待机页 20 分钟无操作超时(nav_idle)共用，行为完全一致 */
+   KEY1 电源动作与待机页 20 分钟无操作超时(nav_idle)共用，行为完全一致 */
 void nav_power_off(void)
 {
     nav_hint_tone_cancel();           /* 提示音重复引擎随关机停止 */
@@ -109,7 +109,7 @@ void nav_backlight_100_defer(void)
 }
 #endif
 
-/* 开机(SLEEP 唤醒)：回主菜单/探针主菜单/首设语言页(原 KEY1 长按唤醒分支原样迁移)。
+/* 开机(SLEEP 唤醒)：回日期时间页/主菜单/探针主菜单/首设语言页(原 KEY1 长按唤醒分支原样迁移)。
    不重复清理——SLEEP 进入前已清理，SLEEP 期间按键全部被吞，状态保持干净 */
 static void nav_power_on(void)
 {
@@ -119,6 +119,10 @@ static void nav_power_on(void)
         /* 首设未完成:开机一律回语言设置页,不得进主菜单(设置链封闭,
          * 与上电 nav_init !g_langpick_done 分支同语义) */
         langpick_enter_from_standby();
+    } else if (g_systime_boot_mode) {
+        /* 断电重启后时间还没设完就关过机:唤醒一律回日期时间页补设,
+         * 设完(OK)才放行进系统 */
+        systime_enter_boot_mode();
     } else if (is_probe_inserted()) {
         jump_to_major_menu_tz();
     } else {
@@ -141,17 +145,18 @@ static void nav_power_on(void)
     lv_refr_now(NULL);
     nav_backlight_100_defer();
 #endif
-    printf("[KEY] power on -> %s\n", g_langpick_done ? "major_menu" : "langpick");
+    printf("[KEY] power on -> %s\n", !g_langpick_done ? "langpick" :
+           (g_systime_boot_mode ? "systime_boot" : "major_menu"));
 }
 
-/* KEY1 单触(按下后 3s 内松开,松开沿生效,响应 0~0.25s)：
-   SLEEP=开机;运行中(烹饪/暂停/预约/完成+保温)=弹"结束当前任务并关机"确认;
-   其余(待机/菜单/设置/首设两页/警报页等)=直接关机 */
-static void nav_key1_short_press(void)
+/* KEY1 按住 0.25s 触发的电源动作：
+   SLEEP=开机;运行中(烹饪/暂停/预约/保温中)=弹"结束当前任务并关机"确认;
+   完成页(纯完成/完成倒计时)与其余(待机/菜单/设置/首设两页/警报页等)=直接关机 */
+static void nav_key1_power_action(void)
 {
     if (g_send.iface_status == IFACE_SLEEP) {
         nav_power_on();
-    } else if (nav_cook_session_active()) {
+    } else if (nav_poweroff_ask_needed()) {
         g_send.buzzer_req = BUZZER_KEY_VALID;
         nav_poweroff_ask_show();
     } else {
@@ -160,28 +165,23 @@ static void nav_key1_short_press(void)
     uart_print();
 }
 
-/* KEY1 长按 3s：强制复位重启(维修说明书场景:卡机强启;全页面统一含警报页)。
- * 真机 rt_hw_cpu_reset()=看门狗复位,调用返回后约 1.2s 内重启(照抄 SDK
- * test_ota.c 直调先例);模拟器无复位硬件,打印即止 */
-void nav_key1_long_press(void)
+/* KEY1 按住满 0.25s：触发电源动作(上面 nav_key1_power_action),每次按压只触发
+ * 一次。复位重启不由显示侧处理——电源板自带 3s 复位逻辑直接断电重启,重启后
+ * 属冷启,按首设标志走开机日期时间页/完整首设 */
+void nav_key1_hold_trigger(void)
 {
-    s_key1_long_fired = 1;   /* 本次按压已消费:释放沿不再触发单触动作 */
-#ifndef LV_USE_AIC_SIMULATOR
-    extern void rt_hw_cpu_reset(void);   /* rthw.h:65 */
-    printf("[KEY] KEY1 long press %dms -> force reset\n", KEY1_LONG_PRESS_MS);
-    rt_hw_cpu_reset();
-#else
-    printf("[KEY] KEY1 long press %dms -> force reset (sim: no-op)\n", KEY1_LONG_PRESS_MS);
-#endif
+    s_key1_fired = 1;   /* 本次按压已消费:按住不重复触发,松开沿无动作 */
+    printf("[KEY] KEY1 hold %dms -> power action\n", KEY1_HOLD_MS);
+    nav_key1_power_action();
 }
-/* 供外部周期调用：KEY1 按住已持续 2s 则触发长按并返回 1（用于长按防抖） */
+/* 供外部周期调用(模拟器 sim_scan_cb 100ms)：KEY1 按住已满 0.25s 则触发电源动作并返回 1 */
 uint8_t nav_key1_hold_check(void)
 {
-    if (active_key == KEY1 && key_state == KEY_PRESSED) {
+    if (active_key == KEY1 && key_state == KEY_PRESSED && !s_key1_fired) {
         uint32_t interval = lv_tick_get() - active_key_time;
-        if (interval >= KEY1_LONG_PRESS_MS) {
+        if (interval >= KEY1_HOLD_MS) {
             active_key_time = lv_tick_get();
-            nav_key1_long_press();
+            nav_key1_hold_trigger();
             return 1;
         }
     }
@@ -200,7 +200,8 @@ void nav_childlock_hold_poll(void)
     }
 }
 /* 按键状态机：KEY_IDLE 首按→记键值+调 process_key；
-   KEY_PRESSED 按住→编码器按 50ms 重复、KEY1 按 2s 长按；松开回 KEY_IDLE。 */
+   KEY_PRESSED 按住→编码器按 50ms 重复、KEY1 按住 0.25s 触发电源动作；
+   松开回 KEY_IDLE(KEY1 松开沿无动作)。 */
 void nav_handle_key(uint8_t key)
 {
     uint32_t now = lv_tick_get();
@@ -225,8 +226,8 @@ void nav_handle_key(uint8_t key)
             key_state = KEY_PRESSED;
             if (key == KEY1) {
                 /* 电源键不进 process_key 分发(按下沿不响、不受守卫拦截):
-                 * 单触动作挂释放沿,长按 3s 在同键分支/hold_check 触发 */
-                s_key1_long_fired = 0;   /* 新按压:清上次长按已消费标志 */
+                 * 电源动作挂按住 0.25s(同键分支/hold_check 触发),松开沿无动作 */
+                s_key1_fired = 0;   /* 新按压:清上次已触发标志 */
                 uart_data_receive[Receive_data_Touch_Key] = 0;   /* 消费键值(同 process_key 尾惯例) */
             } else {
                 process_key(key);
@@ -236,15 +237,12 @@ void nav_handle_key(uint8_t key)
 
     case KEY_PRESSED:
         if (key == 0) {
-            // 松开 → 回到空闲
+            // 松开 → 回到空闲(KEY1 松开沿无动作:电源动作已在按住 0.25s 时触发)
 #ifdef LV_USE_AIC_SIMULATOR
             printf("[KEY] release\n");
 #endif
-            uint8_t released = active_key;
             key_state = KEY_IDLE;
             active_key = 0;
-            if (released == KEY1 && !s_key1_long_fired)
-                nav_key1_short_press();   /* 单触:按下后 3s 内松开即生效 */
         } else if (key == active_key) {
             // 同键按住
             uint32_t interval = now - active_key_time;
@@ -254,9 +252,9 @@ void nav_handle_key(uint8_t key)
                 active_key_time = now;
                 process_key(key);
             }
-            if (active_key == KEY1 && interval >= KEY1_LONG_PRESS_MS) {
+            if (active_key == KEY1 && !s_key1_fired && interval >= KEY1_HOLD_MS) {
                 active_key_time = now;
-                nav_key1_long_press();
+                nav_key1_hold_trigger();
             }
     /* 童锁:旋钮按住 3s 解锁(真机路径;模拟器由 nav_childlock_hold_poll 轮询)。
        armed 门:上锁那一下的按住不算,须先松开一次(与圆环计段一致) */
@@ -271,7 +269,7 @@ void nav_handle_key(uint8_t key)
             active_key = key;
             active_key_time = now;
             if (key == KEY1) {
-                s_key1_long_fired = 0;
+                s_key1_fired = 0;
                 uart_data_receive[Receive_data_Touch_Key] = 0;
             } else {
                 process_key(key);

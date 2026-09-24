@@ -51,6 +51,11 @@ int rtc_get_time(rtc_time_t *t)
     return 0;
 }
 
+/* UI 写完 RTC 后立即刷新缓存:模拟器无缓存(rtc_get_time 直读 PC 时间),空操作 */
+void rtc_cache_refresh(void)
+{
+}
+
 // 自 2000-01-01 起的天数（儒略日算法）
 int rtc_days_from_epoch(int year, int month, int day)
 {

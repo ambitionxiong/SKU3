@@ -18,6 +18,7 @@ void nav_enter_standby(void);   /* 进待机页(waitmenu + IFACE_STANDBY),空闲
 void nav_power_off(void);       /* 关机(清理运行状态+IFACE_SLEEP+暗屏待机),
                                    电源键单触与待机 20 分钟超时共用 */
 int  nav_cook_session_active(void);  /* 烹饪会话进行中(运行/暂停/预约/完成+保温未结束);
-                                   空闲策略与电源键"运行中弹关机确认"同口径 */
+                                   空闲策略口径(电源键弹确认用 nav_poweroff_ask_needed) */
+int  nav_poweroff_ask_needed(void);  /* 电源键单触是否弹关机确认:完成页(无保温)不弹直接关机 */
 
 #endif /*NAV_IDLE_H*/

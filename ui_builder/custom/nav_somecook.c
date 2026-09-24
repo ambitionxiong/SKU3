@@ -16,6 +16,14 @@ static void on_stepset_next_click(lv_event_t *e);
 /* 多段烹饪步骤数据 */
 somecook_step_t g_steps[3];
 int g_cur_step;             /* 当前编辑步骤 0-2 */
+static uint8_t s_steps_consumed = 0;   /* 已跑完待清标记:完成时置位,重进主页时清步骤 */
+
+/* 多段全部段完成时调用:标记步骤已消费(完成页 KEY_FAV 存收藏仍读完整 g_steps,
+ * 故不能完成即清;重进 jump_to_somecook 时才真清) */
+void somecook_steps_mark_consumed(void)
+{
+    s_steps_consumed = 1;
+}
 
 // 按步骤状态刷新 somecook 显示（容器/plus/sure 显隐 + 容器内容文本）
 static void somecook_refresh(void)
@@ -242,6 +250,12 @@ void somecook_rebuild(page_id_t child)
 // 入口：special_menu "多段烹饪" → somecook 主页面
 void jump_to_somecook(void)
 {
+    if (s_steps_consumed) {
+        /* 上次多段已跑完:重进主页清掉旧步骤(2026-09-23 完成多出口不残留) */
+        memset(g_steps, 0, sizeof(g_steps));
+        g_cur_step = 0;
+        s_steps_consumed = 0;
+    }
     edit_clear();
     page_push(PAGE_SOMECOOK);
     somecook_rebuild(PAGE_SOMECOOK);

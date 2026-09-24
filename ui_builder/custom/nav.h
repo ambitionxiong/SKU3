@@ -14,6 +14,7 @@ typedef struct {
     int wday;                    // 星期 0=周日 ~ 6=周六
 } rtc_time_t;
 int rtc_get_time(rtc_time_t *t);              // 0=成功
+void rtc_cache_refresh(void);                 // UI 写完 RTC 后立即刷新缓存(SDK 采样线程 1s 轮询,不等下一拍;SIM 无缓存空操作)
 int64_t rtc_now_ms(void);                     // 自 2000-01-01 00:00 起的绝对毫秒（统一计时戳）
 int rtc_days_from_epoch(int year, int month, int day);  // 自 2000-01-01 起的天数
 extern int64_t g_delay_target;                // 延时预约目标绝对毫秒
@@ -646,7 +647,7 @@ void edit_register(lv_obj_t *label, lv_obj_t *ind_s, lv_obj_t *ind_l,
                    int *value, int min, int max, int step, const char *fmt);
 
 void nav_handle_key(uint8_t key);
-void nav_key1_long_press(void);
+void nav_key1_hold_trigger(void);   /* KEY1 按住满 0.25s 触发电源动作(电源板 3s 复位自行处理) */
 uint8_t nav_key1_hold_check(void);
 void nav_init(void);
 void page_push(page_id_t id);
@@ -724,6 +725,8 @@ void count_down_poweroff_reset(void);    /* 长按关机:清计时器后台/超�
 
 /* 日期/时间子页（nav_systime.c 实现，PAGE_SET_SYSTIME） */
 void jump_to_systime(void);
+extern uint8_t g_systime_boot_mode;   /* 断电重启开机模式:首设已完成的冷启先进本页只补设日期时间(RAM 态,OK 即清) */
+void systime_enter_boot_mode(void);   /* 开机日期页入口(nav_init/nav_power_on/待机页改道守卫共用) */
 lv_group_t *systime_page_group(void);
 void encoder_systime_action(uint8_t key);
 void systime_back_action(void);
@@ -1043,6 +1046,7 @@ typedef struct {
 } somecook_step_t;
 extern somecook_step_t g_steps[3];
 extern int g_cur_step;
+void somecook_steps_mark_consumed(void);   /* 多段全部段完成:标记待清,重进主页时真清 */
 void stepset_on_focus(lv_event_t *e);
 void stepset_apply_sel_mode(bool restore);
 void stepset_restore_mode(uint8_t mode);

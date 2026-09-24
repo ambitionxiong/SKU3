@@ -340,6 +340,7 @@ void somecook_cooking_next_step(void)
         current_group = g_somecook_cooking;
         g_send.iface_status = IFACE_COMPLETE;
         somecook_cooking_set_state(SMC_COMPLETE, SMC_COMPLETE);
+        somecook_steps_mark_consumed();   /* 步骤已消费:标记待清(KEY_FAV 仍可存完整步骤) */
         lang_scr_load_anim(somecook_cooking_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
                          ui_manager.auto_del);

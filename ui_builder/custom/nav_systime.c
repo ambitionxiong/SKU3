@@ -42,12 +42,17 @@ static systime_page_t s_st;
 static systime_page_t *systime_get(ui_manager_t *ui) { (void)ui; return &s_st; }
 
 static uint8_t s_where_time = 0;   /* 0=Yes 待确认 1=年 2=月 3=日 4=时制 5=时 6=分 */
-static int s_year = 0;             /* 0..99,显示 20xx */
-static int s_month = 0;
-static int s_day = 0;
+static int s_year = 27;            /* 0..99,显示 20xx;兜底=2027-01-01(用户定,RTC 未就绪预填失败时显示) */
+static int s_month = 1;            /* 兜底月≥1:0 月会让日旋转 %maxd 除零(转储实锤)且确定被 sd8568 参数检查拒 */
+static int s_day = 1;              /* 兜底日≥1:同上 */
 static int s_timetype = 0;         /* 1=12h 0=24h */
 static int s_hour = 0;
 static int s_min = 0;
+
+/* 断电重启开机模式:首设已完成(g_langpick_done=1)的每次冷启,RTC 因 VL 位被重置
+ * 走时不可信,先进本页只补设日期时间,OK 后进待机页。RAM 态不落盘——本次开机
+ * 时间设完即清;没设完就关机的,唤醒(nav_power_on)凭它回本页补设 */
+uint8_t g_systime_boot_mode = 0;
 
 /* 非闰年每月天数 */
 static const uint8_t s_month_days[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
@@ -59,7 +64,8 @@ static bool systime_is_leap(int year)
 
 static int systime_max_day(int year, int month)
 {
-    if (month < 1 || month > 12) return 0;
+    /* 非法月返回 31 兜底(原 0:日旋转 %0 触发除零硬错误,转储实锤) */
+    if (month < 1 || month > 12) return 31;
     int days = s_month_days[month - 1];
     if (month == 2 && systime_is_leap(year)) return 29;
     return days;
@@ -226,6 +232,7 @@ void encoder_systime_action(uint8_t key)
         /* Yes:写 RTC,成功保存时制偏好回设置层,失败错误音回"年"编辑态 */
         if (systime_rtc_set(s_year, s_month, systime_weekday(s_year + 2000, s_month, s_day),
                             s_day, s_hour, s_min) == 0) {
+            rtc_cache_refresh();   /* 立即刷缓存:待机页/顶栏不再先画旧缓存值(如掉电默认 2000-01-01)约 1s */
             SET_Data.Set_TimeType = (int8_t)s_timetype;
             uart_print();   /* 立即上报新状态帧(时制位) */
             nav_topflag_clock_force();   /* 右上角时制排版立即切换(不等 500ms tick) */
@@ -238,6 +245,14 @@ void encoder_systime_action(uint8_t key)
                 config_save();   /* firstboot=1 立即落盘,不等 persist 线程 1s 轮询 */
 #endif
                 printf("[systime] firstboot setup done -> waitmenu\n");
+                nav_enter_standby();
+                return;
+            }
+            if (g_systime_boot_mode) {
+                /* 断电重启开机链路:时间补设完成即进系统,落待机页(与首设完成一致);
+                 * 首设标志早已落盘,不再动 g_langpick_done/config_save */
+                g_systime_boot_mode = 0;
+                printf("[systime] boot time set -> waitmenu\n");
                 nav_enter_standby();
                 return;
             }
@@ -343,10 +358,12 @@ void jump_to_systime(void)
         s_hour = t.hour;
         s_min = t.min;
     }
+    /* RTC 未就绪读失败时停留静态兜底 2027-01-01;RTC 已是驱动默认值时
+     * 内容即 2027-01-01(sd8568.c 掉电/非法重置直写 27,1,1),无需 UI 侧映射 */
     s_timetype = SET_Data.Set_TimeType;
 
-    if (g_langpick_date_mode) {
-        /* 首次上电链路:语言页确认后进入,栈下无设置覆盖层可弹,直接入栈 */
+    if (g_langpick_date_mode || g_systime_boot_mode) {
+        /* 首次上电链路/断电重启开机链路:栈下无设置覆盖层可弹,直接入栈 */
         page_push(PAGE_SET_SYSTIME);
     } else {
         screen_set_reset();          /* 清设置覆盖层对象/指针 */
@@ -527,4 +544,17 @@ void jump_to_systime(void)
     if (scr->Yes_Btn) lv_group_focus_obj(scr->Yes_Btn);   /* 进页聚焦确定;会话=编辑态,转旋钮直接进"年"编辑 */
     lang_scr_load_anim(scr->obj, LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
     printf("[systime] jump\n");
+}
+
+/* 断电重启开机链路入口(首设已完成,g_langpick_done=1):冷启 nav_init/SLEEP 唤醒
+ * nav_power_on/待机页改道守卫(nav_key.c)三处共用。置开机模式后走日期页直入栈
+ * 分支;OK 进待机页时清标志(见 OK 臂)。栈形 [WAITMENU_24, SET_SYSTIME] 与
+ * langpick_enter_from_standby 同构 */
+void systime_enter_boot_mode(void)
+{
+    g_langpick_date_mode = 0;   /* 与首设链路互斥:BACK 不回语言页(见 nav_key.c BACK 臂) */
+    g_systime_boot_mode = 1;
+    g_send.iface_status = IFACE_SETTING;
+    jump_to_systime();
+    printf("[systime] enter boot mode\n");
 }

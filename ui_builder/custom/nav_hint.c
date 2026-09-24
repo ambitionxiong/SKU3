@@ -420,8 +420,8 @@ int nav_favask_get_mode(void)
 
 /* ==============================
  * 关机确认弹层（topflag 顶层遮罩+tip1+tip2+sure,不自动消失）
- * 运行中(烹饪/暂停/预约/完成+保温)单触电源键弹出
- * (nav_keyio.c nav_key1_short_press):tip1="目前正在烹饪中，"
+ * 运行中(烹饪/暂停/预约/完成+保温)按住电源键 0.25s 弹出
+ * (nav_keyio.c nav_key1_power_action):tip1="目前正在烹饪中，"
  * tip2="停止烹饪并关机吗？"(设计稿两行) sure="关 机"
  * PRESS=确认(nav_power_off 清全部运行状态落 SLEEP 待机)
  * BACK=取消继续运行;其余键忽略(nav_key.c 模态守卫)。
@@ -434,14 +434,31 @@ void nav_poweroff_ask_show(void)
     if (!tf || !tf->obj || !tf->tip1 || !tf->sure) return;
     nav_favtip_hide();                              /* 关掉可能存在的成功提示 */
     if (nav_favask_active()) nav_favask_cancel();   /* 收藏确认弹层让位 */
-    lv_label_set_text(tf->tip1, tr("目前正在烹饪中，"));
-    if (tf->tip2) {
-        lv_label_set_text(tf->tip2, tr("停止烹饪并关机吗？"));
-        /* EN 第二行 27 字符 30 号 ≈380px 超生成宽 370:加宽到与 tip1 同宽同轴
-         * (中心 x≈1021 不变,中文居中显示零差异,favask 复用同控件不受影响) */
-        lv_obj_set_size(tf->tip2, 450, 36);
-        lv_obj_set_pos(tf->tip2, 796, 198);
-        lv_obj_clear_flag(tf->tip2, LV_OBJ_FLAG_HIDDEN);
+    /* 弹窗文案按状态对应(2026-09-23):预约看 buf3,保温看 buf4(保温模式)/完成页自动保温 */
+    {
+        const char *l1 = "目前正在烹饪中，";
+        const char *l2 = "停止烹饪并关机吗？";
+        if (g_send.iface_status == IFACE_DELAY_RESERVE) {
+            /* 预约等待:buf3=DELAY_RESERVE */
+            l1 = "目前正在预约中，";
+            l2 = "停止预约并关机吗？";
+        } else if (g_send.cook_mode == MODE_HEATCONTAIN ||
+                   g_send.iface_status == IFACE_COMPLETE) {
+            /* 保温:buf4=保温模式(保温模式运行中 buf3=COOKING+buf4=11)
+             * 或完成页自动保温(buf3=COMPLETE,keepwarm 计时驱动) */
+            l1 = "目前正在保温中，";
+            l2 = "停止保温并关机吗？";
+        }
+        lv_label_set_text(tf->tip1, tr(l1));
+        if (tf->tip2) {
+            lv_label_set_text(tf->tip2, tr(l2));
+            /* EN 第二行 27 字符 30 号 ≈380px 超生成宽 370:加宽到与 tip1 同宽同轴
+             * (中心 x≈1021 不变,中文居中显示零差异,favask 复用同控件不受影响;
+             * 预约/保温 EN 第二行最长 31 字符 ≈436px 仍在 450 内) */
+            lv_obj_set_size(tf->tip2, 450, 36);
+            lv_obj_set_pos(tf->tip2, 796, 198);
+            lv_obj_clear_flag(tf->tip2, LV_OBJ_FLAG_HIDDEN);
+        }
     }
     {
         lv_obj_t *lbl = lv_obj_get_child(tf->sure, 0);   /* 按钮文字随语言切换 */

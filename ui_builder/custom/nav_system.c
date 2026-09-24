@@ -178,6 +178,8 @@ void nav_init(void)
     }
 
     printf("[nav] init start\n");
+    g_lang_en = (SET_Data.Set_Language == 0);   /* 开机同步 tr 英文标志:保存的英文重启后生效
+                                                 * (繁/简由 is_trad 直读 SET_Data,断电天然存活) */
     depth = 0;
     page_push(PAGE_WAITMENU_24);        // 根页 = waitmenu_24
     if (!g_langpick_done) {
@@ -191,16 +193,9 @@ void nav_init(void)
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
                          ui_manager.auto_del);
     } else {
-        page_push(PAGE_MAJOR_MENU);         // 上电自动进入 major_menu
-        lv_obj_clean(lv_scr_act());
-        major_menu_create(&ui_manager);
-        groups_create();
-        bind_events();
-
-        current_group = g_major_menu;
-        lang_scr_load_anim(major_menu_get(&ui_manager)->obj,
-                         LV_SCR_LOAD_ANIM_NONE, 0, 0,
-                         ui_manager.auto_del);
+        /* 断电/复位重启的冷启(首设已完成):RTC 因 VL 位被重置走时不可信,
+         * 一律先进日期时间页只补设日期时间,OK 后进待机页——不再直接进主菜单 */
+        systime_enter_boot_mode();
     }
 
     g_send.iface_status = IFACE_SETTING;
@@ -225,7 +220,8 @@ void nav_init(void)
     topflag_update_visibility();
     lv_timer_create(topflag_clock_cb, 500, NULL);
     nav_idle_init();   /* 空闲策略:烹饪 1 分钟回页/非烹饪 5 分钟待机/待机 20 分钟关机 */
-    printf("[nav] init done -> %s\n", g_langpick_done ? "major_menu" : "langpick");
+    printf("[nav] init done -> %s\n", !g_langpick_done ? "langpick" :
+           (g_systime_boot_mode ? "systime_boot" : "major_menu"));
 }
 
 // topflag 顶层状态页显隐：除 wait 页面外都显示。
@@ -234,10 +230,12 @@ void topflag_update_visibility(void)
 {
     topflagpage_t *tf = topflagpage_get(&ui_manager);
     if (!tf || !tf->obj) return;
-    /* 首次上电设置链路(语言页/日期页):整层隐藏——时钟未设置无意义,且日期页
-       OK 按钮就在右上角不能被时钟压住;OK 进 waitmenu 后恢复既有显隐规则 */
+    /* 首次上电设置链路(语言页/日期页)与断电重启开机日期页:整层隐藏——时钟未
+       设置无意义,且日期页 OK 按钮就在右上角不能被时钟压住;进 waitmenu 后
+       恢复既有显隐规则 */
     if (depth > 0 && (page_stack[depth - 1] == PAGE_LANG_PICK ||
-                      (page_stack[depth - 1] == PAGE_SET_SYSTIME && g_langpick_date_mode))) {
+                      (page_stack[depth - 1] == PAGE_SET_SYSTIME &&
+                       (g_langpick_date_mode || g_systime_boot_mode)))) {
         lv_obj_add_flag(tf->obj, LV_OBJ_FLAG_HIDDEN);
         return;
     }

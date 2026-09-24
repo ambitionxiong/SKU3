@@ -3,8 +3,9 @@
  *
  * 收到报警协议（接收帧 BUF[12] 报警序号非 0，nav_system 500ms tick 边沿检测）
  * 立即触发：与关机同套清理停掉全部运行状态，落警报页；界面状态发 8（报警
- * 界面）+ 蜂鸣 7（报警音）。页面吞掉全部按键，仅电源键可用——单触关机/
- * 长按 3s 重启，均在 nav_handle_key 状态机层处理，不经 process_key。文本按
+ * 界面）+ 蜂鸣 7（报警音）。页面吞掉全部按键，仅电源键可用——按住 0.25s
+ * 直接关机（警报解除；3s 复位重启由电源板处理），均在 nav_handle_key 状态机
+ * 层处理，不经 process_key。文本按
  * 协议序号显示 "E-<n>:" + 售后提示（中/英双版）。警报一旦触发只能电源键解除
  * （BUF[12] 归 0 不解除）；关机后同码不重弹，新码才重新触发。警报页豁免空闲策略。
  */
@@ -106,9 +107,9 @@ void jump_to_alarm(int code)
 }
 
 /* 常驻 tick(nav_system 500ms)调用:BUF[12] 边沿触发/跟踪。
-   解除规则(2026-09-12 定稿):警报一旦触发只能电源键解除(单触关机/长按 3s
-   重启)——BUF[12] 归 0 不退页不解除;关机后电源板若仍发同码也不再重弹,
-   新码才会重新触发 */
+   解除规则(2026-09-12 定稿):警报一旦触发只能电源键解除(按住 0.25s 直接关机;
+   3s 复位重启由电源板处理)——BUF[12] 归 0 不退页不解除;关机后电源板若仍发
+   同码也不再重弹,新码才会重新触发 */
 void nav_alarm_tick_check(void)
 {
     int code = uart_data_receive[Receive_data_Power_ALL_Error];   /* BUF[12] 报警序号 */
@@ -118,7 +119,7 @@ void nav_alarm_tick_check(void)
         return;
     }
     if (depth > 0 && page_stack[depth - 1] == PAGE_ALARM)
-        return;                       /* 警报页存续:无视 BUF[12] 任何变化,仅长按开关机可离 */
+        return;                       /* 警报页存续:无视 BUF[12] 任何变化,仅电源键(按住 0.25s 关机)可离 */
     if (code && code != s_alarm_code)
         jump_to_alarm(code);          /* 边沿触发 */
     else if (!code)
