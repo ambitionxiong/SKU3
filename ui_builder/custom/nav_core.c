@@ -17,6 +17,7 @@
 #include "nav_lang.h"
 #include "nav_internal.h"
 #include <stdarg.h>
+#include <string.h>
 
 // === 页面栈 ===
 #define MAX_STACK 16
@@ -29,6 +30,7 @@ int cook_bar_saved = 0;
 int probe_target_temp = 80;
 int preheat_start_cavity = 0;
 int preheat_wait_door = 0;
+int hc_wait_door = 0;   /* 高温清洁开门检测等待页:关门边沿自动开始(nav_system.c 消费) */
 int g_complete_to_stop_back = 0;
 int g_cooling_to_stop_back = 0;
 int g_extra_color_to_stop_back = 0;
@@ -1106,6 +1108,38 @@ void groups_create(void)
         printf("[nav] major->special_button is NULL\n");
 
     printf("[nav] major_menu group created\n");
+}
+
+/* 高温清洁 set 确认页组件对齐(2026-09-24):生成屏与 cooking 页坐标差 1~3px,
+ * set→doorwait→cooking 切页会跳;统一到 cooking 基准(上位机重新生成后仍生效)。
+ * EN 值由各 set 页 lang_tune 覆盖(工程 EN 机制),此处仅 CN 基准 */
+void hotclean_set_align(lv_obj_t *icon, lv_obj_t *title, lv_obj_t *status, lv_obj_t *hint)
+{
+    if (icon) lv_obj_set_pos(icon, 115, 161);
+    if (title) lv_obj_set_pos(title, 273, 157);
+    if (status) lv_obj_set_pos(status, 274, 232);
+    if (hint) lv_obj_set_style_text_align(hint, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
+}
+
+/* lockicon 按钮重适配(2026-09-25):lockicon.png 50x43→54x54,生成层 12 个高温
+ * 清洁页按钮仍写死 50x43@(609,170),LVGL 背景图按对象左上角绘制被裁掉右下。
+ * 树遍历找 bg 图含 "lockicon.png" 的对象,放大到图片原尺寸并保持原中心;
+ * 任何现有/后续用该图的按钮一次覆盖,中英繁都要跑(挂 lang_on_page_built 末尾,
+ * EN tune 里两处 50x43 复位随即被本函数覆盖) */
+static lv_obj_tree_walk_res_t lockicon_fit_cb(lv_obj_t *obj, void *user_data)
+{
+    (void)user_data;
+    const char *src = (const char *)lv_obj_get_style_bg_img_src(obj, LV_PART_MAIN | LV_STATE_DEFAULT);
+    if (src && strstr(src, "lockicon.png")) {
+        lv_obj_set_pos(obj, 607, 165);   /* 54x54 对中旧中心 (634,191.5) */
+        lv_obj_set_size(obj, 54, 54);    /* = assets/image/lockicon.png 实际尺寸 */
+    }
+    return LV_OBJ_TREE_WALK_NEXT;
+}
+
+void nav_lockicon_refit(void)
+{
+    lv_obj_tree_walk(lv_scr_act(), lockicon_fit_cb, NULL);
 }
 
 /* 设置页"自动保温"(SET_Data.Set_KeepWarm)是总默认值:各模式 set 页进入时

@@ -362,4 +362,6 @@ void lang_on_page_built(void)
          * 排版与字体与简体一致(taiwanpearl), 不跑 lang_tune/字体映射 */
         lang_refresh_screen();
     }
+
+    nav_lockicon_refit();   /* lockicon 换 54x54 大图:全语言统一重适配锁图标按钮(EN 须在 tune 之后,tune 里有 50x43 复位) */
 }

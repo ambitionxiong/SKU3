@@ -105,6 +105,13 @@ static void system_timer_cb(lv_timer_t *timer)
                               page_stack[depth - 1] == PAGE_PREHEAT_STOP_BACK))
                 jump_to_preheat_complete();
         }
+        /* 高温清洁开门检测等待页(2026-09-24):同一关门边沿,自动开始清洁烹饪。
+         * 残留标志由栈顶守卫兜住(在别的页开关门只清标志不动作) */
+        if (hc_wait_door && !door_now) {
+            hc_wait_door = 0;
+            if (depth > 0 && page_stack[depth - 1] == PAGE_HOTCLEAN_DOORWAIT)
+                hc_doorwait_start_cooking();
+        }
     }
 
     if (probe_now == probe_last)

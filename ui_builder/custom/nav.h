@@ -279,6 +279,7 @@ typedef enum {
     PAGE_HOTCLEANHIGH_STOP_BACK,
     PAGE_HOTCLEANHIGH_COOLING,
     PAGE_HOTCLEANHIGH_COMPLETE,
+    PAGE_HOTCLEAN_DOORWAIT, /* 高温清洁开门检测等待页(三档共用,nav_hotcleandoor.c) */
     PAGE_DELAYSET,
     /* ---- 延时预约/多段烹饪/设置页/第六感 ---- */
     PAGE_DELAYCOOKING,
@@ -635,6 +636,7 @@ void preheat_resume_cooking(void);
 void preheat_complete_exit(void);
 extern int preheat_start_cavity;
 extern int preheat_wait_door;
+extern int hc_wait_door;   /* 高温清洁开门检测等待页:关门边沿自动开始(nav_system.c 消费) */
 void jump_to_preheat_complete(void);
 void jump_to_cook4_menu(void);
 extern uint16_t g_sim_cavity_temp;
@@ -1688,6 +1690,16 @@ void hch_rebuild_stop_back(void);
 void hch_rebuild_cooling(void);
 void hch_rebuild_complete(void);
 void hch_resume_cooking(void);
+
+/* 高温清洁开门检测等待页(nav_hotcleandoor.c,三档共用 PAGE_HOTCLEAN_DOORWAIT) */
+void jump_to_hcs_doorwait(void);
+void jump_to_hcm_doorwait(void);
+void jump_to_hch_doorwait(void);
+void hc_doorwait_start_cooking(void);
+void hc_doorwait_rebuild(void);
+void hc_doorwait_lang_tune(void);
+void hotclean_set_align(lv_obj_t *icon, lv_obj_t *title, lv_obj_t *status, lv_obj_t *hint);   /* set 确认页组件对齐 cooking 基准 */
+void nav_lockicon_refit(void);   /* lockicon 换 54x54 大图:重适配当前屏所有锁图标按钮(全语言) */
 
 /* ==================== 温度显示单位（℉）====================
  * 内部存储/编码器范围/协议全部保持摄氏，仅标签渲染层按 Set_TempUnit 换算显示。

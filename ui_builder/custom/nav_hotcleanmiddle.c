@@ -16,7 +16,7 @@ static void on_hcm_set_start_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
     if (!screen_is_loading(act_scr))
-        jump_to_hcm_cooking();
+        jump_to_hcm_doorwait();   /* 先进开门检测等待页,关门自动开始(2026-09-24) */
 }
 
 static void on_hcm_cooking_stop_click(lv_event_t *e)
@@ -82,6 +82,8 @@ void jump_to_hcm_set(void)
                             LV_EVENT_CLICKED, NULL);
 
         if (set->start) lv_group_focus_obj(set->start);
+
+        hotclean_set_align(set->image_4, set->label_3, set->status, set->label_2);   /* 对齐 cooking 基准(middle 标题=label_3,标语=label_2) */
     }
     current_group = g_hcm_set;
 
@@ -374,6 +376,8 @@ void hcm_rebuild_set(page_id_t child)
                             LV_EVENT_CLICKED, NULL);
 
         if (set->start) lv_group_focus_obj(set->start);
+
+        hotclean_set_align(set->image_4, set->label_3, set->status, set->label_2);   /* 对齐 cooking 基准(middle 标题=label_3,标语=label_2) */
     }
     current_group = g_hcm_set;
     lang_scr_load_anim(hotcleanmiddle_set_get(&ui_manager)->obj,

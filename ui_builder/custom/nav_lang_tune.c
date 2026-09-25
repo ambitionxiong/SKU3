@@ -7116,9 +7116,9 @@ void hotcleanhigh_cooking_lang_tune(void)
     lv_obj_set_pos(pg->label_21, 273, 157);
     lv_obj_set_size(pg->label_21, 235, 60);
 
-    /* button_9: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: lockicon.png */
-    lv_obj_set_pos(pg->button_9, 609, 170);
-    lv_obj_set_size(pg->button_9, 50, 43);
+    /* button_9: 按钮 | lockicon.png 已换 54x54,复位同步放大、中心不变(与 nav_core.c nav_lockicon_refit 一致) */
+    lv_obj_set_pos(pg->button_9, 607, 165);
+    lv_obj_set_size(pg->button_9, 54, 54);
 
     /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Eng modify ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
     lv_obj_t *obj = lv_screen_active();
@@ -7209,15 +7209,15 @@ void hotcleanhigh_set_lang_tune(void)
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_15: 图片 | (117,159) | img: hotcleanhighicon.png */
-    lv_obj_set_pos(pg->image_15, 117, 159);
+    /* image_15: 图片 | (115,161) | img: hotcleanhighicon.png | 对齐 cooking image_17 */
+    lv_obj_set_pos(pg->image_15, 115, 161);
 
-    /* label_16: 标签 | "热解自清洁 — 高" | (276,157) | 512x60 | font taiwanpearl_regular_60 */
-    lv_obj_set_pos(pg->label_16, 276, 157);
+    /* label_16: 标签 | "热解自清洁 — 高" | (273,157) | 512x60 | font taiwanpearl_regular_60 | 对齐 cooking label_21 */
+    lv_obj_set_pos(pg->label_16, 273, 157);
     lv_obj_set_size(pg->label_16, 512, 60);
 
-    /* status: 标签 | "| 2小时 |" | (275,231) | 152x39 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->status, 275, 231);
+    /* status: 标签 | "| 2小时 |" | (274,232) | 152x39 | font taiwanpearl_regular_30 | 对齐 cooking status */
+    lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 152, 39);
 
     /* label_3: 标签 | "温馨提示：取出腔体内所有附件，并关闭机门" | (120,320) | 600x39 | font taiwanpearl_regular_30 */
@@ -7228,6 +7228,14 @@ void hotcleanhigh_set_lang_tune(void)
     lv_obj_t *obj = lv_screen_active();
     //lv_obj_set_style_bg_image_src(obj, LVGL_IMAGE_PATH(sku3_bg_work_clean.png), 0);
     // lv_obj_t *obj = NULL;
+    obj = pg->label_16;   /* EN 标题:modeline/时间同 cooking EN tune 值,切页零偏移 */
+    lv_obj_set_pos(obj, 272, 161);
+    lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+
+    obj = pg->status;
+    lv_obj_set_pos(obj, 275, 232);
+    lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+
     obj = pg->label_3;
     lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_LEFT, 0);
     lv_label_set_long_mode(obj, LV_LABEL_LONG_WRAP);
@@ -7545,15 +7553,15 @@ void hotcleanmiddle_set_lang_tune(void)
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_4: 图片 | (117,159) | img: hotcleanmiddleicon.png */
-    lv_obj_set_pos(pg->image_4, 117, 159);
+    /* image_4: 图片 | (115,161) | img: hotcleanmiddleicon.png | 对齐 cooking image_6 */
+    lv_obj_set_pos(pg->image_4, 115, 161);
 
-    /* label_3: 标签 | "热解自清洁 — 中" | (276,157) | 512x60 | font taiwanpearl_regular_60 */
-    lv_obj_set_pos(pg->label_3, 276, 157);
+    /* label_3: 标签 | "热解自清洁 — 中" | (273,157) | 512x60 | font taiwanpearl_regular_60 | 对齐 cooking label_8 */
+    lv_obj_set_pos(pg->label_3, 273, 157);
     lv_obj_set_size(pg->label_3, 512, 60);
 
-    /* status: 标签 | "| 1小时40分钟 |" | (275,231) | 232x39 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->status, 275, 231);
+    /* status: 标签 | "| 1小时40分钟 |" | (274,232) | 232x39 | font taiwanpearl_regular_30 | 对齐 cooking status */
+    lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 232, 39);
 
     /* label_2: 标签 | "温馨提示：取出腔体内所有附件，并关闭机门" | (120,320) | 600x39 | font taiwanpearl_regular_30 */
@@ -7564,6 +7572,14 @@ void hotcleanmiddle_set_lang_tune(void)
     lv_obj_t *obj = lv_screen_active();
     //lv_obj_set_style_bg_image_src(obj, LVGL_IMAGE_PATH(sku3_bg_work_clean.png), 0);
     // lv_obj_t *obj = NULL;
+    obj = pg->label_3;   /* EN 标题(热解自清洁 — 中):同 cooking EN tune 值,切页零偏移 */
+    lv_obj_set_pos(obj, 272, 161);
+    lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+
+    obj = pg->status;
+    lv_obj_set_pos(obj, 275, 232);
+    lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+
     obj = pg->label_2;
     lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_LEFT, 0);
     lv_label_set_long_mode(obj, LV_LABEL_LONG_WRAP);
@@ -7852,9 +7868,9 @@ void hotcleansave_cooling_lang_tune(void)
     lv_obj_set_pos(pg->image_8, 902-50, 160);
     lv_image_set_src(pg->image_8,LVGL_IMAGE_PATH(hotcleantips_en.png));
 
-    /* button_9: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: lockicon.png */
-    lv_obj_set_pos(pg->button_9, 609, 170);
-    lv_obj_set_size(pg->button_9, 50, 43);
+    /* button_9: 按钮 | lockicon.png 已换 54x54,复位同步放大、中心不变(与 nav_core.c nav_lockicon_refit 一致) */
+    lv_obj_set_pos(pg->button_9, 607, 165);
+    lv_obj_set_size(pg->button_9, 54, 54);
 
     /* Eng modify:与高温冷却页英文排版一致(自适应内容+同锚点),原缺此段致 EN 错位 */
     lv_obj_set_pos(pg->label_13, 272, 161);
@@ -7881,15 +7897,15 @@ void hotcleansave_set_lang_tune(void)
     lv_obj_set_pos(pg->start, 959, 295);
     lv_obj_set_size(pg->start, 129, 83);
 
-    /* image_9: 图片 | (117,159) | img: hotcleansaveicon.png */
-    lv_obj_set_pos(pg->image_9, 117, 159);
+    /* image_9: 图片 | (115,161) | img: hotcleansaveicon.png | 对齐 cooking image_3 */
+    lv_obj_set_pos(pg->image_9, 115, 161);
 
-    /* label_14: 标签 | "热解自清洁 — 节能" | (276,157) | 512x60 | font taiwanpearl_regular_60 */
-    lv_obj_set_pos(pg->label_14, 276, 157);
+    /* label_14: 标签 | "热解自清洁 — 节能" | (273,157) | 512x60 | font taiwanpearl_regular_60 | 对齐 cooking label_8 */
+    lv_obj_set_pos(pg->label_14, 273, 157);
     lv_obj_set_size(pg->label_14, 512, 60);
 
-    /* status: 标签 | "| 1小时15分钟 |" | (275,231) | 233x39 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->status, 275, 231);
+    /* status: 标签 | "| 1小时15分钟 |" | (274,232) | 233x39 | font taiwanpearl_regular_30 | 对齐 cooking status */
+    lv_obj_set_pos(pg->status, 274, 232);
     lv_obj_set_size(pg->status, 233, 39);
 
     /* label_16: 标签 | "温馨提示：取出腔体内所有附件，并关闭机门" | (120,320) | 600x39 | font taiwanpearl_regular_30 */
@@ -7900,6 +7916,14 @@ void hotcleansave_set_lang_tune(void)
     lv_obj_t *obj = lv_screen_active();
     //lv_obj_set_style_bg_image_src(obj, LVGL_IMAGE_PATH(sku3_bg_work_clean.png), 0);
     // lv_obj_t *obj = NULL;
+    obj = pg->label_14;   /* EN 标题(热解自清洁 — 节能):同 cooking EN tune 值,切页零偏移 */
+    lv_obj_set_pos(obj, 272, 161);
+    lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+
+    obj = pg->status;
+    lv_obj_set_pos(obj, 275, 232);
+    lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+
     obj = pg->label_16;
     lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_LEFT, 0);
     lv_label_set_long_mode(obj, LV_LABEL_LONG_WRAP);
@@ -18922,6 +18946,7 @@ const struct { page_id_t page; lang_tune_fn fn; int dx, dy; } s_tune_tab[] = {
     { PAGE_HOTCLEANHIGH_SET, hotcleanhigh_set_lang_tune, 0, 0 },   /*  */
     { PAGE_HOTCLEANHIGH_STOP, hotcleanhigh_stop_lang_tune, 0, 0 },   /*  */
     { PAGE_HOTCLEANHIGH_STOP_BACK, hotcleanhigh_stop_back_lang_tune, 0, 0 },   /*  */
+    { PAGE_HOTCLEAN_DOORWAIT, hc_doorwait_lang_tune, 0, 0 },   /* 高温清洁开门检测等待页(nav_hotcleandoor.c) */
     { PAGE_HOTCLEANMIDDLE_COMPLETE, hotcleanmiddle_complete_lang_tune, 0, 0 },   /*  */
     { PAGE_HOTCLEANMIDDLE_COOKING, hotcleanmiddle_cooking_lang_tune, 0, 0 },   /*  */
     { PAGE_HOTCLEANMIDDLE_COOLING, hotcleanmiddle_cooling_lang_tune, 0, 0 },   /*  */

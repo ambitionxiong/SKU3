@@ -2781,6 +2781,9 @@ void page_pop(void)
     case PAGE_HOTCLEAN_MENU:
         hotclean_rebuild(child);
         break;
+    case PAGE_HOTCLEAN_DOORWAIT:
+        hc_doorwait_rebuild();
+        break;
     case PAGE_HOTCLEANSAVE_SET:
         hcs_rebuild_set(child);
         break;
