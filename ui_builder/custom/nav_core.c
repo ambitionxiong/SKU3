@@ -1007,7 +1007,13 @@ void clear_focus_states(lv_obj_t **btns, int count)
         if (btns[i])
             lv_obj_clear_state(btns[i], LV_STATE_FOCUSED);
 }
+/* updown set 方向箭头图(up2/down2/up3/down3),updown_set_refit 建、
+ * setup_set_temp_display 显隐、EN tune 位移;外部经 updown_dir_img_get 只读 */
+static lv_obj_t *s_updown_dir_img[4] = { NULL, NULL, NULL, NULL };
+
 // updown_bbq_set 温度组件显隐（2 位 / 3 位自动切换）
+// 2026-09-25:↑/↓ 文本标签已由 updown_set_refit 换成 dirup/dirdown 图(永久隐藏),
+// 显隐关系整体平移到 4 张图上——本函数预藏/放开清单同步换图,2/3 位切换逻辑不变
 void setup_set_temp_display(updown_bbq_set_t *set)
 {
     lv_obj_add_flag(set->up2_tempnum_label, LV_OBJ_FLAG_HIDDEN);
@@ -1022,28 +1028,115 @@ void setup_set_temp_display(updown_bbq_set_t *set)
     lv_obj_add_flag(set->down3_tempnum_label, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(set->down3_dir_label, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(set->down3_icon_label, LV_OBJ_FLAG_HIDDEN);
+    for (int i = 0; i < 4; i++)
+        if (s_updown_dir_img[i])
+            lv_obj_add_flag(s_updown_dir_img[i], LV_OBJ_FLAG_HIDDEN);
 
     if (temp_disp_c(set_temp_up) < 100) {
         lv_label_set_text_fmt(set->up2_tempnum_label, "%d", temp_disp_c(set_temp_up));
         lv_obj_clear_flag(set->up2_tempnum_label, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_clear_flag(set->up2_dir_label, LV_OBJ_FLAG_HIDDEN);
+        if (s_updown_dir_img[0]) lv_obj_clear_flag(s_updown_dir_img[0], LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->up2_icon_label, LV_OBJ_FLAG_HIDDEN);
     } else {
         lv_label_set_text_fmt(set->up3_tempnum_label, "%d", temp_disp_c(set_temp_up));
         lv_obj_clear_flag(set->up3_tempnum_label, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_clear_flag(set->up3_dir_label, LV_OBJ_FLAG_HIDDEN);
+        if (s_updown_dir_img[2]) lv_obj_clear_flag(s_updown_dir_img[2], LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->up3_icon_label, LV_OBJ_FLAG_HIDDEN);
     }
     if (temp_disp_c(set_temp_down) < 100) {
         lv_label_set_text_fmt(set->down2_tempnum_label, "%d", temp_disp_c(set_temp_down));
         lv_obj_clear_flag(set->down2_tempnum_label, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_clear_flag(set->down2_dir_label, LV_OBJ_FLAG_HIDDEN);
+        if (s_updown_dir_img[1]) lv_obj_clear_flag(s_updown_dir_img[1], LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->down2_icon_label, LV_OBJ_FLAG_HIDDEN);
     } else {
         lv_label_set_text_fmt(set->down3_tempnum_label, "%d", temp_disp_c(set_temp_down));
         lv_obj_clear_flag(set->down3_tempnum_label, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_clear_flag(set->down3_dir_label, LV_OBJ_FLAG_HIDDEN);
+        if (s_updown_dir_img[3]) lv_obj_clear_flag(s_updown_dir_img[3], LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->down3_icon_label, LV_OBJ_FLAG_HIDDEN);
+    }
+}
+
+/* updown_bbq_set 排版精修(2026-09-25):用户新排版要求——数字与前置文字同字号、
+ * ↑/↓ 文本换 dirup/dirdown 图(assets 实测 32x26)、位置微调。生成层不动(上位机
+ * 会覆盖):数字 font 48→30、盒收窄、y 对齐 ℃/单位行;dir 文本标签永久隐藏,运行时
+ * 建 4 张图替代(指针存 s_updown_dir_img[],setup_set_temp_display 显隐跟随,
+ * EN 位移由 updown_bbq_set_lang_tune 接管)。仅构建路径调用(jump/重建),值刷新不进 */
+lv_obj_t *updown_dir_img_get(int i)
+{
+    if (i < 0 || i >= 4) return NULL;
+    return s_updown_dir_img[i];
+}
+
+void updown_set_refit(updown_bbq_set_t *set)
+{
+    if (!set || !set->obj) return;
+
+    /* 背景保持生成层 bg.jpg(testbg 校准已结束,2026-09-25) */
+
+    /* 胶囊按钮位置保持生成层原值(308/476,用户定不再重设);内容组对中可见胶囊
+     * 真中心——LVGL v9 背景图按 LV_ALIGN_CENTER 居中绘制(lv_draw_rect.c),
+     * tembk 154x54 在 170x61 按钮内居中→可见胶囊 x+8..x+162,中心 btn_x+85/y170.5
+     * (非贴左上的 +77/167);胶囊 308/476 → 中心 385/553;组宽二位 102(pad 29)/
+     * 三位 112(pad 24);垂直:数字/℃ y153、图标 y157 */
+    lv_obj_set_style_text_font(set->up2_tempnum_label, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(set->up2_tempnum_label, 378, 153);
+    lv_obj_set_size(set->up2_tempnum_label, LV_SIZE_CONTENT, 32);
+    lv_obj_set_style_text_font(set->down2_tempnum_label, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(set->down2_tempnum_label, 546, 153);
+    lv_obj_set_size(set->down2_tempnum_label, LV_SIZE_CONTENT, 32);
+    lv_obj_set_style_text_font(set->up3_tempnum_label, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(set->up3_tempnum_label, 373, 153);
+    lv_obj_set_size(set->up3_tempnum_label, LV_SIZE_CONTENT, 32);
+    lv_obj_set_style_text_font(set->down3_tempnum_label, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(set->down3_tempnum_label, 541, 153);
+    lv_obj_set_size(set->down3_tempnum_label, LV_SIZE_CONTENT, 32);
+
+    /* ℃ 紧跟数字 ≈5px:y157 与数字盒同基线(原 159 基线矮 2px);盒宽 SIZE_CONTENT
+     * —— "℃"会被 tempunit 遍历重写成 "°C"(两字形),EN aktiv 下 ≈28px 超 26px
+     * 定宽盒 WRAP 折行、C 被 28 高裁没("95 °" 根因);内容宽后不折行 */
+    lv_obj_set_pos(set->up2_icon_label, 418, 153);
+    lv_obj_set_size(set->up2_icon_label, LV_SIZE_CONTENT, 28);
+    lv_obj_set_pos(set->up3_icon_label, 423, 153);
+    lv_obj_set_size(set->up3_icon_label, LV_SIZE_CONTENT, 28);
+    lv_obj_set_pos(set->down2_icon_label, 586, 153);
+    lv_obj_set_size(set->down2_icon_label, LV_SIZE_CONTENT, 28);
+    lv_obj_set_pos(set->down3_icon_label, 591, 153);
+    lv_obj_set_size(set->down3_icon_label, LV_SIZE_CONTENT, 28);
+
+    /* "温度：" 标签保持生成层原位(温165/度：252,用户定不再动) */
+
+    /* 胶囊按钮位置保持生成层原值(用户定不再重设 308/476),内容居中见上 */
+
+    /* 时间数字 48→30:y270 与 时/分 单位同基线;2026-09-26 整链再左移 7——
+     * "01" 墨迹 316..346 对齐上方胶囊可见左缘(318,用户定"和按钮左边缘差不多对齐"),
+     * 间距 "01|5|时353 |5|30 390-425 |4|分429"(内部节奏不变,标签不动) */
+    lv_obj_set_style_text_font(set->hour_label, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(set->hour_label, 310, 270);
+    lv_obj_set_size(set->hour_label, 40, 32);
+    lv_obj_set_style_text_font(set->min_label, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(set->min_label, 381, 270);
+    lv_obj_set_size(set->min_label, 44, 32);
+    lv_obj_set_pos(set->shi_label, 353, 270);
+    lv_obj_set_pos(set->fen_label, 429, 269);
+
+    /* ↑/↓ 换图:文本标签永久隐藏,运行时建 32x26 图(y162 与 ℃ 同行),显隐由
+     * setup_set_temp_display 按 2/3 位切换 */
+    lv_obj_add_flag(set->up2_dir_label, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(set->down2_dir_label, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(set->up3_dir_label, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(set->down3_dir_label, LV_OBJ_FLAG_HIDDEN);
+
+    const struct { lv_obj_t **slot; const char *src; int x; } imgs[4] = {
+        { &s_updown_dir_img[0], LVGL_IMAGE_PATH(dirup.png),   342 },
+        { &s_updown_dir_img[1], LVGL_IMAGE_PATH(dirdown.png), 510 },
+        { &s_updown_dir_img[2], LVGL_IMAGE_PATH(dirup.png),   337 },
+        { &s_updown_dir_img[3], LVGL_IMAGE_PATH(dirdown.png), 505 },
+    };
+    /* 仅在 lv_obj_clean 后的全新构建调用,旧指针必悬空,无条件新建;y157=可见胶囊(居中绘制)垂直中心 */
+    for (int i = 0; i < 4; i++) {
+        *imgs[i].slot = lv_img_create(set->obj);
+        lv_img_set_src(*imgs[i].slot, imgs[i].src);
+        lv_obj_set_pos(*imgs[i].slot, imgs[i].x, 157);
     }
 }
 // ==============================

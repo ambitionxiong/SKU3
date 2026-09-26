@@ -1700,6 +1700,8 @@ void hc_doorwait_rebuild(void);
 void hc_doorwait_lang_tune(void);
 void hotclean_set_align(lv_obj_t *icon, lv_obj_t *title, lv_obj_t *status, lv_obj_t *hint);   /* set 确认页组件对齐 cooking 基准 */
 void nav_lockicon_refit(void);   /* lockicon 换 54x54 大图:重适配当前屏所有锁图标按钮(全语言) */
+void updown_set_refit(updown_bbq_set_t *set);   /* updown set 排版精修:数字统一 30 号+↑/↓ 换 dirup/dirdown 图(仅构建路径调用) */
+lv_obj_t *updown_dir_img_get(int i);   /* updown set 方向箭头图(0=up2 1=down2 2=up3 3=down3),EN tune 位移用 */
 
 /* ==================== 温度显示单位（℉）====================
  * 内部存储/编码器范围/协议全部保持摄氏，仅标签渲染层按 Set_TempUnit 换算显示。

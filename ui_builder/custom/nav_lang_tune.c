@@ -16579,31 +16579,38 @@ void updown_bbq_set_lang_tune(void)
     lv_obj_set_size(pg->wen_label, 100, 32);
 
     /* du_label: 标签 | "度：" | (252,155) | 64x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->du_label, 252, 155);
+    lv_obj_set_pos(pg->du_label, 255, 155);
     lv_obj_set_size(pg->du_label, 64, 32);
 
     /* cooktime_label: 标签 | "烹饪时间：" | (141,270) | 175x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->cooktime_label, 150, 270);
     lv_obj_set_size(pg->cooktime_label, 175, 32);
 
+    /* 时间行(2026-09-26 三轮:按用户设计稿间距重排——crop 实测 :|12|01|14|h|10|30|12|min,
+     * 缩放 ≈1.15;2px 粒度扫描修正锚点:真冒号墨迹 319-321(此前误把 "e" 尾 296-310 当
+     * 冒号,导致整链偏左、单位与数字挤成 5-6px)。hour/min 盒 text_align LEFT pin 不变 */
+    lv_obj_set_style_text_align(pg->min_label, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(pg->hour_label, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
     if (set_hour == 0) {                       // 无小时
-      lv_obj_set_pos(pg->min_label, 307 + 27, 254 + 5);
+      lv_obj_set_pos(pg->min_label, 331, 270);   /* "30"墨迹333-366 |12| min378 */
+      lv_obj_set_size(pg->min_label, 36, 32);
       lv_obj_set_size(pg->shi_label, 30, 32);
 
-      lv_obj_set_pos(pg->fen_label, 368 + 25, 270 + 3);
-      lv_obj_set_size(pg->fen_label, 30, 32);
+      lv_obj_set_pos(pg->fen_label, 376, 270);
+      lv_obj_set_size(pg->fen_label, LV_SIZE_CONTENT, 32);
     } else {                                   // 有小时
-      lv_obj_set_pos(pg->min_label, 395 + 29, 254 + 3);
+      lv_obj_set_pos(pg->min_label, 395, 270);   /* "30"墨迹397-430 |12| min442 */
+      lv_obj_set_size(pg->min_label, 36, 32);
       lv_obj_set_size(pg->shi_label, 30, 32);
 
-      lv_obj_set_pos(pg->fen_label, 448 + 35, 270);
-      lv_obj_set_size(pg->fen_label, 42, 32);   
-      
-      lv_obj_set_pos(pg->hour_label, 307 + 23, 254 + 3);
-      lv_obj_set_size(pg->hour_label, 62, 53);
+      lv_obj_set_pos(pg->fen_label, 440, 270);
+      lv_obj_set_size(pg->fen_label, LV_SIZE_CONTENT, 32);
 
-      lv_obj_set_pos(pg->shi_label, 368 + 14, 270);
-      lv_obj_set_size(pg->shi_label, 30, 32);
+      lv_obj_set_pos(pg->hour_label, 331, 270);  /* "02"墨迹333-361 |14| h375 */
+      lv_obj_set_size(pg->hour_label, 36, 32);
+
+      lv_obj_set_pos(pg->shi_label, 373, 270);   /* "h"墨迹375-387 |10| "30"397 */
+      lv_obj_set_size(pg->shi_label, LV_SIZE_CONTENT, 32);
 
     }
     // /* hour_label: 标签 | "01" | (307,254) | 62x53 | font taiwanpearl_regular_48 */
@@ -16648,11 +16655,11 @@ void updown_bbq_set_lang_tune(void)
     lv_obj_set_size(pg->chi_label, 26, 32);
 
     /* downtemp_button: 按钮 | (476,140) | 170x61 | font montserratmedium_16 | bg: tembk.png */
-    lv_obj_set_pos(pg->downtemp_button, 428, 140);
+    lv_obj_set_pos(pg->downtemp_button, 417+10, 140);
     lv_obj_set_size(pg->downtemp_button, 170, 61);
 
     /* uptemp_button: 按钮 | (308,140) | 170x61 | font montserratmedium_16 | bg: tembk.png */
-    lv_obj_set_pos(pg->uptemp_button, 260, 140);
+    lv_obj_set_pos(pg->uptemp_button, 249+10, 140);
     lv_obj_set_size(pg->uptemp_button, 170, 61);
 
     /* contain_label: 标签 | "自动保温" | (841,381) | 120x32 | font taiwanpearl_regular_30 */
@@ -16683,29 +16690,35 @@ void updown_bbq_set_lang_tune(void)
     lv_obj_set_style_bg_img_src(pg->contain_button, LVGL_IMAGE_PATH(off_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(pg->contain_button, LVGL_IMAGE_PATH(focusoff_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);    
 
-    /* down3_dir_label: 标签 | "↓" | (493,159) | 26x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->down3_dir_label, 445, 159);
-    lv_obj_set_size(pg->down3_dir_label, 26, 32);
+    /* 胶囊内容三轮(2026-09-26 截图实测):①数字盒 55/40 定宽 CENTER 渲染、"180" 墨迹 46
+     * 居中后左缘内缩,与图标仅 3px(用户"数字和图片挨得太近")→组距 图标|8|数字|8|℃ 重排;
+     * ②内容墨迹垂直中心 167.5 vs 胶囊环中心 171(aktiv 字形盒内偏高,CN 170.5 居中无此患)
+     * →nums/℃ y153→157、图标 y154→158 整体下移 4;数字盒加 CENTER pin 防漂 */
+    /* ↓ 已换 dirdown 图(nav_core.c 运行时建,索引 3):组居中可见胶囊(按钮 427→真中心 512) */
+    lv_obj_t *dir_img = updown_dir_img_get(3);
+    if (dir_img) lv_obj_set_pos(dir_img, 452, 158);
 
-    /* down3_tempnum_label: 标签 | "100" | (510,143) | 87x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->down3_tempnum_label, 461, 147);
-    lv_obj_set_size(pg->down3_tempnum_label, 87, 53);
+    /* down3_tempnum_label: EN 3 位盒 55x32 CENTER,"180" 墨迹 492-538 |8| ℃544 */
+    lv_obj_set_pos(pg->down3_tempnum_label, 488, 157);
+    lv_obj_set_size(pg->down3_tempnum_label, 55, 32);
+    lv_obj_set_style_text_align(pg->down3_tempnum_label, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    /* down3_icon_label: 标签 | "℃" | (600,159) | 26x28 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->down3_icon_label, 521, 159);
-    lv_obj_set_size(pg->down3_icon_label, 60, 28);
+    /* down3_icon_label: ℃ 紧跟数字后,y157 与数字同基线 */
+    lv_obj_set_pos(pg->down3_icon_label, 544, 157);
+    lv_obj_set_size(pg->down3_icon_label, LV_SIZE_CONTENT, 28);
 
-    /* up2_dir_label: 标签 | "↑" | (342,159) | 26x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->up2_dir_label, 285, 159);
-    lv_obj_set_size(pg->up2_dir_label, 26, 32);
+    /* ↑ 已换 dirup 图(索引 0):组居中可见胶囊(按钮 259→真中心 344) */
+    dir_img = updown_dir_img_get(0);
+    if (dir_img) lv_obj_set_pos(dir_img, 290, 158);
 
-    /* up2_tempnum_label: 标签 | "80" | (365,143) | 59x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->up2_tempnum_label, 310, 147);
-    lv_obj_set_size(pg->up2_tempnum_label, 59, 53);
+    /* up2_tempnum_label: EN 2 位盒 40x32 CENTER,"80" 墨迹 332-364 |8| ℃370 */
+    lv_obj_set_pos(pg->up2_tempnum_label, 326, 157);
+    lv_obj_set_size(pg->up2_tempnum_label, 40, 32);
+    lv_obj_set_style_text_align(pg->up2_tempnum_label, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    /* up2_icon_label: 标签 | "℃" | (422,159) | 26x28 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->up2_icon_label, 340, 159);
-    lv_obj_set_size(pg->up2_icon_label, 60, 28);
+    /* up2_icon_label: ℃ 紧跟数字后,y157 同基线 */
+    lv_obj_set_pos(pg->up2_icon_label, 370, 157);
+    lv_obj_set_size(pg->up2_icon_label, LV_SIZE_CONTENT, 28);
 
     /* sure_label: 标签 | "确 定" | (1010,39) | 80x36 | font taiwanpearl_regular_36 */
     lv_obj_set_pos(pg->sure_label, 1000, 42);
@@ -16734,29 +16747,31 @@ void updown_bbq_set_lang_tune(void)
     lv_obj_set_style_bg_img_src(pg->contain_on_button, LVGL_IMAGE_PATH(on1_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(pg->contain_on_button, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 
-    /* up3_icon_label: 标签 | "℃" | (432,159) | 26x28 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->up3_icon_label, 361, 159);
-    lv_obj_set_size(pg->up3_icon_label, 50, 28);
+    /* up3_icon_label: ℃ 紧跟数字后,y157 同基线 */
+    lv_obj_set_pos(pg->up3_icon_label, 376, 157);
+    lv_obj_set_size(pg->up3_icon_label, LV_SIZE_CONTENT, 28);
 
-    /* down2_icon_label: 标签 | "℃" | (590,159) | 26x28 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->down2_icon_label, 518, 159);
-    lv_obj_set_size(pg->down2_icon_label, 50, 28);
+    /* down2_icon_label: ℃ 紧跟数字后,y157 同基线 */
+    lv_obj_set_pos(pg->down2_icon_label, 538, 157);
+    lv_obj_set_size(pg->down2_icon_label, LV_SIZE_CONTENT, 28);
 
-    /* down2_tempnum_label: 标签 | "80" | (504,143) | 83x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->down2_tempnum_label, 452, 147);
-    lv_obj_set_size(pg->down2_tempnum_label, 83, 53);
+    /* down2_tempnum_label: EN 2 位盒 40x32 CENTER,组居中真中心 512 */
+    lv_obj_set_pos(pg->down2_tempnum_label, 494, 157);
+    lv_obj_set_size(pg->down2_tempnum_label, 40, 32);
+    lv_obj_set_style_text_align(pg->down2_tempnum_label, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    /* down2_dir_label: 标签 | "↓" | (510,159) | 26x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->down2_dir_label, 455, 159);
-    lv_obj_set_size(pg->down2_dir_label, 26, 32);
+    /* ↓ 已换 dirdown 图(索引 1):组居中可见胶囊(真中心 512) */
+    dir_img = updown_dir_img_get(1);
+    if (dir_img) lv_obj_set_pos(dir_img, 458, 158);
 
-    /* up3_dir_label: 标签 | "↑" | (325,159) | 26x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->up3_dir_label, 273, 159);
-    lv_obj_set_size(pg->up3_dir_label, 26, 32);
+    /* ↑ 已换 dirup 图(索引 2):组居中可见胶囊(真中心 344) */
+    dir_img = updown_dir_img_get(2);
+    if (dir_img) lv_obj_set_pos(dir_img, 284, 158);
 
-    /* up3_tempnum_label: 标签 | "100" | (342,143) | 87x53 | font taiwanpearl_regular_48 */
-    lv_obj_set_pos(pg->up3_tempnum_label, 291, 147);
-    lv_obj_set_size(pg->up3_tempnum_label, 87, 53);
+    /* up3_tempnum_label: EN 3 位盒 55x32 CENTER,"180" 墨迹 324-370,组居中真中心 344 */
+    lv_obj_set_pos(pg->up3_tempnum_label, 320, 157);
+    lv_obj_set_size(pg->up3_tempnum_label, 55, 32);
+    lv_obj_set_style_text_align(pg->up3_tempnum_label, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
 
 }
 

@@ -1001,6 +1001,7 @@ void page_pop(void)
         if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
 
         updown_bbq_set_create(&ui_manager);
+        updown_set_refit(updown_bbq_set_get(&ui_manager));   /* 数字 30 号+箭头图(2026-09-25),须在 setup_set_temp_display 前 */
         {
             updown_bbq_set_t *set = updown_bbq_set_get(&ui_manager);
             if (set) {
@@ -1028,13 +1029,14 @@ void page_pop(void)
                 if (set_hour == 0) {
                     lv_obj_add_flag(set->hour_label, LV_OBJ_FLAG_HIDDEN);
                     lv_obj_add_flag(set->shi_label, LV_OBJ_FLAG_HIDDEN);
-                    lv_obj_set_pos(set->min_label, 312, 254);
-                    lv_obj_set_pos(set->fen_label, 365, 269);
+                    lv_obj_set_pos(set->min_label, 310, 270);   /* 2026-09-26 整链左移 7:"30" 墨迹贴胶囊左缘;盒 36 右缘 346 贴 分350 */
+                    lv_obj_set_size(set->min_label, 36, 32);
+                    lv_obj_set_pos(set->fen_label, 350, 269);
                 } else {
                     lv_obj_clear_flag(set->hour_label, LV_OBJ_FLAG_HIDDEN);
                     lv_obj_clear_flag(set->shi_label, LV_OBJ_FLAG_HIDDEN);
-                    lv_obj_set_pos(set->min_label, 395, 254);
-                    lv_obj_set_pos(set->fen_label, 448, 269);
+                    lv_obj_set_pos(set->min_label, 381, 270);
+                    lv_obj_set_pos(set->fen_label, 429, 269);
                 }
 
                 /* 恢复 toggle 状态（跟随变量） */
