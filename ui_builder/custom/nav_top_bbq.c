@@ -257,6 +257,7 @@ void jump_to_top_bbq_set(void)
     page_push(PAGE_TOP_BBQ_SET);
     lv_obj_clean(lv_scr_act());
     top_bbq_set_create(&ui_manager);
+    top_bbq_set_refit(top_bbq_set_get(&ui_manager));   /* 数字 30 号(2026-09-26 试点),须在时间分支前 */
 
     preheat_on = 0; delay_on = 0; contain_on = contain_default();
 
@@ -285,37 +286,40 @@ void jump_to_top_bbq_set(void)
     if (set_hour == 0) {
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->label_58, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312, 254);
-        lv_obj_set_pos(set->label_59, 365, 269);
+        lv_obj_set_pos(set->min, 310, 270);   /* 30 号 hour0:分钟贴标签 */
+        lv_obj_set_size(set->min, 36, 32);
+        lv_obj_set_pos(set->label_59, 347, 269);
     } else {
         lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->label_58, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395, 254);
-        lv_obj_set_pos(set->label_59, 448, 269);
+        lv_obj_set_pos(set->min, 390, 270);   /* 30 号 */
+        lv_obj_set_pos(set->label_59, 427, 269);
     }
 
         apply_toggle_state(set->offpreheat, set->onpreheat_button, preheat_on);
     if (set_hour == 0) {
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->label_58, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312, 254);
-        lv_obj_set_pos(set->label_59, 365, 269);
+        lv_obj_set_pos(set->min, 310, 270);   /* 30 号 hour0:分钟贴标签 */
+        lv_obj_set_size(set->min, 36, 32);
+        lv_obj_set_pos(set->label_59, 347, 269);
     } else {
         lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->label_58, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395, 254);
-        lv_obj_set_pos(set->label_59, 448, 269);
+        lv_obj_set_pos(set->min, 390, 270);   /* 30 号 */
+        lv_obj_set_pos(set->label_59, 427, 269);
     }
         apply_toggle_state(set->offdelay, set->ondelay_button, delay_on);
         mode_set_apply_delay_label(set->ondelay_button);
     if (set_hour == 0) {
         lv_obj_add_flag(set->label_58, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312, 254);
-        lv_obj_set_pos(set->label_59, 365, 269);
+        lv_obj_set_pos(set->min, 310, 270);   /* 30 号 hour0:分钟贴标签 */
+        lv_obj_set_size(set->min, 36, 32);
+        lv_obj_set_pos(set->label_59, 347, 269);
     } else {
         lv_obj_clear_flag(set->label_58, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395, 254);
-        lv_obj_set_pos(set->label_59, 448, 269);
+        lv_obj_set_pos(set->min, 390, 270);   /* 30 号 */
+        lv_obj_set_pos(set->label_59, 427, 269);
     }
         apply_toggle_state(set->offcontain, set->oncontain_button, contain_on);
 
@@ -817,6 +821,7 @@ void top_bbq_rebuild_menu(page_id_t child)
 void top_bbq_rebuild_set(page_id_t child)
 {
     top_bbq_set_create(&ui_manager);
+    top_bbq_set_refit(top_bbq_set_get(&ui_manager));   /* 数字 30 号(2026-09-26 试点) */
     top_bbq_set_t *set = top_bbq_set_get(&ui_manager);
     if (set) {
         lv_obj_t *btns[] = {
@@ -842,39 +847,42 @@ void top_bbq_rebuild_set(page_id_t child)
     if (set_hour == 0) {
         lv_obj_add_flag(set->label_58, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312, 254);
-        lv_obj_set_pos(set->label_59, 365, 269);
+        lv_obj_set_pos(set->min, 310, 270);   /* 30 号 hour0:分钟贴标签 */
+        lv_obj_set_size(set->min, 36, 32);
+        lv_obj_set_pos(set->label_59, 347, 269);
     } else {
         lv_obj_clear_flag(set->label_58, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395, 254);
-        lv_obj_set_pos(set->label_59, 448, 269);
+        lv_obj_set_pos(set->min, 390, 270);   /* 30 号 */
+        lv_obj_set_pos(set->label_59, 427, 269);
     }
 
         apply_toggle_state(set->offpreheat, set->onpreheat_button, preheat_on);
     if (set_hour == 0) {
         lv_obj_add_flag(set->label_58, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312, 254);
-        lv_obj_set_pos(set->label_59, 365, 269);
+        lv_obj_set_pos(set->min, 310, 270);   /* 30 号 hour0:分钟贴标签 */
+        lv_obj_set_size(set->min, 36, 32);
+        lv_obj_set_pos(set->label_59, 347, 269);
     } else {
         lv_obj_clear_flag(set->label_58, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395, 254);
-        lv_obj_set_pos(set->label_59, 448, 269);
+        lv_obj_set_pos(set->min, 390, 270);   /* 30 号 */
+        lv_obj_set_pos(set->label_59, 427, 269);
     }
         apply_toggle_state(set->offdelay, set->ondelay_button, delay_on);
         mode_set_apply_delay_label(set->ondelay_button);
     if (set_hour == 0) {
         lv_obj_add_flag(set->label_58, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312, 254);
-        lv_obj_set_pos(set->label_59, 365, 269);
+        lv_obj_set_pos(set->min, 310, 270);   /* 30 号 hour0:分钟贴标签 */
+        lv_obj_set_size(set->min, 36, 32);
+        lv_obj_set_pos(set->label_59, 347, 269);
     } else {
         lv_obj_clear_flag(set->label_58, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395, 254);
-        lv_obj_set_pos(set->label_59, 448, 269);
+        lv_obj_set_pos(set->min, 390, 270);   /* 30 号 */
+        lv_obj_set_pos(set->label_59, 427, 269);
     }
         apply_toggle_state(set->offcontain, set->oncontain_button, contain_on);
 

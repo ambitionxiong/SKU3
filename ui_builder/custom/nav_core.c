@@ -1139,6 +1139,38 @@ void updown_set_refit(updown_bbq_set_t *set)
         lv_obj_set_pos(*imgs[i].slot, imgs[i].x, 157);
     }
 }
+
+/* top_bbq_set(頂部燒烤)排版精修(2026-09-26):其余模式 set 页数字改小第一版(试点),
+ * 样式镜像 updown_set_refit 定稿——温度/时间数字 48→30、℃ SIZE_CONTENT×28 防 °C
+ * 重写折行、时间行 LEFT pin 等间距;单温度无箭头图。仅构建路径调用(jump/重建) */
+void top_bbq_set_refit(top_bbq_set_t *pg)
+{
+    if (!pg || !pg->obj) return;
+
+    /* 温度数字:度：后 308→墨迹311,与时间行数字列对齐,冒号后均 9px;LEFT pin;y157 与度： 垂直居中(数字字形偏上 2px,2026-09-27 实测中心 201.5 vs 标题 203) */
+    lv_obj_set_style_text_font(pg->uptemp2, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(pg->uptemp2, 308, 157);
+    lv_obj_set_size(pg->uptemp2, LV_SIZE_CONTENT, 32);
+    lv_obj_set_style_text_align(pg->uptemp2, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    /* ℃ 两位(icon2)/三位(icon3)各跟数字后 ≈5px,y157 同步居中 */
+    lv_obj_set_pos(pg->icon2, 346, 157);
+    lv_obj_set_size(pg->icon2, LV_SIZE_CONTENT, 28);
+    lv_obj_set_pos(pg->icon3, 360, 157);
+    lv_obj_set_size(pg->icon3, LV_SIZE_CONTENT, 28);
+
+    /* 时间数字 48→30:hour (310,270) 40x32、时 351、min (390,270) 44x32、分钟 427——2026-09-27 三段间隔均分 12px(02|12|時|12|30|12|分鐘,原 14/2/23 不匀) */
+    lv_obj_set_style_text_font(pg->hour, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(pg->hour, 310, 270);
+    lv_obj_set_size(pg->hour, 40, 32);
+    lv_obj_set_style_text_align(pg->hour, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(pg->min, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(pg->min, 390, 270);
+    lv_obj_set_size(pg->min, 44, 32);
+    lv_obj_set_style_text_align(pg->min, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(pg->label_58, 351, 270);
+    lv_obj_set_pos(pg->label_59, 427, 269);
+}
 // ==============================
 // 页面栈操作
 // ==============================
@@ -1233,6 +1265,107 @@ static lv_obj_tree_walk_res_t lockicon_fit_cb(lv_obj_t *obj, void *user_data)
 void nav_lockicon_refit(void)
 {
     lv_obj_tree_walk(lv_scr_act(), lockicon_fit_cb, NULL);
+}
+
+/* menu_top/menu_low/setting 的 ↑/↓ 文本标签换图 + 下划线加长(2026-09-26):
+ * 素材 dirup_menu/dirdown_menu 35x28、dirup_setting/dirdown_setting 29x24(用户加);
+ * 幂等改写现有控件(清文本+bg 图,按中心绘制盒图同尺寸正好填满)不新建对象,
+ * 挂 lang_on_page_built 全语言——EN tune 的 dir/line 行随即被本函数覆盖;
+ * 下划线 lv_image_set_scale_x(256=100%)左锚右伸 ≈14px=一张箭头图宽;
+ * hourline/minline 两条 EN 由 tune 按英文字宽管(scale 282/377),此处仅中繁 */
+static void dir_label_to_img(lv_obj_t *lbl, const char *src, int x, int y, int w, int h)
+{
+    if (!lbl) return;
+    lv_label_set_text(lbl, "");
+    lv_obj_set_size(lbl, w, h);
+    lv_obj_set_pos(lbl, x, y);
+    lv_obj_set_style_bg_img_src(lbl, src, LV_PART_MAIN | LV_STATE_DEFAULT);
+}
+
+/* 仅转换不定位(清文本+尺寸+bg 图):setting 页图标位置分语言——CN/繁 refit 设、
+ * EN 归 tune(tune 在 refit 前跑,refit 的 EN 分支不能带位置否则覆盖 tune) */
+static void dir_label_to_img_conv(lv_obj_t *lbl, const char *src, int w, int h)
+{
+    if (!lbl) return;
+    lv_label_set_text(lbl, "");
+    lv_obj_set_size(lbl, w, h);
+    lv_obj_set_style_bg_img_src(lbl, src, LV_PART_MAIN | LV_STATE_DEFAULT);
+}
+
+void nav_dirimg_refit(void)
+{
+    if (depth <= 0) return;
+    page_id_t id = page_stack[depth - 1];
+
+    if (id == PAGE_UPDOWN_BBQ_MENU_TOP) {
+        updown_bbq_menu_top_t *pg = updown_bbq_menu_top_get(&ui_manager);
+        if (!pg) return;
+        /* temp 标签生成层右对齐(align 3):EN "95" 墨迹 ≈605..679,图标 568..602 仅距 3px
+         * 重叠(用户 2026-09-26)→EN 图标左移 10,CN/繁未报不动 */
+        int dx = is_english() ? -10 : 0;
+        dir_label_to_img(pg->dir3, LVGL_IMAGE_PATH(dirup_menu.png), 529 + dx, 282, 35, 28);
+        dir_label_to_img(pg->dir2, LVGL_IMAGE_PATH(dirup_menu.png), 568 + dx, 282, 35, 28);
+        /* 下划线:EN 归 tune 管(2026-09-26 起 line2/line3 pos+scale 在 nav_lang_tune.c,
+         * 用户直接改 tune);此处仅中/繁 */
+        if (!is_english()) {
+            lv_obj_set_pos(pg->line2, 565, 327);
+            lv_obj_set_pos(pg->line3, 530, 327);
+            if (pg->line2) lv_image_set_scale_x(pg->line2, 282);   /* 146→161 */
+            if (pg->line3) lv_image_set_scale_x(pg->line3, 277);   /* 181→196 */
+        }
+    } else if (id == PAGE_UPDOWN_BBQ_MENU_LOW) {
+        updown_bbq_menu_low_t *pg = updown_bbq_menu_low_get(&ui_manager);
+        if (!pg) return;
+        int dx = is_english() ? -10 : 0;   /* 同 menu_top:EN 图标左移 10 让开右对齐数字 */
+        dir_label_to_img(pg->dir3, LVGL_IMAGE_PATH(dirdown_menu.png), 529 + dx, 282, 35, 28);
+        dir_label_to_img(pg->dir2, LVGL_IMAGE_PATH(dirdown_menu.png), 568 + dx, 282, 35, 28);
+        if (!is_english()) {
+            lv_obj_set_pos(pg->line2, 565, 327);
+            lv_obj_set_pos(pg->line3, 530, 327);
+            if (pg->line2) lv_image_set_scale_x(pg->line2, 282);
+            if (pg->line3) lv_image_set_scale_x(pg->line3, 277);
+        }
+    } else if (id == PAGE_UPDOWN_BBQ_SETTING) {
+        updown_bbq_setting_t *pg = updown_bbq_setting_get(&ui_manager);
+        if (!pg) return;
+        /* 两列整体重排(2026-09-26 用户"挤在一起了,重新规划")后图标/单位分语言微调:
+         * 转换全语言(清文本+29x24+bg 图);位置 CN/繁在 !is_english() 块、EN 归 tune */
+        dir_label_to_img_conv(pg->dirup3_label, LVGL_IMAGE_PATH(dirup_setting.png), 29, 24);
+        dir_label_to_img_conv(pg->dirdown3_label, LVGL_IMAGE_PATH(dirdown_setting.png), 29, 24);
+        dir_label_to_img_conv(pg->dirup2_label, LVGL_IMAGE_PATH(dirup_setting.png), 29, 24);
+        dir_label_to_img_conv(pg->dirdown2_label, LVGL_IMAGE_PATH(dirdown_setting.png), 29, 24);
+        if (!is_english()) {
+            /* 上温图标对齐下温组间距(2026-09-26):下温现间距 三位 5(329−324)/两位 1(339−338),
+             * 上温数字左缘 175/185 → dirup3 右缘 170=141、dirup2 右缘 184=155 */
+            lv_obj_set_pos(pg->dirup3_label, 141, 232);
+            lv_obj_set_pos(pg->dirup2_label, 155, 232);
+            lv_obj_set_pos(pg->dirdown3_label, 295, 232);
+            lv_obj_set_pos(pg->dirdown2_label, 309, 232);
+            lv_obj_set_pos(pg->tempdown_label, 315, 213);
+            lv_obj_set_pos(pg->icon3_label2, 403, 229);   /* CN 三位下温单位再左移 2(405→403) */
+            lv_obj_set_pos(pg->icon2_label2, 389, 229);
+        }
+        if (pg->longup_templine_img) {
+            lv_obj_set_pos(pg->longup_templine_img, 134, 269);   /* 再右移 2(132→134,2026-09-26) */
+            lv_image_set_scale_x(pg->longup_templine_img, 295);   /* 132→152,罩 col1 列组 */
+        }
+        if (pg->longdown_templine_img) {
+            lv_obj_set_pos(pg->longdown_templine_img, 296, 269);   /* 再右移 2(294→296) */
+            lv_image_set_scale_x(pg->longdown_templine_img, 289); /* 132→149,罩 col2 列组 */
+        }
+        if (pg->shortup_templine_img) {
+            lv_obj_set_pos(pg->shortup_templine_img, 143, 269);
+            lv_image_set_scale_x(pg->shortup_templine_img, 318);  /* 111→138:两位态起点=图标 143,至 ℃ 281 */
+        }
+        if (pg->shordown_templine_img) {
+            lv_obj_set_pos(pg->shordown_templine_img, 305, 269);
+            lv_image_set_scale_x(pg->shordown_templine_img, 311); /* 111→135:至 ℃ 440 */
+        }
+        if (!is_english()) {
+            if (pg->hourline_img) lv_image_set_scale_x(pg->hourline_img, 298);   /* 85→99 */
+            if (pg->minline_label) lv_image_set_scale_x(pg->minline_label, 298);
+        }
+    }
 }
 
 /* 设置页"自动保温"(SET_Data.Set_KeepWarm)是总默认值:各模式 set 页进入时

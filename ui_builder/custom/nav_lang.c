@@ -364,4 +364,5 @@ void lang_on_page_built(void)
     }
 
     nav_lockicon_refit();   /* lockicon 换 54x54 大图:全语言统一重适配锁图标按钮(EN 须在 tune 之后,tune 里有 50x43 复位) */
+    nav_dirimg_refit();     /* menu_top/low+setting 箭头换图+下划线加长:全语言统一(EN 须在 tune 之后覆盖 tune 的 dir/line 行) */
 }
