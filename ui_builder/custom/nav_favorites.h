@@ -186,6 +186,7 @@ void Add_favorites_of_Multi(Fun_Multi_SUM_Value Fav_Val);
 void Delete_favorites(uint16_t favorites_id);
 void Clear_all_favorites(void);
 bool Favorites_Check_Exists(void);
+int Favorites_Find_Exists(void);   /* 查当前参数已存在的收藏卡位(口径同 Check_Exists),未命中 -1 */
 void Favorites_Cover_Func(void);
 bool Favorites_Check_Is_full(void);
 void Fav_Start(void);

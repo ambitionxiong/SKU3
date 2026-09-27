@@ -390,6 +390,13 @@ void nav_topflag_like_show(void)
     nav_topflag_demo_sync();   /* 立即显形,不等 500ms tick */
 }
 
+/* 取消收藏:立即收回 like 徽标(完成页内切换收藏时调用,nav_favorites.c) */
+void nav_topflag_like_hide(void)
+{
+    s_topflag_like = 0;
+    nav_topflag_demo_sync();
+}
+
 // 待机页时钟缓存（waitmenu_apply_clock 使用）
 static lv_obj_t *lw_obj = NULL;
 static uint8_t lw_hour = 0xFF, lw_min = 0xFF;

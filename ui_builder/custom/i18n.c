@@ -376,6 +376,7 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "烤生蚝", "Grilled Oysters" },
         { "烤箱运行时不可用。", "Not available\nwhen the oven\nis running." },
         { "收藏成功", "Saved" },
+        { "已取消收藏", "Removed from Favorites" },
         { "该烹调已有，", "Already saved," },
         { "需要覆盖原有烹调吗？", "Overwrite existing?" },
         { "收藏夹已满，", "Favorites full," },

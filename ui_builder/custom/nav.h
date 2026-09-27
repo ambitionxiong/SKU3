@@ -764,6 +764,8 @@ void nav_hint_cancel(void);
 int nav_hint_active(void);
 void nav_show_fav_tip(void);   /* 收藏保存成功提示:topflag 顶层 tip3,2 秒自动消失(nav_hint.c) */
 void nav_topflag_like_show(void);   /* 收藏成功:topflag like 徽标显示到当前完成页,离页自动收回(nav_system.c) */
+void nav_topflag_like_hide(void);   /* 取消收藏:立即收回 like 徽标(nav_system.c) */
+void nav_show_fav_cancel_tip(void);   /* 取消收藏提示:同收藏成功样式含右侧标语隐藏(nav_hint.c) */
 void nav_show_state_tip(const char *text);   /* 通用状态提示:右侧 tip3 显示文本 2 秒(nav_hint.c) */
 void nav_favtip_cancel(void);  /* BACK 提前关闭收藏提示 */
 int nav_favtip_active(void);

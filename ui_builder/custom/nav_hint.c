@@ -311,6 +311,19 @@ void nav_show_fav_tip(void)
     printf("[hint] fav tip show\n");
 }
 
+// 取消收藏提示:同收藏成功样式(隐藏完成页右侧标语防重叠,2 秒自动消失并恢复)
+void nav_show_fav_cancel_tip(void)
+{
+    nav_favtip_hide();   /* 重复触发:重置 2 秒计时 */
+    topflagpage_t *tf = topflagpage_get(&ui_manager);
+    if (!tf || !tf->obj || !tf->tip3) return;
+    lv_label_set_text(tf->tip3, tr("已取消收藏"));   /* 每次显示时设文本,随语言切换 */
+    nav_favtip_collect_hide();   /* 隐藏完成页右侧组件(防烫图标/文字),恢复在 hide */
+    lv_obj_clear_flag(tf->tip3, LV_OBJ_FLAG_HIDDEN);
+    g_favtip_timer = lv_timer_create(favtip_timer_cb, 2000, NULL);
+    printf("[hint] fav cancel tip show\n");
+}
+
 // 通用状态提示:右侧 tip3 显示任意文本 2 秒,无遮罩、不隐藏页面元素
 // (设置覆盖层开关项的即时反馈等)
 void nav_show_state_tip(const char *text)

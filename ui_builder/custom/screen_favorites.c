@@ -532,6 +532,62 @@ bool Favorites_Check_Exists()
     }
     return false;
 }
+//查找当前参数已存在的收藏卡位（匹配口径与 Favorites_Check_Exists 完全一致），未命中返回 -1
+int Favorites_Find_Exists()
+{
+	Fav_Select_By_Probe();	//按当前探针模式选择收藏集合
+    for (uint8_t i = 0; i < 8; i++)
+	{
+        if (input_Mode_name == Fav_Cur->favorites_val[i].PengTiaoMode_name)
+		{
+			int vm = Fav_Cur->favorites_val[i].PengTiaoMode_name;
+			if ((vm == MODE_COOK4 || vm == MODE_FROZEN_BAKE) &&
+			    (page_id_t)Fav_Cur->favorites_val[i].source_page != g_delay_source_page)
+			{
+				continue;
+			}
+			if (Fav_Cur->favorites_val[i].PengTiaoMode_name == FAV_MODE_SIX)
+			{
+				if (Fav_Cur->favorites_val[i].Six_Cook_Fun == input_Six_num)
+				{
+					return i;
+				}
+				else
+				{
+					continue;
+				}
+			}
+			else if (is_probe_inserted())
+			{
+				if (Fav_Cur->favorites_val[i].Probe_temp)
+				{
+					return i;
+				}
+				else
+				{
+					continue;
+				}
+			}
+			else if (Fav_Cur->favorites_val[i].PengTiaoMode_name == FAV_MODE_MULTI)
+			{
+				return i;
+			}
+			else
+			{
+				if (Fav_Cur->favorites_val[i].Func_Hour	||
+					Fav_Cur->favorites_val[i].Func_Minute)
+				{
+					return i;
+				}
+				else
+				{
+					continue;
+				}
+			}
+		}
+    }
+    return -1;
+}
 //覆盖原有收藏夹相同功能
 void Favorites_Cover_Func()
 {

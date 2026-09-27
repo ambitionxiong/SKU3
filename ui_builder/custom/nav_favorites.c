@@ -40,6 +40,9 @@ static int8_t *fav_num_ptr(Fun_Multi_SUM_Value *v, int i)
     return &v->Func_num_3;
 }
 
+/* 本次完成页会话内已收藏过(再按 KEY_FAV=取消收藏);进新烹饪由 fav_snapshot_save 复位 */
+static uint8_t s_fav_saved_this_run = 0;
+
 /* 进入 cooking 时保存初始参数（运行中 setting 页改动不影响收藏） */
 void fav_snapshot_save(void)
 {
@@ -49,6 +52,7 @@ void fav_snapshot_save(void)
     fav_init_probe_temp = probe_target_temp;
     fav_init_temp_up    = set_temp_up;
     fav_init_temp_down  = set_temp_down;
+    s_fav_saved_this_run = 0;   /* 新烹饪会话:完成页"再按=取消收藏"状态复位(退出重跑同参数也走覆盖确认) */
 }
 
 /* 按收藏值返回模式名（含 FROZEN_BAKE/COOK4 子类，Six/多段） */
@@ -154,8 +158,20 @@ void favorites_save_current(void)
         input_Cooking_Mode = g_send.cook_mode;
     }
 
-    /* 查重优先于满夹判定:重复收藏走覆盖确认（覆盖不占新卡位,夹满不影响覆盖）,
+    /* 查重优先于满夹判定:重复收藏=取消收藏(切换逻辑,2026-09-27 用户定稿),
      * 只有非重复的新增收藏才需要检查夹满 */
+    /* 同一完成页会话内再按=取消收藏(会话=本次烹饪完成未退出;退出重跑由
+     * fav_snapshot_save 复位,同样参数再按走下方覆盖确认弹窗) */
+    if (s_fav_saved_this_run) {
+        int idx = Favorites_Find_Exists();
+        if (idx >= 0)
+            Delete_favorites(idx);      /* 复用收藏页删除语义(条目前移) */
+        nav_topflag_like_hide();        /* 收回红心角标 */
+        nav_show_fav_cancel_tip();      /* 右侧提示"已取消收藏"(同收藏成功样式,含右侧标语隐藏) */
+        s_fav_saved_this_run = 0;
+        g_send.buzzer_req = BUZZER_KEY_VALID;
+        return;
+    }
     if (Favorites_Check_Exists()) {
         /* 重复收藏:弹确认(tip1 该烹调已有 / tip2 需要覆盖原有烹调吗？/ sure 确 定)。
          * 不自动返回:确认(PRESS)→nav_favask_confirm 覆盖保存;BACK→关闭回完成页 */
@@ -177,6 +193,7 @@ void favorites_save_current(void)
     }
 
     fav_succeed_no_repetitive = 1;
+    s_fav_saved_this_run = 1;   /* 本次完成页会话已收藏:再按=取消 */
     g_send.buzzer_req = BUZZER_KEY_VALID;
     nav_topflag_like_show();   /* 收藏成功:topflag like 徽标点亮到当前完成页(离页自动收回) */
 }
@@ -280,6 +297,7 @@ void nav_favask_confirm(void)
     }
     Favorites_Cover_Func();
     fav_succeed_no_repetitive = 1;
+    s_fav_saved_this_run = 1;   /* 覆盖保存也是本会话收藏:再按=取消 */
     g_send.buzzer_req = BUZZER_KEY_VALID;
     nav_topflag_like_show();   /* 覆盖保存成功:同样点亮 like 徽标 */
 }
