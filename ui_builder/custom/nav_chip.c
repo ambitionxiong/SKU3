@@ -202,6 +202,7 @@ void jump_to_chip_set(void)
     preheat_on = 0; delay_on = 0; contain_on = contain_default();
     lv_obj_clean(lv_scr_act());
     chip_set_create(&ui_manager);
+    { chip_set_t *ms = chip_set_get(&ui_manager); if (ms) nav_modeset_refit(ms->temp, ms->hour, ms->min, ms->icon2, ms->icon3, ms->label_818, ms->label_819); }   /* 数字 30 号排版(top_bbq 验证终值,EN 由 tune 覆盖) */
 
     chip_set_t *set = chip_set_get(&ui_manager);
     if (set) {
@@ -231,26 +232,26 @@ void jump_to_chip_set(void)
     if (set_hour == 0) {
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->label_818, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312, 254);
-        lv_obj_set_pos(set->label_819, 365, 269);
+        lv_obj_set_pos(set->min, 310, 270);
+        lv_obj_set_pos(set->label_819, 347, 269);
     } else {
         lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->label_818, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395, 254);
-        lv_obj_set_pos(set->label_819, 448, 269);
+        lv_obj_set_pos(set->min, 390, 270);
+        lv_obj_set_pos(set->label_819, 427, 269);
     }
 
         apply_toggle_state(set->offcontain, set->oncontain, contain_on);
     if (set_hour == 0) {
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->label_818, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312, 254);
-        lv_obj_set_pos(set->label_819, 365, 269);
+        lv_obj_set_pos(set->min, 310, 270);
+        lv_obj_set_pos(set->label_819, 347, 269);
     } else {
         lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->label_818, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395, 254);
-        lv_obj_set_pos(set->label_819, 448, 269);
+        lv_obj_set_pos(set->min, 390, 270);
+        lv_obj_set_pos(set->label_819, 427, 269);
     }
 
 
@@ -708,6 +709,7 @@ void chip_rebuild_menu(page_id_t child)
 void chip_rebuild_set(page_id_t child)
 {
     chip_set_create(&ui_manager);
+    { chip_set_t *ms = chip_set_get(&ui_manager); if (ms) nav_modeset_refit(ms->temp, ms->hour, ms->min, ms->icon2, ms->icon3, ms->label_818, ms->label_819); }   /* 数字 30 号排版(top_bbq 验证终值,EN 由 tune 覆盖) */
     chip_set_t *set = chip_set_get(&ui_manager);
     if (set) {
         lv_obj_t *btns[] = {
@@ -736,26 +738,26 @@ void chip_rebuild_set(page_id_t child)
     if (set_hour == 0) {
         lv_obj_add_flag(set->label_818, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312, 254);
-        lv_obj_set_pos(set->label_819, 365, 269);
+        lv_obj_set_pos(set->min, 310, 270);
+        lv_obj_set_pos(set->label_819, 347, 269);
     } else {
         lv_obj_clear_flag(set->label_818, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395, 254);
-        lv_obj_set_pos(set->label_819, 448, 269);
+        lv_obj_set_pos(set->min, 390, 270);
+        lv_obj_set_pos(set->label_819, 427, 269);
     }
 
         apply_toggle_state(set->offcontain, set->oncontain, contain_on);
     if (set_hour == 0) {
         lv_obj_add_flag(set->label_818, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312, 254);
-        lv_obj_set_pos(set->label_819, 365, 269);
+        lv_obj_set_pos(set->min, 310, 270);
+        lv_obj_set_pos(set->label_819, 347, 269);
     } else {
         lv_obj_clear_flag(set->label_818, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395, 254);
-        lv_obj_set_pos(set->label_819, 448, 269);
+        lv_obj_set_pos(set->min, 390, 270);
+        lv_obj_set_pos(set->label_819, 427, 269);
     }
 
 

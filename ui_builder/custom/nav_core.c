@@ -686,6 +686,10 @@ void adjust_value(edit_field_t *f, int delta)
         else
             lv_obj_clear_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
         lv_obj_invalidate(lv_scr_act());
+    } else if (f->ind_short) {
+        /* 单线字段(探针行):编辑中跨 2/3 位自动换源移位;fit 内部按 src 前缀只对 underline 线生效 */
+        nav_underline_fit(f->ind_short, edit_disp(f, new_val));
+        lv_obj_invalidate(lv_scr_act());
     }
 
     /* dir 方向图标切换（上下烧烤菜单页） */
@@ -1170,6 +1174,99 @@ void top_bbq_set_refit(top_bbq_set_t *pg)
     lv_obj_set_style_text_align(pg->min, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_pos(pg->label_58, 351, 270);
     lv_obj_set_pos(pg->label_59, 427, 269);
+}
+
+/* 共享模式 set 页 refit(2026-09-27 推广):bottom/hotwind/hot/save/central/windchange/pizza_2/lasagna
+ * 八个同构页共用,几何=top_bbq_set_refit 验证终值(字段名各异故传对象指针)。
+ * 温度数字 48→30 (308,157) 与"度："垂直居中+冒号后 9px、℃ SIZE_CONTENT×28 防 °C 折行、
+ * 时间行三段 12px 均分(02|12|時|12|30|12|分鐘)+LEFT pin。仅构建路径调用(jump/重建),EN 由 tune 覆盖 */
+void nav_modeset_refit(lv_obj_t *temp, lv_obj_t *hour, lv_obj_t *min,
+                       lv_obj_t *icon2, lv_obj_t *icon3, lv_obj_t *shi, lv_obj_t *fen)
+{
+    if (!temp || !hour || !min || !icon2 || !icon3 || !shi || !fen) return;
+
+    lv_obj_set_style_text_font(temp, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(temp, 308, 157);
+    lv_obj_set_size(temp, LV_SIZE_CONTENT, 32);
+    lv_obj_set_style_text_align(temp, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    lv_obj_set_pos(icon2, 346, 157);
+    lv_obj_set_size(icon2, LV_SIZE_CONTENT, 28);
+    lv_obj_set_pos(icon3, 360, 157);
+    lv_obj_set_size(icon3, LV_SIZE_CONTENT, 28);
+
+    lv_obj_set_style_text_font(hour, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(hour, 310, 270);
+    lv_obj_set_size(hour, 40, 32);
+    lv_obj_set_style_text_align(hour, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(min, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(min, 390, 270);
+    lv_obj_set_size(min, 44, 32);
+    lv_obj_set_style_text_align(min, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(shi, 351, 270);
+    lv_obj_set_pos(fen, 427, 269);
+}
+
+/* probe 模式 set 页 refit(2026-09-27):bottom/hot/slowcook/updown 四个探针页共用。
+ * 两行温度无时间行:行1 设置温度 (308,155) 与 度： y155 同带、行2 探针温度 (308,270) 与
+ * 探针温度： y270 同带,冒号后均 9px、℃ 距数字 5px;探针℃ x 由 nav 按温度位数覆盖
+ * (华氏 99°C→210°F 三位),EN 由 tune 覆盖。仅构建路径调用(jump/重建) */
+void nav_probeset_refit(lv_obj_t *temp, lv_obj_t *icon2, lv_obj_t *icon3,
+                        lv_obj_t *probetemp, lv_obj_t *probec)
+{
+    if (!temp || !icon2 || !icon3 || !probetemp || !probec) return;
+
+    lv_obj_set_style_text_font(temp, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(temp, 308, 155);
+    lv_obj_set_size(temp, LV_SIZE_CONTENT, 32);
+    lv_obj_set_style_text_align(temp, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    lv_obj_set_pos(icon2, 346, 155);
+    lv_obj_set_size(icon2, LV_SIZE_CONTENT, 28);
+    lv_obj_set_pos(icon3, 360, 155);
+    lv_obj_set_size(icon3, LV_SIZE_CONTENT, 28);
+
+    lv_obj_set_style_text_font(probetemp, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_pos(probetemp, 308, 270);
+    lv_obj_set_size(probetemp, LV_SIZE_CONTENT, 32);
+    lv_obj_set_style_text_align(probetemp, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    lv_obj_set_pos(probec, 346, 270);
+    lv_obj_set_size(probec, LV_SIZE_CONTENT, 28);
+}
+
+/* probe menu 单下划线按显示位数换源/移位:华氏三位(99°C→210°F)时 120px 短线短一截。
+ * 直接复用探针行原生线控件(渲染已被证实),不新建控件;右缘 CN 1011/EN 1009 与 ℃ 对齐。
+ * 只对 src 含 "underline" 的线生效——其它单线指示字段自动跳过零影响 */
+void nav_underline_fit(lv_obj_t *line, int disp)
+{
+    const void *src;
+
+    if (!line) return;
+    src = lv_image_get_src(line);
+    if (!src || lv_image_src_get_type(src) != LV_IMAGE_SRC_FILE ||
+        !strstr((const char *)src, "underline")) return;
+    if (is_english()) {
+        if (disp >= 100) {
+            lv_image_set_src(line, LVGL_IMAGE_PATH(underline_179x4.png));
+            lv_obj_set_pos(line, 844, 328);
+            lv_obj_set_size(line, 165, 4);
+        } else {
+            lv_image_set_src(line, LVGL_IMAGE_PATH(underline_120x4.png));
+            lv_obj_set_pos(line, 889, 328);
+            lv_obj_set_size(line, 120, 4);
+        }
+    } else {
+        if (disp >= 100) {
+            lv_image_set_src(line, LVGL_IMAGE_PATH(underline.png));
+            lv_obj_set_pos(line, 854, 328);
+            lv_obj_set_size(line, 157, 4);
+        } else {
+            lv_image_set_src(line, LVGL_IMAGE_PATH(underline_120x4.png));
+            lv_obj_set_pos(line, 891, 328);
+            lv_obj_set_size(line, 120, 4);
+        }
+    }
 }
 // ==============================
 // 页面栈操作

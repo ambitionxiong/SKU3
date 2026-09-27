@@ -166,6 +166,7 @@ void jump_to_hot_bbq_menu_probe(void)
 
         lv_label_set_text_fmt(menu->temp, "%d", temp_disp_c(set_temp));
         lv_label_set_text_fmt(menu->probetemp, "%d", temp_disp_c(probe_target_temp));
+        nav_underline_fit(menu->probetempline, temp_disp_c(probe_target_temp));   /* 探针线随位数换源移位(华氏三位) */
 
         lv_obj_add_flag(menu->templine3, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(menu->templine2, LV_OBJ_FLAG_HIDDEN);
@@ -195,6 +196,7 @@ void jump_to_hot_bbq_set_probe(void)
     page_push(PAGE_HOT_BBQ_SET_PROBE);
     lv_obj_clean(lv_scr_act());
     hot_bbq_set_probe_create(&ui_manager);
+    { hot_bbq_set_probe_t *ms = hot_bbq_set_probe_get(&ui_manager); if (ms) nav_probeset_refit(ms->temp, ms->icon2, ms->icon3, ms->probetemp, ms->label_28); }   /* 温度 30 号排版(两行,EN 由 tune 覆盖) */
 
     hot_bbq_set_probe_t *set = hot_bbq_set_probe_get(&ui_manager);
     if (set) {
@@ -215,6 +217,10 @@ void jump_to_hot_bbq_set_probe(void)
         else
             lv_obj_clear_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
         lv_label_set_text_fmt(set->probetemp, "%d", temp_disp_c(probe_target_temp));
+        if (temp_disp_c(probe_target_temp) < 100)
+            lv_obj_set_pos(set->label_28, 346, 270);   /* 探针℃随位数:2 位贴数字后 5px */
+        else
+            lv_obj_set_pos(set->label_28, 360, 270);   /* 华氏三位右移防重叠 */
 
         apply_toggle_state(set->offdelay, set->ondelay, delay_on);
         mode_set_apply_delay_label(set->ondelay);
@@ -500,6 +506,7 @@ void hot_bbq_probe_rebuild_menu(page_id_t child)
 
         lv_label_set_text_fmt(menu->temp, "%d", temp_disp_c(set_temp));
         lv_label_set_text_fmt(menu->probetemp, "%d", temp_disp_c(probe_target_temp));
+        nav_underline_fit(menu->probetempline, temp_disp_c(probe_target_temp));   /* 探针线随位数换源移位(华氏三位) */
 
         lv_obj_add_flag(menu->templine3, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(menu->templine2, LV_OBJ_FLAG_HIDDEN);
@@ -522,6 +529,7 @@ void hot_bbq_probe_rebuild_set(page_id_t child)
 {
     edit_clear();
     hot_bbq_set_probe_create(&ui_manager);
+    { hot_bbq_set_probe_t *ms = hot_bbq_set_probe_get(&ui_manager); if (ms) nav_probeset_refit(ms->temp, ms->icon2, ms->icon3, ms->probetemp, ms->label_28); }   /* 温度 30 号排版(两行,EN 由 tune 覆盖) */
     hot_bbq_set_probe_t *set = hot_bbq_set_probe_get(&ui_manager);
     if (set) {
         lv_obj_t *btns[] = {
@@ -541,6 +549,10 @@ void hot_bbq_probe_rebuild_set(page_id_t child)
         else
             lv_obj_clear_flag(set->icon3, LV_OBJ_FLAG_HIDDEN);
         lv_label_set_text_fmt(set->probetemp, "%d", temp_disp_c(probe_target_temp));
+        if (temp_disp_c(probe_target_temp) < 100)
+            lv_obj_set_pos(set->label_28, 346, 270);   /* 探针℃随位数:2 位贴数字后 5px */
+        else
+            lv_obj_set_pos(set->label_28, 360, 270);   /* 华氏三位右移防重叠 */
 
         apply_toggle_state(set->offdelay, set->ondelay, delay_on);
         mode_set_apply_delay_label(set->ondelay);

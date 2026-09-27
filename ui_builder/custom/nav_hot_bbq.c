@@ -258,6 +258,7 @@ void jump_to_hot_bbq_set(void)
     page_push(PAGE_HOT_BBQ_SET);
     lv_obj_clean(lv_scr_act());
     hot_bbq_set_create(&ui_manager);
+    { hot_bbq_set_t *ms = hot_bbq_set_get(&ui_manager); if (ms) nav_modeset_refit(ms->temp, ms->hour, ms->min, ms->icon2, ms->icon3, ms->label_173, ms->label_174); }   /* 数字 30 号排版(top_bbq 验证终值,EN 由 tune 覆盖) */
 
     preheat_on = 0; delay_on = 0; contain_on = contain_default();
 
@@ -286,37 +287,37 @@ void jump_to_hot_bbq_set(void)
     if (set_hour == 0) {
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->label_173, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312, 254);
-        lv_obj_set_pos(set->label_174, 365, 269);
+        lv_obj_set_pos(set->min, 310, 270);
+        lv_obj_set_pos(set->label_174, 347, 269);
     } else {
         lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->label_173, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395, 254);
-        lv_obj_set_pos(set->label_174, 448, 269);
+        lv_obj_set_pos(set->min, 390, 270);
+        lv_obj_set_pos(set->label_174, 427, 269);
     }
 
         apply_toggle_state(set->offpreheat, set->onpreheat, preheat_on);
     if (set_hour == 0) {
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->label_173, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312, 254);
-        lv_obj_set_pos(set->label_174, 365, 269);
+        lv_obj_set_pos(set->min, 310, 270);
+        lv_obj_set_pos(set->label_174, 347, 269);
     } else {
         lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->label_173, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395, 254);
-        lv_obj_set_pos(set->label_174, 448, 269);
+        lv_obj_set_pos(set->min, 390, 270);
+        lv_obj_set_pos(set->label_174, 427, 269);
     }
         apply_toggle_state(set->offdelay, set->ondelay, delay_on);
         mode_set_apply_delay_label(set->ondelay);
     if (set_hour == 0) {
         lv_obj_add_flag(set->label_173, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312, 254);
-        lv_obj_set_pos(set->label_174, 365, 269);
+        lv_obj_set_pos(set->min, 310, 270);
+        lv_obj_set_pos(set->label_174, 347, 269);
     } else {
         lv_obj_clear_flag(set->label_173, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395, 254);
-        lv_obj_set_pos(set->label_174, 448, 269);
+        lv_obj_set_pos(set->min, 390, 270);
+        lv_obj_set_pos(set->label_174, 427, 269);
     }
         apply_toggle_state(set->offcontain, set->oncontain, contain_on);
 
@@ -821,6 +822,7 @@ void hot_bbq_rebuild_menu(page_id_t child)
 void hot_bbq_rebuild_set(page_id_t child)
 {
     hot_bbq_set_create(&ui_manager);
+    { hot_bbq_set_t *ms = hot_bbq_set_get(&ui_manager); if (ms) nav_modeset_refit(ms->temp, ms->hour, ms->min, ms->icon2, ms->icon3, ms->label_173, ms->label_174); }   /* 数字 30 号排版(top_bbq 验证终值,EN 由 tune 覆盖) */
     hot_bbq_set_t *set = hot_bbq_set_get(&ui_manager);
     if (set) {
         lv_obj_t *btns[] = {
@@ -846,39 +848,39 @@ void hot_bbq_rebuild_set(page_id_t child)
     if (set_hour == 0) {
         lv_obj_add_flag(set->label_173, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312, 254);
-        lv_obj_set_pos(set->label_174, 365, 269);
+        lv_obj_set_pos(set->min, 310, 270);
+        lv_obj_set_pos(set->label_174, 347, 269);
     } else {
         lv_obj_clear_flag(set->label_173, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395, 254);
-        lv_obj_set_pos(set->label_174, 448, 269);
+        lv_obj_set_pos(set->min, 390, 270);
+        lv_obj_set_pos(set->label_174, 427, 269);
     }
 
         apply_toggle_state(set->offpreheat, set->onpreheat, preheat_on);
     if (set_hour == 0) {
         lv_obj_add_flag(set->label_173, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312, 254);
-        lv_obj_set_pos(set->label_174, 365, 269);
+        lv_obj_set_pos(set->min, 310, 270);
+        lv_obj_set_pos(set->label_174, 347, 269);
     } else {
         lv_obj_clear_flag(set->label_173, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395, 254);
-        lv_obj_set_pos(set->label_174, 448, 269);
+        lv_obj_set_pos(set->min, 390, 270);
+        lv_obj_set_pos(set->label_174, 427, 269);
     }
         apply_toggle_state(set->offdelay, set->ondelay, delay_on);
         mode_set_apply_delay_label(set->ondelay);
     if (set_hour == 0) {
         lv_obj_add_flag(set->label_173, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312, 254);
-        lv_obj_set_pos(set->label_174, 365, 269);
+        lv_obj_set_pos(set->min, 310, 270);
+        lv_obj_set_pos(set->label_174, 347, 269);
     } else {
         lv_obj_clear_flag(set->label_173, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395, 254);
-        lv_obj_set_pos(set->label_174, 448, 269);
+        lv_obj_set_pos(set->min, 390, 270);
+        lv_obj_set_pos(set->label_174, 427, 269);
     }
         apply_toggle_state(set->offcontain, set->oncontain, contain_on);
 

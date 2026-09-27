@@ -1703,6 +1703,9 @@ void nav_lockicon_refit(void);   /* lockicon 换 54x54 大图:重适配当前屏
 void nav_dirimg_refit(void);     /* menu_top/low+setting 箭头标签换图+下划线加长(全语言,幂等) */
 void updown_set_refit(updown_bbq_set_t *set);   /* updown set 排版精修:数字统一 30 号+↑/↓ 换 dirup/dirdown 图(仅构建路径调用) */
 void top_bbq_set_refit(top_bbq_set_t *set);   /* top_bbq set 数字改小 30 号(其余模式 set 页试点,镜像 updown 样式;仅构建路径调用) */
+void nav_modeset_refit(lv_obj_t *temp, lv_obj_t *hour, lv_obj_t *min, lv_obj_t *icon2, lv_obj_t *icon3, lv_obj_t *shi, lv_obj_t *fen);   /* 8 个同构模式 set 页共享 refit(几何=top_bbq 验证终值;仅构建路径调用) */
+void nav_probeset_refit(lv_obj_t *temp, lv_obj_t *icon2, lv_obj_t *icon3, lv_obj_t *probetemp, lv_obj_t *probec);   /* 4 个探针 set 页共享 refit:两行温度无时间行(仅构建路径调用) */
+void nav_underline_fit(lv_obj_t *line, int disp);   /* probe menu 探针单下划线按显示位数换源/移位(华氏三位),仅对 underline 素材生效 */
 lv_obj_t *updown_dir_img_get(int i);   /* updown set 方向箭头图(0=up2 1=down2 2=up3 3=down3),EN tune 位移用 */
 
 /* ==================== 温度显示单位（℉）====================

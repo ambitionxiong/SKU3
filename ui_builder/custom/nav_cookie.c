@@ -254,6 +254,7 @@ void jump_to_cookie_set(void)
     page_push(PAGE_COOKIE_SET);
     lv_obj_clean(lv_scr_act());
     cookie_set_create(&ui_manager);
+    { cookie_set_t *ms = cookie_set_get(&ui_manager); if (ms) nav_modeset_refit(ms->temp, ms->hour, ms->min, ms->icon2, ms->icon3, ms->label_104, ms->label_105); }   /* 数字 30 号排版(top_bbq 验证终值,EN 由 tune 覆盖) */
 
     preheat_on = 0; delay_on = 0; contain_on = contain_default();
 
@@ -281,13 +282,13 @@ void jump_to_cookie_set(void)
     if (set_hour == 0) {
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->label_104, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312, 254);
-        lv_obj_set_pos(set->label_105, 365, 269);
+        lv_obj_set_pos(set->min, 310, 270);
+        lv_obj_set_pos(set->label_105, 347, 269);
     } else {
         lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->label_104, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395, 254);
-        lv_obj_set_pos(set->label_105, 448, 269);
+        lv_obj_set_pos(set->min, 390, 270);
+        lv_obj_set_pos(set->label_105, 427, 269);
     }
 
         apply_toggle_state(set->offdelay, set->ondelay, delay_on);
@@ -295,13 +296,13 @@ void jump_to_cookie_set(void)
     if (set_hour == 0) {
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->label_104, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312, 254);
-        lv_obj_set_pos(set->label_105, 365, 269);
+        lv_obj_set_pos(set->min, 310, 270);
+        lv_obj_set_pos(set->label_105, 347, 269);
     } else {
         lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->label_104, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395, 254);
-        lv_obj_set_pos(set->label_105, 448, 269);
+        lv_obj_set_pos(set->min, 390, 270);
+        lv_obj_set_pos(set->label_105, 427, 269);
     }
         apply_toggle_state(set->offcontain, set->oncontain, contain_on);
 
@@ -799,6 +800,7 @@ void cookie_rebuild_menu(page_id_t child)
 void cookie_rebuild_set(page_id_t child)
 {
     cookie_set_create(&ui_manager);
+    { cookie_set_t *ms = cookie_set_get(&ui_manager); if (ms) nav_modeset_refit(ms->temp, ms->hour, ms->min, ms->icon2, ms->icon3, ms->label_104, ms->label_105); }   /* 数字 30 号排版(top_bbq 验证终值,EN 由 tune 覆盖) */
     cookie_set_t *set = cookie_set_get(&ui_manager);
     if (set) {
         lv_obj_t *btns[] = {
@@ -823,13 +825,13 @@ void cookie_rebuild_set(page_id_t child)
     if (set_hour == 0) {
         lv_obj_add_flag(set->label_104, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312, 254);
-        lv_obj_set_pos(set->label_105, 365, 269);
+        lv_obj_set_pos(set->min, 310, 270);
+        lv_obj_set_pos(set->label_105, 347, 269);
     } else {
         lv_obj_clear_flag(set->label_104, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395, 254);
-        lv_obj_set_pos(set->label_105, 448, 269);
+        lv_obj_set_pos(set->min, 390, 270);
+        lv_obj_set_pos(set->label_105, 427, 269);
     }
 
         apply_toggle_state(set->offdelay, set->ondelay, delay_on);
@@ -837,13 +839,13 @@ void cookie_rebuild_set(page_id_t child)
     if (set_hour == 0) {
         lv_obj_add_flag(set->label_104, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 312, 254);
-        lv_obj_set_pos(set->label_105, 365, 269);
+        lv_obj_set_pos(set->min, 310, 270);
+        lv_obj_set_pos(set->label_105, 347, 269);
     } else {
         lv_obj_clear_flag(set->label_104, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_set_pos(set->min, 395, 254);
-        lv_obj_set_pos(set->label_105, 448, 269);
+        lv_obj_set_pos(set->min, 390, 270);
+        lv_obj_set_pos(set->label_105, 427, 269);
     }
         apply_toggle_state(set->offcontain, set->oncontain, contain_on);
 
