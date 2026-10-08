@@ -1397,6 +1397,13 @@ void nav_dirimg_refit(void)
     if (id == PAGE_UPDOWN_BBQ_MENU_TOP) {
         updown_bbq_menu_top_t *pg = updown_bbq_menu_top_get(&ui_manager);
         if (!pg) return;
+        /* 标题移卡片上半带垂直中点(2026-10-08 用户"标题高度要在上半部分垂直中间"):
+         * 卡 preheatbg 1233x339@(24,118):卡顶 118 与数字墨顶 ≈252 的中点 185 → label y170;
+         * 250 宽 CENTER 盒对卡心 640,EN 直设全称(dict {温度,Temp} 45 页共用不宜改) */
+        lv_obj_set_pos(pg->label_1, 515, 170);
+        lv_obj_set_size(pg->label_1, 250, 32);
+        lv_obj_set_style_text_align(pg->label_1, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+        if (is_english()) lv_label_set_text(pg->label_1, "Temperature");
         /* temp 标签生成层右对齐(align 3):EN "95" 墨迹 ≈605..679,图标 568..602 仅距 3px
          * 重叠(用户 2026-09-26)→EN 图标左移 10,CN/繁未报不动 */
         int dx = is_english() ? -10 : 0;
@@ -1413,6 +1420,11 @@ void nav_dirimg_refit(void)
     } else if (id == PAGE_UPDOWN_BBQ_MENU_LOW) {
         updown_bbq_menu_low_t *pg = updown_bbq_menu_low_get(&ui_manager);
         if (!pg) return;
+        /* 标题上半带垂直中点+EN 全称(同 menu_top,2026-10-08) */
+        lv_obj_set_pos(pg->label_7, 515, 170);
+        lv_obj_set_size(pg->label_7, 250, 32);
+        lv_obj_set_style_text_align(pg->label_7, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+        if (is_english()) lv_label_set_text(pg->label_7, "Temperature");
         int dx = is_english() ? -10 : 0;   /* 同 menu_top:EN 图标左移 10 让开右对齐数字 */
         dir_label_to_img(pg->dir3, LVGL_IMAGE_PATH(dirdown_menu.png), 529 + dx, 282, 35, 28);
         dir_label_to_img(pg->dir2, LVGL_IMAGE_PATH(dirdown_menu.png), 568 + dx, 282, 35, 28);
@@ -1422,6 +1434,18 @@ void nav_dirimg_refit(void)
             if (pg->line2) lv_image_set_scale_x(pg->line2, 282);
             if (pg->line3) lv_image_set_scale_x(pg->line3, 277);
         }
+    } else if (id == PAGE_UPDOWN_BBQ_MENU) {
+        updown_bbq_menu_t *pg = updown_bbq_menu_get(&ui_manager);
+        if (!pg) return;
+        /* 双卡选择页:标题各对卡心(左 330/右 951,卡 div2bk 612x339@(24/645,118)),
+         * 卡顶↔数字顶中点 y170(2026-10-08);EN 温度标题直设全称 */
+        lv_obj_set_pos(pg->label_1, 205, 170);
+        lv_obj_set_size(pg->label_1, 250, 32);
+        lv_obj_set_style_text_align(pg->label_1, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+        if (is_english()) lv_label_set_text(pg->label_1, "Temperature");
+        lv_obj_set_pos(pg->cook_label, 826, 170);
+        lv_obj_set_size(pg->cook_label, 250, 32);
+        lv_obj_set_style_text_align(pg->cook_label, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
     } else if (id == PAGE_UPDOWN_BBQ_SETTING) {
         updown_bbq_setting_t *pg = updown_bbq_setting_get(&ui_manager);
         if (!pg) return;
