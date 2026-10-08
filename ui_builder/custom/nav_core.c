@@ -1389,6 +1389,51 @@ static void dir_label_to_img_conv(lv_obj_t *lbl, const char *src, int w, int h)
     lv_obj_set_style_bg_img_src(lbl, src, LV_PART_MAIN | LV_STATE_DEFAULT);
 }
 
+/* ===== 标题批量 refit 辅助(2026-10-08 推广,口径同上下烧烤三页) ===== */
+/* 双卡 menu 页:卡 div2bk 612x339@(24/645,118),标题 y=卡顶 118↔数字墨顶 ≈253 中点 185.5→170;
+ * 250 宽 CENTER 盒对卡心 330/951;EN 温度直设全称(dict {温度,Temp} 45 页共用不改词条) */
+static void nav_menu2card_title_refit(lv_obj_t *tlabel, lv_obj_t *clabel)
+{
+    if (tlabel) {
+        lv_obj_set_pos(tlabel, 205, 170);
+        lv_obj_set_size(tlabel, 250, 32);
+        lv_obj_set_style_text_align(tlabel, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+        if (is_english()) lv_label_set_text(tlabel, "Temperature");
+    }
+    if (clabel) {
+        lv_obj_set_pos(clabel, 826, 170);
+        lv_obj_set_size(clabel, 250, 32);
+        lv_obj_set_style_text_align(clabel, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+    }
+}
+
+/* 单卡(纯时间)menu 页:卡 div1bg@(24,118),y170 同上,x 对卡心 640 */
+static void nav_menu1card_title_refit(lv_obj_t *clabel)
+{
+    if (!clabel) return;
+    lv_obj_set_pos(clabel, 515, 170);
+    lv_obj_set_size(clabel, 250, 32);
+    lv_obj_set_style_text_align(clabel, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+}
+
+/* setting 页:面板 settingbk(115,115)顶↔数字墨顶 ≈217 中点 166 → y150;盒 250 宽 CENTER,
+ * x=页内原中心−125(保持各页水平锚点);EN 温度直设全称 */
+static void nav_setting_title_refit(lv_obj_t *tlabel, int tcx, lv_obj_t *clabel, int ccx)
+{
+    if (tlabel) {
+        lv_obj_set_pos(tlabel, tcx - 125, 150);
+        lv_obj_set_size(tlabel, 250, 30);
+        lv_obj_set_style_text_align(tlabel, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+        if (is_english()) lv_label_set_text(tlabel, "Temperature");
+    }
+    if (clabel) {
+        lv_obj_set_pos(clabel, ccx - 125, 150);
+        lv_obj_set_size(clabel, 250, 30);
+        lv_obj_set_style_text_align(clabel, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+    }
+}
+
+
 void nav_dirimg_refit(void)
 {
     if (depth <= 0) return;
@@ -1564,6 +1609,160 @@ void nav_dirimg_refit(void)
                 lv_image_set_scale_x(pg->minline_label, 277);         /* 85→92:墨 ≈648..736 */
             }
         }
+    } else if (id == PAGE_AIR_MENU) {
+        { air_menu_t *pg = air_menu_get(&ui_manager); if (pg) nav_menu2card_title_refit(pg->label_289, pg->label_292); }
+
+    } else if (id == PAGE_BOTTOM_BBQ_MENU) {
+        { bottom_bbq_menu_t *pg = bottom_bbq_menu_get(&ui_manager); if (pg) nav_menu2card_title_refit(pg->label_109, pg->label_112); }
+
+    } else if (id == PAGE_CENTRAL_BBQ_MENU) {
+        { central_bbq_menu_t *pg = central_bbq_menu_get(&ui_manager); if (pg) nav_menu2card_title_refit(pg->label_281, pg->label_284); }
+
+    } else if (id == PAGE_COOKIE_MENU) {
+        { cookie_menu_t *pg = cookie_menu_get(&ui_manager); if (pg) nav_menu2card_title_refit(pg->label_88, pg->label_91); }
+
+    } else if (id == PAGE_CORN_MENU) {
+        { corn_menu_t *pg = corn_menu_get(&ui_manager); if (pg) nav_menu2card_title_refit(pg->label_534, pg->label_537); }
+
+    } else if (id == PAGE_HEATCONTAIN_MENU) {
+        { heatcontain_menu_t *pg = heatcontain_menu_get(&ui_manager); if (pg) nav_menu2card_title_refit(pg->label_583, pg->label_586); }
+
+    } else if (id == PAGE_HOT_BBQ_MENU) {
+        { hot_bbq_menu_t *pg = hot_bbq_menu_get(&ui_manager); if (pg) nav_menu2card_title_refit(pg->label_157, pg->label_160); }
+
+    } else if (id == PAGE_HOTWIND_BBQ_MENU) {
+        { hotwind_bbq_menu_t *pg = hotwind_bbq_menu_get(&ui_manager); if (pg) nav_menu2card_title_refit(pg->label_205, pg->label_208); }
+
+    } else if (id == PAGE_MENU_COOK_MENU) {
+        { menu_menu_t *pg = menu_menu_get(&ui_manager); if (pg) nav_menu2card_title_refit(pg->label_241, pg->label_244); }
+
+    } else if (id == PAGE_PIZZA_MENU) {
+        { pizza_menu_t *pg = pizza_menu_get(&ui_manager); if (pg) nav_menu2card_title_refit(pg->label_193, pg->label_196); }
+
+    } else if (id == PAGE_PIZZA_2_MENU) {
+        { pizza_2_menu_t *pg = pizza_2_menu_get(&ui_manager); if (pg) nav_menu2card_title_refit(pg->label_338, pg->label_341); }
+
+    } else if (id == PAGE_RISING_MENU) {
+        { rising_menu_t *pg = rising_menu_get(&ui_manager); if (pg) nav_menu2card_title_refit(pg->label_485, pg->label_488); }
+
+    } else if (id == PAGE_SAVE_BBQ_MENU) {
+        { save_bbq_menu_t *pg = save_bbq_menu_get(&ui_manager); if (pg) nav_menu2card_title_refit(pg->label_243, pg->label_246); }
+
+    } else if (id == PAGE_SLOWCOOK_MENU) {
+        { slowcook_menu_t *pg = slowcook_menu_get(&ui_manager); if (pg) nav_menu2card_title_refit(pg->label_387, pg->label_390); }
+
+    } else if (id == PAGE_UNFROZEN_MENU) {
+        { unfrozen_menu_t *pg = unfrozen_menu_get(&ui_manager); if (pg) nav_menu2card_title_refit(pg->label_436, pg->label_439); }
+
+    } else if (id == PAGE_WEST_MENU) {
+        { west_menu_t *pg = west_menu_get(&ui_manager); if (pg) nav_menu2card_title_refit(pg->label_144, pg->label_147); }
+
+    } else if (id == PAGE_WINDCHANGE_BBQ_MENU) {
+        { windchange_bbq_menu_t *pg = windchange_bbq_menu_get(&ui_manager); if (pg) nav_menu2card_title_refit(pg->label_319, pg->label_322); }
+
+    } else if (id == PAGE_BREAD_MENU) {
+        { bread_menu_t *pg = bread_menu_get(&ui_manager); if (pg) nav_menu1card_title_refit(pg->label_723); }
+
+    } else if (id == PAGE_CHIP_MENU) {
+        { chip_menu_t *pg = chip_menu_get(&ui_manager); if (pg) nav_menu1card_title_refit(pg->label_805); }
+
+    } else if (id == PAGE_CUSTOM_MENU) {
+        { custom_menu_t *pg = custom_menu_get(&ui_manager); if (pg) nav_menu1card_title_refit(pg->label_846); }
+
+    } else if (id == PAGE_LASAGNA_MENU) {
+        { lasagna_menu_t *pg = lasagna_menu_get(&ui_manager); if (pg) nav_menu1card_title_refit(pg->label_635); }
+
+    } else if (id == PAGE_PIZZA3_MENU) {
+        { pizza3_menu_t *pg = pizza3_menu_get(&ui_manager); if (pg) nav_menu1card_title_refit(pg->label_764); }
+
+    } else if (id == PAGE_STRUDEL_MENU) {
+        { strudel_menu_t *pg = strudel_menu_get(&ui_manager); if (pg) nav_menu1card_title_refit(pg->label_682); }
+
+    } else if (id == PAGE_AIR_SETTING) {
+        { air_setting_t *pg = air_setting_get(&ui_manager); if (pg) nav_setting_title_refit(pg->label_320, 278, pg->label_321, 521); }
+
+    } else if (id == PAGE_BOTTOM_BBQ_SETTING) {
+        { bottom_bbq_setting_t *pg = bottom_bbq_setting_get(&ui_manager); if (pg) nav_setting_title_refit(pg->label_139, 278, pg->label_140, 521); }
+
+    } else if (id == PAGE_CENTRAL_BBQ_SETTING) {
+        { central_bbq_setting_t *pg = central_bbq_setting_get(&ui_manager); if (pg) nav_setting_title_refit(pg->label_22, 278, pg->label_23, 521); }
+
+    } else if (id == PAGE_COOKIE_SETTING) {
+        { cookie_setting_t *pg = cookie_setting_get(&ui_manager); if (pg) nav_setting_title_refit(pg->label_126, 278, pg->label_127, 521); }
+
+    } else if (id == PAGE_CORN_SETTING) {
+        { corn_setting_t *pg = corn_setting_get(&ui_manager); if (pg) nav_setting_title_refit(pg->label_565, 278, pg->label_566, 521); }
+
+    } else if (id == PAGE_HEATCONTAIN_SETTING) {
+        { heatcontain_setting_t *pg = heatcontain_setting_get(&ui_manager); if (pg) nav_setting_title_refit(pg->label_614, 278, pg->label_615, 521); }
+
+    } else if (id == PAGE_HOT_BBQ_SETTING) {
+        { hot_bbq_setting_t *pg = hot_bbq_setting_get(&ui_manager); if (pg) nav_setting_title_refit(pg->label_187, 278, pg->label_188, 521); }
+
+    } else if (id == PAGE_HOTWIND_BBQ_SETTING) {
+        { hotwind_bbq_setting_t *pg = hotwind_bbq_setting_get(&ui_manager); if (pg) nav_setting_title_refit(pg->label_2, 278, pg->label_3, 521); }
+
+    } else if (id == PAGE_MENU_COOK_SETTING) {
+        { menu_setting_t *pg = menu_setting_get(&ui_manager); if (pg) nav_setting_title_refit(pg->label_271, 278, pg->label_272, 521); }
+
+    } else if (id == PAGE_PIZZA_SETTING) {
+        { pizza_setting_t *pg = pizza_setting_get(&ui_manager); if (pg) nav_setting_title_refit(pg->label_223, 278, pg->label_224, 521); }
+
+    } else if (id == PAGE_PIZZA_2_SETTING) {
+        { pizza_2_setting_t *pg = pizza_2_setting_get(&ui_manager); if (pg) nav_setting_title_refit(pg->label_369, 278, pg->label_370, 521); }
+
+    } else if (id == PAGE_RISING_SETTING) {
+        { rising_setting_t *pg = rising_setting_get(&ui_manager); if (pg) nav_setting_title_refit(pg->label_516, 278, pg->label_517, 521); }
+
+    } else if (id == PAGE_SAVE_BBQ_SETTING) {
+        { save_bbq_setting_t *pg = save_bbq_setting_get(&ui_manager); if (pg) nav_setting_title_refit(pg->label_12, 278, pg->label_13, 521); }
+
+    } else if (id == PAGE_SLOWCOOK_SETTING) {
+        { slowcook_setting_t *pg = slowcook_setting_get(&ui_manager); if (pg) nav_setting_title_refit(pg->label_418, 278, pg->label_419, 521); }
+
+    } else if (id == PAGE_TOP_BBQ_SETTING) {
+        { top_bbq_setting_t *pg = top_bbq_setting_get(&ui_manager); if (pg) nav_setting_title_refit(pg->label_83, 278, pg->label_84, 521); }
+
+    } else if (id == PAGE_UNFROZEN_SETTING) {
+        { unfrozen_setting_t *pg = unfrozen_setting_get(&ui_manager); if (pg) nav_setting_title_refit(pg->label_467, 278, pg->label_468, 521); }
+
+    } else if (id == PAGE_WEST_SETTING) {
+        { west_setting_t *pg = west_setting_get(&ui_manager); if (pg) nav_setting_title_refit(pg->label_175, 278, pg->label_176, 521); }
+
+    } else if (id == PAGE_WINDCHANGE_BBQ_SETTING) {
+        { windchange_bbq_setting_t *pg = windchange_bbq_setting_get(&ui_manager); if (pg) nav_setting_title_refit(pg->label_32, 278, pg->label_33, 521); }
+
+    } else if (id == PAGE_BREAD_SETTING) {
+        { bread_setting_t *pg = bread_setting_get(&ui_manager); if (pg) nav_setting_title_refit(NULL, 0, pg->label_750, 440); }
+
+    } else if (id == PAGE_CHIP_SETTING) {
+        { chip_setting_t *pg = chip_setting_get(&ui_manager); if (pg) nav_setting_title_refit(NULL, 0, pg->label_832, 440); }
+
+    } else if (id == PAGE_CUSTOM_SETTING) {
+        { custom_setting_t *pg = custom_setting_get(&ui_manager); if (pg) nav_setting_title_refit(NULL, 0, pg->label_873, 440); }
+
+    } else if (id == PAGE_LASAGNA_SETTING) {
+        { lasagna_setting_t *pg = lasagna_setting_get(&ui_manager); if (pg) nav_setting_title_refit(NULL, 0, pg->label_663, 440); }
+
+    } else if (id == PAGE_PIZZA3_SETTING) {
+        { pizza3_setting_t *pg = pizza3_setting_get(&ui_manager); if (pg) nav_setting_title_refit(NULL, 0, pg->label_791, 440); }
+
+    } else if (id == PAGE_STRUDEL_SETTING) {
+    } else if (id == PAGE_TOP_BBQ_MENU) {
+        { top_bbq_menu_t *pg = top_bbq_menu_get(&ui_manager); if (pg) nav_menu2card_title_refit(pg->label_42, pg->label_45); }
+    } else if (id == PAGE_PREHEAT_MENU) {
+        { preheatmenu_t *pg = preheatmenu_get(&ui_manager);
+          if (pg) { nav_menu1card_title_refit(pg->label_61); if (is_english()) lv_label_set_text(pg->label_61, "Temperature"); } }
+    } else if (id == PAGE_BOTTOM_BBQ_MENU_PROBE) {
+        { bottom_bbq_menu_probe_t *pg = bottom_bbq_menu_probe_get(&ui_manager); if (pg) nav_menu2card_title_refit(pg->label_46, pg->label_49); }
+    } else if (id == PAGE_HOT_BBQ_MENU_PROBE) {
+        { hot_bbq_menu_probe_t *pg = hot_bbq_menu_probe_get(&ui_manager); if (pg) nav_menu2card_title_refit(pg->label_1, pg->label_4); }
+    } else if (id == PAGE_SLOWCOOK_MENU_PROBE) {
+        { slowcook_menu_probe_t *pg = slowcook_menu_probe_get(&ui_manager); if (pg) nav_menu2card_title_refit(pg->label_79, pg->label_82); }
+    } else if (id == PAGE_UPDOWN_BBQ_MENU_PROBE) {
+        { updown_bbq_menu_probe_t *pg = updown_bbq_menu_probe_get(&ui_manager); if (pg) nav_menu2card_title_refit(pg->label_4, pg->label_7); }
+        { strudel_setting_t *pg = strudel_setting_get(&ui_manager); if (pg) nav_setting_title_refit(NULL, 0, pg->label_709, 440); }
+
     }
 }
 
