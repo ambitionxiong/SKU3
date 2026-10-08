@@ -1425,42 +1425,120 @@ void nav_dirimg_refit(void)
     } else if (id == PAGE_UPDOWN_BBQ_SETTING) {
         updown_bbq_setting_t *pg = updown_bbq_setting_get(&ui_manager);
         if (!pg) return;
-        /* 两列整体重排(2026-09-26 用户"挤在一起了,重新规划")后图标/单位分语言微调:
-         * 转换全语言(清文本+29x24+bg 图);位置 CN/繁在 !is_english() 块、EN 归 tune */
+        /* 面板换宽版+四组等距重排(2026-10-08 设计稿):settingbk_updown 711x251 @ (84,114),
+         * 面板边距 41/组间隙 48 → 组框 G1 125..275 / G2 323..473 / G3 521..601 / G4 649..754;
+         * 标题 y150 列区居中、数字 y217(font48)、单位/℃ y229、图标 y232、下划线 y269。
+         * 本 refit 在 tune 之后跑,几何 CN/EN 同值一处生效(tune 同值同步仅作基线) */
+        if (pg->settingbk_img) {
+            lv_image_set_src(pg->settingbk_img, LVGL_IMAGE_PATH(settingbk_updown.png));
+            lv_obj_set_pos(pg->settingbk_img, 84, 114);
+        }
         dir_label_to_img_conv(pg->dirup3_label, LVGL_IMAGE_PATH(dirup_setting.png), 29, 24);
         dir_label_to_img_conv(pg->dirdown3_label, LVGL_IMAGE_PATH(dirdown_setting.png), 29, 24);
         dir_label_to_img_conv(pg->dirup2_label, LVGL_IMAGE_PATH(dirup_setting.png), 29, 24);
         dir_label_to_img_conv(pg->dirdown2_label, LVGL_IMAGE_PATH(dirdown_setting.png), 29, 24);
+        /* 标题 250 宽 CENTER 盒,中心对各自列区:温度区 299、时间区 637 */
+        lv_obj_set_pos(pg->temp_label, 174, 150);
+        lv_obj_set_size(pg->temp_label, 250, 30);
+        lv_obj_set_style_text_align(pg->temp_label, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+        /* EN 标题全称 "Temperature"(2026-10-08 用户):dict {温度,Temp} 为 45 页共用词条
+         * 不宜改(会波及其它已调页),此处 EN 直设;翻译遍历只重写命中 dict 键的文本,不回改 */
+        if (is_english()) lv_label_set_text(pg->temp_label, "Temperature");
+        lv_obj_set_pos(pg->cook_label, 512, 150);
+        lv_obj_set_size(pg->cook_label, 250, 30);
+        lv_obj_set_style_text_align(pg->cook_label, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+        /* 三位态:图标钉组框左缘;数字盒 LEFT 钉(生成层 CENTER,墨迹随盒心漂);
+         * 数字墨迹=图标右+8;℃ 距数字 EN3/CN5(2026-10-08 用户"单位和数字再近一点" −4) */
+        lv_obj_set_pos(pg->dirup3_label, 125, 232);
+        lv_obj_set_style_text_align(pg->tempup_label, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_pos(pg->tempup_label, 157, 217);
+        lv_obj_set_pos(pg->icon3_label1, 241, 229);   /* EN aktiv "180"≈79 宽 */
+        lv_obj_set_pos(pg->dirdown3_label, 322, 232);
+        lv_obj_set_style_text_align(pg->tempdown_label, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_pos(pg->tempdown_label, 354, 217);
+        lv_obj_set_pos(pg->icon3_label2, 438, 229);
+        /* 两位态:组框左缘/数字位不变 */
+        lv_obj_set_pos(pg->dirup2_label, 125, 232);
+        lv_obj_set_pos(pg->icon2_label1, 213, 229);
+        lv_obj_set_pos(pg->dirdown2_label, 322, 232);
+        lv_obj_set_pos(pg->icon2_label2, 410, 229);
+        /* CN/繁 taiwanpearl "180"≈68(比 EN 窄 11):℃ 按 5px 间距另设;
+         * 图标底对齐:实测数字墨迹底 CN 260/EN 256(taiwanpearl 数字下沉 5px),
+         * EN 图标 y232 底 255 已齐,CN/繁 y237 底 260 对齐 */
         if (!is_english()) {
-            /* 上温图标对齐下温组间距(2026-09-26):下温现间距 三位 5(329−324)/两位 1(339−338),
-             * 上温数字左缘 175/185 → dirup3 右缘 170=141、dirup2 右缘 184=155 */
-            lv_obj_set_pos(pg->dirup3_label, 141, 232);
-            lv_obj_set_pos(pg->dirup2_label, 155, 232);
-            lv_obj_set_pos(pg->dirdown3_label, 295, 232);
-            lv_obj_set_pos(pg->dirdown2_label, 309, 232);
-            lv_obj_set_pos(pg->tempdown_label, 315, 213);
-            lv_obj_set_pos(pg->icon3_label2, 403, 229);   /* CN 三位下温单位再左移 2(405→403) */
-            lv_obj_set_pos(pg->icon2_label2, 389, 229);
+            lv_obj_set_pos(pg->dirup3_label, 125, 237);
+            lv_obj_set_pos(pg->dirup2_label, 125, 237);
+            lv_obj_set_pos(pg->dirdown3_label, 322, 237);
+            lv_obj_set_pos(pg->dirdown2_label, 322, 237);
+            lv_obj_set_pos(pg->icon3_label1, 232, 229);
+            lv_obj_set_pos(pg->icon3_label2, 429, 229);
+            lv_obj_set_pos(pg->icon2_label1, 210, 229);
+            lv_obj_set_pos(pg->icon2_label2, 407, 229);
         }
+        /* 时间组:数字 LEFT 钉墨迹 524/652,单位 LEFT 钉贴数字后 4(时 578/分 707,
+         * EN min 右缘 753=组框右缘) */
+        lv_obj_set_style_text_align(pg->hour_label, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_pos(pg->hour_label, 518, 217);
+        lv_obj_set_style_text_align(pg->shi_label, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_pos(pg->shi_label, 575, 229);
+        lv_obj_set_style_text_align(pg->min_label, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_pos(pg->min_label, 646, 217);
+        lv_obj_set_style_text_align(pg->fen_label, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_pos(pg->fen_label, 704, 229);
+        /* 下划线罩各自组内容。关键:lv_image 缩放绕 pivot 中心渲染(实测 pos123+299 →
+         * 墨 115..266,非左上角锚定),换算 pos=(内容两端中点)−源宽/2−1.5、scale=(内容宽+3)×256/源宽;
+         * 线长随 ℃/单位宽分语言(℃ 已收紧 4,线随缩):EN 三位罩 ℃ 右 276/473、两位 248/445,h 591、min 753;
+         * CN/繁 ℃ 窄 → 线更短(见下方 !is_english() 块:三位 267/464、两位 243/440,时 606、分 735) */
         if (pg->longup_templine_img) {
-            lv_obj_set_pos(pg->longup_templine_img, 134, 269);   /* 再右移 2(132→134,2026-09-26) */
-            lv_image_set_scale_x(pg->longup_templine_img, 295);   /* 132→152,罩 col1 列组 */
+            lv_obj_set_pos(pg->longup_templine_img, 133, 269);
+            lv_image_set_scale_x(pg->longup_templine_img, 303);   /* 132→156:EN 墨 ≈123..277 */
         }
         if (pg->longdown_templine_img) {
-            lv_obj_set_pos(pg->longdown_templine_img, 296, 269);   /* 再右移 2(294→296) */
-            lv_image_set_scale_x(pg->longdown_templine_img, 289); /* 132→149,罩 col2 列组 */
+            lv_obj_set_pos(pg->longdown_templine_img, 329, 269);
+            lv_image_set_scale_x(pg->longdown_templine_img, 303);
         }
         if (pg->shortup_templine_img) {
-            lv_obj_set_pos(pg->shortup_templine_img, 143, 269);
-            lv_image_set_scale_x(pg->shortup_templine_img, 318);  /* 111→138:两位态起点=图标 143,至 ℃ 281 */
+            lv_obj_set_pos(pg->shortup_templine_img, 129, 269);
+            lv_image_set_scale_x(pg->shortup_templine_img, 297);  /* 111→129:EN 墨 ≈123..249 */
         }
         if (pg->shordown_templine_img) {
-            lv_obj_set_pos(pg->shordown_templine_img, 305, 269);
-            lv_image_set_scale_x(pg->shordown_templine_img, 311); /* 111→135:至 ℃ 440 */
+            lv_obj_set_pos(pg->shordown_templine_img, 326, 269);
+            lv_image_set_scale_x(pg->shordown_templine_img, 297);
         }
+        if (pg->hourline_img) {
+            lv_obj_set_pos(pg->hourline_img, 514, 269);
+            lv_image_set_scale_x(pg->hourline_img, 238);          /* 85→79:EN h 窄,墨 ≈520..596 */
+        }
+        if (pg->minline_label) {
+            lv_obj_set_pos(pg->minline_label, 658, 269);
+            lv_image_set_scale_x(pg->minline_label, 340);         /* 85→113:EN min 右缘 753,墨 ≈647..757 */
+        }
+        /* CN/繁:℃ 窄 11(且已收紧 4)→ 线端点随内容(三位 123..267/320..464,两位 ..243/440,时 ..606,分 ..735) */
         if (!is_english()) {
-            if (pg->hourline_img) lv_image_set_scale_x(pg->hourline_img, 298);   /* 85→99 */
-            if (pg->minline_label) lv_image_set_scale_x(pg->minline_label, 298);
+            if (pg->longup_templine_img) {
+                lv_obj_set_pos(pg->longup_templine_img, 128, 269);
+                lv_image_set_scale_x(pg->longup_templine_img, 286);   /* 132→146:墨 ≈123..268 */
+            }
+            if (pg->longdown_templine_img) {
+                lv_obj_set_pos(pg->longdown_templine_img, 325, 269);
+                lv_image_set_scale_x(pg->longdown_templine_img, 286);
+            }
+            if (pg->shortup_templine_img) {
+                lv_obj_set_pos(pg->shortup_templine_img, 126, 269);
+                lv_image_set_scale_x(pg->shortup_templine_img, 285);  /* 111→124:墨 ≈123..244 */
+            }
+            if (pg->shordown_templine_img) {
+                lv_obj_set_pos(pg->shordown_templine_img, 323, 269);
+                lv_image_set_scale_x(pg->shordown_templine_img, 285);
+            }
+            if (pg->hourline_img) {
+                lv_obj_set_pos(pg->hourline_img, 520, 269);
+                lv_image_set_scale_x(pg->hourline_img, 274);          /* 85→91:墨 ≈520..608 */
+            }
+            if (pg->minline_label) {
+                lv_obj_set_pos(pg->minline_label, 648, 269);
+                lv_image_set_scale_x(pg->minline_label, 277);         /* 85→92:墨 ≈648..736 */
+            }
         }
     }
 }
