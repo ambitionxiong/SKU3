@@ -1202,11 +1202,21 @@ void FAV_screen_Refresh_FirstPage()
         lv_group_focus_obj(scr->obj_null_4);
     }
 
-	//底部页标icon显示逻辑
-	lv_obj_add_flag(scr->fav_page_1_No, LV_OBJ_FLAG_HIDDEN);
-	lv_obj_add_flag(scr->fav_page_2_yes, LV_OBJ_FLAG_HIDDEN);
-	lv_obj_remove_flag(scr->fav_page_1_yes, LV_OBJ_FLAG_HIDDEN);
-	lv_obj_remove_flag(scr->fav_page_2_No, LV_OBJ_FLAG_HIDDEN);
+	//底部页标icon显示逻辑(2026-10-09:没有第二页(收藏5~8位全空)时整组圆点不显示)
+	if (Fav_Cur->has_favorites_byte & 0b11110000)
+	{
+		lv_obj_add_flag(scr->fav_page_1_No, LV_OBJ_FLAG_HIDDEN);
+		lv_obj_add_flag(scr->fav_page_2_yes, LV_OBJ_FLAG_HIDDEN);
+		lv_obj_remove_flag(scr->fav_page_1_yes, LV_OBJ_FLAG_HIDDEN);
+		lv_obj_remove_flag(scr->fav_page_2_No, LV_OBJ_FLAG_HIDDEN);
+	}
+	else
+	{
+		lv_obj_add_flag(scr->fav_page_1_No, LV_OBJ_FLAG_HIDDEN);
+		lv_obj_add_flag(scr->fav_page_2_yes, LV_OBJ_FLAG_HIDDEN);
+		lv_obj_add_flag(scr->fav_page_1_yes, LV_OBJ_FLAG_HIDDEN);
+		lv_obj_add_flag(scr->fav_page_2_No, LV_OBJ_FLAG_HIDDEN);
+	}
 
 	if (scr->group_sub_1 == lv_group_get_default())
 	{
@@ -1341,11 +1351,21 @@ void FAV_screen_Refresh_SecondPage()
         lv_group_focus_obj(scr->obj_null_4);
     }
 
-	//底部页标icon显示逻辑
-	lv_obj_remove_flag(scr->fav_page_1_No, LV_OBJ_FLAG_HIDDEN);
-	lv_obj_remove_flag(scr->fav_page_2_yes, LV_OBJ_FLAG_HIDDEN);
-	lv_obj_add_flag(scr->fav_page_1_yes, LV_OBJ_FLAG_HIDDEN);
-	lv_obj_add_flag(scr->fav_page_2_No, LV_OBJ_FLAG_HIDDEN);
+	//底部页标icon显示逻辑(2026-10-09:同第一页口径,5~8位全空=无第二页不显示圆点)
+	if (Fav_Cur->has_favorites_byte & 0b11110000)
+	{
+		lv_obj_remove_flag(scr->fav_page_1_No, LV_OBJ_FLAG_HIDDEN);
+		lv_obj_remove_flag(scr->fav_page_2_yes, LV_OBJ_FLAG_HIDDEN);
+		lv_obj_add_flag(scr->fav_page_1_yes, LV_OBJ_FLAG_HIDDEN);
+		lv_obj_add_flag(scr->fav_page_2_No, LV_OBJ_FLAG_HIDDEN);
+	}
+	else
+	{
+		lv_obj_add_flag(scr->fav_page_1_No, LV_OBJ_FLAG_HIDDEN);
+		lv_obj_add_flag(scr->fav_page_2_yes, LV_OBJ_FLAG_HIDDEN);
+		lv_obj_add_flag(scr->fav_page_1_yes, LV_OBJ_FLAG_HIDDEN);
+		lv_obj_add_flag(scr->fav_page_2_No, LV_OBJ_FLAG_HIDDEN);
+	}
 
 	if (scr->group_sub_1 == lv_group_get_default())
 	{

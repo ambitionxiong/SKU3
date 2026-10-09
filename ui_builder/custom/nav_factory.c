@@ -43,7 +43,7 @@ static void factory_reset_apply(void)
     SET_Data.Set_TempUnit = 0;
     SET_Data.Set_VolumeFlag = 1;
     SET_Data.Set_VolumeHintTime = 0;
-    SET_Data.Set_VolumeKey = 7;
+    SET_Data.Set_VolumeKey = 4;   /* 默认 4 档(2026-10-09 用户定稿,与初始化器同步,原 7) */
     SET_Data.Set_VolumeWelcome = 1;
     SET_Data.Set_Brightness = 7;
     SET_Data.Set_TimeType = 0;

@@ -94,7 +94,7 @@ void air_complete_lang_tune(void)
     lv_obj_set_pos(pg->image_155, 115, 161);
 
     /* image_6: 图片 | (902,160) | img: tips.png */
-    lv_obj_set_pos(pg->image_6, 820, 160);
+    lv_obj_set_pos(pg->image_6, 905, 160);
     lv_image_set_src(pg->image_6, LVGL_IMAGE_PATH(tips_en.png));
 
 }
@@ -613,7 +613,7 @@ void bottom_bbq_complete_lang_tune(void)
     lv_obj_set_pos(pg->image_76, 115, 161);
 
     /* image_2: 图片 | (902,160) | img: tips.png */
-    lv_obj_set_pos(pg->image_2, 820, 160);
+    lv_obj_set_pos(pg->image_2, 905, 160);
     lv_image_set_src(pg->image_2, LVGL_IMAGE_PATH(tips_en.png));
 
 }
@@ -656,6 +656,12 @@ void bottom_bbq_complete_probe_lang_tune(void)
     /* label_78: 标签 | "请缓慢打开门体！" | (896,197) | 252x36 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_78, 800, 197);
     lv_obj_set_size(pg->label_78, 431, 36);
+    /* EN 两行高温标语换新文案(2026-10-09 用户:一行 Caution 一行 Oven cavity is hot !)
+     * 词典不动——"高温防烫"词条被 somecook/六感 overlay 运行时 tr() 共用;
+     * tune 仅英文跑,直 set 不影响简繁;盒 (800,161/197) 431x36 生成层已是居中对齐,
+     * 新短句自动居中,几何不用动 */
+    lv_label_set_text(pg->label_77, "Caution");
+    lv_label_set_text(pg->label_78, "Oven cavity is hot !");
 
 }
 
@@ -1539,7 +1545,7 @@ void bread_complete_lang_tune(void)
     lv_obj_set_pos(pg->image_355, 115, 161);
 
     /* image_14: 图片 | (902,160) | img: tips.png */
-    lv_obj_set_pos(pg->image_14, 820, 160);
+    lv_obj_set_pos(pg->image_14, 905, 160);
     lv_image_set_src(pg->image_14, LVGL_IMAGE_PATH(tips_en.png));
 
 }
@@ -2072,7 +2078,7 @@ void central_bbq_complete_lang_tune(void)
     lv_obj_set_pos(pg->image_145, 115, 161);
 
     /* image_5: 图片 | (902,160) | img: tips.png */
-    lv_obj_set_pos(pg->image_5, 820, 160);
+    lv_obj_set_pos(pg->image_5, 905, 160);
     lv_image_set_src(pg->image_5, LVGL_IMAGE_PATH(tips_en.png));
 
 }
@@ -2890,7 +2896,7 @@ void chip_complete_lang_tune(void)
     lv_obj_set_pos(pg->image_387, 115, 161);
 
     /* image_16: 图片 | (902,160) | img: tips.png */
-    lv_obj_set_pos(pg->image_16, 820, 160);
+    lv_obj_set_pos(pg->image_16, 905, 160);
     lv_image_set_src(pg->image_16, LVGL_IMAGE_PATH(tips_en.png));
 
 }
@@ -4276,7 +4282,7 @@ void corn_complete_lang_tune(void)
     lv_obj_set_pos(pg->image_260, 143, 161);
 
     /* image_10: 图片 | (902,160) | img: tips.png */
-    lv_obj_set_pos(pg->image_10, 820, 160);
+    lv_obj_set_pos(pg->image_10, 905, 160);
     lv_image_set_src(pg->image_10, LVGL_IMAGE_PATH(tips_en.png));
 
 }
@@ -4794,7 +4800,7 @@ void custom_complete_lang_tune(void)
     lv_obj_set_pos(pg->image_403, 115, 161);
 
     /* image_17: 图片 | (902,160) | img: tips.png */
-    lv_obj_set_pos(pg->image_17, 820, 160);
+    lv_obj_set_pos(pg->image_17, 905, 160);
     lv_image_set_src(pg->image_17, LVGL_IMAGE_PATH(tips_en.png));
 
 }
@@ -5677,7 +5683,7 @@ void heatcontain_complete_lang_tune(void)
     lv_obj_set_pos(pg->image_316, 90, 161);
 
     /* image_11: 图片 | (902,160) | img: tips.png */
-    lv_obj_set_pos(pg->image_11, 820, 160);
+    lv_obj_set_pos(pg->image_11, 905, 160);
     lv_image_set_src(pg->image_11, LVGL_IMAGE_PATH(tips_en.png));
 
 }
@@ -6195,7 +6201,7 @@ void hot_bbq_complete_lang_tune(void)
     lv_obj_set_pos(pg->image_97, 115, 161);
 
     /* image_3: 图片 | (902,160) | img: tips.png */
-    lv_obj_set_pos(pg->image_3, 820, 160);
+    lv_obj_set_pos(pg->image_3, 905, 160);
     lv_image_set_src(pg->image_3, LVGL_IMAGE_PATH(tips_en.png));
 
 }
@@ -6238,6 +6244,9 @@ void hot_bbq_complete_probe_lang_tune(void)
     /* label_45: 标签 | "请缓慢打开门体！" | (896,197) | 252x36 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_45, 800, 197);
     lv_obj_set_size(pg->label_45, 431, 36);
+    /* EN 两行高温标语换新文案(2026-10-09,同 bottom_bbq 注释口径:词典被 overlay 共用不动) */
+    lv_label_set_text(pg->label_44, "Caution");
+    lv_label_set_text(pg->label_45, "Oven cavity is hot !");
 
 }
 
@@ -7109,7 +7118,7 @@ void hotcleanhigh_complete_lang_tune(void)
     lv_obj_set_size(pg->label_28, 235, 60);
 
     /* image_25: 图片 | (902,160) | img: tips.png */
-    lv_obj_set_pos(pg->image_25, 820, 160);
+    lv_obj_set_pos(pg->image_25, 905, 160);
     lv_image_set_src(pg->image_25, LVGL_IMAGE_PATH(tips_en.png));
 
     /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Eng modify ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -7458,7 +7467,7 @@ void hotcleanmiddle_complete_lang_tune(void)
     lv_obj_set_size(pg->label_15, 235, 60);
 
     /* image_14: 图片 | (902,160) | img: tips.png */
-    lv_obj_set_pos(pg->image_14, 820, 160);
+    lv_obj_set_pos(pg->image_14, 905, 160);
     lv_image_set_src(pg->image_14, LVGL_IMAGE_PATH(tips_en.png));
 
     /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Eng modify ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -7802,7 +7811,7 @@ void hotcleansave_complete_lang_tune(void)
     lv_obj_set_size(pg->label_2, 235, 60);
 
     /* image_3: 图片 | (902,160) | img: tips.png */
-    lv_obj_set_pos(pg->image_3, 820, 160);
+    lv_obj_set_pos(pg->image_3, 905, 160);
     lv_image_set_src(pg->image_3, LVGL_IMAGE_PATH(tips_en.png));
 
     /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Eng modify ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -8670,7 +8679,7 @@ void lasagna_complete_lang_tune(void)
     lv_obj_set_pos(pg->image_323, 115, 161);
 
     /* image_12: 图片 | (902,160) | img: tips.png */
-    lv_obj_set_pos(pg->image_12, 820, 160);
+    lv_obj_set_pos(pg->image_12, 905, 160);
     lv_image_set_src(pg->image_12, LVGL_IMAGE_PATH(tips_en.png));
 
 }
@@ -9731,7 +9740,7 @@ void pizza3_complete_lang_tune(void)
     lv_obj_set_pos(pg->image_371, 115, 161);
 
     /* image_15: 图片 | (902,160) | img: tips.png */
-    lv_obj_set_pos(pg->image_15, 820, 160);
+    lv_obj_set_pos(pg->image_15, 905, 160);
     lv_image_set_src(pg->image_15, LVGL_IMAGE_PATH(tips_en.png));
 
 }
@@ -11531,7 +11540,7 @@ void rising_complete_lang_tune(void)
     lv_obj_set_pos(pg->image_239, 115, 161);
 
     /* image_9: 图片 | (902,160) | img: tips.png */
-    lv_obj_set_pos(pg->image_9, 820, 160);
+    lv_obj_set_pos(pg->image_9, 905, 160);
     lv_image_set_src(pg->image_9, LVGL_IMAGE_PATH(tips_en.png));
 
 }
@@ -12107,7 +12116,7 @@ void save_bbq_complete_lang_tune(void)
     lv_obj_set_pos(pg->image_129, 115, 161);
 
     /* image_4: 图片 | (902,160) | img: tips.png */
-    lv_obj_set_pos(pg->image_4, 820, 160);
+    lv_obj_set_pos(pg->image_4, 905, 160);
     lv_image_set_src(pg->image_4, LVGL_IMAGE_PATH(tips_en.png));
 
 }
@@ -12926,7 +12935,7 @@ void slowcook_complete_lang_tune(void)
     lv_obj_set_pos(pg->image_197, 115, 161);
 
     /* image_7: 图片 | (902,160) | img: tips.png */
-    lv_obj_set_pos(pg->image_7, 820, 160);
+    lv_obj_set_pos(pg->image_7, 905, 160);
     lv_image_set_src(pg->image_7, LVGL_IMAGE_PATH(tips_en.png));
 
 }
@@ -12968,6 +12977,9 @@ void slowcook_complete_probe_lang_tune(void)
 
     lv_obj_set_pos(pg->label_111, 800, 197);
     lv_obj_set_size(pg->label_111, 431, 36);
+    /* EN 两行高温标语换新文案(2026-10-09,同 bottom_bbq 注释口径:词典被 overlay 共用不动) */
+    lv_label_set_text(pg->label_110, "Caution");
+    lv_label_set_text(pg->label_111, "Oven cavity is hot !");
 
 }
 
@@ -14426,7 +14438,7 @@ void strudel_complete_lang_tune(void)
     lv_obj_set_pos(pg->image_339, 115, 161);
 
     /* image_13: 图片 | (902,160) | img: tips.png */
-    lv_obj_set_pos(pg->image_13, 820, 160);
+    lv_obj_set_pos(pg->image_13, 905, 160);
     lv_image_set_src(pg->image_13, LVGL_IMAGE_PATH(tips_en.png));
 
 }
@@ -15229,7 +15241,7 @@ void top_bbq_complete_lang_tune(void)
     lv_obj_set_pos(pg->image_55, 115, 161);
 
     /* image_1: 图片 | (902,160) | img: tips.png */
-    lv_obj_set_pos(pg->image_1, 820, 160);
+    lv_obj_set_pos(pg->image_1, 905, 160);
     lv_image_set_src(pg->image_1,LVGL_IMAGE_PATH(tips_en.png));
 
 }
@@ -15751,7 +15763,7 @@ void unfrozen_complete_lang_tune(void)
     lv_obj_set_pos(pg->image_218, 149, 161);
 
     /* image_8: 图片 | (902,160) | img: tips.png */
-    lv_obj_set_pos(pg->image_8, 820, 160);
+    lv_obj_set_pos(pg->image_8, 905, 160);
     lv_image_set_src(pg->image_8, LVGL_IMAGE_PATH(tips_en.png));
 
 }
@@ -17456,7 +17468,7 @@ void waterclean_complete_lang_tune(void)
     lv_obj_set_size(pg->label_13, 235, 60);
 
     /* image_12: 图片 | (902,160) | img: tips.png */
-    lv_obj_set_pos(pg->image_12, 820, 160);
+    lv_obj_set_pos(pg->image_12, 905, 160);
     lv_image_set_src(pg->image_12, LVGL_IMAGE_PATH(tips_en.png));
 
     /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Eng modify ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
