@@ -1703,6 +1703,7 @@ void hc_doorwait_lang_tune(void);
 void hotclean_set_align(lv_obj_t *icon, lv_obj_t *title, lv_obj_t *status, lv_obj_t *hint);   /* set 确认页组件对齐 cooking 基准 */
 void nav_lockicon_refit(void);   /* lockicon 换 54x54 大图:重适配当前屏所有锁图标按钮(全语言) */
 void nav_dirimg_refit(void);     /* menu_top/low+setting 箭头标签换图+下划线加长(全语言,幂等) */
+void nav_btnskin_refit(void);    /* EN 运行/暂停/stopback/预约页右下按钮换专属底图+文案(2026-10-09) */
 void updown_set_refit(updown_bbq_set_t *set);   /* updown set 排版精修:数字统一 30 号+↑/↓ 换 dirup/dirdown 图(仅构建路径调用) */
 void top_bbq_set_refit(top_bbq_set_t *set);   /* top_bbq set 数字改小 30 号(其余模式 set 页试点,镜像 updown 样式;仅构建路径调用) */
 void nav_modeset_refit(lv_obj_t *temp, lv_obj_t *hour, lv_obj_t *min, lv_obj_t *icon2, lv_obj_t *icon3, lv_obj_t *shi, lv_obj_t *fen);   /* 8 个同构模式 set 页共享 refit(几何=top_bbq 验证终值;仅构建路径调用) */

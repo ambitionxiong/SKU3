@@ -344,6 +344,145 @@ static void lang_fit_unit_labels(void)
     lv_obj_tree_walk(lv_scr_act(), lang_fit_min_unit_cb, NULL);
 }
 
+/* ==============================
+ * EN 按钮换肤(2026-10-09 客户新要求):运行/暂停/stopback/演示预约页右下按钮
+ * 底图 stopbk1/2 换 pause/resume/stopcooking/cancel 专属图并改文案(仅英文)。
+ * 按钮识别=bg 图名字符串,不依赖生成层成员名;页面 id 表由 nav.h 枚举后缀脚本
+ * 生成,覆盖 38/35/35 个同构页(含 probe 变体)。setting/set 页的确定钮用同名
+ * 底图但 id 不在表内,不受影响;i18n 词典零改动;简繁零改动(is_english 门禁)。
+ * LVGL8/9 背景图拉伸铺满按钮:按新图原生尺寸设按钮(169x64/stopcooking 264x64)
+ * 零形变,水平中心与上方时间/文案列中线对齐(用户 2026-10-09 二轮修正)+垂直中心
+ * 保持;focus 图 166x61 同盒拉伸(与旧 stopbk2 同规则)。
+ * ============================== */
+static const page_id_t s_bskin_cooking[] = {
+    PAGE_AIR_COOKING, PAGE_BOTTOM_BBQ_COOKING, PAGE_BOTTOM_BBQ_COOKING_PROBE,
+    PAGE_BREAD_COOKING, PAGE_CENTRAL_BBQ_COOKING, PAGE_CHIP_COOKING,
+    PAGE_CHICKENCOOKING, PAGE_COLOR_COOKING, PAGE_COOKIE_COOKING,
+    PAGE_CORN_COOKING, PAGE_CUSTOM_COOKING, PAGE_HEATCONTAIN_COOKING,
+    PAGE_HOTCLEANHIGH_COOKING, PAGE_HOTCLEANMIDDLE_COOKING, PAGE_HOTCLEANSAVE_COOKING,
+    PAGE_HOTWIND_BBQ_COOKING, PAGE_HOT_BBQ_COOKING, PAGE_HOT_BBQ_COOKING_PROBE,
+    PAGE_LASAGNA_COOKING, PAGE_MENU_COOK_COOKING, PAGE_PIZZA3_COOKING,
+    PAGE_PIZZA_2_COOKING, PAGE_PIZZA_COOKING, PAGE_PREHEAT_COOKING,
+    PAGE_RISING_COOKING, PAGE_SAVE_BBQ_COOKING, PAGE_SIX_COOKING,
+    PAGE_SLOWCOOK_COOKING, PAGE_SLOWCOOK_COOKING_PROBE, PAGE_SOMECOOK_COOKING,
+    PAGE_STRUDEL_COOKING, PAGE_TOP_BBQ_COOKING, PAGE_UNFROZEN_COOKING,
+    PAGE_UPDOWN_BBQ_COOKING, PAGE_UPDOWN_BBQ_COOKING_PROBE, PAGE_WATER_CLEAN_COOKING,
+    PAGE_WEST_COOKING, PAGE_WINDCHANGE_BBQ_COOKING,
+};
+static const page_id_t s_bskin_stop[] = {
+    PAGE_AIR_STOP, PAGE_BOTTOM_BBQ_STOP, PAGE_BOTTOM_BBQ_STOP_PROBE,
+    PAGE_BREAD_STOP, PAGE_CENTRAL_BBQ_STOP, PAGE_CHIP_STOP,
+    PAGE_COLOR_STOP, PAGE_COOKIE_STOP, PAGE_CORN_STOP,
+    PAGE_CUSTOM_STOP, PAGE_HEATCONTAIN_STOP, PAGE_HOTCLEANHIGH_STOP,
+    PAGE_HOTCLEANMIDDLE_STOP, PAGE_HOTCLEANSAVE_STOP, PAGE_HOTWIND_BBQ_STOP,
+    PAGE_HOT_BBQ_STOP, PAGE_HOT_BBQ_STOP_PROBE, PAGE_LASAGNA_STOP,
+    PAGE_MENU_COOK_STOP, PAGE_PIZZA3_STOP, PAGE_PIZZA_2_STOP,
+    PAGE_PIZZA_STOP, PAGE_PREHEAT_STOP, PAGE_RISING_STOP,
+    PAGE_SAVE_BBQ_STOP, PAGE_SLOWCOOK_STOP, PAGE_SLOWCOOK_STOP_PROBE,
+    PAGE_STRUDEL_STOP, PAGE_TOP_BBQ_STOP, PAGE_UNFROZEN_STOP,
+    PAGE_UPDOWN_BBQ_STOP, PAGE_UPDOWN_BBQ_STOP_PROBE, PAGE_WATER_CLEAN_STOP,
+    PAGE_WEST_STOP, PAGE_WINDCHANGE_BBQ_STOP,
+};
+static const page_id_t s_bskin_stopback[] = {
+    PAGE_AIR_STOP_BACK, PAGE_BOTTOM_BBQ_STOP_BACK, PAGE_BOTTOM_BBQ_STOP_BACK_PROBE,
+    PAGE_BREAD_STOP_BACK, PAGE_CENTRAL_BBQ_STOP_BACK, PAGE_CHIP_STOP_BACK,
+    PAGE_COLOR_STOP_BACK, PAGE_COOKIE_STOP_BACK, PAGE_CORN_STOP_BACK,
+    PAGE_CUSTOM_STOP_BACK, PAGE_HEATCONTAIN_STOP_BACK, PAGE_HOTCLEANHIGH_STOP_BACK,
+    PAGE_HOTCLEANMIDDLE_STOP_BACK, PAGE_HOTCLEANSAVE_STOP_BACK, PAGE_HOTWIND_BBQ_STOP_BACK,
+    PAGE_HOT_BBQ_STOP_BACK, PAGE_HOT_BBQ_STOP_BACK_PROBE, PAGE_LASAGNA_STOP_BACK,
+    PAGE_MENU_COOK_STOP_BACK, PAGE_PIZZA3_STOP_BACK, PAGE_PIZZA_2_STOP_BACK,
+    PAGE_PIZZA_STOP_BACK, PAGE_PREHEAT_STOP_BACK, PAGE_RISING_STOP_BACK,
+    PAGE_SAVE_BBQ_STOP_BACK, PAGE_SLOWCOOK_STOP_BACK, PAGE_SLOWCOOK_STOP_BACK_PROBE,
+    PAGE_STRUDEL_STOP_BACK, PAGE_TOP_BBQ_STOP_BACK, PAGE_UNFROZEN_STOP_BACK,
+    PAGE_UPDOWN_BBQ_STOP_BACK, PAGE_UPDOWN_BBQ_STOP_BACK_PROBE, PAGE_WATER_CLEAN_STOP_BACK,
+    PAGE_WEST_STOP_BACK, PAGE_WINDCHANGE_BBQ_STOP_BACK,
+};
+
+typedef struct {
+    const char *src, *src_focus;   /* DEFAULT/FOCUSED 新底图 */
+    lv_coord_t w, h;               /* 新按钮尺寸(=底图原生) */
+    int cls;                       /* 0=仅换图 1=暂停页文案 2=stopback 文案 */
+} bskin_arg_t;
+
+static int bskin_id_in(const page_id_t *tab, int n, page_id_t id)
+{
+    int i;
+    for (i = 0; i < n; i++)
+        if (tab[i] == id) return 1;
+    return 0;
+}
+
+static lv_obj_tree_walk_res_t bskin_walk_cb(lv_obj_t *obj, void *user_data)
+{
+    bskin_arg_t *a = user_data;
+    const char *bg = lv_obj_get_style_bg_img_src(obj, LV_PART_MAIN);
+
+    /* 不做 lv_btn_class 判断(SIM 是 LVGL9 类名 lv_button_class,设备端版本未必一致):
+     * stopbk1/2 底图只有目标按钮在用,按 bg 图名匹配即天然唯一 */
+    if (bg && (strcmp(bg, LVGL_IMAGE_PATH(stopbk1.png)) == 0 ||
+               strcmp(bg, LVGL_IMAGE_PATH(stopbk2.png)) == 0)) {
+        lv_coord_t x = lv_obj_get_x(obj), y = lv_obj_get_y(obj);
+        /* 水平中心保持(用户:按钮要与上方时间/文案列中线对齐,原右缘保持会左偏 ~20px) */
+        lv_obj_set_pos(obj, x + lv_obj_get_width(obj) / 2 - a->w / 2,
+                       y + (lv_obj_get_height(obj) - a->h) / 2);
+        lv_obj_set_size(obj, a->w, a->h);
+        lv_obj_set_style_bg_img_src(obj, a->src, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_img_src(obj, a->src_focus, LV_PART_MAIN | LV_STATE_FOCUSED);
+        return LV_OBJ_TREE_WALK_NEXT;
+    }
+    if (!a->cls || !lv_obj_check_type(obj, &lv_label_class)) return LV_OBJ_TREE_WALK_NEXT;
+    {
+        const char *t = lv_label_get_text(obj);
+        if (!t) return LV_OBJ_TREE_WALK_NEXT;
+        if (a->cls == 1) {   /* 暂停页:按钮 Start→Resume,标题按新要求对齐 mockup */
+            if (strcmp(t, "Start") == 0) lv_label_set_text(obj, "Resume");
+            else if (strcmp(t, "Paused...") == 0) lv_label_set_text(obj, "Pause...");
+        } else {             /* stopback 页 */
+            if (strcmp(t, "Start") == 0) {
+                lv_label_set_text(obj, "Stop Cooking");
+            } else if (strcmp(t, "Paused...") == 0) {
+                lv_label_set_text(obj, "Cooking...");
+            } else if (strcmp(t, "Cancel the") == 0 || strcmp(t, "current program?") == 0) {
+                /* 两行提示语换新文案(词典词条仅 stopback 在用):按新要求 mockup
+                 * 走 Aktiv Grotesk Medium 30 号+470 宽固定盒双行居中(盒中心 1005,
+                 * 实测 mockup 墨迹轴≈1005);y 不动(墨迹顶 163/201 与 mockup 164/200 吻合) */
+                lv_label_set_text(obj, strcmp(t, "Cancel the") == 0 ?
+                                      "Cooking is currently in progress." : "Stop cooking and exit?");
+                lv_obj_set_width(obj, 470);
+                lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_CENTER, 0);
+                lv_obj_set_style_text_font(obj, &c_aktivgroteskmedium_30, LV_PART_MAIN);
+                lv_obj_set_pos(obj, 770, lv_obj_get_y(obj));
+            }
+        }
+    }
+    return LV_OBJ_TREE_WALK_NEXT;
+}
+
+void nav_btnskin_refit(void)
+{
+    bskin_arg_t a;
+    page_id_t id;
+
+    if (depth <= 0 || !is_english()) return;
+    id = page_stack[depth - 1];
+    if (bskin_id_in(s_bskin_cooking, (int)(sizeof(s_bskin_cooking) / sizeof(s_bskin_cooking[0])), id)) {
+        a.src = LVGL_IMAGE_PATH(pause.png); a.src_focus = LVGL_IMAGE_PATH(pause_focus.png);
+        a.w = 169; a.h = 64; a.cls = 0;
+    } else if (bskin_id_in(s_bskin_stop, (int)(sizeof(s_bskin_stop) / sizeof(s_bskin_stop[0])), id)) {
+        a.src = LVGL_IMAGE_PATH(resume.png); a.src_focus = LVGL_IMAGE_PATH(resume_focus.png);
+        a.w = 169; a.h = 64; a.cls = 1;
+    } else if (bskin_id_in(s_bskin_stopback, (int)(sizeof(s_bskin_stopback) / sizeof(s_bskin_stopback[0])), id)) {
+        a.src = LVGL_IMAGE_PATH(stopcooking.png); a.src_focus = LVGL_IMAGE_PATH(stopcooking_focus.png);
+        a.w = 264; a.h = 64; a.cls = 2;
+    } else if (id == PAGE_DELAYCOOKING) {
+        a.src = LVGL_IMAGE_PATH(cancel.png); a.src_focus = LVGL_IMAGE_PATH(cancel_focus.png);
+        a.w = 169; a.h = 64; a.cls = 0;
+    } else {
+        return;
+    }
+    lv_obj_tree_walk(lv_scr_act(), bskin_walk_cb, &a);
+}
+
 void lang_on_page_built(void)
 {
     if (depth <= 0) return;
@@ -365,4 +504,5 @@ void lang_on_page_built(void)
 
     nav_lockicon_refit();   /* lockicon 换 54x54 大图:全语言统一重适配锁图标按钮(EN 须在 tune 之后,tune 里有 50x43 复位) */
     nav_dirimg_refit();     /* menu_top/low+setting 箭头换图+下划线加长:全语言统一(EN 须在 tune 之后覆盖 tune 的 dir/line 行) */
+    nav_btnskin_refit();    /* EN 运行/暂停/stopback/预约按钮换 pause/resume/stopcooking/cancel 底图+文案(2026-10-09) */
 }

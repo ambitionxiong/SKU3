@@ -484,8 +484,19 @@ void nav_poweroff_ask_show(void)
     }
     {
         lv_obj_t *lbl = lv_obj_get_child(tf->sure, 0);   /* 按钮文字随语言切换 */
-        if (lbl) lv_label_set_text(lbl, tr("关 机"));
+        if (lbl) lv_label_set_text(lbl, is_english() ? "Turn Off" : tr("关 机"));
         lv_obj_add_state(tf->sure, LV_STATE_FOCUSED);    /* 常亮聚焦底图,提示可按 */
+    }
+    /* EN 按钮换肤(2026-10-09):关机确认钮换 turnoff 专属底图,水平中心与上方
+     * 提示列中线对齐(919→939,同 nav_btnskin 中心保持口径) 169x64@y304;
+     * 简繁保持 stopbk1/2 不动。cancel() 无条件还原生成默认——
+     * 本控件与收藏确认弹窗(nav_favask_show)复用,favask 只改文字不动几何/底图,
+     * 不还原会把 Turn Off 样式串进收藏弹窗 */
+    if (is_english()) {
+        lv_obj_set_pos(tf->sure, 939, 304);
+        lv_obj_set_size(tf->sure, 169, 64);
+        lv_obj_set_style_bg_img_src(tf->sure, LVGL_IMAGE_PATH(turnoff.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_img_src(tf->sure, LVGL_IMAGE_PATH(turnoff_focus.png), LV_PART_MAIN | LV_STATE_FOCUSED);
     }
     lv_obj_clear_flag(tf->tip1, LV_OBJ_FLAG_HIDDEN);
     lv_obj_clear_flag(tf->sure, LV_OBJ_FLAG_HIDDEN);
@@ -506,6 +517,12 @@ void nav_poweroff_ask_cancel(void)
     if (tf->tip1) lv_obj_add_flag(tf->tip1, LV_OBJ_FLAG_HIDDEN);
     if (tf->tip2) lv_obj_add_flag(tf->tip2, LV_OBJ_FLAG_HIDDEN);   /* 两行文案后 tip2 已显示,取消必须同藏 */
     if (tf->sure) {
+        /* 还原生成默认(2026-10-09):EN show() 换过 turnoff 底图/169x64,
+         * 本控件 favask 收藏弹窗复用且只改文字,必须复位防串样 */
+        lv_obj_set_pos(tf->sure, 959, 295);
+        lv_obj_set_size(tf->sure, 129, 83);
+        lv_obj_set_style_bg_img_src(tf->sure, LVGL_IMAGE_PATH(stopbk1.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_img_src(tf->sure, LVGL_IMAGE_PATH(stopbk2.png), LV_PART_MAIN | LV_STATE_FOCUSED);
         lv_obj_add_flag(tf->sure, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_state(tf->sure, LV_STATE_FOCUSED);
     }
