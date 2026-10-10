@@ -481,10 +481,11 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "蒸汽解冻", "Steam Defrost" },
         { "蒸汽预热", "Steam Preheat" },
         { "蔬菜", "Vegetables" },
-        { "蔬菜/配菜", "Veg/Sides" },
+        { "蔬菜/配菜", "Vegetables & Side Dishes" },   /* 2026-10-10 规范新命名(sixmenu 瓦片+子菜单标题),原 Veg/Sides */
         { "薯条", "French Fries" },
         { "蛋挞", "Egg Tart" },
         { "蛋糕", "Cake" },
+        { "蛋糕/糕点", "Cakes & Pastries" },   /* 2026-10-10 sixmenu 瓦片新键(与子菜单页"蛋糕"标题区分) */
         { "西式", "Tarts" },
         { "西式塔", "Tarts" },
         { "解冻", "Defrost" },
@@ -578,7 +579,7 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "饼干", "Cookies" },
         { "高温蒸", "Steam Plus" },
         { "高温防烫", "Caution" },   /* 2026-10-09 同上:与"请缓慢打开门体！"成对新文案 */
-        { "鱼/海鲜", "Fish/Seafood" },
+        { "鱼/海鲜", "Fish & Seafood" },   /* 2026-10-10 规范新命名(sixmenu 瓦片+子菜单标题),原 Fish/Seafood */
         { "鸡", "Chicken" },
         { "鸭", "Duck" },
         { "收藏功能", "Favorites" },

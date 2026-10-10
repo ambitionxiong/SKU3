@@ -505,4 +505,5 @@ void lang_on_page_built(void)
     nav_lockicon_refit();   /* lockicon 换 54x54 大图:全语言统一重适配锁图标按钮(EN 须在 tune 之后,tune 里有 50x43 复位) */
     nav_dirimg_refit();     /* menu_top/low+setting 箭头换图+下划线加长:全语言统一(EN 须在 tune 之后覆盖 tune 的 dir/line 行) */
     nav_btnskin_refit();    /* EN 运行/暂停/stopback/预约按钮换 pause/resume/stopcooking/cancel 底图+文案(2026-10-09) */
+    nav_menuicon_refit();   /* EN major/cook/six 三菜单独立图标+24px居中排版(规范图实测位置表,2026-10-10) */
 }

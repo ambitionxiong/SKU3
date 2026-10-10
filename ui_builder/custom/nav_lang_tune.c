@@ -2576,7 +2576,7 @@ void chick6menu_lang_tune(void)
 
     /* label_1: 标签 | "家禽" | (24,24) | 118x25 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_1, 24, 24);
-    lv_obj_set_size(pg->label_1, 300, 25);
+    lv_obj_set_size(pg->label_1, 430, 25);   /* EN 复用本页做鱼/蔬菜/意面标题:放得下 "Vegetables & Side Dishes"(2026-10-10) */
 
     /* chicken: 按钮 | (12,75) | 638x387 | font taiwanpearl_regular_30 | bg: div230bg.png */
     lv_obj_set_pos(pg->chicken, 12, 75);
@@ -2593,8 +2593,8 @@ void chick6menu_lang_tune(void)
        蔬菜/配菜首页:       第六感→蔬菜/配菜
        砂锅菜/烤意面首页:   第六感→意面(千层面/卡内罗尼) ---- */
     if (six_chick_get_vegetable_mode() || six_chick_get_pasta_mode()) {
-        /* 蔬菜配菜 / 砂锅菜烤意面: 标题文字较长("蔬菜/配菜"/"砂锅菜/烤意面") */
-        /* TODO: 英文实测后调整(label_1 "Vegetables & Side Dishes" 等宽度) */
+        /* 蔬菜配菜 / 砂锅菜烤意面: 标题文字较长,词典 2026-10-10 换 "Vegetables & Side Dishes"/
+           "Casseroles & Baked Pasta",label_1 已加宽 430 单行放下 */
     } else if (six_chick_get_fish_mode()) {
         /* 鱼海鲜首页 / 烤鱼子页 */
         /* TODO: 英文实测后按需调整 */
@@ -4192,57 +4192,11 @@ void cookmenu_lang_tune(void)
     lv_obj_set_pos(pg->up_down_button, 21, 75);
     lv_obj_set_size(pg->up_down_button, 244, 386);
 
-    /* mainimg_1: 图片 | (95,111) | img: cookmenuicon.png */
+    /* mainimg_1: 图片 | (95,111) | img: cookmenuicon.png (EN 由 nav_menuicon_refit 藏图换单瓦片素材,2026-10-10) */
     lv_obj_set_pos(pg->mainimg_1, 95, 111);
 
-    /* hot_wind_labal: 标签 | "热风" | (857,213) | 63x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->hot_wind_labal, 788, 213);
-    lv_obj_set_size(pg->hot_wind_labal, 200, 32);
-	lv_obj_set_style_text_letter_space(pg->hot_wind_labal, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    /* save_labal: 标签 | "节能热风" | (1074,212) | 126x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->save_labal, 1027, 213);
-    lv_obj_set_size(pg->save_labal, 220, 32);
-	lv_obj_set_style_text_letter_space(pg->save_labal, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    /* up_down_labal: 标签 | "上下烧烤" | (69,287) | 150x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->up_down_labal, 46, 303);
-    lv_obj_set_size(pg->up_down_labal, 200, 32);
-	lv_obj_set_style_text_letter_space(pg->up_down_labal, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    /* bottom_bbq_labal: 标签 | "底部烧烤" | (327,406) | 131x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->bottom_bbq_labal, 294, 406);
-    lv_obj_set_size(pg->bottom_bbq_labal, 200, 32);
-	lv_obj_set_style_text_letter_space(pg->bottom_bbq_labal, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    /* hotwind_bbq_labal: 标签 | "热风烧烤" | (577,212) | 126x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->hotwind_bbq_labal, 541, 213);
-    lv_obj_set_size(pg->hotwind_bbq_labal, 200, 32);
-	lv_obj_set_style_text_letter_space(pg->hotwind_bbq_labal, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    /* central_labal: 标签 | "集中烧烤" | (577,405) | 126x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->central_labal, 541, 406);
-    lv_obj_set_size(pg->central_labal, 200, 32);
-	lv_obj_set_style_text_letter_space(pg->central_labal, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    /* wind_change_labal: 标签 | "热风对流" | (826,404) | 126x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->wind_change_labal, 786, 391);
-    lv_obj_set_size(pg->wind_change_labal, 200, 64);
-	lv_obj_set_style_text_letter_space(pg->wind_change_labal, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    /* preheater_labal: 标签 | "预热" | (1107,405) | 61x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->preheater_labal, 1036, 406);
-    lv_obj_set_size(pg->preheater_labal, 200, 32);
-	lv_obj_set_style_text_letter_space(pg->preheater_labal, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    /* pengren_labal: 标签 | "烹饪功能" | (24,22) | 97x25 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->pengren_labal, 24, 24);
-    lv_obj_set_size(pg->pengren_labal, 250, 80);
-
-    /* hot_bbq_labal: 标签 | "顶部烧烤" | (328,212) | 126x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->hot_bbq_labal, 294, 213);
-    lv_obj_set_size(pg->hot_bbq_labal, 200, 32);
-	lv_obj_set_style_text_letter_space(pg->hot_bbq_labal, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
+    /* 9 个瓦片标签几何+24px 居中由 nav_menuicon_refit 统一管(2026-10-10),
+     * tune 原先的 200 宽盒子/letter_space/两行盒全部废弃 */
 
 }
 
@@ -9130,26 +9084,14 @@ void major_menu_lang_tune(void)
     lv_obj_set_pos(pg->special_button, 835, 60);
     lv_obj_set_size(pg->special_button, 439, 417);
 
-    /* major_img: 图片 | (196,187) | img: menuimg.png */
+    /* major_img: 图片 | (196,187) | img: menuimg.png (EN 由 nav_menuicon_refit 藏图换单瓦片素材,2026-10-10) */
     lv_obj_set_pos(pg->major_img, 196, 187);
 
     /* menu_label: 标签 | "菜单" | (24,24) | 58x22 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->menu_label, 24, 24);
     lv_obj_set_size(pg->menu_label, 80, 22);
 
-    /* cook_label: 标签 | "烹饪功能" | (153,291) | 147x28 | font taiwanpearl_regular_30 */
-    /* EN: "Cooking Functions" 在 147x28 内折行只露首行(显示成 "Cooking")，
-     * 照 special_label 同页先例加宽 260x30，中心(226)不变保持卡片居中 */
-    lv_obj_set_pos(pg->cook_label, 96, 291);
-    lv_obj_set_size(pg->cook_label, 260, 30);
-
-    /* cook4_label: 标签 | "COOK 4" | (567,291) | 147x28 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->cook4_label, 567, 291);
-    lv_obj_set_size(pg->cook4_label, 147, 28);
-
-    /* special_label: 标签 | "特殊功能" | (981,291) | 147x30 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->special_label, 914, 291);
-    lv_obj_set_size(pg->special_label, 260, 30);
+    /* cook/cook4/special 标签几何+24px 由 nav_menuicon_refit 统一管(2026-10-10),tune 不再重复设置 */
 
 }
 
@@ -12781,8 +12723,7 @@ void sixmenu_lang_tune(void)
     lv_obj_set_pos(pg->snack, 1012, 268);
     lv_obj_set_size(pg->snack, 248, 193);
 
-    /* image_1: 图片 | (81,115) | img: six.png */
-    lv_img_set_src(pg->image_1,LVGL_IMAGE_PATH(six_en.png));
+    /* image_1: 图片 | (81,115) | img: six.png (EN 由 nav_menuicon_refit 藏整版图换单瓦片素材,2026-10-10) */
     lv_obj_set_pos(pg->image_1, 81, 115);
 
     /* label_9: 标签 | "第六感" | (24,24) | 97x25 | font taiwanpearl_regular_24 */
@@ -14072,47 +14013,10 @@ void special_menu_lang_tune(void)
     lv_obj_set_pos(pg->air_button, 21, 75);
     lv_obj_set_size(pg->air_button, 244, 386);
 
-    /* air_label: 标签 | "空气炸" | (69,287) | 150x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->air_label, 69, 287);
-    lv_obj_set_size(pg->air_label, 150, 32);
+    /* 各标签几何+24px 居中由 nav_menuicon_refit 统一管(2026-10-10);参照图标
+     * frozenbake/rising 按组规则落位,本排其余图标中心对齐参照图标中心(用户定版) */
 
-    /* fajiao_label: 标签 | "发酵" | (327,405) | 131x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->fajiao_label, 327, 405);
-    lv_obj_set_size(pg->fajiao_label, 131, 32);
-
-    /* frozen_cook_label: 标签 | "冷冻烘焙" | (581,212) | 126x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->frozen_cook_label, 555, 212);
-    lv_obj_set_size(pg->frozen_cook_label, 200, 32);
-
-    /* corn_label: 标签 | "干果" | (578,405) | 126x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->corn_label, 555, 405);
-    lv_obj_set_size(pg->corn_label, 200, 32);
-
-    /* slow_cook_label: 标签 | "慢煮" | (859,212) | 63x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->slow_cook_label, 792, 212);
-    lv_obj_set_size(pg->slow_cook_label, 200, 32);
-
-    /* heat_contain_label: 标签 | "保温" | (826,405) | 126x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->heat_contain_label, 788, 405);
-    lv_obj_set_size(pg->heat_contain_label, 200, 32);
-
-    /* unfrozen_label: 标签 | "解冻" | (1075,212) | 126x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->unfrozen_label, 1067, 212);
-    lv_obj_set_size(pg->unfrozen_label, 126, 32);
-
-    /* some_cook_label: 标签 | "多段烹饪" | (1075,405) | 125x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->some_cook_label, 1032, 387);   /* 同事排版微调 */
-    lv_obj_set_size(pg->some_cook_label, 200, 64);
-
-    /* special_label: 标签 | "特殊功能" | (24,24) | 97x25 | font taiwanpearl_regular_24 */
-    lv_obj_set_pos(pg->special_label, 24, 24);
-    lv_obj_set_size(pg->special_label, 260, 25);
-
-    /* piza_label: 标签 | "披萨" | (329,212) | 126x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->piza_label, 329, 212);
-    lv_obj_set_size(pg->piza_label, 126, 32);
-
-    /* major_img: 图片 | (94,110) | img: teshuimg.png */
+    /* major_img: 图片 | (94,110) | img: teshuimg.png (EN 由 nav_menuicon_refit 藏图换单瓦片素材) */
     lv_obj_set_pos(pg->major_img, 94, 110);
 
 }
