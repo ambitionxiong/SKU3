@@ -1710,6 +1710,7 @@ void top_bbq_set_refit(top_bbq_set_t *set);   /* top_bbq set 数字改小 30 号
 void nav_modeset_refit(lv_obj_t *temp, lv_obj_t *hour, lv_obj_t *min, lv_obj_t *icon2, lv_obj_t *icon3, lv_obj_t *shi, lv_obj_t *fen);   /* 8 个同构模式 set 页共享 refit(几何=top_bbq 验证终值;仅构建路径调用) */
 void nav_probeset_refit(lv_obj_t *temp, lv_obj_t *icon2, lv_obj_t *icon3, lv_obj_t *probetemp, lv_obj_t *probec);   /* 4 个探针 set 页共享 refit:两行温度无时间行(仅构建路径调用) */
 void nav_underline_fit(lv_obj_t *line, int disp);   /* probe menu 探针单下划线按显示位数换源/移位(华氏三位),仅对 underline 素材生效;带 4 探针 menu 页门禁,其它页(时/分线)跳过 */
+void nav_hotclean_title_refit(void);   /* hotclean_menu 标题盒 LV_SIZE_CONTENT:TW 意译 6 字裁尾(全语言幂等) */
 lv_obj_t *updown_dir_img_get(int i);   /* updown set 方向箭头图(0=up2 1=down2 2=up3 3=down3),EN tune 位移用 */
 
 /* ==================== 温度显示单位（℉）====================

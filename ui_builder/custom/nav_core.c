@@ -1372,6 +1372,17 @@ void nav_lockicon_refit(void)
     lv_obj_tree_walk(lv_scr_act(), lockicon_fit_cb, NULL);
 }
 
+/* hotclean_menu 页标题盒自适应(2026-10-12):TW 查表意译"热解自清洁"→"高溫自動清洗"
+ * (5 字→6 字),生成盒 125 宽按 5 个 24px 字设计,第 6 字被裁尾。标题独立左上角,
+ * 内容自适应无布局风险,与 EN tune 已有 LV_SIZE_CONTENT 行为一致(全语言幂等) */
+void nav_hotclean_title_refit(void)
+{
+    if (depth <= 0 || page_stack[depth - 1] != PAGE_HOTCLEAN_MENU) return;
+    hotclean_menu_t *pg = hotclean_menu_get(&ui_manager);
+    if (!pg || !pg->label_1) return;
+    lv_obj_set_size(pg->label_1, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+}
+
 /* menu_top/menu_low/setting 的 ↑/↓ 文本标签换图 + 下划线加长(2026-09-26):
  * 素材 dirup_menu/dirdown_menu 35x28、dirup_setting/dirdown_setting 29x24(用户加);
  * 幂等改写现有控件(清文本+bg 图,按中心绘制盒图同尺寸正好填满)不新建对象,

@@ -300,7 +300,7 @@ static void on_set_ldg_click(lv_event_t *e)
     (void)e;
     int flag = (int)((Machine_Set_num >> 4) & 0x03);
     static const char *const opts[4] = { "常亮", "亮15秒", "开门亮", "炉灯关" };
-    sel_popup_create(SEL_WHERE_LIGHT, flag, 4, "炉灯", opts);
+    sel_popup_create(SEL_WHERE_LIGHT, flag, 4, "炉灯光", opts);
 }
 
 static void on_set_power_click(lv_event_t *e)

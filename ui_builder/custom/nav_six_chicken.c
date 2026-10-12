@@ -590,7 +590,7 @@ const char *six_chick_desc(void)
     if (six_chick_is_pasta())
         return tr("烹饪说明：\n参照您喜欢的食谱进行准备。顶部浇上白浆和奶酪碎，以便完美的上色效果。\n现在将食物放在第2层。\n使用网架和器皿。");
     if (g_six_bread_type == SIX_VEG_SWEET_POTATO)
-        return tr("烹饪说明：\n用叉子刺红薯6到8次。在放入烤箱之前，将表皮抹上油并撒上盐。\n现在将食物放在第3层。\n使用烤盘。");
+        return tr("烹饪说明：\n用叉子刺红薯6到8次。\n现在将食物放在第3层。\n使用烤盘。");   /* 2026-10-12 用户定稿:去掉抹油撒盐句 */
     if (six_chick_is_seafood()) {
         const seafood_dish_t *sd = seafood_dish_cfg();
         if (sd) return sd->desc;

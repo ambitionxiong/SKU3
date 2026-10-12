@@ -150,6 +150,11 @@ void jump_to_updown_bbq_stop_back(void)
                     if (w < 0) w = 800;
                     lv_label_set_text_fmt(back->statu_label, tr("| %s | %d%s | %d分钟"),
                                           six_chick_name(), w, toastcolor_weight_unit_n(w), six_chick_cook_min(w));   /* 烤鸡翅类:菜名+单位+时间 */
+                } else if (six_chick_is_seafood()) {
+                    const seafood_dish_t *sd = seafood_dish_cfg();
+                    lv_label_set_text_fmt(back->statu_label, tr("| %s | %d分钟"), six_chick_name(),
+                                          sd ? sd->cook_min : 18);   /* 烤海鲜:菜名+固定时间(与 delaycooking/烹饪页同口径;此前漏分支落到面包兜底) */
+
                 } else if (six_chick_is_veg()) {
                     const seafood_dish_t *sd = veg_fixed_cfg();
                     lv_label_set_text_fmt(back->statu_label, tr("| %s | %d分钟"), six_chick_name(),

@@ -171,7 +171,7 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "亮15秒", "On 15s" },
         { "开门亮", "Door open" },
         { "炉灯关", "Light off" },
-        { "炉灯", "Oven Light" },
+        { "炉灯光", "Oven Light" },   /* 2026-10-12 设置页炉灯弹窗标题改"炉灯光",键同步(待上位机补 U+5149 光字形) */
         { "关于机器", "Info" },
         { "再热", "Reheat" },
         { "冷冻烘培", "Frozen Bake" },
@@ -569,7 +569,7 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "烹饪说明：\n均匀分布在气炸盘中。\n现在将食物放在第3层。\n使用气炸盘和深盘。",
           "Cooking Instruction:\nDistribute evenly in the air fry tray.\nInsert the food now on level 3.\nUse air fry tray and deep tray." },
         { "烹饪说明：\n去掉玉米的皮和须。刷上油，撒上盐。根据你的喜好调味。均匀分布在烤盘上。\n现在将食物放在第3层。\n使用烤盘。", "Cooking Instruction:\nRemove the husks and silk of the corn. Brush with oil and sprinkle with salt. Season as you prefer. Distribute evenly on the baking tray.\nInsert the food now on level 3.\nUse baking tray." },
-        { "烹饪说明：\n用叉子刺红薯6到8次。在放入烤箱之前，将表皮抹上油并撒上盐。\n现在将食物放在第3层。\n使用烤盘。", "Cooking Instruction:\nPrick the sweet potato all over 6 to 8 times with a fork. Rub the skin with oil and sprinkle with salt before insert into the oven.\nInsert the food now on level 3.\nUse baking tray." },
+        { "烹饪说明：\n用叉子刺红薯6到8次。\n现在将食物放在第3层。\n使用烤盘。", "Cooking Instruction:\nPrick the sweet potato all over 6 to 8 times with a fork.\nInsert the food now on level 3.\nUse baking tray." },   /* 2026-10-12 去掉抹油撒盐句 */
         { "烹饪说明：\n用叉子在土豆上扎6到8次。在放入烤箱之前，用油刷皮，并在皮上撒上粗盐。\n现在将食物放在第3层。\n使用烤盘。", "Cooking Instruction:\nPrick the potato all over 6 to 8 times with a fork. Rub the skin with oil and coat the skin in coarse salt before insert into the oven.\nInsert the food now on level 3.\nUse baking tray." },
         { "烹饪说明：\n刷油，抹上盐和胡椒。根据个人喜好，用蒜和香草调味。烹调结束后，在分切前至少静止15分钟。\n现在将食物放在第3层。\n使用深盘。", "Cooking Instruction:\nBrush with oil and rub with salt and pepper. Season with garlic and herbs as you prefer. At the end of cooking let rest for at least 15 minutes before carving.\nInsert the food now on level 3.\nUse deep tray." },
         { "烹饪说明：\n刷油，擦盐和胡椒。根据个人喜好，用蒜和香草调味。烹调结束后，在分切前至少静止15分钟。\n现在将食物放在第3层。\n使用深盘。", "Cooking Instruction:\nBrush with oil and rub with salt and pepper. Season with garlic and herbs as you prefer. At the end of cooking let rest for at least 15 minutes before carving.\nInsert the food now on level 3.\nUse deep tray." },

@@ -21,8 +21,12 @@ static void descriptionmenu_layout(descriptionmenu_t *dm)
     if (!dm || !dm->container_1) return;
 
     /* 左上角菜名 */
-    if (dm->label_19)
-        lv_label_set_text(dm->label_19, six_current_name());
+    if (dm->label_19) {
+        if (g_six_bread_type == SIX_PIZZA && is_trad())
+            lv_label_set_text(dm->label_19, "薄餅");   /* 2026-10-12 用户定稿:仅此页繁体定点叫薄餅(词典表披萨行仍 急凍薄餅,收藏/状态等不受影响) */
+        else
+            lv_label_set_text(dm->label_19, six_current_name());
+    }
 
     /* 摘要：探针菜/程度→时间显示烧烤程度；烤鸡翅类显示份量；面包有发酵显示发酵小结；其余隐藏 */
     if (dm->summary) {
@@ -124,6 +128,10 @@ static void descriptionmenu_layout(descriptionmenu_t *dm)
         lv_obj_set_height(labels[k], LV_SIZE_CONTENT);
         lv_obj_set_style_text_line_space(labels[k], -5, 0);
     }
+    /* 二维菜(烤带皮土豆/千层面/卡内罗尼)说明文本最长:生成宽 894 折 5 行把小结顶到框底,
+     * 说明标签放宽到容器内容宽(1233-24 左距=1209),折行减少给小结底部留距 */
+    if (six_chick_is_2d() && dm->cookdescriptin)
+        lv_obj_set_width(dm->cookdescriptin, 1209);
     /* 探针菜:隐藏时间后，说明与小结整体上移顶对齐（隐藏项不占 flex 位） */
     if (six_chick_is_probe()) {
         if (dm->cookdescriptin) lv_obj_move_to_index(dm->cookdescriptin, 0);

@@ -185,7 +185,14 @@ void screen_overtime_cont_create(void)
     lv_obj_set_style_shadow_opa(scr->Overtime_Cont, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     scr->BBGG_Img = lv_img_create(scr->Overtime_Cont);
-    lv_img_set_src(scr->BBGG_Img, LVGL_IMAGE_PATH(used/Over_Time_Bg.png));
+    /* 背景图烙有标题/按钮文字,按语言三选一(编译期字面量,不能塞三元表达式)。
+     * 超时层是运行时新建、不走 lang 树遍历,_tw 换图表对它无效,须在此分支 */
+    if (is_english())
+        lv_img_set_src(scr->BBGG_Img, LVGL_IMAGE_PATH(used/Over_Time_Bg_en.png));
+    else if (is_trad())
+        lv_img_set_src(scr->BBGG_Img, LVGL_IMAGE_PATH(used/Over_Time_Bg_tw.png));
+    else
+        lv_img_set_src(scr->BBGG_Img, LVGL_IMAGE_PATH(used/Over_Time_Bg.png));
     lv_img_set_pivot(scr->BBGG_Img, 50, 50);
     lv_img_set_angle(scr->BBGG_Img, 0);
     lv_obj_set_style_img_opa(scr->BBGG_Img, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -269,6 +276,17 @@ static void cd_blink_register(int focused)
     if (focused) nav_blink_refresh(scr->Underline_Btn);
 }
 
+/* 下划线按时长位放置:EN 单位 h/min/s 宽度不一,线宽覆盖 00+单位 全组(实测 87/119/86);
+ * 简繁 时/分/秒 等宽,保持生成宽 102 */
+static void cd_underline_place(count_down_page_t *scr, int where)
+{
+    static const int x[4] = {0, 588, 726, 862};
+    static const int w_en[4] = {0, 87, 119, 86};
+    if (!scr || !scr->Underline_Btn) return;
+    lv_obj_set_pos(scr->Underline_Btn, x[where], 306);
+    lv_obj_set_width(scr->Underline_Btn, is_english() ? w_en[where] : 102);
+}
+
 /* 编码器处理(CW/CCW/PRESS 由 nav_key.c 按组分流)
  * 拒绝路径(24h 禁改分秒/0 秒启动/超时层只响一声)内部改无效/提示音 */
 void encoder_count_down_action(uint8_t key)
@@ -343,16 +361,16 @@ void encoder_count_down_action(uint8_t key)
            每次换位重登记呼吸组:只闪当前编辑位(数值+单位+下划线) */
         if (s_set_where == 1) {
             s_set_where = 2;
-            lv_obj_set_pos(scr->Underline_Btn, 726, 306);
+            cd_underline_place(scr, 2);
             cd_blink_register(1);
         } else if (s_set_where == 2) {
             s_set_where = 3;
-            lv_obj_set_pos(scr->Underline_Btn, 862, 306);
+            cd_underline_place(scr, 3);
             cd_blink_register(1);
         } else {
             s_set_where = 1;
             lv_group_focus_obj(scr->Yes_Btn);   /* 秒后确认:先移焦点(线随 FOCUSED 消失+停闪),再挪线不闪影 */
-            lv_obj_set_pos(scr->Underline_Btn, 588, 306);
+            cd_underline_place(scr, 1);
             cd_blink_register(0);   /* 只换组:下次进"时"编辑前预登记 */
         }
     } else if (focused == scr->Reset_icon_Btn) {
@@ -377,12 +395,9 @@ void encoder_count_down_action(uint8_t key)
    运行中沿用原保护:数字位不可选,仅在 确定/清零 间切换 */
 static void cd_browse_to_underline(count_down_page_t *scr)
 {
-    static const int x[4] = {0, 588, 726, 862};   /* 时/分/秒 下划线横坐标 */
-    if (scr->Underline_Btn) {
-        lv_obj_set_pos(scr->Underline_Btn, x[s_set_where], 306);
-        cd_blink_register(0);   /* 换位同步呼吸组(浏览态不刷新=不闪,按下确认才起闪) */
-        lv_group_focus_obj(scr->Underline_Btn);
-    }
+    cd_underline_place(scr, s_set_where);   /* 时/分/秒 下划线横坐标+宽度(EN 随单位自适应) */
+    cd_blink_register(0);   /* 换位同步呼吸组(浏览态不刷新=不闪,按下确认才起闪) */
+    lv_group_focus_obj(scr->Underline_Btn);
 }
 
 void count_down_browse_action(uint8_t key)
@@ -693,6 +708,7 @@ static void count_down_create(ui_manager_t *ui)
         lv_obj_set_pos(scr->Hour_Lb, 578, 259);
         lv_obj_set_pos(scr->Min_Lb, 715, 259);
         lv_obj_set_pos(scr->Second_Lb, 851, 259);
+        lv_obj_set_width(scr->Underline_Btn, 87);   /* EN 时位线宽,后续换位走 cd_underline_place */
     } else {
         lv_obj_align(Yes_Btn_label, LV_ALIGN_CENTER, 0, 0);
         lv_obj_set_pos(scr->Hour_Lb, 578, 255);
