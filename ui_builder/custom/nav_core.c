@@ -687,7 +687,8 @@ void adjust_value(edit_field_t *f, int delta)
             lv_obj_clear_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
         lv_obj_invalidate(lv_scr_act());
     } else if (f->ind_short) {
-        /* 单线字段(探针行):编辑中跨 2/3 位自动换源移位;fit 内部按 src 前缀只对 underline 线生效 */
+        /* 单线字段:fit 内部有探针 menu 页门禁——探针行华氏三位换源移位,
+         * 其它页(时/分线)到这就返回,线保持本页生成位 */
         nav_underline_fit(f->ind_short, edit_disp(f, new_val));
         lv_obj_invalidate(lv_scr_act());
     }
@@ -1237,12 +1238,19 @@ void nav_probeset_refit(lv_obj_t *temp, lv_obj_t *icon2, lv_obj_t *icon3,
 
 /* probe menu 单下划线按显示位数换源/移位:华氏三位(99°C→210°F)时 120px 短线短一截。
  * 直接复用探针行原生线控件(渲染已被证实),不新建控件;右缘 CN 1011/EN 1009 与 ℃ 对齐。
- * 只对 src 含 "underline" 的线生效——其它单线指示字段自动跳过零影响 */
+ * 只对 src 含 "underline" 的线生效——其它单线指示字段自动跳过零影响。
+ * 坐标/换源仅对 4 个探针 menu 页成立:adjust_value 单线分支对所有页面调进来,
+ * 页外(stepset 与各模式 menu/set 的时/分线)一律跳过,线保持本页生成位 */
 void nav_underline_fit(lv_obj_t *line, int disp)
 {
     const void *src;
 
     if (!line) return;
+    if (depth <= 0 ||
+        (page_stack[depth - 1] != PAGE_UPDOWN_BBQ_MENU_PROBE &&
+         page_stack[depth - 1] != PAGE_HOT_BBQ_MENU_PROBE &&
+         page_stack[depth - 1] != PAGE_BOTTOM_BBQ_MENU_PROBE &&
+         page_stack[depth - 1] != PAGE_SLOWCOOK_MENU_PROBE)) return;
     src = lv_image_get_src(line);
     if (!src || lv_image_src_get_type(src) != LV_IMAGE_SRC_FILE ||
         !strstr((const char *)src, "underline")) return;

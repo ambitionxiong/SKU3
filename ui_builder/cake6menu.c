@@ -30,7 +30,7 @@ void cake6menu_create(ui_manager_t *ui)
 
     // Init scr->label_1
     scr->label_1 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_1, "蛋糕");
+    lv_label_set_text(scr->label_1, "蛋糕/糕点");
     lv_label_set_long_mode(scr->label_1, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->label_1, 24, 24);
     lv_obj_set_size(scr->label_1, 144, 32);

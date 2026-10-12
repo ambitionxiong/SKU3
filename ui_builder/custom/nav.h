@@ -1704,12 +1704,12 @@ void hotclean_set_align(lv_obj_t *icon, lv_obj_t *title, lv_obj_t *status, lv_ob
 void nav_lockicon_refit(void);   /* lockicon 换 54x54 大图:重适配当前屏所有锁图标按钮(全语言) */
 void nav_dirimg_refit(void);     /* menu_top/low+setting 箭头标签换图+下划线加长(全语言,幂等) */
 void nav_btnskin_refit(void);    /* EN 运行/暂停/stopback/预约页右下按钮换专属底图+文案(2026-10-09) */
-void nav_menuicon_refit(void);   /* EN major/cook/six 三菜单独立图标+24px居中排版(2026-10-10) */
+void nav_menuicon_refit(void);   /* EN major/cook/six/special+探针三菜单独立图标+24px居中排版(2026-10-10) */
 void updown_set_refit(updown_bbq_set_t *set);   /* updown set 排版精修:数字统一 30 号+↑/↓ 换 dirup/dirdown 图(仅构建路径调用) */
 void top_bbq_set_refit(top_bbq_set_t *set);   /* top_bbq set 数字改小 30 号(其余模式 set 页试点,镜像 updown 样式;仅构建路径调用) */
 void nav_modeset_refit(lv_obj_t *temp, lv_obj_t *hour, lv_obj_t *min, lv_obj_t *icon2, lv_obj_t *icon3, lv_obj_t *shi, lv_obj_t *fen);   /* 8 个同构模式 set 页共享 refit(几何=top_bbq 验证终值;仅构建路径调用) */
 void nav_probeset_refit(lv_obj_t *temp, lv_obj_t *icon2, lv_obj_t *icon3, lv_obj_t *probetemp, lv_obj_t *probec);   /* 4 个探针 set 页共享 refit:两行温度无时间行(仅构建路径调用) */
-void nav_underline_fit(lv_obj_t *line, int disp);   /* probe menu 探针单下划线按显示位数换源/移位(华氏三位),仅对 underline 素材生效 */
+void nav_underline_fit(lv_obj_t *line, int disp);   /* probe menu 探针单下划线按显示位数换源/移位(华氏三位),仅对 underline 素材生效;带 4 探针 menu 页门禁,其它页(时/分线)跳过 */
 lv_obj_t *updown_dir_img_get(int i);   /* updown set 方向箭头图(0=up2 1=down2 2=up3 3=down3),EN tune 位移用 */
 
 /* ==================== 温度显示单位（℉）====================

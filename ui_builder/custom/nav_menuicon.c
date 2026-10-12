@@ -1,5 +1,5 @@
 /*
- * nav_menuicon.c - major/cook/six 三菜单 EN 版独立图标+24px居中排版 (2026-10-10)
+ * nav_menuicon.c - major/cook/six/special 及探针三菜单 EN 版独立图标+24px居中排版 (2026-10-10)
  *
  * 用户定版规则:图标与文字垂直间距 25px(墨迹间距),图标+文字作为整体在瓦片内垂直居中,
  * 图标水平居中;两行文字瓦片的图标与同排单行瓦片对齐(icon_rel=35),
@@ -187,5 +187,48 @@ void nav_menuicon_refit(void)
             menu_icon_add(sm->snack, LVGL_IMAGE_PATH(snack_icon.png), 248, 118, 35);
             six_tile_label(sm->snack, tr("零食"), 35 + 81 + MENU_GAP - MENU_INK_OFF, 44, 248);
         }
+    }
+    else if (pg == PAGE_MAJOR_MENU_TZ) {
+        /* 探针主菜单: 双瓦片 642x390 y73, 图 81 高: icon_rel=(390-123)/2=134,
+         * label_abs=73+134+81+18=306 */
+        major_menu_tz_t *mg = major_menu_tz_get(&ui_manager);
+        if (!mg) return;
+        if (mg->major_img) lv_obj_add_flag(mg->major_img, LV_OBJ_FLAG_HIDDEN);
+        if (mg->cook_button)    menu_icon_add(mg->cook_button, LVGL_IMAGE_PATH(cookingfunction_icon.png), 642, 60, 134);
+        if (mg->special_button) menu_icon_add(mg->special_button, LVGL_IMAGE_PATH(specialfunction_icon.png), 642, 122, 134);
+        menu_label_fit(mg->cook_label, 9, 306, 642, 44);
+        menu_label_fit(mg->special_label, 630, 306, 642, 44);
+    }
+    else if (pg == PAGE_COOK_MENU_TZ) {
+        /* 探针烹调菜单: 三瓦片 439x417 y60, icon_rel=147, label_abs=60+147+81+18=306 */
+        cook_menu_tz_t *tz = cook_menu_tz_get(&ui_manager);
+        if (!tz) return;
+        if (tz->major_img) lv_obj_add_flag(tz->major_img, LV_OBJ_FLAG_HIDDEN);
+        if (tz->updown_button)  menu_icon_add(tz->updown_button, LVGL_IMAGE_PATH(conventional_icon.png), 439, 101, 147);
+        if (tz->hot_bbq_button) menu_icon_add(tz->hot_bbq_button, LVGL_IMAGE_PATH(turbogrill_icon.png), 439, 101, 147);
+        if (tz->bottom_button)  menu_icon_add(tz->bottom_button, LVGL_IMAGE_PATH(bottomheat_icon.png), 439, 101, 147);
+        menu_label_fit(tz->updown_label, 7, 306, 439, 44);
+        menu_label_fit(tz->hot_label, 421, 306, 439, 44);
+        menu_label_fit(tz->bottom_label, 835, 306, 439, 44);
+    }
+    else if (pg == PAGE_SPECIAL_MENU_TZ) {
+        /* 探针特色菜单: 单瓦片 624x400 y68, icon_rel=(400-123)/2=139,
+         * label_abs=68+139+81+18=306 */
+        special_menu_tz_t *sp = special_menu_tz_get(&ui_manager);
+        if (!sp) return;
+        if (sp->major_img) lv_obj_add_flag(sp->major_img, LV_OBJ_FLAG_HIDDEN);
+        if (sp->slowcook_button) menu_icon_add(sp->slowcook_button, LVGL_IMAGE_PATH(slowcooking_icon.png), 624, 104, 139);
+        menu_label_fit(sp->slowcook_label, 18, 306, 624, 44);
+    }
+    else if (pg == PAGE_SIXMENUTZ) {
+        /* 探针第六感菜单: 双瓦片 chick 638x387 y75 / meat 637x389 y74,
+         * icon_rel=(瓦高-123)/2=132/133, label_abs 均为 306 */
+        sixmenutz_t *mz = sixmenutz_get(&ui_manager);
+        if (!mz) return;
+        if (mz->image_3) lv_obj_add_flag(mz->image_3, LV_OBJ_FLAG_HIDDEN);
+        if (mz->chick) menu_icon_add(mz->chick, LVGL_IMAGE_PATH(poultry_icon.png), 638, 136, 132);
+        if (mz->meat)  menu_icon_add(mz->meat, LVGL_IMAGE_PATH(meat_icon.png), 637, 158, 133);
+        menu_label_fit(mz->label_8, 12, 306, 638, 44);
+        menu_label_fit(mz->label_9, 633, 306, 637, 44);
     }
 }
