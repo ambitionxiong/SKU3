@@ -886,8 +886,18 @@ void rebuild_delaycooking(void)
                 lv_label_set_text_fmt(dc->status, tr("| %s | %d℃ | %d小时%02d分钟"),
                                       mode_display_name(), set_temp, set_hour, set_min);
         }
-        if (g_delay_source_page != PAGE_DESCRIPTIONMENU)
+        if (g_delay_source_page != PAGE_DESCRIPTIONMENU) {
             mode_apply_icon(dc->icon);   /* 六感已单独设 sixicon */
+            /* 延迟页 icon 跟随特殊模式烹饪页的微调坐标(corn/heatcontain/unfrozen/pizza_2
+             * 生成页 cooking/stop/stop_back 已同步,唯本页固定 115);其余模式复位生成默认 */
+            switch (g_send.cook_mode) {
+            case MODE_CORN:        lv_obj_set_pos(dc->icon, 143, 161); break;
+            case MODE_HEATCONTAIN: lv_obj_set_pos(dc->icon, 90, 161);  break;
+            case MODE_UNFROZEN:    lv_obj_set_pos(dc->icon, 149, 161); break;
+            case MODE_PIZZA_2:     lv_obj_set_pos(dc->icon, 140, 161); break;
+            default:               lv_obj_set_pos(dc->icon, 115, 161); break;
+            }
+        }
         lv_label_set_text(dc->label_14, tr("预约中..."));
         if (SET_Data.Set_TimeType == 1) {
             int h12 = (delay_hour % 24) % 12;

@@ -61,8 +61,8 @@ static int s_sel_n = 2;              /* 选项数 */
 static uint8_t s_sel_notrans = 0;    /* 选项文本不过翻译表(语言弹窗:语言名保持原文) */
 /* 语言弹窗选项/YY_Lb 回显名(下标与 SET_Data.Set_Language 0英语 1繁体 2简体 对应) */
 static const char *const s_lang_names[3] = { "English", "繁體中文", "简体中文" };
-/* YY_Lb 显示名:English 在 125 宽值标签里按设计稿折成 Eng-/lish 两行(与弹窗选项分开) */
-static const char *const s_lang_yy_names[3] = { "Eng-\nlish", "繁體中文", "简体中文" };
+/* YY_Lb 显示名:English 在 125 宽值标签折行难看,2026-10-13 用户定稿缩写 Eng 单行(与弹窗选项分开) */
+static const char *const s_lang_yy_names[3] = { "Eng", "繁體中文", "简体中文" };
 
 static void sel_icons_refresh(void)
 {

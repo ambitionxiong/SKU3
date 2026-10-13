@@ -401,7 +401,7 @@ static const page_id_t s_bskin_stopback[] = {
 typedef struct {
     const char *src, *src_focus;   /* DEFAULT/FOCUSED 新底图 */
     lv_coord_t w, h;               /* 新按钮尺寸(=底图原生) */
-    int cls;                       /* 0=仅换图 1=暂停页文案 2=stopback 文案 */
+    int cls;                       /* 0=仅换图 1=暂停页文案 2=stopback 文案 3=延迟取消 stopback 仅标语 */
 } bskin_arg_t;
 
 static int bskin_id_in(const page_id_t *tab, int n, page_id_t id)
@@ -419,8 +419,8 @@ static lv_obj_tree_walk_res_t bskin_walk_cb(lv_obj_t *obj, void *user_data)
 
     /* 不做 lv_btn_class 判断(SIM 是 LVGL9 类名 lv_button_class,设备端版本未必一致):
      * stopbk1/2 底图只有目标按钮在用,按 bg 图名匹配即天然唯一 */
-    if (bg && (strcmp(bg, LVGL_IMAGE_PATH(stopbk1.png)) == 0 ||
-               strcmp(bg, LVGL_IMAGE_PATH(stopbk2.png)) == 0)) {
+    if (a->cls != 3 && bg && (strcmp(bg, LVGL_IMAGE_PATH(stopbk1.png)) == 0 ||
+                              strcmp(bg, LVGL_IMAGE_PATH(stopbk2.png)) == 0)) {
         lv_coord_t x = lv_obj_get_x(obj), y = lv_obj_get_y(obj);
         /* 水平中心保持(用户:按钮要与上方时间/文案列中线对齐,原右缘保持会左偏 ~20px) */
         lv_obj_set_pos(obj, x + lv_obj_get_width(obj) / 2 - a->w / 2,
@@ -437,6 +437,17 @@ static lv_obj_tree_walk_res_t bskin_walk_cb(lv_obj_t *obj, void *user_data)
         if (a->cls == 1) {   /* 暂停页:按钮 Start→Resume,标题按新要求对齐 mockup */
             if (strcmp(t, "Start") == 0) lv_label_set_text(obj, "Resume");
             else if (strcmp(t, "Paused...") == 0) lv_label_set_text(obj, "Pause...");
+        } else if (a->cls == 3) {   /* 延迟取消 stopback(2026-10-13 用户定稿):标语 Cancel Current
+                                     * Task/Go Back;按钮保持生成小钮,Start 不换 Stop Cooking。
+                                     * 盒 x=788(中心 1023)与生成小钮中心 959+64.5≈1023.5 同轴 */
+            if (strcmp(t, "Cancel the") == 0 || strcmp(t, "current program?") == 0) {
+                lv_label_set_text(obj, strcmp(t, "Cancel the") == 0 ?
+                                      "Cancel Current Task" : "Go Back");
+                lv_obj_set_width(obj, 470);
+                lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_CENTER, 0);
+                lv_obj_set_style_text_font(obj, &c_aktivgroteskmedium_30, LV_PART_MAIN);
+                lv_obj_set_pos(obj, 788, lv_obj_get_y(obj));
+            }
         } else {             /* stopback 页 */
             if (strcmp(t, "Start") == 0) {
                 lv_label_set_text(obj, "Stop Cooking");
@@ -458,6 +469,20 @@ static lv_obj_tree_walk_res_t bskin_walk_cb(lv_obj_t *obj, void *user_data)
     return LV_OBJ_TREE_WALK_NEXT;
 }
 
+/* 延迟取消进入的 stopback 识别:标题在构建前已被置 预约中...(EN=Delayed Start...),
+ * 烹饪/暂停源是 Cooking.../Completed——扫描当前屏标签即可区分(仅 EN refit 调用) */
+static lv_obj_tree_walk_res_t delaycancel_scan_cb(lv_obj_t *obj, void *user_data)
+{
+    if (lv_obj_check_type(obj, &lv_label_class)) {
+        const char *t = lv_label_get_text(obj);
+        if (t && strcmp(t, "Delayed Start...") == 0) {
+            *(int *)user_data = 1;
+            return LV_OBJ_TREE_WALK_END;
+        }
+    }
+    return LV_OBJ_TREE_WALK_NEXT;
+}
+
 void nav_btnskin_refit(void)
 {
     bskin_arg_t a;
@@ -473,7 +498,10 @@ void nav_btnskin_refit(void)
         a.w = 169; a.h = 64; a.cls = 1;
     } else if (bskin_id_in(s_bskin_stopback, (int)(sizeof(s_bskin_stopback) / sizeof(s_bskin_stopback[0])), id)) {
         a.src = LVGL_IMAGE_PATH(stopcooking.png); a.src_focus = LVGL_IMAGE_PATH(stopcooking_focus.png);
-        a.w = 264; a.h = 64; a.cls = 2;
+        a.w = 264; a.h = 64;
+        int delay_cancel = 0;
+        lv_obj_tree_walk(lv_scr_act(), delaycancel_scan_cb, &delay_cancel);
+        a.cls = delay_cancel ? 3 : 2;   /* 延迟取消:标语 Cancel Current Task/Go Back,不换大钮 */
     } else if (id == PAGE_DELAYCOOKING) {
         a.src = LVGL_IMAGE_PATH(cancel.png); a.src_focus = LVGL_IMAGE_PATH(cancel_focus.png);
         a.w = 169; a.h = 64; a.cls = 0;
