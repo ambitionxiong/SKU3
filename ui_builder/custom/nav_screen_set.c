@@ -467,6 +467,18 @@ void screen_set_rebuild(void)
     if (ss->WDDW_Lb) lv_label_set_text(ss->WDDW_Lb, tr(SET_Data.Set_TempUnit ? "°F" : "°C"));
     if (ss->Demo_Lb) lv_label_set_text(ss->Demo_Lb, tr(SET_Data.Set_DemoMode ? "开" : "关"));
     screen_set_yy_lb_sync();   /* YY_Lb 语言值回显(按 Set_Language 显示语言原名) */
+    /* 值标签透明度 50%(2026-10-13 用户定稿;LVGL 刻度 50%=128,生成页默认 30)。
+     * 运行态页仅 TS/ZDBW 是活动行(底图 set_work_bg_txt 其余行已烘暗),只给这两行
+     * 50%,其余保持生成 30 与底图匹配 */
+    {
+        lv_obj_t *val_lbs[] = { ss->TS_Lb, ss->ZDBW_Lb, ss->Six_Lb,
+                                ss->WDDW_Lb, ss->YY_Lb, ss->Power_Lb, ss->Demo_Lb };
+        for (int k = 0; k < (int)(sizeof(val_lbs) / sizeof(val_lbs[0])); k++)
+            if (val_lbs[k])
+                lv_obj_set_style_text_opa(val_lbs[k],
+                                          (!s_was_running || k < 2) ? 128 : 30,
+                                          LV_PART_MAIN | LV_STATE_DEFAULT);
+    }
     lv_obj_add_event_cb(ss->ZDBW_Btn, on_set_zdbw_click, LV_EVENT_CLICKED, NULL);
     lv_obj_add_event_cb(ss->TFLQYX_Btn, on_set_tflqyx_click, LV_EVENT_CLICKED, NULL);
     lv_obj_add_event_cb(ss->LDG_Btn, on_set_ldg_click, LV_EVENT_CLICKED, NULL);
