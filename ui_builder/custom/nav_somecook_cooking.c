@@ -109,6 +109,7 @@ static void somecook_cooking_set_state(int state, int from)
 {
     somecook_cooking_t *sc = somecook_cooking_get(&ui_manager);
     if (!sc) return;
+    int was_stopback = (g_somecook_state == SMC_STOPBACK);   /* 改写前捕获 */
     g_somecook_state = state;
     g_somecook_from = from;
 
@@ -130,8 +131,8 @@ static void somecook_cooking_set_state(int state, int from)
         if (bl) lv_label_set_text(bl, tr("暂 停"));
         break;
     case SMC_STOP:
-        lv_label_set_text(sc->cookstatus, tr("暂停中..."));
-        if (bl) lv_label_set_text(bl, tr("开 始"));
+        lv_label_set_text(sc->cookstatus, is_english() ? "Pause..." : tr("暂停中..."));   /* EN 对齐生成 STOP 页 cls==1 */
+        if (bl) lv_label_set_text(bl, is_english() ? "Resume" : tr("开 始"));
         break;
     case SMC_STOPBACK:
         lv_obj_add_flag(sc->timelabel, LV_OBJ_FLAG_HIDDEN);
@@ -158,6 +159,14 @@ static void somecook_cooking_set_state(int state, int from)
         break;
     default: break;
     }
+
+    /* EN 取消遮罩换装/还原:进遮罩换新文案+Stop Cooking 底图,退出遮罩还原构建
+     * 基线(仅英文执行,须在上方文案写入之后;只在跳变时切换——常驻还原会把底图
+     * 提前改成 pause.png,构建末尾 nav_btnskin_refit 按 stopbk 匹配失效 → 首帧方钮) */
+    if (state == SMC_STOPBACK)
+        nav_stopback_overlay_en(sc, 1);
+    else if (was_stopback)
+        nav_stopback_overlay_en(sc, 0);
 
     if (state == SMC_STOP)       g_send.iface_status = IFACE_PAUSE;
     else if (state == SMC_COMPLETE) g_send.iface_status = IFACE_COMPLETE;

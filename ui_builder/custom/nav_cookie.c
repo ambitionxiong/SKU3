@@ -32,10 +32,12 @@ void jump_to_cookie_complete(void);
 
 static void cookie_set_status(lv_obj_t *label, int temp, int hour, int min)
 {
+    /* 名字走词条:繁体人工值=曲奇餅(xlsx;烤名格式串的 TW 表行只有转换器字面值 餅乾) */
+    const char *name = tr("饼干");
     if (hour == 0)
-        lv_label_set_text_fmt(label, tr("| 饼干 | %d℃ | %02d分钟"), temp, min);
+        lv_label_set_text_fmt(label, tr("| %s | %d℃ | %02d分钟"), name, temp, min);
     else
-        lv_label_set_text_fmt(label, tr("| 饼干 | %d℃ | %d小时%02d分钟"), temp, hour, min);
+        lv_label_set_text_fmt(label, tr("| %s | %d℃ | %d小时%02d分钟"), name, temp, hour, min);
 }
 
 static void cookie_preheat_toggle(lv_event_t *e)
@@ -709,10 +711,7 @@ void jump_to_cookie_complete(void)
             g_cookie_complete = group_create_for_page(btns, 1);
             lv_obj_add_event_cb(cook->little, on_cookie_cooking_setting_click,
                                 LV_EVENT_CLICKED, NULL);
-            if (set_hour == 0)
-                lv_label_set_text_fmt(cook->status, tr("| 饼干 | %d℃ | %02d分钟"), set_temp, set_min);
-            else
-                lv_label_set_text_fmt(cook->status, tr("| 饼干 | %d℃ | %d小时%02d分钟"), set_temp, set_hour, set_min);
+            cookie_set_status(cook->status, set_temp, set_hour, set_min);
             lv_bar_set_value(cook->bar_7, 100, LV_ANIM_OFF);
         }
     }

@@ -483,6 +483,46 @@ void nav_btnskin_refit(void)
     lv_obj_tree_walk(lv_scr_act(), bskin_walk_cb, &a);
 }
 
+/* ==============================
+ * 六感/多段取消遮罩(同页 stopback 态)英文换装(2026-10-13)
+ * 生成 stopback 页 EN 由 nav_btnskin_refit cls==2 换新文案+stopcooking 底图;
+ * 六感/多段是同页遮罩态,状态刷新每次重写 tr() 词典文案,永远停在旧文案
+ * ("Cancel the current program?"/"Start")。此处对齐生成页口径:
+ *   文案 "Cooking is currently in progress."/"Stop cooking and exit?"
+ *   (基线盒 600 宽已容纳,不动几何) 按钮 "Stop Cooking"+stopcooking.png
+ *   264x64@(891,304)(与生成页 stopbk 129x83 换算结果一致,水平中心 1023 同列)
+ *   状态行 Paused...→Cooking...(与生成页 EN 一致;Completed 不动)
+ * on=0 还原 EN 构建基线:pause.png 169x64@(939,304)(s_bskin_cooking cls==0
+ * 构建换装值);文案/状态由状态机重写,无需还原。仅英文执行,中文/繁体零操作。
+ * ============================== */
+void nav_stopback_overlay_en(somecook_cooking_t *sc, int on)
+{
+    if (!sc || !is_english()) return;
+    if (!sc->stop || !sc->text1 || !sc->text2 || !sc->cookstatus) return;
+    if (!lv_obj_is_valid(sc->stop)) return;
+    if (on) {
+        lv_obj_t *bl = lv_obj_get_child(sc->stop, 0);
+        lv_label_set_text(sc->text1, "Cooking is currently in progress.");
+        lv_label_set_text(sc->text2, "Stop cooking and exit?");
+        if (bl) lv_label_set_text(bl, "Stop Cooking");
+        lv_obj_set_pos(sc->stop, 891, 304);
+        lv_obj_set_size(sc->stop, 264, 64);
+        lv_obj_set_style_bg_img_src(sc->stop, LVGL_IMAGE_PATH(stopcooking.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_img_src(sc->stop, LVGL_IMAGE_PATH(stopcooking_focus.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+        {
+            const char *st = lv_label_get_text(sc->cookstatus);
+            /* 生成页 cls==2:暂停源进遮罩标语统一 Cooking...(六感暂停态已是 Pause...,两种都收) */
+            if (st && (strcmp(st, "Paused...") == 0 || strcmp(st, "Pause...") == 0))
+                lv_label_set_text(sc->cookstatus, "Cooking...");
+        }
+    } else {
+        lv_obj_set_pos(sc->stop, 939, 304);
+        lv_obj_set_size(sc->stop, 169, 64);
+        lv_obj_set_style_bg_img_src(sc->stop, LVGL_IMAGE_PATH(pause.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_img_src(sc->stop, LVGL_IMAGE_PATH(pause_focus.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+    }
+}
+
 void lang_on_page_built(void)
 {
     if (depth <= 0) return;

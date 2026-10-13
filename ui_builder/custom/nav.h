@@ -1704,6 +1704,7 @@ void hotclean_set_align(lv_obj_t *icon, lv_obj_t *title, lv_obj_t *status, lv_ob
 void nav_lockicon_refit(void);   /* lockicon 换 54x54 大图:重适配当前屏所有锁图标按钮(全语言) */
 void nav_dirimg_refit(void);     /* menu_top/low+setting 箭头标签换图+下划线加长(全语言,幂等) */
 void nav_btnskin_refit(void);    /* EN 运行/暂停/stopback/预约页右下按钮换专属底图+文案(2026-10-09) */
+void nav_stopback_overlay_en(somecook_cooking_t *sc, int on);   /* 六感/多段同页取消遮罩 EN 换新文案+Stop Cooking 换装/还原基线(on=1 遮罩态,0 还原;仅英文执行) */
 void nav_menuicon_refit(void);   /* EN major/cook/six/special+探针三菜单独立图标+24px居中排版(2026-10-10) */
 void updown_set_refit(updown_bbq_set_t *set);   /* updown set 排版精修:数字统一 30 号+↑/↓ 换 dirup/dirdown 图(仅构建路径调用) */
 void top_bbq_set_refit(top_bbq_set_t *set);   /* top_bbq set 数字改小 30 号(其余模式 set 页试点,镜像 updown 样式;仅构建路径调用) */

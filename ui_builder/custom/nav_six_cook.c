@@ -258,6 +258,7 @@ static int32_t six_remaining_sec(void)
 }
 
 // 显示刷新：按当前 phase/遮罩/暂停刷新页面元素
+static uint8_t s_six_ovl_styled = 0;   /* EN 遮罩换装态:只在遮罩关跳变时还原(常驻还原会坏构建换装,见遮罩分支) */
 static void six_cook_apply_display(void)
 {
     somecook_cooking_t *sc = somecook_cooking_get(&ui_manager);
@@ -268,6 +269,11 @@ static void six_cook_apply_display(void)
         !sc->stop || !sc->activestatus || !sc->container_1 ||
         !sc->text1 || !sc->text2 || !sc->timelabel || !sc->label_12)
         return;
+
+    /* 顶层确认弹层(关机/收藏覆盖确认)激活期间跳过刷新:右侧元素已被
+     * nav_favtip_collect_hide 藏掉,每秒回显会穿透弹窗叠字(tip1 文案与
+     * timelabel/text1 同位);关闭弹层时 nav_favtip_restore_elems 统一恢复 */
+    if (nav_poweroff_ask_active() || nav_favask_active()) return;
 
     /* 基础显隐 */
     lv_obj_clear_flag(sc->icon, LV_OBJ_FLAG_HIDDEN);
@@ -343,6 +349,12 @@ static void six_cook_apply_display(void)
         break;
     }
 
+    /* EN 暂停态文案对齐生成 STOP 页(cls==1):Start→Resume,Paused...→Pause... */
+    if (is_english() && g_six_paused) {
+        if (bl) lv_label_set_text(bl, "Resume");
+        lv_label_set_text(sc->cookstatus, "Pause...");
+    }
+
     /* 倒计时与进度条 */
     if (g_six_phase == SIX_PHASE_RISING || g_six_phase == SIX_PHASE_COOKING ||
         g_six_phase == SIX_PHASE_COLOR_COOKING) {
@@ -384,6 +396,14 @@ static void six_cook_apply_display(void)
             lv_group_add_obj(g_six_cooking, sc->stop);
         }
         if (bl) lv_label_set_text(bl, tr("确 定"));
+        nav_stopback_overlay_en(sc, 1);   /* EN:换新文案+Stop Cooking 换装(中文零操作) */
+        s_six_ovl_styled = 1;
+    } else if (s_six_ovl_styled) {
+        /* 遮罩→非遮罩:还原一次。不能每秒常驻还原——进页时 apply 先于 lang 加载跑,
+         * 常驻还原会把底图提前改成 pause.png,构建末尾 nav_btnskin_refit 按 stopbk
+         * 底图名匹配不到就放弃换装,tune 复位的 129x83 方钮会一直显示到首拍 */
+        s_six_ovl_styled = 0;
+        nav_stopback_overlay_en(sc, 0);
     }
 }
 
@@ -630,6 +650,7 @@ void jump_to_six_cooking(void)
 
     g_six_running = 1;
     g_six_overlay = 0;
+    s_six_ovl_styled = 0;   /* 上次会话可能带遮罩态退出:入口复位防首帧误还原 */
     g_six_paused = 0;
     g_six_has_rising = six_bread_has_rising() && (g_rising_choice == 1);
     g_six_color_min = six_bread_color_min(2);   /* 默认"中"档 */

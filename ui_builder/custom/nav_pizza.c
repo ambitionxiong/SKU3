@@ -32,10 +32,12 @@ void jump_to_pizza_complete(void);
 
 static void pizza_set_status(lv_obj_t *label, int temp, int hour, int min)
 {
+    /* 名字走词条:繁体=急凍薄餅,EN=Pizzas(用户定稿,词典裸行),CN=披萨 */
+    const char *name = tr("披萨");
     if (hour == 0)
-        lv_label_set_text_fmt(label, tr("| 披萨 | %d℃ | %02d分钟"), temp, min);
+        lv_label_set_text_fmt(label, tr("| %s | %d℃ | %02d分钟"), name, temp, min);
     else
-        lv_label_set_text_fmt(label, tr("| 披萨 | %d℃ | %d小时%02d分钟"), temp, hour, min);
+        lv_label_set_text_fmt(label, tr("| %s | %d℃ | %d小时%02d分钟"), name, temp, hour, min);
 }
 
 static void pizza_preheat_toggle(lv_event_t *e)
@@ -700,10 +702,7 @@ void jump_to_pizza_complete(void)
             g_pizza_complete = group_create_for_page(btns, 1);
             lv_obj_add_event_cb(cook->little, on_pizza_cooking_setting_click,
                                 LV_EVENT_CLICKED, NULL);
-            if (set_hour == 0)
-                lv_label_set_text_fmt(cook->status, tr("| 披萨 | %d℃ | %02d分钟"), set_temp, set_min);
-            else
-                lv_label_set_text_fmt(cook->status, tr("| 披萨 | %d℃ | %d小时%02d分钟"), set_temp, set_hour, set_min);
+            pizza_set_status(cook->status, set_temp, set_hour, set_min);
             lv_bar_set_value(cook->bar_15, 100, LV_ANIM_OFF);
         }
     }
