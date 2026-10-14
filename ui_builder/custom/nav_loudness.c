@@ -18,6 +18,7 @@ typedef struct {
     lv_obj_t *KJHYQ_off_on_Lb;
     lv_obj_t *shengyin_CH_Lb;
     lv_obj_t *tishiyin_CH_Lb;
+    lv_obj_t *tishiyin_val_Lb;   /* 提示音行当前值(一次/5秒/10秒/30秒,贴箭头,样式对齐开机欢迎曲行) */
     lv_obj_t *anjianyin_CH_Lb;
     lv_obj_t *kaijihuanyinqu_CH_Lb;
     lv_obj_t *line_icon_Img;
@@ -81,6 +82,18 @@ static void loudness_state_sync(void)
 	}
 	if (scr->KJHYQ_off_on_Lb)
 		lv_label_set_text(scr->KJHYQ_off_on_Lb, tr(SET_Data.Set_VolumeWelcome ? "开" : "关"));
+}
+
+/* 提示音行当前值(一次/5秒/10秒/30秒):创建与弹窗确认提交后共用。
+ * EN 词与弹层底图一致(once/5S/10S/30S);繁体与简体同字形,过 tr 原样返回 */
+static void loudness_hint_val_sync(void)
+{
+	screen_loudness_page_t *scr = screen_Loudness_get(&ui_manager);
+	static const char *vals[4] = { "一次", "5秒", "10秒", "30秒" };
+	uint8_t v;
+	if (!scr || !scr->tishiyin_val_Lb) return;
+	v = SET_Data.Set_VolumeHintTime;
+	lv_label_set_text(scr->tishiyin_val_Lb, tr(vals[v <= 3 ? v : 3]));
 }
 
 static void screen_Loudness_switch_bg_Btn_clicked (lv_event_t *e) {
@@ -173,7 +186,10 @@ void encoder_Loudness_action(char key)
 					lv_obj_set_style_text_opa(scr->KJHYQ_off_on_Lb, LV_OPA_100, LV_PART_MAIN | LV_STATE_DEFAULT);
 				else
 					lv_obj_set_style_text_opa(scr->KJHYQ_off_on_Lb, LV_OPA_30, LV_PART_MAIN | LV_STATE_DEFAULT);
-				
+				if (scr->tishiyin_val_Lb)   /* 提示音行值随行高亮(对齐开机欢迎曲行) */
+					lv_obj_set_style_text_opa(scr->tishiyin_val_Lb,
+						scr->arrow_1_Btn == lv_group_get_focused(scr->group) ? LV_OPA_100 : LV_OPA_30,
+						LV_PART_MAIN | LV_STATE_DEFAULT);
 			}
 			else if (Set_Loudness_where == 1)
 			{
@@ -198,6 +214,10 @@ void encoder_Loudness_action(char key)
 					lv_obj_set_style_text_opa(scr->KJHYQ_off_on_Lb, LV_OPA_100, LV_PART_MAIN | LV_STATE_DEFAULT);
 				else
 					lv_obj_set_style_text_opa(scr->KJHYQ_off_on_Lb, LV_OPA_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+				if (scr->tishiyin_val_Lb)
+					lv_obj_set_style_text_opa(scr->tishiyin_val_Lb,
+						scr->arrow_1_Btn == lv_group_get_focused(scr->group) ? LV_OPA_100 : LV_OPA_30,
+						LV_PART_MAIN | LV_STATE_DEFAULT);
 			}
 			else if (Set_Loudness_where == 1)
 			{
@@ -234,6 +254,8 @@ void encoder_Loudness_action(char key)
 			{
 				Set_Loudness_where = 0;
 				SET_Data.Set_VolumeHintTime = Set_Flag;
+				loudness_hint_val_sync();   /* 行值跟随新选择(焦点回提示音行,值随行高亮) */
+				lv_obj_set_style_text_opa(scr->tishiyin_val_Lb, LV_OPA_100, LV_PART_MAIN | LV_STATE_DEFAULT);
 				lv_obj_delete(scr->filter_Cont);
 				lv_group_focus_obj(scr->arrow_1_Btn);
 			}
@@ -328,7 +350,14 @@ void TiShiYin_Cont_create()
     // Set style of scr->TiShiYin_Cont
     lv_obj_set_style_bg_color(scr->TiShiYin_Cont, lv_color_hex(0xeff8f5), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->TiShiYin_Cont, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->TiShiYin_Cont, LVGL_IMAGE_PATH(used/VolumeHintTime_bg.png), LV_PART_MAIN | LV_STATE_DEFAULT);   /* TODO: 英文底图出图后按 g_lang_en 切换 */
+    /* 底图烙有标题/选项文字,按语言三选一(宏字符串化只吃裸文件名,不能塞三元表达式);
+     * 弹层运行时新建不走 lang 树遍历,须在创建分支(同超时层 Over_Time_Bg 做法) */
+    if (is_english())
+        lv_obj_set_style_bg_img_src(scr->TiShiYin_Cont, LVGL_IMAGE_PATH(used/VolumeHintTime_bg_en.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    else if (is_trad())
+        lv_obj_set_style_bg_img_src(scr->TiShiYin_Cont, LVGL_IMAGE_PATH(used/VolumeHintTime_bg_tw.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    else
+        lv_obj_set_style_bg_img_src(scr->TiShiYin_Cont, LVGL_IMAGE_PATH(used/VolumeHintTime_bg.png), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_image_opa(scr->TiShiYin_Cont, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_recolor_opa(scr->TiShiYin_Cont, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_opa(scr->TiShiYin_Cont, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -649,6 +678,17 @@ void screen_Loudness_create(ui_manager_t *ui)
 	lv_obj_set_style_text_font(scr->KJHYQ_off_on_Lb, &c_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
 	lv_obj_set_style_text_color(scr->KJHYQ_off_on_Lb, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
 	lv_obj_set_style_text_opa(scr->KJHYQ_off_on_Lb, LV_OPA_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+	// Init scr->tishiyin_val_Lb(提示音行当前值,右对齐贴 arrow_1,中英同一坐标)
+	scr->tishiyin_val_Lb = lv_label_create(scr->obj);
+	lv_label_set_long_mode(scr->tishiyin_val_Lb, LV_LABEL_LONG_WRAP);
+	lv_obj_set_pos(scr->tishiyin_val_Lb, 937, 228);
+	lv_obj_set_size(scr->tishiyin_val_Lb, 90, 32);
+	lv_obj_set_style_text_font(scr->tishiyin_val_Lb, &c_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+	lv_obj_set_style_text_color(scr->tishiyin_val_Lb, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+	lv_obj_set_style_text_opa(scr->tishiyin_val_Lb, LV_OPA_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+	lv_obj_set_style_text_align(scr->tishiyin_val_Lb, LV_TEXT_ALIGN_RIGHT, LV_PART_MAIN | LV_STATE_DEFAULT);
+	loudness_hint_val_sync();
 
 	// 英文排版
 	if (g_lang_en == 1)

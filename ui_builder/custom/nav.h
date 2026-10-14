@@ -723,6 +723,7 @@ void count_down_back_action(void);
 void count_down_browse_action(uint8_t key);   /* 浏览模式编码器:确定/时/分/秒/清零环游 */
 void count_down_browse_press(void);           /* 浏览模式确认:下划线进编辑/确定启动/清零 */
 int  count_down_running(void);   /* 设置计时器后台运行中(topflag timer 图标显隐用,nav_count_down.c) */
+int  count_down_page_active(void);   /* 计时器页正显示在前台(本页不重复显顶栏 timer 图标,nav_count_down.c) */
 int  count_down_overtime_active(void);   /* 计时器超时层显示中(process_key 模态守卫,nav_count_down.c) */
 void count_down_poweroff_reset(void);    /* 长按关机:清计时器后台/超时状态(nav_keyio 调用,nav_count_down.c) */
 

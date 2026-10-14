@@ -436,8 +436,12 @@ void screen_fav_updown_font_resync(void)
 static void FAV_Set_FuncTemp_Lb(lv_obj_t *lb, const Fun_favorites_Value *fav)
 {
 	const char *deg = tr("℃");	/* 翻页重刷不走 lang 树遍历:单位在此过 tr(℃ 模式英文转 °C,℉ 模式转 °F),否则英文字体无 ℃ 字形成方块 */
+	int up_t = temp_disp_c(fav->temperature);
+	int low_t = temp_disp_c((fav->temp_down > 0) ? fav->temp_down : fav->temperature);	//按卡读取（旧数据 temp_down=0 回退上温）；数值按显示单位换算（存储恒摄氏）
 	lv_obj_t *row = lv_obj_get_child(lb, 0);
-	int keep_scroll = (row && fav->PengTiaoMode_name == MODE_UPDOWN_BBQ && !is_probe_inserted());
+	/* 上下温相同降级单温显示(数字+单位,2026-10-14 用户定稿):组合行停滚收起,仅不同温才起组合行 */
+	int updown = (fav->PengTiaoMode_name == MODE_UPDOWN_BBQ && !is_probe_inserted() && up_t != low_t);
+	int keep_scroll = (row && updown);
 	if (row && !keep_scroll) {                             /* 真正切走组合行才停滚归位;保持显示时不重启(重启=画面弹回一段) */
 		lv_obj_t *strip = lv_obj_get_child(row, 0);
 		if (strip) {
@@ -449,15 +453,12 @@ static void FAV_Set_FuncTemp_Lb(lv_obj_t *lb, const Fun_favorites_Value *fav)
 		lv_obj_add_flag(row, LV_OBJ_FLAG_HIDDEN);
 	if (fav->PengTiaoMode_name == FAV_MODE_MULTI || fav->PengTiaoMode_name == FAV_MODE_SIX)
 		lv_label_set_text(lb, " ");
-	else if (fav->PengTiaoMode_name == MODE_UPDOWN_BBQ)
-		if (is_probe_inserted()) lv_label_set_text_fmt(lb, "%d%s", temp_disp_c(fav->temperature), deg);
-		else {
-			FAV_UpDown_Temp_Row(lb, temp_disp_c(fav->temperature),
-			                    temp_disp_c((fav->temp_down > 0) ? fav->temp_down : fav->temperature), deg);	//↓按卡读取（旧数据 temp_down=0 回退上温）；数值按显示单位换算（存储恒摄氏）
-			lv_label_set_text(lb, " ");	/* 宿主标签留占位,组合行子对象显示 */
-		}
+	else if (updown) {
+		FAV_UpDown_Temp_Row(lb, up_t, low_t, deg);
+		lv_label_set_text(lb, " ");	/* 宿主标签留占位,组合行子对象显示 */
+	}
 	else
-		lv_label_set_text_fmt(lb, "%d%s", temp_disp_c(fav->temperature), deg);
+		lv_label_set_text_fmt(lb, "%d%s", up_t, deg);   /* 探针在位/上下同温:单温 数字+单位 */
 }
 static void FAV_Set_L1_Lb(lv_obj_t *lb, const Fun_favorites_Value *fav)
 {

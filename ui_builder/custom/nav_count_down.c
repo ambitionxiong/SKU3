@@ -257,6 +257,24 @@ static void count_down_edit_visual(int running)
     lv_obj_set_style_text_opa(scr->Second_Lb, edit_opa, LV_PART_MAIN | LV_STATE_DEFAULT);
 }
 
+/* 左下角时长镜像(未运行):文本随时/分/秒编辑值,亮度随焦点——
+   焦点在数字位(下划线):恒亮;焦点在确定:时长>0亮,=0灰(2026-10-14 用户定稿)。
+   运行中亮度/文本由 running_visual+edit_visual(1) 管,超时层不动,此处直接跳过 */
+static void count_down_clock_sync(void)
+{
+    count_down_page_t *scr = count_down_get(&ui_manager);
+    lv_obj_t *focused;
+    int bright;
+    if (!scr->obj || !lv_obj_is_valid(scr->obj) || !scr->group || s_run || s_overtime) return;
+    if (!scr->Clock_Num_Lb) return;
+    lv_label_set_text_fmt(scr->Clock_Num_Lb, "%02d:%02d:%02d", s_dhour, s_dmin, s_dsec);
+    focused = lv_group_get_focused(scr->group);
+    bright = (focused == scr->Underline_Btn) ||
+             (focused == scr->Yes_Btn && (s_dhour || s_dmin || s_dsec));
+    lv_obj_set_style_text_opa(scr->Clock_Num_Lb,
+                              bright ? LV_OPA_100 : LV_OPA_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+}
+
 /* 按当前编辑位(s_set_where:1时/2分/3秒)重登记呼吸组。
    focused=1:焦点正落在下划线上,立即停旧组起新组(换字段无缝切换呼吸对象) */
 static void cd_blink_register(int focused)
@@ -329,6 +347,7 @@ void encoder_count_down_action(uint8_t key)
         } else if (focused == scr->Reset_icon_Btn) {
             lv_group_focus_obj(scr->Yes_Btn);
         }
+        count_down_clock_sync();   /* 数字位改值/焦点换位:左下角镜像跟亮 */
         return;
     }
 
@@ -373,6 +392,7 @@ void encoder_count_down_action(uint8_t key)
             cd_underline_place(scr, 1);
             cd_blink_register(0);   /* 只换组:下次进"时"编辑前预登记 */
         }
+        count_down_clock_sync();   /* 回确定位:时长=0 灰 / >0 亮 */
     } else if (focused == scr->Reset_icon_Btn) {
         s_reset_flag = 1;
         lv_group_focus_obj(scr->Underline_Btn);
@@ -386,6 +406,7 @@ void encoder_count_down_action(uint8_t key)
         lv_label_set_text_fmt(scr->Min_Lb, "00");
         lv_label_set_text_fmt(scr->Second_Lb, "00");
         count_down_edit_visual(0);
+        count_down_clock_sync();   /* 清零后焦点在数字位:左下角亮显 00:00:00 */
     }
 }
 
@@ -427,6 +448,7 @@ void count_down_browse_action(uint8_t key)
             else if (scr->Yes_Btn) lv_group_focus_obj(scr->Yes_Btn);   /* 时→确定 */
         }
     }
+    count_down_clock_sync();   /* 浏览换位:左下角亮度/镜像跟焦点走 */
 }
 
 /* 浏览模式 PRESS:下划线(未在跑)→进该位编辑;确定/清零→原点击语义(启动/离开/清零) */
@@ -517,7 +539,9 @@ void jump_to_count_down(void)
     }
     current_group = s_cd.group;
     if (s_cd.Yes_Btn) lv_group_focus_obj(s_cd.Yes_Btn);   /* 进页聚焦确定;会话=编辑态,转旋钮直接进"时"编辑 */
+    count_down_clock_sync();   /* 进页初始:时长=0 左下角灰显 00:00:00(后台运行恢复走 running_visual) */
     lang_scr_load_anim(s_cd.obj, LV_SCR_LOAD_ANIM_NONE, 0, 0, false);   /* false:保留下层页面(返回免重建) */
+    nav_topflag_demo_sync();   /* 本页已在前台:顶栏 timer 图标立即收起(不等 500ms tick 闪一下) */
     if (s_cd_timer == NULL)
         s_cd_timer = lv_timer_create(count_down_timer_cb, 1000, NULL);   /* 秒节拍(离开页面仍跑) */
     printf("[count_down] jump (run=%d left=%u)\n", restore_run, (unsigned)s_cd_left);
@@ -735,6 +759,12 @@ static void count_down_create(ui_manager_t *ui)
 int count_down_running(void)
 {
     return s_run && s_cd_left > 0;
+}
+
+/* 计时器页正显示在前台(倒计时在本页跑时不重复显示顶栏 timer 图标,2026-10-14 用户定稿) */
+int count_down_page_active(void)
+{
+    return s_cd.obj && lv_obj_is_valid(s_cd.obj) && s_cd.obj == lv_scr_act();
 }
 
 /* 超时层显示中(process_key 模态守卫/cooking_timer_cb 挂起判定用) */

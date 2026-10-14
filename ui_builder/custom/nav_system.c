@@ -319,7 +319,7 @@ void nav_topflag_demo_sync(void)
 
     int is_wait = (depth > 0 && page_stack[depth - 1] == PAGE_WAITMENU_24);
     int v_demo  = SET_Data.Set_DemoMode ? 1 : 0;
-    int v_timer = count_down_running();
+    int v_timer = count_down_running() && !count_down_page_active();   /* 倒计时在本页跑:不重复显 timer 图标 */
     int v_light = is_lamp_on();
     int v_like  = s_topflag_like;
     /* 待机页保持干净:仅演示徽标(整层显隐已由 topflag_update_visibility 处理) */
