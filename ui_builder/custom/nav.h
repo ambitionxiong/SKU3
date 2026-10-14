@@ -701,6 +701,7 @@ void loudness_page_rebuild(void);
 
 /* 数值条子页（nav_loudness.c 实现，PAGE_SET_VAL，按键音音量/屏幕亮度共用） */
 void jump_to_set_val(uint8_t set_this);   /* 1=按键音音量 2=屏幕亮度 */
+void nav_brightness_apply(void);          /* 按当前 Set_Brightness 档位立即生效背光(恢复出厂后调,nav_loudness.c) */
 void set_val_encoder_action(uint8_t key);
 void set_val_return_action(void);
 
@@ -740,6 +741,7 @@ void systime_browse_press(void);           /* 浏览模式确认:下划线进编
 /* 出厂设置确认页（nav_factory.c 实现，PAGE_FACTORY_RESET） */
 void jump_to_factory(void);              /* 设置页 RESET 行进入 */
 void factory_back_action(void);          /* BACK:回设置层,焦点回 RESET 行 */
+int  factory_prog_running(void);         /* 恢复出厂进度页 5s 运行中(全键吞/电源动作吞/警报延后守卫用,nav_factory.c) */
 
 /* 关于机器页（nav_about.c 实现，PAGE_ABOUT，无按钮纯展示） */
 void jump_to_about(void);                /* 设置页 GYJQ 行进入 */

@@ -884,6 +884,18 @@ static void set_val_apply(void)
     uart_print();   /* 立即上报新状态帧(按键音档位/亮度位) */
 }
 
+/* 按当前 Set_Brightness 档位立即生效背光(与亮度条页同表 12..100)。
+ * 恢复出厂后调:默认档立即生效,不等用户再动亮度条(2026-10-14 用户定稿) */
+void nav_brightness_apply(void)
+{
+    static const int lvl[8] = {12, 25, 37, 50, 62, 75, 87, 100};
+    int v = SET_Data.Set_Brightness;
+    if (v < 0 || v > 7) return;
+#ifndef LV_USE_AIC_SIMULATOR
+    backlight_set_level(lvl[v]);
+#endif
+}
+
 /* 编码器处理(nav_key.c 按栈顶 PAGE_SET_VAL 分流)。越界旋转拒绝(无效音) */
 void set_val_encoder_action(uint8_t key)
 {

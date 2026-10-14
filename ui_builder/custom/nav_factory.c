@@ -5,7 +5,8 @@
  * topflag 图标组据此居中）+ 右上确定胶囊（与日期页同位）+ 深灰圆角面板 +
  * 居中大标题（48 号）与说明（30 号，中 2 行/英 3 行）。
  * 确认 = SET_Data 全字段回默认（与 nav_screen_set.c 初始化器一致）+ 双收藏集
- * 清空 + 语言回默认简体，uart_print 上报后整页栈重置回主菜单（重建即时生效）。
+ * 清空 + 语言回默认简体，uart_print 上报；随后本页就地切"恢复出厂设置中"进度页
+ * （进度条 5s 走满，期间按键无效），走满等同第一次上电：清栈进语言选择页→时间设置→系统。
  * BACK 不复位回设置层，焦点回 RESET 行。
  */
 #include "nav.h"
@@ -30,6 +31,40 @@ typedef struct {
 
 static factory_page_t s_fr;
 static factory_page_t *factory_get(ui_manager_t *ui) { (void)ui; return &s_fr; }
+
+/* 确认后的 5s 进度页(2026-10-14 用户定稿):大标题换"恢复出厂设置中"+进度条走满,
+ * 走满回主菜单;期间按键无效(确认/BACK 双守卫) */
+static lv_obj_t *s_prog_bar;
+static lv_timer_t *s_prog_timer;
+static uint8_t s_prog_run = 0;
+
+static void factory_progress_done_cb(lv_timer_t *t)
+{
+    (void)t;
+    s_prog_timer = NULL;
+    s_prog_run = 0;
+    s_prog_bar = NULL;
+    if (!s_fr.obj || !lv_obj_is_valid(s_fr.obj)) return;   /* 5s 内页面被清场(关机等):只回状态不导航 */
+    /* 复位=第一次上电:清栈后走完整首设链 语言页→时间页→进系统(g_langpick_done 已在 apply 清零) */
+    depth = 0;
+    page_push(PAGE_WAITMENU_24);   /* 与开机路径同构:wait 页垫底,随即被语言页盖住 */
+    langpick_enter_from_standby();
+    nav_topflag_demo_sync();    /* demo 徽标图分中英文,复位后立即重排 */
+    nav_topflag_clock_force();  /* 时制回 24h:右上角时钟立即切换 */
+}
+
+/* 进度条动画执行(lv_anim 数值→bar 值) */
+static void factory_bar_anim_cb(void *var, int32_t v)
+{
+    lv_bar_set_value((lv_obj_t *)var, v, LV_ANIM_OFF);
+}
+
+/* 进度页运行中(5s):process_key 全键吞/nav_keyio 电源动作吞/nav_alarm 警报延后/
+ * count_down 超时不抢屏,各打断源守卫共用 */
+int factory_prog_running(void)
+{
+    return s_prog_run;
+}
 
 /* 复位执行:确认键回调与后续扩展共用 */
 static void factory_reset_apply(void)
@@ -62,6 +97,16 @@ static void factory_reset_apply(void)
     Fav_Cur = &Func_favorites_Value;
     favorites_how_many = 0;
 
+    /* 多段参数全局载体(persist 的 multi= 键)一并清零:首次上电 RAM 默认即全零,
+       不清则上一用户的半截多段编辑在恢复出厂后仍从收藏/多段页带出 */
+    memset(&Favorites_Value, 0, sizeof(Favorites_Value));
+
+    /* 后台倒计时整体停表清零(表/超时层/抢屏与下层记录):运行中恢复出厂,
+       定时器不该再存活——否则首次设置链中到期会重建计时页抢屏拽走用户 */
+    count_down_poweroff_reset();
+
+    nav_brightness_apply();   /* 默认亮度档立即生效(背光随后续调整才变不合理) */
+
 #ifndef LV_USE_AIC_SIMULATOR
     settings_mirror_rebuild();   /* 重建 BUF[15..17] 设置字节镜像:复位后当前会话立即按复位值上报 */
     config_save();               /* 立即全量落盘清掉旧内容,不等 persist 线程 1s 轮询 */
@@ -69,23 +114,55 @@ static void factory_reset_apply(void)
 
     g_lang_en = (SET_Data.Set_Language == 0);   /* 默认简体:同步 tr 语言标志 */
     uart_print();               /* 立即上报复位后的状态帧 */
-
-    /* 语言已回默认:整页栈重置回主菜单,新语言随整页重建即时生效 */
-    nav_goto_major_menu();
-    nav_topflag_demo_sync();    /* demo 徽标图分中英文,复位后立即重排 */
-    nav_topflag_clock_force();  /* 时制回 24h:右上角时钟立即切换 */
-    g_send.buzzer_req = BUZZER_KEY_VALID;
+    /* 语言已回默认:导航回主菜单延后到 5s 进度页走满(factory_progress_done_cb) */
 }
 
-/* 确定胶囊点击(框架 PRESS=聚焦按钮 click,与设置行回调同机制) */
+/* 确定胶囊点击(框架 PRESS=聚焦按钮 click,与设置行回调同机制):
+ * 数据立即复位落盘,页面就地切进度页,5s 后回主菜单 */
 static void on_factory_ok(lv_event_t *e)
 {
     (void)e;
+    factory_page_t *scr = &s_fr;
+    lv_anim_t a;
+    const char *ttl;
+    if (s_prog_run) return;   /* 进度 5s 内再按无效 */
+    s_prog_run = 1;
+    g_send.buzzer_req = BUZZER_KEY_VALID;
+    ttl = tr("恢复出厂设置中");   /* 先取词:apply 会把语言重置回简体,之后 tr 只会返回中文 */
     factory_reset_apply();
+
+    /* 进度页化:说明/确认胶囊退场,大标题换词(位置不动,设计图标题中心 ≈238=确认页原位),面板内加进度条 5s 线性走满 */
+    lv_obj_add_flag(scr->Yes_Btn, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(scr->Desc_Lb, LV_OBJ_FLAG_HIDDEN);
+    lv_label_set_text(scr->Reset_Lb, ttl);
+
+    s_prog_bar = lv_bar_create(scr->panel);
+    lv_obj_set_size(s_prog_bar, 772, 32);      /* 设计图实测:外圈 772x32 */
+    lv_obj_align(s_prog_bar, LV_ALIGN_TOP_MID, 0, 156);   /* 面板内水平自动居中;上移贴近标题(隙≈12px) */
+    lv_obj_set_style_pad_all(s_prog_bar, 4, LV_PART_MAIN);   /* 可见间隙=pad-描边宽:4-2=2px,内条高 32-8=24(对齐标准图) */
+    lv_obj_set_style_radius(s_prog_bar, LV_RADIUS_CIRCLE, LV_PART_MAIN);
+    lv_obj_set_style_bg_color(s_prog_bar, lv_color_hex(0x2a2a2a), LV_PART_MAIN);
+    lv_obj_set_style_border_color(s_prog_bar, lv_color_hex(0xffffff), LV_PART_MAIN);
+    lv_obj_set_style_border_width(s_prog_bar, 2, LV_PART_MAIN);
+    lv_obj_set_style_radius(s_prog_bar, LV_RADIUS_CIRCLE, LV_PART_INDICATOR);
+    lv_obj_set_style_bg_color(s_prog_bar, lv_color_hex(0xffffff), LV_PART_INDICATOR);
+    lv_bar_set_range(s_prog_bar, 0, 100);
+    lv_bar_set_value(s_prog_bar, 0, LV_ANIM_OFF);
+    lv_anim_init(&a);
+    lv_anim_set_var(&a, s_prog_bar);
+    lv_anim_set_exec_cb(&a, factory_bar_anim_cb);
+    lv_anim_set_values(&a, 0, 100);
+    lv_anim_set_time(&a, 5000);                /* 进度条 5s 走满 */
+    lv_anim_set_path_cb(&a, lv_anim_path_linear);
+    lv_anim_start(&a);
+
+    s_prog_timer = lv_timer_create(factory_progress_done_cb, 5000, NULL);
+    lv_timer_set_repeat_count(s_prog_timer, 1);   /* 一次性:走满自删 */
 }
 
 void factory_back_action(void)
 {
+    if (s_prog_run) return;   /* 进度 5s 内 BACK 无效 */
     page_pop();
     jump_to_screen_set();
     {   /* 焦点回到来源行"出厂设置" */
@@ -97,6 +174,9 @@ void factory_back_action(void)
 void jump_to_factory(void)
 {
     screen_set_reset();          /* 清设置覆盖层对象/指针 */
+    if (s_prog_timer) { lv_timer_del(s_prog_timer); s_prog_timer = NULL; }   /* 卫生位:清残留进度计时 */
+    s_prog_run = 0;
+    s_prog_bar = NULL;
     depth--;                     /* 弹掉 PAGE_SCREEN_SET */
     page_push(PAGE_FACTORY_RESET);
     lv_obj_clean(lv_scr_act());

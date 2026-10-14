@@ -141,7 +141,7 @@ static void count_down_timer_cb(lv_timer_t *timer)
     if (s_run) {
         s_run = 0;
         g_send.buzzer_req = BUZZER_COOK_DONE;   /* 定时器结束音=烹调结束音(6),原漏发 */
-        if (s_get_out_scr == 0 && s_reset_flag == 0) {
+        if (s_get_out_scr == 0 && s_reset_flag == 0 && !factory_prog_running()) {   /* 进度 5s:不抢屏,静默结束 */
             if (scr->obj && lv_obj_is_valid(scr->obj) && scr->obj == lv_scr_act()) {
                 s_return_scr = NULL;                      /* 在本页到期 */
                 screen_overtime_cont_create();

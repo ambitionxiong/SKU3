@@ -154,6 +154,7 @@ static void nav_power_on(void)
    完成页(纯完成/完成倒计时)与其余(待机/菜单/设置/首设两页/警报页等)=直接关机 */
 static void nav_key1_power_action(void)
 {
+    if (factory_prog_running()) return;   /* 恢复出厂进度 5s:电源动作(关机确认/关机)吞掉,不打断进度 */
     if (g_send.iface_status == IFACE_SLEEP) {
         nav_power_on();
     } else if (nav_poweroff_ask_needed()) {

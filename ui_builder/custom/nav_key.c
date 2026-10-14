@@ -198,6 +198,12 @@ void process_key(uint8_t key)
        解锁=长按旋钮3秒,由 nav_keyio 长按分支/hold_poll 处理,不经过这里 */
     if (nav_childlock_active()) return;
     if (g_send.iface_status == IFACE_SLEEP) return;
+    /* 恢复出厂进度页(5s):吞全部按键——运行中什么都不能打断(2026-10-14 用户定稿) */
+    if (factory_prog_running()) {
+        g_send.buzzer_req = BUZZER_KEY_INVALID;
+        uart_print();
+        return;
+    }
     /* 首次上电设置链路/断电重启开机日期页:不能进链路外任何界面,走完进
        waitmenu 才算进入系统。只放行编码器三键(滚动/确认);语言页 BACK/功能键
        全吞(BACK 不退编辑态,滚轮呼吸不受影响),日期页另放行 BACK(首设回语言页,

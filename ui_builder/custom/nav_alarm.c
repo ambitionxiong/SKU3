@@ -118,6 +118,8 @@ void nav_alarm_tick_check(void)
         s_alarm_code = 0;         /* 关闭期间不触发不跟踪;BUF[12] 仍被读取以备恢复 */
         return;
     }
+    if (factory_prog_running())
+        return;                       /* 恢复出厂进度 5s:警报延后——BUF[12] 边沿未消费,进度走满后下一 tick 仍会触发 */
     if (depth > 0 && page_stack[depth - 1] == PAGE_ALARM)
         return;                       /* 警报页存续:无视 BUF[12] 任何变化,仅电源键(按住 0.25s 关机)可离 */
     if (code && code != s_alarm_code)
