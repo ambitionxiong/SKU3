@@ -574,5 +574,6 @@ void lang_on_page_built(void)
     nav_hotclean_title_refit();   /* hotclean_menu 标题盒自适应:TW 意译 6 字裁尾,全语言幂等(EN tune 同口径) */
     nav_dirimg_refit();     /* menu_top/low+setting 箭头换图+下划线加长:全语言统一(EN 须在 tune 之后覆盖 tune 的 dir/line 行) */
     nav_btnskin_refit();    /* EN 运行/暂停/stopback/预约按钮换 pause/resume/stopcooking/cancel 底图+文案(2026-10-09) */
+    screen_fav_updown_font_resync();   /* 收藏上下温组合行小标签字体随宿主补同步(EN/TW 树遍历后才落字体) */
     nav_menuicon_refit();   /* EN major/cook/six/special+探针三菜单独立图标+24px居中排版(规范图实测位置表,2026-10-10) */
 }

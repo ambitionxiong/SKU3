@@ -287,15 +287,175 @@ static void FAV_Six_Parse(const Fun_favorites_Value *fav, char *summary1, int s1
 
 	g_six_bread_type = old_fun;
 }
+/* 上下烧烤温度行(2026-10-13 用户定稿):↑/↓ 文字箭头换 topiconlittle/lowiconlittle 小图标,
+ * 分隔符 CN/TW=/ EN=&。组合行做成宿主标签的首子节点(标签留空格占位,随页销毁、翻页复用)。
+ * 超宽环形滚动(对齐原标签 SCROLL_CIRCULAR 样式):158x32 裁剪行内一条 strip 内容带,
+ * 带内两组相同内容(第二组默认隐藏),超宽时显示第二组并令 strip 线性左移一个周期无限
+ * 重复——滚满一周期画面与起点重合,无缝循环;不超宽静止。无定时器,动画随 strip 销毁
+ * 自动回收;LVGL 8.3/9.1 公共 API */
+static void fav_updown_scroll_exec(void *var, int32_t v)
+{
+	lv_obj_set_x((lv_obj_t *)var, -v);
+}
+
+/* 每条 strip 正在滚的周期缓存:刷新时周期没变就不重启动画——重启会从 0 弹回,
+ * EN 超宽滚动时肉眼可见"突然移一段"(诊断日志实测:中文组宽 135≤158 静止不受影响) */
+static const lv_obj_t *s_fav_scroll_strip[4];
+static int32_t s_fav_scroll_period[4];
+
+static int32_t *fav_scroll_period_slot(const lv_obj_t *strip)
+{
+	int i, free_i = -1;
+	for (i = 0; i < 4; i++) {
+		if (s_fav_scroll_strip[i] == strip) return &s_fav_scroll_period[i];
+		if (!s_fav_scroll_strip[i] || !lv_obj_is_valid((lv_obj_t *)(s_fav_scroll_strip[i]))) {
+			s_fav_scroll_strip[i] = NULL;
+			s_fav_scroll_period[i] = 0;
+			if (free_i < 0) free_i = i;
+		}
+	}
+	if (free_i < 0) free_i = 0;
+	s_fav_scroll_strip[free_i] = strip;
+	return &s_fav_scroll_period[free_i];
+}
+/* 量宽并决定滚/停:刷新与字体重同步共用,保证动画周期与当前字体下的组宽一致
+ * (EN/TW 字体在 lang 树遍历才落,首建量宽偏小,不同步则接缝错位、每次到接缝跳一下) */
+static void fav_updown_refit(lv_obj_t *strip)
+{
+	lv_obj_t *last;
+	int32_t group_w, period, x;
+	int k;
+	int32_t *pcache = fav_scroll_period_slot(strip);
+
+	lv_obj_update_layout(strip);
+	last = lv_obj_get_child(strip, 3);
+	group_w = lv_obj_get_x(last) + lv_obj_get_width(last);   /* 第一组宽 */
+	period = group_w + 3;  /* +列间距(接缝与组内间距一致) */
+	x = lv_obj_get_x(strip);
+	if (group_w <= 158) {              /* 不超宽:停滚,第二组隐藏 */
+		for (k = 4; k < 8; k++) lv_obj_add_flag(lv_obj_get_child(strip, k), LV_OBJ_FLAG_HIDDEN);
+		lv_anim_del(strip, fav_updown_scroll_exec);
+		lv_obj_set_x(strip, 0);
+		*pcache = 0;
+	} else {                           /* 超宽:显示第二组,线性左移一周期无限无缝循环 */
+		lv_anim_t a;
+		for (k = 4; k < 8; k++) lv_obj_clear_flag(lv_obj_get_child(strip, k), LV_OBJ_FLAG_HIDDEN);
+		lv_obj_update_layout(strip);
+		/* 已在滚且周期未变:保持相位不重启(x!=0 佐证动画存活;对象销毁重建后 x 归 0 会走重启动) */
+		if (*pcache == period && x != 0) return;
+		lv_anim_del(strip, fav_updown_scroll_exec);
+		lv_anim_init(&a);
+		lv_anim_set_var(&a, strip);
+		lv_anim_set_exec_cb(&a, fav_updown_scroll_exec);
+		lv_anim_set_values(&a, 0, period);
+		lv_anim_set_time(&a, period * 20);           /* ≈20ms/px,一周期 ~3s */
+		lv_anim_set_path_cb(&a, lv_anim_path_linear);
+		lv_anim_set_repeat_count(&a, LV_ANIM_REPEAT_INFINITE);
+		lv_anim_start(&a);
+		*pcache = period;
+	}
+}
+
+static void FAV_UpDown_Temp_Row(lv_obj_t *lb, int up, int low, const char *deg)
+{
+	lv_obj_t *row = lv_obj_get_child(lb, 0);
+	lv_obj_t *strip;
+	int k;
+	if (!row) {
+		row = lv_obj_create(lb);
+		/* 固定 158x32=宿主标签生成终尺寸:helper 首建发生在标签 set_size 之前,
+		 * 取实时宽高会得到 0/内容宽,LVGL 裁剪父区外子对象 → 整行不可见 */
+		lv_obj_set_pos(row, 0, 0);
+		lv_obj_set_size(row, 158, 32);
+		lv_obj_set_style_pad_all(row, 0, 0);
+		lv_obj_set_style_border_width(row, 0, 0);
+		lv_obj_set_style_bg_opa(row, 0, 0);
+		lv_obj_clear_flag(row, LV_OBJ_FLAG_SCROLLABLE);
+		strip = lv_obj_create(row);
+		lv_obj_set_pos(strip, 0, 0);
+		lv_obj_set_height(strip, 32);
+		lv_obj_set_width(strip, LV_SIZE_CONTENT);
+		lv_obj_set_flex_flow(strip, LV_FLEX_FLOW_ROW);
+		lv_obj_set_flex_align(strip, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+		lv_obj_set_style_pad_all(strip, 0, 0);
+		lv_obj_set_style_pad_column(strip, 3, 0);
+		lv_obj_set_style_border_width(strip, 0, 0);
+		lv_obj_set_style_bg_opa(strip, 0, 0);
+		lv_obj_set_scrollbar_mode(strip, LV_SCROLLBAR_MODE_OFF);
+		lv_obj_clear_flag(strip, LV_OBJ_FLAG_SCROLLABLE);
+		for (k = 0; k < 8; k++) {          /* 两组相同内容:[图标 数字 图标 数字]×2,第二组默认隐藏 */
+			if (k % 2 == 0) {
+				lv_obj_t *ic = lv_img_create(strip);
+				/* LVGL_IMAGE_PATH 会把参数字符串化,只吃裸文件名,不能传表达式 */
+				if (k % 4) lv_img_set_src(ic, LVGL_IMAGE_PATH(lowiconlittle.png));
+				else       lv_img_set_src(ic, LVGL_IMAGE_PATH(topiconlittle.png));
+			} else {
+				lv_obj_t *l = lv_label_create(strip);
+				lv_label_set_text(l, " ");
+			}
+		}
+	}
+	strip = lv_obj_get_child(row, 0);
+	/* 字体/颜色每次同步:首建时宿主尚未挂样式(生成序 set_text→set_style) */
+	for (k = 1; k <= 7; k += 2) {
+		lv_obj_t *l = lv_obj_get_child(strip, k);
+		lv_obj_set_style_text_font(l, lv_obj_get_style_text_font(lb, LV_PART_MAIN), 0);
+		lv_obj_set_style_text_color(l, lv_obj_get_style_text_color(lb, LV_PART_MAIN), 0);
+	}
+	lv_label_set_text_fmt(lv_obj_get_child(strip, 1), "%d%s %s", up, deg, is_english() ? "&" : "/");
+	lv_label_set_text_fmt(lv_obj_get_child(strip, 3), "%d%s", low, deg);
+	lv_label_set_text_fmt(lv_obj_get_child(strip, 5), "%d%s %s", up, deg, is_english() ? "&" : "/");
+	lv_label_set_text_fmt(lv_obj_get_child(strip, 7), "%d%s", low, deg);
+	lv_obj_clear_flag(row, LV_OBJ_FLAG_HIDDEN);
+	fav_updown_refit(strip);
+}
+/* 组合行小标签字体再同步:EN/TW 的字体切换发生在 lang 树遍历(晚于组合行首建,
+ * 首建时抓到的是主题默认小字体),lang_on_page_built 末尾调用一次补齐 */
+void screen_fav_updown_font_resync(void)
+{
+	screen_favorites_t *scr = &g_fav_screen;
+	lv_obj_t *lbs[4] = { scr->favo_Func_Temp_Lb_1, scr->favo_Func_Temp_Lb_2,
+	                     scr->favo_Func_Temp_Lb_3, scr->favo_Func_Temp_Lb_4 };
+	int i, k;
+	for (i = 0; i < 4; i++) {
+		lv_obj_t *lb = lbs[i];
+		lv_obj_t *row, *strip;
+		if (!lb || !lv_obj_is_valid(lb)) continue;
+		row = lv_obj_get_child(lb, 0);
+		if (!row) continue;
+		strip = lv_obj_get_child(row, 0);
+		if (!strip) continue;
+		for (k = 1; k <= 7; k += 2) {
+			lv_obj_t *l = lv_obj_get_child(strip, k);
+			lv_obj_set_style_text_font(l, lv_obj_get_style_text_font(lb, LV_PART_MAIN), 0);
+			lv_obj_set_style_text_color(l, lv_obj_get_style_text_color(lb, LV_PART_MAIN), 0);
+		}
+		fav_updown_refit(strip);   /* 字体换了组宽随之变:重量宽校正滚动周期,否则接缝错位 */
+	}
+}
 static void FAV_Set_FuncTemp_Lb(lv_obj_t *lb, const Fun_favorites_Value *fav)
 {
 	const char *deg = tr("℃");	/* 翻页重刷不走 lang 树遍历:单位在此过 tr(℃ 模式英文转 °C,℉ 模式转 °F),否则英文字体无 ℃ 字形成方块 */
+	lv_obj_t *row = lv_obj_get_child(lb, 0);
+	int keep_scroll = (row && fav->PengTiaoMode_name == MODE_UPDOWN_BBQ && !is_probe_inserted());
+	if (row && !keep_scroll) {                             /* 真正切走组合行才停滚归位;保持显示时不重启(重启=画面弹回一段) */
+		lv_obj_t *strip = lv_obj_get_child(row, 0);
+		if (strip) {
+			lv_anim_del(strip, fav_updown_scroll_exec);
+			lv_obj_set_x(strip, 0);
+		}
+	}
+	if (row)
+		lv_obj_add_flag(row, LV_OBJ_FLAG_HIDDEN);
 	if (fav->PengTiaoMode_name == FAV_MODE_MULTI || fav->PengTiaoMode_name == FAV_MODE_SIX)
 		lv_label_set_text(lb, " ");
 	else if (fav->PengTiaoMode_name == MODE_UPDOWN_BBQ)
 		if (is_probe_inserted()) lv_label_set_text_fmt(lb, "%d%s", temp_disp_c(fav->temperature), deg);
-		else lv_label_set_text_fmt(lb, "↑%d%s/↓%d%s", temp_disp_c(fav->temperature), deg,
-		                           temp_disp_c((fav->temp_down > 0) ? fav->temp_down : fav->temperature), deg);	//↓按卡读取（此前读全局残留值，多卡片串值；旧数据 temp_down=0 回退上温）；数值按显示单位换算（存储恒摄氏）
+		else {
+			FAV_UpDown_Temp_Row(lb, temp_disp_c(fav->temperature),
+			                    temp_disp_c((fav->temp_down > 0) ? fav->temp_down : fav->temperature), deg);	//↓按卡读取（旧数据 temp_down=0 回退上温）；数值按显示单位换算（存储恒摄氏）
+			lv_label_set_text(lb, " ");	/* 宿主标签留占位,组合行子对象显示 */
+		}
 	else
 		lv_label_set_text_fmt(lb, "%d%s", temp_disp_c(fav->temperature), deg);
 }
