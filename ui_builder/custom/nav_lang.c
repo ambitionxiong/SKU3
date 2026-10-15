@@ -576,4 +576,7 @@ void lang_on_page_built(void)
     nav_btnskin_refit();    /* EN 运行/暂停/stopback/预约按钮换 pause/resume/stopcooking/cancel 底图+文案(2026-10-09) */
     screen_fav_updown_font_resync();   /* 收藏上下温组合行小标签字体随宿主补同步(EN/TW 树遍历后才落字体) */
     nav_menuicon_refit();   /* EN major/cook/six/special+探针三菜单独立图标+24px居中排版(规范图实测位置表,2026-10-10) */
+    nav_cook4_card_icons();    /* cook4 四卡恢复原版图标+标签(全语言,2026-10-15) */
+    nav_frozen_card_icons();   /* 冷冻烘焙六卡铺图标+标签(全语言,2026-10-15) */
+    nav_chickmenutz_en_refit();   /* 探针二级菜单 EN 小字规则(仅英文,2026-10-15) */
 }

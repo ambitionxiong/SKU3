@@ -282,7 +282,7 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "收藏成功!", "Saved as favourite!" },
         { "无猪肉", "No Pork" },
         { "無豬肉", "No Pork" },
-        { "日期/时间", "Date /Time" },
+        { "日期/时间", "Date /Time" },   /* 设置列表行原文案(页标题是烙字底图,与此值无关) */
         { "时", "h" },
         { "时间: %d分钟", "Time: %dmin" },
         { "时间: %d小时%d分钟", "Time: %dh %dmin" },

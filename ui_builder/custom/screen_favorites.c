@@ -1333,26 +1333,23 @@ void FAV_screen_Refresh_FirstPage()
 	lv_obj_add_flag(scr->plus_sign_2, LV_OBJ_FLAG_HIDDEN);      	//隐藏加号+
 	lv_obj_add_flag(scr->plus_sign_3, LV_OBJ_FLAG_HIDDEN);     		//隐藏加号+
 	lv_obj_add_flag(scr->plus_sign_4, LV_OBJ_FLAG_HIDDEN);      	//隐藏加号+
-	lv_obj_remove_flag(scr->plus_sign_1, LV_OBJ_FLAG_HIDDEN);      	//显示加号+
+	lv_obj_add_flag(scr->plus_sign_1, LV_OBJ_FLAG_HIDDEN);      	//加号整体移除(2026-10-15):空卡不再显示+
 
     if (Fav_Cur->has_favorites_byte & 0b1)
     {
 		lv_obj_add_flag(scr->plus_sign_1, LV_OBJ_FLAG_HIDDEN);      	//隐藏加号+
-		lv_obj_remove_flag(scr->plus_sign_2, LV_OBJ_FLAG_HIDDEN);
         lv_obj_remove_flag(scr->favo_Cont_1, LV_OBJ_FLAG_HIDDEN);     	//显示收藏一内容
         lv_group_focus_obj(scr->obj_null_1);
     }
     if (Fav_Cur->has_favorites_byte & 0b10)
     {
 		lv_obj_add_flag(scr->plus_sign_2, LV_OBJ_FLAG_HIDDEN);      	//隐藏加号+
-		lv_obj_remove_flag(scr->plus_sign_3, LV_OBJ_FLAG_HIDDEN);     		//隐藏加号+
         lv_obj_remove_flag(scr->favo_Cont_2, LV_OBJ_FLAG_HIDDEN);     	//显示收藏二内容
         lv_group_focus_obj(scr->obj_null_2);
     }
     if (Fav_Cur->has_favorites_byte & 0b100)
     {
 		lv_obj_add_flag(scr->plus_sign_3, LV_OBJ_FLAG_HIDDEN);      	//隐藏加号+
-		lv_obj_remove_flag(scr->plus_sign_4, LV_OBJ_FLAG_HIDDEN);     		//隐藏加号+
         lv_obj_remove_flag(scr->favo_Cont_3, LV_OBJ_FLAG_HIDDEN);     	//显示收藏三内容
         lv_group_focus_obj(scr->obj_null_3);
     }
@@ -1482,26 +1479,23 @@ void FAV_screen_Refresh_SecondPage()
 	lv_obj_add_flag(scr->plus_sign_2, LV_OBJ_FLAG_HIDDEN);      	//隐藏加号+
 	lv_obj_add_flag(scr->plus_sign_3, LV_OBJ_FLAG_HIDDEN);     		//隐藏加号+
 	lv_obj_add_flag(scr->plus_sign_4, LV_OBJ_FLAG_HIDDEN);      	//隐藏加号+
-	lv_obj_remove_flag(scr->plus_sign_1, LV_OBJ_FLAG_HIDDEN);      	//显示加号+
+	lv_obj_add_flag(scr->plus_sign_1, LV_OBJ_FLAG_HIDDEN);      	//加号整体移除(2026-10-15):空卡不再显示+
 
     if (Fav_Cur->has_favorites_byte & 0b10000)
     {
 		lv_obj_add_flag(scr->plus_sign_1, LV_OBJ_FLAG_HIDDEN);      	//隐藏加号+
-		lv_obj_remove_flag(scr->plus_sign_2, LV_OBJ_FLAG_HIDDEN);
         lv_obj_remove_flag(scr->favo_Cont_1, LV_OBJ_FLAG_HIDDEN);     	//显示收藏一内容
         lv_group_focus_obj(scr->obj_null_1);
     }
     if (Fav_Cur->has_favorites_byte & 0b100000)
     {
 		lv_obj_add_flag(scr->plus_sign_2, LV_OBJ_FLAG_HIDDEN);      	//隐藏加号+
-		lv_obj_remove_flag(scr->plus_sign_3, LV_OBJ_FLAG_HIDDEN);     		//隐藏加号+
         lv_obj_remove_flag(scr->favo_Cont_2, LV_OBJ_FLAG_HIDDEN);     	//显示收藏二内容
         lv_group_focus_obj(scr->obj_null_2);
     }
     if (Fav_Cur->has_favorites_byte & 0b1000000)
     {
 		lv_obj_add_flag(scr->plus_sign_3, LV_OBJ_FLAG_HIDDEN);      	//隐藏加号+
-		lv_obj_remove_flag(scr->plus_sign_4, LV_OBJ_FLAG_HIDDEN);     		//隐藏加号+
         lv_obj_remove_flag(scr->favo_Cont_3, LV_OBJ_FLAG_HIDDEN);     	//显示收藏三内容
         lv_group_focus_obj(scr->obj_null_3);
     }
@@ -2649,7 +2643,6 @@ void screen_favorites_create(void)
         favorites_how_many = 1;
 		lv_group_focus_obj(scr->favorites_box_1_Btn);
 		lv_obj_add_flag(scr->plus_sign_1, LV_OBJ_FLAG_HIDDEN);      	//隐藏加号+
-		lv_obj_remove_flag(scr->plus_sign_2, LV_OBJ_FLAG_HIDDEN);
         lv_obj_remove_flag(scr->favo_Cont_1, LV_OBJ_FLAG_HIDDEN);     	//显示收藏一内容
         lv_group_focus_obj(scr->obj_null_1);
     }
@@ -2658,7 +2651,6 @@ void screen_favorites_create(void)
 		favorites_how_many = 2;
 
 		lv_obj_add_flag(scr->plus_sign_2, LV_OBJ_FLAG_HIDDEN);      	//隐藏加号+
-		lv_obj_remove_flag(scr->plus_sign_3, LV_OBJ_FLAG_HIDDEN);     		//隐藏加号+
         lv_obj_remove_flag(scr->favo_Cont_2, LV_OBJ_FLAG_HIDDEN);     	//显示收藏二内容
         lv_group_focus_obj(scr->obj_null_2);
     }
@@ -2667,7 +2659,6 @@ void screen_favorites_create(void)
 		favorites_how_many = 3;
 
 		lv_obj_add_flag(scr->plus_sign_3, LV_OBJ_FLAG_HIDDEN);      	//隐藏加号+
-		lv_obj_remove_flag(scr->plus_sign_4, LV_OBJ_FLAG_HIDDEN);     		//隐藏加号+
         lv_obj_remove_flag(scr->favo_Cont_3, LV_OBJ_FLAG_HIDDEN);     	//显示收藏三内容
         lv_group_focus_obj(scr->obj_null_3);
     }

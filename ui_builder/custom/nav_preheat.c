@@ -107,7 +107,11 @@ static void preheat_apply_mode_ui(lv_obj_t *icon, lv_obj_t *status)
         txt = tr("| 保温 |");
         break;
     default:
-        /* 预热菜单入口（MODE_PREHEAT）:仅按键4入口显示"快速预热",cookmenu 入口保持"| 预热 |" */
+        /* 预热菜单入口（MODE_PREHEAT）:仅按键4入口显示"快速预热",cookmenu 入口保持"| 预热 |";
+         * 按键4入口图标换用户新素材 fastpreheaticon(2026-10-15,91x101 等高,
+         * 左缘与旧图 115 对齐进度条;cookmenu 普通预热沿用生成层 preheaticon) */
+        if (g_preheat_fast && icon)
+            lv_img_set_src(icon, LVGL_IMAGE_PATH(fastpreheaticon.png));
         if (g_preheat_fast && status)
             lv_label_set_text(status, tr("| 快速预热 |"));
         return;

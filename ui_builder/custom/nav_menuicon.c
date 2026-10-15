@@ -232,3 +232,115 @@ void nav_menuicon_refit(void)
         menu_label_fit(mz->label_9, 633, 306, 637, 44);
     }
 }
+
+/* ============ cook4menu/冷冻烘焙 两页卡片恢复"图标+标签"样式(2026-10-15) ============ */
+
+/* COOK 4 四卡: 生成层本有整套原版图标+标签控件——独立图标 image_47~50
+ * (cookieimg/westimg/pizaimg/menuimgg 101x81,原位已与瓦片对心)+独立标签
+ * label_84~87(与内联文字同文案,树遍历照常翻译),导出时一并烙了 HIDDEN
+ * 换成按键内联文字;这里翻回: 藏内联文字,亮原图标+标签。标签盒 100 宽左
+ * 对齐放 EN 长词会裁边,放宽到瓦片宽 340 并文字居中。EN 走小字规则:
+ * 24px aktiv+图标+文字整体瓦内垂直居中(墨迹间距 25px,盒顶补偿 7),
+ * 简繁维持原版 30px/原位。全语言幂等,跑在 lang_on_page_built 末位
+ * (EN tune 的 label_84~87 行先执行,被这里覆盖) */
+void nav_cook4_card_icons(void)
+{
+    if (depth <= 0 || page_stack[depth - 1] != PAGE_COOK4_MENU) return;
+    cook4menu_t *pg = cook4menu_get(&ui_manager);
+    if (!pg || !pg->obj) return;
+
+    lv_obj_t *btns[4] = { pg->cookie, pg->west, pg->piza, pg->menu };
+    lv_obj_t *imgs[4] = { pg->image_47, pg->image_48, pg->image_49, pg->image_50 };
+    lv_obj_t *labs[4] = { pg->label_84, pg->label_85, pg->label_86, pg->label_87 };
+    const int cx[4]   = { 5, 315, 625, 936 };
+    int lab_y = 290, icon_y = 0;
+    if (is_english()) {
+        icon_y = 206; lab_y = 305;   /* EN: 瓦 340x406 y65, 群组 81+25+17 居中 */
+    }
+    for (int i = 0; i < 4; i++) {
+        if (btns[i]) {
+            lv_obj_t *in = lv_obj_get_child(btns[i], 0);
+            if (in && lv_obj_check_type(in, &lv_label_class))
+                lv_obj_add_flag(in, LV_OBJ_FLAG_HIDDEN);
+        }
+        if (imgs[i]) {
+            lv_obj_clear_flag(imgs[i], LV_OBJ_FLAG_HIDDEN);
+            if (icon_y) lv_obj_set_y(imgs[i], icon_y);
+        }
+        if (labs[i]) {
+            lv_obj_clear_flag(labs[i], LV_OBJ_FLAG_HIDDEN);
+            lv_obj_set_pos(labs[i], cx[i], lab_y);
+            lv_obj_set_size(labs[i], 340, 32);
+            lv_obj_set_style_text_align(labs[i], LV_TEXT_ALIGN_CENTER,
+                                        LV_PART_MAIN | LV_STATE_DEFAULT);
+            if (is_english())
+                lv_obj_set_style_text_font(labs[i], &c_aktivgroteskmedium_24,
+                                           LV_PART_MAIN | LV_STATE_DEFAULT);
+        }
+    }
+}
+
+/* 探针二级菜单(家禽/牛肉/羊肉/猪肉共用 chickmenutz 页) EN 小字规则:
+ * 24px aktiv + 图标+文字整体瓦内垂直居中(墨迹间距 25px)。瓦 638x387 y75/y74,
+ * 图 68x41: 图 rel=(387-83)/2=152, label 盒顶=152+41+18(25-7);
+ * tune 的 align_to 大字版先跑,被这里覆盖。简繁不动(生成层 30px 原位),仅英文执行 */
+void nav_chickmenutz_en_refit(void)
+{
+    if (depth <= 0 || page_stack[depth - 1] != PAGE_CHICKMENUTZ) return;
+    if (!is_english()) return;
+    chickmenutz_t *pg = chickmenutz_get(&ui_manager);
+    if (!pg || !pg->obj) return;
+
+    if (pg->image_1) lv_obj_set_pos(pg->image_1, 296, 227);
+    if (pg->image_2) lv_obj_set_pos(pg->image_2, 917, 226);
+    if (pg->label_5) {
+        lv_obj_set_size(pg->label_5, 638, LV_SIZE_CONTENT);
+        lv_obj_set_pos(pg->label_5, 12, 286);
+        lv_obj_set_style_text_font(pg->label_5, &c_aktivgroteskmedium_24,
+                                   LV_PART_MAIN | LV_STATE_DEFAULT);
+    }
+    if (pg->label_6) {
+        lv_obj_set_size(pg->label_6, 638, LV_SIZE_CONTENT);
+        lv_obj_set_pos(pg->label_6, 633, 285);
+        lv_obj_set_style_text_font(pg->label_6, &c_aktivgroteskmedium_24,
+                                   LV_PART_MAIN | LV_STATE_DEFAULT);
+    }
+}
+
+/* 冷冻烘焙六卡: 生成层没有单卡图标控件——原版是 928x338 简体位图长条图
+ * frozencookfr(繁體换 _tw),文字烙在图里无法随 EN 显示,395px 节距也对不上
+ * 414px 卡片栅格,故藏掉;逐卡铺图标+文字,烹饪页同套图标偏大,等比缩到高 80
+ * (126x101→100x80 预缩素材 *_s80.png,设备端不跑 transform 缩放)。
+ * 排版沿用定版规则: 图标水平居中,图标+文字整体卡内垂直居中,墨迹间距 25px;
+ * EN 标签按小字规则用 24px(MENU_INK_OFF=7),简繁维持 30px taiwanpearl
+ * (盒顶补偿 5),图标/标签 y 随字号分两组。全语言幂等 */
+void nav_frozen_card_icons(void)
+{
+    if (depth <= 0 || page_stack[depth - 1] != PAGE_FROZEN_COOK) return;
+    frozencookpage_t *pg = frozencookpage_get(&ui_manager);
+    if (!pg || !pg->obj) return;
+
+    if (pg->image_279) lv_obj_add_flag(pg->image_279, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_t *btns[6] = { pg->Lasagna, pg->Strudel, pg->bread,
+                          pg->pizza3,  pg->chip,   pg->custom };
+    const char *src[6] = {
+        LVGL_IMAGE_PATH(lasagnaicon_s80.png), LVGL_IMAGE_PATH(strudelicon_s80.png),
+        LVGL_IMAGE_PATH(breadicon_1_s80.png), LVGL_IMAGE_PATH(pizza3icon_s80.png),
+        LVGL_IMAGE_PATH(chipicon_s80.png),    LVGL_IMAGE_PATH(customicon_s80.png),
+    };
+    int icon_y = 43, lab_y = 143;   /* 简繁 30px: 群组 80+25+29 卡内居中 */
+    if (is_english()) {
+        icon_y = 49; lab_y = 147;   /* EN 24px 小字: 群组 80+25+17 */
+    }
+    for (int i = 0; i < 6; i++) {
+        if (!btns[i]) continue;
+        menu_icon_add(btns[i], src[i], 437, 100, icon_y);
+        lv_obj_t *in = lv_obj_get_child(btns[i], 0);
+        if (in && lv_obj_check_type(in, &lv_label_class)) {
+            lv_obj_align(in, LV_ALIGN_TOP_MID, 0, lab_y);
+            if (is_english())
+                lv_obj_set_style_text_font(in, &c_aktivgroteskmedium_24,
+                                           LV_PART_MAIN | LV_STATE_DEFAULT);
+        }
+    }
+}

@@ -245,16 +245,36 @@ void process_key(uint8_t key)
         return;
     }
     /* 关机确认弹层(运行中单触电源键弹出):模态。PRESS=确认结束运行并关机,
-       BACK=取消继续运行,其余键忽略 */
+       BACK=取消继续运行,其余键忽略。
+       两臂都响:BACK 取消=有效音+发帧;PRESS 确认先单独发一帧有效音再进关机
+       流程——nav_power_off 会把 buzzer_req 覆写为 BUZZER_POWER_OFF(关机专属音),
+       同帧带不了键音(2026-10-15 用户定稿:确认也要响) */
     if (nav_poweroff_ask_active()) {
-        if (key == KEY_ENCODER_PRESS) nav_poweroff_ask_confirm();
-        else if (key == KEY_BACK) nav_poweroff_ask_cancel();
+        if (key == KEY_ENCODER_PRESS) {
+            g_send.buzzer_req = BUZZER_KEY_VALID;
+            uart_print();
+            nav_poweroff_ask_confirm();
+        }
+        else if (key == KEY_BACK) {
+            g_send.buzzer_req = BUZZER_KEY_VALID;
+            nav_poweroff_ask_cancel();
+            uart_print();
+        }
         return;
     }
-    /* 重复收藏确认弹层:模态。PRESS=确认覆盖保存,BACK=取消回完成页,其余键忽略 */
+    /* 重复收藏确认弹层:模态。PRESS=确认覆盖保存,BACK=取消回完成页,其余键忽略。
+       两臂都是有效按键,各补有效音+发帧(原静默无帧,2026-10-15 补) */
     if (nav_favask_active()) {
-        if (key == KEY_ENCODER_PRESS) nav_favask_confirm();
-        else if (key == KEY_BACK) nav_favask_cancel();
+        if (key == KEY_ENCODER_PRESS) {
+            nav_favask_confirm();   /* 内部已置 VALID(覆盖保存臂),此处统一兜底 */
+            g_send.buzzer_req = BUZZER_KEY_VALID;
+            uart_print();
+        }
+        else if (key == KEY_BACK) {
+            g_send.buzzer_req = BUZZER_KEY_VALID;
+            nav_favask_cancel();
+            uart_print();
+        }
         return;
     }
     /* 计时器超时层:模态。BACK/PRESS=取消超时层,CW/CCW=响一声(均由计时页组路由处理),
@@ -697,13 +717,15 @@ void process_key(uint8_t key)
             break;
         }
         if (nav_favtip_active()) {
-            /* 收藏结果提示中:BACK 直接关闭提示,不执行返回 */
+            /* 收藏结果提示中:BACK 直接关闭提示,不执行返回(关提示=有效按键,补有效音) */
+            g_send.buzzer_req = BUZZER_KEY_VALID;
             nav_favtip_cancel();
             uart_print();
             break;
         }
         if (nav_hint_active()) {
-            /* 无效提示弹窗中:BACK 直接结束提示恢复页面,不执行返回 */
+            /* 无效提示弹窗中:BACK 直接结束提示恢复页面,不执行返回(同上补有效音) */
+            g_send.buzzer_req = BUZZER_KEY_VALID;
             nav_hint_cancel();
             uart_print();
             break;
