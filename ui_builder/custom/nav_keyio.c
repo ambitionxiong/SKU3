@@ -20,6 +20,8 @@
 #define KEY1_HOLD_MS 250   /* 电源键动作阈值:按住满 0.25s 触发(电源板 3s 复位自行处理) */
 
 static uint8_t s_key1_fired = 0;   /* 本次按压电源动作已触发:按住不重复触发,松开沿无动作 */
+static uint8_t s_clean_done_fired = 0;   /* 本次按压一键完成已触发(烹饪中长按清洁键 1s 测试钩子) */
+static uint8_t s_clean_done_hold = 0;   /* 触发后本次按住期间豁免提示音取消:保完成音 5 秒重发不被同一次按住掐掉 */
 
 /* 关机：清全部运行状态 → SLEEP 待机暗屏。
    KEY1 电源动作与待机页 20 分钟无操作超时(nav_idle)共用，行为完全一致 */
@@ -209,7 +211,11 @@ void nav_handle_key(uint8_t key)
 
     if (key != 0) {
         nav_idle_touch();          /* 任何实际按键都算用户活动(含被模态吞掉的) */
-        nav_hint_tone_cancel();    /* 协议 3.1:用户操作取消后续提示音(按键/旋钮) */
+        /* 协议 3.1:用户操作取消后续提示音(按键/旋钮)。
+         * 豁免:一键完成长按触发后、同一次按住期间不取消——否则完成音刚随帧登记
+         * 5 秒重发就被后续轮询掐掉(自然完成无键按着所以正常,长按特有问题) */
+        if (!s_clean_done_hold)
+            nav_hint_tone_cancel();
     }
 
     switch (key_state) {
@@ -231,6 +237,8 @@ void nav_handle_key(uint8_t key)
                 s_key1_fired = 0;   /* 新按压:清上次已触发标志 */
                 uart_data_receive[Receive_data_Touch_Key] = 0;   /* 消费键值(同 process_key 尾惯例) */
             } else {
+                if (key == KEY_CLEAN)
+                    s_clean_done_fired = 0;   /* 新按压:清上次已触发标志 */
                 process_key(key);
             }
         }
@@ -244,6 +252,7 @@ void nav_handle_key(uint8_t key)
 #endif
             key_state = KEY_IDLE;
             active_key = 0;
+            s_clean_done_hold = 0;   /* 松开即恢复协议 3.1:后续按键照常取消提示音 */
         } else if (key == active_key) {
             // 同键按住
             uint32_t interval = now - active_key_time;
@@ -256,6 +265,18 @@ void nav_handle_key(uint8_t key)
             if (active_key == KEY1 && !s_key1_fired && interval >= KEY1_HOLD_MS) {
                 active_key_time = now;
                 nav_key1_hold_trigger();
+            }
+            /* 测试钩子(2026-10-15):烹饪运行中长按清洁键 1s=立即完成,复用
+             * sim_force_cook_done 走真实完成链(完成音/跳完成页/协议同步;多段逐段跳)。
+             * 童锁中也有效(用户定稿 2026-10-15:童锁只吞界面操作,不拦这个测试通道);
+             * 短按行为照旧(烹饪中=无效提示弹窗,随强制完成收掉,定时器不在新页闪);
+             * 非烹饪态长按无作用(函数自带 IFACE_COOKING+cook_timer 守卫) */
+            if (active_key == KEY_CLEAN && !s_clean_done_fired && interval >= 1000) {
+                s_clean_done_fired = 1;
+                s_clean_done_hold = 1;   /* 豁免本次按住期的提示音取消,保完成音重发 */
+                if (nav_hint_active())
+                    nav_hint_cancel();   /* 短按沿弹的无效提示随强制完成一并收掉 */
+                sim_force_cook_done();
             }
     /* 童锁:旋钮按住 3s 解锁(真机路径;模拟器由 nav_childlock_hold_poll 轮询)。
        armed 门:上锁那一下的按住不算,须先松开一次(与圆环计段一致) */

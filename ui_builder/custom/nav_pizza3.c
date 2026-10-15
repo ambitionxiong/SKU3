@@ -30,9 +30,9 @@ static void pizza3_set_status(lv_obj_t *label, int temp, int hour, int min)
     /* 名字走词条:繁体=急凍薄餅,EN=Pizzas,CN=披萨(与 cook4/特殊烹饪披萨同源) */
     const char *name = tr("披萨");
     if (hour == 0)
-        lv_label_set_text_fmt(label, tr("| %s | %d℃ | %02d分钟"), name, temp, min);
+        lv_label_set_text_fmt(label, tr("| %s | %d℃ | %d分钟"), name, temp, min);
     else
-        lv_label_set_text_fmt(label, tr("| %s | %d℃ | %d小时%02d分钟"), name, temp, hour, min);
+        lv_label_set_text_fmt(label, tr("| %s | %d℃ | %d小时%d分钟"), name, temp, hour, min);
 }
 
 static void pizza3_delay_toggle(lv_event_t *e)

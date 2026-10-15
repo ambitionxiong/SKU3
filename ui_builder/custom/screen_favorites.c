@@ -278,7 +278,7 @@ static void FAV_Six_Parse(const Fun_favorites_Value *fav, char *summary1, int s1
 
 	if (total >= 0) {
 		if (total >= 60)
-			snprintf(time_buf, t_sz, tr("时间：%d小时%02d分钟"), total / 60, total % 60);
+			snprintf(time_buf, t_sz, tr("时间：%d小时%d分钟"), total / 60, total % 60);
 		else
 			snprintf(time_buf, t_sz, tr("时间：%d分钟"), total);
 		if (*lines == 1)
@@ -508,7 +508,7 @@ static void FAV_Set_L2_Lb(lv_obj_t *lb, const Fun_favorites_Value *fav)
 				/* 时间直接按传入项显示：FAV_Option_LB_str 固定读 val[0..3]，
 				 * 第二页卡片(val[4..7])的时间会串成第一页的值；小时为 0 只显分钟 */
 				if (fav->Func_Hour > 0)
-					lv_label_set_text_fmt(lb, tr("时间：%d小时%02d分钟"),
+					lv_label_set_text_fmt(lb, tr("时间：%d小时%d分钟"),
 					                      fav->Func_Hour, fav->Func_Minute);
 				else
 					lv_label_set_text_fmt(lb, tr("时间：%d分钟"),
@@ -1233,7 +1233,7 @@ void FAV_Option_LB_str(lv_obj_t *obj, int8_t Cooking_FUN)
             }
             else if (obj == label2) {
                 if (Fav_Cur->favorites_val[i].Func_Hour > 0)
-                    lv_label_set_text_fmt(obj, tr("时间：%d小时%02d分钟"),
+                    lv_label_set_text_fmt(obj, tr("时间：%d小时%d分钟"),
                         Fav_Cur->favorites_val[i].Func_Hour,
                         Fav_Cur->favorites_val[i].Func_Minute);
                 else

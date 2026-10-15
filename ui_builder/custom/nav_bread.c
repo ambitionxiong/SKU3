@@ -28,9 +28,9 @@ void jump_to_bread_complete(void);
 static void bread_set_status(lv_obj_t *label, int temp, int hour, int min)
 {
     if (hour == 0)
-        lv_label_set_text_fmt(label, tr("| 面包 | %d℃ | %02d分钟"), temp, min);
+        lv_label_set_text_fmt(label, tr("| 面包 | %d℃ | %d分钟"), temp, min);
     else
-        lv_label_set_text_fmt(label, tr("| 面包 | %d℃ | %d小时%02d分钟"), temp, hour, min);
+        lv_label_set_text_fmt(label, tr("| 面包 | %d℃ | %d小时%d分钟"), temp, hour, min);
 }
 
 static void bread_delay_toggle(lv_event_t *e)

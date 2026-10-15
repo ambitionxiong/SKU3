@@ -880,10 +880,10 @@ void rebuild_delaycooking(void)
             set_status_label_min(dc->status, set_temp_up, set_temp_down, set_hour, set_min);
         else {
             if (set_hour == 0)
-                lv_label_set_text_fmt(dc->status, tr("| %s | %d℃ | %02d分钟"),
+                lv_label_set_text_fmt(dc->status, tr("| %s | %d℃ | %d分钟"),
                                       mode_display_name(), set_temp, set_min);
             else
-                lv_label_set_text_fmt(dc->status, tr("| %s | %d℃ | %d小时%02d分钟"),
+                lv_label_set_text_fmt(dc->status, tr("| %s | %d℃ | %d小时%d分钟"),
                                       mode_display_name(), set_temp, set_hour, set_min);
         }
         if (g_delay_source_page != PAGE_DESCRIPTIONMENU) {

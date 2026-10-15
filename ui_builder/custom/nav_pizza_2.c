@@ -34,9 +34,9 @@ static void pizza_2_set_status(lv_obj_t *label, int temp, int hour, int min)
     /* 特殊烹饪急凍薄餅:名字走词条(繁=急凍薄餅,与 cook4 披萨同源;EN=Pizzas 用户定稿,CN=披萨) */
     const char *name = tr("披萨");
     if (hour == 0)
-        lv_label_set_text_fmt(label, tr("| %s | %d℃ | %02d分钟"), name, temp, min);
+        lv_label_set_text_fmt(label, tr("| %s | %d℃ | %d分钟"), name, temp, min);
     else
-        lv_label_set_text_fmt(label, tr("| %s | %d℃ | %d小时%02d分钟"), name, temp, hour, min);
+        lv_label_set_text_fmt(label, tr("| %s | %d℃ | %d小时%d分钟"), name, temp, hour, min);
 }
 
 static void pizza_2_preheat_toggle(lv_event_t *e)

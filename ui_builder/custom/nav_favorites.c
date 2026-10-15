@@ -175,6 +175,7 @@ void favorites_save_current(void)
     if (Favorites_Check_Exists()) {
         /* 重复收藏:弹确认(tip1 该烹调已有 / tip2 需要覆盖原有烹调吗？/ sure 确 定)。
          * 不自动返回:确认(PRESS)→nav_favask_confirm 覆盖保存;BACK→关闭回完成页 */
+        g_send.buzzer_req = BUZZER_KEY_VALID;   /* 弹确认层=一次有效按键(原漏发,2026-10-15 补) */
         nav_show_fav_ask();
         return;
     }

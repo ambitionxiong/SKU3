@@ -31,9 +31,9 @@ void jump_to_top_bbq_complete(void);
 static void top_bbq_set_status(lv_obj_t *label, int temp, int hour, int min)
 {
     if (hour == 0)
-        lv_label_set_text_fmt(label, tr("| 顶部烧烤 | %d℃ | %02d分钟"), temp, min);
+        lv_label_set_text_fmt(label, tr("| 顶部烧烤 | %d℃ | %d分钟"), temp, min);
     else
-        lv_label_set_text_fmt(label, tr("| 顶部烧烤 | %d℃ | %d小时%02d分钟"), temp, hour, min);
+        lv_label_set_text_fmt(label, tr("| 顶部烧烤 | %d℃ | %d小时%d分钟"), temp, hour, min);
 }
 
 static void top_bbq_preheat_toggle(lv_event_t *e)
@@ -733,9 +733,9 @@ void jump_to_top_bbq_complete(void)
             lv_obj_add_event_cb(cook->button_27, on_top_bbq_cooking_setting_click,
                                 LV_EVENT_CLICKED, NULL);
             if (set_hour == 0)
-                lv_label_set_text_fmt(cook->label_107, tr("| 顶部烧烤 | %d℃ | %02d分钟"), set_temp, set_min);
+                lv_label_set_text_fmt(cook->label_107, tr("| 顶部烧烤 | %d℃ | %d分钟"), set_temp, set_min);
             else
-                lv_label_set_text_fmt(cook->label_107, tr("| 顶部烧烤 | %d℃ | %d小时%02d分钟"), set_temp, set_hour, set_min);
+                lv_label_set_text_fmt(cook->label_107, tr("| 顶部烧烤 | %d℃ | %d小时%d分钟"), set_temp, set_hour, set_min);
             lv_bar_set_value(cook->bar_9, 100, LV_ANIM_OFF);
         }
     }

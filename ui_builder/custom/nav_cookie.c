@@ -35,9 +35,9 @@ static void cookie_set_status(lv_obj_t *label, int temp, int hour, int min)
     /* 名字走词条:繁体人工值=曲奇餅(xlsx;烤名格式串的 TW 表行只有转换器字面值 餅乾) */
     const char *name = tr("饼干");
     if (hour == 0)
-        lv_label_set_text_fmt(label, tr("| %s | %d℃ | %02d分钟"), name, temp, min);
+        lv_label_set_text_fmt(label, tr("| %s | %d℃ | %d分钟"), name, temp, min);
     else
-        lv_label_set_text_fmt(label, tr("| %s | %d℃ | %d小时%02d分钟"), name, temp, hour, min);
+        lv_label_set_text_fmt(label, tr("| %s | %d℃ | %d小时%d分钟"), name, temp, hour, min);
 }
 
 static void cookie_preheat_toggle(lv_event_t *e)

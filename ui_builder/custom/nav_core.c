@@ -968,9 +968,9 @@ int edit_minute_borrow(void)
 static void set_status_label(lv_obj_t *label, int temp, int hour, int min)
 {
     if (hour == 0)
-        lv_label_set_text_fmt(label, tr("| 上下烧烤 | %d℃ | %02d分钟"), temp, min);
+        lv_label_set_text_fmt(label, tr("| 上下烧烤 | %d℃ | %d分钟"), temp, min);
     else
-        lv_label_set_text_fmt(label, tr("| 上下烧烤 | %d℃ | %d小时%02d分钟"), temp, hour, min);
+        lv_label_set_text_fmt(label, tr("| 上下烧烤 | %d℃ | %d小时%d分钟"), temp, hour, min);
 }
 void set_status_label_min(lv_obj_t *label, int temp_up, int temp_down, int hour, int min)
 {

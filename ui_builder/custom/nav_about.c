@@ -3,7 +3,7 @@
  *
  * 结构复用 probetip 的独立屏模式，版式按设计图：左上角标题标签（真实 label，
  * topflag 图标组据此居中）+ 深灰圆角面板 + 5 行左对齐信息（30 号）。
- * 型号/12NC 为固定值；TFT 版本号固定 686030108；按键板版本=接收帧 BUF[16]
+ * 型号/12NC 为固定值；TFT 版本号固定 686030109；按键板版本=接收帧 BUF[16]
  * 高 4 位（BIT4~BIT7，BIT7 为高位）；电源板版本=接收帧 BUF[13]
  * （20260618 协议：电源板→显示板 18 字节帧）。进页时读一次即可（版本静态）。
  * BACK 回设置层，焦点回 GYJQ 行；功能键不拦截。
@@ -14,7 +14,7 @@
 #include "nav_internal.h"
 #include "screen_SET.h"       /* 返回设置层后焦点定位 GYJQ_Btn 用 */
 
-#define ABOUT_TFT_VERSION     "686030108"   /* TFT 固件版本号(用户给定) */
+#define ABOUT_TFT_VERSION     "686030109"   /* TFT 固件版本号(用户给定,2026-10-15 末段 0108→0109) */
 #define ABOUT_MODEL           "WCM76P1HB"   /* 型号 */
 #define ABOUT_12NC            "858791853530"
 

@@ -966,6 +966,19 @@ void cooking_timer_cb(lv_timer_t *timer)
         lv_timer_del(cook_timer);
         cook_timer = NULL;
         g_send.buzzer_req = BUZZER_COOK_DONE;
+        /* 完成页参数=本次运行确认值(2026-10-15):setting 覆盖层编辑态未确认的调值
+         * 不带入——编辑直接写 set_temp 等显示变量,协议镜像 g_send 仍是确认值
+         * (实测:setting 调 185 未确认,到点完成页显示 185℃/真值 180);
+         * 时长回读 cook_total_ms(真实运行时长,编辑不改变它)。
+         * 仅编辑态生效:非编辑态各模式显示变量与确认值一致,不动
+         * (避开 somecook 等无逐段镜像同步链路) */
+        if (nav_edit_session_active()) {
+            set_temp      = g_send.set_temp;
+            set_temp_up   = g_send.set_temp;        /* 上下烧烤:协议上发热管=SET_TEMP */
+            set_temp_down = g_send.set_temp_lower;
+            set_hour      = cook_total_ms / 3600000;
+            set_min       = (cook_total_ms / 60000) % 60;
+        }
         if (current_group == g_updown_bbq_setting) {
             if (depth > 0) depth--;
             lv_obj_clean(lv_scr_act());
@@ -1271,11 +1284,12 @@ void cooking_timer_cb(lv_timer_t *timer)
     g_send.remaining_ms = remaining_sec * 1000;
 }
 
-/* ===================== 模拟器调试：C 键立即完成烹饪 =====================
+/* ===================== 调试：立即完成烹饪(模拟器 C 键/实机烹饪中长按清洁键 1s) ==========
  * 把计时起点回拨整个烹饪时长，使 elapsed >= cook_total_ms，随后同步执行一次
  * cooking_timer_cb —— 走与真实到点完全相同的完成分发（删定时器/完成音/按模式
  * 裁栈跳完成页/多段切下一段）。探针页由探针温度驱动（用 8/- 键调温）、六感有
- * 独立阶段状态机（菜谱调试时长已是 1 分钟），均不走此路径，不受影响。 */
+ * 独立阶段状态机（菜谱调试时长已是 1 分钟），均不走此路径，不受影响。
+ * 实机触发挂在 nav_keyio 按键状态机(2026-10-15,长按清洁键 1s,童锁中也有效)。 */
 void sim_force_cook_done(void)
 {
     if (g_send.iface_status != IFACE_COOKING || !cook_timer) return;
