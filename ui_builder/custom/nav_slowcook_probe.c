@@ -67,7 +67,7 @@ static void on_slowcook_probe_stop_back_sure_click(lv_event_t *e)
     g_on_stop_back = 0;
     g_keepwarm_active = 0;
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
-    probe_target_temp = 80; set_temp = 80; set_hour = 0; set_min = 30;
+    probe_target_temp = 70; set_temp = 80; set_hour = 0; set_min = 30;
     cook_elapsed_saved = 0; cook_bar_saved = 0;
     if (is_probe_inserted()) {
         depth = 0;
@@ -130,7 +130,7 @@ static void on_slowcook_probe_complete_click(lv_event_t *e)
 void jump_to_slowcook_menu_probe(void)
 {
     set_temp = 80;
-    set_hour = 0; set_min = 30; probe_target_temp = 80;
+    set_hour = 0; set_min = 30; probe_target_temp = 70;   /* 慢煮默认探针 70(炉温默认 80,恰好满足高 10℃ 规则) */
     page_push(PAGE_SLOWCOOK_MENU_PROBE);
     lv_obj_clean(lv_scr_act());
     slowcook_menu_probe_create(&ui_manager);

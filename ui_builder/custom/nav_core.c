@@ -897,6 +897,48 @@ void adjust_value(edit_field_t *f, int delta)
         heatcontain_setting_t *set = heatcontain_setting_get(&ui_manager);
         update_heatcontain_dir_icon(set);
     }
+
+    /* 探针 menu 页(上下/下/热风/慢炖):炉温必须比探针目标高 10℃。
+       调炉温:下探越限时联动压低探针(=炉温-10,探针顶住 30 下限则炉温回弹到探针+10);
+       调探针:上限=炉温-10,越限钳回(不回绕,与设置页温差回弹同风格) */
+    if (current_group == g_updown_bbq_menu_probe ||
+        current_group == g_bottom_bbq_menu_probe ||
+        current_group == g_hot_bbq_menu_probe ||
+        current_group == g_slowcook_menu_probe) {
+        if (f->value == &set_temp && set_temp < probe_target_temp + 10) {
+            int np = set_temp - 10;
+            if (np < 30) {
+                set_temp = probe_target_temp + 10;   /* 探针已在下限:炉温停在探针+10 */
+                lv_label_set_text_fmt(f->label, f->fmt, edit_disp(f, set_temp));
+                if (f->ind_short && f->ind_long) {
+                    lv_obj_add_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
+                    lv_obj_add_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
+                    if (edit_disp(f, set_temp) < 100)
+                        lv_obj_clear_flag(f->ind_short, LV_OBJ_FLAG_HIDDEN);
+                    else
+                        lv_obj_clear_flag(f->ind_long, LV_OBJ_FLAG_HIDDEN);
+                }
+            } else {
+                probe_target_temp = np;
+                for (int i = 0; i < edit_count; i++) {
+                    if (edit_fields[i].value == &probe_target_temp) {
+                        edit_field_t *pf = &edit_fields[i];
+                        lv_label_set_text_fmt(pf->label, pf->fmt, edit_disp(pf, np));
+                        if (pf->ind_short)
+                            nav_underline_fit(pf->ind_short, edit_disp(pf, np));
+                        break;
+                    }
+                }
+            }
+        } else if (f->value == &probe_target_temp &&
+                   probe_target_temp > set_temp - 10) {
+            /* 越上限:上调回绕到最低温30(循环风格);下调只会是最小值回绕撞限,钳回上限 */
+            probe_target_temp = (delta < 0) ? set_temp - 10 : 30;
+            lv_label_set_text_fmt(f->label, f->fmt, edit_disp(f, probe_target_temp));
+            if (f->ind_short)
+                nav_underline_fit(f->ind_short, edit_disp(f, probe_target_temp));
+        }
+    }
 }
 void validate_constraints(void)
 {
