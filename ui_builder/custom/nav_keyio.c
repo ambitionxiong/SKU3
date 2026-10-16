@@ -29,6 +29,9 @@ void nav_power_off(void)
 {
     nav_hint_tone_cancel();           /* 提示音重复引擎随关机停止 */
     probetip_cancel_auto_dismiss();   /* 取消陈旧的探针提示自动关闭定时器,防止跨会话误触发 */
+    nav_hint_cancel();                /* 无效键提示层随关机收起(否则演示模式待机下残留遮罩/文字至到期) */
+    nav_favtip_cancel();              /* 收藏结果提示定时器同款卫生 */
+    temptip_cancel_auto_dismiss();    /* 腔温过热提示定时器同款 */
     screen_set_reset();               /* 覆盖层若打开:清理对象/组/焦点指针,防悬空 */
     count_down_poweroff_reset();      /* 计时器后台/超时状态一并清:防关机后到期自动退出拽屏 */
     if (nav_favask_active()) nav_favask_cancel();   /* 收藏确认弹层随关机收起(标志残留会吞键) */
