@@ -18871,7 +18871,7 @@ void topflagpage_lang_tune(void)
 /* ==============================================================================
  * favorites 英文布局基准（对应 PAGE_FAVORITES 收藏夹）
  * 卡片标题(favo_Title_Lb_1..4)：英文名长单行放不下，高度随折行行数自适应
- * （宽 200/位置 (50,25) 保持生成原值，先只验证两行折行效果）
+ * （宽已扩 240(中心不变)，Grilled Chicken Wings/Breast 两行放下不压参数行）
  * ============================================================================== */
 void favorites_lang_tune(void)
 {
@@ -18882,7 +18882,7 @@ void favorites_lang_tune(void)
     };
     for (int i = 0; i < 4; i++) {
         if (!ts[i]) continue;
-        lv_obj_set_size(ts[i], 200, LV_SIZE_CONTENT);   /* 宽不变,高随折行行数自适应 */
+        lv_obj_set_size(ts[i], 240, LV_SIZE_CONTENT);   /* 宽与创建值一致,高随折行行数自适应 */
     }
 }
 

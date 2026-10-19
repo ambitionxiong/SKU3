@@ -1097,24 +1097,24 @@ void return_favorites_action()
 //收藏选项标题选择
 void FAV_Option_Title(lv_obj_t *obj, const Fun_favorites_Value *fav)
 {
-	const char *name = NULL;
-	if (fav->PengTiaoMode_name == FAV_MODE_SIX)
-	{
-		/* 临时按收藏菜谱编号取名称（分类入口：肉菜/海鲜/蔬菜/二维菜/披萨/面包蛋糕，读后恢复） */
-		uint8_t old = g_six_bread_type;
-		g_six_bread_type = (uint8_t)fav->Six_Cook_Fun;
-		name = six_current_name();
-		g_six_bread_type = old;
-	}
-	else if (fav->PengTiaoMode_name == FAV_MODE_MULTI)
-	{
-		name = tr("多段烹饪");
-	}
-	else
-	{
-		name = fav_mode_name(fav);
-	}
-	if (name) lv_label_set_text(obj, name);
+    const char *name = NULL;
+    if (fav->PengTiaoMode_name == FAV_MODE_SIX)
+    {
+        /* 临时按收藏菜谱编号取名称（分类入口：肉菜/海鲜/蔬菜/二维菜/披萨/面包蛋糕，读后恢复） */
+        uint8_t old = g_six_bread_type;
+        g_six_bread_type = (uint8_t)fav->Six_Cook_Fun;
+        name = six_current_name();
+        g_six_bread_type = old;
+    }
+    else if (fav->PengTiaoMode_name == FAV_MODE_MULTI)
+    {
+        name = tr("多段烹饪");
+    }
+    else
+    {
+        name = fav_mode_name(fav);
+    }
+    if (name) lv_label_set_text(obj, name);
 }
 //多段烹饪，选择功能名称
 const char* FAV_Option_Fun_name(int8_t Cooking_FUN)
@@ -1845,8 +1845,8 @@ void screen_favorites_create(void)
 	FAV_Option_Title(scr->favo_Title_Lb_1, &Fav_Cur->favorites_val[0]);
 	
     lv_label_set_long_mode(scr->favo_Title_Lb_1, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->favo_Title_Lb_1, 50, 25);
-    lv_obj_set_size(scr->favo_Title_Lb_1, 200, 32);
+    lv_obj_set_pos(scr->favo_Title_Lb_1, 30, 25);
+    lv_obj_set_size(scr->favo_Title_Lb_1, 240, 32);   /* 200->240:EN长菜名折三行压参数行,加宽后两行放下(中心150不变) */
 
     // Set style of scr->favo_Title_Lb_1
     lv_obj_set_style_text_font(scr->favo_Title_Lb_1, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -2006,8 +2006,8 @@ void screen_favorites_create(void)
     //lv_label_set_text(scr->favo_Title_Lb_2, TR(STR_Steam_Plus));
 	FAV_Option_Title(scr->favo_Title_Lb_2, &Fav_Cur->favorites_val[1]);
     lv_label_set_long_mode(scr->favo_Title_Lb_2, LV_LABEL_LONG_WRAP);
-	lv_obj_set_pos(scr->favo_Title_Lb_2, 50, 25);
-    lv_obj_set_size(scr->favo_Title_Lb_2, 200, 32);
+	lv_obj_set_pos(scr->favo_Title_Lb_2, 30, 25);
+    lv_obj_set_size(scr->favo_Title_Lb_2, 240, 32);   /* 200->240:EN长菜名折三行压参数行,加宽后两行放下(中心150不变) */
 
     // Set style of scr->favo_Title_Lb_2
     lv_obj_set_style_text_font(scr->favo_Title_Lb_2, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -2170,8 +2170,8 @@ void screen_favorites_create(void)
 	FAV_Option_Title(scr->favo_Title_Lb_3, &Fav_Cur->favorites_val[2]);
 	
     lv_label_set_long_mode(scr->favo_Title_Lb_3, LV_LABEL_LONG_WRAP);
-	lv_obj_set_pos(scr->favo_Title_Lb_3, 50, 25);
-    lv_obj_set_size(scr->favo_Title_Lb_3, 200, 32);
+	lv_obj_set_pos(scr->favo_Title_Lb_3, 30, 25);
+    lv_obj_set_size(scr->favo_Title_Lb_3, 240, 32);   /* 200->240:EN长菜名折三行压参数行,加宽后两行放下(中心150不变) */
 
     // Set style of scr->favo_Title_Lb_3
     lv_obj_set_style_text_font(scr->favo_Title_Lb_3, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -2332,8 +2332,8 @@ void screen_favorites_create(void)
     //lv_label_set_text(scr->favo_Title_Lb_4, TR(STR_Steam_Plus));
 	FAV_Option_Title(scr->favo_Title_Lb_4, &Fav_Cur->favorites_val[3]);
     lv_label_set_long_mode(scr->favo_Title_Lb_4, LV_LABEL_LONG_WRAP);
-	lv_obj_set_pos(scr->favo_Title_Lb_4, 50, 25);
-    lv_obj_set_size(scr->favo_Title_Lb_4, 200, 32);
+	lv_obj_set_pos(scr->favo_Title_Lb_4, 30, 25);
+    lv_obj_set_size(scr->favo_Title_Lb_4, 240, 32);   /* 200->240:EN长菜名折三行压参数行,加宽后两行放下(中心150不变) */
 
     // Set style of scr->favo_Title_Lb_4
     lv_obj_set_style_text_font(scr->favo_Title_Lb_4, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);

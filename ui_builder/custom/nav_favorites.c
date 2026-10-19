@@ -144,16 +144,25 @@ void favorites_save_current(void)
         }
         input_Mode_name   = FAV_MODE_MULTI;
         input_Cooking_Mode = (uint8_t)g_steps[0].mode;
-    } else if (g_six_running ||
-               (depth > 0 && page_stack[depth - 1] == PAGE_CHICKENCOOKING)) {
+    } else if (depth > 0 && (page_stack[depth - 1] == PAGE_SIX_COOKING ||
+                             page_stack[depth - 1] == PAGE_CHICKENCOOKING)) {
         /* 六感：菜谱编号 + 档位（时间由菜谱数据决定，不收藏时间）。
          * 探针肉菜(全鸡/鸭/牛排/牛肉/羊腿/羊排/里脊/五花)运行页是 chickencooking，
          * 不置 g_six_running——此前漏判，存成普通模式：卡片显示模式名、
-         * 启动进 updown 等普通烹饪页（用户实测闪退/串页根因） */
+         * 启动进 updown 等普通烹饪页（用户实测闪退/串页根因）。
+         * 2026-10-19:不再 OR g_six_running——该标志在个别退出路径残留 1 时,
+         * 普通模式收藏会被误分类成六感(残留 g_six_bread_type 撞上已存收藏,
+         * 用户实测普通收藏全部误弹"覆盖");收藏只认栈顶页面事实 */
         input_Mode_name    = FAV_MODE_SIX;
         input_Cooking_Mode = g_send.cook_mode;
     } else {
         /* 普通/探针模式 */
+        if (g_six_running) {
+            /* 六感会话标志残留(异常退出路径):人在普通完成页,六感会话必已结束。
+             * 只清标志(其余六感私有态在重建/入口各自复位),不动 cook_timer
+             * (全局共用,此时可能正服务本页保温计数) */
+            g_six_running = 0;
+        }
         input_Mode_name    = (int8_t)g_send.cook_mode;
         input_Cooking_Mode = g_send.cook_mode;
     }
