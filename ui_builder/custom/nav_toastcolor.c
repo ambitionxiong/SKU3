@@ -207,8 +207,8 @@ static void on_toastcolor_next_click(lv_event_t *e)
         return;
     }
     g_six_color_min = six_bread_color_min(s_toast_color);   /* 1浅 2中 3深,按菜查表 */
-    six_cook_goto_setup();   /* 重建后显示上色准备态 */
-    /* 回运行页:弹 toastcolor */
+    if (!six_cook_goto_setup()) return;   /* 门开:留在烤色页(无效音已发),不弹页 */
+    /* 回运行页:弹 toastcolor,重建后直接显示上色烹饪进行中 */
     page_pop();
 }
 

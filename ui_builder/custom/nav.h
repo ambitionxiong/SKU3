@@ -1037,7 +1037,7 @@ void six_cook_force_done(void);   /* 模拟器调试:c 键强制完成六感当�
 void fav_snapshot_save(void);   /* 收藏:进入 cooking 时快照初始参数(nav_favorites.c) */
 void six_cook_handle_back(void);
 void six_cooking_rebuild(page_id_t child);
-void six_cook_goto_setup(void);
+int six_cook_goto_setup(void);        /* toastcolor确认:直接开始上色烹饪;1=已开始 0=门开未开始 */
 void six_cook_reset(void);
 void six_cook_refresh_display(void);
 int six_cook_is_overlay(void);

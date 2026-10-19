@@ -1877,13 +1877,18 @@ lv_coord_t nav_status_name_anchor_w(lv_obj_t *label, lv_obj_t *name_label)
 int nav_status_bar_dynamic(lv_obj_t *label, lv_obj_t *name_label,
                            const char *name_text, const char *merged)
 {
+    /* 判宽基准=状态栏设计宽 490:EN 排版微调把标签改成 LV_SIZE_CONTENT,
+       "当前宽"=上一条文本宽,拿它当基准会把放下短菜名的页误判成动态(上色页踩过),
+       统一对 490 判定——真正放不下的(EN 全麦面包/海绵蛋糕等长名)才走动态 */
+    const lv_coord_t avail = 490;
     if (!label || !merged) return 0;
     const lv_font_t *font = lv_obj_get_style_text_font(label, LV_PART_MAIN);
     lv_point_t sz = { 0, 0 };
     if (font)
         lv_txt_get_size(&sz, merged, font, 0, 0, LV_COORD_MAX, LV_TEXT_FLAG_NONE);
-    if (!font || sz.x <= lv_obj_get_width(label)) {
-        if (name_label) lv_obj_add_flag(name_label, LV_OBJ_FLAG_HIDDEN);
+    if (!font || sz.x <= avail) {
+        if (name_label && !lv_obj_has_flag(name_label, LV_OBJ_FLAG_HIDDEN))
+            lv_obj_add_flag(name_label, LV_OBJ_FLAG_HIDDEN);   /* 已隐藏不再add:避免每秒invalidate白刷 */
         status_text_set_if_changed(label, merged);
         return 0;
     }
@@ -1892,16 +1897,38 @@ int nav_status_bar_dynamic(lv_obj_t *label, lv_obj_t *name_label,
         status_text_set_if_changed(label, merged);
         return 0;
     }
-    const char *blank = status_blank_prefix();
-    /* 名窗口右缘只收不超过锚定宽(EN 排版微调已进页即锚定,此处为每秒幂等兜底;
-       中文无微调,由这里直接从生成宽收拢) */
-    lv_coord_t anchor = nav_status_name_anchor_w(label, name_label);
-    if (anchor > 0 && lv_obj_get_width(name_label) > anchor)
-        lv_obj_set_width(name_label, anchor);
+    /* 留白前缀自适应:整行(留白+参数段)也必须放进 490——参数段长(EN"额外上色"行)
+       时按空格实测宽收缩留白(名窗随之改短),不再固定 33/25 空格硬套导致整行溢出右端 */
+    char blank[48];
+    int n = is_english() ? 33 : 25;
+    {
+        lv_point_t pw = { 0, 0 }, sw = { 0, 0 }, tw = { 0, 0 };
+        lv_txt_get_size(&pw, "|", font, 0, 0, LV_COORD_MAX, LV_TEXT_FLAG_NONE);
+        lv_txt_get_size(&sw, " ", font, 0, 0, LV_COORD_MAX, LV_TEXT_FLAG_NONE);
+        lv_txt_get_size(&tw, tail, font, 0, 0, LV_COORD_MAX, LV_TEXT_FLAG_NONE);
+        while (n > 10 && pw.x + n * sw.x + tw.x > avail)
+            n--;
+        blank[0] = '|';
+        memset(blank + 1, ' ', n);
+        blank[n + 1] = '\0';
+    }
+    /* 名窗口右缘锚定:第二根竖线实测位置(状态栏起点+当帧自适应留白实测宽)再退一个空格;
+       只收不超过锚定宽的窗口。全部当场实测,无跨帧缓存。
+       (EN 排版微调另以默认留白预锚定:烹饪页参数段短,自适应留白=默认,两者一致;
+       上色页参数段长时留白收缩,本帧锚定同步收紧,首帧即一致无跳变) */
+    const lv_font_t *nfont = lv_obj_get_style_text_font(name_label, LV_PART_MAIN);
+    if (nfont) {
+        lv_point_t bw = { 0, 0 }, sp = { 0, 0 };
+        lv_txt_get_size(&bw, blank, font, 0, 0, LV_COORD_MAX, LV_TEXT_FLAG_NONE);
+        lv_txt_get_size(&sp, " ", nfont, 0, 0, LV_COORD_MAX, LV_TEXT_FLAG_NONE);
+        lv_coord_t anchor = lv_obj_get_x(label) + bw.x - lv_obj_get_x(name_label) - sp.x;
+        if (anchor >= 40 && lv_obj_get_width(name_label) > anchor)
+            lv_obj_set_width(name_label, anchor);
+    }
     lv_obj_clear_flag(name_label, LV_OBJ_FLAG_HIDDEN);
     status_text_set_if_changed(name_label, name_text ? name_text : "");
     {
-        char buf[160];
+        char buf[192];
         snprintf(buf, sizeof(buf), "%s%s", blank, tail);
         status_text_set_if_changed(label, buf);
     }

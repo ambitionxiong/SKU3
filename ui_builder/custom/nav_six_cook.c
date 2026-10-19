@@ -291,14 +291,8 @@ static void six_cook_apply_display(void)
     lv_obj_clear_flag(sc->image_10, LV_OBJ_FLAG_HIDDEN);
     lv_obj_clear_flag(sc->bar_1, LV_OBJ_FLAG_HIDDEN);
     lv_obj_clear_flag(sc->stop, LV_OBJ_FLAG_HIDDEN);
-    /* 发酵/上色设置/上色烹饪三阶段 label_12 为直接单行(不经动态助手),
-       名标签须隐藏;其余阶段由 six_label_status 按需显隐。
-       加已隐藏守卫:add_flag 对已隐藏对象仍会 invalidate,每秒白刷一次 */
-    if ((g_six_phase == SIX_PHASE_RISING ||
-         g_six_phase == SIX_PHASE_COLOR_SETUP ||
-         g_six_phase == SIX_PHASE_COLOR_COOKING) &&
-        !lv_obj_has_flag(sc->activestatus, LV_OBJ_FLAG_HIDDEN))
-        lv_obj_add_flag(sc->activestatus, LV_OBJ_FLAG_HIDDEN);
+    /* 名标签(activestatus)显隐统一由 nav_status_bar_dynamic 按"单行放下与否"自决
+       (发酵/上色设置/上色烹饪三处直接单行分支也已接入助手),此处不再干预 */
     lv_obj_add_flag(sc->container_1, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(sc->text1, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(sc->text2, LV_OBJ_FLAG_HIDDEN);
@@ -311,7 +305,12 @@ static void six_cook_apply_display(void)
     switch (g_six_phase) {
     case SIX_PHASE_RISING:
         lv_label_set_text(sc->cookstatus, g_six_paused ? tr("暂停中...") : tr("发酵中..."));
-        lv_label_set_text_fmt(sc->label_12, tr("| %s | %d℃ | 45分钟"), six_bread_name(), temp_disp_c(45));
+        {
+            char merged[160];
+            snprintf(merged, sizeof(merged), tr("| %s | %d℃ | 45分钟"),
+                     six_bread_name(), temp_disp_c(45));
+            nav_status_bar_dynamic(sc->label_12, sc->activestatus, six_bread_name(), merged);
+        }
         if (bl) lv_label_set_text(bl, g_six_paused ? tr("开 始") : tr("暂 停"));
         break;
     case SIX_PHASE_COOKING:
@@ -348,18 +347,14 @@ static void six_cook_apply_display(void)
         lv_bar_set_range(sc->bar_1, 0, 100);
         lv_bar_set_value(sc->bar_1, 100, LV_ANIM_OFF);
         break;
-    case SIX_PHASE_COLOR_SETUP:
-        lv_obj_clear_flag(sc->timelabel, LV_OBJ_FLAG_HIDDEN);
-        lv_label_set_text_fmt(sc->timelabel, "00:%02d:00", g_six_color_min);   /* 所选程度时长 */
-        lv_label_set_text(sc->cookstatus, tr("额外上色"));
-        lv_label_set_text_fmt(sc->label_12, tr("| %s | %d分钟"), six_bread_name(), g_six_color_min);
-        if (bl) lv_label_set_text(bl, tr("开 始"));
-        lv_bar_set_range(sc->bar_1, 0, 100);
-        lv_bar_set_value(sc->bar_1, 3, LV_ANIM_OFF);
-        break;
     case SIX_PHASE_COLOR_COOKING:
         lv_label_set_text(sc->cookstatus, g_six_paused ? tr("暂停中...") : tr("烹饪中..."));
-        lv_label_set_text_fmt(sc->label_12, tr("| %s | 额外上色 | %d分钟"), six_bread_name(), g_six_color_min);
+        {
+            char merged[160];
+            snprintf(merged, sizeof(merged), tr("| %s | 额外上色 | %d分钟"),
+                     six_bread_name(), g_six_color_min);
+            nav_status_bar_dynamic(sc->label_12, sc->activestatus, six_bread_name(), merged);
+        }
         if (bl) lv_label_set_text(bl, g_six_paused ? tr("开 始") : tr("暂 停"));
         break;
     default:
@@ -443,17 +438,11 @@ static void six_cook_set_phase(int phase)
         g_send.set_temp_lower = (g_send.cook_mode == MODE_UPDOWN_BBQ) ? six_cook_temp() : 0;   /* 仅上下烧烤发下温 */
         g_send.iface_status = IFACE_COOKING;
         break;
-    case SIX_PHASE_COLOR_SETUP:
-        g_send.cook_mode = six_cook_mode();   /* 烤色阶段保持前面模式,不发 color */
-        g_send.set_temp = six_cook_temp();
-        g_send.set_temp_lower = (g_send.cook_mode == MODE_UPDOWN_BBQ) ? six_cook_temp() : 0;
-        /* iface_status 不设:保持完成状态(尚未开始烹饪) */
-        break;
     case SIX_PHASE_COLOR_COOKING:
         g_send.cook_mode = six_cook_mode();
         g_send.set_temp = six_cook_temp();
         g_send.set_temp_lower = (g_send.cook_mode == MODE_UPDOWN_BBQ) ? six_cook_temp() : 0;
-        g_send.iface_status = IFACE_COOKING;   /* 点"开 始"后才发烹饪状态 */
+        g_send.iface_status = IFACE_COOKING;   /* 开始即发烹饪状态(准备页已取消) */
         break;
     case SIX_PHASE_ASK:
     case SIX_PHASE_ASK_COLOR:
@@ -574,17 +563,7 @@ static void on_six_stop_click(lv_event_t *e)
         }
         break;
     case SIX_PHASE_COLOR_SETUP:
-        /* 门开:无效音,不开始上色(与其他模式一致) */
-        if (is_door_open()) {
-            g_send.buzzer_req = BUZZER_KEY_INVALID;
-            return;
-        }
-        g_six_paused = 0;
-        cook_elapsed_saved = 0;
-        cook_start_time = lv_tick_get();
-        six_cook_set_phase(SIX_PHASE_COLOR_COOKING);
-        if (cook_timer) lv_timer_del(cook_timer);
-        cook_timer = lv_timer_create(six_cook_timer_cb, 1000, NULL);
+        /* 已废弃:准备页取消后此态不再进入(保留枚举占位),开始逻辑移至 six_cook_goto_setup */
         break;
     default:
         break;
@@ -700,18 +679,29 @@ int six_cook_is_overlay(void)
     return g_six_overlay;
 }
 
-// toastcolor next 确认:切到上色准备态(重建后显示)
-void six_cook_goto_setup(void)
+// toastcolor next 确认:直接开始上色烹饪(原"上色准备页"流程已取消,2026-10-19)
+// 返回 1=已开始(调用方弹页回运行页),0=门开未开始(留在烤色页,已发无效键音)
+int six_cook_goto_setup(void)
 {
-    /* 仅切状态与通讯;烤色页在栈顶时运行页对象已销毁(指针悬空),
-       显示刷新由 next 的 page_pop → six_cooking_rebuild → apply_display 完成 */
+    if (is_door_open()) {
+        g_send.buzzer_req = BUZZER_KEY_INVALID;   /* 门开:无效键,不开始(与各模式开始口径一致) */
+        return 0;
+    }
+    /* 烤色页在栈顶时运行页对象已销毁(结构体里是悬空指针,非 NULL,判空防不住)——
+       严禁调 six_cook_set_phase(其尾部 apply_display 会写悬空对象,实测点 Next 即崩)。
+       状态/通讯就地直写,显示由调用方 page_pop → six_cooking_rebuild → apply_display 刷新 */
     g_six_overlay = 0;
     g_six_paused = 0;
-    g_six_phase = SIX_PHASE_COLOR_SETUP;
-    g_send.cook_mode = six_bread_cfg()->mode;   /* 保持前面模式,不发 color */
-    g_send.set_temp = six_bread_cfg()->cook_temp;
-    g_send.set_temp_lower = (g_send.cook_mode == MODE_UPDOWN_BBQ) ? six_bread_cfg()->cook_temp : 0;   /* 仅上下烧烤发下温 */
-    /* iface_status 不设:保持完成状态,点"开 始"后才发烹饪状态 */
+    g_six_phase = SIX_PHASE_COLOR_COOKING;
+    cook_elapsed_saved = 0;
+    cook_start_time = lv_tick_get();
+    g_send.cook_mode = six_cook_mode();   /* 烤色阶段保持前面模式,不发 color */
+    g_send.set_temp = six_cook_temp();
+    g_send.set_temp_lower = (g_send.cook_mode == MODE_UPDOWN_BBQ) ? g_send.set_temp : 0;   /* 仅上下烧烤发下温 */
+    g_send.iface_status = IFACE_COOKING;   /* 开始即发烹饪状态 */
+    if (cook_timer) lv_timer_del(cook_timer);
+    cook_timer = lv_timer_create(six_cook_timer_cb, 1000, NULL);
+    return 1;
 }
 
 // 外部路径(长按关机/探针)清理运行状态
@@ -755,10 +745,12 @@ void six_cooking_rebuild(page_id_t child)
 
     g_six_overlay = 0;
     g_six_paused = 0;
-    six_cook_apply_display();
 
     lang_scr_load_anim(somecook_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
+    /* 显示刷新放 load_anim(EN 排版微调)之后:微调会把名窗设成默认留白的锚定宽,
+       上色页自适应留白更窄——先刷再微调首帧名窗偏宽叠字,下一秒才被助手收紧(实测) */
+    six_cook_apply_display();
     printf("[six_cook] rebuild: child=%d\n", (int)child);
 }
