@@ -1836,6 +1836,79 @@ int contain_default(void)
 }
 
 /* ==============================
+ * 状态栏超长动态布局(多段/六感,2026-10-19)
+ * 合并单行文本实测超宽时:首段名称移入叠放的 name_label(activestatus,自身循环滚动),
+ * 状态栏首段留白,参数段从第二个'|'起原样拼接(留白宽度对齐 i18n 留白词条:中25/英34 空格)。
+ * 返回 1=走了动态布局,0=单行放下了
+ * ============================== */
+/* 文本未变化则不重设:lv_label_set_text 会重置循环滚动相位,每秒刷新会把滚动打断归零 */
+static void status_text_set_if_changed(lv_obj_t *lb, const char *txt)
+{
+    if (!lb || !txt) return;
+    const char *cur = lv_label_get_text(lb);
+    if (cur && strcmp(cur, txt) == 0) return;
+    lv_label_set_text(lb, txt);
+}
+
+/* 动态布局留白前缀:EN 33 空格(比词条少 1,留右侧余量)/中文 25 空格(与留白词条同宽) */
+static const char *status_blank_prefix(void)
+{
+    return is_english() ?
+           "|                                 " :
+           "|                         ";
+}
+
+/* 动态名窗口锚定宽:第二根竖线实测位置(状态栏起点+留白实测宽)再退一个空格。
+   全部当场实测,无跨帧缓存。导出给 EN 排版微调(nav_lang_tune)进页即锚定,
+   消除"首秒微调宽度贴线→秒刷新才归位"的跳变;返回 0=对象/字体不可用,调用方勿动宽度 */
+lv_coord_t nav_status_name_anchor_w(lv_obj_t *label, lv_obj_t *name_label)
+{
+    if (!label || !name_label) return 0;
+    const lv_font_t *font = lv_obj_get_style_text_font(label, LV_PART_MAIN);
+    const lv_font_t *nfont = lv_obj_get_style_text_font(name_label, LV_PART_MAIN);
+    if (!font || !nfont) return 0;
+    lv_point_t bw = { 0, 0 }, sp = { 0, 0 };
+    lv_txt_get_size(&bw, status_blank_prefix(), font, 0, 0, LV_COORD_MAX, LV_TEXT_FLAG_NONE);
+    lv_txt_get_size(&sp, " ", nfont, 0, 0, LV_COORD_MAX, LV_TEXT_FLAG_NONE);
+    lv_coord_t anchor = lv_obj_get_x(label) + bw.x - lv_obj_get_x(name_label) - sp.x;
+    return anchor >= 40 ? anchor : 0;
+}
+
+int nav_status_bar_dynamic(lv_obj_t *label, lv_obj_t *name_label,
+                           const char *name_text, const char *merged)
+{
+    if (!label || !merged) return 0;
+    const lv_font_t *font = lv_obj_get_style_text_font(label, LV_PART_MAIN);
+    lv_point_t sz = { 0, 0 };
+    if (font)
+        lv_txt_get_size(&sz, merged, font, 0, 0, LV_COORD_MAX, LV_TEXT_FLAG_NONE);
+    if (!font || sz.x <= lv_obj_get_width(label)) {
+        if (name_label) lv_obj_add_flag(name_label, LV_OBJ_FLAG_HIDDEN);
+        status_text_set_if_changed(label, merged);
+        return 0;
+    }
+    const char *tail = strchr(merged + 1, '|');
+    if (!name_label || !tail) {
+        status_text_set_if_changed(label, merged);
+        return 0;
+    }
+    const char *blank = status_blank_prefix();
+    /* 名窗口右缘只收不超过锚定宽(EN 排版微调已进页即锚定,此处为每秒幂等兜底;
+       中文无微调,由这里直接从生成宽收拢) */
+    lv_coord_t anchor = nav_status_name_anchor_w(label, name_label);
+    if (anchor > 0 && lv_obj_get_width(name_label) > anchor)
+        lv_obj_set_width(name_label, anchor);
+    lv_obj_clear_flag(name_label, LV_OBJ_FLAG_HIDDEN);
+    status_text_set_if_changed(name_label, name_text ? name_text : "");
+    {
+        char buf[160];
+        snprintf(buf, sizeof(buf), "%s%s", blank, tail);
+        status_text_set_if_changed(label, buf);
+    }
+    return 1;
+}
+
+/* ==============================
  * 选中项呼吸闪烁（数值+下划线+配套单位同步渐变显隐）
  * 原理:每个对象一条 lv_anim 写 style opa(255→0 去程+playback 回程,无限重复);
  * 同组对象同一时刻 start、参数一致→相位永远同步。

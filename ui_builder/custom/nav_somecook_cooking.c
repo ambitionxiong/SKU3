@@ -77,31 +77,28 @@ void somecook_cooking_update_timer(somecook_cooking_t *sc)
     lv_bar_set_value(sc->bar_1, p, LV_ANIM_OFF);
 
     g_send.remaining_ms = (int32_t)(rem > INT32_MAX ? INT32_MAX : rem);
+
+    /* 每秒重放一次信息行:EN 排版微调(名窗 226)晚于进页执行,apply_info 只在进页/
+       切阶段跑会错过锚定,名窗一整段贴线;文本未变不重设,代价两三次字符串比较 */
+    somecook_cooking_apply_info(sc);
 }
 
-// activestatus / label_12 按小时规则显示(英文仅热风对流段走动态填空,其余模式合并单行)
+// activestatus / label_12 显示:合并单行实测超宽才切动态填空(语言/模式/时长通吃,替代原"小时>0"启发)
 static void somecook_cooking_apply_info(somecook_cooking_t *sc)
 {
     if (!sc || g_somecook_run_idx < 0 || g_somecook_run_idx > 2) return;
     static const char *cn[] = { "一", "二", "三" };
     int i = g_somecook_run_idx;
-    int dynamic = (set_hour > 0) && (!is_english() || g_send.cook_mode == MODE_WINDCHANGE_BBQ);
-    if (dynamic) {
-        lv_obj_clear_flag(sc->activestatus, LV_OBJ_FLAG_HIDDEN);
-        lv_label_set_text_fmt(sc->activestatus, tr("步骤%s：%s"), tr(cn[i]), mode_display_name());
-        lv_label_set_text_fmt(sc->label_12, tr("|                         | %d℃ | %d小时%d分钟"),
-                              set_temp, set_hour, set_min);
-    } else {
-        lv_obj_add_flag(sc->activestatus, LV_OBJ_FLAG_HIDDEN);
-        if (set_hour > 0) {
-            /* 英文非热风对流且小时>0:合并行但时间需带小时(中文走不到这,中文小时>0恒走动态分支) */
-            lv_label_set_text_fmt(sc->label_12, tr("| 步骤%s：%s | %d℃ | %d小时%d分钟"),
-                                  tr(cn[i]), mode_display_name(), set_temp, set_hour, set_min);
-        } else {
-            lv_label_set_text_fmt(sc->label_12, tr("| 步骤%s：%s | %d℃ | %d分钟"),
-                                  tr(cn[i]), mode_display_name(), set_temp, set_min);
-        }
-    }
+    char merged[128];
+    if (set_hour > 0)
+        snprintf(merged, sizeof(merged), tr("| 步骤%s：%s | %d℃ | %d小时%d分钟"),
+                 tr(cn[i]), mode_display_name(), set_temp, set_hour, set_min);
+    else
+        snprintf(merged, sizeof(merged), tr("| 步骤%s：%s | %d℃ | %d分钟"),
+                 tr(cn[i]), mode_display_name(), set_temp, set_min);
+    char step[64];
+    snprintf(step, sizeof(step), tr("步骤%s：%s"), tr(cn[i]), mode_display_name());
+    nav_status_bar_dynamic(sc->label_12, sc->activestatus, step, merged);
 }
 
 // 状态切换：显隐 + 文字 + iface

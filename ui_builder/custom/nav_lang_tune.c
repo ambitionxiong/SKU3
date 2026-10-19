@@ -13889,9 +13889,14 @@ static void somecook_cooking_common(void)
     lv_obj_set_pos(obj, 275, 232);
     lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
 
-    // obj = pg->activestatus;
-    // lv_obj_set_pos(obj, 275, 232);
-    // lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+    /* activestatus: EN 名窗宽度=动态布局锚定宽(与 nav_status_bar_dynamic 同源计算,进页即锚定,
+       消除"首秒微调宽贴线→秒刷新才归位"跳变;锚定失败(0)回退 161+65 旧微调值) */
+    obj = pg->activestatus;
+    lv_obj_set_pos(obj, 289, 232);
+    {
+        lv_coord_t w = nav_status_name_anchor_w(pg->label_12, pg->activestatus);
+        lv_obj_set_size(obj, w > 0 ? w : 161 + 65, 39);
+    }
 
     obj = pg->timelabel;
     lv_obj_set_pos(obj, 902, 162);

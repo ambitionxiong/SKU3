@@ -176,38 +176,48 @@ static int32_t six_cook_sec(void)
 }
 
 // 烹饪页 status 文案:程度→时间=菜名+程度+时间;份量=菜名+克重+时间;面包/蛋糕=菜名+时间
+// 菜名过长实测超宽时走动态填空:菜名移入 activestatus 循环滚动,状态栏首段留白
 static void six_label_status(somecook_cooking_t *sc)
 {
+    char merged[160];
+    const char *name = six_bread_name();
     if (six_chick_is_degree_time()) {
         int d = toastcolor_degree_value();
         if (d < 1 || d > 3) d = 2;
         const char *dt = (d == 1) ? tr("浅色") : (d == 3) ? tr("深色") : tr("中等色");   /* 逐项 tr,与 nav_stop.c 六感分支一致 */
-        lv_label_set_text_fmt(sc->label_12, tr("| %s | %s | %d分钟"),
-                              six_chick_name(), dt, six_chick_degree_min(d));
+        snprintf(merged, sizeof(merged), tr("| %s | %s | %d分钟"),
+                 six_chick_name(), dt, six_chick_degree_min(d));
+        name = six_chick_name();
     } else if (six_chick_is_kind()) {
         int w = toastcolor_weight_value();
         if (w < 0) w = 800;   /* 兜底 */
-        lv_label_set_text_fmt(sc->label_12, tr("| %s | %d%s | %d分钟"),
-                              six_chick_name(), w, toastcolor_weight_unit_n(w), six_chick_cook_min(w));   /* 烤鸡翅类:菜名+单位+时间 */
+        snprintf(merged, sizeof(merged), tr("| %s | %d%s | %d分钟"),
+                 six_chick_name(), w, toastcolor_weight_unit_n(w), six_chick_cook_min(w));   /* 烤鸡翅类:菜名+单位+时间 */
+        name = six_chick_name();
     } else if (six_chick_is_seafood()) {
         const seafood_dish_t *sd = seafood_dish_cfg();
-        lv_label_set_text_fmt(sc->label_12, tr("| %s | %d分钟"),
-                              six_chick_name(), sd ? sd->cook_min : 18);
-
+        snprintf(merged, sizeof(merged), tr("| %s | %d分钟"),
+                 six_chick_name(), sd ? sd->cook_min : 18);
+        name = six_chick_name();
     } else if (six_chick_is_veg()) {
         const seafood_dish_t *sd = veg_fixed_cfg();
-        lv_label_set_text_fmt(sc->label_12, tr("| %s | %d分钟"),
-                              six_chick_name(), sd ? sd->cook_min : 22);
+        snprintf(merged, sizeof(merged), tr("| %s | %d分钟"),
+                 six_chick_name(), sd ? sd->cook_min : 22);
+        name = six_chick_name();
     } else if (six_chick_is_pizza()) {
         const seafood_dish_t *sd = pizza_fixed_cfg();
-        lv_label_set_text_fmt(sc->label_12, tr("| %s | %d分钟"),
-                              six_chick_name(), sd ? sd->cook_min : 23);
+        snprintf(merged, sizeof(merged), tr("| %s | %d分钟"),
+                 six_chick_name(), sd ? sd->cook_min : 23);
+        name = six_chick_name();
     } else if (six_chick_is_2d()) {
-        lv_label_set_text_fmt(sc->label_12, tr("| %s | %dg | %s色"),
-                              six_chick_name(), six_2d_weight(), six_2d_deg_text());   /* 二维菜:菜名|克数|程度色 */
+        snprintf(merged, sizeof(merged), tr("| %s | %dg | %s色"),
+                 six_chick_name(), six_2d_weight(), six_2d_deg_text());   /* 二维菜:菜名|克数|程度色 */
+        name = six_chick_name();
     } else {
-        lv_label_set_text_fmt(sc->label_12, tr("| %s | %d分钟"), six_bread_name(), six_bread_cfg()->cook_min);
+        snprintf(merged, sizeof(merged), tr("| %s | %d分钟"), six_bread_name(), six_bread_cfg()->cook_min);
+        name = six_bread_name();
     }
+    nav_status_bar_dynamic(sc->label_12, sc->activestatus, name, merged);
 }
 
 // 运行模式/温度:烤鸡翅类按菜谱表(热风对流/空气炸250℃),面包/蛋糕按配置
@@ -281,7 +291,14 @@ static void six_cook_apply_display(void)
     lv_obj_clear_flag(sc->image_10, LV_OBJ_FLAG_HIDDEN);
     lv_obj_clear_flag(sc->bar_1, LV_OBJ_FLAG_HIDDEN);
     lv_obj_clear_flag(sc->stop, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_add_flag(sc->activestatus, LV_OBJ_FLAG_HIDDEN);   /* 恒隐藏 */
+    /* 发酵/上色设置/上色烹饪三阶段 label_12 为直接单行(不经动态助手),
+       名标签须隐藏;其余阶段由 six_label_status 按需显隐。
+       加已隐藏守卫:add_flag 对已隐藏对象仍会 invalidate,每秒白刷一次 */
+    if ((g_six_phase == SIX_PHASE_RISING ||
+         g_six_phase == SIX_PHASE_COLOR_SETUP ||
+         g_six_phase == SIX_PHASE_COLOR_COOKING) &&
+        !lv_obj_has_flag(sc->activestatus, LV_OBJ_FLAG_HIDDEN))
+        lv_obj_add_flag(sc->activestatus, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(sc->container_1, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(sc->text1, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(sc->text2, LV_OBJ_FLAG_HIDDEN);

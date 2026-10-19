@@ -511,6 +511,9 @@ extern int delay_hour;
 extern int delay_min;
 extern uint8_t contain_on;
 int contain_default(void);           /* set 页保温开关初值=设置页"自动保温"(总默认值) */
+int nav_status_bar_dynamic(lv_obj_t *label, lv_obj_t *name_label,
+                           const char *name_text, const char *merged);   /* 状态栏超长→首段名称移入 name_label 留白布局 */
+lv_coord_t nav_status_name_anchor_w(lv_obj_t *label, lv_obj_t *name_label);   /* 动态名窗锚定宽(第二竖线实测位退一空格),EN排版微调进页即锚定用 */
 extern int cook_total_ms;
 extern uint32_t cook_start_time;
 extern uint8_t cook_is_color;
