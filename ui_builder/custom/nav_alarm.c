@@ -17,7 +17,7 @@
 
 static int s_alarm_code = 0;   /* 当前报警序号(0=无);触发后与 BUF[12] 同步跟踪 */
 
-#define NAV_ALARM_ENABLE 0   /* 异常报警暂关(2026-09-12 用户要求):置 1 恢复触发;页面/按键逻辑均保留 */
+#define NAV_ALARM_ENABLE 1   /* 异常报警(2026-10-19 用户要求恢复启用):BUF[12]非0边沿抢屏;置 0 关闭;页面/按键逻辑均保留 */
 
 /* 全部停止:与关机(nav_power_off)同套运行状态清理,但不清屏幕落警报页 */
 static void alarm_stop_all(void)

@@ -69,7 +69,7 @@ void air_complete_lang_tune(void)
     air_complete_t *pg = air_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_153: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_153, 115, 320);
@@ -110,7 +110,7 @@ void air_cooking_lang_tune(void)
     air_cooking_t *pg = air_cooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 空气炸 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -155,7 +155,7 @@ void air_menu_lang_tune(void)
     air_menu_t *pg = air_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
@@ -271,7 +271,7 @@ void air_set_lang_tune(void)
         lv_obj_set_style_bg_img_src(pg->oncontain, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
     }
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_299: 标签 | "空气炸" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_299, 24, 24);
@@ -410,7 +410,7 @@ void air_setting_lang_tune(void)
     air_setting_t *pg = air_setting_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->timelabel, 907, 157);
@@ -490,7 +490,7 @@ void air_stop_lang_tune(void)
     air_stop_t *pg = air_stop_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 空气炸 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -535,7 +535,7 @@ void air_stop_back_lang_tune(void)
     air_stop_back_t *pg = air_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_151: 图片 | (115,161) | img: airicon.png */
     lv_obj_set_pos(pg->image_151, 115, 161);
@@ -588,7 +588,7 @@ void bottom_bbq_complete_lang_tune(void)
     bottom_bbq_complete_t *pg = bottom_bbq_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_74: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_74, 115, 320);
@@ -629,7 +629,7 @@ void bottom_bbq_complete_probe_lang_tune(void)
     bottom_bbq_complete_probe_t *pg = bottom_bbq_complete_probe_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_31: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_31, 115, 320);
@@ -676,7 +676,7 @@ void bottom_bbq_cooking_lang_tune(void)
     bottom_bbq_cooking_t *pg = bottom_bbq_cooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 底部烧烤 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -721,7 +721,7 @@ void bottom_bbq_cooking_probe_lang_tune(void)
     bottom_bbq_cooking_probe_t *pg = bottom_bbq_cooking_probe_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 底部烧烤 | 180℃ | 80℃" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -765,7 +765,7 @@ void bottom_bbq_menu_lang_tune(void)
     bottom_bbq_menu_t *pg = bottom_bbq_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
@@ -846,7 +846,7 @@ void bottom_bbq_menu_probe_lang_tune(void)
     bottom_bbq_menu_probe_t *pg = bottom_bbq_menu_probe_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
@@ -948,7 +948,7 @@ void bottom_bbq_set_lang_tune(void)
         lv_obj_set_style_bg_img_src(pg->oncontain, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
     }
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_119: 标签 | "底部烧烤" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_119, 24, 24);
@@ -1088,7 +1088,7 @@ void bottom_bbq_set_probe_lang_tune(void)
     bottom_bbq_set_probe_t *pg = bottom_bbq_set_probe_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_54: 标签 | "底部烧烤" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_54, 24, 24);
@@ -1206,7 +1206,7 @@ void bottom_bbq_setting_lang_tune(void)
     bottom_bbq_setting_t *pg = bottom_bbq_setting_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->timelabel, 907, 157);
@@ -1286,7 +1286,7 @@ void bottom_bbq_stop_lang_tune(void)
     bottom_bbq_stop_t *pg = bottom_bbq_stop_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 底部烧烤 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -1331,7 +1331,7 @@ void bottom_bbq_stop_back_lang_tune(void)
     bottom_bbq_stop_back_t *pg = bottom_bbq_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_72: 图片 | (115,161) | img: dwbbqicon.png */
     lv_obj_set_pos(pg->image_72, 115, 161);
@@ -1384,7 +1384,7 @@ void bottom_bbq_stop_back_probe_lang_tune(void)
     bottom_bbq_stop_back_probe_t *pg = bottom_bbq_stop_back_probe_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 底部烧烤 | 180℃ | 80℃" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -1433,7 +1433,7 @@ void bottom_bbq_stop_probe_lang_tune(void)
     bottom_bbq_stop_probe_t *pg = bottom_bbq_stop_probe_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_68: 标签 | "| 底部烧烤 | 180℃ | 80℃" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_68, 274, 232);
@@ -1477,7 +1477,7 @@ void bread6menu_lang_tune(void)
     bread6menu_t *pg = bread6menu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_11: 标签 | "面包" | (24,24) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_11, 24, 24);
@@ -1520,7 +1520,7 @@ void bread_complete_lang_tune(void)
     bread_complete_t *pg = bread_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_353: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_353, 115, 320);
@@ -1561,7 +1561,7 @@ void bread_cooking_lang_tune(void)
     bread_cooking_t *pg = bread_cooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 面包 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -1606,7 +1606,7 @@ void bread_menu_lang_tune(void)
     bread_menu_t *pg = bread_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
@@ -1688,7 +1688,7 @@ void bread_set_lang_tune(void)
         lv_obj_set_style_bg_img_src(pg->oncontain, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
     }
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_730: 标签 | "面包" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_730, 24, 24);
@@ -1826,7 +1826,7 @@ void bread_setting_lang_tune(void)
     bread_setting_t *pg = bread_setting_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->timelabel, 907, 157);
@@ -1884,7 +1884,7 @@ void bread_stop_lang_tune(void)
     bread_stop_t *pg = bread_stop_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 面包 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -1929,7 +1929,7 @@ void bread_stop_back_lang_tune(void)
     bread_stop_back_t *pg = bread_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_351: 图片 | (115,161) | img: breadicon_1.png */
     lv_obj_set_pos(pg->image_351, 115, 161);
@@ -1982,7 +1982,7 @@ void cake6menu_lang_tune(void)
     cake6menu_t *pg = cake6menu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_1: 标签 | "蛋糕" | (24,24) | 144x32 | font taiwanpearl_regular_24 */
     /* EN: 页面标题键已改"蛋糕/糕点"(用户改生成页) → "Cakes & Pastries" 144 宽内折行
@@ -2055,7 +2055,7 @@ void central_bbq_complete_lang_tune(void)
     central_bbq_complete_t *pg = central_bbq_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_143: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_143, 115, 320);
@@ -2096,7 +2096,7 @@ void central_bbq_cooking_lang_tune(void)
     central_bbq_cooking_t *pg = central_bbq_cooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 集中烧烤 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -2141,7 +2141,7 @@ void central_bbq_menu_lang_tune(void)
     central_bbq_menu_t *pg = central_bbq_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
@@ -2256,7 +2256,7 @@ void central_bbq_set_lang_tune(void)
         lv_obj_set_style_bg_img_src(pg->oncontain, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
     }
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_291: 标签 | "集中烧烤" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_291, 24, 24);
@@ -2396,7 +2396,7 @@ void central_bbq_setting_lang_tune(void)
     central_bbq_setting_t *pg = central_bbq_setting_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->timelabel, 907, 157);
@@ -2476,7 +2476,7 @@ void central_bbq_stop_lang_tune(void)
     central_bbq_stop_t *pg = central_bbq_stop_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 集中烧烤 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -2521,7 +2521,7 @@ void central_bbq_stop_back_lang_tune(void)
     central_bbq_stop_back_t *pg = central_bbq_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_141: 图片 | (115,161) | img: centralbbqicon.png */
     lv_obj_set_pos(pg->image_141, 115, 161);
@@ -2574,7 +2574,7 @@ void chick6menu_lang_tune(void)
     chick6menu_t *pg = chick6menu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_1: 标签 | "家禽" | (24,24) | 118x25 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_1, 24, 24);
@@ -2616,7 +2616,7 @@ void chickencooking_lang_tune(void)
     chickencooking_t *pg = chickencooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* ---- 场景分支: 本页为探针烹饪页,8 种探针菜共用 ----
        烤全鸡/烤全鸭:        status "| 菜名 | 浅色/中等色/深色 |"(短)
@@ -2705,7 +2705,7 @@ void chickenmenu_lang_tune(void)
     chickenmenu_t *pg = chickenmenu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_2: 标签 | "鸡" | (24,24) | 97x25 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_2, 24, 24);
@@ -2809,7 +2809,7 @@ void chickmenutz_lang_tune(void)
     chickmenutz_t *pg = chickmenutz_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* wholechicken: 按钮 | (12,75) | 638x387 | font montserratmedium_16 | bg: div2bk30.png */
     lv_obj_set_pos(pg->wholechicken, 12, 75);
@@ -2873,7 +2873,7 @@ void chip_complete_lang_tune(void)
     chip_complete_t *pg = chip_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_385: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_385, 115, 320);
@@ -2914,7 +2914,7 @@ void chip_cooking_lang_tune(void)
     chip_cooking_t *pg = chip_cooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 炸薯条 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -2959,7 +2959,7 @@ void chip_menu_lang_tune(void)
     chip_menu_t *pg = chip_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
@@ -3041,7 +3041,7 @@ void chip_set_lang_tune(void)
         lv_obj_set_style_bg_img_src(pg->oncontain, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
     }
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_812: 标签 | "炸薯条" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_812, 24, 24);
@@ -3178,7 +3178,7 @@ void chip_setting_lang_tune(void)
     chip_setting_t *pg = chip_setting_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->timelabel, 907, 157);
@@ -3236,7 +3236,7 @@ void chip_stop_lang_tune(void)
     chip_stop_t *pg = chip_stop_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 炸薯条 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -3281,7 +3281,7 @@ void chip_stop_back_lang_tune(void)
     chip_stop_back_t *pg = chip_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_383: 图片 | (115,161) | img: chipicon.png */
     lv_obj_set_pos(pg->image_383, 115, 161);
@@ -3334,7 +3334,7 @@ void clean_menu_lang_tune(void)
     clean_menu_t *pg = clean_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_1: 标签 | "清洁" | (24,24) | 97x25 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_1, 24, 24);
@@ -3365,7 +3365,7 @@ void color_cookoing_lang_tune(void)
     color_cookoing_t *pg = color_cookoing_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status_label: 标签 | "| 额外上色 | 5分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status_label, 274, 232);
@@ -3406,7 +3406,7 @@ void color_stop_lang_tune(void)
     color_stop_t *pg = color_stop_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_13: 标签 | "| 额外上色 | 5分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_13, 274, 232);
@@ -3447,7 +3447,7 @@ void color_stop_back_lang_tune(void)
     color_stop_back_t *pg = color_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_17: 标签 | "| 额外上色 | 5分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_17, 274, 232);
@@ -3496,7 +3496,7 @@ void colorcooking_complete_lang_tune(void)
     colorcooking_complete_t *pg = colorcooking_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* barbk_img: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->barbk_img, 115, 320);
@@ -3533,7 +3533,7 @@ void cook4menu_lang_tune(void)
     cook4menu_t *pg = cook4menu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_83: 标签 | "COOK 4" | (24,24) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_83, 24, 24);
@@ -3596,7 +3596,7 @@ void cook_menu_tz_lang_tune(void)
     cook_menu_tz_t *pg = cook_menu_tz_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* hot_bbq_button: 按钮 | (421,60) | 439x417 | font montserratmedium_16 | bg: div3bk30.png */
     lv_obj_set_pos(pg->hot_bbq_button, 421, 60);
@@ -3633,7 +3633,7 @@ void cookie_complete_lang_tune(void)
     cookie_complete_t *pg = cookie_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_69: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_69, 115, 320);
@@ -3674,7 +3674,7 @@ void cookie_cooking_lang_tune(void)
     cookie_cooking_t *pg = cookie_cooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 饼干 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -3719,7 +3719,7 @@ void cookie_menu_lang_tune(void)
     cookie_menu_t *pg = cookie_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
@@ -3825,7 +3825,7 @@ void cookie_set_lang_tune(void)
         lv_obj_set_style_bg_img_src(pg->oncontain, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
     }
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_98: 标签 | "饼干" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_98, 24, 24);
@@ -3963,7 +3963,7 @@ void cookie_setting_lang_tune(void)
     cookie_setting_t *pg = cookie_setting_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->timelabel, 907, 157);
@@ -4044,7 +4044,7 @@ void cookie_stop_lang_tune(void)
     cookie_stop_t *pg = cookie_stop_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 饼干 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -4089,7 +4089,7 @@ void cookie_stop_back_lang_tune(void)
     cookie_stop_back_t *pg = cookie_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_67: 图片 | (115,161) | img: cookieicon.png */
     lv_obj_set_pos(pg->image_67, 115, 161);
@@ -4144,7 +4144,7 @@ void cookmenu_lang_tune(void)
     // lv_obj_set_style_bg_img_src(pg->obj, LVGL_IMAGE_PATH(cookmenuenbg.png), LV_PART_MAIN | LV_STATE_DEFAULT);
 	// lv_obj_set_style_bg_img_recolor(pg->obj, lv_color_hex(0xff00ff), LV_PART_MAIN | LV_STATE_DEFAULT);
     // lv_obj_set_style_bg_img_recolor_opa(pg->obj, 80, LV_PART_MAIN | LV_STATE_DEFAULT);
-    /* 页面背景: 背景图 bg.jpg | 底色 0x000000 | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0x000000 | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* top_bbq_button: 按钮 | (267,75) | 248x193 | font montserratmedium_16 | bg: bottombk.png */
     lv_obj_set_pos(pg->top_bbq_button, 267, 75);
@@ -4201,7 +4201,7 @@ void corn_complete_lang_tune(void)
     corn_complete_t *pg = corn_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_258: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_258, 115, 320);
@@ -4242,7 +4242,7 @@ void corn_cooking_lang_tune(void)
     corn_cooking_t *pg = corn_cooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 干果 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -4287,7 +4287,7 @@ void corn_menu_lang_tune(void)
     corn_menu_t *pg = corn_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
@@ -4402,7 +4402,7 @@ void corn_set_lang_tune(void)
         lv_obj_set_style_bg_img_src(pg->oncontain, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
     }
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_544: 标签 | "干果" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_544, 24, 24);
@@ -4541,7 +4541,7 @@ void corn_setting_lang_tune(void)
     corn_setting_t *pg = corn_setting_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->timelabel, 907, 157);
@@ -4621,7 +4621,7 @@ void corn_stop_lang_tune(void)
     corn_stop_t *pg = corn_stop_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 干果 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -4666,7 +4666,7 @@ void corn_stop_back_lang_tune(void)
     corn_stop_back_t *pg = corn_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_256: 图片 | (143,161) | img: cornicon.png */
     lv_obj_set_pos(pg->image_256, 143, 161);
@@ -4719,7 +4719,7 @@ void custom_complete_lang_tune(void)
     custom_complete_t *pg = custom_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_401: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_401, 115, 320);
@@ -4760,7 +4760,7 @@ void custom_cooking_lang_tune(void)
     custom_cooking_t *pg = custom_cooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 自定义 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -4805,7 +4805,7 @@ void custom_menu_lang_tune(void)
     custom_menu_t *pg = custom_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
@@ -4887,7 +4887,7 @@ void custom_set_lang_tune(void)
         lv_obj_set_style_bg_img_src(pg->oncontain, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
     }
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_853: 标签 | "自定义" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_853, 24, 24);
@@ -5024,7 +5024,7 @@ void custom_setting_lang_tune(void)
     custom_setting_t *pg = custom_setting_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->timelabel, 907, 157);
@@ -5082,7 +5082,7 @@ void custom_stop_lang_tune(void)
     custom_stop_t *pg = custom_stop_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 自定义 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -5127,7 +5127,7 @@ void custom_stop_back_lang_tune(void)
     custom_stop_back_t *pg = custom_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_399: 图片 | (115,161) | img: customicon.png */
     lv_obj_set_pos(pg->image_399, 115, 161);
@@ -5180,7 +5180,7 @@ void delaycooking_lang_tune(void)
     delaycooking_t *pg = delaycooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 上下烧烤 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -5263,7 +5263,7 @@ void delayset_lang_tune(void)
     delayset_t *pg = delayset_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_6: 图片 | (24,119) | img: div1bg.png */
     lv_obj_set_pos(pg->image_6, 24, 119);
@@ -5400,7 +5400,7 @@ void descriptionmenu_lang_tune(void)
     descriptionmenu_t *pg = descriptionmenu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_19: 标签 | "面包卷" | (24,24) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_19, 24, 24);
@@ -5460,7 +5460,7 @@ void duckmenu_lang_tune(void)
     duckmenu_t *pg = duckmenu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* ---- 场景分支: 本页被四处复用 ----
        复用态(零食/配菜/肉菜): 第六感→零食(炸鸡米花) / 蔬菜配菜→配菜(炸薯条) / 蔬菜配菜→肉菜(烤香肠)
@@ -5515,7 +5515,7 @@ void extra_color_lang_tune(void)
     extra_color_t *pg = extra_color_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status_label: 标签 | "| 5分钟 |" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status_label, 274, 232);
@@ -5556,7 +5556,7 @@ void frozencookpage_lang_tune(void)
     frozencookpage_t *pg = frozencookpage_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_631: 标签 | "冷冻烘焙" | (24,24) | 97x25 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_631, 24, 24);
@@ -5602,7 +5602,7 @@ void heatcontain_complete_lang_tune(void)
     heatcontain_complete_t *pg = heatcontain_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_314: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_314, 115, 320);
@@ -5643,7 +5643,7 @@ void heatcontain_cooking_lang_tune(void)
     heatcontain_cooking_t *pg = heatcontain_cooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 保温 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -5688,7 +5688,7 @@ void heatcontain_menu_lang_tune(void)
     heatcontain_menu_t *pg = heatcontain_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
@@ -5803,7 +5803,7 @@ void heatcontain_set_lang_tune(void)
         lv_obj_set_style_bg_img_src(pg->oncontain, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
     }
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_593: 标签 | "保温" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_593, 24, 24);
@@ -5942,7 +5942,7 @@ void heatcontain_setting_lang_tune(void)
     heatcontain_setting_t *pg = heatcontain_setting_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->timelabel, 907, 157);
@@ -6022,7 +6022,7 @@ void heatcontain_stop_lang_tune(void)
     heatcontain_stop_t *pg = heatcontain_stop_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 保温 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -6067,7 +6067,7 @@ void heatcontain_stop_back_lang_tune(void)
     heatcontain_stop_back_t *pg = heatcontain_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_277: 图片 | (90,161) | img: heatcontainicon.png */
     lv_obj_set_pos(pg->image_277, 90, 161);
@@ -6120,7 +6120,7 @@ void hot_bbq_complete_lang_tune(void)
     hot_bbq_complete_t *pg = hot_bbq_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_95: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_95, 115, 320);
@@ -6161,7 +6161,7 @@ void hot_bbq_complete_probe_lang_tune(void)
     hot_bbq_complete_probe_t *pg = hot_bbq_complete_probe_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_15: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_15, 115, 320);
@@ -6205,7 +6205,7 @@ void hot_bbq_cooking_lang_tune(void)
     hot_bbq_cooking_t *pg = hot_bbq_cooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 热风烧烤 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -6250,7 +6250,7 @@ void hot_bbq_cooking_probe_lang_tune(void)
     hot_bbq_cooking_probe_t *pg = hot_bbq_cooking_probe_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 热风烧烤 | 180℃ | 80℃" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -6294,7 +6294,7 @@ void hot_bbq_menu_lang_tune(void)
     hot_bbq_menu_t *pg = hot_bbq_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
@@ -6375,7 +6375,7 @@ void hot_bbq_menu_probe_lang_tune(void)
     hot_bbq_menu_probe_t *pg = hot_bbq_menu_probe_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
@@ -6477,7 +6477,7 @@ void hot_bbq_set_lang_tune(void)
         lv_obj_set_style_bg_img_src(pg->oncontain, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
     }
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_167: 标签 | "热风烧烤" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_167, 24, 24);
@@ -6617,7 +6617,7 @@ void hot_bbq_set_probe_lang_tune(void)
     hot_bbq_set_probe_t *pg = hot_bbq_set_probe_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_9: 标签 | "热风烧烤" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_9, 24, 24);
@@ -6735,7 +6735,7 @@ void hot_bbq_setting_lang_tune(void)
     hot_bbq_setting_t *pg = hot_bbq_setting_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->timelabel, 907, 157);
@@ -6815,7 +6815,7 @@ void hot_bbq_stop_lang_tune(void)
     hot_bbq_stop_t *pg = hot_bbq_stop_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 热风烧烤 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -6860,7 +6860,7 @@ void hot_bbq_stop_back_lang_tune(void)
     hot_bbq_stop_back_t *pg = hot_bbq_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_93: 图片 | (115,161) | img: hotbbqicon.png */
     lv_obj_set_pos(pg->image_93, 115, 161);
@@ -6913,7 +6913,7 @@ void hot_bbq_stop_back_probe_lang_tune(void)
     hot_bbq_stop_back_probe_t *pg = hot_bbq_stop_back_probe_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 热风烧烤 | 180℃ | 80℃" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -6962,7 +6962,7 @@ void hot_bbq_stop_probe_lang_tune(void)
     hot_bbq_stop_probe_t *pg = hot_bbq_stop_probe_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 热风烧烤 | 180℃ | 80℃" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -7006,7 +7006,7 @@ void hotclean_menu_lang_tune(void)
     hotclean_menu_t *pg = hotclean_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xffffff | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xffffff | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* hotclean_middle: 按钮 | (421,60) | 439x417 | font taiwanpearl_regular_30 | bg: div3bk30.png */
     lv_obj_set_pos(pg->hotclean_middle, 421, 60);
@@ -7041,7 +7041,7 @@ void hotcleanhigh_complete_lang_tune(void)
     hotcleanhigh_complete_t *pg = hotcleanhigh_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_23: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_23, 115, 320);
@@ -7089,7 +7089,7 @@ void hotcleanhigh_cooking_lang_tune(void)
     hotcleanhigh_cooking_t *pg = hotcleanhigh_cooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 热解自清洁 | 2小时 |" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -7152,7 +7152,7 @@ void hotcleanhigh_cooling_lang_tune(void)
     hotcleanhigh_cooling_t *pg = hotcleanhigh_cooling_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_20: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_20, 115, 320);
@@ -7204,7 +7204,7 @@ void hotcleanhigh_set_lang_tune(void)
     hotcleanhigh_set_t *pg = hotcleanhigh_set_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
@@ -7260,7 +7260,7 @@ void hotcleanhigh_stop_lang_tune(void)
     hotcleanhigh_stop_t *pg = hotcleanhigh_stop_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 热解自清洁 | 2小时 |" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -7323,7 +7323,7 @@ void hotcleanhigh_stop_back_lang_tune(void)
     hotcleanhigh_stop_back_t *pg = hotcleanhigh_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 热解自清洁 | 2小时 |" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -7390,7 +7390,7 @@ void hotcleanmiddle_complete_lang_tune(void)
     hotcleanmiddle_complete_t *pg = hotcleanmiddle_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_12: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_12, 115, 320);
@@ -7438,7 +7438,7 @@ void hotcleanmiddle_cooking_lang_tune(void)
     hotcleanmiddle_cooking_t *pg = hotcleanmiddle_cooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 热解自清洁 | 1小时40分钟 |" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -7501,7 +7501,7 @@ void hotcleanmiddle_cooling_lang_tune(void)
     hotcleanmiddle_cooling_t *pg = hotcleanmiddle_cooling_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_9: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_9, 115, 320);
@@ -7548,7 +7548,7 @@ void hotcleanmiddle_set_lang_tune(void)
     hotcleanmiddle_set_t *pg = hotcleanmiddle_set_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
@@ -7604,7 +7604,7 @@ void hotcleanmiddle_stop_lang_tune(void)
     hotcleanmiddle_stop_t *pg = hotcleanmiddle_stop_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 热解自清洁 | 1小时40分钟 |" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -7667,7 +7667,7 @@ void hotcleanmiddle_stop_back_lang_tune(void)
     hotcleanmiddle_stop_back_t *pg = hotcleanmiddle_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 热解自清洁 | 1小时40分钟 |" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -7734,7 +7734,7 @@ void hotcleansave_complete_lang_tune(void)
     hotcleansave_complete_t *pg = hotcleansave_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_1: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_1, 115, 320);
@@ -7782,7 +7782,7 @@ void hotcleansave_cooking_lang_tune(void)
     hotcleansave_cooking_t *pg = hotcleansave_cooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 热解自清洁 | 1小时15分钟 |" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -7845,7 +7845,7 @@ void hotcleansave_cooling_lang_tune(void)
     hotcleansave_cooling_t *pg = hotcleansave_cooling_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_6: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_6, 115, 320);
@@ -7892,7 +7892,7 @@ void hotcleansave_set_lang_tune(void)
     hotcleansave_set_t *pg = hotcleansave_set_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
@@ -7948,7 +7948,7 @@ void hotcleansave_stop_lang_tune(void)
     hotcleansave_stop_t *pg = hotcleansave_stop_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 热解自清洁 | 1小时15分钟 |" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -8012,7 +8012,7 @@ void hotcleansave_stop_back_lang_tune(void)
     hotcleansave_stop_back_t *pg = hotcleansave_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 热解自清洁 | 1小时15分钟 |" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -8079,7 +8079,7 @@ void hotwind_bbq_complete_lang_tune(void)
     hotwind_bbq_complete_t *pg = hotwind_bbq_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_111: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_111, 115, 320);
@@ -8120,7 +8120,7 @@ void hotwind_bbq_cooking_lang_tune(void)
     hotwind_bbq_cooking_t *pg = hotwind_bbq_cooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 热风 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -8165,7 +8165,7 @@ void hotwind_bbq_menu_lang_tune(void)
     hotwind_bbq_menu_t *pg = hotwind_bbq_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
@@ -8280,7 +8280,7 @@ void hotwind_bbq_set_lang_tune(void)
         lv_obj_set_style_bg_img_src(pg->oncontain, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
     }
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_215: 标签 | "热风" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_215, 24, 24);
@@ -8420,7 +8420,7 @@ void hotwind_bbq_setting_lang_tune(void)
     hotwind_bbq_setting_t *pg = hotwind_bbq_setting_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->timelabel, 907, 157);
@@ -8500,7 +8500,7 @@ void hotwind_bbq_stop_lang_tune(void)
     hotwind_bbq_stop_t *pg = hotwind_bbq_stop_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 热风 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -8545,7 +8545,7 @@ void hotwind_bbq_stop_back_lang_tune(void)
     hotwind_bbq_stop_back_t *pg = hotwind_bbq_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_109: 图片 | (115,161) | img: hotwindicon.png */
     lv_obj_set_pos(pg->image_109, 115, 161);
@@ -8598,7 +8598,7 @@ void lasagna_complete_lang_tune(void)
     lasagna_complete_t *pg = lasagna_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_321: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_321, 115, 320);
@@ -8639,7 +8639,7 @@ void lasagna_cooking_lang_tune(void)
     lasagna_cooking_t *pg = lasagna_cooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 千层面 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -8684,7 +8684,7 @@ void lasagna_menu_lang_tune(void)
     lasagna_menu_t *pg = lasagna_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
@@ -8766,7 +8766,7 @@ void lasagna_set_lang_tune(void)
         lv_obj_set_style_bg_img_src(pg->oncontain, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
     }
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_642: 标签 | "千层面" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_642, 24, 24);
@@ -8904,7 +8904,7 @@ void lasagna_setting_lang_tune(void)
     lasagna_setting_t *pg = lasagna_setting_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->timelabel, 907, 157);
@@ -8962,7 +8962,7 @@ void lasagna_stop_lang_tune(void)
     lasagna_stop_t *pg = lasagna_stop_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 千层面 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -9007,7 +9007,7 @@ void lasagna_stop_back_lang_tune(void)
     lasagna_stop_back_t *pg = lasagna_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_319: 图片 | (115,161) | img: lasagnaicon.png */
     lv_obj_set_pos(pg->image_319, 115, 161);
@@ -9060,7 +9060,7 @@ void major_menu_lang_tune(void)
     major_menu_t *pg = major_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xffffff | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xffffff | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* cook4_button: 按钮 | (421,60) | 439x417 | font montserratmedium_16 | bg: div3bk30.png */
     lv_obj_set_pos(pg->cook4_button, 421, 60);
@@ -9096,7 +9096,7 @@ void major_menu_tz_lang_tune(void)
     major_menu_tz_t *pg = major_menu_tz_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* cook_button: 按钮 | (9,73) | 642x390 | font montserratmedium_16 | bg: div2bk30.png */
     lv_obj_set_pos(pg->cook_button, 9, 73);
@@ -9131,7 +9131,7 @@ void menu_complete_lang_tune(void)
     menu_complete_t *pg = menu_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_132: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_132, 115, 320);
@@ -9172,7 +9172,7 @@ void menu_cooking_lang_tune(void)
     menu_cooking_t *pg = menu_cooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 菜单 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -9217,7 +9217,7 @@ void menu_menu_lang_tune(void)
     menu_menu_t *pg = menu_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
@@ -9322,7 +9322,7 @@ void menu_set_lang_tune(void)
         lv_obj_set_style_bg_img_src(pg->oncontain, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
     }
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_251: 标签 | "菜单" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_251, 24, 24);
@@ -9461,7 +9461,7 @@ void menu_setting_lang_tune(void)
     menu_setting_t *pg = menu_setting_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->timelabel, 907, 157);
@@ -9541,7 +9541,7 @@ void menu_stop_lang_tune(void)
     menu_stop_t *pg = menu_stop_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 菜单 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -9586,7 +9586,7 @@ void menu_stop_back_lang_tune(void)
     menu_stop_back_t *pg = menu_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_130: 图片 | (115,161) | img: menuicon.png */
     lv_obj_set_pos(pg->image_130, 115, 161);
@@ -9639,7 +9639,7 @@ void pizza3_complete_lang_tune(void)
     pizza3_complete_t *pg = pizza3_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_369: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_369, 115, 320);
@@ -9680,7 +9680,7 @@ void pizza3_cooking_lang_tune(void)
     pizza3_cooking_t *pg = pizza3_cooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 披萨 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -9725,7 +9725,7 @@ void pizza3_menu_lang_tune(void)
     pizza3_menu_t *pg = pizza3_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
@@ -9807,7 +9807,7 @@ void pizza3_set_lang_tune(void)
         lv_obj_set_style_bg_img_src(pg->oncontain, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
     }
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_771: 标签 | "披萨" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_771, 24, 24);
@@ -9944,7 +9944,7 @@ void pizza3_setting_lang_tune(void)
     pizza3_setting_t *pg = pizza3_setting_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->timelabel, 907, 157);
@@ -10002,7 +10002,7 @@ void pizza3_stop_lang_tune(void)
     pizza3_stop_t *pg = pizza3_stop_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 披萨 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -10047,7 +10047,7 @@ void pizza3_stop_back_lang_tune(void)
     pizza3_stop_back_t *pg = pizza3_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_367: 图片 | (115,161) | img: pizza3icon.png */
     lv_obj_set_pos(pg->image_367, 115, 161);
@@ -10100,7 +10100,7 @@ void pizza_2_complete_lang_tune(void)
     pizza_2_complete_t *pg = pizza_2_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_174: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_174, 115, 320);
@@ -10141,7 +10141,7 @@ void pizza_2_cooking_lang_tune(void)
     pizza_2_cooking_t *pg = pizza_2_cooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 披萨 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -10186,7 +10186,7 @@ void pizza_2_menu_lang_tune(void)
     pizza_2_menu_t *pg = pizza_2_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
@@ -10301,7 +10301,7 @@ void pizza_2_set_lang_tune(void)
         lv_obj_set_style_bg_img_src(pg->oncontain, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
     }
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_348: 标签 | "披萨" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_348, 24, 24);
@@ -10440,7 +10440,7 @@ void pizza_2_setting_lang_tune(void)
     pizza_2_setting_t *pg = pizza_2_setting_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->timelabel, 907, 157);
@@ -10520,7 +10520,7 @@ void pizza_2_stop_lang_tune(void)
     pizza_2_stop_t *pg = pizza_2_stop_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 披萨 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -10565,7 +10565,7 @@ void pizza_2_stop_back_lang_tune(void)
     pizza_2_stop_back_t *pg = pizza_2_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_172: 图片 | (140,161) | img: pizza2icon.png */
     lv_obj_set_pos(pg->image_172, 140, 161);
@@ -10618,7 +10618,7 @@ void pizza_complete_lang_tune(void)
     pizza_complete_t *pg = pizza_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_111: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_111, 115, 320);
@@ -10659,7 +10659,7 @@ void pizza_cooking_lang_tune(void)
     pizza_cooking_t *pg = pizza_cooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 披萨 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -10704,7 +10704,7 @@ void pizza_menu_lang_tune(void)
     pizza_menu_t *pg = pizza_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
@@ -10809,7 +10809,7 @@ void pizza_set_lang_tune(void)
         lv_obj_set_style_bg_img_src(pg->oncontain, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
     }
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_203: 标签 | "披萨" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_203, 24, 24);
@@ -10947,7 +10947,7 @@ void pizza_setting_lang_tune(void)
     pizza_setting_t *pg = pizza_setting_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->timelabel, 907, 157);
@@ -11027,7 +11027,7 @@ void pizza_stop_lang_tune(void)
     pizza_stop_t *pg = pizza_stop_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 披萨 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -11072,7 +11072,7 @@ void pizza_stop_back_lang_tune(void)
     pizza_stop_back_t *pg = pizza_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_109: 图片 | (115,161) | img: pizzaicon.png */
     lv_obj_set_pos(pg->image_109, 115, 161);
@@ -11125,7 +11125,7 @@ void preheat_stop_back_lang_tune(void)
     preheat_stop_back_t *pg = preheat_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 预热 |" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -11177,7 +11177,7 @@ void preheatcomplete_lang_tune(void)
     preheatcomplete_t *pg = preheatcomplete_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_43: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_43, 115, 320);
@@ -11225,7 +11225,7 @@ void preheatcooking_lang_tune(void)
     preheatcooking_t *pg = preheatcooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 预热 |" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -11268,7 +11268,7 @@ static void preheatmenu_common(void)
     preheatmenu_t *pg = preheatmenu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 979, 22);
@@ -11348,7 +11348,7 @@ void preheatstop_lang_tune(void)
     preheatstop_t *pg = preheatstop_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 预热 |" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -11393,7 +11393,7 @@ void probeneedtip_lang_tune(void)
     probeneedtip_t *pg = probeneedtip_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* button_20: 按钮 | (19,113) | 1243x347 | font taiwanpearl_regular_48 | bg: div1bg.png */
     lv_obj_set_pos(pg->button_20, 19, 113);
@@ -11420,7 +11420,7 @@ void probetip_lang_tune(void)
     probetip_t *pg = probetip_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* button_1: 按钮 | (19,113) | 1243x347 | font taiwanpearl_regular_48 | bg: div1bg.png */
     lv_obj_set_pos(pg->button_1, 19, 113);
@@ -11439,7 +11439,7 @@ void rising_complete_lang_tune(void)
     rising_complete_t *pg = rising_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_237: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_237, 115, 320);
@@ -11480,7 +11480,7 @@ void rising_cooking_lang_tune(void)
     rising_cooking_t *pg = rising_cooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 发酵 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -11525,7 +11525,7 @@ void rising_menu_lang_tune(void)
     rising_menu_t *pg = rising_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
@@ -11640,7 +11640,7 @@ void rising_set_lang_tune(void)
         lv_obj_set_style_bg_img_src(pg->oncontain, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
     }
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_495: 标签 | "发酵" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_495, 24, 24);
@@ -11779,7 +11779,7 @@ void rising_setting_lang_tune(void)
     rising_setting_t *pg = rising_setting_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->timelabel, 907, 157);
@@ -11859,7 +11859,7 @@ void rising_stop_lang_tune(void)
     rising_stop_t *pg = rising_stop_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 发酵 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -11904,7 +11904,7 @@ void rising_stop_back_lang_tune(void)
     rising_stop_back_t *pg = rising_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_235: 图片 | (115,161) | img: risingicon.png */
     lv_obj_set_pos(pg->image_235, 115, 161);
@@ -11957,7 +11957,7 @@ void risingpage_lang_tune(void)
     risingpage_t *pg = risingpage_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_6: 图片 | (24,119) | img: div1bg.png */
     lv_obj_set_pos(pg->image_6, 24, 119);
@@ -12015,7 +12015,7 @@ void save_bbq_complete_lang_tune(void)
     save_bbq_complete_t *pg = save_bbq_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_127: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_127, 115, 320);
@@ -12056,7 +12056,7 @@ void save_bbq_cooking_lang_tune(void)
     save_bbq_cooking_t *pg = save_bbq_cooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 节能热风 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -12101,7 +12101,7 @@ void save_bbq_menu_lang_tune(void)
     save_bbq_menu_t *pg = save_bbq_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
@@ -12216,7 +12216,7 @@ void save_bbq_set_lang_tune(void)
         lv_obj_set_style_bg_img_src(pg->oncontain, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
     }
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_253: 标签 | "节能热风" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_253, 24, 24);
@@ -12356,7 +12356,7 @@ void save_bbq_setting_lang_tune(void)
     save_bbq_setting_t *pg = save_bbq_setting_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->timelabel, 907, 157);
@@ -12436,7 +12436,7 @@ void save_bbq_stop_lang_tune(void)
     save_bbq_stop_t *pg = save_bbq_stop_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 节能热风 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -12481,7 +12481,7 @@ void save_bbq_stop_back_lang_tune(void)
     save_bbq_stop_back_t *pg = save_bbq_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_125: 图片 | (115,161) | img: savewindicon.png */
     lv_obj_set_pos(pg->image_125, 115, 161);
@@ -12534,7 +12534,7 @@ void screen_SET_lang_tune(void)
     screen_SET_t *pg = screen_SET_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* Title_Lb: 标签 | (24,24) | 110x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->Title_Lb, 24, 24);
@@ -12668,7 +12668,7 @@ void sixmenu_lang_tune(void)
     sixmenu_t *pg = sixmenu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0x000000 | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0x000000 | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* bread: 按钮 | (21,75) | 244x386 | font montserratmedium_16 | bg: updown80bk.png */
     lv_obj_set_pos(pg->bread, 21, 75);
@@ -12730,7 +12730,7 @@ void sixmenutz_lang_tune(void)
     sixmenutz_t *pg = sixmenutz_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_7: 标签 | "第六感" | (24,24) | 97x25 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_7, 24, 24);
@@ -12766,7 +12766,7 @@ void sixop3page_lang_tune(void)
     sixop3page_t *pg = sixop3page_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xffffff | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xffffff | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* bt2: 按钮 | (421,60) | 439x417 | font montserratmedium_16 | bg: div3bk30.png */
     lv_obj_set_pos(pg->bt2, 421, 60);
@@ -12828,7 +12828,7 @@ void slowcook_complete_lang_tune(void)
     slowcook_complete_t *pg = slowcook_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_195: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_195, 115, 320);
@@ -12869,7 +12869,7 @@ void slowcook_complete_probe_lang_tune(void)
     slowcook_complete_probe_t *pg = slowcook_complete_probe_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_47: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_47, 115, 320);
@@ -12912,7 +12912,7 @@ void slowcook_cooking_lang_tune(void)
     slowcook_cooking_t *pg = slowcook_cooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 慢煮 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -12957,7 +12957,7 @@ void slowcook_cooking_probe_lang_tune(void)
     slowcook_cooking_probe_t *pg = slowcook_cooking_probe_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 慢煮 | 180℃ | 80℃" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -13001,7 +13001,7 @@ void slowcook_menu_lang_tune(void)
     slowcook_menu_t *pg = slowcook_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
@@ -13082,7 +13082,7 @@ void slowcook_menu_probe_lang_tune(void)
     slowcook_menu_probe_t *pg = slowcook_menu_probe_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
@@ -13184,7 +13184,7 @@ void slowcook_set_lang_tune(void)
         lv_obj_set_style_bg_img_src(pg->oncontain, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
     }
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_397: 标签 | "慢煮" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_397, 24, 24);
@@ -13323,7 +13323,7 @@ void slowcook_set_probe_lang_tune(void)
     slowcook_set_probe_t *pg = slowcook_set_probe_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_87: 标签 | "慢煮" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_87, 24, 24);
@@ -13441,7 +13441,7 @@ void slowcook_setting_lang_tune(void)
     slowcook_setting_t *pg = slowcook_setting_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->timelabel, 907, 157);
@@ -13521,7 +13521,7 @@ void slowcook_stop_lang_tune(void)
     slowcook_stop_t *pg = slowcook_stop_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 慢煮 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -13566,7 +13566,7 @@ void slowcook_stop_back_lang_tune(void)
     slowcook_stop_back_t *pg = slowcook_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_193: 图片 | (115,161) | img: slowcookicon.png */
     lv_obj_set_pos(pg->image_193, 115, 161);
@@ -13619,7 +13619,7 @@ void slowcook_stop_back_probe_lang_tune(void)
     slowcook_stop_back_probe_t *pg = slowcook_stop_back_probe_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 慢煮 | 180℃ | 80℃" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -13668,7 +13668,7 @@ void slowcook_stop_probe_lang_tune(void)
     slowcook_stop_probe_t *pg = slowcook_stop_probe_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_101: 标签 | "| 慢煮 | 180℃ | 80℃" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_101, 274, 232);
@@ -13712,7 +13712,7 @@ void somecook_lang_tune(void)
     somecook_t *pg = somecook_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xffffff | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xffffff | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* step3button: 按钮 | (845,110) | 418x355 | font montserratmedium_16 | bg: stepbg30.png */
     lv_obj_set_pos(pg->step3button, 845, 110);
@@ -13836,7 +13836,7 @@ static void somecook_cooking_common(void)
     somecook_cooking_t *pg = somecook_cooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_12: 标签 | "|                         | 180℃ |…" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_12, 274, 232);
@@ -13957,7 +13957,7 @@ void special_menu_lang_tune(void)
 	// lv_obj_set_style_bg_img_src(pg->obj, LVGL_IMAGE_PATH(cookmenuenbg.png), LV_PART_MAIN | LV_STATE_DEFAULT);
 	// lv_obj_set_style_bg_img_recolor(pg->obj, lv_color_hex(0xff00ff), LV_PART_MAIN | LV_STATE_DEFAULT);
     // lv_obj_set_style_bg_img_recolor_opa(pg->obj, 80, LV_PART_MAIN | LV_STATE_DEFAULT);
-    /* 页面背景: 背景图 bg.jpg | 底色 0x000000 | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0x000000 | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* rising_button: 按钮 | (266,268) | 248x193 | font montserratmedium_16 | bg: bottombk.png */
     lv_obj_set_pos(pg->rising_button, 266, 268);
@@ -14014,7 +14014,7 @@ void special_menu_tz_lang_tune(void)
     special_menu_tz_t *pg = special_menu_tz_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* slowcook_button: 按钮 | (18,68) | 624x400 | font montserratmedium_16 | bg: div2bk30.png */
     lv_obj_set_pos(pg->slowcook_button, 18, 68);
@@ -14167,7 +14167,7 @@ void stepset_lang_tune(void)
     stepset_t *pg = stepset_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* roller_mode: 滚轮 | (374,248) | 229x176 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->roller_mode, 374, 248);
@@ -14297,7 +14297,7 @@ void strudel_complete_lang_tune(void)
     strudel_complete_t *pg = strudel_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_337: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_337, 115, 320);
@@ -14338,7 +14338,7 @@ void strudel_cooking_lang_tune(void)
     strudel_cooking_t *pg = strudel_cooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 果馅卷 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -14383,7 +14383,7 @@ void strudel_menu_lang_tune(void)
     strudel_menu_t *pg = strudel_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
@@ -14465,7 +14465,7 @@ void strudel_set_lang_tune(void)
         lv_obj_set_style_bg_img_src(pg->oncontain, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
     }
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_689: 标签 | "果馅卷" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_689, 24, 24);
@@ -14602,7 +14602,7 @@ void strudel_setting_lang_tune(void)
     strudel_setting_t *pg = strudel_setting_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->timelabel, 907, 157);
@@ -14660,7 +14660,7 @@ void strudel_stop_lang_tune(void)
     strudel_stop_t *pg = strudel_stop_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 果馅卷 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -14705,7 +14705,7 @@ void strudel_stop_back_lang_tune(void)
     strudel_stop_back_t *pg = strudel_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_335: 图片 | (115,161) | img: strudelicon.png */
     lv_obj_set_pos(pg->image_335, 115, 161);
@@ -14758,7 +14758,7 @@ void temptip_lang_tune(void)
     temptip_t *pg = temptip_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* button_1: 按钮 | (19,113) | 1243x347 | font taiwanpearl_regular_48 | bg: div1bg.png */
     lv_obj_set_pos(pg->button_1, 19, 113);
@@ -14904,7 +14904,7 @@ void toastcolor_lang_tune(void)
     toastcolor_t *pg = toastcolor_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_9: 图片 | (24,119) | img: div1bg.png */
     lv_obj_set_pos(pg->image_9, 24, 119);
@@ -15100,7 +15100,7 @@ void top_bbq_complete_lang_tune(void)
     top_bbq_complete_t *pg = top_bbq_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_52: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_52, 115, 320);
@@ -15141,7 +15141,7 @@ void top_bbq_cooking_lang_tune(void)
     top_bbq_cooking_t *pg = top_bbq_cooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* statu: 标签 | "| 顶部烧烤 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->statu, 274, 232);
@@ -15186,7 +15186,7 @@ void top_bbq_menu_lang_tune(void)
     top_bbq_menu_t *pg = top_bbq_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* next_button: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next_button, 981, 22);
@@ -15301,7 +15301,7 @@ void top_bbq_set_lang_tune(void)
         lv_obj_set_style_bg_img_src(pg->oncontain_button, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
     }
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_52: 标签 | "顶部烧烤" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_52, 24, 24);
@@ -15444,7 +15444,7 @@ void top_bbq_setting_lang_tune(void)
     top_bbq_setting_t *pg = top_bbq_setting_get(&ui_manager);
     if (!pg) return;
 	
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* time_label: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->time_label, 907, 157);
@@ -15524,7 +15524,7 @@ void top_bbq_stop_lang_tune(void)
     top_bbq_stop_t *pg = top_bbq_stop_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* statu: 标签 | "| 顶部烧烤 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->statu, 274, 232);
@@ -15569,7 +15569,7 @@ void top_bbq_stop_back_lang_tune(void)
     top_bbq_stop_back_t *pg = top_bbq_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* up: 图片 | (115,161) | img: topicon.png */
     lv_obj_set_pos(pg->up, 115, 161);
@@ -15622,7 +15622,7 @@ void unfrozen_complete_lang_tune(void)
     unfrozen_complete_t *pg = unfrozen_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_216: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_216, 115, 320);
@@ -15663,7 +15663,7 @@ void unfrozen_cooking_lang_tune(void)
     unfrozen_cooking_t *pg = unfrozen_cooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 解冻 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -15708,7 +15708,7 @@ void unfrozen_menu_lang_tune(void)
     unfrozen_menu_t *pg = unfrozen_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
@@ -15823,7 +15823,7 @@ void unfrozen_set_lang_tune(void)
         lv_obj_set_style_bg_img_src(pg->oncontain, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
     }
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_446: 标签 | "解冻" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_446, 24, 24);
@@ -15962,7 +15962,7 @@ void unfrozen_setting_lang_tune(void)
     unfrozen_setting_t *pg = unfrozen_setting_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->timelabel, 907, 157);
@@ -16042,7 +16042,7 @@ void unfrozen_stop_lang_tune(void)
     unfrozen_stop_t *pg = unfrozen_stop_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 解冻 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -16087,7 +16087,7 @@ void unfrozen_stop_back_lang_tune(void)
     unfrozen_stop_back_t *pg = unfrozen_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_214: 图片 | (149,161) | img: unfrozenicon.png */
     lv_obj_set_pos(pg->image_214, 149, 161);
@@ -16140,7 +16140,7 @@ void updown_bbq_complete_lang_tune(void)
     updown_bbq_complete_t *pg = updown_bbq_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* barbk_img: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->barbk_img, 115, 320);
@@ -16181,7 +16181,7 @@ void updown_bbq_complete_probe_lang_tune(void)
     updown_bbq_complete_probe_t *pg = updown_bbq_complete_probe_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_30: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_30, 115, 320);
@@ -16218,7 +16218,7 @@ void updown_bbq_cooking_lang_tune(void)
     updown_bbq_cooking_t *pg = updown_bbq_cooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* updown_label: 标签 | "| 上下烧烤 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->updown_label, 274, 232);
@@ -16263,7 +16263,7 @@ void updown_bbq_cooking_probe_lang_tune(void)
     updown_bbq_cooking_probe_t *pg = updown_bbq_cooking_probe_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 上下烧烤 | 180℃ | 80℃" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -16307,7 +16307,7 @@ void updown_bbq_menu_lang_tune(void)
     updown_bbq_menu_t *pg = updown_bbq_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* next_button: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next_button, 981, 22);
@@ -16390,7 +16390,7 @@ void updown_bbq_menu_low_lang_tune(void)
     updown_bbq_menu_low_t *pg = updown_bbq_menu_low_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_30: 图片 | (24,118) | img: preheatbg.png */
     lv_obj_set_pos(pg->image_30, 24, 118);
@@ -16450,7 +16450,7 @@ void updown_bbq_menu_probe_lang_tune(void)
     updown_bbq_menu_probe_t *pg = updown_bbq_menu_probe_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
@@ -16518,7 +16518,7 @@ void updown_bbq_menu_top_lang_tune(void)
     updown_bbq_menu_top_t *pg = updown_bbq_menu_top_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_21: 图片 | (24,118) | img: preheatbg.png */
     lv_obj_set_pos(pg->image_21, 24, 118);
@@ -16579,7 +16579,7 @@ void updown_bbq_set_lang_tune(void)
     updown_bbq_set_t *pg = updown_bbq_set_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* updown_label: 标签 | "上下烧烤" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->updown_label, 24, 24);
@@ -16797,7 +16797,7 @@ void updown_bbq_set_probe_lang_tune(void)
     updown_bbq_set_probe_t *pg = updown_bbq_set_probe_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_19: 标签 | "上下烧烤" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_19, 24, 24);
@@ -16903,7 +16903,7 @@ void updown_bbq_setting_lang_tune(void)
     updown_bbq_setting_t *pg = updown_bbq_setting_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* time_label: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->time_label, 907, 157);
@@ -17030,7 +17030,7 @@ void updown_bbq_stop_lang_tune(void)
     updown_bbq_stop_t *pg = updown_bbq_stop_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* statu_label: 标签 | "| 上下烧烤 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->statu_label, 274, 232);
@@ -17075,7 +17075,7 @@ void updown_bbq_stop_back_lang_tune(void)
     updown_bbq_stop_back_t *pg = updown_bbq_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* ---- 场景分支: 本页被两处复用 ----
        原生:   上下烧烤流程停止/暂停返回(status "| 上下烧烤 | 180℃ | 时间 |")
@@ -17138,7 +17138,7 @@ void updown_bbq_stop_back_probe_lang_tune(void)
     updown_bbq_stop_back_probe_t *pg = updown_bbq_stop_back_probe_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 上下烧烤 | 180℃ | 80℃" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -17187,7 +17187,7 @@ void updown_bbq_stop_probe_lang_tune(void)
     updown_bbq_stop_probe_t *pg = updown_bbq_stop_probe_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 上下烧烤 | 180℃ | 80℃" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -17231,7 +17231,7 @@ void vegetablemenu_lang_tune(void)
     vegetablemenu_t *pg = vegetablemenu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0x000000 | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0x000000 | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* bt1: 按钮 | (18,76) | 313x386 | font taiwanpearl_regular_30 | bg: div7_1_30.png */
     lv_obj_set_pos(pg->bt1, 18, 76);
@@ -17291,7 +17291,7 @@ void waitmenu_24_lang_tune(void)
     waitmenu_24_t *pg = waitmenu_24_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0x000000 | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0x000000 | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* time_label: 标签 | "12:00" | (421,123) | 438x127 | font taiwanpearl_regular_128 */
     lv_obj_set_pos(pg->time_label, 421, 123);
@@ -17331,7 +17331,7 @@ void waterclean_complete_lang_tune(void)
     waterclean_complete_t *pg = waterclean_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_9: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_9, 115, 320);
@@ -17379,7 +17379,7 @@ void waterclean_cooking_lang_tune(void)
     waterclean_cooking_t *pg = waterclean_cooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_6: 标签 | "| 水解自清洁 | 10分钟 |" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_6, 274, 232);
@@ -17438,7 +17438,7 @@ void waterclean_set_lang_tune(void)
     waterclean_set_t *pg = waterclean_set_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* start: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
     lv_obj_set_pos(pg->start, 959, 295);
@@ -17464,7 +17464,7 @@ void waterclean_stop_lang_tune(void)
     waterclean_stop_t *pg = waterclean_stop_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_9: 标签 | "| 水解自清洁 | 10分钟 |" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->label_9, 274, 232);
@@ -17523,7 +17523,7 @@ void waterclean_stop_back_lang_tune(void)
     waterclean_stop_back_t *pg = waterclean_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 水解自清洁 | 10分钟 |" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -17586,7 +17586,7 @@ void west_complete_lang_tune(void)
     west_complete_t *pg = west_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_90: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_90, 115, 320);
@@ -17627,7 +17627,7 @@ void west_cooking_lang_tune(void)
     west_cooking_t *pg = west_cooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 西式塔 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -17672,7 +17672,7 @@ void west_menu_lang_tune(void)
     west_menu_t *pg = west_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
@@ -17777,7 +17777,7 @@ void west_set_lang_tune(void)
         lv_obj_set_style_bg_img_src(pg->oncontain, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
     }
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_154: 标签 | "西式塔" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_154, 24, 24);
@@ -17916,7 +17916,7 @@ void west_setting_lang_tune(void)
     west_setting_t *pg = west_setting_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->timelabel, 907, 157);
@@ -17996,7 +17996,7 @@ void west_stop_lang_tune(void)
     west_stop_t *pg = west_stop_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 西式塔 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -18041,7 +18041,7 @@ void west_stop_back_lang_tune(void)
     west_stop_back_t *pg = west_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_88: 图片 | (115,161) | img: westicon.png */
     lv_obj_set_pos(pg->image_88, 115, 161);
@@ -18094,7 +18094,7 @@ void windchange_bbq_complete_lang_tune(void)
     windchange_bbq_complete_t *pg = windchange_bbq_complete_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_159: 图片 | (115,320) | img: bar.png */
     lv_obj_set_pos(pg->image_159, 115, 320);
@@ -18135,7 +18135,7 @@ void windchange_bbq_cooking_lang_tune(void)
     windchange_bbq_cooking_t *pg = windchange_bbq_cooking_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 热风对流 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -18180,7 +18180,7 @@ void windchange_bbq_menu_lang_tune(void)
     windchange_bbq_menu_t *pg = windchange_bbq_menu_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* next: 按钮 | (981,22) | 138x70 | font montserratmedium_16 | bg: nextbk.png */
     lv_obj_set_pos(pg->next, 981, 22);
@@ -18295,7 +18295,7 @@ void windchange_bbq_set_lang_tune(void)
         lv_obj_set_style_bg_img_src(pg->oncontain, LVGL_IMAGE_PATH(on2_en.png), LV_PART_MAIN | LV_STATE_FOCUSED);
     }
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_329: 标签 | "热风对流" | (24,25) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_329, 24, 24);
@@ -18435,7 +18435,7 @@ void windchange_bbq_setting_lang_tune(void)
     windchange_bbq_setting_t *pg = windchange_bbq_setting_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->timelabel, 907, 157);
@@ -18515,7 +18515,7 @@ void windchange_bbq_stop_lang_tune(void)
     windchange_bbq_stop_t *pg = windchange_bbq_stop_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 热风对流 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->status, 274, 232);
@@ -18560,7 +18560,7 @@ void windchange_bbq_stop_back_lang_tune(void)
     windchange_bbq_stop_back_t *pg = windchange_bbq_stop_back_get(&ui_manager);
     if (!pg) return;
 
-    /* 页面背景: 背景图 bg.jpg | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
+    /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_157: 图片 | (115,161) | img: windchange.png */
     lv_obj_set_pos(pg->image_157, 115, 161);

@@ -61,7 +61,10 @@ void uart_send_fill(void)
 
     uart_data_send[SEND_SETTINGS1]    = Machine_Set_num_1;
     uart_data_send[SEND_LAMP_STATE]   = (uint8_t)((Machine_Set_num >> 4) & 0x03);   /* 炉灯态 0-3,联调时与板端确认 */
-    uart_data_send[SEND_SETTINGS2]    = (uint8_t)(Machine_Set_num | (g_keepwarm_active ? Send_MachineState_AutoKeepWarm : 0x00));   /* BIT0: 设置位 | 运行中保温 */
+    /* BIT0=自动保温运行位:仅进入保温页(g_keepwarm_active=1)后发 1,其余时候发 0;
+       设置开关位不再上报此位(2026-10-19 改),Machine_Set_num 其它位照常透传 */
+    uart_data_send[SEND_SETTINGS2] = (uint8_t)((Machine_Set_num & (uint8_t)~Send_MachineState_AutoKeepWarm) |
+                                               (g_keepwarm_active ? Send_MachineState_AutoKeepWarm : 0x00));
 
     uart_data_send[SEND_TEMP_LOWER_H] = (uint8_t)(g_send.set_temp_lower >> 8);
     uart_data_send[SEND_TEMP_LOWER_L] = (uint8_t)(g_send.set_temp_lower & 0xFF);

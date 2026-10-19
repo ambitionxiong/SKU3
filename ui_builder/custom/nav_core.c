@@ -1118,7 +1118,7 @@ void updown_set_refit(updown_bbq_set_t *set)
 {
     if (!set || !set->obj) return;
 
-    /* 背景保持生成层 bg.jpg(testbg 校准已结束,2026-09-25) */
+    /* 背景保持生成层 bg.png(testbg 校准已结束,2026-09-25) */
 
     /* 胶囊按钮位置保持生成层原值(308/476,用户定不再重设);内容组对中可见胶囊
      * 真中心——LVGL v9 背景图按 LV_ALIGN_CENTER 居中绘制(lv_draw_rect.c),

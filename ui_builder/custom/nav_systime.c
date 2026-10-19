@@ -378,7 +378,7 @@ void jump_to_systime(void)
     lv_obj_set_scrollbar_mode(scr->obj, LV_SCROLLBAR_MODE_OFF);
     lv_obj_set_style_bg_color(scr->obj, lv_color_hex(0xfcfcfc), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->obj, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->obj, LVGL_IMAGE_PATH(bg.jpg), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->obj, LVGL_IMAGE_PATH(bg.png), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     /* 栏目标题整幅底图,按语言三选一(CN/繁體/EN;同事 ui_lang_img 三版本) */
     scr->set_time_bg_txt_Img = lv_img_create(scr->obj);

@@ -26,7 +26,7 @@ void slowcook_complete_create(ui_manager_t *ui)
     // Set style of scr->obj
     lv_obj_set_style_bg_color(scr->obj, lv_color_hex(0xfcfcfc), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->obj, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(scr->obj, LVGL_IMAGE_PATH(bg.jpg), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->obj, LVGL_IMAGE_PATH(bg.png), LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Init scr->image_195
     scr->image_195 = lv_img_create(scr->obj);

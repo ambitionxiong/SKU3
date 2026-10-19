@@ -158,7 +158,9 @@ static void nav_hint_restore(void)
     topflagpage_t *tf = topflagpage_get(&ui_manager);
     if (tf && tf->obj) {
         if (tf->tip1)        lv_obj_add_flag(tf->tip1, LV_OBJ_FLAG_HIDDEN);
-        if (tf->container_1) lv_obj_add_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);
+        /* container_1 童锁激活期间归锁层(锁图标/提示皆其子对象):收回会连窝隐藏锁层 */
+        if (tf->container_1 && !nav_childlock_active())
+            lv_obj_add_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);
     }
 }
 
@@ -288,7 +290,8 @@ static void nav_favtip_hide(void)
     topflagpage_t *tf = topflagpage_get(&ui_manager);
     if (!tf || !tf->obj) return;
     if (tf->tip3)        lv_obj_add_flag(tf->tip3, LV_OBJ_FLAG_HIDDEN);
-    if (tf->container_1) lv_obj_add_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);   /* 防御:保持隐藏 */
+    if (tf->container_1 && !nav_childlock_active())
+        lv_obj_add_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);   /* 防御:保持隐藏(童锁期归锁层) */
 }
 
 static void favtip_timer_cb(lv_timer_t *t)
@@ -416,7 +419,8 @@ void nav_favask_cancel(void)
         lv_obj_add_flag(tf->sure, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_state(tf->sure, LV_STATE_FOCUSED);
     }
-    if (tf->container_1) lv_obj_add_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);
+    if (tf->container_1 && !nav_childlock_active())
+        lv_obj_add_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);   /* 童锁期归锁层,不随提示收回 */
     nav_favtip_restore_elems();
     printf("[hint] fav ask cancel\n");
 }
@@ -440,6 +444,9 @@ int nav_favask_get_mode(void)
  * BACK=取消继续运行;其余键忽略(nav_key.c 模态守卫)。
  * ============================== */
 static int g_pwroff_ask_active = 0;
+/* 童锁期弹窗的遮罩层级:锁定中弹窗把 container_1 提到层顶(标语/确认钮压遮罩下),
+   记住原序,取消时放回防残留压住后续提示/收藏弹窗 */
+static int32_t s_pwroff_mask_idx = -1;
 
 void nav_poweroff_ask_show(void)
 {
@@ -501,6 +508,14 @@ void nav_poweroff_ask_show(void)
     lv_obj_clear_flag(tf->tip1, LV_OBJ_FLAG_HIDDEN);
     lv_obj_clear_flag(tf->sure, LV_OBJ_FLAG_HIDDEN);
     if (tf->container_1) lv_obj_clear_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);   /* 遮罩 */
+    /* 童锁锁定中弹窗(运行态按电源):遮罩连同锁图标/锁定提示提至层顶——
+       标语/确认钮显示在遮罩下面(2026-10-19 用户要求,不穿锁层);
+       60s 自动取消只收 tip1/tip2/sure,遮罩与锁标志由收回守卫保留 */
+    if (nav_childlock_active() && tf->container_1) {
+        s_pwroff_mask_idx = lv_obj_get_index(tf->container_1);
+        lv_obj_move_to_index(tf->container_1,
+                             (int32_t)lv_obj_get_child_count(lv_obj_get_parent(tf->container_1)) - 1);
+    }
     nav_favtip_collect_hide();   /* 完成页+保温时 tip1 与右侧防烫组件同位,藏掉关闭时恢复 */
     g_pwroff_ask_active = 1;
     printf("[hint] poweroff ask show\n");
@@ -514,6 +529,12 @@ void nav_poweroff_ask_cancel(void)
     g_pwroff_ask_active = 0;
     tf = topflagpage_get(&ui_manager);
     if (!tf || !tf->obj) return;
+    /* 层级复位:锁定弹窗曾把遮罩提到层顶,放回生成原序——
+       锁定中取消(60s 自动)时锁仍激活,遮罩保持显示仅归位 */
+    if (s_pwroff_mask_idx >= 0 && tf->container_1) {
+        lv_obj_move_to_index(tf->container_1, s_pwroff_mask_idx);
+        s_pwroff_mask_idx = -1;
+    }
     if (tf->tip1) lv_obj_add_flag(tf->tip1, LV_OBJ_FLAG_HIDDEN);
     if (tf->tip2) lv_obj_add_flag(tf->tip2, LV_OBJ_FLAG_HIDDEN);   /* 两行文案后 tip2 已显示,取消必须同藏 */
     if (tf->sure) {
@@ -526,7 +547,8 @@ void nav_poweroff_ask_cancel(void)
         lv_obj_add_flag(tf->sure, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_state(tf->sure, LV_STATE_FOCUSED);
     }
-    if (tf->container_1) lv_obj_add_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);
+    if (tf->container_1 && !nav_childlock_active())
+        lv_obj_add_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);   /* 童锁期归锁层,不随提示收回 */
     nav_favtip_restore_elems();
     printf("[hint] poweroff ask cancel\n");
 }
@@ -759,7 +781,8 @@ void nav_childlock_set(int on)
         if (tf->locktip1)  lv_obj_add_flag(tf->locktip1, LV_OBJ_FLAG_HIDDEN);
         if (tf->locktip2)  lv_obj_add_flag(tf->locktip2, LV_OBJ_FLAG_HIDDEN);
         if (tf->locktip3)  lv_obj_add_flag(tf->locktip3, LV_OBJ_FLAG_HIDDEN);
-        if (tf->container_1) lv_obj_add_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);
+        if (tf->container_1 && !nav_childlock_active())
+            lv_obj_add_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);
         topflag_update_visibility();
         printf("[hint] childlock off\n");
     }
