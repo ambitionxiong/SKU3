@@ -279,12 +279,27 @@ static void on_set_zdbw_click(lv_event_t *e)
 {
     (void)e;
     g_send.buzzer_req = BUZZER_KEY_VALID;   /* 切换行:有效音(编码器路径通用尾已发,触摸路径由此补) */
-    int on = !(Machine_Set_num & Send_MachineState_AutoKeepWarm);
-    SET_Data.Set_KeepWarm = on;
-    if (on) MSt_AutoKeepWarm_EN; else MSt_AutoKeepWarm_UN;
+    int on;
+    if (s_was_running) {
+        /* 运行态(烹饪/暂停/完成/预约进来的):本行即席编辑当前会话的保温(contain_on),
+           全局默认/上报位不动,烹饪完成后回主菜单全局仍是原值 */
+        contain_on = !contain_on;
+        on = contain_on;
+        if (g_send.iface_status == IFACE_COMPLETE && on) {
+            /* 完成页中途改开:等待→保温流程从零起算 */
+            g_keepwarm_active = 0;
+            g_keepwarm_sec = 0;
+            if (!cook_timer) cook_timer = lv_timer_create(cooking_timer_cb, 1000, NULL);
+        }
+        /* 完成页中途改关:由 cooking_timer_cb 的 COMPLETE else 支统一收尾 */
+    } else {
+        on = !(Machine_Set_num & Send_MachineState_AutoKeepWarm);
+        SET_Data.Set_KeepWarm = on;
+        if (on) MSt_AutoKeepWarm_EN; else MSt_AutoKeepWarm_UN;
+        uart_print();   /* 立即上报新状态帧 */
+    }
     screen_SET_t *ss = screen_SET_get(&ui_manager);
     if (ss && ss->ZDBW_Lb) lv_label_set_text(ss->ZDBW_Lb, tr(on ? "开" : "关"));
-    uart_print();   /* 立即上报新状态帧 */
 }
 
 static void on_set_tflqyx_click(lv_event_t *e)
@@ -460,7 +475,9 @@ void screen_set_rebuild(void)
 
 
     /* 基础设置项:状态字节 → 标签回显 + PRESS 切换回调(运行态 3 键组仅含 ZDBW) */
-    if (ss->ZDBW_Lb) lv_label_set_text(ss->ZDBW_Lb, tr(SET_Data.Set_KeepWarm ? "开" : "关"));
+    /* 保温行:运行态进来显示当前会话的 contain_on,非运行态显示全局默认 */
+    if (ss->ZDBW_Lb) lv_label_set_text(ss->ZDBW_Lb,
+        tr((s_was_running ? contain_on : SET_Data.Set_KeepWarm) ? "开" : "关"));
     if (ss->Power_Lb) lv_label_set_text(ss->Power_Lb, (Machine_Set_num & Send_MachineState_Power_xxA) ? "16A" : "13A");
     screen_set_ts_lb_sync();   /* TS_Lb 童锁值回显(按 Set_Lock 显示 开/关) */
     if (ss->Six_Lb) lv_label_set_text(ss->Six_Lb, tr(SET_Data.Set_6th ? "无猪肉" : "全部"));

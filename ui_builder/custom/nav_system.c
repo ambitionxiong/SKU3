@@ -147,6 +147,8 @@ static void system_timer_cb(lv_timer_t *timer)
     cook_elapsed_saved = 0; cook_bar_saved = 0;
     cook_total_ms = 0; cook_is_color = 0;
     preheat_on = 0; delay_on = 0; contain_on = 0;
+    g_keepwarm_active = 0;   /* 不随清理复位会残留:BUF[17] 比特0 一直报保温中 */
+    g_keepwarm_sec = 0;
     g_on_stop_back = 0;
     g_complete_to_stop_back = 0;
     g_cooling_to_stop_back = 0;

@@ -179,7 +179,7 @@ void cooking_timer_cb(lv_timer_t *timer)
                            g_keepwarm_active ? 0x01 : 0x00, (void *)cook_timer);
                 }
             } else {
-                if (g_keepwarm_sec >= 60) {
+                if (g_keepwarm_sec >= 900) {   /* 保温持续 15 分钟(原 60 秒测试值,对齐注释) */
                     g_keepwarm_active = 0;
                     lv_label_set_text(kw_label, tr("已完成"));
                     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
@@ -188,6 +188,12 @@ void cooking_timer_cb(lv_timer_t *timer)
                            g_keepwarm_active ? 0x01 : 0x00, (void *)cook_timer);
                 }
             }
+        } else if (kw_label && (g_keepwarm_active || cook_timer)) {
+            /* 会话保温被运行态设置覆盖层即席关闭(contain_on→0):回"已完成"并收尾,定时器不再空转 */
+            g_keepwarm_active = 0;
+            g_keepwarm_sec = 0;
+            lv_label_set_text(kw_label, tr("已完成"));
+            if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
         }
         return;
     }
@@ -286,7 +292,7 @@ void cooking_timer_cb(lv_timer_t *timer)
             if (get_cavity_temp() >= set_temp && cook_timer) {
                 lv_timer_del(cook_timer);
                 cook_timer = NULL;
-                g_send.buzzer_req = BUZZER_COOK_DONE;
+                g_send.buzzer_req = BUZZER_PREHEAT_DONE;   /* 预热完成音(4),原错发烹调结束音 */
                 g_on_stop_back = 0;
                 if (g_stop_back_complete) {
                     void (*fn)(void) = g_stop_back_complete;

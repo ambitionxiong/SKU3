@@ -48,7 +48,7 @@ void uart_send_fill(void)
 
     uart_data_send[SEND_TEMP_H]       = (uint8_t)(g_send.set_temp >> 8);
     uart_data_send[SEND_TEMP_L]       = (uint8_t)(g_send.set_temp & 0xFF);
-    uart_data_send[SEND_PROBE_TEMP]   = g_send.probe_temp;
+    uart_data_send[SEND_PROBE_TEMP]   = (g_send.cook_flag == 2) ? g_send.probe_temp : 0;   /* 探针目标只随探针模式发出,防其它状态残留 */
 
     uart_data_send[SEND_TIME_HOUR]    = (uint8_t)h;
     uart_data_send[SEND_TIME_MIN]     = (uint8_t)m;
