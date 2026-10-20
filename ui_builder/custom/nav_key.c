@@ -1317,6 +1317,11 @@ void process_key(uint8_t key)
         if (ef && nav_edit_session_active()) {
             if (ef->min == ef->max) {
                 g_send.buzzer_req = BUZZER_KEY_INVALID;
+            } else if (ef->value == &set_min && edit_minute_carry()) {
+                /* 上限少一分钟处(时=上限-1,分=59)右转:进位到上限 时+1/分0,
+                   与 CCW 借位对称(2026-10-20 用户定稿);此后 CW 走无效音 */
+                g_send.buzzer_req = BUZZER_ENCODER;
+                printf("[nav] adjust +: carry to %dh %02dm\n", set_hour, set_min);
             } else {
                 g_send.buzzer_req = BUZZER_ENCODER;
                 adjust_value(ef, +1);

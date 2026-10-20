@@ -442,6 +442,11 @@ static uint8_t s_edit_browse = 0;                /* 0=编辑态 1=浏览模式 *
 static lv_obj_t *s_edit_extras[MAX_EDIT_EXTRAS]; /* 非 edit_register 体系可编辑对象登记表 */
 static int s_edit_extra_n = 0;
 
+/* 分钟编辑会话自上限值进入(2026-10-20 用户定稿):上限边界的时分联动特判
+   (借位后 59 分处右转回进位到上限)仅在该会话内生效;其它位置进编辑、
+   旋到上限-1:59 时右转维持普通 0-59 循环绕回不动小时 */
+static uint8_t s_min_edit_at_max = 0;
+
 /* 进页编辑/浏览默认(用户定稿):menu/setting 编辑字段族页面进页即浏览,
  * 其余页面维持进页即编辑。edit_clear/nav_blink_forget 两处复位点统一走此,
  * 按当前栈顶页面族判定(push 建页/pop 返回时栈顶即目标页) */
@@ -459,6 +464,7 @@ void edit_clear(void)
 {
     edit_count = 0;
     s_edit_extra_n = 0;
+    s_min_edit_at_max = 0;   /* 切页:分钟编辑特判门槛不复带过页 */
     edit_browse_reset();   /* 族页面进浏览/其余进编辑(新页面从默认态开始,防悬空状态带过页) */
 }
 
@@ -1002,6 +1008,29 @@ int edit_minute_borrow(void)
     lv_label_set_text_fmt(hour_ef->label, hour_ef->fmt, set_hour);
     lv_label_set_text_fmt(min_ef->label, min_ef->fmt, set_min);
     validate_constraints();   /* 小时不再==上限:分钟范围恢复 0..59 */
+    return 1;
+}
+
+/* 上限少一分钟处进位(2026-10-20 用户定稿):分钟编辑会话自上限值进入时,
+   时==上限-1 且分==59 的分钟位 CW → 时+1、分=0(到达上限,validate 钉回
+   0..0,再 CW 无效音)。与借位对称:上限边界分钟 CW/CCW 各恰一个时分联动点;
+   会话门槛(s_min_edit_at_max)外的 59 分处右转维持普通 0-59 循环绕回。
+   返回 1=已进位(调用方给编码器音),0=不适用(调用方走原 adjust) */
+int edit_minute_carry(void)
+{
+    if (!s_min_edit_at_max) return 0;
+    edit_field_t *min_ef = NULL, *hour_ef = NULL;
+    for (int i = 0; i < edit_count; i++) {
+        if (edit_fields[i].value == &set_min)  min_ef  = &edit_fields[i];
+        if (edit_fields[i].value == &set_hour) hour_ef = &edit_fields[i];
+    }
+    if (!min_ef || !hour_ef) return 0;
+    if (set_hour != hour_ef->max - 1 || set_min != 59) return 0;
+    set_hour += 1;
+    set_min = 0;
+    lv_label_set_text_fmt(hour_ef->label, hour_ef->fmt, set_hour);
+    lv_label_set_text_fmt(min_ef->label, min_ef->fmt, set_min);
+    validate_constraints();   /* 小时==上限:分钟钉 0..0,再 CW 走无效音 */
     return 1;
 }
 // ==============================
@@ -2167,6 +2196,17 @@ uint8_t nav_edit_session_active(void)
 void nav_edit_session_enter(lv_obj_t *focused)
 {
     s_edit_browse = 0;
+    /* 会话门槛:本次编辑落在分钟字段且时==上限(分钟被钉 0)才置位 */
+    s_min_edit_at_max = 0;
+    edit_field_t *ef = find_edit_field(focused);
+    if (ef && ef->value == &set_min) {
+        for (int i = 0; i < edit_count; i++) {
+            if (edit_fields[i].value == &set_hour && set_hour == edit_fields[i].max) {
+                s_min_edit_at_max = 1;
+                break;
+            }
+        }
+    }
     if (focused)
         nav_blink_refresh(focused);
 }
@@ -2176,6 +2216,7 @@ void nav_edit_session_enter(lv_obj_t *focused)
 void nav_edit_session_exit(void)
 {
     s_edit_browse = 1;
+    s_min_edit_at_max = 0;   /* 出会话:特判联动门槛收回 */
     lv_obj_t *focused = current_group ? lv_group_get_focused(current_group) : NULL;
     if (focused)
         nav_blink_refresh(focused);
