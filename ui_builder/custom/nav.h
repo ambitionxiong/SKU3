@@ -659,6 +659,7 @@ void page_push(page_id_t id);
 void page_pop(void);
 int is_cook_setting_page(page_id_t cur);   /* 各模式 SETTING 页(烹饪中小按钮进入,nav_key.c) */
 int nav_is_cook_above_page(page_id_t p);   /* 烹饪层之上的页(覆盖层/子页/SETTING 页,nav_idle.c;收藏分类穿透用) */
+void nav_cook_icon_align(lv_obj_t *icon, lv_obj_t *slogan, lv_obj_t *status);   /* 烹饪页图标对齐进度条左缘+标语距图标右缘35(nav_core.c) */
 int is_menu_edit_page(page_id_t cur);      /* 各模式 MENU 菜单设置页(编辑字段族,进页即浏览) */
 void stepset_bind_events(void);
 void delay_cancel_exit_to_set(void);

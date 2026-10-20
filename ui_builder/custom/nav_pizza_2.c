@@ -357,6 +357,7 @@ void jump_to_pizza_2_cooking(void)
 
     pizza_2_cooking_t *cook = pizza_2_cooking_get(&ui_manager);
     if (cook) {
+        nav_cook_icon_align(cook->image_164, cook->label_367, cook->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
         lv_obj_t *btns[] = { cook->stop, cook->little };
         if (g_pizza_2_cooking) lv_group_del(g_pizza_2_cooking);
         g_pizza_2_cooking = group_create_for_page(btns, 2);
@@ -498,6 +499,7 @@ void jump_to_pizza_2_stop(void)
 
     pizza_2_stop_t *stop = pizza_2_stop_get(&ui_manager);
     if (stop) {
+        nav_cook_icon_align(stop->image_171, stop->label_380, stop->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
         lv_obj_t *btns[] = { stop->start, stop->little };
         if (g_pizza_2_stop) lv_group_del(g_pizza_2_stop);
         g_pizza_2_stop = group_create_for_page(btns, 2);
@@ -543,6 +545,7 @@ void jump_to_pizza_2_stop_back(void)
 
     pizza_2_stop_back_t *back = pizza_2_stop_back_get(&ui_manager);
     if (back) {
+        nav_cook_icon_align(back->image_172, back->label_382, back->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
         lv_obj_t *btns[] = { back->sure };
         if (g_pizza_2_stop_back) lv_group_del(g_pizza_2_stop_back);
         g_pizza_2_stop_back = group_create_for_page(btns, 1);
@@ -606,6 +609,7 @@ void pizza_2_resume_cooking(void)
 
     pizza_2_cooking_t *cook = pizza_2_cooking_get(&ui_manager);
     if (cook) {
+        nav_cook_icon_align(cook->image_164, cook->label_367, cook->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
         lv_obj_t *btns[] = { cook->stop, cook->little };
         if (g_pizza_2_cooking) lv_group_del(g_pizza_2_cooking);
         g_pizza_2_cooking = group_create_for_page(btns, 2);
@@ -675,6 +679,7 @@ static void on_pizza_2_setting_sure_click(lv_event_t *e)
 
     pizza_2_cooking_t *cook = pizza_2_cooking_get(&ui_manager);
     if (cook) {
+        nav_cook_icon_align(cook->image_164, cook->label_367, cook->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
         lv_obj_t *btns[] = { cook->stop, cook->little };
         if (g_pizza_2_cooking) lv_group_del(g_pizza_2_cooking);
         g_pizza_2_cooking = group_create_for_page(btns, 2);
@@ -729,6 +734,7 @@ void jump_to_pizza_2_complete(void)
     {
         pizza_2_complete_t *cook = pizza_2_complete_get(&ui_manager);
         if (cook) {
+        nav_cook_icon_align(cook->image_176, cook->label_386, cook->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
             lv_obj_t *btns[] = { cook->little };
             if (g_pizza_2_complete) lv_group_del(g_pizza_2_complete);
             g_pizza_2_complete = group_create_for_page(btns, 1);
@@ -910,6 +916,7 @@ void pizza_2_rebuild_cooking(page_id_t child)
     pizza_2_cooking_create(&ui_manager);
     pizza_2_cooking_t *cook = pizza_2_cooking_get(&ui_manager);
     if (cook) {
+        nav_cook_icon_align(cook->image_164, cook->label_367, cook->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
         lv_obj_t *btns[] = { cook->stop, cook->little };
         if (g_pizza_2_cooking) lv_group_del(g_pizza_2_cooking);
         g_pizza_2_cooking = group_create_for_page(btns, 2);
@@ -1037,6 +1044,7 @@ void pizza_2_rebuild_stop(void)
     pizza_2_stop_create(&ui_manager);
     pizza_2_stop_t *stop = pizza_2_stop_get(&ui_manager);
     if (stop) {
+        nav_cook_icon_align(stop->image_171, stop->label_380, stop->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
         lv_obj_t *btns[] = { stop->start, stop->little };
         if (g_pizza_2_stop) lv_group_del(g_pizza_2_stop);
         g_pizza_2_stop = group_create_for_page(btns, 2);
@@ -1075,6 +1083,7 @@ void pizza_2_rebuild_stop_back(void)
     pizza_2_stop_back_create(&ui_manager);
     pizza_2_stop_back_t *back = pizza_2_stop_back_get(&ui_manager);
     if (back) {
+        nav_cook_icon_align(back->image_172, back->label_382, back->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
         lv_obj_t *btns[] = { back->sure };
         if (g_pizza_2_stop_back) lv_group_del(g_pizza_2_stop_back);
         g_pizza_2_stop_back = group_create_for_page(btns, 1);
@@ -1115,6 +1124,10 @@ void pizza_2_rebuild_complete(void)
 {
     edit_clear();
     pizza_2_complete_create(&ui_manager);
+
+    { pizza_2_complete_t *c = pizza_2_complete_get(&ui_manager);
+      if (c) nav_cook_icon_align(c->image_176, c->label_386, c->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
+    }
     current_group = g_pizza_2_complete;
     lang_scr_load_anim(pizza_2_complete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,

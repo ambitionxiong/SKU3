@@ -108,6 +108,7 @@ void jump_to_wc_cooking(void)
 
     waterclean_cooking_t *cook = waterclean_cooking_get(&ui_manager);
     if (cook) {
+        nav_cook_icon_align(cook->image_6, cook->label_8, cook->label_6);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
         lv_obj_t *btns[] = { cook->stop };
         if (g_wc_cooking) lv_group_del(g_wc_cooking);
         g_wc_cooking = group_create_for_page(btns, 1);
@@ -161,6 +162,7 @@ void jump_to_wc_stop(void)
 
     waterclean_stop_t *stop = waterclean_stop_get(&ui_manager);
     if (stop) {
+        nav_cook_icon_align(stop->image_8, stop->label_11, stop->label_9);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
         lv_obj_t *btns[] = { stop->start };
         if (g_wc_stop) lv_group_del(g_wc_stop);
         g_wc_stop = group_create_for_page(btns, 1);
@@ -205,6 +207,7 @@ void wc_resume_cooking(void)
 
     waterclean_cooking_t *cook = waterclean_cooking_get(&ui_manager);
     if (cook) {
+        nav_cook_icon_align(cook->image_6, cook->label_8, cook->label_6);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
         lv_obj_t *btns[] = { cook->stop };
         if (g_wc_cooking) lv_group_del(g_wc_cooking);
         g_wc_cooking = group_create_for_page(btns, 1);
@@ -263,6 +266,7 @@ void jump_to_wc_stop_back(void)
 
     waterclean_stop_back_t *back = waterclean_stop_back_get(&ui_manager);
     if (back) {
+        nav_cook_icon_align(back->image_2, back->label_6, back->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
         lv_obj_t *btns[] = { back->sure };
         if (g_wc_stop_back) lv_group_del(g_wc_stop_back);
         g_wc_stop_back = group_create_for_page(btns, 1);
@@ -305,6 +309,10 @@ void jump_to_wc_complete(void)
     lv_obj_clean(lv_scr_act());
     waterclean_complete_create(&ui_manager);
 
+    { waterclean_complete_t *c = waterclean_complete_get(&ui_manager);
+      if (c) nav_cook_icon_align(c->image_10, c->label_13, c->label_12);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
+    }
+
     current_group = g_wc_complete;
 
     lang_scr_load_anim(waterclean_complete_get(&ui_manager)->obj,
@@ -342,6 +350,7 @@ void wc_rebuild_cooking(page_id_t child)
     waterclean_cooking_create(&ui_manager);
     waterclean_cooking_t *cook = waterclean_cooking_get(&ui_manager);
     if (cook) {
+        nav_cook_icon_align(cook->image_6, cook->label_8, cook->label_6);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
         lv_obj_t *btns[] = { cook->stop };
         if (g_wc_cooking) lv_group_del(g_wc_cooking);
         g_wc_cooking = group_create_for_page(btns, 1);
@@ -400,6 +409,7 @@ void wc_rebuild_stop(void)
     waterclean_stop_create(&ui_manager);
     waterclean_stop_t *stop = waterclean_stop_get(&ui_manager);
     if (stop) {
+        nav_cook_icon_align(stop->image_8, stop->label_11, stop->label_9);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
         lv_obj_t *btns[] = { stop->start };
         if (g_wc_stop) lv_group_del(g_wc_stop);
         g_wc_stop = group_create_for_page(btns, 1);
@@ -436,6 +446,7 @@ void wc_rebuild_stop_back(void)
     waterclean_stop_back_create(&ui_manager);
     waterclean_stop_back_t *back = waterclean_stop_back_get(&ui_manager);
     if (back) {
+        nav_cook_icon_align(back->image_2, back->label_6, back->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
         lv_obj_t *btns[] = { back->sure };
         if (g_wc_stop_back) lv_group_del(g_wc_stop_back);
         g_wc_stop_back = group_create_for_page(btns, 1);
@@ -468,6 +479,10 @@ void wc_rebuild_complete(void)
 {
     edit_clear();
     waterclean_complete_create(&ui_manager);
+
+    { waterclean_complete_t *c = waterclean_complete_get(&ui_manager);
+      if (c) nav_cook_icon_align(c->image_10, c->label_13, c->label_12);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
+    }
     current_group = g_wc_complete;
     lang_scr_load_anim(waterclean_complete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,

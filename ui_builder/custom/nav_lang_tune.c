@@ -4207,7 +4207,7 @@ void corn_complete_lang_tune(void)
     lv_obj_set_pos(pg->image_258, 115, 320);
 
     /* status: 标签 | "| 干果 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->status, 274, 232);
+    lv_obj_set_y(pg->status, 232);   /* x 由下方 nav_cook_icon_align 统一 */
     lv_obj_set_size(pg->status, 490, 39);
 
     /* bar_43: 进度条 | (122,326) | 637x20 */
@@ -4215,7 +4215,7 @@ void corn_complete_lang_tune(void)
     lv_obj_set_size(pg->bar_43, 637, 20);
 
     /* label_582: 标签 | "已完成" | (273,157) | 235x60 | font taiwanpearl_regular_60 */
-    lv_obj_set_pos(pg->label_582, 273, 157);
+    lv_obj_set_y(pg->label_582, 157);
     lv_obj_set_size(pg->label_582, 330, 60);   /* 对齐 top_bbq 系排版 */
 
     /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
@@ -4223,7 +4223,7 @@ void corn_complete_lang_tune(void)
     lv_obj_set_size(pg->little, 50, 43);
 
     /* image_260: 图片 | (143,161) | img: cornicon.png */
-    lv_obj_set_pos(pg->image_260, 143, 161);
+    nav_cook_icon_align(pg->image_260, pg->label_582, pg->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35(与nav侧同规则) */
 
     /* image_10: 图片 | (902,160) | img: tips.png */
     lv_obj_set_pos(pg->image_10, 905, 160);
@@ -4245,7 +4245,7 @@ void corn_cooking_lang_tune(void)
     /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 干果 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->status, 274, 232);
+    lv_obj_set_y(pg->status, 232);   /* x 由下方 nav_cook_icon_align 统一 */
     lv_obj_set_size(pg->status, 490, 39);
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
@@ -4264,7 +4264,7 @@ void corn_cooking_lang_tune(void)
     lv_obj_set_size(pg->bar_40, 637, 20);
 
     /* label_563: 标签 | "烹饪中..." | (273,157) | 235x60 | font taiwanpearl_regular_60 */
-    lv_obj_set_pos(pg->label_563, 273, 157);
+    lv_obj_set_y(pg->label_563, 157);
     lv_obj_set_size(pg->label_563, 300, 60);   /* 对齐 top_bbq 系排版 */
 
     /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
@@ -4272,7 +4272,7 @@ void corn_cooking_lang_tune(void)
     lv_obj_set_size(pg->little, 50, 43);
 
     /* image_248: 图片 | (143,161) | img: cornicon.png */
-    lv_obj_set_pos(pg->image_248, 143, 161);
+    nav_cook_icon_align(pg->image_248, pg->label_563, pg->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35(与nav侧同规则) */
 
 }
 
@@ -4624,7 +4624,7 @@ void corn_stop_lang_tune(void)
     /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 干果 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->status, 274, 232);
+    lv_obj_set_y(pg->status, 232);   /* x 由下方 nav_cook_icon_align 统一 */
     lv_obj_set_size(pg->status, 490, 39);
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
@@ -4643,7 +4643,7 @@ void corn_stop_lang_tune(void)
     lv_obj_set_size(pg->bar_41, 637, 20);
 
     /* label_576: 标签 | "暂停中..." | (273,157) | 235x60 | font taiwanpearl_regular_60 */
-    lv_obj_set_pos(pg->label_576, 273, 157);
+    lv_obj_set_y(pg->label_576, 157);
     lv_obj_set_size(pg->label_576, 300, 60);   /* 对齐 top_bbq 系排版 */
 
     /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
@@ -4651,7 +4651,7 @@ void corn_stop_lang_tune(void)
     lv_obj_set_size(pg->little, 50, 43);
 
     /* image_255: 图片 | (143,161) | img: cornicon.png */
-    lv_obj_set_pos(pg->image_255, 143, 161);
+    nav_cook_icon_align(pg->image_255, pg->label_576, pg->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35(与nav侧同规则) */
 
 }
 
@@ -4669,10 +4669,10 @@ void corn_stop_back_lang_tune(void)
     /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_256: 图片 | (143,161) | img: cornicon.png */
-    lv_obj_set_pos(pg->image_256, 143, 161);
+    nav_cook_icon_align(pg->image_256, pg->label_578, pg->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35(与nav侧同规则) */
 
     /* status: 标签 | "| 干果 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->status, 274, 232);
+    lv_obj_set_y(pg->status, 232);   /* x 由下方 nav_cook_icon_align 统一 */
     lv_obj_set_size(pg->status, 490, 39);
 
     /* image_257: 图片 | (115,320) | img: bar.png */
@@ -4683,7 +4683,7 @@ void corn_stop_back_lang_tune(void)
     lv_obj_set_size(pg->bar_42, 637, 20);
 
     /* label_578: 标签 | "暂停中..." | (273,157) | 235x60 | font taiwanpearl_regular_60 */
-    lv_obj_set_pos(pg->label_578, 273, 157);
+    lv_obj_set_y(pg->label_578, 157);
     lv_obj_set_size(pg->label_578, LV_SIZE_CONTENT, 60);   /* 对齐 top_bbq 系排版 */
 
     /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
@@ -10106,7 +10106,7 @@ void pizza_2_complete_lang_tune(void)
     lv_obj_set_pos(pg->image_174, 115, 320);
 
     /* status: 标签 | "| 披萨 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->status, 274, 232);
+    lv_obj_set_y(pg->status, 232);   /* x 由下方 nav_cook_icon_align 统一 */
     lv_obj_set_size(pg->status, 490, 39);
 
     /* bar_27: 进度条 | (122,326) | 637x20 */
@@ -10114,7 +10114,7 @@ void pizza_2_complete_lang_tune(void)
     lv_obj_set_size(pg->bar_27, 637, 20);
 
     /* label_386: 标签 | "已完成" | (273,157) | 235x60 | font taiwanpearl_regular_60 */
-    lv_obj_set_pos(pg->label_386, 273, 157);
+    lv_obj_set_y(pg->label_386, 157);
     lv_obj_set_size(pg->label_386, 330, 60);   /* 对齐 top_bbq 系排版 */
 
     /* image_175: 图片 | (845,160) | img: hotcare.png */
@@ -10126,7 +10126,7 @@ void pizza_2_complete_lang_tune(void)
     lv_obj_set_size(pg->little, 50, 43);
 
     /* image_176: 图片 | (140,161) | img: pizza2icon.png */
-    lv_obj_set_pos(pg->image_176, 140, 161);
+    nav_cook_icon_align(pg->image_176, pg->label_386, pg->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35(与nav侧同规则) */
 
 }
 
@@ -10144,7 +10144,7 @@ void pizza_2_cooking_lang_tune(void)
     /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 披萨 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->status, 274, 232);
+    lv_obj_set_y(pg->status, 232);   /* x 由下方 nav_cook_icon_align 统一 */
     lv_obj_set_size(pg->status, 490, 39);
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
@@ -10163,7 +10163,7 @@ void pizza_2_cooking_lang_tune(void)
     lv_obj_set_size(pg->bar_24, 637, 20);
 
     /* label_367: 标签 | "烹饪中..." | (273,157) | 235x60 | font taiwanpearl_regular_60 */
-    lv_obj_set_pos(pg->label_367, 273, 157);
+    lv_obj_set_y(pg->label_367, 157);
     lv_obj_set_size(pg->label_367, 300, 60);   /* 对齐 top_bbq 系排版 */
 
     /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
@@ -10171,7 +10171,7 @@ void pizza_2_cooking_lang_tune(void)
     lv_obj_set_size(pg->little, 50, 43);
 
     /* image_164: 图片 | (140,161) | img: pizza2icon.png */
-    lv_obj_set_pos(pg->image_164, 140, 161);
+    nav_cook_icon_align(pg->image_164, pg->label_367, pg->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35(与nav侧同规则) */
 
 }
 
@@ -10523,7 +10523,7 @@ void pizza_2_stop_lang_tune(void)
     /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 披萨 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->status, 274, 232);
+    lv_obj_set_y(pg->status, 232);   /* x 由下方 nav_cook_icon_align 统一 */
     lv_obj_set_size(pg->status, 490, 39);
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
@@ -10542,7 +10542,7 @@ void pizza_2_stop_lang_tune(void)
     lv_obj_set_size(pg->bar_25, 637, 20);
 
     /* label_380: 标签 | "暂停中..." | (273,157) | 235x60 | font taiwanpearl_regular_60 */
-    lv_obj_set_pos(pg->label_380, 273, 157);
+    lv_obj_set_y(pg->label_380, 157);
     lv_obj_set_size(pg->label_380, 300, 60);   /* 对齐 top_bbq 系排版 */
 
     /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
@@ -10550,7 +10550,7 @@ void pizza_2_stop_lang_tune(void)
     lv_obj_set_size(pg->little, 50, 43);
 
     /* image_171: 图片 | (140,161) | img: pizza2icon.png */
-    lv_obj_set_pos(pg->image_171, 140, 161);
+    nav_cook_icon_align(pg->image_171, pg->label_380, pg->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35(与nav侧同规则) */
 
 }
 
@@ -10568,10 +10568,10 @@ void pizza_2_stop_back_lang_tune(void)
     /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_172: 图片 | (140,161) | img: pizza2icon.png */
-    lv_obj_set_pos(pg->image_172, 140, 161);
+    nav_cook_icon_align(pg->image_172, pg->label_382, pg->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35(与nav侧同规则) */
 
     /* status: 标签 | "| 披萨 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->status, 274, 232);
+    lv_obj_set_y(pg->status, 232);   /* x 由下方 nav_cook_icon_align 统一 */
     lv_obj_set_size(pg->status, 490, 39);
 
     /* image_173: 图片 | (115,320) | img: bar.png */
@@ -10582,7 +10582,7 @@ void pizza_2_stop_back_lang_tune(void)
     lv_obj_set_size(pg->bar_26, 637, 20);
 
     /* label_382: 标签 | "暂停中..." | (273,157) | 235x60 | font taiwanpearl_regular_60 */
-    lv_obj_set_pos(pg->label_382, 273, 157);
+    lv_obj_set_y(pg->label_382, 157);
     lv_obj_set_size(pg->label_382, LV_SIZE_CONTENT, 60);   /* 对齐 top_bbq 系排版 */
 
     /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
@@ -15628,7 +15628,7 @@ void unfrozen_complete_lang_tune(void)
     lv_obj_set_pos(pg->image_216, 115, 320);
 
     /* status: 标签 | "| 解冻 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->status, 274, 232);
+    lv_obj_set_y(pg->status, 232);   /* x 由下方 nav_cook_icon_align 统一 */
     lv_obj_set_size(pg->status, 490, 39);
 
     /* bar_35: 进度条 | (122,326) | 637x20 */
@@ -15636,7 +15636,7 @@ void unfrozen_complete_lang_tune(void)
     lv_obj_set_size(pg->bar_35, 637, 20);
 
     /* label_484: 标签 | "已完成" | (273,157) | 235x60 | font taiwanpearl_regular_60 */
-    lv_obj_set_pos(pg->label_484, 273, 157);
+    lv_obj_set_y(pg->label_484, 157);
     lv_obj_set_size(pg->label_484, 330, 60);   /* 对齐 top_bbq 系排版 */
 
     /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
@@ -15644,7 +15644,7 @@ void unfrozen_complete_lang_tune(void)
     lv_obj_set_size(pg->little, 50, 43);
 
     /* image_218: 图片 | (149,161) | img: unfrozenicon.png */
-    lv_obj_set_pos(pg->image_218, 149, 161);
+    nav_cook_icon_align(pg->image_218, pg->label_484, pg->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35(与nav侧同规则) */
 
     /* image_8: 图片 | (902,160) | img: tips.png */
     lv_obj_set_pos(pg->image_8, 905, 160);
@@ -15666,7 +15666,7 @@ void unfrozen_cooking_lang_tune(void)
     /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 解冻 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->status, 274, 232);
+    lv_obj_set_y(pg->status, 232);   /* x 由下方 nav_cook_icon_align 统一 */
     lv_obj_set_size(pg->status, 490, 39);
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
@@ -15685,7 +15685,7 @@ void unfrozen_cooking_lang_tune(void)
     lv_obj_set_size(pg->bar_32, 637, 20);
 
     /* label_465: 标签 | "烹饪中..." | (273,157) | 235x60 | font taiwanpearl_regular_60 */
-    lv_obj_set_pos(pg->label_465, 273, 157);
+    lv_obj_set_y(pg->label_465, 157);
     lv_obj_set_size(pg->label_465, 300, 60);   /* 对齐 top_bbq 系排版 */
 
     /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
@@ -15693,7 +15693,7 @@ void unfrozen_cooking_lang_tune(void)
     lv_obj_set_size(pg->little, 50, 43);
 
     /* image_206: 图片 | (149,161) | img: unfrozenicon.png */
-    lv_obj_set_pos(pg->image_206, 149, 161);
+    nav_cook_icon_align(pg->image_206, pg->label_465, pg->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35(与nav侧同规则) */
 
 }
 
@@ -16045,7 +16045,7 @@ void unfrozen_stop_lang_tune(void)
     /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 解冻 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->status, 274, 232);
+    lv_obj_set_y(pg->status, 232);   /* x 由下方 nav_cook_icon_align 统一 */
     lv_obj_set_size(pg->status, 490, 39);
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
@@ -16064,7 +16064,7 @@ void unfrozen_stop_lang_tune(void)
     lv_obj_set_size(pg->bar_33, 637, 20);
 
     /* label_478: 标签 | "暂停中..." | (273,157) | 235x60 | font taiwanpearl_regular_60 */
-    lv_obj_set_pos(pg->label_478, 273, 157);
+    lv_obj_set_y(pg->label_478, 157);
     lv_obj_set_size(pg->label_478, 300, 60);   /* 对齐 top_bbq 系排版 */
 
     /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
@@ -16072,7 +16072,7 @@ void unfrozen_stop_lang_tune(void)
     lv_obj_set_size(pg->little, 50, 43);
 
     /* image_213: 图片 | (149,161) | img: unfrozenicon.png */
-    lv_obj_set_pos(pg->image_213, 149, 161);
+    nav_cook_icon_align(pg->image_213, pg->label_478, pg->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35(与nav侧同规则) */
 
 }
 
@@ -16090,10 +16090,10 @@ void unfrozen_stop_back_lang_tune(void)
     /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* image_214: 图片 | (149,161) | img: unfrozenicon.png */
-    lv_obj_set_pos(pg->image_214, 149, 161);
+    nav_cook_icon_align(pg->image_214, pg->label_480, pg->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35(与nav侧同规则) */
 
     /* status: 标签 | "| 解冻 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->status, 274, 232);
+    lv_obj_set_y(pg->status, 232);   /* x 由下方 nav_cook_icon_align 统一 */
     lv_obj_set_size(pg->status, 490, 39);
 
     /* image_215: 图片 | (115,320) | img: bar.png */
@@ -16104,7 +16104,7 @@ void unfrozen_stop_back_lang_tune(void)
     lv_obj_set_size(pg->bar_34, 637, 20);
 
     /* label_480: 标签 | "暂停中..." | (273,157) | 235x60 | font taiwanpearl_regular_60 */
-    lv_obj_set_pos(pg->label_480, 273, 157);
+    lv_obj_set_y(pg->label_480, 157);
     lv_obj_set_size(pg->label_480, LV_SIZE_CONTENT, 60);   /* 对齐 top_bbq 系排版 */
 
     /* little: 按钮 | (609,170) | 50x43 | font montserratmedium_16 | bg: little.png */
@@ -17337,7 +17337,7 @@ void waterclean_complete_lang_tune(void)
     lv_obj_set_pos(pg->image_9, 115, 320);
 
     /* label_12: 标签 | "| 水解自清洁 | 10分钟 |" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_12, 274, 232);
+    lv_obj_set_y(pg->label_12, 232);   /* x 由下方 nav_cook_icon_align 统一 */
     lv_obj_set_size(pg->label_12, 490, 39);
 
     /* bar_4: 进度条 | (122,326) | 637x20 */
@@ -17345,10 +17345,10 @@ void waterclean_complete_lang_tune(void)
     lv_obj_set_size(pg->bar_4, 637, 20);
 
     /* image_10: 图片 | (167,161) | img: watercleanicon.png */
-    lv_obj_set_pos(pg->image_10, 167, 161);
+    nav_cook_icon_align(pg->image_10, pg->label_13, pg->label_12);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35(与nav侧同规则) */
 
     /* label_13: 标签 | "已完成" | (273,157) | 235x60 | font taiwanpearl_regular_60 */
-    lv_obj_set_pos(pg->label_13, 273, 157);
+    lv_obj_set_y(pg->label_13, 157);
     lv_obj_set_size(pg->label_13, 235, 60);
 
     /* image_12: 图片 | (902,160) | img: tips.png */
@@ -17382,7 +17382,7 @@ void waterclean_cooking_lang_tune(void)
     /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_6: 标签 | "| 水解自清洁 | 10分钟 |" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_6, 274, 232);
+    lv_obj_set_y(pg->label_6, 232);   /* x 由下方 nav_cook_icon_align 统一 */
     lv_obj_set_size(pg->label_6, 490, 39);
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
@@ -17401,10 +17401,10 @@ void waterclean_cooking_lang_tune(void)
     lv_obj_set_size(pg->bar_2, 637, 20);
 
     /* image_6: 图片 | (167,161) | img: watercleanicon.png */
-    lv_obj_set_pos(pg->image_6, 167, 161);
+    nav_cook_icon_align(pg->image_6, pg->label_8, pg->label_6);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35(与nav侧同规则) */
 
     /* label_8: 标签 | "清洁中..." | (273,157) | 235x60 | font taiwanpearl_regular_60 */
-    lv_obj_set_pos(pg->label_8, 273, 157);
+    lv_obj_set_y(pg->label_8, 157);
     lv_obj_set_size(pg->label_8, 235, 60);
 
     /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Eng modify ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -17467,7 +17467,7 @@ void waterclean_stop_lang_tune(void)
     /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_9: 标签 | "| 水解自清洁 | 10分钟 |" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_9, 274, 232);
+    lv_obj_set_y(pg->label_9, 232);   /* x 由下方 nav_cook_icon_align 统一 */
     lv_obj_set_size(pg->label_9, 490, 39);
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
@@ -17486,10 +17486,10 @@ void waterclean_stop_lang_tune(void)
     lv_obj_set_size(pg->bar_3, 637, 20);
 
     /* image_8: 图片 | (167,161) | img: watercleanicon.png */
-    lv_obj_set_pos(pg->image_8, 167, 161);
+    nav_cook_icon_align(pg->image_8, pg->label_11, pg->label_9);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35(与nav侧同规则) */
 
     /* label_11: 标签 | "暂停中..." | (273,157) | 235x60 | font taiwanpearl_regular_60 */
-    lv_obj_set_pos(pg->label_11, 273, 157);
+    lv_obj_set_y(pg->label_11, 157);
     lv_obj_set_size(pg->label_11, 235, 60);
 
     /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Eng modify ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -17526,7 +17526,7 @@ void waterclean_stop_back_lang_tune(void)
     /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* status: 标签 | "| 水解自清洁 | 10分钟 |" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->status, 274, 232);
+    lv_obj_set_y(pg->status, 232);   /* x 由下方 nav_cook_icon_align 统一 */
     lv_obj_set_size(pg->status, 490, 39);
 
     /* image_1: 图片 | (115,320) | img: bar.png */
@@ -17537,10 +17537,10 @@ void waterclean_stop_back_lang_tune(void)
     lv_obj_set_size(pg->bar_1, 637, 20);
 
     /* image_2: 图片 | (167,161) | img: watercleanicon.png */
-    lv_obj_set_pos(pg->image_2, 167, 161);
+    nav_cook_icon_align(pg->image_2, pg->label_6, pg->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35(与nav侧同规则) */
 
     /* label_6: 标签 | "暂停中..." | (273,157) | 235x60 | font taiwanpearl_regular_60 */
-    lv_obj_set_pos(pg->label_6, 273, 157);
+    lv_obj_set_y(pg->label_6, 157);
     lv_obj_set_size(pg->label_6, 235, 60);
 
     /* container_1: 容器 | (0,0) | 1280x480 */

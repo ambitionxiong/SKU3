@@ -1814,6 +1814,11 @@ void nav_dirimg_refit(void)
     } else if (id == PAGE_PREHEAT_MENU) {
         { preheatmenu_t *pg = preheatmenu_get(&ui_manager);
           if (pg) { nav_menu1card_title_refit(pg->label_61); if (is_english()) lv_label_set_text(pg->label_61, "Temperature"); } }
+    } else if (id == PAGE_COLOR_MENU) {
+        /* 额外上色设置页复用 preheatmenu 结构:同一"温度"标题上半带垂直居中补丁
+           (2026-10-20 用户:预热页已调中间,此页漏掉) */
+        { preheatmenu_t *pg = preheatmenu_get(&ui_manager);
+          if (pg) { nav_menu1card_title_refit(pg->label_61); if (is_english()) lv_label_set_text(pg->label_61, "Temperature"); } }
     } else if (id == PAGE_BOTTOM_BBQ_MENU_PROBE) {
         { bottom_bbq_menu_probe_t *pg = bottom_bbq_menu_probe_get(&ui_manager); if (pg) nav_menu2card_title_refit(pg->label_46, pg->label_49); }
     } else if (id == PAGE_HOT_BBQ_MENU_PROBE) {
@@ -1833,6 +1838,24 @@ void nav_dirimg_refit(void)
 int contain_default(void)
 {
     return SET_Data.Set_KeepWarm ? 1 : 0;
+}
+
+/* ==============================
+ * 烹饪页图标/标语排版统一(2026-10-20 用户定稿)
+ * 特殊烹饪(披萨/解冻/干果/保温)与水解自清洁烹饪页:图标左缘对齐进度条框
+ * 左缘(115,与上下烧烤等主模式页同基准),两条标语左缘=图标右缘+35;
+ * status 行比大标语右移 1px,沿用生成稿 273/274 的相对关系。
+ * 原生成稿按"图标右缘≈241"对齐,图标左缘随图标宽度参差、不对齐进度条。
+ * 宽度按图标源图实测取(lv_img 宽=源图宽),换图标素材无需改代码。
+ * ============================== */
+void nav_cook_icon_align(lv_obj_t *icon, lv_obj_t *slogan, lv_obj_t *status)
+{
+    if (!icon) return;
+    lv_obj_set_x(icon, 115);
+    lv_obj_update_layout(icon);
+    lv_coord_t x = (lv_coord_t)(115 + lv_obj_get_width(icon) + 35);
+    if (slogan) lv_obj_set_x(slogan, x);
+    if (status) lv_obj_set_x(status, (lv_coord_t)(x + 1));
 }
 
 /* ==============================

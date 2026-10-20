@@ -355,6 +355,7 @@ void jump_to_corn_cooking(void)
 
     corn_cooking_t *cook = corn_cooking_get(&ui_manager);
     if (cook) {
+        nav_cook_icon_align(cook->image_248, cook->label_563, cook->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
         lv_obj_t *btns[] = { cook->stop, cook->little };
         if (g_corn_cooking) lv_group_del(g_corn_cooking);
         g_corn_cooking = group_create_for_page(btns, 2);
@@ -496,6 +497,7 @@ void jump_to_corn_stop(void)
 
     corn_stop_t *stop = corn_stop_get(&ui_manager);
     if (stop) {
+        nav_cook_icon_align(stop->image_255, stop->label_576, stop->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
         lv_obj_t *btns[] = { stop->start, stop->little };
         if (g_corn_stop) lv_group_del(g_corn_stop);
         g_corn_stop = group_create_for_page(btns, 2);
@@ -546,6 +548,7 @@ void jump_to_corn_stop_back(void)
 
     corn_stop_back_t *back = corn_stop_back_get(&ui_manager);
     if (back) {
+        nav_cook_icon_align(back->image_256, back->label_578, back->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
         lv_obj_t *btns[] = { back->sure };
         if (g_corn_stop_back) lv_group_del(g_corn_stop_back);
         g_corn_stop_back = group_create_for_page(btns, 1);
@@ -604,6 +607,7 @@ void corn_resume_cooking(void)
 
     corn_cooking_t *cook = corn_cooking_get(&ui_manager);
     if (cook) {
+        nav_cook_icon_align(cook->image_248, cook->label_563, cook->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
         lv_obj_t *btns[] = { cook->stop, cook->little };
         if (g_corn_cooking) lv_group_del(g_corn_cooking);
         g_corn_cooking = group_create_for_page(btns, 2);
@@ -673,6 +677,7 @@ static void on_corn_setting_sure_click(lv_event_t *e)
 
     corn_cooking_t *cook = corn_cooking_get(&ui_manager);
     if (cook) {
+        nav_cook_icon_align(cook->image_248, cook->label_563, cook->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
         lv_obj_t *btns[] = { cook->stop, cook->little };
         if (g_corn_cooking) lv_group_del(g_corn_cooking);
         g_corn_cooking = group_create_for_page(btns, 2);
@@ -727,6 +732,7 @@ void jump_to_corn_complete(void)
     {
         corn_complete_t *cook = corn_complete_get(&ui_manager);
         if (cook) {
+        nav_cook_icon_align(cook->image_260, cook->label_582, cook->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
             lv_obj_t *btns[] = { cook->little };
             if (g_corn_complete) lv_group_del(g_corn_complete);
             g_corn_complete = group_create_for_page(btns, 1);
@@ -911,6 +917,7 @@ void corn_rebuild_cooking(page_id_t child)
     corn_cooking_create(&ui_manager);
     corn_cooking_t *cook = corn_cooking_get(&ui_manager);
     if (cook) {
+        nav_cook_icon_align(cook->image_248, cook->label_563, cook->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
         lv_obj_t *btns[] = { cook->stop, cook->little };
         if (g_corn_cooking) lv_group_del(g_corn_cooking);
         g_corn_cooking = group_create_for_page(btns, 2);
@@ -1038,6 +1045,7 @@ void corn_rebuild_stop(void)
     corn_stop_create(&ui_manager);
     corn_stop_t *stop = corn_stop_get(&ui_manager);
     if (stop) {
+        nav_cook_icon_align(stop->image_255, stop->label_576, stop->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
         lv_obj_t *btns[] = { stop->start, stop->little };
         if (g_corn_stop) lv_group_del(g_corn_stop);
         g_corn_stop = group_create_for_page(btns, 2);
@@ -1081,6 +1089,7 @@ void corn_rebuild_stop_back(void)
     corn_stop_back_create(&ui_manager);
     corn_stop_back_t *back = corn_stop_back_get(&ui_manager);
     if (back) {
+        nav_cook_icon_align(back->image_256, back->label_578, back->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
         lv_obj_t *btns[] = { back->sure };
         if (g_corn_stop_back) lv_group_del(g_corn_stop_back);
         g_corn_stop_back = group_create_for_page(btns, 1);
@@ -1116,6 +1125,10 @@ void corn_rebuild_complete(void)
 {
     edit_clear();
     corn_complete_create(&ui_manager);
+
+    { corn_complete_t *c = corn_complete_get(&ui_manager);
+      if (c) nav_cook_icon_align(c->image_260, c->label_582, c->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
+    }
     current_group = g_corn_complete;
     lang_scr_load_anim(corn_complete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,

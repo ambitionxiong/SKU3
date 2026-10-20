@@ -355,6 +355,7 @@ void jump_to_unfrozen_cooking(void)
 
     unfrozen_cooking_t *cook = unfrozen_cooking_get(&ui_manager);
     if (cook) {
+        nav_cook_icon_align(cook->image_206, cook->label_465, cook->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
         lv_obj_t *btns[] = { cook->stop, cook->little };
         if (g_unfrozen_cooking) lv_group_del(g_unfrozen_cooking);
         g_unfrozen_cooking = group_create_for_page(btns, 2);
@@ -496,6 +497,7 @@ void jump_to_unfrozen_stop(void)
 
     unfrozen_stop_t *stop = unfrozen_stop_get(&ui_manager);
     if (stop) {
+        nav_cook_icon_align(stop->image_213, stop->label_478, stop->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
         lv_obj_t *btns[] = { stop->start, stop->little };
         if (g_unfrozen_stop) lv_group_del(g_unfrozen_stop);
         g_unfrozen_stop = group_create_for_page(btns, 2);
@@ -541,6 +543,7 @@ void jump_to_unfrozen_stop_back(void)
 
     unfrozen_stop_back_t *back = unfrozen_stop_back_get(&ui_manager);
     if (back) {
+        nav_cook_icon_align(back->image_214, back->label_480, back->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
         lv_obj_t *btns[] = { back->sure };
         if (g_unfrozen_stop_back) lv_group_del(g_unfrozen_stop_back);
         g_unfrozen_stop_back = group_create_for_page(btns, 1);
@@ -604,6 +607,7 @@ void unfrozen_resume_cooking(void)
 
     unfrozen_cooking_t *cook = unfrozen_cooking_get(&ui_manager);
     if (cook) {
+        nav_cook_icon_align(cook->image_206, cook->label_465, cook->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
         lv_obj_t *btns[] = { cook->stop, cook->little };
         if (g_unfrozen_cooking) lv_group_del(g_unfrozen_cooking);
         g_unfrozen_cooking = group_create_for_page(btns, 2);
@@ -673,6 +677,7 @@ static void on_unfrozen_setting_sure_click(lv_event_t *e)
 
     unfrozen_cooking_t *cook = unfrozen_cooking_get(&ui_manager);
     if (cook) {
+        nav_cook_icon_align(cook->image_206, cook->label_465, cook->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
         lv_obj_t *btns[] = { cook->stop, cook->little };
         if (g_unfrozen_cooking) lv_group_del(g_unfrozen_cooking);
         g_unfrozen_cooking = group_create_for_page(btns, 2);
@@ -727,6 +732,7 @@ void jump_to_unfrozen_complete(void)
     {
         unfrozen_complete_t *cook = unfrozen_complete_get(&ui_manager);
         if (cook) {
+        nav_cook_icon_align(cook->image_218, cook->label_484, cook->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
             lv_obj_t *btns[] = { cook->little };
             if (g_unfrozen_complete) lv_group_del(g_unfrozen_complete);
             g_unfrozen_complete = group_create_for_page(btns, 1);
@@ -911,6 +917,7 @@ void unfrozen_rebuild_cooking(page_id_t child)
     unfrozen_cooking_create(&ui_manager);
     unfrozen_cooking_t *cook = unfrozen_cooking_get(&ui_manager);
     if (cook) {
+        nav_cook_icon_align(cook->image_206, cook->label_465, cook->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
         lv_obj_t *btns[] = { cook->stop, cook->little };
         if (g_unfrozen_cooking) lv_group_del(g_unfrozen_cooking);
         g_unfrozen_cooking = group_create_for_page(btns, 2);
@@ -1038,6 +1045,7 @@ void unfrozen_rebuild_stop(void)
     unfrozen_stop_create(&ui_manager);
     unfrozen_stop_t *stop = unfrozen_stop_get(&ui_manager);
     if (stop) {
+        nav_cook_icon_align(stop->image_213, stop->label_478, stop->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
         lv_obj_t *btns[] = { stop->start, stop->little };
         if (g_unfrozen_stop) lv_group_del(g_unfrozen_stop);
         g_unfrozen_stop = group_create_for_page(btns, 2);
@@ -1076,6 +1084,7 @@ void unfrozen_rebuild_stop_back(void)
     unfrozen_stop_back_create(&ui_manager);
     unfrozen_stop_back_t *back = unfrozen_stop_back_get(&ui_manager);
     if (back) {
+        nav_cook_icon_align(back->image_214, back->label_480, back->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
         lv_obj_t *btns[] = { back->sure };
         if (g_unfrozen_stop_back) lv_group_del(g_unfrozen_stop_back);
         g_unfrozen_stop_back = group_create_for_page(btns, 1);
@@ -1116,6 +1125,10 @@ void unfrozen_rebuild_complete(void)
 {
     edit_clear();
     unfrozen_complete_create(&ui_manager);
+
+    { unfrozen_complete_t *c = unfrozen_complete_get(&ui_manager);
+      if (c) nav_cook_icon_align(c->image_218, c->label_484, c->status);   /* 图标左缘对齐进度条框左缘,标语距图标右缘35 */
+    }
     current_group = g_unfrozen_complete;
     lang_scr_load_anim(unfrozen_complete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
