@@ -57,8 +57,9 @@ int nav_poweroff_ask_needed(void)
 }
 
 /* 烹饪会话中可出现在烹饪层之上的页面：设置覆盖层/其子页/各模式 SETTING 小按钮页。
-   空闲回页只处理这些；遇到其它页面即视为已在运行/暂停/完成/预约层 */
-static int is_cook_above_page(page_id_t p)
+   空闲回页只处理这些；遇到其它页面即视为已在运行/暂停/完成/预约层。
+   收藏分类(nav_favorites)与 like 徽标落页(nav_system)亦用它向下穿透栈顶 */
+int nav_is_cook_above_page(page_id_t p)
 {
     if (p == PAGE_SCREEN_SET || p == PAGE_LOUDNESS || p == PAGE_SET_VAL ||
         p == PAGE_SET_COUNT || p == PAGE_SET_SYSTIME)
@@ -143,7 +144,7 @@ static void nav_idle_timer_cb(lv_timer_t *t)
        覆盖层/子页上不刷新(规则1 的无操作 1 分钟回烹饪层照常累积)。
        完成态(IFACE_COMPLETE)一律不进闲时:完成页无限期停留,由用户手动离开 */
     if (g_send.iface_status == IFACE_COMPLETE ||
-        (nav_cook_session_active() && !is_cook_above_page(top)))
+        (nav_cook_session_active() && !nav_is_cook_above_page(top)))
         g_last_activity_ms = lv_tick_get();
 
     /* 规则3:待机页无操作 20 分钟关机 */
@@ -163,7 +164,7 @@ static void nav_idle_timer_cb(lv_timer_t *t)
 
     /* 规则1:烹饪会话无操作 1 分钟逐层退出覆盖层/子页回烹饪层 */
     if (nav_cook_session_active() && idle_s >= NAV_IDLE_TO_COOKING_S &&
-        is_cook_above_page(top)) {
+        nav_is_cook_above_page(top)) {
         switch (top) {
         case PAGE_SCREEN_SET:
             screen_set_back();            /* 运行态分支:还原下层焦点组并补刷倒计时 */

@@ -384,11 +384,16 @@ void nav_topflag_demo_sync(void)
         lv_obj_set_pos(tf->like, 24, 24);
 }
 
-/* 收藏成功:like 徽标显示到当前完成页,离页自动收回(nav_favorites.c 两处成功路径调用) */
+/* 收藏成功:like 徽标显示到当前完成页,离页自动收回(nav_favorites.c 两处成功路径调用)。
+ * 落页取向下穿透后的烹饪层页(设置覆盖层子页上收藏时,徽标挂到下层完成页,
+ * 退回完成页即亮,不悬在子页上) */
 void nav_topflag_like_show(void)
 {
+    int base = depth;
+    while (base > 0 && nav_is_cook_above_page(page_stack[base - 1]))
+        base--;
     s_topflag_like = 1;
-    s_topflag_like_page = (depth > 0) ? page_stack[depth - 1] : -1;
+    s_topflag_like_page = (base > 0) ? page_stack[base - 1] : -1;
     nav_topflag_demo_sync();   /* 立即显形,不等 500ms tick */
 }
 

@@ -508,6 +508,20 @@ void process_key(uint8_t key)
                 uart_print();
                 break;
             }
+            /* 排除：第六感额外烤色选择页(完成态中途的决策页,主烹饪已完上色档位
+             * 未定,栈顶非烹饪层页——分类误入普通模式存脏数据,且 like 徽标与本页
+             * 左上角菜名 logo 重叠,2026-10-20)；
+             * 烹饪层之上的子页(设置覆盖层子页:声音/数值条/计时器/日期,及各模式
+             * SETTING 小页)——收藏成功提示/角标是完成页专属版式,在子页上叠乱
+             * (计时器页实测"Saved"压住时间字段,2026-10-20)。收藏点=完成页本身:
+             * 覆盖层顶层按收藏会先被关层守卫弹回完成页再存,不受影响 */
+            if (depth > 0 &&
+                (page_stack[depth - 1] == PAGE_TOASTCOLOR ||
+                 nav_is_cook_above_page(page_stack[depth - 1]))) {
+                g_send.buzzer_req = BUZZER_KEY_INVALID;
+                uart_print();
+                break;
+            }
             favorites_save_current();   /* 收藏当前运行参数（进 cooking 时的设置值） */
             uart_print();
             break;
