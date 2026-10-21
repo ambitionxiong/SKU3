@@ -1257,15 +1257,25 @@ void process_key(uint8_t key)
         if (current_group == g_delayset) {
             lv_obj_t *df = lv_group_get_focused(current_group);
             delayset_t *ds = delayset_get(&ui_manager);
-            if (ds && df == ds->hour && nav_edit_session_active()) {
+            if (ds && nav_delayset_fresh && !nav_edit_session_active()) {
+                /* 刚进入(焦点在start,浏览态):顺时针定向到小时并直接进编辑(2026-10-21);
+                   BACK 退出编辑后的浏览态旋转则按 时/分/start 整组循环移焦点 */
+                nav_delayset_fresh = 0;
+                lv_group_focus_obj(ds->hour);
+                nav_edit_session_enter(ds->hour);
+            } else if (ds && df == ds->hour && nav_edit_session_active()) {
                 delay_hour++;
                 if (delay_hour > 23) delay_hour = 0;
             } else if (ds && df == ds->min && nav_edit_session_active()) {
                 delay_min++;
                 if (delay_min > 59) delay_min = 0;
+            } else if (ds && df == ds->start && nav_edit_session_active()) {
+                /* 编辑态焦点在start(OK从分切过来):顺时针拉回小时编辑,仿日期时间页(2026-10-21);
+                   浏览态不在此列,旋转仍按 时/分/start 整组循环 */
+                lv_group_focus_obj(ds->hour);
             } else {
                 g_send.buzzer_req = BUZZER_ENCODER;
-                lv_group_focus_next(current_group);   /* 浏览模式或焦点在 start:移焦点 */
+                lv_group_focus_next(current_group);   /* 浏览模式:移焦点 */
                 uart_print();
                 break;
             }
@@ -1445,15 +1455,23 @@ void process_key(uint8_t key)
         if (current_group == g_delayset) {
             lv_obj_t *df = lv_group_get_focused(current_group);
             delayset_t *ds = delayset_get(&ui_manager);
-            if (ds && df == ds->hour && nav_edit_session_active()) {
+            if (ds && nav_delayset_fresh && !nav_edit_session_active()) {
+                /* 刚进入(焦点在start,浏览态):逆时针也定向到小时并直接进编辑(两方向同一定向,2026-10-21) */
+                nav_delayset_fresh = 0;
+                lv_group_focus_obj(ds->hour);
+                nav_edit_session_enter(ds->hour);
+            } else if (ds && df == ds->hour && nav_edit_session_active()) {
                 delay_hour--;
                 if (delay_hour < 0) delay_hour = 23;
             } else if (ds && df == ds->min && nav_edit_session_active()) {
                 delay_min--;
                 if (delay_min < 0) delay_min = 59;
+            } else if (ds && df == ds->start && nav_edit_session_active()) {
+                /* 编辑态焦点在start:逆时针也拉回小时编辑(两方向同一定向,2026-10-21) */
+                lv_group_focus_obj(ds->hour);
             } else {
                 g_send.buzzer_req = BUZZER_ENCODER;
-                lv_group_focus_prev(current_group);   /* 浏览模式或焦点在 start:移焦点 */
+                lv_group_focus_prev(current_group);   /* 浏览模式:移焦点 */
                 uart_print();
                 break;
             }
@@ -1468,6 +1486,7 @@ void process_key(uint8_t key)
             if (ss && df == ss->next && nav_edit_session_active()) {
                 /* 仿 updown menu:从 next 左转跳到 mainroller */
                 lv_group_focus_obj(ss->roller_main);
+                nav_edit_min_gate_refocus(ss->roller_main);   /* 落焦非分钟字段,收门槛防残留 */
                 g_send.buzzer_req = BUZZER_ENCODER;
                 uart_print();
                 break;
@@ -2063,6 +2082,9 @@ void process_key(uint8_t key)
             } else {
                 g_send.buzzer_req = BUZZER_KEY_VALID;
                 lv_group_focus_next(current_group);   /* 编辑中:确认切下一焦点 */
+                /* 多段页无浏览态:落焦即"进入该字段编辑",重算分钟特判门槛
+                   (从上限落到分钟才启用进位联动,与menu同口径,2026-10-21) */
+                nav_edit_min_gate_refocus(lv_group_get_focused(current_group));
             }
             uart_print();
             break;

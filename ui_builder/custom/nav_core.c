@@ -1041,7 +1041,7 @@ static void set_status_label(lv_obj_t *label, int temp, int hour, int min)
     if (hour == 0)
         lv_label_set_text_fmt(label, tr("| 上下烧烤 | %d℃ | %d分钟"), temp, min);
     else
-        lv_label_set_text_fmt(label, tr("| 上下烧烤 | %d℃ | %d小时%d分钟"), temp, hour, min);
+        nav_status_info_fmt(label, tr("| 上下烧烤 | %d℃ | %d小时%d分钟"), temp, hour, min);
 }
 void set_status_label_min(lv_obj_t *label, int temp_up, int temp_down, int hour, int min)
 {
@@ -1888,6 +1888,46 @@ void nav_cook_icon_align(lv_obj_t *icon, lv_obj_t *slogan, lv_obj_t *status)
 }
 
 /* ==============================
+ * 状态信息行整小时裁剪(2026-10-21 用户定稿)
+ * 运行态信息行时长为整小时(分==0)时只显示小时段:"4小时0分钟"→"4小时"、
+ * "4小時00分鐘"→"4小時"(繁体分带前导零)、"4h 0min"→"4h"。
+ * 分钟非 0 或尾部不带小时段则原样保留。各运行页信息行统一走
+ * nav_status_info_fmt;自拼缓冲(如 somecook merged)调 nav_strip_wholehour_tail
+ * ============================== */
+void nav_strip_wholehour_tail(char *buf)
+{
+    if (!buf) return;
+    size_t n = strlen(buf);
+    static const struct { const char *zeros; const char *mark; } s_rules[] = {
+        { "0分钟", "小时" },    /* 简体: %d分钟 */
+        { "00分鐘", "小時" },   /* 繁体: %02d分鐘 */
+        { " 0min", "h" },      /* 英文: %dh %dmin(带空格,状态行族) */
+        { "0min", "h" },       /* 英文: %dh%dmin(无空格,收藏卡"Time: %dh%dmin") */
+    };
+    for (unsigned i = 0; i < sizeof(s_rules) / sizeof(s_rules[0]); i++) {
+        size_t zl = strlen(s_rules[i].zeros), ml = strlen(s_rules[i].mark);
+        if (n > zl + ml &&
+            strncmp(buf + n - zl, s_rules[i].zeros, zl) == 0 &&
+            strncmp(buf + n - zl - ml, s_rules[i].mark, ml) == 0) {
+            buf[n - zl] = '\0';
+            return;
+        }
+    }
+}
+
+void nav_status_info_fmt(lv_obj_t *label, const char *fmt, ...)
+{
+    if (!label || !fmt) return;
+    char buf[160];
+    va_list ap;
+    va_start(ap, fmt);
+    vsnprintf(buf, sizeof(buf), fmt, ap);
+    va_end(ap);
+    nav_strip_wholehour_tail(buf);
+    lv_label_set_text(label, buf);
+}
+
+/* ==============================
  * 状态栏超长动态布局(多段/六感,2026-10-19)
  * 合并单行文本实测超宽时:首段名称移入叠放的 name_label(activestatus,自身循环滚动),
  * 状态栏首段留白,参数段从第二个'|'起原样拼接(留白宽度对齐 i18n 留白词条:中25/英34 空格)。
@@ -2192,11 +2232,12 @@ uint8_t nav_edit_session_active(void)
     return !s_edit_browse;
 }
 
-// 浏览模式按确认进入编辑:焦点不动,起闪
-void nav_edit_session_enter(lv_obj_t *focused)
+// 分钟特判门槛重算:焦点落在分钟字段且时==上限(分钟被钉 0)才置位,其余收回。
+// menu 页由 nav_edit_session_enter(浏览按确认进编辑)调用;
+// 多段页无浏览/编辑切换(进页即编辑),焦点落到字段即等价"进入该字段编辑",
+// 由 nav_key 落焦处调 nav_edit_min_gate_refocus——两口径一致(2026-10-21)
+void nav_edit_min_gate_refocus(lv_obj_t *focused)
 {
-    s_edit_browse = 0;
-    /* 会话门槛:本次编辑落在分钟字段且时==上限(分钟被钉 0)才置位 */
     s_min_edit_at_max = 0;
     edit_field_t *ef = find_edit_field(focused);
     if (ef && ef->value == &set_min) {
@@ -2207,6 +2248,13 @@ void nav_edit_session_enter(lv_obj_t *focused)
             }
         }
     }
+}
+
+// 浏览模式按确认进入编辑:焦点不动,起闪
+void nav_edit_session_enter(lv_obj_t *focused)
+{
+    s_edit_browse = 0;
+    nav_edit_min_gate_refocus(focused);   /* 会话门槛:进入分钟编辑且时==上限才置位 */
     if (focused)
         nav_blink_refresh(focused);
 }

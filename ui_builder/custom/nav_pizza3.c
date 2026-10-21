@@ -32,7 +32,7 @@ static void pizza3_set_status(lv_obj_t *label, int temp, int hour, int min)
     if (hour == 0)
         lv_label_set_text_fmt(label, tr("| %s | %d℃ | %d分钟"), name, temp, min);
     else
-        lv_label_set_text_fmt(label, tr("| %s | %d℃ | %d小时%d分钟"), name, temp, hour, min);
+        nav_status_info_fmt(label, tr("| %s | %d℃ | %d小时%d分钟"), name, temp, hour, min);
 }
 
 static void pizza3_delay_toggle(lv_event_t *e)

@@ -660,6 +660,8 @@ void page_pop(void);
 int is_cook_setting_page(page_id_t cur);   /* 各模式 SETTING 页(烹饪中小按钮进入,nav_key.c) */
 int nav_is_cook_above_page(page_id_t p);   /* 烹饪层之上的页(覆盖层/子页/SETTING 页,nav_idle.c;收藏分类穿透用) */
 void nav_cook_icon_align(lv_obj_t *icon, lv_obj_t *slogan, lv_obj_t *status);   /* 烹饪页图标对齐进度条左缘+标语距图标右缘35(nav_core.c) */
+void nav_status_info_fmt(lv_obj_t *label, const char *fmt, ...);   /* 状态信息行渲染:整小时(分0)裁掉分钟段(nav_core.c) */
+void nav_strip_wholehour_tail(char *buf);   /* 缓冲版整小时裁剪:"4小时0分钟"→"4小时"(简/繁/英三态) */
 int is_menu_edit_page(page_id_t cur);      /* 各模式 MENU 菜单设置页(编辑字段族,进页即浏览) */
 void stepset_bind_events(void);
 void delay_cancel_exit_to_set(void);
@@ -813,6 +815,7 @@ void nav_blink_refresh(lv_obj_t *focused);  /* 组表变化后按焦点强制重
    浏览模式:编码器移焦点、确认进编辑/点按钮、BACK 才返回上一页 */
 uint8_t nav_edit_session_active(void);                 /* 当前是否编辑态 */
 void nav_edit_session_enter(lv_obj_t *focused);        /* 浏览→编辑:焦点不动起闪 */
+void nav_edit_min_gate_refocus(lv_obj_t *focused);     /* 分钟特判门槛重算(多段页落焦即"进入编辑",menu经session_enter同口径) */
 void nav_edit_session_exit(void);                      /* 编辑→浏览:数值保留停闪 */
 uint8_t nav_editable_target(lv_obj_t *obj);            /* 焦点对象是否可编辑(字段+extras) */
 void nav_editable_extra_register(lv_obj_t *obj);       /* 特殊页登记可编辑对象(build 时) */

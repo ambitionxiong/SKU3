@@ -293,6 +293,10 @@ void on_preheat_toggle(lv_event_t *e)
 int delay_hour = 19;
 int delay_min = 0;
 
+/* 刚进入 delayset 的定向标志(2026-10-21):进入后首次旋转(顺/逆皆)把焦点定到
+   小时并直接进编辑;BACK 退出编辑后的浏览态不在此列,旋转按 时/分/start 整组循环 */
+uint8_t nav_delayset_fresh = 0;
+
 // 进入 delayset 的时刻（今天/明天切换基准，不随实时时间变化）
 static int delayset_enter_hour = -1;
 static int delayset_enter_min = 0;
@@ -544,6 +548,7 @@ void delayset_page_build(void)
         nav_editable_extra_register(ds->min);
 
         lv_group_focus_obj(ds->start);
+        nav_delayset_fresh = 1;   /* 进入定向:首次旋转直接进小时编辑(jump/pop 重建共用此构建) */
 
         /* 六感已设"面包卷",其他模式显示模式名 */
         if (g_delay_source_page != PAGE_DESCRIPTIONMENU)
@@ -551,6 +556,10 @@ void delayset_page_build(void)
         delayset_refresh_display(ds);
     }
     current_group = g_delayset;
+    /* 延迟页入口定义:焦点在 start 的浏览态。族分类(edit_browse_reset)对本页走
+       "其余页面进页即编辑"默认,会话带进来后首次旋转会落兜底分支绕错方向——
+       此处显式退浏览:首次旋转(顺/逆)定向进小时编辑,BACK 退编辑后整组循环 */
+    nav_edit_session_exit();
 
     lang_scr_load_anim(delayset_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
@@ -883,7 +892,7 @@ void rebuild_delaycooking(void)
                 lv_label_set_text_fmt(dc->status, tr("| %s | %d℃ | %d分钟"),
                                       mode_display_name(), set_temp, set_min);
             else
-                lv_label_set_text_fmt(dc->status, tr("| %s | %d℃ | %d小时%d分钟"),
+                nav_status_info_fmt(dc->status, tr("| %s | %d℃ | %d小时%d分钟"),
                                       mode_display_name(), set_temp, set_hour, set_min);
         }
         if (g_delay_source_page != PAGE_DESCRIPTIONMENU) {

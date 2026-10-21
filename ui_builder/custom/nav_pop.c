@@ -2454,7 +2454,7 @@ void page_pop(void)
                 if (set_hour == 0)
                     lv_label_set_text_fmt(done->status, tr("| 千层面 | %d℃ | %d分钟"), set_temp, set_min);
                 else
-                    lv_label_set_text_fmt(done->status, tr("| 千层面 | %d℃ | %d小时%d分钟"), set_temp, set_hour, set_min);
+                    nav_status_info_fmt(done->status, tr("| 千层面 | %d℃ | %d小时%d分钟"), set_temp, set_hour, set_min);
                 lv_bar_set_value(done->bar_51, 100, LV_ANIM_OFF);
             }
             current_group = g_lasagna_complete;
@@ -2518,7 +2518,7 @@ void page_pop(void)
                     lv_label_set_text_fmt(done->status, tr("| %s | %d℃ | %d分钟"),
                                           tr("果馅卷"), set_temp, set_min);
                 else
-                    lv_label_set_text_fmt(done->status, tr("| %s | %d℃ | %d小时%d分钟"),
+                    nav_status_info_fmt(done->status, tr("| %s | %d℃ | %d小时%d分钟"),
                                           tr("果馅卷"), set_temp, set_hour, set_min);
                 lv_bar_set_value(done->bar_55, 100, LV_ANIM_OFF);
             }
@@ -2582,7 +2582,7 @@ void page_pop(void)
                 if (set_hour == 0)
                     lv_label_set_text_fmt(done->status, tr("| 面包 | %d℃ | %d分钟"), set_temp, set_min);
                 else
-                    lv_label_set_text_fmt(done->status, tr("| 面包 | %d℃ | %d小时%d分钟"), set_temp, set_hour, set_min);
+                    nav_status_info_fmt(done->status, tr("| 面包 | %d℃ | %d小时%d分钟"), set_temp, set_hour, set_min);
                 lv_bar_set_value(done->bar_59, 100, LV_ANIM_OFF);
             }
             current_group = g_bread_complete;
@@ -2646,7 +2646,7 @@ void page_pop(void)
                     lv_label_set_text_fmt(done->status, tr("| %s | %d℃ | %d分钟"),
                                           tr("披萨"), set_temp, set_min);
                 else
-                    lv_label_set_text_fmt(done->status, tr("| %s | %d℃ | %d小时%d分钟"),
+                    nav_status_info_fmt(done->status, tr("| %s | %d℃ | %d小时%d分钟"),
                                           tr("披萨"), set_temp, set_hour, set_min);
                 lv_bar_set_value(done->bar_63, 100, LV_ANIM_OFF);
             }
@@ -2710,7 +2710,7 @@ void page_pop(void)
                 if (set_hour == 0)
                     lv_label_set_text_fmt(done->status, tr("| 薯条 | %d℃ | %d分钟"), set_temp, set_min);
                 else
-                    lv_label_set_text_fmt(done->status, tr("| 薯条 | %d℃ | %d小时%d分钟"), set_temp, set_hour, set_min);
+                    nav_status_info_fmt(done->status, tr("| 薯条 | %d℃ | %d小时%d分钟"), set_temp, set_hour, set_min);
                 lv_bar_set_value(done->bar_67, 100, LV_ANIM_OFF);
             }
             current_group = g_chip_complete;
@@ -2773,7 +2773,7 @@ void page_pop(void)
                 if (set_hour == 0)
                     lv_label_set_text_fmt(done->status, tr("| 自定义 | %d℃ | %d分钟"), set_temp, set_min);
                 else
-                    lv_label_set_text_fmt(done->status, tr("| 自定义 | %d℃ | %d小时%d分钟"), set_temp, set_hour, set_min);
+                    nav_status_info_fmt(done->status, tr("| 自定义 | %d℃ | %d小时%d分钟"), set_temp, set_hour, set_min);
                 lv_bar_set_value(done->bar_71, 100, LV_ANIM_OFF);
             }
             current_group = g_custom_complete;

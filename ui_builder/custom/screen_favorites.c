@@ -281,6 +281,7 @@ static void FAV_Six_Parse(const Fun_favorites_Value *fav, char *summary1, int s1
 			snprintf(time_buf, t_sz, tr("时间：%d小时%d分钟"), total / 60, total % 60);
 		else
 			snprintf(time_buf, t_sz, tr("时间：%d分钟"), total);
+		nav_strip_wholehour_tail(time_buf);   /* 整小时只显示小时段,与运行态口径一致(2026-10-21) */
 		if (*lines == 1)
 			snprintf(summary2, s2_sz, "%s", time_buf);   /* 单行小结：时间落 L2 */
 	}
@@ -508,7 +509,7 @@ static void FAV_Set_L2_Lb(lv_obj_t *lb, const Fun_favorites_Value *fav)
 				/* 时间直接按传入项显示：FAV_Option_LB_str 固定读 val[0..3]，
 				 * 第二页卡片(val[4..7])的时间会串成第一页的值；小时为 0 只显分钟 */
 				if (fav->Func_Hour > 0)
-					lv_label_set_text_fmt(lb, tr("时间：%d小时%d分钟"),
+					nav_status_info_fmt(lb, tr("时间：%d小时%d分钟"),
 					                      fav->Func_Hour, fav->Func_Minute);
 				else
 					lv_label_set_text_fmt(lb, tr("时间：%d分钟"),
@@ -1233,7 +1234,7 @@ void FAV_Option_LB_str(lv_obj_t *obj, int8_t Cooking_FUN)
             }
             else if (obj == label2) {
                 if (Fav_Cur->favorites_val[i].Func_Hour > 0)
-                    lv_label_set_text_fmt(obj, tr("时间：%d小时%d分钟"),
+                    nav_status_info_fmt(obj, tr("时间：%d小时%d分钟"),
                         Fav_Cur->favorites_val[i].Func_Hour,
                         Fav_Cur->favorites_val[i].Func_Minute);
                 else
@@ -1889,7 +1890,7 @@ void screen_favorites_create(void)
     // Init scr->favo_L2_Lb_1
     scr->favo_L2_Lb_1 = lv_label_create(scr->favo_LB_Cont_1);
     //lv_label_set_text(scr->favo_L2_Lb_1, "时间： 20分钟");
-	// lv_label_set_text_fmt(scr->favo_L2_Lb_1, "时间： %d小时%d分钟", 
+	// nav_status_info_fmt(scr->favo_L2_Lb_1, "时间： %d小时%d分钟", 
 	// 	Fav_Cur->favorites_val[0].Func_Hour, Fav_Cur->favorites_val[0].Func_Minute);
 	FAV_Set_L2_Lb(scr->favo_L2_Lb_1, &Fav_Cur->favorites_val[0]);
     lv_label_set_long_mode(scr->favo_L2_Lb_1, LV_LABEL_LONG_WRAP);
@@ -2052,7 +2053,7 @@ void screen_favorites_create(void)
     // Init scr->favo_L2_Lb_2
     scr->favo_L2_Lb_2 = lv_label_create(scr->favo_LB_Cont_2);
     //lv_label_set_text(scr->favo_L2_Lb_2, "时间：24分钟");
-	// lv_label_set_text_fmt(scr->favo_L2_Lb_2, "时间： %d小时%d分钟", 
+	// nav_status_info_fmt(scr->favo_L2_Lb_2, "时间： %d小时%d分钟", 
 	// 	Fav_Cur->favorites_val[1].Func_Hour, Fav_Cur->favorites_val[1].Func_Minute);
 	FAV_Set_L2_Lb(scr->favo_L2_Lb_2, &Fav_Cur->favorites_val[1]);
     lv_label_set_long_mode(scr->favo_L2_Lb_2, LV_LABEL_LONG_WRAP);
@@ -2215,7 +2216,7 @@ void screen_favorites_create(void)
     // Init scr->favo_L2_Lb_3
     scr->favo_L2_Lb_3 = lv_label_create(scr->favo_LB_Cont_3);
     //lv_label_set_text(scr->favo_L2_Lb_3, "时间： 20分钟");
-	// lv_label_set_text_fmt(scr->favo_L2_Lb_3, "时间： %d小时%d分钟", 
+	// nav_status_info_fmt(scr->favo_L2_Lb_3, "时间： %d小时%d分钟", 
 	// 	Fav_Cur->favorites_val[2].Func_Hour, Fav_Cur->favorites_val[2].Func_Minute);
 	FAV_Set_L2_Lb(scr->favo_L2_Lb_3, &Fav_Cur->favorites_val[2]);
     lv_label_set_long_mode(scr->favo_L2_Lb_3, LV_LABEL_LONG_WRAP);
@@ -2379,7 +2380,7 @@ void screen_favorites_create(void)
     // Init scr->favo_L2_Lb_4
     scr->favo_L2_Lb_4 = lv_label_create(scr->favo_LB_Cont_4);
     //lv_label_set_text(scr->favo_L2_Lb_4, "时间： 20分钟");
-	// lv_label_set_text_fmt(scr->favo_L2_Lb_4, "时间： %d小时%d分钟", 
+	// nav_status_info_fmt(scr->favo_L2_Lb_4, "时间： %d小时%d分钟", 
 	// 	Fav_Cur->favorites_val[3].Func_Hour, Fav_Cur->favorites_val[3].Func_Minute);
 	FAV_Set_L2_Lb(scr->favo_L2_Lb_4, &Fav_Cur->favorites_val[3]);
     lv_label_set_long_mode(scr->favo_L2_Lb_4, LV_LABEL_LONG_WRAP);

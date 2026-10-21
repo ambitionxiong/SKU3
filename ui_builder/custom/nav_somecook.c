@@ -73,7 +73,7 @@ static void somecook_refresh(void)
                 if (g_steps[i].hour == 0)
                     lv_label_set_text_fmt(time_lb[i], tr("时间: %d分钟"), g_steps[i].min);
                 else
-                    lv_label_set_text_fmt(time_lb[i], tr("时间: %d小时%d分钟"), g_steps[i].hour, g_steps[i].min);
+                    nav_status_info_fmt(time_lb[i], tr("时间: %d小时%d分钟"), g_steps[i].hour, g_steps[i].min);
             }
         } else {
             lv_obj_add_flag(steps[i], LV_OBJ_FLAG_HIDDEN);

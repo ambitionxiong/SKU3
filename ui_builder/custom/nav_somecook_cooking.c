@@ -96,6 +96,7 @@ static void somecook_cooking_apply_info(somecook_cooking_t *sc)
     else
         snprintf(merged, sizeof(merged), tr("| 步骤%s：%s | %d℃ | %d分钟"),
                  tr(cn[i]), mode_display_name(), set_temp, set_min);
+    nav_strip_wholehour_tail(merged);   /* 整小时只显示小时段(2026-10-21) */
     char step[64];
     snprintf(step, sizeof(step), tr("步骤%s：%s"), tr(cn[i]), mode_display_name());
     nav_status_bar_dynamic(sc->label_12, sc->activestatus, step, merged);

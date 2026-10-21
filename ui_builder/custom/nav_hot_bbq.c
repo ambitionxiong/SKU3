@@ -34,7 +34,7 @@ static void hot_bbq_set_status(lv_obj_t *label, int temp, int hour, int min)
     if (hour == 0)
         lv_label_set_text_fmt(label, tr("| 热风烧烤 | %d℃ | %d分钟"), temp, min);
     else
-        lv_label_set_text_fmt(label, tr("| 热风烧烤 | %d℃ | %d小时%d分钟"), temp, hour, min);
+        nav_status_info_fmt(label, tr("| 热风烧烤 | %d℃ | %d小时%d分钟"), temp, hour, min);
 }
 
 static void hot_bbq_preheat_toggle(lv_event_t *e)
@@ -736,7 +736,7 @@ void jump_to_hot_bbq_complete(void)
             if (set_hour == 0)
                 lv_label_set_text_fmt(cook->status, tr("| 热风烧烤 | %d℃ | %d分钟"), set_temp, set_min);
             else
-                lv_label_set_text_fmt(cook->status, tr("| 热风烧烤 | %d℃ | %d小时%d分钟"), set_temp, set_hour, set_min);
+                nav_status_info_fmt(cook->status, tr("| 热风烧烤 | %d℃ | %d小时%d分钟"), set_temp, set_hour, set_min);
             lv_bar_set_value(cook->bar_17, 100, LV_ANIM_OFF);
         }
     }
