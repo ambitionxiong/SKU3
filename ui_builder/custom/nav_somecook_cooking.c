@@ -332,7 +332,7 @@ void somecook_cooking_next_step(void)
         page_push(PAGE_SOMECOOK_COOKING);
         lv_obj_clean(lv_scr_act());
         somecook_cooking_create(&ui_manager);
-        somecook_cooking_t *sc = somecook_cooking_get(&ui_manager);
+            somecook_cooking_t *sc = somecook_cooking_get(&ui_manager);
         if (sc) {
             lv_obj_t *btns[] = { sc->stop };
             if (g_somecook_cooking) lv_group_del(g_somecook_cooking);

@@ -42,8 +42,7 @@ static void preheat_update_bar(lv_obj_t *bar, lv_obj_t *bartemp)
 // 按来源模式设置预热页的 icon 和 status（模式自己的 icon + 模式名，无温度）
 static void preheat_apply_mode_ui(lv_obj_t *icon, lv_obj_t *status)
 {
-    /* 单独进入预热:icon 右移 48px(排版修正,不改生成文件;模式预热保持原位) */
-    if (g_preheat_solo && icon) lv_obj_set_pos(icon, 163, 161);
+    /* 单独预热沿用默认图标:位置由调用点 nav_cook_icon_align 统一贴进度条左缘(2026-10-21) */
     const char *txt = NULL;
     switch (g_send.cook_mode) {
     case MODE_UPDOWN_BBQ:
@@ -330,6 +329,7 @@ void jump_to_preheat_cooking(void)
         lv_label_set_text_fmt(cook->temp, tr("%d℃"), set_temp);
         lv_label_set_text(cook->name, tr("预热中..."));
         preheat_apply_mode_ui(cook->icon, cook->status);
+        { nav_cook_icon_align(cook->icon, cook->name, cook->status); }   /* 换图后重对齐(2026-10-21) */
         preheat_update_bar(cook->bar_1, cook->bartemp);
     }
     current_group = g_preheat_cooking;
@@ -367,6 +367,7 @@ void jump_to_preheat_stop(void)
 
         lv_label_set_text_fmt(stop->temp, tr("%d℃"), set_temp);
         preheat_apply_mode_ui(stop->icon, stop->status);
+        { nav_cook_icon_align(stop->icon, stop->name, stop->status); }   /* 换图后重对齐(2026-10-21) */
         preheat_update_bar(stop->bar_2, stop->bartemp);
     }
     current_group = g_preheat_stop;
@@ -403,6 +404,7 @@ void preheat_resume_cooking(void)
         lv_label_set_text_fmt(cook->temp, tr("%d℃"), set_temp);
         lv_label_set_text(cook->name, tr("预热中..."));
         preheat_apply_mode_ui(cook->icon, cook->status);
+        { nav_cook_icon_align(cook->icon, cook->name, cook->status); }   /* 换图后重对齐(2026-10-21) */
         preheat_update_bar(cook->bar_1, cook->bartemp);
     }
     current_group = g_preheat_cooking;
@@ -436,6 +438,7 @@ void jump_to_preheat_stop_back(void)
 
         preheat_update_bar(back->bar_1, back->bartemp);
         preheat_apply_mode_ui(back->icon, back->status);
+        { nav_cook_icon_align(back->icon, back->name, back->status); }   /* 换图后重对齐(2026-10-21) */
 
         if (g_send.iface_status == IFACE_COOKING)
             lv_label_set_text(back->name, tr("预热中..."));
@@ -470,6 +473,7 @@ void preheat_rebuild_stop_back(void)
 
         preheat_update_bar(back->bar_1, back->bartemp);
         preheat_apply_mode_ui(back->icon, back->status);
+        { nav_cook_icon_align(back->icon, back->name, back->status); }   /* 换图后重对齐(2026-10-21) */
 
         if (g_send.iface_status == IFACE_COOKING)
             lv_label_set_text(back->name, tr("预热中..."));
@@ -541,6 +545,7 @@ void jump_to_preheat_complete(void)
             lv_bar_set_value(cook->bar_3, 100, LV_ANIM_OFF);
             lv_label_set_text(cook->name, tr("预热完成"));
             preheat_apply_mode_ui(cook->icon, cook->status);
+            { nav_cook_icon_align(cook->icon, cook->name, cook->status); }   /* 换图后重对齐(2026-10-21) */
             if (cook->bartemp) {
                 lv_label_set_text_fmt(cook->bartemp, tr("%d℃"), set_temp);
                 lv_obj_set_pos(cook->bartemp, 679 + lang_dyn_dx(), 323 + lang_dyn_dy());
@@ -608,6 +613,7 @@ void preheat_rebuild_cooking(void)
 {
     edit_clear();
     preheatcooking_create(&ui_manager);
+{ preheatcooking_t *p = preheatcooking_get(&ui_manager); if (p) nav_cook_icon_align(p->icon, p->name, p->status); }
     preheatcooking_t *cook = preheatcooking_get(&ui_manager);
     if (cook) {
         lv_obj_t *btns[] = { cook->stop };
@@ -619,6 +625,7 @@ void preheat_rebuild_cooking(void)
         lv_label_set_text_fmt(cook->temp, tr("%d℃"), set_temp);
         lv_label_set_text(cook->name, tr("预热中..."));
         preheat_apply_mode_ui(cook->icon, cook->status);
+        { nav_cook_icon_align(cook->icon, cook->name, cook->status); }   /* 换图后重对齐(2026-10-21) */
         preheat_update_bar(cook->bar_1, cook->bartemp);
     }
     current_group = g_preheat_cooking;
@@ -643,6 +650,7 @@ void preheat_rebuild_stop(void)
 
         lv_label_set_text_fmt(stop->temp, tr("%d℃"), set_temp);
         preheat_apply_mode_ui(stop->icon, stop->status);
+        { nav_cook_icon_align(stop->icon, stop->name, stop->status); }   /* 换图后重对齐(2026-10-21) */
         preheat_update_bar(stop->bar_2, stop->bartemp);
     }
     current_group = g_preheat_stop;
@@ -667,6 +675,7 @@ void preheat_rebuild_complete(void)
             lv_bar_set_value(cook->bar_3, 100, LV_ANIM_OFF);
             lv_label_set_text(cook->name, tr("预热完成"));
             preheat_apply_mode_ui(cook->icon, cook->status);
+            { nav_cook_icon_align(cook->icon, cook->name, cook->status); }   /* 换图后重对齐(2026-10-21) */
             if (cook->bartemp) {
                 lv_label_set_text_fmt(cook->bartemp, tr("%d℃"), set_temp);
                 lv_obj_set_pos(cook->bartemp, 679 + lang_dyn_dx(), 323 + lang_dyn_dy());

@@ -604,6 +604,7 @@ void jump_to_color_cookoing(void)
     page_push(PAGE_COLOR_COOKING);
     lv_obj_clean(lv_scr_act());
     color_cookoing_create(&ui_manager);
+    { color_cookoing_t *p = color_cookoing_get(&ui_manager); if (p) nav_cook_icon_align(p->color_img, p->cooking_label, p->status_label); }
 
     color_cookoing_t *cc = color_cookoing_get(&ui_manager);
     if (cc) {
@@ -673,6 +674,7 @@ void jump_to_color_complete(void)
     page_push(PAGE_COLOR_COOKING_COMPLETE);
     lv_obj_clean(lv_scr_act());
     colorcooking_complete_create(&ui_manager);
+    { colorcooking_complete_t *p = colorcooking_complete_get(&ui_manager); if (p) nav_cook_icon_align(p->color_img, p->complete_label, p->status_label); }
 
     {
         colorcooking_complete_t *cc = colorcooking_complete_get(&ui_manager);

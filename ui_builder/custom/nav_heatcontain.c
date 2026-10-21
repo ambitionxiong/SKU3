@@ -352,6 +352,7 @@ void jump_to_heatcontain_cooking(void)
     page_push(PAGE_HEATCONTAIN_COOKING);
     lv_obj_clean(lv_scr_act());
     heatcontain_cooking_create(&ui_manager);
+    { heatcontain_cooking_t *p = heatcontain_cooking_get(&ui_manager); if (p) nav_cook_icon_align(p->image_269, p->label_612, p->status); }
 
     heatcontain_cooking_t *cook = heatcontain_cooking_get(&ui_manager);
     if (cook) {
@@ -493,6 +494,7 @@ void jump_to_heatcontain_stop(void)
     page_push(PAGE_HEATCONTAIN_STOP);
     lv_obj_clean(lv_scr_act());
     heatcontain_stop_create(&ui_manager);
+    { heatcontain_stop_t *p = heatcontain_stop_get(&ui_manager); if (p) nav_cook_icon_align(p->image_276, p->label_625, p->status); }
 
     heatcontain_stop_t *stop = heatcontain_stop_get(&ui_manager);
     if (stop) {
@@ -543,6 +545,7 @@ void jump_to_heatcontain_stop_back(void)
     page_push(PAGE_HEATCONTAIN_STOP_BACK);
     lv_obj_clean(lv_scr_act());
     heatcontain_stop_back_create(&ui_manager);
+    { heatcontain_stop_back_t *p = heatcontain_stop_back_get(&ui_manager); if (p) nav_cook_icon_align(p->image_277, p->label_627, p->status); }
 
     heatcontain_stop_back_t *back = heatcontain_stop_back_get(&ui_manager);
     if (back) {
@@ -601,6 +604,7 @@ void heatcontain_resume_cooking(void)
     if (depth > 1) depth--;
     lv_obj_clean(lv_scr_act());
     heatcontain_cooking_create(&ui_manager);
+    { heatcontain_cooking_t *p = heatcontain_cooking_get(&ui_manager); if (p) nav_cook_icon_align(p->image_269, p->label_612, p->status); }
 
     heatcontain_cooking_t *cook = heatcontain_cooking_get(&ui_manager);
     if (cook) {
@@ -670,6 +674,7 @@ static void on_heatcontain_setting_sure_click(lv_event_t *e)
         depth--;
     lv_obj_clean(lv_scr_act());
     heatcontain_cooking_create(&ui_manager);
+        { heatcontain_cooking_t *p = heatcontain_cooking_get(&ui_manager); if (p) nav_cook_icon_align(p->image_269, p->label_612, p->status); }
 
     heatcontain_cooking_t *cook = heatcontain_cooking_get(&ui_manager);
     if (cook) {
@@ -723,6 +728,7 @@ void jump_to_heatcontain_complete(void)
     page_push(PAGE_HEATCONTAIN_COMPLETE);
     lv_obj_clean(lv_scr_act());
     heatcontain_complete_create(&ui_manager);
+    { heatcontain_complete_t *p = heatcontain_complete_get(&ui_manager); if (p) nav_cook_icon_align(p->image_316, p->label_672, p->status); }
 
     {
         heatcontain_complete_t *cook = heatcontain_complete_get(&ui_manager);
@@ -909,6 +915,7 @@ void heatcontain_rebuild_cooking(page_id_t child)
 {
     edit_clear();
     heatcontain_cooking_create(&ui_manager);
+{ heatcontain_cooking_t *p = heatcontain_cooking_get(&ui_manager); if (p) nav_cook_icon_align(p->image_269, p->label_612, p->status); }
     heatcontain_cooking_t *cook = heatcontain_cooking_get(&ui_manager);
     if (cook) {
         lv_obj_t *btns[] = { cook->stop, cook->little };
@@ -1036,6 +1043,7 @@ void heatcontain_rebuild_stop(void)
     edit_clear();
     g_on_stop_back = 0;
     heatcontain_stop_create(&ui_manager);
+    { heatcontain_stop_t *p = heatcontain_stop_get(&ui_manager); if (p) nav_cook_icon_align(p->image_276, p->label_625, p->status); }
     heatcontain_stop_t *stop = heatcontain_stop_get(&ui_manager);
     if (stop) {
         lv_obj_t *btns[] = { stop->start, stop->little };
@@ -1079,6 +1087,7 @@ void heatcontain_rebuild_stop_back(void)
     g_on_stop_back = 1;
     g_stop_back_complete = jump_to_heatcontain_complete;
     heatcontain_stop_back_create(&ui_manager);
+    { heatcontain_stop_back_t *p = heatcontain_stop_back_get(&ui_manager); if (p) nav_cook_icon_align(p->image_277, p->label_627, p->status); }
     heatcontain_stop_back_t *back = heatcontain_stop_back_get(&ui_manager);
     if (back) {
         lv_obj_t *btns[] = { back->sure };
@@ -1116,6 +1125,7 @@ void heatcontain_rebuild_complete(void)
 {
     edit_clear();
     heatcontain_complete_create(&ui_manager);
+    { heatcontain_complete_t *p = heatcontain_complete_get(&ui_manager); if (p) nav_cook_icon_align(p->image_316, p->label_672, p->status); }
     current_group = g_heatcontain_complete;
     lang_scr_load_anim(heatcontain_complete_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,

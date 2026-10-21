@@ -438,6 +438,7 @@ void jump_to_color_stop(void)
     page_push(PAGE_COLOR_STOP);
     lv_obj_clean(lv_scr_act());
     color_stop_create(&ui_manager);
+    { color_stop_t *p = color_stop_get(&ui_manager); if (p) nav_cook_icon_align(p->image_12, p->label_15, p->label_13); }
 
     color_stop_t *cs = color_stop_get(&ui_manager);
     if (cs) {
@@ -479,6 +480,7 @@ void jump_to_color_stop_back(void)
     page_push(PAGE_COLOR_STOP_BACK);
     lv_obj_clean(lv_scr_act());
     color_stop_back_create(&ui_manager);
+    { color_stop_back_t *p = color_stop_back_get(&ui_manager); if (p) nav_cook_icon_align(p->image_15, p->label_19, p->label_17); }
 
     color_stop_back_t *csb = color_stop_back_get(&ui_manager);
     if (csb) {
