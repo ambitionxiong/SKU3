@@ -734,6 +734,7 @@ int  count_down_running(void);   /* 设置计时器后台运行中(topflag timer
 int  count_down_page_active(void);   /* 计时器页正显示在前台(本页不重复显顶栏 timer 图标,nav_count_down.c) */
 int  count_down_overtime_active(void);   /* 计时器超时层显示中(process_key 模态守卫,nav_count_down.c) */
 void count_down_poweroff_reset(void);    /* 长按关机:清计时器后台/超时状态(nav_keyio 调用,nav_count_down.c) */
+void count_down_overtime_reset(void);    /* 探针插拔等外部重置:只清超时层(标志+回屏指针),后台计时器保留 */
 
 /* 日期/时间子页（nav_systime.c 实现，PAGE_SET_SYSTIME） */
 void jump_to_systime(void);

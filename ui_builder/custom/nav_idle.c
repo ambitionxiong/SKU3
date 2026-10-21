@@ -94,6 +94,12 @@ void nav_goto_major_menu(void)
 void nav_enter_standby(void)
 {
     probetip_cancel_auto_dismiss();       /* 取消陈旧的探针提示自动关闭定时器 */
+    nav_hint_tone_cancel();               /* 提示音引擎/提示层/确认弹层同款卫生(2026-10-21):
+    nav_hint_cancel();                       待机页不残留吞键标志(对齐关机清单;计时器按用户定稿保留) */
+    nav_favtip_cancel();
+    temptip_cancel_auto_dismiss();
+    if (nav_favask_active()) nav_favask_cancel();
+    nav_poweroff_ask_cancel();
     screen_set_reset();                   /* 覆盖层若开着:清理对象/组/焦点指针 */
     depth = 0;
     page_push(PAGE_WAITMENU_24);

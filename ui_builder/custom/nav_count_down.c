@@ -146,6 +146,20 @@ static void count_down_timer_cb(lv_timer_t *timer)
                 s_return_scr = NULL;                      /* 在本页到期 */
                 screen_overtime_cont_create();
             } else {
+                /* 提示页显示中到期:先关提示页(停自动关闭定时器+回其下层页),否则
+                   稍后自动关闭 pop 重建下层页,把超时层屏幕清掉而 s_overtime 残留,
+                   模态守卫吞键(2026-10-21;探针提示 3 秒/腔温提示 5 秒同款) */
+                if (depth > 0 && page_stack[depth - 1] == PAGE_PROBETIP)
+                    probetip_dismiss_now();
+                else if (depth > 0 && page_stack[depth - 1] == PAGE_TEMPTIP)
+                    temptip_dismiss_now();
+                /* 设置覆盖层开着:清覆盖层(还原下层页组+弹栈位),对齐 jump_to_count_down
+                   的预备动作,防覆盖层对象/组随抢屏悬空(2026-10-21) */
+                if (screen_set_overlay_open()) {
+                    screen_set_reset();
+                    if (depth > 0 && page_stack[depth - 1] == PAGE_SCREEN_SET)
+                        depth--;
+                }
                 s_return_scr = lv_scr_act();              /* 在别的页到期:记住原屏 */
                 if (!scr->obj || !lv_obj_is_valid(scr->obj))
                     count_down_create(&ui_manager);       /* 屏幕已被 auto_del:重建 */
@@ -782,6 +796,20 @@ void count_down_poweroff_reset(void)
     s_overtime_sec = 1;
     s_run = 0;
     s_cd_total = s_cd_left = 0;
+    s_return_scr = NULL;
+    s_return_group = NULL;
+    s_below_scr = NULL;
+    s_below_group = NULL;
+}
+
+/* 外部重置(探针插拔,2026-10-21 用户定稿):只清超时层,不停后台计时器。
+ * 超时层显示中被外部重置抢屏时,s_overtime 残留会吞键(模态守卫劫持按键/
+ * 挂起空闲休眠),抢屏与下层指针随页面重建悬空——这些都随本函数清掉;
+ * 计时器若还在跑照常后台走,到期仍按原逻辑抢屏 */
+void count_down_overtime_reset(void)
+{
+    s_overtime = 0;
+    s_overtime_sec = 1;
     s_return_scr = NULL;
     s_return_group = NULL;
     s_below_scr = NULL;

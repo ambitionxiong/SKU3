@@ -23,6 +23,10 @@ static int s_alarm_code = 0;   /* 当前报警序号(0=无);触发后与 BUF[12]
 static void alarm_stop_all(void)
 {
     probetip_cancel_auto_dismiss();   /* 陈旧的探针提示自动关闭定时器 */
+    nav_hint_tone_cancel();           /* 提示音引擎/无效键提示层/收藏提示/腔温提示
+    nav_hint_cancel();                   定时器同款卫生(2026-10-21,对齐关机清单) */
+    nav_favtip_cancel();
+    temptip_cancel_auto_dismiss();
     screen_set_reset();               /* 覆盖层若打开:清对象/组/焦点指针 */
     count_down_poweroff_reset();      /* 计时器后台/超时状态一并清 */
     if (nav_favask_active()) nav_favask_cancel();   /* 弹层标志随清理收起(残留会吞键) */

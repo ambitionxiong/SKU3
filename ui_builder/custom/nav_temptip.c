@@ -16,6 +16,10 @@ void temptip_dismiss_now(void)
     temptip_cancel_auto_dismiss();
     if (depth > 0 && page_stack[depth - 1] == PAGE_TEMPTIP) {
         g_send.iface_status = s_temptip_prev_iface;
+        /* 自愈兜底:超时层抢屏中本页又被关闭(遗留的 5 秒定时器到点),
+           pop 重建下层会清掉超时层屏幕——同步清其状态,防 s_overtime 残留吞键(2026-10-21) */
+        if (count_down_overtime_active())
+            count_down_overtime_reset();
         page_pop();
     }
 }

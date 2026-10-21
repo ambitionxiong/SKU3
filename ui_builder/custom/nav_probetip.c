@@ -14,6 +14,10 @@ void probetip_dismiss_now(void)
     probetip_cancel_auto_dismiss();
     if (depth > 0 && page_stack[depth - 1] == PAGE_PROBETIP) {
         g_send.iface_status = s_probetip_prev_iface;
+        /* 自愈兜底:超时层抢屏中本页又被关闭(如下层到期抢屏后遗留的定时器),
+           pop 重建下层会清掉超时层屏幕——同步清其状态,防 s_overtime 残留吞键(2026-10-21) */
+        if (count_down_overtime_active())
+            count_down_overtime_reset();
         page_pop();
     }
 }

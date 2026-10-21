@@ -102,15 +102,27 @@ static void system_timer_cb(lv_timer_t *timer)
         if (preheat_wait_door && !door_now) {
             preheat_wait_door = 0;
             if (depth > 0 && (page_stack[depth - 1] == PAGE_PREHEAT_COMPLETE ||
-                              page_stack[depth - 1] == PAGE_PREHEAT_STOP_BACK))
+                              page_stack[depth - 1] == PAGE_PREHEAT_STOP_BACK)) {
+                /* 关门跳转重建页面:超时层屏幕随之销毁,先清其状态防残留吞键;
+                   确认弹层(lv_layer_top)不随重建消失,一并收起(2026-10-21) */
+                if (count_down_overtime_active())
+                    count_down_overtime_reset();
+                if (nav_favask_active()) nav_favask_cancel();
+                nav_poweroff_ask_cancel();
                 jump_to_preheat_complete();
+            }
         }
         /* 高温清洁开门检测等待页(2026-09-24):同一关门边沿,自动开始清洁烹饪。
          * 残留标志由栈顶守卫兜住(在别的页开关门只清标志不动作) */
         if (hc_wait_door && !door_now) {
             hc_wait_door = 0;
-            if (depth > 0 && page_stack[depth - 1] == PAGE_HOTCLEAN_DOORWAIT)
+            if (depth > 0 && page_stack[depth - 1] == PAGE_HOTCLEAN_DOORWAIT) {
+                if (count_down_overtime_active())   /* 同上:跳转销毁超时层屏幕,先清状态(2026-10-21) */
+                    count_down_overtime_reset();
+                if (nav_favask_active()) nav_favask_cancel();
+                nav_poweroff_ask_cancel();
                 hc_doorwait_start_cooking();
+            }
         }
     }
 
@@ -139,14 +151,24 @@ static void system_timer_cb(lv_timer_t *timer)
         return;
     }
 
+    if (depth > 0 && page_stack[depth - 1] == PAGE_TEMPTIP)
+        temptip_dismiss_now();         /* 腔温提示页在顶:先弹掉,防其栈位夹在主页/探针提示之间(2026-10-21) */
+    nav_hint_tone_cancel();            /* 提示音重复引擎停止 */
+    nav_hint_cancel();                 /* 无效键提示层收起(对象在旧屏,标志残留吞键) */
+    nav_favtip_cancel();               /* 收藏提示定时器同款卫生 */
+    temptip_cancel_auto_dismiss();     /* 腔温提示自动关闭定时器同款 */
     probetip_cancel_auto_dismiss();   /* 取消陈旧的探针提示自动关闭定时器,防止跨会话误触发 */
     screen_set_reset();               /* 覆盖层若打开:清理对象/组/焦点指针,防悬空 */
+    count_down_overtime_reset();      /* 只清超时层(标志+回屏指针,防吞键/悬空),后台计时器保留照跑(2026-10-21) */
+    if (nav_favask_active()) nav_favask_cancel();   /* 确认弹层标志残留会吞键(PRESS误触确认) */
+    nav_poweroff_ask_cancel();        /* 关机确认弹层同款(PRESS残留=直接关机) */
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
     set_temp = 180; set_temp_up = 180; set_temp_down = 180;
     set_hour = 0; set_min = 30;
     cook_elapsed_saved = 0; cook_bar_saved = 0;
     cook_total_ms = 0; cook_is_color = 0;
     preheat_on = 0; delay_on = 0; contain_on = 0;
+    g_delay_target = -1;   /* 预约目标一并作废(对齐关机清单,防过期目标在后续 stop_back 态触发)(2026-10-21) */
     g_keepwarm_active = 0;   /* 不随清理复位会残留:BUF[17] 比特0 一直报保温中 */
     g_keepwarm_sec = 0;
     g_on_stop_back = 0;
