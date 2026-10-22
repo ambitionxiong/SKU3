@@ -414,6 +414,8 @@ const char *six_chick_name(void)
         return sd ? tr(sd->name) : tr("烤蔬菜");
     }
     if (six_chick_is_pizza()) {
+        if (is_trad()) return "薄餅";   /* 2026-10-22 用户定稿:六感薄饼繁体统一定点薄餅——词典"披萨"行(急凍薄餅)是冷冻烘焙/特殊烹饪口径;
+                                           延迟页/烹饪页/停止页/收藏卡显示随此收敛,描述页10-12先行的同款定点 */
         const seafood_dish_t *sd = pizza_fixed_cfg();
         return sd ? tr(sd->name) : tr("披萨");
     }

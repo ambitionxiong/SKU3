@@ -425,6 +425,12 @@ void process_key(uint8_t key)
         }
         if (g_send.iface_status == IFACE_COMPLETE) {
             /* 完成状态：特定模式完成页可再次上色（直接开始上色，不进确认页） */
+            /* 排除：预热完成页(设置场景预热段刚结束,烹饪未开始,无可上色对象;
+             * 此时 cook_mode 已是真实烹饪模式,下方模式白名单拦不住,2026-10-22) */
+            if (depth > 0 && page_stack[depth - 1] == PAGE_PREHEAT_COMPLETE) {
+                g_send.buzzer_req = BUZZER_KEY_INVALID;
+                break;
+            }
             if (depth > 0 && page_stack[depth - 1] == PAGE_EXTRA_COLOR) {
                 /* 已在 extra_color 确认页，防重复入栈 */
                 g_send.buzzer_req = BUZZER_KEY_INVALID;
@@ -504,6 +510,14 @@ void process_key(uint8_t key)
                 g_send.cook_mode == MODE_HEATCONTAIN ||
                 g_send.cook_mode == MODE_HOT_CLEAN ||
                 g_send.cook_mode == MODE_WATER_CLEAN) {
+                g_send.buzzer_req = BUZZER_KEY_INVALID;
+                uart_print();
+                break;
+            }
+            /* 排除：预热完成页(设置场景预热段刚结束,等放食材/已放入确认两阶段,
+             * 烹饪尚未开始,无可收藏配方;此时 cook_mode 已是真实烹饪模式,
+             * 上面的模式排除表拦不住,2026-10-22) */
+            if (depth > 0 && page_stack[depth - 1] == PAGE_PREHEAT_COMPLETE) {
                 g_send.buzzer_req = BUZZER_KEY_INVALID;
                 uart_print();
                 break;

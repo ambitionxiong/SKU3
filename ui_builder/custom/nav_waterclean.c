@@ -74,6 +74,8 @@ void jump_to_wc_set(void)
 
     waterclean_set_t *set = waterclean_set_get(&ui_manager);
     if (set) {
+        lv_obj_set_pos(set->image_2, 115, 161);   /* 图标贴烹饪页同位115(新waterbg烙字按此构图,面板117不动) */
+
         lv_obj_t *btns[] = { set->start };
         if (g_wc_set) lv_group_del(g_wc_set);
         g_wc_set = group_create_for_page(btns, 1);
@@ -328,6 +330,8 @@ void wc_rebuild_set(page_id_t child)
     waterclean_set_create(&ui_manager);
     waterclean_set_t *set = waterclean_set_get(&ui_manager);
     if (set) {
+        lv_obj_set_pos(set->image_2, 115, 161);   /* 图标贴烹饪页同位115(新waterbg烙字按此构图,面板117不动) */
+
         lv_obj_t *btns[] = { set->start };
         if (g_wc_set) lv_group_del(g_wc_set);
         g_wc_set = group_create_for_page(btns, 1);

@@ -2041,9 +2041,6 @@ int nav_status_bar_dynamic(lv_obj_t *label, lv_obj_t *name_label,
             lv_obj_set_width(name_label, anchor);   /* 六感双向贴锚随留白加长;多段维持原只收不放 */
     }
     lv_obj_clear_flag(name_label, LV_OBJ_FLAG_HIDDEN);
-    printf("[dyn] fill=%d n=%d avail=%d lx=%d wx=%d ww=%d\n", fill_to_edge, n,
-           avail, lv_obj_get_x(label), lv_obj_get_x(name_label),
-           (int)lv_obj_get_width(name_label));   /* 诊断:首帧短窗定位(2026-10-21,定位后删) */
     status_text_set_if_changed(name_label, name_text ? name_text : "");
     {
         char buf[192];

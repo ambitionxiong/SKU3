@@ -1,5 +1,6 @@
 #include "nav_lang.h"
 #include "i18n.h"
+#include "protocol.h"   /* g_send/IFACE_PAUSE(stopback 标题按运行/暂停态分流,2026-10-22) */
 #include <string.h>
 #include <stdio.h>
 
@@ -452,7 +453,11 @@ static lv_obj_tree_walk_res_t bskin_walk_cb(lv_obj_t *obj, void *user_data)
             if (strcmp(t, "Start") == 0) {
                 lv_label_set_text(obj, "Stop Cooking");
             } else if (strcmp(t, "Paused...") == 0) {
-                lv_label_set_text(obj, "Cooking...");
+                /* 2026-10-22 用户:暂停态进返回确认标题从 Pause 变 Cooking 完全不对——
+                 * 暂停态保持 Pause...(与暂停页 cls==1 口径一致);运行态维持 10-09 mockup
+                 * 口径 Cooking...(生成 stopback 静态标题"暂停中..."在运行态返回的场景) */
+                lv_label_set_text(obj, (g_send.iface_status == IFACE_PAUSE) ?
+                                      "Pause..." : "Cooking...");
             } else if (strcmp(t, "Cancel the") == 0 || strcmp(t, "current program?") == 0) {
                 /* 两行提示语换新文案(词典词条仅 stopback 在用):按新要求 mockup
                  * 走 Aktiv Grotesk Medium 30 号+470 宽固定盒双行居中(盒中心 1005,
@@ -539,8 +544,10 @@ void nav_stopback_overlay_en(somecook_cooking_t *sc, int on)
         lv_obj_set_style_bg_img_src(sc->stop, LVGL_IMAGE_PATH(stopcooking_focus.png), LV_PART_MAIN | LV_STATE_FOCUSED);
         {
             const char *st = lv_label_get_text(sc->cookstatus);
-            /* 生成页 cls==2:暂停源进遮罩标语统一 Cooking...(六感暂停态已是 Pause...,两种都收) */
-            if (st && (strcmp(st, "Paused...") == 0 || strcmp(st, "Pause...") == 0))
+            /* 生成页 cls==2:暂停源进遮罩标语统一 Cooking...(六感暂停态已是 Pause...,两种都收)
+             * 2026-10-22 用户:暂停态显 Cooking 完全不对——暂停态(IFACE_PAUSE)保持原标题,
+             * 仅运行态残留 Paused... 时改写(与 bskin_walk_cb cls==2 同口径) */
+            if (st && strcmp(st, "Paused...") == 0 && g_send.iface_status != IFACE_PAUSE)
                 lv_label_set_text(sc->cookstatus, "Cooking...");
         }
     } else {

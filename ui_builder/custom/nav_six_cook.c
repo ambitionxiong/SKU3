@@ -659,7 +659,6 @@ void jump_to_six_cooking(void)
     cook_timer = lv_timer_create(six_cook_timer_cb, 1000, NULL);
     g_send.iface_status = IFACE_COOKING;
     six_cook_apply_display();
-    printf("[six] build apply done\n");   /* 诊断(临时,定位后删) */
 
     lang_scr_load_anim(somecook_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
@@ -667,7 +666,6 @@ void jump_to_six_cooking(void)
     /* 显示刷新放 load_anim 之后(与 rebuild 路径同款):EN 微调换字体后按新字宽重算,
        否则首帧是换字体前口径的排版,一秒后才被纠正(2026-10-21) */
     six_cook_apply_display();
-    printf("[six] post-load apply done\n");   /* 诊断(临时,定位后删) */
     printf("[six_cook] jump: cooking (choice=%d)\n", g_rising_choice);
 }
 

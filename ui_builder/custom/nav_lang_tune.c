@@ -5625,6 +5625,9 @@ void heatcontain_complete_lang_tune(void)
 
     /* image_316: 图片 | (90,161) | img: heatcontainicon.png */
     nav_cook_icon_align(pg->image_316, pg->label_672, pg->status);
+    /* 同 cooking/stop/stop_back 页(2026-10-22):两标语左移12,四态标题同位(用户定稿完成页也对齐) */
+    lv_obj_set_x(pg->label_672, lv_obj_get_x(pg->label_672) - 12);
+    lv_obj_set_x(pg->status, lv_obj_get_x(pg->status) - 12);
 
     /* image_11: 图片 | (902,160) | img: tips.png */
     lv_obj_set_pos(pg->image_11, 905, 160);
@@ -5674,6 +5677,11 @@ void heatcontain_cooking_lang_tune(void)
 
     /* image_269: 图片 | (90,161) | img: heatcontainicon.png */
     nav_cook_icon_align(pg->image_269, pg->label_612, pg->status);
+    /* EN "Keep Warm" 长标题(像素实测宽317,右缘623)压到 little 设置小钮(墨迹≈617..659):
+     * 两标语整体左移12——标题右缘611,距钮墨迹≈6(首版-25 用户:左移多了一点);
+     * CN"保温中..."短不重叠,保持icon+35口径 */
+    lv_obj_set_x(pg->label_612, lv_obj_get_x(pg->label_612) - 12);
+    lv_obj_set_x(pg->status, lv_obj_get_x(pg->status) - 12);
 
 }
 
@@ -6053,6 +6061,10 @@ void heatcontain_stop_lang_tune(void)
 
     /* image_276: 图片 | (90,161) | img: heatcontainicon.png */
     nav_cook_icon_align(pg->image_276, pg->label_625, pg->status);
+    /* 同 cooking/stop_back 页(2026-10-22):两标语左移12保持四态标题同位(暂停态标题
+     * Pause... 短虽不压小钮,但烹饪↔暂停切换时标语不能横跳) */
+    lv_obj_set_x(pg->label_625, lv_obj_get_x(pg->label_625) - 12);
+    lv_obj_set_x(pg->status, lv_obj_get_x(pg->status) - 12);
 
 }
 
@@ -6071,6 +6083,10 @@ void heatcontain_stop_back_lang_tune(void)
 
     /* image_277: 图片 | (90,161) | img: heatcontainicon.png */
     nav_cook_icon_align(pg->image_277, pg->label_627, pg->status);
+    /* 同 cooking 页(2026-10-22):运行态进返回确认标题=保温中...(EN Keep Warm 宽317)
+     * 压 little 设置小钮,两标语整体左移12;Pause.../Completed/Delayed Start... 短,移动无副作用 */
+    lv_obj_set_x(pg->label_627, lv_obj_get_x(pg->label_627) - 12);
+    lv_obj_set_x(pg->status, lv_obj_get_x(pg->status) - 12);
 
     /* status: 标签 | "| 保温 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
     lv_obj_set_y(pg->status, 232); /* x 由 nav_cook_icon_align 统一 */
@@ -13904,7 +13920,6 @@ static void somecook_cooking_common(void)
         /* 六感:直接整跑一次显示刷新(名窗x/宽按实测+填满口径),替代默认留白预锚定——
            预锚定比填满口径窄,首帧名窗短一截,一秒后才被助手刷新到位(2026-10-21) */
         six_cook_refresh_display();
-        printf("[tune6] refresh done\n");   /* 诊断(临时,定位后删) */
     } else {
         lv_obj_set_pos(obj, 289, 232);
         lv_coord_t w = nav_status_name_anchor_w(pg->label_12, pg->activestatus);
@@ -17374,11 +17389,11 @@ void waterclean_complete_lang_tune(void)
     //lv_obj_set_style_bg_image_src(obj, LVGL_IMAGE_PATH(sku3_bg_work_cnt_En.png), 0);
 
     obj = pg->label_13;
-    lv_obj_set_pos(obj, 272, 161);
+    lv_obj_set_y(obj, 161);   /* x 由上方 nav_cook_icon_align 统一,EN 不覆盖(2026-10-22) */
     lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
 
     obj = pg->label_12;
-    lv_obj_set_pos(obj, 275, 232);
+    lv_obj_set_y(obj, 232);   /* x 由上方 nav_cook_icon_align 统一,EN 不覆盖(2026-10-22) */
     lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
 }
 
@@ -17426,11 +17441,11 @@ void waterclean_cooking_lang_tune(void)
     //lv_obj_set_style_bg_image_src(obj, LVGL_IMAGE_PATH(sku3_bg_work_cnt_En.png), 0);
 
     obj = pg->label_8;
-    lv_obj_set_pos(obj, 272, 161);
+    lv_obj_set_y(obj, 161);   /* x 由上方 nav_cook_icon_align 统一,EN 不覆盖(2026-10-22) */
     lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
 
     obj = pg->label_6;
-    lv_obj_set_pos(obj, 275, 232);
+    lv_obj_set_y(obj, 232);   /* x 由上方 nav_cook_icon_align 统一,EN 不覆盖(2026-10-22) */
     lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
 
     obj = pg->timelabel;
@@ -17463,7 +17478,7 @@ void waterclean_set_lang_tune(void)
     lv_image_set_src(pg->image_1,LVGL_IMAGE_PATH(waterbg_en.png));
 
     /* image_2: 图片 | (167,161) | img: watercleanicon.png */
-    lv_obj_set_pos(pg->image_2, 167, 161);
+    lv_obj_set_pos(pg->image_2, 115, 161);   /* 与烹饪页nav_cook_icon_align同位(新waterbg烙字按此构图,面板117不动,2026-10-22) */
 
 }
 
@@ -17511,11 +17526,11 @@ void waterclean_stop_lang_tune(void)
     //lv_obj_set_style_bg_image_src(obj, LVGL_IMAGE_PATH(sku3_bg_work_cnt_En.png), 0);
 
     obj = pg->label_11;
-    lv_obj_set_pos(obj, 272, 161);
+    lv_obj_set_y(obj, 161);   /* x 由上方 nav_cook_icon_align 统一,EN 不覆盖(2026-10-22) */
     lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
 
     obj = pg->label_9;
-    lv_obj_set_pos(obj, 275, 232);
+    lv_obj_set_y(obj, 232);   /* x 由上方 nav_cook_icon_align 统一,EN 不覆盖(2026-10-22) */
     lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
 
     obj = pg->timelabel;
@@ -17578,11 +17593,11 @@ void waterclean_stop_back_lang_tune(void)
     //lv_obj_set_style_bg_image_src(obj, LVGL_IMAGE_PATH(sku3_bg_work_cnt_En.png), 0);
 
     obj = pg->label_6;
-    lv_obj_set_pos(obj, 272, 161);
+    lv_obj_set_y(obj, 161);   /* x 由上方 nav_cook_icon_align 统一,EN 不覆盖(2026-10-22) */
     lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
 
     obj = pg->status;
-    lv_obj_set_pos(obj, 275, 232);
+    lv_obj_set_y(obj, 232);   /* x 由上方 nav_cook_icon_align 统一,EN 不覆盖(2026-10-22) */
     lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
 
     obj = pg->sure;

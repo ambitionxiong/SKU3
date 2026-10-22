@@ -20,12 +20,9 @@ static void descriptionmenu_layout(descriptionmenu_t *dm)
 {
     if (!dm || !dm->container_1) return;
 
-    /* 左上角菜名 */
+    /* 左上角菜名(六感薄饼繁体"薄餅"定点已收敛进six_chick_name,2026-10-22) */
     if (dm->label_19) {
-        if (g_six_bread_type == SIX_PIZZA && is_trad())
-            lv_label_set_text(dm->label_19, "薄餅");   /* 2026-10-12 用户定稿:仅此页繁体定点叫薄餅(词典表披萨行仍 急凍薄餅,收藏/状态等不受影响) */
-        else
-            lv_label_set_text(dm->label_19, six_current_name());
+        lv_label_set_text(dm->label_19, six_current_name());
     }
 
     /* 摘要：探针菜/程度→时间显示烧烤程度；烤鸡翅类显示份量；面包有发酵显示发酵小结；其余隐藏 */
