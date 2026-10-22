@@ -99,7 +99,7 @@ static void somecook_cooking_apply_info(somecook_cooking_t *sc)
     nav_strip_wholehour_tail(merged);   /* 整小时只显示小时段(2026-10-21) */
     char step[64];
     snprintf(step, sizeof(step), tr("步骤%s：%s"), tr(cn[i]), mode_display_name());
-    nav_status_bar_dynamic(sc->label_12, sc->activestatus, step, merged);
+    nav_status_bar_dynamic(sc->label_12, sc->activestatus, step, merged, 0);   /* 多段维持原 490 口径(2026-10-21 拆分) */
 }
 
 // 状态切换：显隐 + 文字 + iface
@@ -285,7 +285,8 @@ void somecook_cooking_start(void)
                             LV_EVENT_CLICKED, NULL);
 
         mode_apply_icon(sc->icon);
-        /* 解冻段 icon 位置与其他模式不同（对齐普通解冻 149） */
+        /* 解冻段 icon 位置与其他模式不同（对齐普通解冻 149）——多段维持原几何
+           (2026-10-21 用户定稿:图标贴左仅第六感烹饪页,多段不跟) */
         if (g_send.cook_mode == MODE_UNFROZEN)
             lv_obj_set_pos(sc->icon, 149, 161);
         else
@@ -342,7 +343,7 @@ void somecook_cooking_next_step(void)
             lv_obj_add_event_cb(sc->stop, on_somecook_stop_click,
                                 LV_EVENT_CLICKED, NULL);
             mode_apply_icon(sc->icon);
-            /* 解冻段 icon 位置与其他模式不同（对齐普通解冻 149） */
+            /* 多段维持原几何:解冻 149/其余 115,标语 273/状态行 274 不动(2026-10-21 拆分) */
             if (g_send.cook_mode == MODE_UNFROZEN)
                 lv_obj_set_pos(sc->icon, 149, 161);
             else

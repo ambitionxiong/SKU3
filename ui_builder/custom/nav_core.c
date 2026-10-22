@@ -1967,13 +1967,19 @@ lv_coord_t nav_status_name_anchor_w(lv_obj_t *label, lv_obj_t *name_label)
 }
 
 int nav_status_bar_dynamic(lv_obj_t *label, lv_obj_t *name_label,
-                           const char *name_text, const char *merged)
+                           const char *name_text, const char *merged, int fill_to_edge)
 {
-    /* 判宽基准=状态栏设计宽 490:EN 排版微调把标签改成 LV_SIZE_CONTENT,
-       "当前宽"=上一条文本宽,拿它当基准会把放下短菜名的页误判成动态(上色页踩过),
-       统一对 490 判定——真正放不下的(EN 全麦面包/海绵蛋糕等长名)才走动态 */
-    const lv_coord_t avail = 490;
+    /* 判宽基准:六感烹饪(fill_to_edge=1)=行右缘锚点 764-行左缘,图标贴左后行左缘随图标
+       实测宽度左移(六感页约 225),基准同步加长——动态行右缘与进度条右缘对齐;
+       多段烹饪(0)=原设计宽 490 不变(2026-10-21 用户定稿:两页拆分,多段不受六感影响)。
+       EN 排版微调把标签改成 LV_SIZE_CONTENT,"当前宽"=上一条文本宽,拿它当基准
+       会把放下短菜名的页误判成动态(上色页踩过),统一按锚定值判定 */
     if (!label || !merged) return 0;
+    /* 同帧可靠性(2026-10-21):进页链里图标对齐/名窗设位刚 set_x 完,布局坐标尚未
+       刷新,lv_obj_get_x 读回旧值——首帧判定宽按旧 274 算成 490、名窗锚定按旧 x
+       算小,一秒后布局刷新才正确(实测闪帧根源)。统一先强制同步布局再测量 */
+    lv_obj_update_layout(label);
+    const lv_coord_t avail = fill_to_edge ? (764 - lv_obj_get_x(label)) : 490;
     const lv_font_t *font = lv_obj_get_style_text_font(label, LV_PART_MAIN);
     lv_point_t sz = { 0, 0 };
     if (font)
@@ -1989,8 +1995,9 @@ int nav_status_bar_dynamic(lv_obj_t *label, lv_obj_t *name_label,
         status_text_set_if_changed(label, merged);
         return 0;
     }
-    /* 留白前缀自适应:整行(留白+参数段)也必须放进 490——参数段长(EN"额外上色"行)
-       时按空格实测宽收缩留白(名窗随之改短),不再固定 33/25 空格硬套导致整行溢出右端 */
+    /* 留白前缀自适应:先按整行(留白+参数段)≤基准收缩(参数段长(EN"额外上色"行)时防溢出右端),
+       再向基准填满加长——只加前两根竖线之间的空格,参数段原样不动,行右缘贴进度条右缘
+       (2026-10-21 用户定稿:图标左移后补右侧,内容位置不明显左移) */
     char blank[48];
     int n = is_english() ? 33 : 25;
     {
@@ -2000,6 +2007,9 @@ int nav_status_bar_dynamic(lv_obj_t *label, lv_obj_t *name_label,
         lv_txt_get_size(&tw, tail, font, 0, 0, LV_COORD_MAX, LV_TEXT_FLAG_NONE);
         while (n > 10 && pw.x + n * sw.x + tw.x > avail)
             n--;
+        if (fill_to_edge)   /* 填满加长:只加前两竖线间空格,参数段不动,行右缘贴进度条右缘 */
+            while (n < 44 && pw.x + (n + 1) * sw.x + tw.x <= avail)
+                n++;
         blank[0] = '|';
         memset(blank + 1, ' ', n);
         blank[n + 1] = '\0';
@@ -2008,16 +2018,32 @@ int nav_status_bar_dynamic(lv_obj_t *label, lv_obj_t *name_label,
        只收不超过锚定宽的窗口。全部当场实测,无跨帧缓存。
        (EN 排版微调另以默认留白预锚定:烹饪页参数段短,自适应留白=默认,两者一致;
        上色页参数段长时留白收缩,本帧锚定同步收紧,首帧即一致无跳变) */
+    /* 名窗左缘=第一根竖线+一个空格(标签字体实测,2026-10-21 用户定稿:窗口向左扩到
+       距第一竖线一空格):原建页定值偏移 15 与字体实测宽不符,标语左移后左侧露出空段;
+       放本函数内每帧自适应,EN 换字体后同样准确。锚定同样用刚算出的 nx,不回读
+       (set 后布局未刷新会读到旧值) */
+    lv_coord_t nx = lv_obj_get_x(name_label);
+    if (fill_to_edge) {
+        lv_point_t pp = { 0, 0 }, ps = { 0, 0 };
+        lv_txt_get_size(&pp, "|", font, 0, 0, LV_COORD_MAX, LV_TEXT_FLAG_NONE);
+        lv_txt_get_size(&ps, " ", font, 0, 0, LV_COORD_MAX, LV_TEXT_FLAG_NONE);
+        nx = lv_obj_get_x(label) + pp.x + ps.x;
+        lv_obj_set_x(name_label, nx);
+    }
     const lv_font_t *nfont = lv_obj_get_style_text_font(name_label, LV_PART_MAIN);
     if (nfont) {
         lv_point_t bw = { 0, 0 }, sp = { 0, 0 };
         lv_txt_get_size(&bw, blank, font, 0, 0, LV_COORD_MAX, LV_TEXT_FLAG_NONE);
         lv_txt_get_size(&sp, " ", nfont, 0, 0, LV_COORD_MAX, LV_TEXT_FLAG_NONE);
-        lv_coord_t anchor = lv_obj_get_x(label) + bw.x - lv_obj_get_x(name_label) - sp.x;
-        if (anchor >= 40 && lv_obj_get_width(name_label) > anchor)
-            lv_obj_set_width(name_label, anchor);
+        lv_coord_t anchor = lv_obj_get_x(label) + bw.x - nx - sp.x;
+        if (anchor >= 40 &&
+            (fill_to_edge || lv_obj_get_width(name_label) > anchor))
+            lv_obj_set_width(name_label, anchor);   /* 六感双向贴锚随留白加长;多段维持原只收不放 */
     }
     lv_obj_clear_flag(name_label, LV_OBJ_FLAG_HIDDEN);
+    printf("[dyn] fill=%d n=%d avail=%d lx=%d wx=%d ww=%d\n", fill_to_edge, n,
+           avail, lv_obj_get_x(label), lv_obj_get_x(name_label),
+           (int)lv_obj_get_width(name_label));   /* 诊断:首帧短窗定位(2026-10-21,定位后删) */
     status_text_set_if_changed(name_label, name_text ? name_text : "");
     {
         char buf[192];

@@ -1687,8 +1687,9 @@ void jump_to_chick_cooking(void)
             lv_obj_add_event_cb(ck->stop, on_chick_cooking_stop_click, LV_EVENT_CLICKED, NULL);
             lv_group_focus_obj(ck->stop);
         }
-        /* icon：六感图标 */
+        /* icon：六感图标,贴进度条左缘+标语测宽跟随(2026-10-21) */
         if (ck->icon) lv_img_set_src(ck->icon, LVGL_IMAGE_PATH(sixicon.png));
+        nav_cook_icon_align(ck->icon, ck->cookstatus, ck->status);
     }
     current_group = g_chick_cooking;
 

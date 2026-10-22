@@ -217,7 +217,7 @@ static void six_label_status(somecook_cooking_t *sc)
         snprintf(merged, sizeof(merged), tr("| %s | %d分钟"), six_bread_name(), six_bread_cfg()->cook_min);
         name = six_bread_name();
     }
-    nav_status_bar_dynamic(sc->label_12, sc->activestatus, name, merged);
+    nav_status_bar_dynamic(sc->label_12, sc->activestatus, name, merged, 1);
 }
 
 // 运行模式/温度:烤鸡翅类按菜谱表(热风对流/空气炸250℃),面包/蛋糕按配置
@@ -309,7 +309,7 @@ static void six_cook_apply_display(void)
             char merged[160];
             snprintf(merged, sizeof(merged), tr("| %s | %d℃ | 45分钟"),
                      six_bread_name(), temp_disp_c(45));
-            nav_status_bar_dynamic(sc->label_12, sc->activestatus, six_bread_name(), merged);
+            nav_status_bar_dynamic(sc->label_12, sc->activestatus, six_bread_name(), merged, 1);
         }
         if (bl) lv_label_set_text(bl, g_six_paused ? tr("开 始") : tr("暂 停"));
         break;
@@ -353,7 +353,7 @@ static void six_cook_apply_display(void)
             char merged[160];
             snprintf(merged, sizeof(merged), tr("| %s | 额外上色 | %d分钟"),
                      six_bread_name(), g_six_color_min);
-            nav_status_bar_dynamic(sc->label_12, sc->activestatus, six_bread_name(), merged);
+            nav_status_bar_dynamic(sc->label_12, sc->activestatus, six_bread_name(), merged, 1);
         }
         if (bl) lv_label_set_text(bl, g_six_paused ? tr("开 始") : tr("暂 停"));
         break;
@@ -634,11 +634,13 @@ void jump_to_six_cooking(void)
             lv_obj_add_event_cb(sc->stop, on_six_stop_click, LV_EVENT_CLICKED, NULL);
         }
 
-        /* icon:六感图标,右移 23(115 -> 138) */
-        if (sc->icon) {
+        /* icon:六感图标贴进度条左缘,标语测宽跟随(2026-10-21,原163为窄素材保间距旧设计);
+           名窗左缘由 nav_status_bar_dynamic 按第一竖线+一空格实测定位(每帧自适应) */
+        if (sc->icon)
             lv_img_set_src(sc->icon, LVGL_IMAGE_PATH(sixicon.png));
-            lv_obj_set_pos(sc->icon, 163, 161);
-        }
+        nav_cook_icon_align(sc->icon, sc->cookstatus, sc->label_12);
+        if (sc->label_12)
+            lv_obj_set_width(sc->label_12, LV_SIZE_CONTENT);   /* 判定基准>490,定宽490会换行(2026-10-21) */
         if (sc->activestatus)
             lv_obj_add_flag(sc->activestatus, LV_OBJ_FLAG_HIDDEN);
     }
@@ -657,10 +659,15 @@ void jump_to_six_cooking(void)
     cook_timer = lv_timer_create(six_cook_timer_cb, 1000, NULL);
     g_send.iface_status = IFACE_COOKING;
     six_cook_apply_display();
+    printf("[six] build apply done\n");   /* 诊断(临时,定位后删) */
 
     lang_scr_load_anim(somecook_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
+    /* 显示刷新放 load_anim 之后(与 rebuild 路径同款):EN 微调换字体后按新字宽重算,
+       否则首帧是换字体前口径的排版,一秒后才被纠正(2026-10-21) */
+    six_cook_apply_display();
+    printf("[six] post-load apply done\n");   /* 诊断(临时,定位后删) */
     printf("[six_cook] jump: cooking (choice=%d)\n", g_rising_choice);
 }
 
@@ -734,10 +741,12 @@ void six_cooking_rebuild(page_id_t child)
             lv_obj_add_event_cb(sc->stop, on_six_stop_click, LV_EVENT_CLICKED, NULL);
         }
 
-        if (sc->icon) {
+        /* icon:六感图标贴进度条左缘(同建页口径,2026-10-21);名窗左缘由动态栏函数实测定位 */
+        if (sc->icon)
             lv_img_set_src(sc->icon, LVGL_IMAGE_PATH(sixicon.png));
-            lv_obj_set_pos(sc->icon, 163, 161);
-        }
+        nav_cook_icon_align(sc->icon, sc->cookstatus, sc->label_12);
+        if (sc->label_12)
+            lv_obj_set_width(sc->label_12, LV_SIZE_CONTENT);   /* 判定基准>490,定宽490会换行(2026-10-21) */
         if (sc->activestatus)
             lv_obj_add_flag(sc->activestatus, LV_OBJ_FLAG_HIDDEN);
     }

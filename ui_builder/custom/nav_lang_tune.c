@@ -13834,12 +13834,15 @@ void somecook_lang_tune(void)
 static void somecook_cooking_common(void)
 {
     somecook_cooking_t *pg = somecook_cooking_get(&ui_manager);
+    /* 第六感烹饪页几何由 nav 侧统一(贴左+名窗平移);多段烹饪页维持原 274/273/289(2026-10-21 拆分) */
+    int is_six = (depth > 0 && page_stack[depth - 1] == PAGE_SIX_COOKING);
     if (!pg) return;
 
     /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* label_12: 标签 | "|                         | 180℃ |…" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
-    lv_obj_set_y(pg->label_12, 232); /* x 由 nav_cook_icon_align 统一 */
+    if (is_six) lv_obj_set_y(pg->label_12, 232);
+    else lv_obj_set_pos(pg->label_12, 274, 232);
     lv_obj_set_size(pg->label_12, 490, 39);
 
     /* timelabel: 标签 | "00:19:59" | (907,157) | 235x60 | font taiwanpearl_regular_60 */
@@ -13854,11 +13857,13 @@ static void somecook_cooking_common(void)
     lv_obj_set_size(pg->bar_1, 637, 20);
 
     /* cookstatus: 标签 | "烹饪中..." | (273,157) | 262x60 | font taiwanpearl_regular_60 */
-    lv_obj_set_y(pg->cookstatus, 157);
+    if (is_six) lv_obj_set_y(pg->cookstatus, 157);
+    else lv_obj_set_pos(pg->cookstatus, 273, 157);
     lv_obj_set_size(pg->cookstatus, 262, 60);
 
     /* activestatus: 标签 | "步骤一：发酵" | (289,232) | 161x39 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->activestatus, 289, 232);
+    if (is_six) lv_obj_set_y(pg->activestatus, 232);
+    else lv_obj_set_pos(pg->activestatus, 289, 232);
     lv_obj_set_size(pg->activestatus, 161+65, 39);
 
     /* container_1: 容器 | (0,0) | 1280x480 */
@@ -13882,18 +13887,26 @@ static void somecook_cooking_common(void)
     //lv_obj_set_style_bg_image_src(obj, LVGL_IMAGE_PATH(sku3_bg_work_cnt_En.png), 0);
 
     obj = pg->cookstatus;
-    lv_obj_set_y(obj, 161);
+    if (is_six) lv_obj_set_y(obj, 161);
+    else lv_obj_set_pos(obj, 272, 161);
     lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
 
     obj = pg->label_12;
-    lv_obj_set_y(obj, 232);
+    if (is_six) lv_obj_set_y(obj, 232);
+    else lv_obj_set_pos(obj, 275, 232);
     lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
 
     /* activestatus: EN 名窗宽度=动态布局锚定宽(与 nav_status_bar_dynamic 同源计算,进页即锚定,
        消除"首秒微调宽贴线→秒刷新才归位"跳变;锚定失败(0)回退 161+65 旧微调值) */
     obj = pg->activestatus;
-    lv_obj_set_pos(obj, 289, 232);
-    {
+    if (is_six) {
+        lv_obj_set_y(obj, 232);
+        /* 六感:直接整跑一次显示刷新(名窗x/宽按实测+填满口径),替代默认留白预锚定——
+           预锚定比填满口径窄,首帧名窗短一截,一秒后才被助手刷新到位(2026-10-21) */
+        six_cook_refresh_display();
+        printf("[tune6] refresh done\n");   /* 诊断(临时,定位后删) */
+    } else {
+        lv_obj_set_pos(obj, 289, 232);
         lv_coord_t w = nav_status_name_anchor_w(pg->label_12, pg->activestatus);
         lv_obj_set_size(obj, w > 0 ? w : 161 + 65, 39);
     }
@@ -13919,7 +13932,7 @@ void six_cooking_lang_tune(void)
     somecook_cooking_common();
 
     /* icon: 图片 | (115,161) | img: updown_img.png | 动态定位(默认业务值, 直接改数字) */
-    lv_obj_set_pos(pg->icon, 163, 161);
+    nav_cook_icon_align(pg->icon, pg->cookstatus, pg->label_12);
 
 }
 
@@ -13936,6 +13949,7 @@ void somecook_cooking_lang_tune(void)
     somecook_cooking_common();
 
     /* icon: 图片 | (115,161) | img: updown_img.png | 状态切换(默认业务值, 直接改数字) */
+    /* 多段维持原几何:解冻 149/其余 115(2026-10-21 拆分,图标贴左仅第六感烹饪页) */
     if (g_send.cook_mode == MODE_UNFROZEN)
         lv_obj_set_pos(pg->icon, 149, 161);
     else
