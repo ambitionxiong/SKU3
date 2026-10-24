@@ -1005,7 +1005,7 @@ static void on_probe_dish_click(lv_event_t *e)
     jump_to_probeneedtip();
 }
 
-/* 烤鸡翅类（份量驱动）：进 toastcolor 份量/种类组（选项/默认按当前菜配置表） */
+/* 烤鸡翅类（份量驱动）：进 toastcolor 份量组（选项/默认按当前菜配置表） */
 static void on_chickenmenu_weight_dish_click(lv_event_t *e)
 {
     if (screen_is_loading(lv_scr_act())) return;
@@ -1014,7 +1014,7 @@ static void on_chickenmenu_weight_dish_click(lv_event_t *e)
     const chick_dish_t *c = chick_dish_cfg();
     if (c)
         toastcolor_set_weight_options(c->weights, c->count, c->default_idx);
-    g_toast_mode = TOAST_MODE_WEIGHT;   /* 份量/种类组 */
+    g_toast_mode = TOAST_MODE_WEIGHT;   /* 份量组 */
     jump_to_toastcolor();
 }
 

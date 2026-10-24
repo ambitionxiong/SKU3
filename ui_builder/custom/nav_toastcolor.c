@@ -16,7 +16,7 @@ static void toastcolor_apply_maturity_line_focused(lv_obj_t *focused);
  * 页面包含三组互斥的设置信息，同一时间仅显示一组，由 label_23 标题标明当前组：
  *   1) 烤色程度：degree 标签(浅/中/深) + line（跟随 degree 聚焦显隐）
  *   2) 成熟度：  Maturity 标签 + 其下划线（maturityline2/3 按字数择一,仅 Maturity 聚焦时显示）
- *   3) 份量/种类： weight 标签 + 其下划线（weightline3/4 按数值位数择一显示）
+ *   3) 份量： weight 标签 + 其下划线（weightline3/4 按数值位数择一显示）
  * 编码器切换档位(默认中)；确定(PRESS)从当前组切到 next；next 点击进入下一步。
  * ============================== */
 
@@ -34,7 +34,7 @@ void toastcolor_set_weight_sel(int v) { s_weight_override = (v > 0) ? v : -1; }
 /* 当前激活组：三组互斥（默认烤色程度；进入前由流程设置 g_toast_mode） */
 int g_toast_mode = TOAST_MODE_DEGREE;
 
-/* 份量/种类组选项（克数，由调用方按菜谱表传入） */
+/* 份量组选项（克数，由调用方按菜谱表传入） */
 static const int *s_weight_opts = NULL;
 static int s_weight_count = 0;
 static int s_weight_index = 0;   /* 当前选中份量下标 */
@@ -125,7 +125,7 @@ static void toastcolor_apply_mode_visibility(void)
     if (tc->maturityline3) {
         lv_obj_add_flag(tc->maturityline3, LV_OBJ_FLAG_HIDDEN);
     }
-    /* 份量/种类组 */
+    /* 份量组 */
     if (tc->weight) {
         if (show_wt) lv_obj_clear_flag(tc->weight, LV_OBJ_FLAG_HIDDEN);
         else lv_obj_add_flag(tc->weight, LV_OBJ_FLAG_HIDDEN);
@@ -146,7 +146,7 @@ static void toastcolor_apply_mode_visibility(void)
     /* 标题跟随当前组 */
     if (tc->label_23)
         lv_label_set_text(tc->label_23, show_deg ? tr("选择烤色程度") :
-                                          show_mat ? tr("成熟度") : tr("份量/种类"));
+                                          show_mat ? tr("成熟度") : tr("份量"));
 }
 
 // line 固定位置(生成默认),仅按 degree 是否聚焦显隐
@@ -227,6 +227,8 @@ static void toastcolor_blink_register(toastcolor_t *tc)
     nav_editable_extra_register(tc->Maturity);
 }
 
+
+
 void jump_to_toastcolor(void)
 {
     s_degree_override = -1;   /* 正常流程重新选择，收藏恢复值失效 */
@@ -289,6 +291,10 @@ void jump_to_toastcolor(void)
     lang_scr_load_anim(toastcolor_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
+    /* 2026-10-24 标题垂直居中:卡顶(119)↔数值墨顶(258) 中点为 188.5 → label y172;
+     * 中/繁在此覆盖生成层 y139(EN 由 toastcolor_lang_tune 同值) */
+    { toastcolor_t *vt = toastcolor_get(&ui_manager); if (vt && vt->label_23) lv_obj_set_y(vt->label_23, 174); }
+
     printf("[toastcolor] jump\n");
 }
 
@@ -349,6 +355,9 @@ void toastcolor_rebuild(page_id_t child)
     lang_scr_load_anim(toastcolor_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
+    /* 2026-10-24 标题垂直居中:卡顶(119)↔数值墨顶(258) 中点为 188.5 → label y172;
+     * 中/繁在此覆盖生成层 y139(EN 由 toastcolor_lang_tune 同值) */
+    { toastcolor_t *vt = toastcolor_get(&ui_manager); if (vt && vt->label_23) lv_obj_set_y(vt->label_23, 174); }
     printf("[toastcolor] rebuild\n");
 }
 

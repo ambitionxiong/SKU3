@@ -1506,17 +1506,47 @@ static void nav_menu1card_title_refit(lv_obj_t *clabel)
     lv_obj_set_style_text_align(clabel, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
 }
 
+/* 单温 setting 页 EN 宽卡(2026-10-24 用户新增 settingbk_en.png 711x251):
+ * 生成层 18 页都写死 settingbk.png 651x251@(115,115),EN 按样张换成宽卡并落到
+ * 双温 setting 页同位 (84,114)(卡右缘 795 = 内容右 755+40,卡底 365);
+ * 树遍历找 src 含 settingbk.png 的图片对象,现有/后续单温页一次覆盖;
+ * 中/繁保持原卡不动(tune 的 651 卡坐标照旧) */
+static lv_obj_tree_walk_res_t setting_card_en_cb(lv_obj_t *obj, void *user_data)
+{
+    (void)user_data;
+    if (!lv_obj_check_type(obj, &lv_image_class)) return LV_OBJ_TREE_WALK_NEXT;
+    const char *src = (const char *)lv_image_get_src(obj);
+    if (src && strstr(src, "settingbk.png")) {
+        lv_image_set_src(obj, LVGL_IMAGE_PATH(settingbk_en.png));
+        lv_obj_set_pos(obj, 84, 114);      /* = settingbk_en.png 目标位,同双温 setting 页 */
+        lv_obj_set_size(obj, 711, 251);
+    }
+    return LV_OBJ_TREE_WALK_NEXT;
+}
+
+static void nav_setting_card_en_refit(void)
+{
+    if (!is_english()) return;
+    lv_obj_tree_walk(lv_scr_act(), setting_card_en_cb, NULL);
+}
+
 /* setting 页:面板 settingbk(115,115)顶↔数字墨顶 ≈217 中点 166 → y150;盒 250 宽 CENTER,
  * x=页内原中心−125(保持各页水平锚点);EN 温度直设全称。
  * 2026-10-24 EN 样张重排:标题行下移到面板顶+65(y180);单温族标题中心随数值组
- * 右移(Temperature 278→307 / Cook Time 521→609,时间独显族 440 不动);CN/繁不动 */
+ * 右移(Temperature 278→307 / Cook Time 521→609,时间独显族 440 不动);CN/繁不动。
+ * 2026-10-24 EN 宽卡样张(第二版):单温族卡换 settingbk_en(711x251) 后,温度组中心
+ * 落 30.2% 参考线 299.5 → 标题 307→301;时间组右锚卡右-40(755),数字组中点 625
+ * → Cook Time 609→625。
+ * 2026-10-24 样张(第三版):时间独显族同样换 settingbk_en 宽卡(卡心 439.5 = 标题 440,
+ * 内容不用动);单温族 + 时间独显族共 24 页统一在此换卡,中/繁仍用 settingbk */
 static void nav_setting_title_refit(lv_obj_t *tlabel, int tcx, lv_obj_t *clabel, int ccx)
 {
     int ty = 150;
     if (is_english()) {
         ty = 180;
-        if (tcx == 278) tcx = 307;
-        if (ccx == 521) ccx = 609;   /* 2026-10-24 二次校正:两样张实测 Cook Time 中心 609/610(先前 636 系映射算错) */
+        nav_setting_card_en_refit();   /* 单温族 18 页 + 时间独显族 6 页 */
+        if (tcx == 278) tcx = 301;
+        if (ccx == 521) ccx = 625;
     }
     if (tlabel) {
         lv_obj_set_pos(tlabel, tcx - 125, ty);
@@ -1607,14 +1637,16 @@ void nav_dirimg_refit(void)
         dir_label_to_img_conv(pg->dirdown3_label, LVGL_IMAGE_PATH(dirdown_setting.png), 29, 24);
         dir_label_to_img_conv(pg->dirup2_label, LVGL_IMAGE_PATH(dirup_setting.png), 29, 24);
         dir_label_to_img_conv(pg->dirdown2_label, LVGL_IMAGE_PATH(dirdown_setting.png), 29, 24);
-        /* 标题 250 宽 CENTER 盒,中心对各自列区:温度区 299、时间区 637 */
-        lv_obj_set_pos(pg->temp_label, 174, en_v ? 180 : 150);
+        /* 标题 250 宽 CENTER 盒,中心对各自列区:温度区 299、时间区 637;
+         * 2026-10-24 EN 样张(第三版):双温也按同一标题网格 → 温度中心 298、时间中心 625
+         * (样张实测 297.5 / 625.5),CN/繁保持 299/637 */
+        lv_obj_set_pos(pg->temp_label, en_v ? 173 : 174, en_v ? 180 : 150);
         lv_obj_set_size(pg->temp_label, 250, 30);
         lv_obj_set_style_text_align(pg->temp_label, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
         /* EN 标题全称 "Temperature"(2026-10-08 用户):dict {温度,Temp} 为 45 页共用词条
          * 不宜改(会波及其它已调页),此处 EN 直设;翻译遍历只重写命中 dict 键的文本,不回改 */
         if (is_english()) lv_label_set_text(pg->temp_label, "Temperature");
-        lv_obj_set_pos(pg->cook_label, 512, en_v ? 180 : 150);
+        lv_obj_set_pos(pg->cook_label, en_v ? 500 : 512, en_v ? 180 : 150);
         lv_obj_set_size(pg->cook_label, 250, 30);
         lv_obj_set_style_text_align(pg->cook_label, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
         /* 三位态:图标钉组框左缘;数字盒 LEFT 钉(生成层 CENTER,墨迹随盒心漂);

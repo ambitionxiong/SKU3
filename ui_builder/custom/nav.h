@@ -1034,7 +1034,7 @@ void toastcolor_set_weight_sel(int v);  /* 收藏启动恢复份量值(克/玉�
 /* 第六感烤色选择（nav_toastcolor.c 实现）：三组互斥显示模式 */
 #define TOAST_MODE_DEGREE   0     /* 烤色程度（degree+line） */
 #define TOAST_MODE_MATURITY 1     /* 成熟度（Maturity+maturityline2/3） */
-#define TOAST_MODE_WEIGHT   2     /* 份量/种类（weight+weightline3/4） */
+#define TOAST_MODE_WEIGHT   2     /* 份量（weight+weightline3/4） */
 extern int g_toast_mode;                /* 进入页面时由流程设置的当前组 */
 void toastcolor_set_weight_options(const int *opts, int count, int default_idx);
 void jump_to_six_cooking(void);

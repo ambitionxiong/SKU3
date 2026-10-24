@@ -346,7 +346,7 @@ void jump_to_sixset2(void)
         }
 
         /* name1 跟随中间组类型 */
-        if (pg->name1)    lv_label_set_text(pg->name1, s_show_maturity ? tr("成熟度") : tr("份量/种类"));
+        if (pg->name1)    lv_label_set_text(pg->name1, s_show_maturity ? tr("成熟度") : tr("份量"));
         if (pg->label_18) lv_label_set_text(pg->label_18, six_2d_dish_name());
 
         /* degree 组恢复常显 */
@@ -377,6 +377,10 @@ void jump_to_sixset2(void)
     lang_scr_load_anim(sixset2_get(&ui_manager)->obj,
                        LV_SCR_LOAD_ANIM_NONE, 0, 0,
                        ui_manager.auto_del);
+    /* 2026-10-24 两卡标题垂直居中:卡顶(118)↔数值墨顶(258) 中点为 188 → 标题 y169;
+     * 中/繁在此覆盖生成层 y137(EN 由 sixset2_lang_tune 同值) */
+    { sixset2_t *vp = sixset2_get(&ui_manager);
+      if (vp) { if (vp->name1) lv_obj_set_y(vp->name1, 174); if (vp->label_13) lv_obj_set_y(vp->label_13, 174); } }
     printf("[sixset2] jump\n");
 }
 
@@ -413,7 +417,7 @@ void sixset2_rebuild(page_id_t child)
             if (pg->maturityline3) lv_obj_add_flag(pg->maturityline3, LV_OBJ_FLAG_HIDDEN);
         }
 
-        if (pg->name1)    lv_label_set_text(pg->name1, s_show_maturity ? tr("成熟度") : tr("份量/种类"));
+        if (pg->name1)    lv_label_set_text(pg->name1, s_show_maturity ? tr("成熟度") : tr("份量"));
         if (pg->label_18) lv_label_set_text(pg->label_18, six_2d_dish_name());
 
         if (pg->label_13)   lv_obj_clear_flag(pg->label_13, LV_OBJ_FLAG_HIDDEN);
@@ -441,5 +445,9 @@ void sixset2_rebuild(page_id_t child)
     lang_scr_load_anim(sixset2_get(&ui_manager)->obj,
                        LV_SCR_LOAD_ANIM_NONE, 0, 0,
                        ui_manager.auto_del);
+    /* 2026-10-24 两卡标题垂直居中:卡顶(118)↔数值墨顶(258) 中点为 188 → 标题 y169;
+     * 中/繁在此覆盖生成层 y137(EN 由 sixset2_lang_tune 同值) */
+    { sixset2_t *vp = sixset2_get(&ui_manager);
+      if (vp) { if (vp->name1) lv_obj_set_y(vp->name1, 174); if (vp->label_13) lv_obj_set_y(vp->label_13, 174); } }
     printf("[sixset2] rebuild\n");
 }

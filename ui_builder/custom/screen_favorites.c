@@ -198,10 +198,10 @@ static void FAV_Six_Parse(const Fun_favorites_Value *fav, char *summary1, int s1
 		*has_cook_time = 1;
 	} else if (six_chick_is_kind()) {
 		/* 份量驱动（鸡翅类/炸牛排/炸排骨/香肠/鳕鱼/全鱼/薯条/爆米花/红薯/玉米）。
-		 * 小结="份量/种类：Xg"，时间=份量→分钟；玉米存根数(1-4)，单位随菜显示"根" */
+		 * 小结="份量：Xg"，时间=份量→分钟；玉米存根数(1-4)，单位随菜显示"根" */
 		int w = fav->Six_KG;
 		if (w <= 0) w = 800;   /* 旧数据/异常兜底（与描述页一致） */
-		snprintf(summary1, s1_sz, "%s%d%s", tr("份量/种类："), w,
+		snprintf(summary1, s1_sz, "%s%d%s", tr("份量："), w,
 		         (g_six_bread_type == SIX_VEG_CORN) ? ((w == 1 && is_english()) ? "corn" : tr("根")) : "g");   /* 玉米英文 1 根 corn 其余 corns */
 		total = six_chick_cook_min(w);
 		*lines = 1;
@@ -259,7 +259,7 @@ static void FAV_Six_Parse(const Fun_favorites_Value *fav, char *summary1, int s1
 		int widx = six_2d_widx_by_weight(w);
 		int d = fav->Six_KaoSe;
 		if (d < 1 || d > 3) d = 2;
-		snprintf(summary1, s1_sz, "%s%dg", tr("份量/种类："), w);
+		snprintf(summary1, s1_sz, "%s%dg", tr("份量："), w);
 		snprintf(summary2, s2_sz, "%s%s", tr("上色程度："),
 		         d == 1 ? tr("浅色") : d == 3 ? tr("深色") : tr("中等色"));
 		*lines = 2;

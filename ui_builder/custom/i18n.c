@@ -155,7 +155,7 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "今天", "Today" },
         { "今明天", "Today/Tomorrow" },
         { "今明天12:00", "Today/Tomorrow 12:00" },
-        { "份量/种类", "Portion/type" },
+        { "份量", "Portion" },
         { "你想启动安息日烘焙吗", "Start Sabbath Bake?" },
         { "保温", "Keep Warm" },
         { "保温中...", "Keep Warm" },
@@ -209,12 +209,12 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "多段烹饪", "Multi-step\nCooking" },
         { "安息日", "Sabbath Mode" },
         { "家禽", "Poultry" },
-        { "小结：\n份量/种类：%dg\n", "Summary:\nPortion/type: %dg\n" },
+        { "小结：\n份量：%dg\n", "Summary:\nPortion: %dg\n" },
         { "小结：\n有发酵阶段\n", "Summary:\nRising phase included\n" },
         { "小结：\n没有发酵阶段\n", "Summary:\nNo rising phase\n" },
         { "发酵阶段：是", "Rising phase: Yes" },   /* 收藏卡片小结行（无"小结："前缀） */
         { "发酵阶段：否", "Rising phase: No" },
-        { "份量/种类：", "Portion/type: " },       /* 收藏卡片小结行（份量驱动菜） */
+        { "份量：", "Portion: " },       /* 收藏卡片小结行（份量驱动菜） */
         { "烧烤程度：", "Browning: " },            /* 收藏卡片小结行（程度驱动菜） */
         { "上色程度：", "Browning: " },            /* 收藏卡片小结行（双设置菜 L2） */
         { "成熟度：", "Doneness: " },              /* 收藏卡片小结行（牛肉/羊腿/羊排 L1） */
@@ -227,7 +227,7 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "五成熟", "Medium" },
         { "七成熟", "Medium Well" },
         { "全熟", "Well-done" },
-        { "小结：\n份量/种类：1份\n", "Summary:\nAmount: 1\n" },
+        { "小结：\n份量：1份\n", "Summary:\nAmount: 1\n" },
         { "巧克力蛋糕", "Chocolate Cake" },
         { "已完成", "Completed" },
         { "已完成/保温中", "Completed/Keep Warm" },
@@ -550,8 +550,8 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "| %s | %d%s | %d分钟", "| %s | %d%s | %dmin" },
         { "| %s | %dg | %s色", "| %s | %dg | %s" },
         { "| %s | %dg | %s色", "| %s | %dg | %s" },
-        { "小结：\n份量/种类：%d%s\n", "Summary:\nWeight: %d%s\n" },
-        { "小结：\n份量/种类：%dg\n烧烤程度：%s\n", "Summary:\nWeight: %dg\nBrowning level: %s\n" },
+        { "小结：\n份量：%d%s\n", "Summary:\nWeight: %d%s\n" },
+        { "小结：\n份量：%dg\n烧烤程度：%s\n", "Summary:\nWeight: %dg\nBrowning level: %s\n" },
         { "小结：\n熟度：%s\n", "Summary:\nDoneness level: %s\n" },
         { "小结：\n熟度：%s\n烧烤程度：%s\n", "Summary:\nDoneness level: %s\nBrowning level: %s\n" },
         { "零食", "Snacks" },
