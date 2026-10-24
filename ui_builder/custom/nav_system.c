@@ -137,6 +137,11 @@ static void system_timer_cb(lv_timer_t *timer)
     probe_last_time = now;
     probe_last = probe_now;
 
+    /* 首次上电设置链路(语言页/日期页)与断电重启开机日期页:探针插拔只记边沿,
+     * 不弹探针提示也不清屏跳主页——设置没走完不能被拽离(2026-10-23) */
+    if (!g_langpick_done || g_systime_boot_mode)
+        return;
+
     if (depth > 0 && page_stack[depth - 1] == PAGE_PROBETIP) {
         probetip_t *tip = probetip_get(&ui_manager);
         if (tip && tip->button_1) {

@@ -393,6 +393,26 @@ void jump_to_systime(void)
     lv_obj_set_style_img_opa(scr->set_time_bg_txt_Img, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_pos(scr->set_time_bg_txt_Img, 24, 24);
 
+    /* 开机链路(首设日期页/断电重启补设页)EN:左上角标题从烙字 "Date & Time" 换显
+     * "Set Date and Time"(2026-10-24 用户)。烙字在底图内无法单独换,该区域页面
+     * 背景为纯色(bg.png 实测 0x181918),同色矩形盖掉烙字后叠 24 号白字;
+     * 设置层进入的子页保持原烙字标题,简繁仍用各自底图 */
+    if ((g_langpick_date_mode || g_systime_boot_mode) && is_english()) {
+        lv_obj_t *cover = lv_obj_create(scr->obj);
+        lv_obj_set_pos(cover, 24, 24);          /* 烙字带实测:屏幕 x26..158,y27..44 */
+        lv_obj_set_size(cover, 150, 26);
+        lv_obj_set_style_bg_color(cover, lv_color_hex(0x181918), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_opa(cover, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_border_width(cover, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_radius(cover, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_clear_flag(cover, LV_OBJ_FLAG_SCROLLABLE);
+        lv_obj_t *title = lv_label_create(scr->obj);
+        lv_label_set_text(title, "Set Date and Time");
+        lv_obj_set_style_text_font(title, &c_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_text_color(title, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_pos(title, 26, 24);
+    }
+
     /* Init scr->Yes_Btn */
     scr->Yes_Btn = lv_btn_create(scr->obj);
     lv_obj_t *Yes_Btn_label = lv_label_create(scr->Yes_Btn);

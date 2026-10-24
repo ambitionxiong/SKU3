@@ -106,12 +106,13 @@ static const sel_layout_t s_sel_n4 = {
     { 50, 50, 50, 50 }, { 105, 166, 226, 286 },
     { 429, 430, 429, 430 }, { 110, 171, 231, 291 },
 };
-/* N3:Set_3seletc_bg_IMG 面板(370,91)501x315;文本(50,111)/(50,171)/(50,231)200x32;
- * 图标(429,115)/(429,176)/(429,236);位置定稿同 N2(2026-10-22 二次)。
- * 注意:Set_3seletc_bg_IMG 素材不存在,实际底图 lock_select_bg(501x241) 比 315 高的对象矮,
- * LVGL 背景图在对象内垂直居中 → 卡片视觉顶=py+37(测得),位置已按视觉中心校正 */
+/* N3:setcard3 面板(370,99)501x301;文本(50,111)/(50,171)/(50,231)200x32;
+ * 图标(429,115)/(429,176)/(429,236);卡片中心与 N2/N4 同点(370+250.5,249.5)。
+ * 底图沿革:Set_3seletc_bg_IMG 素材从未存在(此前借 lock_select_bg 501x241 居中画在
+ * 315 高对象内,视觉顶=py+37,卡片显矮即用户所指尺寸不对);2026-10-24 用户补
+ * setcard3.png(501x301,纯色圆角卡无烙字),对象改按素材实高 301,图满铺无居中偏移 */
 static const sel_layout_t s_sel_n3 = {
-    370, 91, 501, 315, "used/Set_3seletc_bg_IMG.png",
+    370, 99, 501, 301, "setcard3.png",
     { 50, 50, 50 }, { 111, 171, 231 },
     { 429, 429, 429 }, { 115, 176, 236 },
 };
@@ -132,10 +133,11 @@ static void sel_popup_create(int where, int flag, int n, const char *title_text,
     lv_obj_set_style_bg_opa(s_sel_cont, 115, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(s_sel_cont, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    /* 面板背景:编译期字面量二选一(同事即此写法);运行时 snprintf 拼路径会被
-     * 96 字节缓冲截断成 "…assets/image/used" 导致图片加载失败 */
+    /* 面板背景:编译期字面量三选一(n3 用用户新补的 setcard3,2026-10-24);运行时
+     * snprintf 拼路径会被 96 字节缓冲截断成 "…assets/image/used" 导致图片加载失败 */
     const char *bg_path = (n >= 4) ? LVGL_IMAGE_PATH(used/Set_4seletc_bg_IMG.png)
-                                   : LVGL_IMAGE_PATH(used/lock_select_bg.png);
+                                   : (n == 3) ? LVGL_IMAGE_PATH(setcard3.png)
+                                              : LVGL_IMAGE_PATH(used/lock_select_bg.png);
     lv_obj_t *panel = lv_obj_create(s_sel_cont);
     lv_obj_set_pos(panel, L->px, L->py);
     lv_obj_set_size(panel, L->pw, L->ph);
