@@ -309,6 +309,13 @@ void jump_to_preheat_cooking(void)
         return;
     }
 
+    /* 上下烧烤开预热:预热目标=上下温较低者。set 页只编辑 set_temp_up/down,
+     * set_temp 停留在 menu 页主温(实测显示 menu 温度即此因);预热页大字/进度条
+     * 上限/下发 SET_TEMP(SET_TEMP_LOWER 镜像)全跟随 set_temp,入口一次取低即全正。
+     * 单独预热(cook_mode=MODE_PREHEAT)与其余单温模式不进此分支(2026-10-26) */
+    if (g_send.cook_mode == MODE_UPDOWN_BBQ)
+        set_temp = set_temp_up < set_temp_down ? set_temp_up : set_temp_down;
+
     page_push(PAGE_PREHEAT_COOKING);
     lv_obj_clean(lv_scr_act());
     preheatcooking_create(&ui_manager);

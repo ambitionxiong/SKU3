@@ -354,8 +354,8 @@ void air_set_lang_tune(void)
     lv_obj_set_size(pg->label_310, 26, 32);
 
     /* label_311: 标签 | "自动保温" | (831,381) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_311, 765, 381);
-    lv_obj_set_size(pg->label_311, 200, 32);
+    lv_obj_set_pos(pg->label_311, 705, 381);
+    lv_obj_set_size(pg->label_311, 260, 32);   /* EN "Auto Keep Warm"(TTF 宽233):右缘不动盒加宽260防折行(2026-10-26) */
 
     /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offpreheat, 983, 144);
@@ -1033,8 +1033,8 @@ void bottom_bbq_set_lang_tune(void)
     lv_obj_set_size(pg->label_130, 26, 32);
 
     /* label_131: 标签 | "自动保温" | (831,381) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_131, 765, 381);   /* 对齐 updown 系英文排版(A) */
-    lv_obj_set_size(pg->label_131, 200, 32);   /* 对齐 updown 系英文排版(A) */
+    lv_obj_set_pos(pg->label_131, 705, 381);   /* 对齐 updown 系英文排版(A) */
+    lv_obj_set_size(pg->label_131, 260, 32);   /* 对齐 updown 系英文排版(A) */   /* EN "Auto Keep Warm"(TTF 宽233):右缘不动盒加宽260防折行(2026-10-26) */
 
     /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offpreheat, 983, 144);
@@ -1768,8 +1768,8 @@ void bread_set_lang_tune(void)
     lv_obj_set_size(pg->label_740, 26, 32);
 
     /* label_741: 标签 | "自动保温" | (831,270) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_741, 714, 270);
-    lv_obj_set_size(pg->label_741, 250, 32);
+    lv_obj_set_pos(pg->label_741, 704, 270);
+    lv_obj_set_size(pg->label_741, 260, 32);   /* EN "Auto Keep Warm"(TTF 宽233):右缘不动盒加宽260防折行(2026-10-26) */
 
 
     /* temp: 标签 | "200" | (315,141) | 83x53 | font taiwanpearl_regular_48 */
@@ -2343,8 +2343,8 @@ void central_bbq_set_lang_tune(void)
     lv_obj_set_size(pg->label_302, 26, 32);
 
     /* label_303: 标签 | "自动保温" | (831,381) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_303, 765, 381);   /* 对齐 updown 系英文排版(A) */
-    lv_obj_set_size(pg->label_303, 200, 32);   /* 对齐 updown 系英文排版(A) */
+    lv_obj_set_pos(pg->label_303, 705, 381);   /* 对齐 updown 系英文排版(A) */
+    lv_obj_set_size(pg->label_303, 260, 32);   /* 对齐 updown 系英文排版(A) */   /* EN "Auto Keep Warm"(TTF 宽233):右缘不动盒加宽260防折行(2026-10-26) */
 
     /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offpreheat, 983, 144);
@@ -3123,8 +3123,8 @@ void chip_set_lang_tune(void)
     lv_obj_set_size(pg->label_822, 26, 32);
 
     /* label_823: 标签 | "自动保温" | (831,270) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_823, 714, 270);
-    lv_obj_set_size(pg->label_823, 250, 32);
+    lv_obj_set_pos(pg->label_823, 704, 270);
+    lv_obj_set_size(pg->label_823, 260, 32);   /* EN "Auto Keep Warm"(TTF 宽233):右缘不动盒加宽260防折行(2026-10-26) */
 
         /* temp: 标签 | "230" | (315,141) | 83x53 | font taiwanpearl_regular_48 */
     lv_obj_set_pos(pg->temp, 260, 155);
@@ -3908,8 +3908,8 @@ void cookie_set_lang_tune(void)
     lv_obj_set_size(pg->label_109, 26, 32);
 
     /* label_110: 标签 | "自动保温" | (831,270) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_110, 714, 270);
-    lv_obj_set_size(pg->label_110, 250, 32);
+    lv_obj_set_pos(pg->label_110, 704, 270);
+    lv_obj_set_size(pg->label_110, 260, 32);   /* EN "Auto Keep Warm"(TTF 宽233):右缘不动盒加宽260防折行(2026-10-26) */
 
 
     /* temp: 标签 | "135" | (315,141) | 83x53 | font taiwanpearl_regular_48 */
@@ -4491,8 +4491,8 @@ void corn_set_lang_tune(void)
     lv_obj_set_size(pg->label_555, 26, 32);
 
     /* label_556: 标签 | "自动保温" | (831,381) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_556, 765, 381);   /* 对齐 air_set */
-    lv_obj_set_size(pg->label_556, 200, 32);   /* 对齐 air_set */
+    lv_obj_set_pos(pg->label_556, 705, 381);   /* 对齐 air_set */
+    lv_obj_set_size(pg->label_556, 260, 32);   /* 对齐 air_set */   /* EN "Auto Keep Warm"(TTF 宽233):右缘不动盒加宽260防折行(2026-10-26) */
 
     /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offpreheat, 983, 144);
@@ -4972,8 +4972,8 @@ void custom_set_lang_tune(void)
     lv_obj_set_size(pg->label_863, 26, 32);
 
     /* label_864: 标签 | "自动保温" | (831,270) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_864, 714, 270);
-    lv_obj_set_size(pg->label_864, 250, 32);
+    lv_obj_set_pos(pg->label_864, 704, 270);
+    lv_obj_set_size(pg->label_864, 260, 32);   /* EN "Auto Keep Warm"(TTF 宽233):右缘不动盒加宽260防折行(2026-10-26) */
 
         /* temp: 标签 | "200" | (315,141) | 83x53 | font taiwanpearl_regular_48 */
     lv_obj_set_pos(pg->temp, 260, 155);
@@ -5902,8 +5902,8 @@ void heatcontain_set_lang_tune(void)
     lv_obj_set_size(pg->label_604, 26, 32);
 
     /* label_605: 标签 | "自动保温" | (831,381) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_605, 765, 381);   /* 对齐 air_set */
-    lv_obj_set_size(pg->label_605, 200, 32);   /* 对齐 air_set */
+    lv_obj_set_pos(pg->label_605, 705, 381);   /* 对齐 air_set */
+    lv_obj_set_size(pg->label_605, 260, 32);   /* 对齐 air_set */   /* EN "Auto Keep Warm"(TTF 宽233):右缘不动盒加宽260防折行(2026-10-26) */
 
     /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offpreheat, 983, 144);
@@ -6586,8 +6586,8 @@ void hot_bbq_set_lang_tune(void)
     lv_obj_set_size(pg->label_178, 26, 32);
 
     /* label_179: 标签 | "自动保温" | (831,381) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_179, 765, 381);   /* 对齐 updown 系英文排版(A) */
-    lv_obj_set_size(pg->label_179, 200, 32);   /* 对齐 updown 系英文排版(A) */
+    lv_obj_set_pos(pg->label_179, 705, 381);   /* 对齐 updown 系英文排版(A) */
+    lv_obj_set_size(pg->label_179, 260, 32);   /* 对齐 updown 系英文排版(A) */   /* EN "Auto Keep Warm"(TTF 宽233):右缘不动盒加宽260防折行(2026-10-26) */
 
     /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offpreheat, 983, 144);
@@ -8390,8 +8390,8 @@ void hotwind_bbq_set_lang_tune(void)
     lv_obj_set_size(pg->label_226, 26, 32);
 
     /* label_227: 标签 | "自动保温" | (831,381) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_227, 765, 381);   /* 对齐 updown 系英文排版(A) */
-    lv_obj_set_size(pg->label_227, 200, 32);   /* 对齐 updown 系英文排版(A) */
+    lv_obj_set_pos(pg->label_227, 705, 381);   /* 对齐 updown 系英文排版(A) */
+    lv_obj_set_size(pg->label_227, 260, 32);   /* 对齐 updown 系英文排版(A) */   /* EN "Auto Keep Warm"(TTF 宽233):右缘不动盒加宽260防折行(2026-10-26) */
 
     /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offpreheat, 983, 144);
@@ -8871,8 +8871,8 @@ void lasagna_set_lang_tune(void)
     lv_obj_set_size(pg->label_652, 26, 32);
 
     /* label_653: 标签 | "自动保温" | (831,270) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_653, 714, 270);
-    lv_obj_set_size(pg->label_653, 250, 32);
+    lv_obj_set_pos(pg->label_653, 704, 270);
+    lv_obj_set_size(pg->label_653, 260, 32);   /* EN "Auto Keep Warm"(TTF 宽233):右缘不动盒加宽260防折行(2026-10-26) */
 
 
     /* temp: 标签 | "230" | (315,141) | 83x53 | font taiwanpearl_regular_48 */
@@ -9429,8 +9429,8 @@ void menu_set_lang_tune(void)
     lv_obj_set_size(pg->label_261, 26, 32);
 
     /* label_262: 标签 | "自动保温" | (831,270) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_262, 714, 270);
-    lv_obj_set_size(pg->label_262, 250, 32);
+    lv_obj_set_pos(pg->label_262, 704, 270);
+    lv_obj_set_size(pg->label_262, 260, 32);   /* EN "Auto Keep Warm"(TTF 宽233):右缘不动盒加宽260防折行(2026-10-26) */
 
 
     /* temp: 标签 | "210" | (315,141) | 83x53 | font taiwanpearl_regular_48 */
@@ -9914,8 +9914,8 @@ void pizza3_set_lang_tune(void)
     lv_obj_set_size(pg->label_781, 26, 32);
 
     /* label_782: 标签 | "自动保温" | (831,270) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_782, 714, 270);
-    lv_obj_set_size(pg->label_782, 250, 32);
+    lv_obj_set_pos(pg->label_782, 704, 270);
+    lv_obj_set_size(pg->label_782, 260, 32);   /* EN "Auto Keep Warm"(TTF 宽233):右缘不动盒加宽260防折行(2026-10-26) */
 
         /* temp: 标签 | "250" | (315,141) | 83x53 | font taiwanpearl_regular_48 */
     lv_obj_set_pos(pg->temp, 260, 155);
@@ -10414,8 +10414,8 @@ void pizza_2_set_lang_tune(void)
     lv_obj_set_size(pg->label_359, 26, 32);
 
     /* label_360: 标签 | "自动保温" | (831,381) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_360, 765, 381);   /* 对齐 air_set */
-    lv_obj_set_size(pg->label_360, 200, 32);   /* 对齐 air_set */
+    lv_obj_set_pos(pg->label_360, 705, 381);   /* 对齐 air_set */
+    lv_obj_set_size(pg->label_360, 260, 32);   /* 对齐 air_set */   /* EN "Auto Keep Warm"(TTF 宽233):右缘不动盒加宽260防折行(2026-10-26) */
 
     /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offpreheat, 983, 144);
@@ -10919,8 +10919,8 @@ void pizza_set_lang_tune(void)
     lv_obj_set_size(pg->label_213, 26, 32);
 
     /* label_214: 标签 | "自动保温" | (831,270) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_214, 714, 270);
-    lv_obj_set_size(pg->label_214, 250, 32);
+    lv_obj_set_pos(pg->label_214, 704, 270);
+    lv_obj_set_size(pg->label_214, 260, 32);   /* EN "Auto Keep Warm"(TTF 宽233):右缘不动盒加宽260防折行(2026-10-26) */
 
         /* temp: 标签 | "210" | (315,141) | 83x53 | font taiwanpearl_regular_48 */
     lv_obj_set_pos(pg->temp, 260, 155);   /* 对齐 air_set */
@@ -11755,8 +11755,8 @@ void rising_set_lang_tune(void)
     lv_obj_set_size(pg->label_506, 26, 32);
 
     /* label_507: 标签 | "自动保温" | (831,381) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_507, 765, 381);   /* 对齐 air_set */
-    lv_obj_set_size(pg->label_507, 200, 32);   /* 对齐 air_set */
+    lv_obj_set_pos(pg->label_507, 705, 381);   /* 对齐 air_set */
+    lv_obj_set_size(pg->label_507, 260, 32);   /* 对齐 air_set */   /* EN "Auto Keep Warm"(TTF 宽233):右缘不动盒加宽260防折行(2026-10-26) */
 
     /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offpreheat, 983, 144);
@@ -12333,8 +12333,8 @@ void save_bbq_set_lang_tune(void)
     lv_obj_set_size(pg->label_264, 26, 32);
 
     /* label_265: 标签 | "自动保温" | (831,381) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_265, 765, 381);   /* 对齐 updown 系英文排版(A) */
-    lv_obj_set_size(pg->label_265, 200, 32);   /* 对齐 updown 系英文排版(A) */
+    lv_obj_set_pos(pg->label_265, 705, 381);   /* 对齐 updown 系英文排版(A) */
+    lv_obj_set_size(pg->label_265, 260, 32);   /* 对齐 updown 系英文排版(A) */   /* EN "Auto Keep Warm"(TTF 宽233):右缘不动盒加宽260防折行(2026-10-26) */
 
     /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offpreheat, 983, 144);
@@ -13301,8 +13301,8 @@ void slowcook_set_lang_tune(void)
     lv_obj_set_size(pg->label_408, 26, 32);
 
     /* label_409: 标签 | "自动保温" | (831,381) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_409, 765, 381);   /* 对齐 air_set */
-    lv_obj_set_size(pg->label_409, 200, 32);   /* 对齐 air_set */
+    lv_obj_set_pos(pg->label_409, 705, 381);   /* 对齐 air_set */
+    lv_obj_set_size(pg->label_409, 260, 32);   /* 对齐 air_set */   /* EN "Auto Keep Warm"(TTF 宽233):右缘不动盒加宽260防折行(2026-10-26) */
 
     /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offpreheat, 983, 144);
@@ -14591,8 +14591,8 @@ void strudel_set_lang_tune(void)
     lv_obj_set_size(pg->label_699, 26, 32);
 
     /* label_700: 标签 | "自动保温" | (831,270) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_700, 714, 270);
-    lv_obj_set_size(pg->label_700, 250, 32);
+    lv_obj_set_pos(pg->label_700, 704, 270);
+    lv_obj_set_size(pg->label_700, 260, 32);   /* EN "Auto Keep Warm"(TTF 宽233):右缘不动盒加宽260防折行(2026-10-26) */
 
         /* temp: 标签 | "200" | (315,141) | 83x53 | font taiwanpearl_regular_48 */
     lv_obj_set_pos(pg->temp, 260, 155);
@@ -15438,8 +15438,8 @@ void top_bbq_set_lang_tune(void)
     lv_obj_set_size(pg->label_63, 26, 32);
 
     /* label_64: 标签 | "自动保温" | (831,381) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_64, 765, 381);   /* 对齐 updown 系英文排版(A) */
-    lv_obj_set_size(pg->label_64, 200, 32);   /* 对齐 updown 系英文排版(A) */
+    lv_obj_set_pos(pg->label_64, 705, 381);   /* 对齐 updown 系英文排版(A) */
+    lv_obj_set_size(pg->label_64, 260, 32);   /* 对齐 updown 系英文排版(A) */   /* EN "Auto Keep Warm"(TTF 宽233):右缘不动盒加宽260防折行(2026-10-26) */
 
     /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offpreheat, 983, 144);
@@ -15959,8 +15959,8 @@ void unfrozen_set_lang_tune(void)
     lv_obj_set_size(pg->label_457, 26, 32);
 
     /* label_458: 标签 | "自动保温" | (831,381) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_458, 765, 381);   /* 对齐 air_set */
-    lv_obj_set_size(pg->label_458, 200, 32);   /* 对齐 air_set */
+    lv_obj_set_pos(pg->label_458, 705, 381);   /* 对齐 air_set */
+    lv_obj_set_size(pg->label_458, 260, 32);   /* 对齐 air_set */   /* EN "Auto Keep Warm"(TTF 宽233):右缘不动盒加宽260防折行(2026-10-26) */
 
     /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offpreheat, 983, 144);
@@ -16728,8 +16728,8 @@ void updown_bbq_set_lang_tune(void)
     lv_obj_set_size(pg->uptemp_button, 170, 61);
 
     /* contain_label: 标签 | "自动保温" | (841,381) | 120x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->contain_label, 765, 381);
-    lv_obj_set_size(pg->contain_label, 200, 32);
+    lv_obj_set_pos(pg->contain_label, 705, 381);
+    lv_obj_set_size(pg->contain_label, 260, 32);   /* EN "Auto Keep Warm"(TTF 宽233):右缘不动盒加宽260防折行(2026-10-26) */
 
     /* preheat_button: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off_en.png */
     lv_obj_set_pos(pg->preheat_button, 983, 144);
@@ -17910,8 +17910,8 @@ void west_set_lang_tune(void)
     lv_obj_set_size(pg->label_165, 26, 32);
 
     /* label_166: 标签 | "自动保温" | (831,270) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_166, 714, 270);
-    lv_obj_set_size(pg->label_166, 250, 32);
+    lv_obj_set_pos(pg->label_166, 704, 270);
+    lv_obj_set_size(pg->label_166, 260, 32);   /* EN "Auto Keep Warm"(TTF 宽233):右缘不动盒加宽260防折行(2026-10-26) */
 
 
     /* temp: 标签 | "170" | 30 号标准位 (260,155) 与 ℃ 同行(2026-10-08 修:9.27.2 批量挪位漏网本页,
@@ -18435,8 +18435,8 @@ void windchange_bbq_set_lang_tune(void)
     lv_obj_set_size(pg->label_340, 26, 32);
 
     /* label_341: 标签 | "自动保温" | (831,381) | 130x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_341, 765, 381);   /* 对齐 updown 系英文排版(A) */
-    lv_obj_set_size(pg->label_341, 200, 32);   /* 对齐 updown 系英文排版(A) */
+    lv_obj_set_pos(pg->label_341, 705, 381);   /* 对齐 updown 系英文排版(A) */
+    lv_obj_set_size(pg->label_341, 260, 32);   /* 对齐 updown 系英文排版(A) */   /* EN "Auto Keep Warm"(TTF 宽233):右缘不动盒加宽260防折行(2026-10-26) */
 
     /* offpreheat: 按钮 | (983,144) | 135x53 | font montserratmedium_16 | bg: off.png */
     lv_obj_set_pos(pg->offpreheat, 983, 144);

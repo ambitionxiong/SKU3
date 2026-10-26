@@ -6,6 +6,7 @@
  *      含被童锁/SLEEP 吞掉的键——有按键动作就算活动）
  *   2. nav_idle_init：创建常驻 1s 调度定时器（nav_init 调用，一次创建永不重建）
  *   3. 三规则（nav_idle_timer_cb）：
+ *      确认层（关机确认弹窗/各模式返回确认页）3s 无操作 → 回运行页；
  *      烹饪会话 60s 无操作 → 逐层退出设置覆盖层/子页回烹饪层；
  *      非烹饪 300s 无操作 → 进待机页；
  *      待机页 1200s 无操作 → 关机。
@@ -24,6 +25,9 @@
 #define NAV_IDLE_TO_COOKING_S   60    /* 烹饪会话无操作回烹饪层 */
 #define NAV_IDLE_TO_STANDBY_S   300   /* 非烹饪无操作进待机 */
 #define NAV_IDLE_TO_POWEROFF_S  1200  /* 待机页无操作关机 */
+/* 确认层(关机确认弹窗/各模式返回确认页)无操作自动回运行页(2026-10-26 用户,
+ * 原与规则1 同 60s);1s 拍粒度,实际触发在 3.0~4.0s 之间 */
+#define NAV_IDLE_CONFIRM_TO_COOKING_S 3
 
 static uint32_t g_last_activity_ms = 0;
 
@@ -65,6 +69,53 @@ int nav_is_cook_above_page(page_id_t p)
         p == PAGE_SET_COUNT || p == PAGE_SET_SYSTIME)
         return 1;
     return is_cook_setting_page(p);
+}
+
+/* 返回确认页族:烹饪/预约/预热/清洁/上色各模式 STOP_BACK(共 35 页,BACK 或停止键
+   从运行页进入的"确认退出"页)。3s 无操作自动 page_pop 回运行页(nav_idle_timer_cb);
+   清单与 nav_pop.c 的 g_on_stop_back 清场 switch 同源,新增模式两处同步 */
+static int is_stop_back_page(page_id_t p)
+{
+    switch (p) {
+    case PAGE_UPDOWN_BBQ_STOP_BACK:
+    case PAGE_TOP_BBQ_STOP_BACK:
+    case PAGE_BOTTOM_BBQ_STOP_BACK:
+    case PAGE_HOT_BBQ_STOP_BACK:
+    case PAGE_HOTWIND_BBQ_STOP_BACK:
+    case PAGE_SAVE_BBQ_STOP_BACK:
+    case PAGE_CENTRAL_BBQ_STOP_BACK:
+    case PAGE_WINDCHANGE_BBQ_STOP_BACK:
+    case PAGE_AIR_STOP_BACK:
+    case PAGE_PIZZA_2_STOP_BACK:
+    case PAGE_SLOWCOOK_STOP_BACK:
+    case PAGE_UNFROZEN_STOP_BACK:
+    case PAGE_RISING_STOP_BACK:
+    case PAGE_CORN_STOP_BACK:
+    case PAGE_HEATCONTAIN_STOP_BACK:
+    case PAGE_UPDOWN_BBQ_STOP_BACK_PROBE:
+    case PAGE_HOT_BBQ_STOP_BACK_PROBE:
+    case PAGE_BOTTOM_BBQ_STOP_BACK_PROBE:
+    case PAGE_SLOWCOOK_STOP_BACK_PROBE:
+    case PAGE_COOKIE_STOP_BACK:
+    case PAGE_WEST_STOP_BACK:
+    case PAGE_PIZZA_STOP_BACK:
+    case PAGE_MENU_COOK_STOP_BACK:
+    case PAGE_LASAGNA_STOP_BACK:
+    case PAGE_STRUDEL_STOP_BACK:
+    case PAGE_BREAD_STOP_BACK:
+    case PAGE_PIZZA3_STOP_BACK:
+    case PAGE_CHIP_STOP_BACK:
+    case PAGE_CUSTOM_STOP_BACK:
+    case PAGE_PREHEAT_STOP_BACK:
+    case PAGE_WATER_CLEAN_STOP_BACK:
+    case PAGE_HOTCLEANSAVE_STOP_BACK:
+    case PAGE_HOTCLEANMIDDLE_STOP_BACK:
+    case PAGE_HOTCLEANHIGH_STOP_BACK:
+    case PAGE_COLOR_STOP_BACK:
+        return 1;
+    default:
+        return 0;
+    }
 }
 
 /* 栈重置为 [WAITMENU_24, MAJOR_MENU(_TZ)] 并重建主菜单。
@@ -133,13 +184,27 @@ static void nav_idle_timer_cb(lv_timer_t *t)
     /* 警报页:空闲策略不生效(待机/关机都不允许拽走警报),仅长按开关机 */
     if (top == PAGE_ALARM) return;
 
-    /* 关机确认弹窗:无操作 1 分钟自动取消回烹饪层(2026-09-24)。
-     * 弹窗非页面,栈顶仍是烹饪层,下面的活动刷新会每秒重置闲时——
-     * 必须在其之前拦截并冻结活动时钟(弹窗期间任何按键 nav_idle_touch 重打点) */
+    /* 关机确认弹窗:无操作 3s 自动取消回烹饪层(2026-09-23 引入,原 60s,
+     * 2026-10-26 用户改 3s 与返回确认页同窗口)。弹窗非页面,栈顶仍是烹饪层,
+     * 下面的活动刷新会每秒重置闲时——必须在其之前拦截并冻结活动时钟
+     * (弹窗期间任何按键 nav_idle_touch 重打点) */
     if (nav_poweroff_ask_active()) {
-        if (idle_s >= NAV_IDLE_TO_COOKING_S) {
-            printf("[idle] poweroff ask no-op %ds -> cancel\n", NAV_IDLE_TO_COOKING_S);
+        if (idle_s >= NAV_IDLE_CONFIRM_TO_COOKING_S) {
+            printf("[idle] poweroff ask no-op %ds -> cancel\n", NAV_IDLE_CONFIRM_TO_COOKING_S);
             nav_poweroff_ask_cancel();
+        }
+        return;
+    }
+
+    /* 返回确认页(各模式 STOP_BACK):无操作 3s 自动 pop 回运行页(2026-10-26 用户,
+     * 与关机确认弹窗同窗口)。栈顶是 stop_back 即无条件拦截——它不在
+     * nav_is_cook_above_page 清单,若落到下方会被"坐烹饪层每秒重打点"重置闲时,
+     * 永远到不了 3s(首版只 return 在触发分支里,实测 3s 不返回即此因,2026-10-26 复修);
+     * 关机弹窗叠在 stop_back 上时共用同一活动时钟:弹窗 3s 先消,下一拍 stop_back 回运行页 */
+    if (is_stop_back_page(top)) {
+        if (idle_s >= NAV_IDLE_CONFIRM_TO_COOKING_S) {
+            printf("[idle] stop_back no-op %ds -> page_pop\n", NAV_IDLE_CONFIRM_TO_COOKING_S);
+            page_pop();
         }
         return;
     }
