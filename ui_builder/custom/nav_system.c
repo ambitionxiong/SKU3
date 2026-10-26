@@ -440,6 +440,44 @@ static lv_obj_t *lw_ampm = NULL;      /* 12 小时制上午/下午后缀(随待�
 static uint8_t lw_timetype = 0xFF;    /* 时制参与变更判定:设置页切换后立即重排 */
 static uint8_t lw_lang_en = 0xFF;     /* 语言参与变更判定:切换后时间/星期/年月日全部重刷 */
 
+/* 待机页"冷却风扇散热中"行(2026-10-26 用户需求):BUF[11] BIT5=顶部风扇/烹调后散热
+ * 标志,仅 1(散热中)时显示,0 时整行隐藏(不留空行)。位置按两张设计样张(CN 879x393 /
+ * EN 867x408,等比 0.638)反推:24 号字、屏幕水平居中、墨迹中心 y388(日期行墨迹下约
+ * 70px;样张 90PX 注记=日期基线到本行的行距)。EN 用 aktiv 24,简繁用 taiwanpearl 24 */
+static lv_obj_t *lw_fan = NULL;       /* 随待机页实例重建,页销毁前由缓存重置清空 */
+static uint8_t lw_fan_on = 0xFF;      /* 上次显隐:1/0,0xFF=未定 */
+static uint8_t lw_fan_en = 0xFF;      /* 上次语言:字体/词条随之切换 */
+#define WAITMENU_FAN_Y  377           /* 24 号标签盒顶(实测墨迹中心 388) */
+
+static void waitmenu_apply_fan_line(void)
+{
+    if (depth <= 0 || page_stack[depth - 1] != PAGE_WAITMENU_24) return;
+    waitmenu_24_t *wait = waitmenu_24_get(&ui_manager);
+    if (!wait || !wait->obj) return;
+
+    uint8_t en = is_english() ? 1 : 0;
+    if (lw_fan == NULL || !lv_obj_is_valid(lw_fan) || lv_obj_get_parent(lw_fan) != wait->obj) {
+        lw_fan = lv_label_create(wait->obj);
+        lv_obj_set_style_text_color(lw_fan, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lw_fan_on = 0xFF;
+        lw_fan_en = 0xFF;
+    }
+    if (lw_fan_en != en) {
+        lw_fan_en = en;
+        lv_obj_set_style_text_font(lw_fan,
+            en ? &c_aktivgroteskmedium_24 : &c_taiwanpearl_regular_24,
+            LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_label_set_text(lw_fan, tr("冷却风扇散热中"));
+        lv_obj_align(lw_fan, LV_ALIGN_TOP_MID, 0, WAITMENU_FAN_Y);
+    }
+    uint8_t on = is_fan_running() ? 1 : 0;
+    if (lw_fan_on != on) {
+        lw_fan_on = on;
+        if (on) lv_obj_clear_flag(lw_fan, LV_OBJ_FLAG_HIDDEN);
+        else    lv_obj_add_flag(lw_fan, LV_OBJ_FLAG_HIDDEN);
+    }
+}
+
 // 显式重置缓存：waitmenu_24_create 后调用，强制刷新为真实时间。
 // 不依赖指针相等判定——auto_del 下 malloc 地址复用会导致缓存不失效（显示默认假文本/陈旧星期）
 void waitmenu_clock_cache_reset(void)
@@ -448,6 +486,8 @@ void waitmenu_clock_cache_reset(void)
     lw_hour = 0xFF; lw_min = 0xFF;
     lw_year = 0; lw_month = 0; lw_day = 0; lw_wday = -1;
     lw_ampm = NULL; lw_timetype = 0xFF;
+    lw_fan = NULL;      /* 旧页已销毁:散热行指针同 lw_ampm 一并作废 */
+    lw_fan_on = 0xFF;
 }
 
 // 待机页 waitmenu_24 时间/星期/年月日 实时刷新：
@@ -467,6 +507,8 @@ void waitmenu_apply_clock(void)
         lw_hour = 0xFF; lw_min = 0xFF;
         lw_year = 0; lw_month = 0; lw_day = 0; lw_wday = -1;
         lw_ampm = NULL;   /* 旧页后缀标签随页销毁,新实例重建 */
+        lw_fan = NULL;    /* 散热行同款:新页实例重建 */
+        lw_fan_on = 0xFF;
     }
     if (lw_lang_en != (is_english() ? 1 : 0)) {   /* 切语言:周/日缓存不感知语言,整体作废重刷 */
         lw_lang_en = is_english() ? 1 : 0;
@@ -554,6 +596,7 @@ void waitmenu_apply_clock(void)
         }
         if (wait->week_label) lv_label_set_text(wait->week_label, buf);
     }
+    waitmenu_apply_fan_line();   /* 散热行:与时间/日期刷新同拍,显隐只跟 BUF[11] BIT5 */
 }
 
 // topflag 右上角时间刷新体(500ms tick 与强制刷新共用);

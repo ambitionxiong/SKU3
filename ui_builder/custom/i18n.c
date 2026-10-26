@@ -524,6 +524,7 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "选择相应模式！", "choose cooking mode!" },
         { "通风冷却运行", "Cooling Fan Run-on" },
         { "通风冷却", "Fan Cooling" },
+        { "冷却风扇散热中", "Cooling Fan" },   /* 待机页散热行(2026-10-26,样张英文只写 Cooling Fan) */
         { "配菜", "Sides" },
         { "除垢", "Descaling" },
         { "集中烧烤", "Half Grill" },

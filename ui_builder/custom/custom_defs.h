@@ -141,6 +141,12 @@ static inline int is_lamp_on(void) {
     return (uart_data_receive[Receive_data_Power_ALL_State2] & (1 << 0)) != 0;
 }
 
+/* BUF[11] BIT5:顶部风扇/烹调后散热标志 0=未开启 1=散热中(20260618 协议)。
+   待机页"冷却风扇散热中"行据此显隐 */
+static inline int is_fan_running(void) {
+    return (uart_data_receive[Receive_data_Power_ALL_State] & (1 << 5)) != 0;
+}
+
 static inline int get_probe_temp(void) {
     return ((uint16_t)uart_data_receive[Receive_data_Probe_Temp_H] << 8)
          | uart_data_receive[Receive_data_Probe_Temp_L];
