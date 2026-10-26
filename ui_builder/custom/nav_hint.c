@@ -191,6 +191,7 @@ void nav_show_invalid_hint(void)
 
     /* 显示 topflag 遮罩 + tip1(文本每次设置,随语言切换) */
     lv_label_set_text(tf->tip1, tr("烤箱运行时不可用。"));
+    lv_obj_set_style_text_font(tf->tip1, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);   /* 钉默认字体:防收藏确认 EN aktiv30 串染(复用 tip1,2026-10-26) */
     topflagpage_lang_tune();   /* 英文排版:tip1 三行折行+高度自适应(每次显示刷新) */
     lv_obj_clear_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);
     lv_obj_clear_flag(tf->tip1, LV_OBJ_FLAG_HIDDEN);
@@ -289,7 +290,14 @@ static void nav_favtip_hide(void)
     nav_favtip_restore_elems();
     topflagpage_t *tf = topflagpage_get(&ui_manager);
     if (!tf || !tf->obj) return;
-    if (tf->tip3)        lv_obj_add_flag(tf->tip3, LV_OBJ_FLAG_HIDDEN);
+    if (tf->tip3) {
+        lv_obj_add_flag(tf->tip3, LV_OBJ_FLAG_HIDDEN);
+        /* 还原生成默认几何/字体(2026-10-26):show 换过 450x150 双行盒与 EN aktiv60,
+         * 本控件 tip3 唯一消费者是收藏两条标语,还原防遗留版式串进后续提示 */
+        lv_obj_set_pos(tf->tip3, 838, 161);
+        lv_obj_set_size(tf->tip3, 370, 61);
+        lv_obj_set_style_text_font(tf->tip3, &c_taiwanpearl_regular_60, LV_PART_MAIN | LV_STATE_DEFAULT);
+    }
     if (tf->container_1 && !nav_childlock_active())
         lv_obj_add_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);   /* 防御:保持隐藏(童锁期归锁层) */
 }
@@ -300,6 +308,21 @@ static void favtip_timer_cb(lv_timer_t *t)
     nav_favtip_hide();
 }
 
+/* 收藏标语版式(2026-10-26 样张:字体标注 Aktiv Grotesk Medium 60px):
+ * 60 号即生成默认字号,中文 taiwanpearl60 单行不变;EN 换 aktiv60 显示完整句,
+ * 双行折行("Saved as"/"favourite")。盒放宽与 tip1/tip2 同列 450x150@x797——
+ * "Saved as favourite"@aktiv60 实宽 520px,旧 370 盒装不下(故旧版 EN 只能
+ * 短词"Saved");"Removed from favourite" 679px 在 450 内折 "Removed from"/
+ * "favourite"。盒加高后文本仍顶部对齐,中文单行视觉位置与旧版相同 */
+static void favtip_style_apply(topflagpage_t *tf)
+{
+    lv_obj_set_pos(tf->tip3, 797, 161);
+    lv_obj_set_size(tf->tip3, 450, 150);
+    lv_obj_set_style_text_font(tf->tip3,
+        is_english() ? &c_aktivgroteskmedium_60 : &c_taiwanpearl_regular_60,
+        LV_PART_MAIN | LV_STATE_DEFAULT);
+}
+
 // 触发:正常收藏成功时调用(favorites_save_current)
 // 收藏成功不显示遮罩(container_1 保持隐藏),仅右侧 tip3 文字,2 秒自动消失
 void nav_show_fav_tip(void)
@@ -308,6 +331,7 @@ void nav_show_fav_tip(void)
     topflagpage_t *tf = topflagpage_get(&ui_manager);
     if (!tf || !tf->obj || !tf->tip3) return;
     lv_label_set_text(tf->tip3, tr("收藏成功"));   /* 每次显示时设文本,随语言切换 */
+    favtip_style_apply(tf);
     nav_favtip_collect_hide();   /* 隐藏完成页右侧组件(防烫图标/文字),恢复在 hide */
     lv_obj_clear_flag(tf->tip3, LV_OBJ_FLAG_HIDDEN);
     g_favtip_timer = lv_timer_create(favtip_timer_cb, 2000, NULL);
@@ -320,7 +344,8 @@ void nav_show_fav_cancel_tip(void)
     nav_favtip_hide();   /* 重复触发:重置 2 秒计时 */
     topflagpage_t *tf = topflagpage_get(&ui_manager);
     if (!tf || !tf->obj || !tf->tip3) return;
-    lv_label_set_text(tf->tip3, tr("已取消收藏"));   /* 每次显示时设文本,随语言切换 */
+    lv_label_set_text(tf->tip3, tr("取消收藏"));   /* 每次显示时设文本,随语言切换 */
+    favtip_style_apply(tf);
     nav_favtip_collect_hide();   /* 隐藏完成页右侧组件(防烫图标/文字),恢复在 hide */
     lv_obj_clear_flag(tf->tip3, LV_OBJ_FLAG_HIDDEN);
     g_favtip_timer = lv_timer_create(favtip_timer_cb, 2000, NULL);
@@ -378,6 +403,25 @@ static void fav_ask_show(int mode)
     } else {
         lv_label_set_text(tf->tip1, tr("该烹调已有，"));
         lv_label_set_text(tf->tip2, tr("需要覆盖原有烹调吗？"));
+    }
+    /* 字体/几何按语言显式设定(2026-10-26 样张:EN 标注 Aktiv Grotesk Medium 30px):
+     * EN 问句换 aktiv30 整句上移占 tip1 位(CN 前导行词条 EN 译文留空),两行硬换行
+     * 盒加高 76;CN 恢复 taiwanpearl30 + tip2 y198。tip1/tip2 与关机确认弹层/无效
+     * 提示复用,显式复位防 EN tune 残留与两弹层互串(同 poweroff 口径) */
+    if (is_english()) {
+        lv_obj_set_pos(tf->tip1, 797, 161);
+        lv_obj_set_size(tf->tip1, 450, 36);
+        lv_obj_set_style_text_font(tf->tip1, &c_aktivgroteskmedium_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_pos(tf->tip2, 796, 161);
+        lv_obj_set_size(tf->tip2, 450, 76);
+        lv_obj_set_style_text_font(tf->tip2, &c_aktivgroteskmedium_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    } else {
+        lv_obj_set_pos(tf->tip1, 797, 161);
+        lv_obj_set_size(tf->tip1, 450, 36);
+        lv_obj_set_style_text_font(tf->tip1, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_pos(tf->tip2, 796, 198);
+        lv_obj_set_size(tf->tip2, 450, 36);
+        lv_obj_set_style_text_font(tf->tip2, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     }
     if (tf->sure) {
         lv_obj_t *lbl = lv_obj_get_child(tf->sure, 0);   /* 按钮文字随语言切换 */
@@ -479,6 +523,7 @@ void nav_poweroff_ask_show(void)
          * (与 tip2 同轴中心 x≈1022,中文零差异;无效提示每次显示会重新 tune 不受影响) */
         lv_obj_set_size(tf->tip1, 450, 36);
         lv_obj_set_pos(tf->tip1, 797, 161);
+        lv_obj_set_style_text_font(tf->tip1, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);   /* 钉默认字体:防收藏确认 EN aktiv30 串染(两弹层复用同控件,2026-10-26) */
         if (tf->tip2) {
             lv_label_set_text(tf->tip2, tr(l2));
             /* EN 第二行 27 字符 30 号 ≈380px 超生成宽 370:加宽到与 tip1 同宽同轴
@@ -486,6 +531,7 @@ void nav_poweroff_ask_show(void)
              * 预约/保温 EN 第二行最长 31 字符 ≈436px 仍在 450 内) */
             lv_obj_set_size(tf->tip2, 450, 36);
             lv_obj_set_pos(tf->tip2, 796, 198);
+            lv_obj_set_style_text_font(tf->tip2, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);   /* 同上防串染 */
             lv_obj_clear_flag(tf->tip2, LV_OBJ_FLAG_HIDDEN);
         }
     }

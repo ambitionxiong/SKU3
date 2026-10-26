@@ -379,16 +379,16 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "烤猪里脊肉", "Roast Pork Tenderloin" },
         { "烤生蚝", "Grilled Oysters" },
         { "烤箱运行时不可用。", "Not available\nwhen the oven\nis running." },
-        { "收藏成功", "Saved" },
-        { "已取消收藏", "Removed" },   /* tip3 是 370 宽 60 号单行大字,EN 长句折行被裁;与"Saved"同口径 */
-        { "该烹调已有，", "Already saved," },
-        { "需要覆盖原有烹调吗？", "Overwrite existing?" },
+        { "收藏成功", "Saved as favourite" },
+        { "取消收藏", "Removed from favourite" },   /* 2026-10-26 样张:EN 完整句 60 号两行(tip3 盒已放宽 450x150);原"已取消收藏/Removed"短词版弃用 */
+        { "该烹调已有，", "" },   /* 2026-10-26 样张:EN 只有问句无前导行,tip1 留空;CN/繁不变 */
+        { "需要覆盖原有烹调吗？", "Do you want to overwrite\nthe existing cooking?" },   /* 样张 30 号两行,硬换行钉折行位(aktiv30 实测整句 653px) */
         { "收藏夹已满，", "Favorites full," },
         { "请删除不太喜欢的烹调！", "Please delete some!" },
         { "烤羊排", "Lamb Rack" },
         { "烤羊肉串", "Grilled Lamb Kebabs" },
         { "烤羊腿", "Roast Leg of Lamb" },
-        { "烤色吗!", "Extra browning?" },
+        { "烤色吗!", "enhancement?" },   /* 2026-10-26 样张:烤色询问 EN 下半句(上半句"Need (more) browning",两 label 拼句);仅第六感完成询问使用 */
         { "烤色程度：中等色", "Browning degree: Medium" },
         { "烤青口贝", "Grilled Mussels" },
         { "烤香肠", "Grilled Sausages" },
@@ -398,8 +398,8 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "烤鸡翅", "Grilled Chicken Wings" },
         { "烤鸡胸肉", "Grilled Chicken Breast" },
         { "热解自清洁", "Pyrolytic Self-Cleaning" },
-        { "请打开门...", "Please open the door" },
-        { "请打开门取出腔体内所有附件，并关闭机门", "Please open the door and remove all accessories, then close the door" },
+        { "请打开门...", "Open the door..." },   /* 2026-10-26 样张:高温清洁等待页标题 */
+        { "请打开门取出腔体内所有附件，并关闭机门", "Please open the door, remove all accessories from the cavity, and close the door." },   /* 2026-10-26 样张:aktiv30 实测首行 633px,doorwait 650 盒自然折行正断在 accessories 后(同样张) */
         { "| 热解自清洁 | %d小时%d分钟", "| Pyrolytic Self-Cleaning | %dh %dmin" },
         { "热解自清洁 — 中", "Pyro Mid" },
         { "热解自清洁 — 节能", "Pyro Eco" },
@@ -516,8 +516,8 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "请等待烤箱冷却", "达到安全温度后" },
         { "请等待烤箱冷却！", "Please wait for the oven to cool!" },
         { "请缓慢打开门体！", "Oven cavity is hot !" },   /* 2026-10-09 用户定稿:高温标语两行换 Caution/新句(探针完成页+overlay 全部使用方) */
-        { "请问还需要增加", "Would you like to add more" },
-        { "请问需要增加", "Would you like to add" },
+        { "请问还需要增加", "Need more browning" },   /* 2026-10-26 对齐烤色询问新句式(样张只给首问句式,二次询问同构) */
+        { "请问需要增加", "Need browning" },   /* 2026-10-26 样张:Need browning enhancement? */
         { "运行界面各类", "提示语" },
         { "迟", " " },
         { "选择烤色程度", "Select extra browning level" },
@@ -528,7 +528,7 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "配菜", "Sides" },
         { "除垢", "Descaling" },
         { "集中烧烤", "Half Grill" },
-        { "需 要", "Yes" },
+        { "需 要", "Need" },   /* 2026-10-26 样张:烤色询问确认钮(仅 nav_six_cook 使用) */
         { "需要插入探针才能继续", "Insert probe to continue" },
         { "需要插入温度探针才能使用", "Insert probe to use" },
         { "面包", "Bread" },
