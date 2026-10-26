@@ -1933,7 +1933,8 @@ void nav_cook_icon_align(lv_obj_t *icon, lv_obj_t *slogan, lv_obj_t *status)
 /* ==============================
  * 状态信息行整小时裁剪(2026-10-21 用户定稿)
  * 运行态信息行时长为整小时(分==0)时只显示小时段:"4小时0分钟"→"4小时"、
- * "4小時00分鐘"→"4小時"(繁体分带前导零)、"4h 0min"→"4h"。
+ * "4小時00分鐘"→"4小時"(繁体分带前导零)、"4h0m"→"4h"(2026-10-26 状态行 EN
+ * 时长格式 %dh %dmin→%dh%dm,裁剪尾标随改)。
  * 分钟非 0 或尾部不带小时段则原样保留。各运行页信息行统一走
  * nav_status_info_fmt;自拼缓冲(如 somecook merged)调 nav_strip_wholehour_tail
  * ============================== */
@@ -1944,8 +1945,8 @@ void nav_strip_wholehour_tail(char *buf)
     static const struct { const char *zeros; const char *mark; } s_rules[] = {
         { "0分钟", "小时" },    /* 简体: %d分钟 */
         { "00分鐘", "小時" },   /* 繁体: %02d分鐘 */
-        { " 0min", "h" },      /* 英文: %dh %dmin(带空格,状态行族) */
-        { "0min", "h" },       /* 英文: %dh%dmin(无空格,收藏卡"Time: %dh%dmin") */
+        { "0m", "h" },         /* 英文: 状态行族 2026-10-26 改 %dh%dm("4h0m"→"4h") */
+        { "0min", "h" },       /* 英文: 收藏卡"Time: %dh%dmin"未改,规则保留 */
     };
     for (unsigned i = 0; i < sizeof(s_rules) / sizeof(s_rules[0]); i++) {
         size_t zl = strlen(s_rules[i].zeros), ml = strlen(s_rules[i].mark);

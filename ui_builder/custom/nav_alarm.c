@@ -81,11 +81,13 @@ void jump_to_alarm(int code)
     lv_obj_set_style_border_width(panel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(panel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    /* 居中文本(48 号;设计图墨迹中心 y≈283,标签 y253;EN 全角冒号带空) */
+    /* 居中文本(48 号;设计图墨迹中心 y≈283,标签 y253)。EN 冒号用 ASCII+空格:
+     * EN 树遍历会把无 CJK 标签字体切 aktiv(仅基本拉丁区),全角"："缺字显豆腐框
+     * (2026-10-26 用户报);CN 仍半角冒号(taiwanpearl 有字形) */
     {
         char buf[128];
         if (is_english())
-            snprintf(buf, sizeof(buf), "E-%d：%s", code, tr("请联系最近的售后服务点"));
+            snprintf(buf, sizeof(buf), "E-%d: %s", code, tr("请联系最近的售后服务点"));
         else
             snprintf(buf, sizeof(buf), "E-%d:%s", code, tr("请联系最近的售后服务点"));
         lv_obj_t *lb = lv_label_create(scr);
