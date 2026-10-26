@@ -380,7 +380,11 @@ void jump_to_systime(void)
     lv_obj_set_style_bg_opa(scr->obj, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_img_src(scr->obj, LVGL_IMAGE_PATH(bg.png), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    /* 栏目标题整幅底图,按语言三选一(CN/繁體/EN;同事 ui_lang_img 三版本) */
+    /* 栏目标题整幅底图,按语言三选一(CN/繁體/EN;同事 ui_lang_img 三版本)。
+       注意:两张卡片内的"日期/时间"标题也烙在这张图里(仅 CN/TW 版本),位置在
+       图内 y115..142 → 屏幕 139..166,即贴着卡片顶(118)往下 21px。2026-10-26 已把
+       图上这两处标题整体下移 40px,使其墨迹中心落在卡片顶(118)与数值墨迹顶(266)
+       的正中(y192,与 EN 版 Date/Time 同位);只改素材未加码,重导该图后需按此重做 */
     scr->set_time_bg_txt_Img = lv_img_create(scr->obj);
     if (SET_Data.Set_Language == 0)
         lv_img_set_src(scr->set_time_bg_txt_Img, LVGL_IMAGE_PATH(used/set_SYStime_bg_txt_en.png));
