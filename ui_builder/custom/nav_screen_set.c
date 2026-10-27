@@ -157,7 +157,10 @@ static void sel_popup_create(int where, int flag, int n, const char *title_text,
     lv_label_set_text(title, tr(title_text));   /* 弹窗标题过翻译表(英文模式显示英译) */
     lv_obj_set_pos(title, 0, 46);
     lv_obj_set_size(title, 502, 32);
-    lv_obj_set_style_text_font(title, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    /* 2026-10-27 炉灯样张:EN 标注 Aktiv Grotesk Medium 30px;CN/繁 taiwanpearl 不变 */
+    lv_obj_set_style_text_font(title, is_english() ? &c_aktivgroteskmedium_30
+                                                   : &c_taiwanpearl_regular_30,
+                               LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(title, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(title, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -171,7 +174,12 @@ static void sel_popup_create(int where, int flag, int n, const char *title_text,
         lv_label_set_text(s_sel_labels[i], s_sel_notrans ? opts[i] : tr(opts[i]));
         lv_obj_set_pos(s_sel_labels[i], L->tx[i], L->ty[i]);
         lv_obj_set_width(s_sel_labels[i], LV_SIZE_CONTENT);   /* 宽度随文本自适应:英文长词(如 Temperature Control)不被截断 */
-        lv_obj_set_style_text_font(s_sel_labels[i], &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+        /* EN 选项同换 aktiv30(样张 60px 行距五行案例);语言弹窗选项含中文名(notrans),
+         * aktiv 无 CJK 字形,保持 taiwanpearl;其余弹窗 EN 选项均 ASCII */
+        lv_obj_set_style_text_font(s_sel_labels[i],
+                                   (is_english() && !s_sel_notrans) ? &c_aktivgroteskmedium_30
+                                                                    : &c_taiwanpearl_regular_30,
+                                   LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_set_style_text_color(s_sel_labels[i], lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
     }
     s_sel_flag = flag;

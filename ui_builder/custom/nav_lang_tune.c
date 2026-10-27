@@ -5429,7 +5429,10 @@ void descriptionmenu_lang_tune(void)
     /* cookdescriptin: 标签 | "烹饪说明：⏎根据你最喜欢的食谱准备面团，放在烤盘上⏎现在将食物放在第…" | (0,0) | 894x122 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->cookdescriptin, 0, 0);
     // lv_obj_set_size(pg->cookdescriptin, 894, 122);
-    lv_obj_set_size(pg->cookdescriptin, 930, LV_SIZE_CONTENT);
+    /* 2026-10-27 加宽仅限泡芙/千层酥两页(用户样张红框右缘≈1147并明确其余菜不加宽):
+     * 930 下长说明折行太多顶到面板底(泡芙 9 行),1100 下泡芙 8/千层酥断行后 9 行,
+     * 末行均为短句居中,不侵入右下 Delay 钮(x≥984 y≥396);其余菜维持原 930 */
+    lv_obj_set_size(pg->cookdescriptin, six_desc_is_wide_dish() ? 1100 : 930, LV_SIZE_CONTENT);
 
     /* cooktime: 标签 | "预计烹饪时间：25分钟" | (0,0) | 628x30 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->cooktime, 0, 0);
@@ -5451,6 +5454,16 @@ void descriptionmenu_lang_tune(void)
         lv_obj_t *lbls[] = { pg->cooktime, pg->cookdescriptin, pg->summary };
         for (int k = 0; k < 3; k++)
             if (lbls[k]) lv_obj_set_style_text_line_space(lbls[k], -2, 0);
+    }
+
+    /* 2026-10-27 千层酥专属:断行后 9 行,行距 30 底部贴面板沿(余~2px)。
+     * 行距 -4(28,避开 -5/27 叠字区)+ flex 行距 16→10,共回收 ~22px,末行底余 ~24px;
+     * 泡芙 8 行不压(用户指定),维持 -2/30+16;其余菜同不变 */
+    if (six_desc_is_millefeuille()) {
+        if (pg->cookdescriptin)
+            lv_obj_set_style_text_line_space(pg->cookdescriptin, -4, 0);
+        if (pg->container_1)
+            lv_obj_set_style_pad_row(pg->container_1, 10, 0);
     }
 
     //  obj = pg->cooktime;

@@ -261,7 +261,10 @@ void jump_to_preheat_menu(void)
 
     preheatmenu_t *menu = preheatmenu_get(&ui_manager);
     if (menu) {
-        if (g_preheat_fast) lv_label_set_text(menu->label_69, tr("快速预热"));
+        /* 功能键入口标题:EN 用全称 "Fast Preheat"(全局词表 快速预热→Preheat 是给
+         * set 页切换标签的,标题不能跟着缩短);EN 盒 350x32 放得下(约139px@24) */
+        if (g_preheat_fast)
+            lv_label_set_text(menu->label_69, is_english() ? "Fast Preheat" : tr("快速预热"));
         lv_obj_t *btns[] = { menu->temp, menu->next };
         if (g_preheat_menu) lv_group_del(g_preheat_menu);
         g_preheat_menu = group_create_for_page(btns, 2);
@@ -580,7 +583,10 @@ void preheat_rebuild_menu(page_id_t child)
     preheatmenu_create(&ui_manager);
     preheatmenu_t *menu = preheatmenu_get(&ui_manager);
     if (menu) {
-        if (g_preheat_fast) lv_label_set_text(menu->label_69, tr("快速预热"));
+        /* 功能键入口标题:EN 用全称 "Fast Preheat"(全局词表 快速预热→Preheat 是给
+         * set 页切换标签的,标题不能跟着缩短);EN 盒 350x32 放得下(约139px@24) */
+        if (g_preheat_fast)
+            lv_label_set_text(menu->label_69, is_english() ? "Fast Preheat" : tr("快速预热"));
         lv_obj_t *btns[] = { menu->temp, menu->next };
         if (g_preheat_menu) lv_group_del(g_preheat_menu);
         g_preheat_menu = group_create_for_page(btns, 2);

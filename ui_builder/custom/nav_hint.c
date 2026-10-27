@@ -405,15 +405,22 @@ static void fav_ask_show(int mode)
         lv_label_set_text(tf->tip2, tr("需要覆盖原有烹调吗？"));
     }
     /* 字体/几何按语言显式设定(2026-10-26 样张:EN 标注 Aktiv Grotesk Medium 30px):
-     * EN 问句换 aktiv30 整句上移占 tip1 位(CN 前导行词条 EN 译文留空),两行硬换行
-     * 盒加高 76;CN 恢复 taiwanpearl30 + tip2 y198。tip1/tip2 与关机确认弹层/无效
-     * 提示复用,显式复位防 EN tune 残留与两弹层互串(同 poweroff 口径) */
+     * EN 覆盖确认问句换 aktiv30 整句上移占 tip1 位(CN 前导行词条 EN 译文留空),两行
+     * 硬换行盒加高 76;CN 恢复 taiwanpearl30 + tip2 y198。tip1/tip2 与关机确认弹层/
+     * 无效提示复用,显式复位防 EN tune 残留与两弹层互串(同 poweroff 口径)。
+     * EN 收藏夹满:两句均非空,沿用覆盖确认 tip2 y161 与 tip1 叠印(2026-10-27 实测
+     * 修复),按 CN 口径上下堆叠 y161/y198;两句 @aktiv30 实测 188/281px 单行无忧 */
     if (is_english()) {
         lv_obj_set_pos(tf->tip1, 797, 161);
         lv_obj_set_size(tf->tip1, 450, 36);
         lv_obj_set_style_text_font(tf->tip1, &c_aktivgroteskmedium_30, LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_pos(tf->tip2, 796, 161);
-        lv_obj_set_size(tf->tip2, 450, 76);
+        if (mode == FAV_ASK_FULL) {
+            lv_obj_set_pos(tf->tip2, 796, 198);
+            lv_obj_set_size(tf->tip2, 450, 36);
+        } else {
+            lv_obj_set_pos(tf->tip2, 796, 161);
+            lv_obj_set_size(tf->tip2, 450, 76);
+        }
         lv_obj_set_style_text_font(tf->tip2, &c_aktivgroteskmedium_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     } else {
         lv_obj_set_pos(tf->tip1, 797, 161);

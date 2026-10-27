@@ -111,6 +111,21 @@ static uint8_t six_bread_type_safe(void)
 const six_bread_cfg_t *six_bread_cfg(void) { return &s_bread_cfg[six_bread_type_safe()]; }
 const char *six_bread_name(void)     { return tr(six_bread_cfg()->name); }
 const char *six_bread_desc(void)     { return tr(six_bread_cfg()->cook_desc); }
+/* 2026-10-27:EN 说明页加宽仅限泡芙/千层酥两页(用户指定,其余菜维持原宽)。
+ * 按当前说明词条指针判定——tr 按内容归一到词表槽位,两比对项与 six_current_desc()
+ * 同源同槽;家禽/肉菜流程 g_six_bread_type 残留也不会误判(其说明走 six_chick_desc,
+ * 指针必不同) */
+int six_desc_is_wide_dish(void)
+{
+    const char *d = six_current_desc();
+    return d == tr(s_bread_cfg[SIX_CAKE_CREAMPUFF].cook_desc)
+        || d == tr(s_bread_cfg[SIX_CAKE_MILLEFEUILLE].cook_desc);
+}
+/* 2026-10-27:千层酥单判——断行 9 行才需收行距/flex 距;泡芙 8 行不压(用户指定) */
+int six_desc_is_millefeuille(void)
+{
+    return six_current_desc() == tr(s_bread_cfg[SIX_CAKE_MILLEFEUILLE].cook_desc);
+}
 int six_bread_cook_min(void)         { return six_bread_cfg()->cook_min; }
 int six_bread_has_color(void)  { return (six_chick_is_kind() || six_chick_is_seafood() || six_chick_is_veg() || six_chick_is_2d() || six_chick_is_pizza()) ? 0 : six_bread_cfg()->has_color; }   /* 烤鸡翅类/海鲜/蔬菜/二维菜/披萨:无烤色 */
 int six_bread_has_rising(void) { return (six_chick_is_kind() || six_chick_is_seafood() || six_chick_is_veg() || six_chick_is_2d() || six_chick_is_pizza()) ? 0 : six_bread_cfg()->has_rising; }  /* 烤鸡翅类/海鲜/蔬菜/二维菜/披萨:无发酵 */
