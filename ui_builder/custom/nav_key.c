@@ -17,6 +17,7 @@
 #include "nav.h"
 #include "nav_internal.h"
 #include "nav_favorites.h"
+#include "nav_idle.h"     /* nav_goto_major_menu: 待机页转旋钮/BACK 直进主页 */
 
 // ==============================
 // 按键处理（状态机防抖）
@@ -241,6 +242,22 @@ void process_key(uint8_t key)
             g_send.buzzer_req = BUZZER_KEY_VALID;
             systime_enter_boot_mode();
         }
+        uart_print();
+        return;
+    }
+    /* 待机页:编码器转动/确认/BACK 直接进主页(2026-10-28 用户定稿:功能键直入对应
+     * 功能已对,转旋钮/按下确认/返回=进系统看主菜单)。原三键在待机页只是无效音
+     * (无焦点组/depth<=1),落点与 KEY_MENU 进主页同口径(栈重置+协议复位+IFACE_SETTING) */
+    if (depth == 1 && page_stack[0] == PAGE_WAITMENU_24 &&
+        g_send.iface_status == IFACE_STANDBY &&
+        (key == KEY_ENCODER_CW || key == KEY_ENCODER_CCW ||
+         key == KEY_ENCODER_PRESS || key == KEY_BACK)) {
+        g_send.buzzer_req = BUZZER_KEY_VALID;
+        nav_goto_major_menu();
+        g_send.cook_mode = MODE_NONE;
+        g_send.set_temp = 0;
+        g_send.set_temp_lower = 0;
+        g_send.remaining_ms = -1;
         uart_print();
         return;
     }

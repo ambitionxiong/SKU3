@@ -420,7 +420,10 @@ void jump_to_systime(void)
     /* Init scr->Yes_Btn */
     scr->Yes_Btn = lv_btn_create(scr->obj);
     lv_obj_t *Yes_Btn_label = lv_label_create(scr->Yes_Btn);
-    lv_label_set_text(Yes_Btn_label, g_langpick_date_mode ? "OK" : tr("确 定"));   /* 首次上电链路固定 OK(共享词条不动) */
+    /* 右上按钮随语言:EN=OK(首设/断电补设/设置入口三链路一致,2026-10-28 用户定稿),
+     * 中/繁走 tr 显 确 定/確 定——任何语言死显"OK"是异常(用户 10-28 修正);
+     * 不走"确 定"→Start 共享词条,那是计时器等页确认钮的 8.25 样张口径 */
+    lv_label_set_text(Yes_Btn_label, is_english() ? "OK" : tr("确 定"));
     lv_obj_set_pos(scr->Yes_Btn, 975, 22);
     lv_obj_set_size(scr->Yes_Btn, 150, 70);
     lv_obj_set_style_bg_opa(scr->Yes_Btn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);

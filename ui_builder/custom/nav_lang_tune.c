@@ -13754,6 +13754,17 @@ void slowcook_stop_probe_lang_tune(void)
  * somecook 英文布局基准（对应 PAGE_SOMECOOK ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */
+
+/* 2026-10-28 三步标题:steptext_en.png 整条图是圆体字(客户规范英文要 Aktiv Grotesk),
+ * 简繁仍用图片条(steptext.png/steptext_tw.png 圆体即各自标准),仅英文隐藏图片换真标签 */
+static lv_obj_t *s_somecook_stage_lbl[3] = { NULL, NULL, NULL };
+
+static void somecook_stage_lbl_del_cb(lv_event_t *e)
+{
+    lv_obj_t **slot = (lv_obj_t **)lv_event_get_user_data(e);
+    if (slot) *slot = NULL;
+}
+
 void somecook_lang_tune(void)
 {
     if (depth <= 0 || page_stack[depth - 1] != PAGE_SOMECOOK) return;
@@ -13774,9 +13785,24 @@ void somecook_lang_tune(void)
     lv_obj_set_pos(pg->step1button, 17, 110);
     lv_obj_set_size(pg->step1button, 418, 355);
 
-    /* image_1: 图片 | (184,138) | img: steptext.png */
-    lv_obj_set_pos(pg->image_1, 184, 138);
-    lv_img_set_src(pg->image_1,LVGL_IMAGE_PATH(steptext_en.png));
+    /* image_1: 图片 | (184,138) | img: steptext.png — 英文隐藏,三个 Stage 标签接替
+     * 定位=沿用原图墨迹:center 228/644/1058("Stage N" aktiv30 advance 106.8px,
+     * 首字 lsb 1px → x=center-53);墨迹顶 140 = 标签顶 136 + cap 顶偏 3.6
+     * (line 32/base_line 7 → 基线距顶 25,capHeight 21.4),g 下伸缘≈167 */
+    lv_obj_add_flag(pg->image_1, LV_OBJ_FLAG_HIDDEN);
+    {
+        static const char *stage_txt[3] = { "Stage 1", "Stage 2", "Stage 3" };
+        static const lv_coord_t stage_cx[3] = { 228, 644, 1058 };
+        for (int i = 0; i < 3; i++) {
+            s_somecook_stage_lbl[i] = lv_label_create(pg->obj);
+            lv_label_set_text(s_somecook_stage_lbl[i], stage_txt[i]);
+            lv_obj_set_style_text_font(s_somecook_stage_lbl[i], &c_aktivgroteskmedium_30, LV_PART_MAIN);
+            lv_obj_set_style_text_color(s_somecook_stage_lbl[i], lv_color_hex(0xffffff), LV_PART_MAIN);
+            lv_obj_set_pos(s_somecook_stage_lbl[i], stage_cx[i] - 53, 136);
+            lv_obj_add_event_cb(s_somecook_stage_lbl[i], somecook_stage_lbl_del_cb,
+                                LV_EVENT_DELETE, &s_somecook_stage_lbl[i]);
+        }
+    }
 
     /* label_1: 标签 | "多段烹饪" | (24,24) | 103x22 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_1, 24, 24);
@@ -14242,6 +14268,14 @@ void stepset_lang_tune(void)
     s_stepset_teardown = 0;   /* 进页复位拆除标志 */
     lv_obj_set_style_text_opa(pg->roller_main, LV_OPA_TRANSP, LV_PART_SELECTED);
     lv_obj_set_style_text_opa(pg->roller_mode, LV_OPA_TRANSP, LV_PART_SELECTED);
+
+    /* 2026-10-28 未选中行(上下行)原生也是圆体 24 → 换 aktiv24;行距 33→36 补偿
+     * (tw24 line 28 → aktiv24 line 25,行距+3 保持节距 61/滚轮总高不变,
+     * 选中带与覆盖标签零位移;选中行文字透明不受 MAIN 字体影响) */
+    lv_obj_set_style_text_font(pg->roller_main, &c_aktivgroteskmedium_24, LV_PART_MAIN);
+    lv_obj_set_style_text_font(pg->roller_mode, &c_aktivgroteskmedium_24, LV_PART_MAIN);
+    lv_obj_set_style_text_line_space(pg->roller_main, 36, LV_PART_MAIN);
+    lv_obj_set_style_text_line_space(pg->roller_mode, 36, LV_PART_MAIN);
 
     /* roller DELETE:拆除开始的第一事件(LVGL 先发 DELETE 再析构/组移除),置标志封死后续事件 */
     lv_obj_add_event_cb(pg->roller_main, stepset_en_roller_del_cb, LV_EVENT_DELETE, NULL);
