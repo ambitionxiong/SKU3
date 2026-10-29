@@ -116,8 +116,13 @@ static void somecook_cooking_set_state(int state, int from)
     lv_obj_clear_flag(sc->label_12, LV_OBJ_FLAG_HIDDEN);
     lv_obj_clear_flag(sc->image_10, LV_OBJ_FLAG_HIDDEN);
     lv_obj_clear_flag(sc->bar_1, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_clear_flag(sc->timelabel, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_clear_flag(sc->stop, LV_OBJ_FLAG_HIDDEN);
+    /* 关机/收藏确认弹层活动期间不回显其 collector 藏掉的右栏元素:门开自动暂停
+       等会在弹层中触发本函数,裸 clear 顶回造成与弹层文案/确认钮同位叠显;
+       弹层收起时 collector 自会按原状恢复(2026-10-29) */
+    if (!nav_poweroff_ask_active() && !nav_favask_active()) {
+        lv_obj_clear_flag(sc->timelabel, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(sc->stop, LV_OBJ_FLAG_HIDDEN);
+    }
     lv_obj_add_flag(sc->container_1, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(sc->text1, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(sc->text2, LV_OBJ_FLAG_HIDDEN);
@@ -141,7 +146,9 @@ static void somecook_cooking_set_state(int state, int from)
         lv_label_set_text(sc->text2, tr("回到主页"));
         if (bl) lv_label_set_text(bl, tr("确 定"));
         if (from == SMC_COMPLETE)      lv_label_set_text(sc->cookstatus, tr("已完成"));
-        else if (from == SMC_STOP)     lv_label_set_text(sc->cookstatus, tr("暂停中..."));
+        /* EN 暂停源进遮罩保持 Pause...(生成 stopback cls==2 口径,同 SMC_STOP 态写法;
+         * 词典 "暂停中..."→"Paused..." 是旧型,自定义页不走 bskin 遍历改写,须在此直写) */
+        else if (from == SMC_STOP)     lv_label_set_text(sc->cookstatus, is_english() ? "Pause..." : tr("暂停中..."));
         else                           lv_label_set_text(sc->cookstatus, tr("烹饪中..."));
         break;
     case SMC_COMPLETE:

@@ -218,9 +218,9 @@ int nav_hint_active(void)
  * 隐藏/恢复见 collect_hide。期间功能键忽略、BACK 提前关闭(nav_key.c 守卫)。
  * ============================== */
 static lv_timer_t *g_favtip_timer = NULL;
-static lv_obj_t *g_favtip_objs[8];   /* 提示期间隐藏的完成页右侧组件 */
+static lv_obj_t *g_favtip_objs[16];  /* 提示期间隐藏的右栏组件(设置页右列 10+,原 8 溢出漏藏) */
 static int g_favtip_n = 0;
-static int g_favtip_was[8];          /* 隐藏前是否本就隐藏(恢复时只还原我们藏掉的) */
+static int g_favtip_was[16];         /* 隐藏前是否本就隐藏(恢复时只还原我们藏掉的) */
 
 /* 对象销毁时同步置空指针(防悬空,同 hint_del_cb) */
 static void favtip_del_cb(lv_event_t *e)
@@ -233,7 +233,7 @@ static void favtip_del_cb(lv_event_t *e)
 /* 登记并隐藏单个右侧组件(去重:几何收集可能已含同一对象,重复登记会污染 was[] 恢复标记) */
 static void favtip_collect_add(lv_obj_t *obj)
 {
-    if (!obj || g_favtip_n >= 8) return;
+    if (!obj || g_favtip_n >= 16) return;
     if (!lv_obj_is_valid(obj)) return;
     for (int i = 0; i < g_favtip_n; i++)
         if (g_favtip_objs[i] == obj) return;
@@ -244,19 +244,22 @@ static void favtip_collect_add(lv_obj_t *obj)
     g_favtip_objs[g_favtip_n++] = obj;
 }
 
-/* 收集并隐藏当前完成页右侧组件(防烫图标/文字等)。
- * 完成页 30+ 张、右侧组件字段名各异(image_3/6/26/70、text1/2...),
- * 按几何位置通用识别:屏幕直属子对象 x>=800 即右侧列(同 nav_hint_collect 思路) */
+/* 收集并隐藏当前页面右栏组件(完成页防烫图标/文字、设置页开关列、暂停返回页
+ * 标语、烹饪页倒计时/按钮等——关机确认/收藏确认/收藏提示三个弹层共用)。
+ * 完成页 30+ 张、右栏组件字段名各异(image_3/6/26/70、text1/2...),
+ * 按几何位置通用识别:屏幕直属子对象 x>=700 即右栏(同 nav_hint_collect 思路)。
+ * 2026-10-29 800→700:英文 tune 把右栏文字左挪到 x<800(生成 stopback 标语 788/
+ * 设置页标签 784/多段 text1 725),原阈值漏收 → 关机弹窗文案与页面文字同位叠印 */
 static void nav_favtip_collect_hide(void)
 {
     g_favtip_n = 0;
     lv_obj_t *scr = lv_scr_act();
     if (!scr) return;
     uint32_t cnt = lv_obj_get_child_cnt(scr);
-    for (uint32_t i = 0; i < cnt && g_favtip_n < 8; i++) {
+    for (uint32_t i = 0; i < cnt && g_favtip_n < 16; i++) {
         lv_obj_t *ch = lv_obj_get_child(scr, i);
         if (!ch) continue;
-        if (lv_obj_get_x(ch) >= 800) {
+        if (lv_obj_get_x(ch) >= 700) {
             g_favtip_was[g_favtip_n] = lv_obj_has_flag(ch, LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(ch, LV_OBJ_FLAG_HIDDEN);
             lv_obj_remove_event_cb(ch, favtip_del_cb);

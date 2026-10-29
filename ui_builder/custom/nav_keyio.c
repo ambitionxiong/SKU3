@@ -164,6 +164,7 @@ static void nav_key1_power_action(void)
         nav_power_on();
     } else if (nav_poweroff_ask_needed()) {
         g_send.buzzer_req = BUZZER_KEY_VALID;
+        nav_poweroff_ask_return_run();   /* 非运行页先退回运行页再弹(设置覆盖层功能键"先关层"同口径,2026-10-29) */
         nav_poweroff_ask_show();
     } else {
         nav_power_off();

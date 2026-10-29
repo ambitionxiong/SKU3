@@ -793,6 +793,7 @@ void nav_poweroff_ask_show(void);
 void nav_poweroff_ask_cancel(void);   /* BACK 取消/关机·警报清理共用 */
 int  nav_poweroff_ask_active(void);
 void nav_poweroff_ask_confirm(void);  /* 确认(PRESS):收起+nav_power_off */
+void nav_poweroff_ask_return_run(void); /* 弹窗前:非运行页按 BACK 同口径先退回运行页(nav_key.c) */
 
 /* 童锁（topflag 顶层弹窗级,nav_hint.c 实现） */
 void nav_childlock_set(int on);      /* 1=立即全屏锁定层 0=解锁(设置页童锁开关联动) */

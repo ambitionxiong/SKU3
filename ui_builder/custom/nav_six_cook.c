@@ -416,8 +416,11 @@ static void six_cook_apply_display(void)
         lv_obj_clear_flag(sc->text2, LV_OBJ_FLAG_HIDDEN);
         lv_label_set_text(sc->text1, tr("是否结束当前任务"));
         lv_label_set_text(sc->text2, tr("回到主页"));
-        /* 确认层:按钮恢复显示并加回焦点组(可操作) */
-        lv_obj_clear_flag(sc->stop, LV_OBJ_FLAG_HIDDEN);
+        /* 确认层:按钮恢复显示并加回焦点组(可操作)。关机/收藏确认弹层活动期间
+         * 不回显:其 collector 已把按钮藏掉(防与弹层确认钮同位叠印),遮罩态每秒
+         * 刷新裸 clear 会原地顶回;弹层收起时 collector 恢复,无残留 */
+        if (!nav_poweroff_ask_active() && !nav_favask_active())
+            lv_obj_clear_flag(sc->stop, LV_OBJ_FLAG_HIDDEN);
         if (g_six_cooking) {
             lv_group_remove_obj(sc->stop);   /* 防重复添加 */
             lv_group_add_obj(g_six_cooking, sc->stop);

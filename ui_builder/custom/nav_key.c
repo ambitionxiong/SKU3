@@ -52,6 +52,45 @@ int is_cook_setting_page(page_id_t cur)
     }
 }
 
+/* 关机确认弹窗前"先返回运行页"(2026-10-29 用户定稿):弹窗 tip1/tip2/sure 与多数
+ * 页面右栏内容(设置页开关列/stopback 标语/倒计时)同位,原地弹要靠 collector 逐页
+ * 藏元素补漏;改为弹窗前把非运行页按各自 BACK 同口径退回运行页(cooking/stop),
+ * 弹窗只落在运行页上——与系统设置覆盖层功能键"先关层再处理"(process_key 入口)
+ * 同构。运行页右栏仅倒计时+暂停钮,collector 原生覆盖,任意语言无叠印 */
+void nav_poweroff_ask_return_run(void)
+{
+    page_id_t cur;
+    if (depth <= 0) return;
+
+    /* 同页遮罩态(多段/六感):BACK 同款收遮罩回运行显示,iface/计时不动 */
+    cur = page_stack[depth - 1];
+    if (cur == PAGE_SOMECOOK_COOKING && somecook_cooking_is_stopback()) {
+        somecook_cooking_handle_back();
+        return;
+    }
+    if (cur == PAGE_SIX_COOKING && six_cook_is_overlay()) {
+        six_cook_handle_back();
+        return;
+    }
+    /* 系统设置覆盖层:先关层退栈(process_key 入口功能键同款三步) */
+    if (cur == PAGE_SCREEN_SET) {
+        screen_set_reset();
+        depth--;
+        topflag_update_visibility();
+        return;
+    }
+    /* 模式设置页(烹饪中小按钮进入)与单模式 stopback 确认页(g_on_stop_back 置位族):
+     * BACK 即 page_pop 重建运行页(恢复保存值、cook_timer 未删沿走、清 stopback 标志)。
+     * 两层循环:设置页可叠在 stopback 之上,须连退两步才落运行页 */
+    for (int i = 0; i < 2 && depth > 1; i++) {
+        cur = page_stack[depth - 1];
+        if (is_cook_setting_page(cur) || g_on_stop_back)
+            page_pop();
+        else
+            break;
+    }
+}
+
 /* 是否为各模式 MENU 菜单设置页(模式入口 Temp/CookTime/Next 编辑字段页,含探针
  * 变体与预热/额外上色菜单;单字段 updown menu_top/low 不在列——它们保持进页即编辑)。
  * 与 SETTING 族同用通用编辑字段管线:进页即浏览(用户定稿,nav_core push/pop 族检查) */
