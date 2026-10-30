@@ -201,6 +201,20 @@ static void system_timer_cb(lv_timer_t *timer)
 // 初始化入口
 // ==============================
 
+/* 首帧上电让位后应用存档亮度(2026-10-30 实机):显示端口在首帧 flip 时才
+ * AICFB_POWERON(lv_port_disp display_power_on)→面板 enable→背光按 Kconfig
+ * 默认档 80 点亮。存档亮度只能在此之后压(REFR_READY 时首帧 POWERON 已过),
+ * 不能在 nav_init 提前应用——提前 rt_pwm_enable 会把掉电残留的最后一帧照出
+ * 来(闪一帧断电前页面)。一次性,之后(含 SLEEP 唤醒抬 100)零干扰 */
+static void boot_bl_refr_cb(lv_event_t *e)
+{
+    static int s_done = 0;
+    (void)e;
+    if (s_done) return;
+    s_done = 1;
+    nav_brightness_apply();
+}
+
 void nav_init(void)
 {
     waitmenu_24_t *wait = waitmenu_24_get(&ui_manager);
@@ -256,6 +270,11 @@ void nav_init(void)
     topflag_update_visibility();
     lv_timer_create(topflag_clock_cb, 500, NULL);
     nav_idle_init();   /* 空闲策略:烹饪 1 分钟回页/非烹饪 5 分钟待机/待机 20 分钟关机 */
+    /* 开机亮度只经首帧后重放(boot_bl_refr_cb),不提前应用:首帧 POWERON 前背光
+     * 未使能属黑屏,提前 rt_pwm_enable 会点亮面板上掉电残留的最后一帧(实机
+     * 闪一帧断电前页面);首帧 POWERON 默认档亮屏后立即重放存档档位即可 */
+    lv_display_add_event_cb(lv_display_get_default(), boot_bl_refr_cb,
+                            LV_EVENT_REFR_READY, NULL);
     printf("[nav] init done -> %s\n", !g_langpick_done ? "langpick" :
            (g_systime_boot_mode ? "systime_boot" : "major_menu"));
 }

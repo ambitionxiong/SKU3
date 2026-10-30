@@ -62,6 +62,22 @@ void nav_poweroff_ask_return_run(void)
     page_id_t cur;
     if (depth <= 0) return;
 
+    /* 计时器超时抢屏层/计时页(2026-10-30,运行中自设置层进入):BACK 同款逐层退。
+     * 抢屏压在其它页上方时 dismiss 直接还原该页(一轮即净);压在计时页上时
+     * dismiss 内部保屏返回+重建设置层,随后由下方覆盖层分支关层落运行页。
+     * 循环至多两轮:计时页编辑态首轮只退编辑不弹页 */
+    for (int i = 0; i < 2; i++) {
+        if (count_down_overtime_active()) {
+            count_down_back_action();
+            continue;
+        }
+        if (depth > 0 && page_stack[depth - 1] == PAGE_SET_COUNT) {
+            count_down_back_action();
+            continue;
+        }
+        break;
+    }
+
     /* 同页遮罩态(多段/六感):BACK 同款收遮罩回运行显示,iface/计时不动 */
     cur = page_stack[depth - 1];
     if (cur == PAGE_SOMECOOK_COOKING && somecook_cooking_is_stopback()) {

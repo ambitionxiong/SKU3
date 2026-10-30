@@ -116,13 +116,8 @@ static void somecook_cooking_set_state(int state, int from)
     lv_obj_clear_flag(sc->label_12, LV_OBJ_FLAG_HIDDEN);
     lv_obj_clear_flag(sc->image_10, LV_OBJ_FLAG_HIDDEN);
     lv_obj_clear_flag(sc->bar_1, LV_OBJ_FLAG_HIDDEN);
-    /* 关机/收藏确认弹层活动期间不回显其 collector 藏掉的右栏元素:门开自动暂停
-       等会在弹层中触发本函数,裸 clear 顶回造成与弹层文案/确认钮同位叠显;
-       弹层收起时 collector 自会按原状恢复(2026-10-29) */
-    if (!nav_poweroff_ask_active() && !nav_favask_active()) {
-        lv_obj_clear_flag(sc->timelabel, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_clear_flag(sc->stop, LV_OBJ_FLAG_HIDDEN);
-    }
+    lv_obj_clear_flag(sc->timelabel, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(sc->stop, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(sc->container_1, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(sc->text1, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(sc->text2, LV_OBJ_FLAG_HIDDEN);
@@ -245,6 +240,7 @@ static void on_somecook_stop_click(lv_event_t *e)
 void somecook_cooking_auto_pause(void)
 {
     if (g_somecook_state != SMC_COOKING) return;
+    nav_topflag_popups_yield();   /* 门开转暂停态让位:set_state 会回显被弹窗藏掉的元素(2026-10-30) */
     cook_elapsed_saved = lv_tick_get() - cook_start_time;
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
     somecook_cooking_set_state(SMC_STOP, SMC_COOKING);
@@ -321,6 +317,8 @@ void somecook_cooking_start(void)
 // 当前段完成：切下一段 / 全部完成 → complete 态
 void somecook_cooking_next_step(void)
 {
+    /* 切段重建页让位:弹窗悬浮 layer_top,重建后其文字压新页元素,先收(2026-10-30) */
+    nav_topflag_popups_yield();
     /* 空洞步骤:跳到下一个已设置步骤,没有则全部完成 */
     g_somecook_run_idx++;
     while (g_somecook_run_idx < 3 && !g_steps[g_somecook_run_idx].set)

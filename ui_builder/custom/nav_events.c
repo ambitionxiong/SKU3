@@ -701,6 +701,7 @@ void mode_set_apply_delay_label(lv_obj_t *ondelay_btn)
 // 延时预约到点：按 cook_mode 进入对应模式烹饪（探针插入走探针烹饪）
 void delay_start_cook(void)
 {
+    nav_topflag_popups_yield();   /* 到点跳烹饪页让位:弹窗悬浮 layer_top,换屏前先收(2026-10-30) */
     if (g_delay_source_page == PAGE_DESCRIPTIONMENU) {
         if (six_chick_is_probe())
             jump_to_chick_cooking();   /* 探针菜(烤全鸡/烤全鸭):到点直接进烹饪页（探针驱动） */

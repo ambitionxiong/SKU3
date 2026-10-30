@@ -141,6 +141,10 @@ static void count_down_timer_cb(lv_timer_t *timer)
     if (s_run) {
         s_run = 0;
         g_send.buzzer_req = BUZZER_COOK_DONE;   /* 定时器结束音=烹调结束音(6),原漏发 */
+        /* 顶层弹窗让位(2026-10-30):关机确认/收藏确认/无效提示/收藏提示悬浮于
+         * lv_layer_top,超时层换屏后其文字压在新屏内容上叠印——先收掉再抢屏
+         * (ask 取消=继续运行语义),与探针/腔温提示页、设置覆盖层让位同款 */
+        nav_topflag_popups_yield();
         if (s_get_out_scr == 0 && s_reset_flag == 0 && !factory_prog_running()) {   /* 进度 5s:不抢屏,静默结束 */
             if (scr->obj && lv_obj_is_valid(scr->obj) && scr->obj == lv_scr_act()) {
                 s_return_scr = NULL;                      /* 在本页到期 */

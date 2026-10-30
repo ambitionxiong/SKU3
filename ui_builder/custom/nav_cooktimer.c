@@ -19,6 +19,7 @@ static void auto_pause_on_door(void)
 {
     if (!is_door_open()) return;
     if (depth < 1) return;
+    nav_topflag_popups_yield();   /* 门开跳暂停页让位:弹窗悬浮 layer_top,换屏前先收(2026-10-30) */
     page_id_t cur = page_stack[depth - 1];
     if (cur == PAGE_UPDOWN_BBQ_COOKING) jump_to_updown_bbq_stop();
     else if (cur == PAGE_UPDOWN_BBQ_COOKING_PROBE) jump_to_updown_bbq_stop_probe();
@@ -598,6 +599,7 @@ void cooking_timer_cb(lv_timer_t *timer)
                 lv_timer_del(cook_timer);
                 cook_timer = NULL;
                 g_send.buzzer_req = BUZZER_COOK_DONE;
+                nav_topflag_popups_yield();   /* 冷却完跳完成让位:换屏前先收弹窗(2026-10-30) */
                 jump_to_hcs_complete();
             }
         }
@@ -612,6 +614,7 @@ void cooking_timer_cb(lv_timer_t *timer)
                 lv_timer_del(cook_timer);
                 cook_timer = NULL;
                 g_send.buzzer_req = BUZZER_COOK_DONE;
+                nav_topflag_popups_yield();   /* 冷却完跳完成让位:换屏前先收弹窗(2026-10-30) */
                 jump_to_hcm_complete();
             }
         }
@@ -626,6 +629,7 @@ void cooking_timer_cb(lv_timer_t *timer)
                 lv_timer_del(cook_timer);
                 cook_timer = NULL;
                 g_send.buzzer_req = BUZZER_COOK_DONE;
+                nav_topflag_popups_yield();   /* 冷却完跳完成让位:换屏前先收弹窗(2026-10-30) */
                 jump_to_hch_complete();
             }
         }
@@ -637,6 +641,7 @@ void cooking_timer_cb(lv_timer_t *timer)
             lv_timer_del(cook_timer);
             cook_timer = NULL;
             g_send.buzzer_req = BUZZER_COOK_DONE;
+            nav_topflag_popups_yield();   /* 遮罩期到点跳完成让位:换屏前先收弹窗(2026-10-30) */
             jump_to_updown_bbq_complete();
         }
         return;
@@ -659,6 +664,7 @@ void cooking_timer_cb(lv_timer_t *timer)
             cook_timer = NULL;
             g_send.buzzer_req = BUZZER_COOK_DONE;
             g_send.cook_flag = 0;
+            nav_topflag_popups_yield();   /* 探针到温跳完成让位:换屏前先收弹窗(2026-10-30) */
             jump_to_updown_bbq_complete_probe();
         }
         return;
@@ -678,6 +684,7 @@ void cooking_timer_cb(lv_timer_t *timer)
         if (probe >= probe_target_temp && probe_target_temp >= 30 && probe >= cook_start_probe && cook_timer) {
             lv_timer_del(cook_timer); cook_timer = NULL;
             g_send.buzzer_req = BUZZER_COOK_DONE; g_send.cook_flag = 0;
+            nav_topflag_popups_yield();   /* 探针到温跳完成让位:换屏前先收弹窗(2026-10-30) */
             jump_to_hot_bbq_complete_probe();
         }
         return;
@@ -697,6 +704,7 @@ void cooking_timer_cb(lv_timer_t *timer)
         if (probe >= probe_target_temp && probe_target_temp >= 30 && probe >= cook_start_probe && cook_timer) {
             lv_timer_del(cook_timer); cook_timer = NULL;
             g_send.buzzer_req = BUZZER_COOK_DONE; g_send.cook_flag = 0;
+            nav_topflag_popups_yield();   /* 探针到温跳完成让位:换屏前先收弹窗(2026-10-30) */
             jump_to_bottom_bbq_complete_probe();
         }
         return;
@@ -716,6 +724,7 @@ void cooking_timer_cb(lv_timer_t *timer)
         if (probe >= probe_target_temp && probe_target_temp >= 30 && probe >= cook_start_probe && cook_timer) {
             lv_timer_del(cook_timer); cook_timer = NULL;
             g_send.buzzer_req = BUZZER_COOK_DONE; g_send.cook_flag = 0;
+            nav_topflag_popups_yield();   /* 探针到温跳完成让位:换屏前先收弹窗(2026-10-30) */
             jump_to_slowcook_complete_probe();
         }
         return;
@@ -751,6 +760,7 @@ void cooking_timer_cb(lv_timer_t *timer)
                 lv_timer_del(cook_timer);
                 cook_timer = NULL;
                 g_send.buzzer_req = BUZZER_PREHEAT_DONE;   /* 预热完成音(4),原错发烹调结束音 */
+                nav_topflag_popups_yield();   /* 预热完跳完成让位:换屏前先收弹窗(2026-10-30) */
                 jump_to_preheat_complete();
             }
         }
@@ -775,6 +785,7 @@ void cooking_timer_cb(lv_timer_t *timer)
                 lv_timer_del(cook_timer);
                 cook_timer = NULL;
                 g_send.buzzer_req = BUZZER_PREHEAT_DONE;   /* 预热完成音(4),原错发烹调结束音 */
+                nav_topflag_popups_yield();   /* 预热完跳完成让位:换屏前先收弹窗(2026-10-30) */
                 jump_to_preheat_complete();
             }
         }
@@ -972,6 +983,7 @@ void cooking_timer_cb(lv_timer_t *timer)
         lv_timer_del(cook_timer);
         cook_timer = NULL;
         g_send.buzzer_req = BUZZER_COOK_DONE;
+        nav_topflag_popups_yield();   /* 完成跳页让位:弹窗悬浮 layer_top,换屏前先收(2026-10-30) */
         /* 完成页参数=本次运行确认值(2026-10-15):setting 覆盖层编辑态未确认的调值
          * 不带入——编辑直接写 set_temp 等显示变量,协议镜像 g_send 仍是确认值
          * (实测:setting 调 185 未确认,到点完成页显示 185℃/真值 180);
