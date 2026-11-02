@@ -104,7 +104,11 @@ void jump_to_alarm(int code)
     g_send.iface_status = IFACE_ALARM;     /* 界面状态 8:报警界面 */
     uart_print();
 #ifndef LV_USE_AIC_SIMULATOR
-    backlight_set_level(100);         /* 若从 SLEEP(如待机温度异常 E-14)触发:恢复背光 */
+    /* 若从 SLEEP(如待机温度异常 E-14)触发,待机可能是黑屏/夜间最低档,这里把背光
+       恢复到正常可视:档位跟设置走(2026-11-02 用户定),不再固定满亮;
+       存档档位非法(理论上不会)时退回满亮,报警页必须看得见 */
+    if (nav_brightness_level() >= 0) nav_brightness_apply();
+    else                             backlight_set_level(100);
 #endif
     lang_scr_load_anim(scr, LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
     topflag_update_visibility();      /* 从 SLEEP 触发时 topflag 层此前被隐:重新放行 */
