@@ -709,6 +709,7 @@ void loudness_page_rebuild(void);
 /* 数值条子页（nav_loudness.c 实现，PAGE_SET_VAL，按键音音量/屏幕亮度共用） */
 void jump_to_set_val(uint8_t set_this);   /* 1=按键音音量 2=屏幕亮度 */
 void nav_brightness_apply(void);          /* 按当前 Set_Brightness 档位立即生效背光(恢复出厂后调,nav_loudness.c) */
+int  nav_brightness_level(void);          /* 当前档位对应的背光值 0-100;-1=档位越界(首帧点亮前交给面板用) */
 void set_val_encoder_action(uint8_t key);
 void set_val_return_action(void);
 

@@ -272,7 +272,9 @@ void nav_init(void)
     nav_idle_init();   /* 空闲策略:烹饪 1 分钟回页/非烹饪 5 分钟待机/待机 20 分钟关机 */
     /* 开机亮度只经首帧后重放(boot_bl_refr_cb),不提前应用:首帧 POWERON 前背光
      * 未使能属黑屏,提前 rt_pwm_enable 会点亮面板上掉电残留的最后一帧(实机
-     * 闪一帧断电前页面);首帧 POWERON 默认档亮屏后立即重放存档档位即可 */
+     * 闪一帧断电前页面);首帧 POWERON 默认档亮屏后立即重放存档档位即可。
+     * 首帧点亮档本身由 custom.c custom_init() 提前写进面板(2026-11-02),
+     * 所以这里重放的是同一档位,不再有"默认档闪一帧" */
     lv_display_add_event_cb(lv_display_get_default(), boot_bl_refr_cb,
                             LV_EVENT_REFR_READY, NULL);
     printf("[nav] init done -> %s\n", !g_langpick_done ? "langpick" :
