@@ -76,14 +76,13 @@ void nav_hint_tone_cancel(void)
 /* ===== 上电开机音（2026-11-02 用户需求）=====
  * 冷启动时电源板不会自己响，开机音要靠 TFT 发蜂鸣码 1（BUZZER_POWER_ON）触发——
  * 与 SLEEP 唤醒 nav_power_on 里的同一句同口径，那条路径实测有声。
- * 设置项“开机欢迎曲”（SET_Data.Set_VolumeWelcome）关掉时不发；同时把 BUF[15]
- * BIT4 开机音位同步成关，免得电源板按默认(0x00=开)自行处理。
+ * 这里只负责“发声音”，不做是否该响的判断：声音设置（开机音开关/音量/静音）由电源板
+ * 自己管理，我们照常把设置值放 BUF[15] 发出去即可（用户 2026-11-02 明确）。
  * 延时 400ms 再发：电源板与本板同时上电，帧发太早它还没准备好收（唤醒路径
  * 电源板早已在跑，所以那边是立即发）。 */
 static void boot_tone_timer_cb(lv_timer_t *t)
 {
     lv_timer_del(t);
-    if (!SET_Data.Set_VolumeWelcome) return;
     g_send.buzzer_req = BUZZER_POWER_ON;
     uart_print();     /* 模拟器即时出帧；真机由 100ms 定时器统一发送 */
     printf("[BOOT] boot tone sent (code %d)\n", BUZZER_POWER_ON);
@@ -255,10 +254,8 @@ void nav_init(void)
     printf("[nav] init start\n");
     g_lang_en = (SET_Data.Set_Language == 0);   /* 开机同步 tr 英文标志:保存的英文重启后生效
                                                  * (繁/简由 is_trad 直读 SET_Data,断电天然存活) */
-    /* 上电开机音:先把存档的“开机欢迎曲”同步到 BUF[15] BIT4(电源板据此放开机音),
-       再挂 400ms 一次性定时器发蜂鸣码 1——电源板同时上电,太早发的帧收不到 */
-    if (SET_Data.Set_VolumeWelcome) MSt_BootTone_ON;
-    else                            MSt_BootTone_OFF;
+    /* 上电开机音:挂 400ms 一次性定时器发蜂鸣码 1——电源板同时上电,太早发的帧收不到。
+       开机音开关等声音设置由电源板自己管理,这里不改 BUF[15],照常发设置值即可 */
     lv_timer_create(boot_tone_timer_cb, 400, NULL);
     depth = 0;
     page_push(PAGE_WAITMENU_24);        // 根页 = waitmenu_24
