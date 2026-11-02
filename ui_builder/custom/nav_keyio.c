@@ -100,15 +100,17 @@ int nav_standby_backlight_level(void)
 }
 
 #ifndef LV_USE_AIC_SIMULATOR
-/* 延 50ms(≥3 个 vsync)抬满背光:refr_now 完成渲染+翻转入队,但面板出新帧要等
-   vsync——立刻抬亮会先照亮面板上的待机页旧帧(闪一下待机页才出菜单) */
+/* 延 50ms(≥3 个 vsync)再恢复背光:refr_now 完成渲染+翻转入队,但面板出新帧要等
+   vsync——立刻抬亮会先照亮面板上的待机页旧帧(闪一下待机页才出菜单)。
+   亮度用存档档位(nav_brightness_apply),不再固定 100:关机再开机后亮度变全亮,
+   与设置里的"显示屏亮度"不符(2026-11-02 实机反馈) */
 static void wake_backlight_timer_cb(lv_timer_t *t)
 {
     lv_timer_del(t);
-    backlight_set_level(100);
+    nav_brightness_apply();
 }
 
-void nav_backlight_100_defer(void)
+void nav_backlight_restore_defer(void)
 {
     lv_timer_create(wake_backlight_timer_cb, 50, NULL);
 }
@@ -144,11 +146,11 @@ static void nav_power_on(void)
     g_send.buzzer_req = BUZZER_POWER_ON;
     g_send.iface_status = IFACE_SETTING;
 #ifndef LV_USE_AIC_SIMULATOR
-    /* 先把新页整帧刷到面板、等翻转落屏后再抬背光(顺序:刷帧→延→抬),
-     * 避免抬亮照亮的是待机页旧帧 */
+    /* 先把新页整帧刷到面板、等翻转落屏后再恢复背光(顺序:刷帧→延→抬),
+     * 避免抬亮照亮的是待机页旧帧;档位按存档设置,不固定 100 */
     lv_obj_invalidate(lv_scr_act());
     lv_refr_now(NULL);
-    nav_backlight_100_defer();
+    nav_backlight_restore_defer();
 #endif
     printf("[KEY] power on -> %s\n", !g_langpick_done ? "langpick" :
            (g_systime_boot_mode ? "systime_boot" : "major_menu"));
