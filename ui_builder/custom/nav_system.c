@@ -14,6 +14,7 @@
 #include "nav.h"
 #include "nav_idle.h"
 #include "nav_internal.h"
+#include "protocol.h"     /* BUZZER_* 蜂鸣码 / Machine_Set_num_1 开机音位 */
 
 /* 文件内前向声明(定义在后方) */
 void topflag_clock_cb(lv_timer_t *timer);
@@ -72,6 +73,22 @@ void nav_hint_tone_cancel(void)
     s_hint_left = 0;
 }
 
+/* ===== 上电开机音（2026-11-02 用户需求）=====
+ * 冷启动时电源板不会自己响，开机音要靠 TFT 发蜂鸣码 1（BUZZER_POWER_ON）触发——
+ * 与 SLEEP 唤醒 nav_power_on 里的同一句同口径，那条路径实测有声。
+ * 设置项“开机欢迎曲”（SET_Data.Set_VolumeWelcome）关掉时不发；同时把 BUF[15]
+ * BIT4 开机音位同步成关，免得电源板按默认(0x00=开)自行处理。
+ * 延时 400ms 再发：电源板与本板同时上电，帧发太早它还没准备好收（唤醒路径
+ * 电源板早已在跑，所以那边是立即发）。 */
+static void boot_tone_timer_cb(lv_timer_t *t)
+{
+    lv_timer_del(t);
+    if (!SET_Data.Set_VolumeWelcome) return;
+    g_send.buzzer_req = BUZZER_POWER_ON;
+    uart_print();     /* 模拟器即时出帧；真机由 100ms 定时器统一发送 */
+    printf("[BOOT] boot tone sent (code %d)\n", BUZZER_POWER_ON);
+}
+
 static void system_timer_cb(lv_timer_t *timer)
 {
     static int probe_last = 0;
@@ -99,6 +116,14 @@ static void system_timer_cb(lv_timer_t *timer)
     if (door_now != door_last) {
         door_last = door_now;
         nav_hint_tone_cancel();   /* 协议 3.1:门开关属用户操作,取消后续提示音 */
+        /* 运行中(烹饪/暂停)开门:补一声按键有效音(2026-11-02 用户需求)。
+           待机/设置/完成/预约页开门不响——那些不算"运行中"。
+           门开自动暂停(烹饪页跳 stop 页)会把状态改成 PAUSE,故两个状态都认 */
+        if (door_now && (g_send.iface_status == IFACE_COOKING ||
+                         g_send.iface_status == IFACE_PAUSE)) {
+            g_send.buzzer_req = BUZZER_KEY_VALID;
+            uart_print();     /* 模拟器即时出帧;真机由 100ms 定时器统一发送 */
+        }
         if (preheat_wait_door && !door_now) {
             preheat_wait_door = 0;
             if (depth > 0 && (page_stack[depth - 1] == PAGE_PREHEAT_COMPLETE ||
@@ -230,6 +255,11 @@ void nav_init(void)
     printf("[nav] init start\n");
     g_lang_en = (SET_Data.Set_Language == 0);   /* 开机同步 tr 英文标志:保存的英文重启后生效
                                                  * (繁/简由 is_trad 直读 SET_Data,断电天然存活) */
+    /* 上电开机音:先把存档的“开机欢迎曲”同步到 BUF[15] BIT4(电源板据此放开机音),
+       再挂 400ms 一次性定时器发蜂鸣码 1——电源板同时上电,太早发的帧收不到 */
+    if (SET_Data.Set_VolumeWelcome) MSt_BootTone_ON;
+    else                            MSt_BootTone_OFF;
+    lv_timer_create(boot_tone_timer_cb, 400, NULL);
     depth = 0;
     page_push(PAGE_WAITMENU_24);        // 根页 = waitmenu_24
     if (!g_langpick_done) {
