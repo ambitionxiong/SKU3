@@ -302,9 +302,12 @@ void process_key(uint8_t key)
     }
     /* 待机页:编码器转动/确认/BACK 直接进主页(2026-10-28 用户定稿:功能键直入对应
      * 功能已对,转旋钮/按下确认/返回=进系统看主菜单)。原三键在待机页只是无效音
-     * (无焦点组/depth<=1),落点与 KEY_MENU 进主页同口径(栈重置+协议复位+IFACE_SETTING) */
+     * (无焦点组/depth<=1),落点与 KEY_MENU 进主页同口径(栈重置+协议复位+IFACE_SETTING)。
+     * 计时器超时抢屏压在待机页上时不拦:抢屏不改栈/iface,本分支条件仍成立,
+     * 截走会让超时层状态悬空——四键放行给计时页组路由(响音/取消超时层,2026-10-30) */
     if (depth == 1 && page_stack[0] == PAGE_WAITMENU_24 &&
         g_send.iface_status == IFACE_STANDBY &&
+        !count_down_overtime_active() &&
         (key == KEY_ENCODER_CW || key == KEY_ENCODER_CCW ||
          key == KEY_ENCODER_PRESS || key == KEY_BACK)) {
         g_send.buzzer_req = BUZZER_KEY_VALID;

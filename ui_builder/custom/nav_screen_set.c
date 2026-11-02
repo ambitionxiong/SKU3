@@ -327,8 +327,16 @@ static void on_set_ldg_click(lv_event_t *e)
 {
     (void)e;
     int flag = (int)((Machine_Set_num >> 4) & 0x03);
-    static const char *const opts[4] = { "常亮", "亮15秒", "开门亮", "炉灯关" };
+    /* 2026-10-31 样张定稿文案:开/持续15秒/仅开门时亮/关——持续15秒/仅开门时亮本就是
+     * 词典原词条(移植时曾简写成 亮15秒/开门亮),开/关走共享词条(繁 開/關) */
+    static const char *const opts[4] = { "开", "持续15秒", "仅开门时亮", "关" };
     sel_popup_create(SEL_WHERE_LIGHT, flag, 4, "炉灯光", opts);
+    /* EN 首尾档与共享词条("开"→on/"关"→off,待机显示等弹窗共用)大小写不一致,
+     * 炉灯样张 EN 定稿 On/Off——弹窗内显式覆盖,不动共享词条 */
+    if (is_english()) {
+        if (s_sel_labels[0]) lv_label_set_text(s_sel_labels[0], "On");
+        if (s_sel_labels[3]) lv_label_set_text(s_sel_labels[3], "Off");
+    }
 }
 
 static void on_set_power_click(lv_event_t *e)
