@@ -534,7 +534,7 @@ void jump_to_updown_bbq_menu_low(void)
                      ui_manager.auto_del);
     printf("[nav] jump: updown_bbq_set -> updown_bbq_menu_low\n");
 }
-// 额外上色设置页（复用 preheatmenu 结构）：label_69="额外上色"，温度 30-300，next → color cooking
+// 额外上色设置页（复用 preheatmenu 结构）：label_69="额外上色"，温度 30-250，next → color cooking
 static void color_menu_open(void)
 {
     preheatmenu_create(&ui_manager);
@@ -547,7 +547,7 @@ static void color_menu_open(void)
 
         edit_clear();
         edit_register_temp(menu->temp, menu->line2, menu->line3,
-                      &set_temp, 30, 300, 5, "%d");
+                      &set_temp, 30, 250, 5, "%d");
         /* blink extras: 单位℃ */
         nav_blink_extra(menu->temp, menu->label_63);
 
