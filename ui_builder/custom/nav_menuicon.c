@@ -284,66 +284,61 @@ void nav_cook4_card_icons(void)
     }
 }
 
-/* 探针小标(tanzhen.png 40x26):探针插入且停在菜单/设置态时,在每页标题右侧补一枚
- * (2026-11-03 用户定:此前只有探针版三张主菜单自带,其余菜单页都没有;烹饪运行页
- * 右侧另有 probeicon,不归这里)。标题按"左上角 (x,y ≤40) 首个可见标签"认定,
- * 文字宽度实测后贴右 8px,纵向 +3 与 24px 标题文字齐平。探针版
- * MAJOR/COOK/SPECIAL_MENU_TZ 生成层已有该图,跳过防双标。
- * 幂等:同屏复用一个对象;翻页时旧对象随页面销毁,靠 is_valid 兜住悬空 */
+/* 探针小标(tanzhen.png 40x26):探针态下烹饪前各菜单页标题右侧的一枚标记。
+ * 2026-11-03 用户定:1)位置照探针主菜单(major_menu_tz 的 tz_img 96,24)——横向贴
+ * 标题文字右缘 8px、纵向与标题同 y;2)逐页显式登记本页"页对象+标题标签",不做树扫描
+ * (扫描会挑错标签,加错页)。标题盒是 97x25 定值,英文长标题会溢出盒子,故横向按实测
+ * 文字宽度算,不能用盒宽。探针主菜单生成层已自带该图,本表不列它(防双标)。
+ * 表里没有的页(烹饪/停止/完成/待机/设置覆盖层)一律不加。 */
+#define PB_ENTRY(pid, type, getter, field) \
+    case pid: { type *p = getter(&ui_manager); if (p) { page = p->obj; title = p->field; } } break;
+
 void nav_probe_badge_refit(void)
 {
     static lv_obj_t *s_badge = NULL;
-    static lv_obj_t *s_badge_scr = NULL;
+    static lv_obj_t *s_page = NULL;
 
-    lv_obj_t *scr = lv_scr_act();
-    if (!scr) return;
+    if (depth <= 0 || !is_probe_inserted()) return;
 
-    /* 换页后旧标随旧屏销毁,这里只清指针——不在切屏途中主动 del,
-       避免删到正在做转场动画的旧屏子对象 */
-    if (s_badge && (!lv_obj_is_valid(s_badge) || s_badge_scr != scr)) {
+    lv_obj_t *page = NULL, *title = NULL;
+    switch (page_stack[depth - 1]) {
+    PB_ENTRY(PAGE_COOK_MENU_TZ,          cook_menu_tz_t,          cook_menu_tz_get,          cook_label)
+    PB_ENTRY(PAGE_SPECIAL_MENU_TZ,       special_menu_tz_t,       special_menu_tz_get,       special_label)
+    PB_ENTRY(PAGE_SIXMENUTZ,             sixmenutz_t,             sixmenutz_get,             label_7)
+    PB_ENTRY(PAGE_CHICKMENUTZ,           chickmenutz_t,           chickmenutz_get,           label_4)
+    PB_ENTRY(PAGE_SIXOP3PAGE,            sixop3page_t,            sixop3page_get,            name)
+    PB_ENTRY(PAGE_DESCRIPTIONMENU,       descriptionmenu_t,       descriptionmenu_get,       label_19)
+    PB_ENTRY(PAGE_TOASTCOLOR,            toastcolor_t,            toastcolor_get,            label_24)
+    PB_ENTRY(PAGE_UPDOWN_BBQ_MENU_PROBE, updown_bbq_menu_probe_t, updown_bbq_menu_probe_get, label_12)
+    PB_ENTRY(PAGE_UPDOWN_BBQ_SET_PROBE,  updown_bbq_set_probe_t,  updown_bbq_set_probe_get,  label_19)
+    PB_ENTRY(PAGE_HOT_BBQ_MENU_PROBE,    hot_bbq_menu_probe_t,    hot_bbq_menu_probe_get,    label_5)
+    PB_ENTRY(PAGE_HOT_BBQ_SET_PROBE,     hot_bbq_set_probe_t,     hot_bbq_set_probe_get,     label_9)
+    PB_ENTRY(PAGE_BOTTOM_BBQ_MENU_PROBE, bottom_bbq_menu_probe_t, bottom_bbq_menu_probe_get, label_50)
+    PB_ENTRY(PAGE_BOTTOM_BBQ_SET_PROBE,  bottom_bbq_set_probe_t,  bottom_bbq_set_probe_get,  label_54)
+    PB_ENTRY(PAGE_SLOWCOOK_MENU_PROBE,   slowcook_menu_probe_t,   slowcook_menu_probe_get,   label_83)
+    PB_ENTRY(PAGE_SLOWCOOK_SET_PROBE,    slowcook_set_probe_t,    slowcook_set_probe_get,    label_87)
+    default: return;
+    }
+    if (!page || !title || !lv_obj_is_valid(page) || !lv_obj_is_valid(title)) return;
+
+    /* 标挂在本页上;换页后旧标随页销毁,这里只清指针,不在切屏途中 del */
+    if (s_badge && (!lv_obj_is_valid(s_badge) || s_page != page)) {
         s_badge = NULL;
-        s_badge_scr = NULL;
+        s_page = NULL;
     }
-
-    int want = is_probe_inserted() && g_send.iface_status == IFACE_SETTING && depth > 0;
-    if (want && page_stack[depth - 1] == PAGE_MAJOR_MENU_TZ)
-        want = 0;   /* 探针主菜单生成层自带 tanzhen 图(96,24),再加就双标 */
-
-    /* 找左上角标题标签(标题都在 24,24 附近;其余标签 x/y 更靠内) */
-    lv_obj_t *title = NULL;
-    if (want) {
-        uint32_t n = lv_obj_get_child_cnt(scr);
-        for (uint32_t i = 0; i < n; i++) {
-            lv_obj_t *o = lv_obj_get_child(scr, i);
-            if (!o || !lv_obj_check_type(o, &lv_label_class)) continue;
-            if (lv_obj_has_flag(o, LV_OBJ_FLAG_HIDDEN)) continue;
-            if (lv_obj_get_x(o) > 40 || lv_obj_get_y(o) > 40) continue;
-            const char *t = lv_label_get_text(o);
-            if (!t || !t[0]) continue;
-            title = o;
-            break;
-        }
-        if (!title) want = 0;
-    }
-
-    if (!want) {
-        if (s_badge) { lv_obj_add_flag(s_badge, LV_OBJ_FLAG_HIDDEN); }
-        return;
-    }
-
-    const char *tt = lv_label_get_text(title);
-    const lv_font_t *f = lv_obj_get_style_text_font(title, LV_PART_MAIN);
-    int32_t ls = lv_obj_get_style_text_letter_space(title, LV_PART_MAIN);
-    int tw = lv_txt_get_width(tt, (uint32_t)strlen(tt), f, ls);
-
     if (!s_badge) {
-        s_badge = lv_img_create(scr);
+        s_badge = lv_img_create(page);
         lv_img_set_src(s_badge, LVGL_IMAGE_PATH(tanzhen.png));
         lv_obj_clear_flag(s_badge, LV_OBJ_FLAG_CLICKABLE);
-        s_badge_scr = scr;
+        s_page = page;
     }
+
+    const char *t = lv_label_get_text(title);
+    int tw = lv_txt_get_width(t, (uint32_t)strlen(t),
+                              lv_obj_get_style_text_font(title, LV_PART_MAIN),
+                              lv_obj_get_style_text_letter_space(title, LV_PART_MAIN));
     lv_obj_clear_flag(s_badge, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_set_pos(s_badge, lv_obj_get_x(title) + tw + 8, lv_obj_get_y(title) + 3);
+    lv_obj_set_pos(s_badge, lv_obj_get_x(title) + tw + 8, lv_obj_get_y(title));
 }
 
 /* 探针二级菜单(家禽/牛肉/羊肉/猪肉共用 chickmenutz 页) EN 小字规则:
