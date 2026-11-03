@@ -639,7 +639,7 @@ void nav_topflag_popups_yield(void)
  * 童锁（topflag 顶层弹窗级,任意界面生效）
  * 素材/控件:9.4.2 已在 topflagpage.c 建好 image_1(lockifr 面板)
  *   image_2(childlock 图标) locktip1(已锁定) locktip2(长按旋钮3秒)
- *   locktip3(模式名+状态,五态动态),默认全隐藏。
+ *   locktip3(菜名/模式名+状态,五态动态),默认全隐藏。
  * 开启:设置页"童锁→开"(nav_screen_set.c SEL_WHERE_TS)→nav_childlock_set(1)。
  * 锁定中:process_key 守卫链最顶吞掉一切按键(nav_key.c)。
  * 解锁:长按旋钮(KEY_ENCODER_PRESS)3秒——真机走 nav_handle_key
@@ -648,16 +648,25 @@ void nav_topflag_popups_yield(void)
  * ============================== */
 static int g_childlock_active = 0;
 
-/* 锁层第三行刷新签名:界面状态/保温标志/模式名任一变化才重排(由 topflag_clock_cb 驱动) */
+/* 锁层第三行刷新签名:界面状态/保温标志/第三行标题(模式名或第六感菜名)任一变化才重排 */
 static int s_cl_sig_status = -1;
 static int s_cl_sig_keepwarm = -1;
 static const char *s_cl_sig_mode = NULL;
+
+/* 锁层第三行标题:第六感运行中印菜名(2026-11-03 用户定——第六感烹饪页状态栏本是
+   菜名 Strudel,锁层却印模式名 Forced Air,两处对不上),其余模式仍用模式名。
+   签名比较也用本函数,菜名/模式名切换时随之刷新 */
+static const char *childlock_title(void)
+{
+    if (g_six_running) return six_dish_name();
+    return mode_display_name();
+}
 
 static void childlock_sig_update(void)
 {
     s_cl_sig_status = g_send.iface_status;
     s_cl_sig_keepwarm = g_keepwarm_active;
-    s_cl_sig_mode = mode_display_name();
+    s_cl_sig_mode = childlock_title();
 }
 
 /* locktip3 显示时 icon/tip1/tip2 用原位,隐藏时下移 41px:
@@ -745,10 +754,11 @@ static void childlock_apply_layout(topflagpage_t *tf)
     else if (g_send.iface_status == IFACE_COMPLETE)     word = "已完成";
 
     int dy = 0;
-    if (word && tf->locktip3 && mode_display_name()) {
-        /* 中文模式名+状态直连,英文中间补空格 */
+    const char *title = childlock_title();
+    if (word && tf->locktip3 && title) {
+        /* 中文模式名/菜名+状态直连,英文中间补空格 */
         lv_label_set_text_fmt(tf->locktip3, is_english() ? "%s %s" : "%s%s",
-                              mode_display_name(), tr(word));
+                              title, tr(word));
         lv_obj_clear_flag(tf->locktip3, LV_OBJ_FLAG_HIDDEN);
     } else {
         if (tf->locktip3) lv_obj_add_flag(tf->locktip3, LV_OBJ_FLAG_HIDDEN);
@@ -871,7 +881,7 @@ void nav_childlock_refresh(void)
     if (!g_childlock_active || !tf || !tf->obj) return;
     if (s_cl_sig_status == g_send.iface_status &&
         s_cl_sig_keepwarm == g_keepwarm_active &&
-        s_cl_sig_mode == mode_display_name()) return;
+        s_cl_sig_mode == childlock_title()) return;
     childlock_sig_update();
     childlock_apply_layout(tf);
 }

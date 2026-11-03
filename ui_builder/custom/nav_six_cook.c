@@ -235,6 +235,17 @@ static void six_label_status(somecook_cooking_t *sc)
     nav_status_bar_dynamic(sc->label_12, sc->activestatus, name, merged, 1);
 }
 
+/* 当前第六感菜名(锁层第三行等弹层复用):选名口径与 six_label_status 一致——
+   烤全鸡/鸡翅类/海鲜/蔬配/披萨/二维菜走 chick 名,面包/蛋糕走 bread 名。
+   集中一处,防弹层与状态栏两处各挑各的漂移 */
+const char *six_dish_name(void)
+{
+    if (six_chick_is_degree_time() || six_chick_is_kind() || six_chick_is_seafood() ||
+        six_chick_is_veg() || six_chick_is_2d() || six_chick_is_pizza())
+        return six_chick_name();
+    return six_bread_name();
+}
+
 // 运行模式/温度:烤鸡翅类按菜谱表(热风对流/空气炸250℃),面包/蛋糕按配置
 uint8_t six_cook_mode(void)
 {

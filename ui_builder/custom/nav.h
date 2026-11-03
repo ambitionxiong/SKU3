@@ -886,6 +886,7 @@ extern uint8_t g_six_bread_type;   /* 面包品类: SIX_BREAD_ROLL/WHEAT/TOAST/C
 #define SIX_CAKE_MUFFIN         14  /* 蛋糕-松饼 */
 extern const char *six_bread_name(void);
 extern const char *six_bread_desc(void);
+const char *six_dish_name(void);   /* 当前第六感菜名(含鸡/海鲜/蔬配/披萨/二维菜),锁层弹层复用 */
 extern int six_bread_cook_min(void);
 extern int six_rising_min(void);
 extern int six_bread_has_color(void);
