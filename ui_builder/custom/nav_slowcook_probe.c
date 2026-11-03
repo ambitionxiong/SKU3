@@ -555,10 +555,12 @@ void slowcook_probe_rebuild_set(page_id_t child)
                             LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(set->ondelay, on_slowcook_probe_delay_toggle,
                             LV_EVENT_CLICKED, NULL);
+        /* 从 delayset 点"开始"回来:焦点留在延时按钮(其余来源仍落"开始")。
+           注意 must else,原无条件 focus sure 会把上面的延时焦点覆盖掉 */
         if (child == PAGE_DELAYSET && set->offdelay)
             lv_group_focus_obj(delay_on ? set->ondelay : set->offdelay);
-
-        lv_group_focus_obj(set->sure);
+        else
+            lv_group_focus_obj(set->sure);
     }
     current_group = g_slowcook_set_probe;
     lang_scr_load_anim(slowcook_set_probe_get(&ui_manager)->obj,
