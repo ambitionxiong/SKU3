@@ -751,13 +751,12 @@ void process_key(uint8_t key)
     case KEY_SIXMENU:       // 2: 进入第六感菜单
         if (depth > 0) {
             page_id_t cur = page_stack[depth - 1];
-            if (cur == PAGE_SIXMENU || cur == PAGE_BREAD6MENU ||
-                cur == PAGE_CAKE6MENU || cur == PAGE_CHICK6MENU || cur == PAGE_CHICKENMENU ||
-                cur == PAGE_DUCK6MENU || cur == PAGE_VEGETABLEMENU ||
-                cur == PAGE_SIXMENUTZ || cur == PAGE_CHICKMENUTZ ||
-                cur == PAGE_RISINGPAGE || cur == PAGE_DESCRIPTIONMENU ||
-                cur == PAGE_TOASTCOLOR) {
-                g_send.buzzer_req = BUZZER_KEY_INVALID;   /* 防重入 */
+            /* 已在第六感首页:防重入,原地不动。
+               其余第六感各级子页(子菜单/说明页/烤色/发酵)不再拦——
+               落到下面的"重置栈 + 进第六感首页"路径,即第六感键 = 回第六感首页
+               (2026-11-03 用户需求:子菜单设置页按第六感键回首页) */
+            if (cur == PAGE_SIXMENU || cur == PAGE_SIXMENUTZ) {
+                g_send.buzzer_req = BUZZER_KEY_INVALID;
                 uart_print();
                 break;
             }
