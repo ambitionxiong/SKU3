@@ -7,7 +7,8 @@
  *   2. nav_idle_init：创建常驻 1s 调度定时器（nav_init 调用，一次创建永不重建）
  *   3. 三规则（nav_idle_timer_cb）：
  *      确认层（关机确认弹窗/各模式返回确认页）3s 无操作 → 回运行页；
- *      烹饪会话 60s 无操作 → 逐层退出设置覆盖层/子页回烹饪层；
+ *      收藏确认弹层（重复收藏/收藏夹已满）60s 无操作 → 关闭回完成页；
+ *      烹饪会话（含完成页）60s 无操作 → 逐层退出设置覆盖层/子页回烹饪层/完成页；
  *      非烹饪 300s 无操作 → 进待机页；
  *      待机页 1200s 无操作 → 关机。
  *   4. nav_goto_major_menu：返回链终点统一落主菜单（栈底 WAITMENU_24 仅作哨兵）。
@@ -28,6 +29,9 @@
 /* 确认层(关机确认弹窗/各模式返回确认页)无操作自动回运行页(2026-10-26 用户,
  * 原与规则1 同 60s);1s 拍粒度,实际触发在 3.0~4.0s 之间 */
 #define NAV_IDLE_CONFIRM_TO_COOKING_S 3
+/* 收藏确认弹层(重复收藏/收藏夹已满)无操作自动关闭回完成页(2026-11-03 用户):
+   与烹饪会话回层同为 1 分钟窗口 */
+#define NAV_IDLE_FAVASK_S 60
 
 static uint32_t g_last_activity_ms = 0;
 
@@ -209,13 +213,27 @@ static void nav_idle_timer_cb(lv_timer_t *t)
         return;
     }
 
+    /* 收藏确认弹层(重复收藏/收藏夹已满):无操作 1 分钟关闭回完成页(2026-11-03 用户)。
+       弹层不是页面(栈顶仍是完成页),完成页的"持续刷新活动时钟"会把它永远按住,
+       必须像关机确认弹窗一样在刷新之前拦截并冻结活动时钟
+       (弹层期间任何按键 nav_idle_touch 重打点,所以按键就重新计 1 分钟) */
+    if (nav_favask_active()) {
+        if (idle_s >= NAV_IDLE_FAVASK_S) {
+            printf("[idle] favask no-op %ds -> cancel\n", NAV_IDLE_FAVASK_S);
+            nav_favask_cancel();
+        }
+        return;
+    }
+
     /* 烹饪会话进行中且已坐在烹饪层:机器工作视为用户活动,持续刷新活动时钟——
        烹饪时长不计入闲时(修 30 分钟烹饪结束瞬间按累积闲时直接进待机的 bug),
        完成后 5 分钟待机倒计时从结束时刻重新起算;
        覆盖层/子页上不刷新(规则1 的无操作 1 分钟回烹饪层照常累积)。
-       完成态(IFACE_COMPLETE)一律不进闲时:完成页无限期停留,由用户手动离开 */
-    if (g_send.iface_status == IFACE_COMPLETE ||
-        (nav_cook_session_active() && !nav_is_cook_above_page(top)))
+       完成态(IFACE_COMPLETE):坐完成页本身无限期停留(不刷新则会被 5 分钟待机拽走
+       或直接关机),但完成页之上打开的设置覆盖层/模式设置页同样不刷新——
+       走规则1 的 1 分钟回完成页(2026-11-03 用户) */
+    if ((g_send.iface_status == IFACE_COMPLETE || nav_cook_session_active()) &&
+        !nav_is_cook_above_page(top))
         g_last_activity_ms = lv_tick_get();
 
     /* 规则3:待机页无操作 20 分钟关机 */
@@ -233,9 +251,9 @@ static void nav_idle_timer_cb(lv_timer_t *t)
         return;
     }
 
-    /* 规则1:烹饪会话无操作 1 分钟逐层退出覆盖层/子页回烹饪层 */
-    if (nav_cook_session_active() && idle_s >= NAV_IDLE_TO_COOKING_S &&
-        nav_is_cook_above_page(top)) {
+    /* 规则1:烹饪会话/完成页之上无操作 1 分钟,逐层退出覆盖层/子页回烹饪层/完成页 */
+    if ((nav_cook_session_active() || g_send.iface_status == IFACE_COMPLETE) &&
+        idle_s >= NAV_IDLE_TO_COOKING_S && nav_is_cook_above_page(top)) {
         switch (top) {
         case PAGE_SCREEN_SET:
             screen_set_back();            /* 运行态分支:还原下层焦点组并补刷倒计时 */
