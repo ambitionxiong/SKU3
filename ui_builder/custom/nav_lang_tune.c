@@ -3548,12 +3548,14 @@ void cook4menu_lang_tune(void)
     lv_obj_set_pos(pg->cookie, 5, 65);
     lv_obj_set_size(pg->cookie, 340, 406);
 
-    /* west: 按钮 | (315,65) | 340x406 | font montserratmedium_16 | bg: div4bg30.png */
-    lv_obj_set_pos(pg->west, 315, 65);
+    /* west: 按钮 | (625,65) | 340x406 | font montserratmedium_16 | bg: div4bg30.png
+       2026-11-03: 与披萨换位(原 315) */
+    lv_obj_set_pos(pg->west, 625, 65);
     lv_obj_set_size(pg->west, 340, 406);
 
-    /* piza: 按钮 | (625,65) | 340x406 | font montserratmedium_16 | bg: div4bg30.png */
-    lv_obj_set_pos(pg->piza, 625, 65);
+    /* piza: 按钮 | (315,65) | 340x406 | font montserratmedium_16 | bg: div4bg30.png
+       2026-11-03: 与西式塔换位(原 625) */
+    lv_obj_set_pos(pg->piza, 315, 65);
     lv_obj_set_size(pg->piza, 340, 406);
 
     /* menu: 按钮 | (936,65) | 340x406 | font montserratmedium_16 | bg: div4bg30.png */
@@ -3563,11 +3565,11 @@ void cook4menu_lang_tune(void)
     /* image_47: 图片 | (125,187) | img: cookieimg.png */
     lv_obj_set_pos(pg->image_47, 125, 187);
 
-    /* image_48: 图片 | (433,186) | img: westimg.png */
-    lv_obj_set_pos(pg->image_48, 433, 186);
+    /* image_48: 图片 | (745,186) | img: westimg.png | 2026-11-03 跟瓦换位(原 433) */
+    lv_obj_set_pos(pg->image_48, 745, 186);
 
-    /* image_49: 图片 | (745,186) | img: pizaimg.png */
-    lv_obj_set_pos(pg->image_49, 745, 186);
+    /* image_49: 图片 | (433,186) | img: pizaimg.png | 2026-11-03 跟瓦换位(原 745) */
+    lv_obj_set_pos(pg->image_49, 433, 186);
 
     /* image_50: 图片 | (1056,187) | img: menuimgg.png */
     lv_obj_set_pos(pg->image_50, 1056, 187);
@@ -3576,12 +3578,12 @@ void cook4menu_lang_tune(void)
     lv_obj_set_pos(pg->label_84, 130, 290);
     lv_obj_set_size(pg->label_84, 100, 32);
 
-    /* label_85: 标签 | "西式塔" | (440,290) | 100x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_85, 448, 290);
+    /* label_85: 标签 | "西式塔" | (750,290) | 100x32 | 2026-11-03 跟瓦换位(原 440) */
+    lv_obj_set_pos(pg->label_85, 750, 290);
     lv_obj_set_size(pg->label_85, 100, 32);
 
-    /* label_86: 标签 | "披萨" | (765,290) | 100x32 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->label_86, 752, 290);
+    /* label_86: 标签 | "披萨" | (440,290) | 100x32 | 2026-11-03 跟瓦换位(原 765) */
+    lv_obj_set_pos(pg->label_86, 440, 290);
     lv_obj_set_size(pg->label_86, 100, 32);
 
     /* label_87: 标签 | "菜单" | (1076,290) | 100x32 | font taiwanpearl_regular_30 */

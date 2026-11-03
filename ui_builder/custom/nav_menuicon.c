@@ -281,12 +281,6 @@ void nav_cook4_card_icons(void)
                                            LV_PART_MAIN | LV_STATE_DEFAULT);
         }
     }
-    /* 瓦与图标跟着换位(标签已按新 cx 摆):西式塔 315→625、图标 433→745;
-       披萨 625→315、图标 745→433。点击回调绑在按钮对象上,搬瓦不动句柄 */
-    if (pg->west)     lv_obj_set_x(pg->west, 625);
-    if (pg->piza)     lv_obj_set_x(pg->piza, 315);
-    if (pg->image_48) lv_obj_set_x(pg->image_48, 745);
-    if (pg->image_49) lv_obj_set_x(pg->image_49, 433);
 }
 
 /* 探针二级菜单(家禽/牛肉/羊肉/猪肉共用 chickmenutz 页) EN 小字规则:
