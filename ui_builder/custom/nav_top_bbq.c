@@ -405,10 +405,10 @@ void jump_to_top_bbq_cooking(void)
 // cooking → setting（不暂停 timer）
 void jump_to_top_bbq_setting(void)
 {
-    if (g_send.iface_status == IFACE_COMPLETE) { set_hour = 0; set_min = 1; }   /* 完成页小按钮进设置:烹饪时间默认 1 分钟 */
     top_setting_saved_temp = set_temp;
     top_setting_saved_hour = set_hour;
     top_setting_saved_min = set_min;
+    if (g_send.iface_status == IFACE_COMPLETE) { set_hour = 0; set_min = 1; }   /* 完成页小按钮进设置:烹饪时间默认 1 分钟(先存原始值再改,自动弹回/BACK 才恢复状态栏原值) */
 
     page_push(PAGE_TOP_BBQ_SETTING);
     lv_obj_clean(lv_scr_act());
