@@ -1726,6 +1726,7 @@ void nav_btnskin_refit(void);    /* EN 运行/暂停/stopback/预约页右下按
 void nav_stopback_overlay_en(somecook_cooking_t *sc, int on);   /* 六感/多段同页取消遮罩 EN 换新文案+Stop Cooking 换装/还原基线(on=1 遮罩态,0 还原;仅英文执行) */
 void screen_fav_updown_font_resync(void);   /* 收藏上下温组合行小标签字体/颜色随宿主补同步(lang 树遍历后调,全语言幂等) */
 void nav_menuicon_refit(void);   /* EN major/cook/six/special+探针三菜单独立图标+24px居中排版(2026-10-10) */
+void nav_probe_badge_refit(void);   /* 探针插入时在菜单页标题右侧补 tanzhen 小标(全语言,2026-11-03) */
 void nav_cook4_card_icons(void);   /* cook4 四卡恢复原版图标+独立标签,藏按键内联文字(全语言,2026-10-15) */
 void nav_frozen_card_icons(void);   /* 冷冻烘焙六卡铺图标+标签,藏简繁位图长条图(全语言,2026-10-15) */
 void nav_chickmenutz_en_refit(void);   /* 探针二级菜单(共用 chickmenutz 页)EN 小字规则 24px+整体居中(仅英文,2026-10-15) */

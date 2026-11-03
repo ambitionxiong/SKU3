@@ -586,4 +586,5 @@ void lang_on_page_built(void)
     nav_cook4_card_icons();    /* cook4 四卡恢复原版图标+标签(全语言,2026-10-15) */
     nav_frozen_card_icons();   /* 冷冻烘焙六卡铺图标+标签(全语言,2026-10-15) */
     nav_chickmenutz_en_refit();   /* 探针二级菜单 EN 小字规则(仅英文,2026-10-15) */
+    nav_probe_badge_refit();      /* 探针插入时菜单页标题右侧补 tanzhen 小标(全语言,2026-11-03) */
 }

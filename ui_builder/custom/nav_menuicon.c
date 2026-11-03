@@ -13,6 +13,7 @@
  * 简繁直接 return(长条图照旧,显示零变化)。
  */
 #include "nav.h"
+#include "protocol.h"   /* g_send/IFACE_*:探针小标按界面状态取舍(2026-11-03) */
 
 #define MENU_INK_OFF   7    /* 24px label 盒顶到墨迹顶 */
 #define MENU_GAP       25   /* 图标底到文字墨迹顶 */
@@ -281,6 +282,68 @@ void nav_cook4_card_icons(void)
                                            LV_PART_MAIN | LV_STATE_DEFAULT);
         }
     }
+}
+
+/* 探针小标(tanzhen.png 40x26):探针插入且停在菜单/设置态时,在每页标题右侧补一枚
+ * (2026-11-03 用户定:此前只有探针版三张主菜单自带,其余菜单页都没有;烹饪运行页
+ * 右侧另有 probeicon,不归这里)。标题按"左上角 (x,y ≤40) 首个可见标签"认定,
+ * 文字宽度实测后贴右 8px,纵向 +3 与 24px 标题文字齐平。探针版
+ * MAJOR/COOK/SPECIAL_MENU_TZ 生成层已有该图,跳过防双标。
+ * 幂等:同屏复用一个对象;翻页时旧对象随页面销毁,靠 is_valid 兜住悬空 */
+void nav_probe_badge_refit(void)
+{
+    static lv_obj_t *s_badge = NULL;
+    static lv_obj_t *s_badge_scr = NULL;
+
+    lv_obj_t *scr = lv_scr_act();
+    if (!scr) return;
+
+    /* 换页后旧标随旧屏销毁,这里只清指针——不在切屏途中主动 del,
+       避免删到正在做转场动画的旧屏子对象 */
+    if (s_badge && (!lv_obj_is_valid(s_badge) || s_badge_scr != scr)) {
+        s_badge = NULL;
+        s_badge_scr = NULL;
+    }
+
+    int want = is_probe_inserted() && g_send.iface_status == IFACE_SETTING && depth > 0;
+    if (want && page_stack[depth - 1] == PAGE_MAJOR_MENU_TZ)
+        want = 0;   /* 探针主菜单生成层自带 tanzhen 图(96,24),再加就双标 */
+
+    /* 找左上角标题标签(标题都在 24,24 附近;其余标签 x/y 更靠内) */
+    lv_obj_t *title = NULL;
+    if (want) {
+        uint32_t n = lv_obj_get_child_cnt(scr);
+        for (uint32_t i = 0; i < n; i++) {
+            lv_obj_t *o = lv_obj_get_child(scr, i);
+            if (!o || !lv_obj_check_type(o, &lv_label_class)) continue;
+            if (lv_obj_has_flag(o, LV_OBJ_FLAG_HIDDEN)) continue;
+            if (lv_obj_get_x(o) > 40 || lv_obj_get_y(o) > 40) continue;
+            const char *t = lv_label_get_text(o);
+            if (!t || !t[0]) continue;
+            title = o;
+            break;
+        }
+        if (!title) want = 0;
+    }
+
+    if (!want) {
+        if (s_badge) { lv_obj_add_flag(s_badge, LV_OBJ_FLAG_HIDDEN); }
+        return;
+    }
+
+    const char *tt = lv_label_get_text(title);
+    const lv_font_t *f = lv_obj_get_style_text_font(title, LV_PART_MAIN);
+    int32_t ls = lv_obj_get_style_text_letter_space(title, LV_PART_MAIN);
+    int tw = lv_txt_get_width(tt, (uint32_t)strlen(tt), f, ls);
+
+    if (!s_badge) {
+        s_badge = lv_img_create(scr);
+        lv_img_set_src(s_badge, LVGL_IMAGE_PATH(tanzhen.png));
+        lv_obj_clear_flag(s_badge, LV_OBJ_FLAG_CLICKABLE);
+        s_badge_scr = scr;
+    }
+    lv_obj_clear_flag(s_badge, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_set_pos(s_badge, lv_obj_get_x(title) + tw + 8, lv_obj_get_y(title) + 3);
 }
 
 /* 探针二级菜单(家禽/牛肉/羊肉/猪肉共用 chickmenutz 页) EN 小字规则:
