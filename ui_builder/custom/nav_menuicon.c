@@ -333,12 +333,14 @@ void nav_probe_badge_refit(void)
         s_page = page;
     }
 
+    /* 横向=标题文字宽度 +24:探针主菜单生成层给的是 x=96,标题"菜单"宽 48、起点 24,
+       正好等于 24+48+24 —— 按同一条口算,各页间距与主菜单一致(2026-11-03 用户定) */
     const char *t = lv_label_get_text(title);
     int tw = lv_txt_get_width(t, (uint32_t)strlen(t),
                               lv_obj_get_style_text_font(title, LV_PART_MAIN),
                               lv_obj_get_style_text_letter_space(title, LV_PART_MAIN));
     lv_obj_clear_flag(s_badge, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_set_pos(s_badge, lv_obj_get_x(title) + tw + 8, lv_obj_get_y(title));
+    lv_obj_set_pos(s_badge, lv_obj_get_x(title) + tw + 24, lv_obj_get_y(title));
 }
 
 /* 探针二级菜单(家禽/牛肉/羊肉/猪肉共用 chickmenutz 页) EN 小字规则:
