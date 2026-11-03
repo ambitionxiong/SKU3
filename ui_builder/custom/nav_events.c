@@ -69,7 +69,7 @@ void jump_to_cook4_menu(void)
 
     cook4menu_t *c4 = cook4menu_get(&ui_manager);
     if (c4) {
-        lv_obj_t *btns[] = { c4->cookie, c4->west, c4->piza, c4->menu };
+        lv_obj_t *btns[] = { c4->cookie, c4->piza, c4->west, c4->menu };   /* 组序=视觉序(西式塔/披萨换位,2026-11-03) */
         if (g_cook4_menu) lv_group_del(g_cook4_menu);
         g_cook4_menu = group_create_for_page(btns, 4);
 
@@ -97,7 +97,7 @@ void cook4menu_rebuild(page_id_t child)
 
     cook4menu_t *c4 = cook4menu_get(&ui_manager);
     if (c4) {
-        lv_obj_t *btns[] = { c4->cookie, c4->west, c4->piza, c4->menu };
+        lv_obj_t *btns[] = { c4->cookie, c4->piza, c4->west, c4->menu };   /* 组序=视觉序(西式塔/披萨换位,2026-11-03) */
         if (g_cook4_menu) lv_group_del(g_cook4_menu);
         g_cook4_menu = group_create_for_page(btns, 4);
 

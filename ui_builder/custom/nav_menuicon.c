@@ -252,7 +252,10 @@ void nav_cook4_card_icons(void)
     lv_obj_t *btns[4] = { pg->cookie, pg->west, pg->piza, pg->menu };
     lv_obj_t *imgs[4] = { pg->image_47, pg->image_48, pg->image_49, pg->image_50 };
     lv_obj_t *labs[4] = { pg->label_84, pg->label_85, pg->label_86, pg->label_87 };
-    const int cx[4]   = { 5, 315, 625, 936 };
+    /* 2026-11-03 用户定:西式塔与披萨两卡换位(左→右 饼干|披萨|西式塔|菜单)。
+       标签 x 直接按换位后的瓦位给(85=西式塔 走 625,86=披萨 走 315),
+       按键/图标在下面循环后单独搬——三件套整块跟着瓦走,不会出现"字在左图在右" */
+    const int cx[4]   = { 5, 625, 315, 936 };
     int lab_y = 290, icon_y = 0;
     if (is_english()) {
         icon_y = 206; lab_y = 305;   /* EN: 瓦 340x406 y65, 群组 81+25+17 居中 */
@@ -278,6 +281,12 @@ void nav_cook4_card_icons(void)
                                            LV_PART_MAIN | LV_STATE_DEFAULT);
         }
     }
+    /* 瓦与图标跟着换位(标签已按新 cx 摆):西式塔 315→625、图标 433→745;
+       披萨 625→315、图标 745→433。点击回调绑在按钮对象上,搬瓦不动句柄 */
+    if (pg->west)     lv_obj_set_x(pg->west, 625);
+    if (pg->piza)     lv_obj_set_x(pg->piza, 315);
+    if (pg->image_48) lv_obj_set_x(pg->image_48, 745);
+    if (pg->image_49) lv_obj_set_x(pg->image_49, 433);
 }
 
 /* 探针二级菜单(家禽/牛肉/羊肉/猪肉共用 chickmenutz 页) EN 小字规则:
