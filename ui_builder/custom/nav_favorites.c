@@ -22,6 +22,10 @@ int fav_init_temp_down = 0;
 /* 收藏页实例（独立页面，控件全部由 screen_favorites_create 手动创建） */
 screen_favorites_t g_fav_screen;
 
+/* 探针小标用入口(2026-11-03):收藏页不挂在 ui_manager 上,给 nav_menuicon 的页表取页对象/标题 */
+lv_obj_t *nav_favorites_page_obj(void)  { return g_fav_screen.obj; }
+lv_obj_t *nav_favorites_title_obj(void) { return g_fav_screen.fav_title_Lb; }
+
 /* 多段收藏时 g_steps 的转换载体（Add_favorites_of_Multi / Favorites_Cover_Func 使用） */
 Fun_Multi_SUM_Value Func_SUM_Value_step;
 

@@ -309,6 +309,11 @@ void nav_probe_badge_refit(void)
     PB_ENTRY(PAGE_SIXOP3PAGE,            sixop3page_t,            sixop3page_get,            name)
     PB_ENTRY(PAGE_DESCRIPTIONMENU,       descriptionmenu_t,       descriptionmenu_get,       label_19)
     PB_ENTRY(PAGE_TOASTCOLOR,            toastcolor_t,            toastcolor_get,            label_24)
+    PB_ENTRY(PAGE_COLOR_MENU,            preheatmenu_t,           preheatmenu_get,           label_69)
+    case PAGE_FAVORITES:   /* 收藏页独立于 ui_manager,走 nav_favorites 的两个取值入口 */
+        page = nav_favorites_page_obj();
+        title = nav_favorites_title_obj();
+        break;
     PB_ENTRY(PAGE_UPDOWN_BBQ_MENU_PROBE, updown_bbq_menu_probe_t, updown_bbq_menu_probe_get, label_12)
     PB_ENTRY(PAGE_UPDOWN_BBQ_SET_PROBE,  updown_bbq_set_probe_t,  updown_bbq_set_probe_get,  label_19)
     PB_ENTRY(PAGE_HOT_BBQ_MENU_PROBE,    hot_bbq_menu_probe_t,    hot_bbq_menu_probe_get,    label_5)
