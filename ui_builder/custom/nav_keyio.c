@@ -23,33 +23,6 @@ static uint8_t s_key1_fired = 0;   /* 本次按压电源动作已触发:按住�
 static uint8_t s_clean_done_fired = 0;   /* 本次按压一键完成已触发(烹饪中长按清洁键 1s 测试钩子) */
 static uint8_t s_clean_done_hold = 0;   /* 触发后本次按住期间豁免提示音取消:保完成音 5 秒重发不被同一次按住掐掉 */
 
-/* ===== 关机音未播完就抢开机(2026-11-04 用户反馈) =====
- * 关机发蜂鸣码 8,电源板还在放音时按电源键开机,发过去的码 1 会被它丢掉(实测无声)。
- * 处理:记下关机音请求时刻,若开机发生在关机音窗口内,则把开机音推迟到窗口末尾再发
- * 一次(只发一次,不重复,避免电源板放完后再叠一声)。窗口长度按关机提示音取经验值,
- * 电源板换音长时调 POWER_TONE_GUARD_MS 即可 */
-#define POWER_TONE_GUARD_MS 1500
-static uint32_t s_off_tone_tick = 0;
-static uint8_t  s_off_tone_valid = 0;
-static lv_timer_t *s_boot_tone_timer = NULL;
-
-static void boot_tone_delayed_cb(lv_timer_t *t)
-{
-    g_send.buzzer_req = BUZZER_POWER_ON;
-    uart_print();                 /* 模拟器立即出帧;实机 uart_print 空函数,由 100ms 帧定时器发 */
-    s_boot_tone_timer = NULL;
-    lv_timer_del(t);
-    printf("[KEY] boot tone sent (delayed)\n");
-}
-
-static void boot_tone_cancel(void)
-{
-    if (s_boot_tone_timer) {
-        lv_timer_del(s_boot_tone_timer);
-        s_boot_tone_timer = NULL;
-    }
-}
-
 /* 关机：清全部运行状态 → SLEEP 待机暗屏。
    KEY1 电源动作与待机页 20 分钟无操作超时(nav_idle)共用，行为完全一致 */
 void nav_power_off(void)
@@ -87,9 +60,6 @@ void nav_power_off(void)
     g_send.remaining_ms = -1;
 
     if (nav_childlock_active()) nav_childlock_set(0);   /* 关机不显示锁层(Set_Lock 保持 1,开机恢复) */
-    boot_tone_cancel();             /* 上次抢开机挂的延迟开机音作废:本轮重新计 */
-    s_off_tone_tick = lv_tick_get();   /* 关机音起点:窗口内开机则把开机音推迟到窗口末尾 */
-    s_off_tone_valid = 1;
     g_send.buzzer_req = BUZZER_POWER_OFF;
     g_send.iface_status = IFACE_SLEEP;
     depth = 0;
@@ -174,16 +144,7 @@ static void nav_power_on(void)
                          LV_SCR_LOAD_ANIM_NONE, 0, 0, 0);
     }
     if (SET_Data.Set_Lock && !nav_childlock_active()) nav_childlock_set(1);   /* 关机前童锁开着:开机恢复锁层 */
-    /* 开机音:与关机音撞车时推迟到关机音窗口末尾再发(见文件头 POWER_TONE_GUARD_MS 说明) */
-    if (s_off_tone_valid && (lv_tick_get() - s_off_tone_tick) < POWER_TONE_GUARD_MS) {
-        uint32_t wait = POWER_TONE_GUARD_MS - (lv_tick_get() - s_off_tone_tick);
-        boot_tone_cancel();
-        s_boot_tone_timer = lv_timer_create(boot_tone_delayed_cb, wait, NULL);
-        printf("[KEY] power on: off-tone busy, boot tone delayed %ums\n", wait);
-    } else {
-        g_send.buzzer_req = BUZZER_POWER_ON;
-    }
-    s_off_tone_valid = 0;
+    g_send.buzzer_req = BUZZER_POWER_ON;
     g_send.iface_status = IFACE_SETTING;
 #ifndef LV_USE_AIC_SIMULATOR
     /* 先把新页整帧刷到面板、等翻转落屏后再恢复背光(顺序:刷帧→延→抬),
