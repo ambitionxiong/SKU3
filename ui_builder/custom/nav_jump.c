@@ -637,6 +637,10 @@ void jump_to_color_cookoing(void)
 
     /* 启动定时器 */
     cook_is_color = 1;
+    /* 从完成页"保温中"直接点上色(2026-11-04):保温会话到此结束——新任务开始,
+       否则童锁第三行/关机确认文案仍按保温中显示(cook_timer 下面即被换成本轮) */
+    g_keepwarm_active = 0;
+    g_keepwarm_sec = 0;
     cook_start_time = lv_tick_get();
     if (cook_timer) lv_timer_del(cook_timer);
     cook_timer = lv_timer_create(cooking_timer_cb, 1000, NULL);

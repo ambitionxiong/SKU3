@@ -630,6 +630,9 @@ const char *mode_display_name(void)
     case MODE_RISING:         return tr("发酵");
     case MODE_CORN:           return tr("干果");
     case MODE_HEATCONTAIN:    return tr("保温");
+    /* 额外上色(2026-11-04):此前落到 default 显示成"上下烧烤"——上色是完成页的
+       后续小任务,童锁第三行等按模式名显示的地方都该是"额外上色" */
+    case MODE_EXTRA_COLOR:    return tr("额外上色");
     case MODE_FROZEN_BAKE:
         switch (g_delay_source_page) {
         case PAGE_LASAGNA_SET: return tr("千层面");
