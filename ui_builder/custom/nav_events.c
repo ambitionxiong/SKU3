@@ -297,18 +297,23 @@ int delay_min = 0;
    小时并直接进编辑;BACK 退出编辑后的浏览态不在此列,旋转按 时/分/start 整组循环 */
 uint8_t nav_delayset_fresh = 0;
 
-// 进入 delayset 的时刻（今天/明天切换基准，不随实时时间变化）
-static int delayset_enter_hour = -1;
-static int delayset_enter_min = 0;
-
 // 12 小时制后缀标签缓存(随 delayset 页实例重建,防悬空)
 static lv_obj_t *s_delay_ampm = NULL;
 static void *s_delay_ampm_host = NULL;
 
-// 刷新 delayset 页的时间显示（hour 显示 0-23，超 23:59 切换明天）
-// 今天/明天标签：调节期按"进入时刻"双向比较（已过→明天），确定后 delay_hour>=24 恒明天。
-// 刷新 delayset 页的时间显示（hour 显示 0-23，min 0-59）
-// 今天/明天标签：与进入时刻纯比较（小时+分钟分开判断），小于 → 明天，否则 → 今天
+/* 今天/明天实时判定(2026-11-04 用户:改实时,不再用进入时刻做冻结基准):
+   所选时刻(时:分)早于当前 RTC → 明天;相等按今天(点开始即当场执行,与 start 校正同口径)。
+   delay_hour>=24 是点开始后"已确认明天"的归一值,恒明天 */
+static uint8_t delayset_pick_tomorrow(void)
+{
+    rtc_time_t now;
+    if (delay_hour >= 24) return 1;
+    if (rtc_get_time(&now) != 0) return 0;
+    return (delay_hour < now.hour ||
+            (delay_hour == now.hour && delay_min < now.min)) ? 1 : 0;
+}
+
+// 刷新 delayset 页的时间显示（hour 显示 0-23，min 0-59；今天/明天按实时时钟比较）
 void delayset_refresh_display(delayset_t *ds)
 {
     if (!ds) return;
@@ -321,14 +326,7 @@ void delayset_refresh_display(delayset_t *ds)
         lv_label_set_text_fmt(ds->hour, "%02d", delay_hour);
     }
     lv_label_set_text_fmt(ds->min, "%02d", delay_min);
-    const char *day;
-    if (delayset_enter_hour >= 0 &&
-        (delay_hour < delayset_enter_hour ||
-         (delay_hour == delayset_enter_hour && delay_min < delayset_enter_min)))
-        day = tr("明天");   /* 小时或分钟小于时间戳 → 明天 */
-    else
-        day = tr("今天");   /* 大于或相等 → 今天 */
-    lv_label_set_text(ds->day, day);
+    lv_label_set_text(ds->day, delayset_pick_tomorrow() ? tr("明天") : tr("今天"));
 
     /* 12 小时制:min 右侧"上午/下午"后缀。
        英文:后缀由 delayset_lang_tune 挂在 flex 时间组尾(第 4 子),这里只翻文字(跨 12 点 AM/PM);
@@ -378,6 +376,22 @@ void delayset_refresh_display(delayset_t *ds)
         lv_obj_set_style_translate_x(ds->image_10, 0, 0);
     }
 }
+/* 1s 常驻:delayset 在栈顶时按实时时钟刷新"今天/明天"——调节中时间走过所选时刻
+   会自动翻;只在文案真变时重刷整页,避免每秒无谓重绘。
+   定时器只建一个,页面反复重建不新增;页面已销毁时由栈顶守卫+对象有效性挡住 */
+static lv_timer_t *s_delayset_live_timer = NULL;
+static void delayset_live_tick_cb(lv_timer_t *t)
+{
+    (void)t;
+    if (depth <= 0 || page_stack[depth - 1] != PAGE_DELAYSET) return;
+    delayset_t *ds = delayset_get(&ui_manager);
+    if (!ds || !ds->day || !lv_obj_is_valid(ds->day)) return;
+    const char *want = delayset_pick_tomorrow() ? tr("明天") : tr("今天");
+    const char *cur = lv_label_get_text(ds->day);
+    if (!cur || strcmp(cur, want) != 0)
+        delayset_refresh_display(ds);
+}
+
 // delayset 焦点切换：显示对应字段的下划线
 void on_delayset_focus(lv_event_t *e)
 {
@@ -402,10 +416,9 @@ void on_delayset_start_click(lv_event_t *e)
     if (screen_is_loading(act_scr)) return;
     rtc_time_t now;
     if (rtc_get_time(&now) == 0) {
-        if (delay_hour < 24 &&
-            (delay_hour < now.hour ||
-             (delay_hour == now.hour && delay_min < now.min)))
-            delay_hour += 24;                       /* 实时已过 → 明天 */
+        /* 与页面显示同一实时口径:已过 → 归一成明天(target 多加一天) */
+        if (delay_hour < 24 && delayset_pick_tomorrow())
+            delay_hour += 24;
         int64_t base = (int64_t)rtc_days_from_epoch(now.year, now.month, now.day) * 86400000LL;
         g_delay_target = base
                        + (delay_hour >= 24 ? 86400000LL : 0)
@@ -554,6 +567,10 @@ void delayset_page_build(void)
         if (g_delay_source_page != PAGE_DESCRIPTIONMENU)
             lv_label_set_text(ds->name, mode_display_name());
         delayset_refresh_display(ds);
+
+        /* 实时判断:1s 常驻定时器(只建一个,页面反复重建不新增) */
+        if (!s_delayset_live_timer)
+            s_delayset_live_timer = lv_timer_create(delayset_live_tick_cb, 1000, NULL);
     }
     current_group = g_delayset;
     /* 延迟页入口定义:焦点在 start 的浏览态。族分类(edit_browse_reset)对本页走
@@ -573,11 +590,9 @@ void jump_to_delayset(void)
     if (depth > 0)
         g_delay_source_page = page_stack[depth - 1];
     apply_delay_cook_mode(g_delay_source_page);
-    /* 记录进入时刻（今天/明天切换基准）+ 默认当前时间+5 分钟（当前 23:59 → 明天 00:04） */
+    /* 默认当前时间+5 分钟（当前 23:59 → 明天 00:04）；今天/明天由实时判断,不再记进入时刻 */
     rtc_time_t now;
     if (rtc_get_time(&now) == 0) {
-        delayset_enter_hour = now.hour;
-        delayset_enter_min = now.min;
         delay_hour = now.hour;
         delay_min = now.min + 5;
         if (delay_min > 59) { delay_min -= 60; delay_hour++; }
