@@ -353,6 +353,12 @@ void favorites_start_selected(void)
 void nav_favask_confirm(void)
 {
     int mode = nav_favask_get_mode();
+    /* 弹层开着期间进到自动保温态（完成页 1 分钟到点）：与收藏键同口径，不再保存 */
+    if (g_keepwarm_active) {
+        nav_favask_cancel();
+        g_send.buzzer_req = BUZZER_KEY_INVALID;
+        return;
+    }
     nav_favask_cancel();
     if (mode == 2) {
         /* 收藏夹已满:进收藏夹删除界面(整卡删除)。

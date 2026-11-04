@@ -578,6 +578,14 @@ void process_key(uint8_t key)
             break;
         }
         if (g_send.iface_status == IFACE_COMPLETE) {
+            /* 排除：完成页自动保温中（2026-11-04 用户定稿）。保温开关开着时完成页
+             * 停留 1 分钟即进保温态，此时 cook_mode 仍是真实烹饪模式，下面的模式
+             * 排除表拦不住——保温中不是"刚做完的成品"完成态，不提供收藏 */
+            if (g_keepwarm_active) {
+                g_send.buzzer_req = BUZZER_KEY_INVALID;
+                uart_print();
+                break;
+            }
             /* 排除：预热/额外上色/保温/清洁两族（这几种完成态不支持收藏,
              * 清洁此前会误入收藏且卡片显示成上下烧烤） */
             if (g_send.cook_mode == MODE_PREHEAT ||
