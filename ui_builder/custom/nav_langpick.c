@@ -50,31 +50,15 @@ uint8_t g_langpick_date_mode = 0;   /* 首次上电链路:语言已确认进入�
 static const char *const s_lang_names[3] = { "English", "繁體中文", "简体中文" };
 
 /* 滚轮几何:节距 86 = 30 号行高 35 + 行距 51,可见 3 行高 258,在面板(24,118,1233x339)内垂直居中
- * 下划线在中央行文字下方(中央行 band 245..329,48 号文字底 ≈301,线 y=311 居中 x) */
+ * 下划线在中央行文字下方(文字基线 y≈301,线 y=317 → 渲染 318,中线留 17px;
+ * 48 号 English 的 g 下伸到 313,线在其下 4px,中文底 305 在其上 12px) */
 #define LANGPICK_ROLLER_X   440
 #define LANGPICK_ROLLER_Y   158
 #define LANGPICK_ROLLER_W   400
 #define LANGPICK_ROLLER_H   258
 #define LANGPICK_LINE_W     135
 #define LANGPICK_LINE_X     ((1280 - LANGPICK_LINE_W) / 2)
-#define LANGPICK_LINE_Y     311
-
-/* 选中下划线的纵向位置(2026-11-04 用户反馈"English 和下划线有一点重叠"):
-   中文三项无下伸部,线贴文字墨迹底 ≈305 下方 6px → y=311(与改字号前一致);
-   English 的 g 有下伸部、墨迹底到 ≈313,48 号字下会压住字尾,唯这一项再把线让 8px,
-   让完两者视觉间隙同为 6px。实测(截图逐像素量):中文底 305/线 312;英文底 313/线 320。
-   字号或文案再动需重测 */
-static int langpick_line_y(void)
-{
-    uint32_t sel = lv_roller_get_selected(s_pick_page.Roller);
-    return LANGPICK_LINE_Y + ((sel == 0) ? 8 : 0);   /* 0=English(唯一含下伸部的拉丁项) */
-}
-
-static void langpick_line_place(void)
-{
-    if (!s_pick_page.Line || !s_pick_page.Roller) return;
-    lv_obj_set_y(s_pick_page.Line, langpick_line_y());
-}
+#define LANGPICK_LINE_Y     317
 
 /* 页面销毁时释放焦点组(挂 Title_Lb 的 LV_EVENT_DELETE,照 nav_loudness Scr_Group_Delete) */
 static void langpick_group_del_cb(lv_event_t *e)
@@ -135,7 +119,7 @@ void screen_Langpick_create(ui_manager_t *ui)
     lv_obj_set_style_text_color(scr->Roller, lv_color_hex(0xffffff), LV_PART_SELECTED | LV_STATE_DEFAULT);
     lv_obj_set_style_text_line_space(scr->Roller, 51, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->Line  选中下划线(水平居中固定,宽随 48 号字加宽到 ≈190px;y 由 langpick_line_place 按墨迹底贴)
+    // Init scr->Line  选中下划线(roller 选中恒居中,固定位置;48 号字加宽到 ≈190px)
     scr->Line = lv_image_create(scr->obj);
     lv_image_set_src(scr->Line, LVGL_IMAGE_PATH(underline_135x4.png));
     lv_obj_set_pos(scr->Line, LANGPICK_LINE_X, LANGPICK_LINE_Y);
@@ -143,7 +127,6 @@ void screen_Langpick_create(ui_manager_t *ui)
 
     /* 进页默认选中 English(0):首次上电/恢复出厂/中途断电重来都从英语起 */
     lv_roller_set_selected(scr->Roller, 0, LV_ANIM_OFF);
-    langpick_line_place();   /* 下划线按选中项墨迹底定位(English 的 g 有下伸部) */
 
     /* 呼吸闪烁(照 stepset 滚轮注册,nav_somecook.c jump_to_stepset):
      * roller 进组→选中行 SELECTED text_opa 呼吸,线进组→img_opa 呼吸,同相位;
@@ -238,7 +221,6 @@ void langpick_encoder_action(char key)
         }
         lv_roller_set_selected(s_pick_page.Roller, sel - 1, LV_ANIM_ON);
     }
-    langpick_line_place();   /* 换项后下划线重贴(中/英墨迹底不同) */
     g_send.buzzer_req = BUZZER_ENCODER;
 }
 
