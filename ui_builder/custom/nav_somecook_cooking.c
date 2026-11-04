@@ -357,11 +357,15 @@ void somecook_cooking_next_step(void)
         }
         current_group = g_somecook_cooking;
         g_send.iface_status = IFACE_COMPLETE;
+        /* 全部段做完才发完成音(2026-11-04 用户定:段间切换保持安静);
+           nav_cooktimer 的两处切段调用点已不再发,统一由这里收尾 */
+        g_send.buzzer_req = BUZZER_COOK_DONE;
         somecook_cooking_set_state(SMC_COMPLETE, SMC_COMPLETE);
         somecook_steps_mark_consumed();   /* 步骤已消费:标记待清(KEY_FAV 仍可存完整步骤) */
         lang_scr_load_anim(somecook_cooking_get(&ui_manager)->obj,
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
                          ui_manager.auto_del);
+        uart_print();   /* 完成音随帧立即下发(模拟器走此处,实机由 100ms 帧定时器消费同一请求) */
         printf("[somecook_cooking] all steps done -> complete\n");
     }
 }

@@ -555,7 +555,10 @@ void cooking_timer_cb(lv_timer_t *timer)
             && current_group != g_hch_stop_back) {
             lv_timer_del(cook_timer);
             cook_timer = NULL;
-            g_send.buzzer_req = BUZZER_COOK_DONE;
+            /* 多段段间切换不出声(2026-11-04 用户定):只有最后一段做完才算"完成"，
+               完成音由 somecook_cooking_next_step 的收尾分支统一发 */
+            if (!g_somecook_running)
+                g_send.buzzer_req = BUZZER_COOK_DONE;
             g_on_stop_back = 0;
             cook_is_color = 0;
             if (g_somecook_running) {
@@ -577,7 +580,7 @@ void cooking_timer_cb(lv_timer_t *timer)
             if (elapsed >= (uint32_t)cook_total_ms) {
                 lv_timer_del(cook_timer);
                 cook_timer = NULL;
-                g_send.buzzer_req = BUZZER_COOK_DONE;
+                /* 段间切换不出声:完成音在 next_step 的"全部完成"分支里发 */
                 somecook_cooking_next_step();
             }
         }
