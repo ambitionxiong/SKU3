@@ -123,7 +123,7 @@ const char *fav_category_tag(const Fun_favorites_Value *fav)
     case FAV_MODE_SIX:     return tr("第六感");
     case MODE_COOK4:       return tr("COOK4");
     case MODE_FROZEN_BAKE: return tr("冷冻烘焙");
-    case MODE_PIZZA_2:     return tr("特殊功能");
+    case MODE_PIZZA_2:     return is_english() ? "Special" : tr("特殊功能");   /* EN 全称太长,标题一行放不下 */
     default:               return NULL;
     }
 }

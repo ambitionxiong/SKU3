@@ -1095,15 +1095,15 @@ void return_favorites_action()
 		}
 	}
 }
-/* 收藏卡标题字号自适应(2026-11-04):分类前缀让繁体组合变长
-   ("冷凍烘焙-急凍薄餅"=9 字),240 宽标题盒放不下时降到 24 号;英文取 aktiv 同号,
-   与语言树遍历的换字口径一致 */
+/* 收藏卡标题字号自适应(2026-11-04):分类前缀后个别组合较长,标题盒 256 宽
+   (2026-11-04 由 240 加宽,繁体 9 字组合"特殊功能-急凍薄餅"=247 正好一行),
+   仍超宽才降到 24 号,避免折行被 32 高裁掉;英文取 aktiv 同号,与语言树遍历口径一致 */
 static void fav_title_apply(lv_obj_t *obj, const char *txt)
 {
     const lv_font_t *f30 = is_english() ? &c_aktivgroteskmedium_30 : &c_taiwanpearl_regular_30;
     const lv_font_t *f24 = is_english() ? &c_aktivgroteskmedium_24 : &c_taiwanpearl_regular_24;
     int w = lv_txt_get_width(txt, (uint32_t)strlen(txt), f30, 0);
-    lv_obj_set_style_text_font(obj, (w > 240) ? f24 : f30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(obj, (w > 256) ? f24 : f30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_label_set_text(obj, txt);
 }
 //收藏选项标题选择
@@ -1870,8 +1870,8 @@ void screen_favorites_create(void)
 	FAV_Option_Title(scr->favo_Title_Lb_1, &Fav_Cur->favorites_val[0]);
 	
     lv_label_set_long_mode(scr->favo_Title_Lb_1, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->favo_Title_Lb_1, 30, 25);
-    lv_obj_set_size(scr->favo_Title_Lb_1, 240, 32);   /* 200->240:EN长菜名折三行压参数行,加宽后两行放下(中心150不变) */
+    lv_obj_set_pos(scr->favo_Title_Lb_1, 14, 25);
+    lv_obj_set_size(scr->favo_Title_Lb_1, 256, 32);   /* 2026-11-04 分类前缀加宽 240->256:繁体 9 字组合(特殊功能-急凍薄餅 247)一行放下,不再降字号 */
 
     // Set style of scr->favo_Title_Lb_1
     lv_obj_set_style_text_font(scr->favo_Title_Lb_1, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -2031,8 +2031,8 @@ void screen_favorites_create(void)
     //lv_label_set_text(scr->favo_Title_Lb_2, TR(STR_Steam_Plus));
 	FAV_Option_Title(scr->favo_Title_Lb_2, &Fav_Cur->favorites_val[1]);
     lv_label_set_long_mode(scr->favo_Title_Lb_2, LV_LABEL_LONG_WRAP);
-	lv_obj_set_pos(scr->favo_Title_Lb_2, 30, 25);
-    lv_obj_set_size(scr->favo_Title_Lb_2, 240, 32);   /* 200->240:EN长菜名折三行压参数行,加宽后两行放下(中心150不变) */
+	lv_obj_set_pos(scr->favo_Title_Lb_2, 14, 25);
+    lv_obj_set_size(scr->favo_Title_Lb_2, 256, 32);   /* 同上:分类前缀 9 字组合一行放下 */
 
     // Set style of scr->favo_Title_Lb_2
     lv_obj_set_style_text_font(scr->favo_Title_Lb_2, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -2195,8 +2195,8 @@ void screen_favorites_create(void)
 	FAV_Option_Title(scr->favo_Title_Lb_3, &Fav_Cur->favorites_val[2]);
 	
     lv_label_set_long_mode(scr->favo_Title_Lb_3, LV_LABEL_LONG_WRAP);
-	lv_obj_set_pos(scr->favo_Title_Lb_3, 30, 25);
-    lv_obj_set_size(scr->favo_Title_Lb_3, 240, 32);   /* 200->240:EN长菜名折三行压参数行,加宽后两行放下(中心150不变) */
+	lv_obj_set_pos(scr->favo_Title_Lb_3, 14, 25);
+    lv_obj_set_size(scr->favo_Title_Lb_3, 256, 32);   /* 同上:分类前缀 9 字组合一行放下 */
 
     // Set style of scr->favo_Title_Lb_3
     lv_obj_set_style_text_font(scr->favo_Title_Lb_3, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -2357,8 +2357,8 @@ void screen_favorites_create(void)
     //lv_label_set_text(scr->favo_Title_Lb_4, TR(STR_Steam_Plus));
 	FAV_Option_Title(scr->favo_Title_Lb_4, &Fav_Cur->favorites_val[3]);
     lv_label_set_long_mode(scr->favo_Title_Lb_4, LV_LABEL_LONG_WRAP);
-	lv_obj_set_pos(scr->favo_Title_Lb_4, 30, 25);
-    lv_obj_set_size(scr->favo_Title_Lb_4, 240, 32);   /* 200->240:EN长菜名折三行压参数行,加宽后两行放下(中心150不变) */
+	lv_obj_set_pos(scr->favo_Title_Lb_4, 14, 25);
+    lv_obj_set_size(scr->favo_Title_Lb_4, 256, 32);   /* 同上:分类前缀 9 字组合一行放下 */
 
     // Set style of scr->favo_Title_Lb_4
     lv_obj_set_style_text_font(scr->favo_Title_Lb_4, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
