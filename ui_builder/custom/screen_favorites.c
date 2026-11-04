@@ -1095,6 +1095,17 @@ void return_favorites_action()
 		}
 	}
 }
+/* 收藏卡标题字号自适应(2026-11-04):分类前缀让繁体组合变长
+   ("冷凍烘焙-急凍薄餅"=9 字),240 宽标题盒放不下时降到 24 号;英文取 aktiv 同号,
+   与语言树遍历的换字口径一致 */
+static void fav_title_apply(lv_obj_t *obj, const char *txt)
+{
+    const lv_font_t *f30 = is_english() ? &c_aktivgroteskmedium_30 : &c_taiwanpearl_regular_30;
+    const lv_font_t *f24 = is_english() ? &c_aktivgroteskmedium_24 : &c_taiwanpearl_regular_24;
+    int w = lv_txt_get_width(txt, (uint32_t)strlen(txt), f30, 0);
+    lv_obj_set_style_text_font(obj, (w > 240) ? f24 : f30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_label_set_text(obj, txt);
+}
 //收藏选项标题选择
 void FAV_Option_Title(lv_obj_t *obj, const Fun_favorites_Value *fav)
 {
@@ -1115,7 +1126,20 @@ void FAV_Option_Title(lv_obj_t *obj, const Fun_favorites_Value *fav)
     {
         name = fav_mode_name(fav);
     }
-    if (name) lv_label_set_text(obj, name);
+    if (!name) return;
+
+    /* 跨菜单同名菜加"分类-"前缀(2026-11-04):披萨 4 家、千层面/果馅卷各 2 家 */
+    const char *tag = fav_category_tag(fav);
+    if (tag && fav_title_need_tag(fav))
+    {
+        char buf[80];
+        snprintf(buf, sizeof(buf), "%s-%s", tag, name);
+        fav_title_apply(obj, buf);
+    }
+    else
+    {
+        fav_title_apply(obj, name);
+    }
 }
 //多段烹饪，选择功能名称
 const char* FAV_Option_Fun_name(int8_t Cooking_FUN)

@@ -112,6 +112,49 @@ const char *fav_mode_name(const Fun_favorites_Value *fav)
     }
 }
 
+/* ===================== 收藏卡标题分类前缀（2026-11-04 用户） =====================
+ * 同一道菜出现在多个菜单时，收藏卡标题一模一样分不清（披萨 4 家、千层面/果馅卷
+ * 各 2 家）。收藏卡标题前加"分类-"区分：COOK4 / 冷冻烘焙 / 特殊功能 / 第六感。
+ * 只在**当前语言下确实同名**时才加：繁体第六感的披萨定点叫"薄餅"，与其余三家的
+ * "急凍薄餅"不同名，就不加前缀（用户 2026-11-04 明确该口径）。 */
+const char *fav_category_tag(const Fun_favorites_Value *fav)
+{
+    switch (fav->PengTiaoMode_name) {
+    case FAV_MODE_SIX:     return tr("第六感");
+    case MODE_COOK4:       return tr("COOK4");
+    case MODE_FROZEN_BAKE: return tr("冷冻烘焙");
+    case MODE_PIZZA_2:     return tr("特殊功能");
+    default:               return NULL;
+    }
+}
+
+int fav_title_need_tag(const Fun_favorites_Value *fav)
+{
+    int m = fav->PengTiaoMode_name;
+
+    if (m == FAV_MODE_SIX) {
+        if ((uint8_t)fav->Six_Cook_Fun == SIX_PIZZA) {
+            /* 繁体六感披萨=薄餅，与其余三家不同名 → 不加 */
+            uint8_t old = g_six_bread_type;
+            g_six_bread_type = (uint8_t)fav->Six_Cook_Fun;
+            const char *n = six_current_name();
+            g_six_bread_type = old;
+            return (n != NULL && strcmp(n, tr("披萨")) == 0);
+        }
+        return (uint8_t)fav->Six_Cook_Fun == SIX_PASTA_LASAGNA ||
+               (uint8_t)fav->Six_Cook_Fun == SIX_CAKE_STRUDEL;
+    }
+    if (m == MODE_COOK4)
+        return (page_id_t)fav->source_page == PAGE_PIZZA_SET;
+    if (m == MODE_FROZEN_BAKE) {
+        page_id_t p = (page_id_t)fav->source_page;
+        return p == PAGE_PIZZA3_SET || p == PAGE_LASAGNA_SET || p == PAGE_STRUDEL_SET;
+    }
+    if (m == MODE_PIZZA_2)
+        return 1;   /* 特殊功能披萨:与 COOK4 / 冷冻烘焙同名 */
+    return 0;
+}
+
 /* ===================== 收藏保存（KEY_FAV complete 态调用） ===================== */
 void favorites_save_current(void)
 {

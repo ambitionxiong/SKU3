@@ -198,6 +198,9 @@ void encoder_favorites_action(char key);
 void return_favorites_action(void);
 void favo_safety_group_delete(void);
 const char *fav_mode_name(const Fun_favorites_Value *fav);   /* 按收藏值返回模式名（含子类） */
+/* 收藏卡标题分类前缀(2026-11-04):跨菜单同名菜加"分类-",其余返回 NULL/0 */
+const char *fav_category_tag(const Fun_favorites_Value *fav);
+int fav_title_need_tag(const Fun_favorites_Value *fav);
 void jump_to_favorites(void);                                /* 进入收藏页 */
 void favorites_rebuild(page_id_t child);                     /* 返回收藏页重建 */
 void somecook_cooking_start(void);                           /* 多段启动（nav_somecook_cooking.c 导出） */
