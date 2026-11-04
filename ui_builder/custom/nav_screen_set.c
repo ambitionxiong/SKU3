@@ -23,7 +23,8 @@ volatile Setting_Data SET_Data = {
     .Set_Lock = 0, .Set_KeepWarm = 0, .Set_FanCooling = 0, .Set_6th = 0,
     .Set_Light = 0, .Set_TempUnit = 0, .Set_VolumeFlag = 1, .Set_VolumeHintTime = 0,
     .Set_VolumeKey = 4, .Set_VolumeWelcome = 1, .Set_Brightness = 7,   /* 按键音默认 4 档(2026-10-09 用户定稿,原 7) */
-    .Set_TimeType = 0, .Set_StandbyTime = 0, .Set_Language = 2, .Set_Power = 1,
+    .Set_TimeType = 0, .Set_StandbyTime = 0, .Set_Language = 0, .Set_Power = 1,
+    /* 语言默认英语(2026-11-04 用户定):首设未完成时的待机时钟等就是英文界面 */
     .Set_DemoMode = 0,
 };
 

@@ -83,7 +83,7 @@ static void factory_reset_apply(void)
     SET_Data.Set_Brightness = 7;
     SET_Data.Set_TimeType = 0;
     SET_Data.Set_StandbyTime = 0;
-    SET_Data.Set_Language = 2;
+    SET_Data.Set_Language = 0;   /* 语言默认英语(2026-11-04 用户定,与初始化器同步) */
     SET_Data.Set_Power = 1;
     SET_Data.Set_DemoMode = 0;
     g_langpick_done = 0;   /* 恢复出厂后下次上电重新出现语言选择页(完整首设) */
@@ -112,7 +112,7 @@ static void factory_reset_apply(void)
     config_save();               /* 立即全量落盘清掉旧内容,不等 persist 线程 1s 轮询 */
 #endif
 
-    g_lang_en = (SET_Data.Set_Language == 0);   /* 默认简体:同步 tr 语言标志 */
+    g_lang_en = (SET_Data.Set_Language == 0);   /* 默认英语:同步 tr 语言标志 */
     uart_print();               /* 立即上报复位后的状态帧 */
     /* 语言已回默认:导航回主菜单延后到 5s 进度页走满(factory_progress_done_cb) */
 }

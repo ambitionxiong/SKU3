@@ -526,6 +526,24 @@ static void waitmenu_apply_fan_line(void)
     }
 }
 
+/* ===== 时间未设置时的待机时钟(2026-11-04 用户定) =====
+ * 首设链路(语言+日期)或断电补设未完成时,RTC 里是驱动默认 2027-01-01 从 00:0x
+ * 一路累积走时,直接显示出来就是"开机就开始计时"。用户要求这一态下待机/关机
+ * 时钟页固定显示 2027-01-01、时间从 00:00 起算,且每次重新进入该页都归零。 */
+static uint32_t s_unset_clock_tick = 0;
+static int s_unset_clock_armed = 0;
+
+int nav_clock_time_unset(void)
+{
+    return (!g_langpick_done || g_systime_boot_mode) ? 1 : 0;
+}
+
+void nav_clock_unset_restart(void)
+{
+    s_unset_clock_tick = lv_tick_get();
+    s_unset_clock_armed = 1;
+}
+
 // 显式重置缓存：waitmenu_24_create 后调用，强制刷新为真实时间。
 // 不依赖指针相等判定——auto_del 下 malloc 地址复用会导致缓存不失效（显示默认假文本/陈旧星期）
 void waitmenu_clock_cache_reset(void)
@@ -547,6 +565,19 @@ void waitmenu_apply_clock(void)
 {
     rtc_time_t t;
     if (rtc_get_time(&t) != 0) return;
+    /* 时间未设置:不显示 RTC 累积走时,改用 2027-01-01 00:00 起算的合成时钟,
+       进入待机/关机时钟页时由 nav_clock_unset_restart() 归零 */
+    if (nav_clock_time_unset()) {
+        if (!s_unset_clock_armed) nav_clock_unset_restart();
+        uint32_t el = (uint32_t)((lv_tick_get() - s_unset_clock_tick) / 1000);
+        t.year  = 2027;
+        t.month = 1;
+        t.day   = 1;
+        t.hour  = (uint8_t)((el / 3600) % 24);
+        t.min   = (uint8_t)((el / 60) % 60);
+        t.sec   = (uint8_t)(el % 60);
+        t.wday  = 5;   /* 2027-01-01 星期五 */
+    }
     if (depth <= 0 || page_stack[depth - 1] != PAGE_WAITMENU_24) return;
     waitmenu_24_t *wait = waitmenu_24_get(&ui_manager);
     if (!wait || !wait->obj) return;

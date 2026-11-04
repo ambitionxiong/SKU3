@@ -4,6 +4,7 @@
  */
 #include "nav.h"
 #include "protocol.h"
+#include "nav_internal.h"   /* uart_print(完成音随帧下发) */
 
 /* ==============================
  * 多段运行（somecook_cooking 单页五态）

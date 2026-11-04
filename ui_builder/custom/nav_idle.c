@@ -161,6 +161,7 @@ void nav_enter_standby(void)
     lv_obj_clean(lv_scr_act());
     waitmenu_24_create(&ui_manager);
     waitmenu_clock_cache_reset();         /* 强制刷新为真实时间 */
+    nav_clock_unset_restart();            /* 时间未设置时:本次进待机时钟从 00:00 重新起算 */
     current_group = NULL;
     lang_scr_load_anim(waitmenu_24_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,

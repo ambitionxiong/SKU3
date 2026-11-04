@@ -351,7 +351,11 @@ void jump_to_systime(void)
 {
     rtc_time_t t;
     s_where_time = 0;   /* 进页停在"确定",会话为编辑态:转旋钮直接进入"年"编辑 */
-    if (rtc_get_time(&t) == 0) {
+    if (nav_clock_time_unset()) {
+        /* 时间未设置(首设链路/断电补设未完成):进页一律从默认 2027-01-01 00:00
+         * 开始编辑,不跟随 RTC 里累积的走时(2026-11-04 用户定) */
+        s_year = 27; s_month = 1; s_day = 1; s_hour = 0; s_min = 0;
+    } else if (rtc_get_time(&t) == 0) {
         s_year = t.year % 100;
         s_month = t.month;
         s_day = t.day;

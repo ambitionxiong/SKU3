@@ -615,6 +615,10 @@ void temptip_cancel_auto_dismiss(void);
 void temptip_dismiss_now(void);
 void waitmenu_apply_clock(void);
 void waitmenu_clock_cache_reset(void);
+/* 时间未设置(首设链路/断电补设未完成)时的待机时钟(2026-11-04 用户定):
+   固定显示 2027-01-01,时间从 00:00 起算,每次进待机/关机时钟页重新归零 */
+int  nav_clock_time_unset(void);
+void nav_clock_unset_restart(void);
 void jump_to_major_menu_tz(void);
 void jump_to_cook_menu_tz(void);
 void jump_to_special_menu_tz(void);
