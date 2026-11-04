@@ -19,20 +19,6 @@
 
 #define KEY1_HOLD_MS 250   /* 电源键动作阈值:按住满 0.25s 触发(电源板 3s 复位自行处理) */
 
-/* 连续开关机限速(2026-11-04 用户定):关机/开机状态切换后在该窗口内再按电源键不响应。
- * 电源板对开关机音有连播限制——关机音没播完时随后到的开机音会被丢掉,与其出现
- * "屏幕已经亮了却没有开机音",不如让这一下按键干脆不生效;过了窗口再按照常执行。
- * 窗口按关机提示音长度取经验值,电源板换音长时改这里即可 */
-#define POWER_ACTION_MIN_INTERVAL_MS 1500
-static uint32_t s_power_action_tick = 0;
-static uint8_t  s_power_action_valid = 0;
-
-static void power_action_stamp(void)
-{
-    s_power_action_tick = lv_tick_get();
-    s_power_action_valid = 1;
-}
-
 static uint8_t s_key1_fired = 0;   /* 本次按压电源动作已触发:按住不重复触发,松开沿无动作 */
 static uint8_t s_clean_done_fired = 0;   /* 本次按压一键完成已触发(烹饪中长按清洁键 1s 测试钩子) */
 static uint8_t s_clean_done_hold = 0;   /* 触发后本次按住期间豁免提示音取消:保完成音 5 秒重发不被同一次按住掐掉 */
@@ -41,7 +27,6 @@ static uint8_t s_clean_done_hold = 0;   /* 触发后本次按住期间豁免提�
    KEY1 电源动作与待机页 20 分钟无操作超时(nav_idle)共用，行为完全一致 */
 void nav_power_off(void)
 {
-    power_action_stamp();             /* 关机动作时刻:连续开关机限速从这里起算 */
     nav_hint_tone_cancel();           /* 提示音重复引擎随关机停止 */
     probetip_cancel_auto_dismiss();   /* 取消陈旧的探针提示自动关闭定时器,防止跨会话误触发 */
     nav_hint_cancel();                /* 无效键提示层随关机收起(否则演示模式待机下残留遮罩/文字至到期) */
@@ -136,7 +121,6 @@ void nav_backlight_restore_defer(void)
    不重复清理——SLEEP 进入前已清理，SLEEP 期间按键全部被吞，状态保持干净 */
 static void nav_power_on(void)
 {
-    power_action_stamp();             /* 开机动作时刻:连续开关机限速从这里起算 */
     depth = 0;
     page_push(PAGE_WAITMENU_24);
     if (!g_langpick_done) {
@@ -179,12 +163,6 @@ static void nav_power_on(void)
 static void nav_key1_power_action(void)
 {
     if (factory_prog_running()) return;   /* 恢复出厂进度 5s:电源动作(关机确认/关机)吞掉,不打断进度 */
-    /* 连续开关机限速:上一次开关机动作没过去 POWER_ACTION_MIN_INTERVAL_MS,这一下不响应 */
-    if (s_power_action_valid &&
-        (lv_tick_get() - s_power_action_tick) < POWER_ACTION_MIN_INTERVAL_MS) {
-        printf("[KEY] power action ignored (min interval %dms)\n", POWER_ACTION_MIN_INTERVAL_MS);
-        return;
-    }
     if (g_send.iface_status == IFACE_SLEEP) {
         nav_power_on();
     } else if (nav_poweroff_ask_needed()) {
