@@ -1095,17 +1095,6 @@ void return_favorites_action()
 		}
 	}
 }
-/* 收藏卡标题字号自适应(2026-11-04):分类前缀后个别组合较长,标题盒 256 宽
-   (2026-11-04 由 240 加宽,繁体 9 字组合"特殊功能-急凍薄餅"=247 正好一行),
-   仍超宽才降到 24 号,避免折行被 32 高裁掉;英文取 aktiv 同号,与语言树遍历口径一致 */
-static void fav_title_apply(lv_obj_t *obj, const char *txt)
-{
-    const lv_font_t *f30 = is_english() ? &c_aktivgroteskmedium_30 : &c_taiwanpearl_regular_30;
-    const lv_font_t *f24 = is_english() ? &c_aktivgroteskmedium_24 : &c_taiwanpearl_regular_24;
-    int w = lv_txt_get_width(txt, (uint32_t)strlen(txt), f30, 0);
-    lv_obj_set_style_text_font(obj, (w > 256) ? f24 : f30, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_label_set_text(obj, txt);
-}
 //收藏选项标题选择
 void FAV_Option_Title(lv_obj_t *obj, const Fun_favorites_Value *fav)
 {
@@ -1128,17 +1117,18 @@ void FAV_Option_Title(lv_obj_t *obj, const Fun_favorites_Value *fav)
     }
     if (!name) return;
 
-    /* 跨菜单同名菜加"分类-"前缀(2026-11-04):披萨 4 家、千层面/果馅卷各 2 家 */
+    /* 跨菜单同名菜加"分类-"前缀(2026-11-04):披萨 4 家、千层面/果馅卷各 2 家。
+       超长不再降字号(2026-11-04 用户):统一 30 号,靠标题框 WRAP 换行两行显示 */
     const char *tag = fav_category_tag(fav);
     if (tag && fav_title_need_tag(fav))
     {
         char buf[80];
         snprintf(buf, sizeof(buf), "%s-%s", tag, name);
-        fav_title_apply(obj, buf);
+        lv_label_set_text(obj, buf);
     }
     else
     {
-        fav_title_apply(obj, name);
+        lv_label_set_text(obj, name);
     }
 }
 //多段烹饪，选择功能名称
@@ -1870,8 +1860,8 @@ void screen_favorites_create(void)
 	FAV_Option_Title(scr->favo_Title_Lb_1, &Fav_Cur->favorites_val[0]);
 	
     lv_label_set_long_mode(scr->favo_Title_Lb_1, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->favo_Title_Lb_1, 14, 25);
-    lv_obj_set_size(scr->favo_Title_Lb_1, 256, 32);   /* 2026-11-04 分类前缀加宽 240->256:繁体 9 字组合(特殊功能-急凍薄餅 247)一行放下,不再降字号 */
+    lv_obj_set_pos(scr->favo_Title_Lb_1, 30, 25);
+    lv_obj_set_size(scr->favo_Title_Lb_1, 240, 69);   /* 2026-11-04:超长不降字号,高度放到两行(2x35)以便换行;下沿 94 正好接温度行 */
 
     // Set style of scr->favo_Title_Lb_1
     lv_obj_set_style_text_font(scr->favo_Title_Lb_1, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -2031,8 +2021,8 @@ void screen_favorites_create(void)
     //lv_label_set_text(scr->favo_Title_Lb_2, TR(STR_Steam_Plus));
 	FAV_Option_Title(scr->favo_Title_Lb_2, &Fav_Cur->favorites_val[1]);
     lv_label_set_long_mode(scr->favo_Title_Lb_2, LV_LABEL_LONG_WRAP);
-	lv_obj_set_pos(scr->favo_Title_Lb_2, 14, 25);
-    lv_obj_set_size(scr->favo_Title_Lb_2, 256, 32);   /* 同上:分类前缀 9 字组合一行放下 */
+	lv_obj_set_pos(scr->favo_Title_Lb_2, 30, 25);
+    lv_obj_set_size(scr->favo_Title_Lb_2, 240, 69);   /* 同上:两行高度,超长换行 */
 
     // Set style of scr->favo_Title_Lb_2
     lv_obj_set_style_text_font(scr->favo_Title_Lb_2, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -2195,8 +2185,8 @@ void screen_favorites_create(void)
 	FAV_Option_Title(scr->favo_Title_Lb_3, &Fav_Cur->favorites_val[2]);
 	
     lv_label_set_long_mode(scr->favo_Title_Lb_3, LV_LABEL_LONG_WRAP);
-	lv_obj_set_pos(scr->favo_Title_Lb_3, 14, 25);
-    lv_obj_set_size(scr->favo_Title_Lb_3, 256, 32);   /* 同上:分类前缀 9 字组合一行放下 */
+	lv_obj_set_pos(scr->favo_Title_Lb_3, 30, 25);
+    lv_obj_set_size(scr->favo_Title_Lb_3, 240, 69);   /* 同上:两行高度,超长换行 */
 
     // Set style of scr->favo_Title_Lb_3
     lv_obj_set_style_text_font(scr->favo_Title_Lb_3, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -2357,8 +2347,8 @@ void screen_favorites_create(void)
     //lv_label_set_text(scr->favo_Title_Lb_4, TR(STR_Steam_Plus));
 	FAV_Option_Title(scr->favo_Title_Lb_4, &Fav_Cur->favorites_val[3]);
     lv_label_set_long_mode(scr->favo_Title_Lb_4, LV_LABEL_LONG_WRAP);
-	lv_obj_set_pos(scr->favo_Title_Lb_4, 14, 25);
-    lv_obj_set_size(scr->favo_Title_Lb_4, 256, 32);   /* 同上:分类前缀 9 字组合一行放下 */
+	lv_obj_set_pos(scr->favo_Title_Lb_4, 30, 25);
+    lv_obj_set_size(scr->favo_Title_Lb_4, 240, 69);   /* 同上:两行高度,超长换行 */
 
     // Set style of scr->favo_Title_Lb_4
     lv_obj_set_style_text_font(scr->favo_Title_Lb_4, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
