@@ -49,12 +49,12 @@ uint8_t g_langpick_date_mode = 0;   /* 首次上电链路:语言已确认进入�
 /* 三项固定原文,下标即 SET_Data.Set_Language 编码(0英语 1繁体 2简体,与设置页语言弹窗一致) */
 static const char *const s_lang_names[3] = { "English", "繁體中文", "简体中文" };
 
-/* 滚轮几何:行距 84 = 24 号行高 33 + 行距 51,可见 3 行高 252,在面板(24,118,1233x339)内垂直居中
- * 下划线在中央行文字下方(中央行 band 245..329,36 号文字底 ≈305,线 y=311 居中 x) */
+/* 滚轮几何:节距 86 = 30 号行高 35 + 行距 51,可见 3 行高 258,在面板(24,118,1233x339)内垂直居中
+ * 下划线在中央行文字下方(中央行 band 245..329,48 号文字底 ≈301,线 y=311 居中 x) */
 #define LANGPICK_ROLLER_X   440
-#define LANGPICK_ROLLER_Y   161
+#define LANGPICK_ROLLER_Y   158
 #define LANGPICK_ROLLER_W   400
-#define LANGPICK_ROLLER_H   252
+#define LANGPICK_ROLLER_H   258
 #define LANGPICK_LINE_W     135
 #define LANGPICK_LINE_X     ((1280 - LANGPICK_LINE_W) / 2)
 #define LANGPICK_LINE_Y     311
@@ -102,26 +102,27 @@ void screen_Langpick_create(ui_manager_t *ui)
     lv_image_set_src(scr->Panel_Img, LVGL_IMAGE_PATH(preheatbg.png));
     lv_obj_set_pos(scr->Panel_Img, 24, 118);
 
-    // Init scr->Roller  三语言滚轮,样式照抄 stepset roller(未选中 24 灰/选中 36 白)
+    // Init scr->Roller  三语言滚轮,样式照抄 stepset roller(未选中 30 灰/选中 48 白)
     scr->Roller = lv_roller_create(scr->obj);
     lv_roller_set_options(scr->Roller, "English\n繁體中文\n简体中文", LV_ROLLER_MODE_NORMAL);
     lv_roller_set_visible_row_count(scr->Roller, 3);
     lv_obj_set_pos(scr->Roller, LANGPICK_ROLLER_X, LANGPICK_ROLLER_Y);
     lv_obj_set_size(scr->Roller, LANGPICK_ROLLER_W, LANGPICK_ROLLER_H);
     lv_obj_set_style_bg_opa(scr->Roller, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->Roller, &c_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->Roller, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->Roller, lv_color_hex(0x89817d), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_opa(scr->Roller, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_opa(scr->Roller, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(scr->Roller, 0, LV_PART_SELECTED | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(scr->Roller, &c_taiwanpearl_regular_36, LV_PART_SELECTED | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->Roller, &c_taiwanpearl_regular_48, LV_PART_SELECTED | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(scr->Roller, lv_color_hex(0xffffff), LV_PART_SELECTED | LV_STATE_DEFAULT);
     lv_obj_set_style_text_line_space(scr->Roller, 51, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->Line  选中下划线(roller 选中恒居中,固定位置)
+    // Init scr->Line  选中下划线(roller 选中恒居中,固定位置;48 号字加宽到 ≈190px)
     scr->Line = lv_image_create(scr->obj);
     lv_image_set_src(scr->Line, LVGL_IMAGE_PATH(underline_135x4.png));
     lv_obj_set_pos(scr->Line, LANGPICK_LINE_X, LANGPICK_LINE_Y);
+    lv_image_set_scale_x(scr->Line, 360);   /* 135*360/256≈190,缩放绕中心,线仍居中 */
 
     /* 进页默认选中 English(0):首次上电/恢复出厂/中途断电重来都从英语起 */
     lv_roller_set_selected(scr->Roller, 0, LV_ANIM_OFF);
