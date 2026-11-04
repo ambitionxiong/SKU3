@@ -1285,6 +1285,12 @@ void process_key(uint8_t key)
             uart_print();
             break;
         }
+        /* 完成页 setting 小按钮默认不亮:首次旋动先把它放回组并点亮(2026-11-04 用户) */
+        if (nav_complete_btn_focus_first(current_group)) {
+            g_send.buzzer_req = BUZZER_ENCODER;
+            uart_print();
+            break;
+        }
         if (current_group == g_favorites) {
             encoder_favorites_action(KEY_ENCODER_CW);   /* 收藏页：翻页/移焦点 */
             g_send.buzzer_req = BUZZER_ENCODER;
@@ -1480,6 +1486,12 @@ void process_key(uint8_t key)
         }
         if (!current_group) {
             g_send.buzzer_req = BUZZER_KEY_INVALID;
+            uart_print();
+            break;
+        }
+        /* 完成页 setting 小按钮默认不亮:首次旋动先把它放回组并点亮(2026-11-04 用户) */
+        if (nav_complete_btn_focus_first(current_group)) {
+            g_send.buzzer_req = BUZZER_ENCODER;
             uart_print();
             break;
         }

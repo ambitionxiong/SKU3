@@ -1083,6 +1083,51 @@ void clear_focus_states(lv_obj_t **btns, int count)
         if (btns[i])
             lv_obj_clear_state(btns[i], LV_STATE_FOCUSED);
 }
+/* ==============================
+ * 完成页 setting 小按钮默认不高亮(2026-11-04 用户需求)
+ * 建组时 lv_group_add_obj 会自动聚焦第一个对象,按钮就带着 FOCUSED 底图
+ * (little100.png)常亮;完成页要求"旋动编码器再选中",所以建页后把唯一对象
+ * 移出组——remove_obj 发 DEFOCUSED,LVGL 同步撤掉 FOCUSED/FOCUS_KEY 状态,
+ * 底图回到 little.png。首次旋动时再放回空组(空组 add_obj 会自动聚焦)→ 点亮,
+ * 之后 PRESS 即点击。
+ * 判定"完成页 setting 钮"用结构特征(不维护页面清单):组里只有一个对象、
+ * 是按钮、DEFAULT 态 bg 图是 little.png——烹饪页(停止+setting 两个对象)、
+ * 预热完成页(stopbk2 的确定钮)、清洁完成页(无按钮)都不会被误撤焦点。
+ * ============================== */
+static lv_obj_t *s_complete_btn = NULL;
+static lv_group_t *s_complete_grp = NULL;
+
+void nav_complete_btn_unfocus(lv_group_t *g)
+{
+    s_complete_btn = NULL;
+    s_complete_grp = NULL;
+    if (!g || lv_group_get_obj_count(g) != 1) return;   /* 只认单对象组:完成页小按钮 */
+
+    lv_obj_t *f = lv_group_get_focused(g);
+    if (!f || !lv_obj_check_type(f, &lv_button_class)) return;
+
+    /* 读本地样式精确 DEFAULT 态:对象此刻是 FOCUSED 态,普通 getter 会解析成 little100 */
+    lv_style_value_t v;
+    if (lv_obj_get_local_style_prop(f, LV_STYLE_BG_IMAGE_SRC, &v,
+                                    LV_PART_MAIN | LV_STATE_DEFAULT) != LV_STYLE_RES_FOUND)
+        return;
+    if (lv_image_src_get_type(v.ptr) != LV_IMAGE_SRC_FILE) return;
+    if (!v.ptr || !strstr((const char *)v.ptr, "little.png")) return;
+
+    s_complete_btn = f;
+    s_complete_grp = g;
+    lv_group_remove_obj(f);          /* DEFOCUSED → 高亮底图熄灭 */
+}
+
+int nav_complete_btn_focus_first(lv_group_t *g)
+{
+    if (!g || !s_complete_btn || g != s_complete_grp) return 0;
+    if (!lv_obj_is_valid(s_complete_btn)) return 0;
+    if (lv_group_get_focused(g) != NULL) return 0;      /* 已选中:交给通用焦点逻辑 */
+    lv_group_add_obj(g, s_complete_btn);                /* 空组:加入即自动聚焦点亮 */
+    return 1;
+}
+
 /* updown set 方向箭头图(up2/down2/up3/down3),updown_set_refit 建、
  * setup_set_temp_display 显隐、EN tune 位移;外部经 updown_dir_img_get 只读 */
 static lv_obj_t *s_updown_dir_img[4] = { NULL, NULL, NULL, NULL };

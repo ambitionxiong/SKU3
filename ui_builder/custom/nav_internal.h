@@ -85,6 +85,9 @@ void edit_register(lv_obj_t *label, lv_obj_t *ind_s, lv_obj_t *ind_l, int *value
 edit_field_t *find_edit_field(lv_obj_t *obj);
 uint16_t get_cavity_temp(void);
 lv_group_t *group_create_for_page(lv_obj_t **btns, int count);
+/* 完成页 setting 小按钮:默认不聚焦,首次旋动编码器再选中(2026-11-04) */
+void nav_complete_btn_unfocus(lv_group_t *g);
+int nav_complete_btn_focus_first(lv_group_t *g);
 void groups_create(void);
 void jump_to_color_complete(void);
 void jump_to_color_cookoing(void);
