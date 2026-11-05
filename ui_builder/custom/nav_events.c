@@ -916,13 +916,24 @@ void rebuild_delaycooking(void)
         }
         if (g_delay_source_page != PAGE_DESCRIPTIONMENU) {
             mode_apply_icon(dc->icon);   /* 六感已单独设 sixicon */
-            /* 延迟页 icon/标语/状态行与烹饪/停止/确认退出页同一排版规则
-             * (2026-11-05 用户:特殊功能里几个改过 icon 坐标的模式,预约页与
-             * 延迟取消页的图标/状态栏对不齐):图标左缘固定 115 对齐进度条框,
-             * 标语=图标右缘+35,状态行再 +1。原先按模式给 icon 单独坐标的
-             * switch 已删——那套坐标是生成稿遗留,烹饪/停止/确认页早已统一
-             * 走 nav_cook_icon_align,唯独本页还留着偏移 */
-            nav_cook_icon_align(dc->icon, dc->label_14, dc->status);
+            /* 标语/状态行的 x 必须与同模式的烹饪页、延迟返回(取消)页一致:
+             *   干果/保温/解冻/披萨四家按模式微调过 icon,它们的烹饪/停止/确认页
+             *   统一走 nav_cook_icon_align(图标 115、标语=图标右缘+35、状态再+1),
+             *   本页同步;
+             *   其余模式图标同为 126 宽左右,各页沿用生成稿的 273/274,本页也保持
+             *   生成稿坐标不动(英文版由 delaycooking_lang_tune 维持同一口径)。
+             * 2026-11-05 用户:延迟中页与延迟返回页图标/状态栏必须同位置 */
+            switch (g_send.cook_mode) {
+            case MODE_CORN:
+            case MODE_HEATCONTAIN:
+            case MODE_UNFROZEN:
+            case MODE_PIZZA_2:
+                nav_cook_icon_align(dc->icon, dc->label_14, dc->status);
+                break;
+            default:
+                lv_obj_set_pos(dc->icon, 115, 161);   /* 图标左缘与其它页同基准 */
+                break;
+            }
         }
         lv_label_set_text(dc->label_14, tr("预约中..."));
         if (SET_Data.Set_TimeType == 1) {

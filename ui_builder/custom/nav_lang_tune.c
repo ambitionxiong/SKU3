@@ -5237,9 +5237,21 @@ void delaycooking_lang_tune(void)
                           delay_hour % 24, delay_min);
     }
 
-    /* 图标左缘 115 + 标语/状态行按图标宽度对齐(与 rebuild_delaycooking 同规则):
-       英文版若沿用生成稿的固定 273/274,与延迟取消页(确认退出页)差 ~28px */
-    nav_cook_icon_align(pg->icon, pg->label_14, pg->status);
+    /* 标语/状态行的 x:跟同模式其它页的英文口径走——普通模式的烹饪/停止/确认页
+       英文 tune 把标题钉在 273、状态行钉在 274(生成稿坐标);只有按模式微调过
+       icon 的干果/保温/解冻/披萨四家没有英文钉位,它们的烹饪/停止/确认页走
+       nav_cook_icon_align,这里也保留 rebuild_delaycooking 算好的对齐结果 */
+    switch (g_send.cook_mode) {
+    case MODE_CORN:
+    case MODE_HEATCONTAIN:
+    case MODE_UNFROZEN:
+    case MODE_PIZZA_2:
+        break;
+    default:
+        lv_obj_set_x(pg->label_14, 273);
+        lv_obj_set_x(pg->status, 274);
+        break;
+    }
 
     // /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Eng modify ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
     // lv_obj_t *obj = lv_screen_active();
