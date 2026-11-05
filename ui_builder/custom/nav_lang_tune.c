@@ -5192,15 +5192,17 @@ void delaycooking_lang_tune(void)
 
     /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
-    /* status: 标签 | "| 上下烧烤 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30 */
-    lv_obj_set_pos(pg->status, 274, 232);
+    /* status: 标签 | "| 上下烧烤 | 180℃ | 1小时20分钟" | (274,232) | 490x39 | font taiwanpearl_regular_30
+     * x 由 nav_cook_icon_align 按图标宽度动态给(与 rebuild_delaycooking 同规则,2026-11-05) */
+    lv_obj_set_y(pg->status, 232);
     lv_obj_set_size(pg->status, 570, 39);
 
     /* icon: 图片 | (115,161) | img: updown_img.png | 动态定位(默认业务值, 直接改数字) */
     /* 位置由业务动态控制, 微调按文件头模板 */
 
-    /* label_14: 标签 | "预约中..." | (273,157) | 235x60 | font taiwanpearl_regular_60 */
-    lv_obj_set_pos(pg->label_14, 273, 157);
+    /* label_14: 标签 | "预约中..." | (273,157) | 235x60 | font taiwanpearl_regular_60
+     * x 同上,由对齐函数按图标宽度给 */
+    lv_obj_set_y(pg->label_14, 157);
     lv_obj_set_size(pg->label_14, LV_SIZE_CONTENT, 60);
 
     /* cancel: 按钮 | (959,295) | 129x83 | font taiwanpearl_regular_36 | bg: stopbk1.png */
@@ -5235,6 +5237,9 @@ void delaycooking_lang_tune(void)
                           delay_hour % 24, delay_min);
     }
 
+    /* 图标左缘 115 + 标语/状态行按图标宽度对齐(与 rebuild_delaycooking 同规则):
+       英文版若沿用生成稿的固定 273/274,与延迟取消页(确认退出页)差 ~28px */
+    nav_cook_icon_align(pg->icon, pg->label_14, pg->status);
 
     // /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Eng modify ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
     // lv_obj_t *obj = lv_screen_active();
