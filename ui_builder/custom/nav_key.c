@@ -1366,11 +1366,18 @@ void process_key(uint8_t key)
                 lv_group_focus_obj(ds->hour);
                 nav_edit_session_enter(ds->hour);
             } else if (ds && df == ds->hour && nav_edit_session_active()) {
-                delay_hour++;
-                if (delay_hour > 23) delay_hour = 0;
+                /* 24h 窗口内 +1 小时;出窗(已到"明天此刻-1 分")只响无效音 */
+                if (!delayset_shift_minutes(60)) {
+                    g_send.buzzer_req = BUZZER_KEY_INVALID;
+                    uart_print();
+                    break;
+                }
             } else if (ds && df == ds->min && nav_edit_session_active()) {
-                delay_min++;
-                if (delay_min > 59) delay_min = 0;
+                if (!delayset_shift_minutes(1)) {
+                    g_send.buzzer_req = BUZZER_KEY_INVALID;
+                    uart_print();
+                    break;
+                }
             } else if (ds && df == ds->start && nav_edit_session_active()) {
                 /* 编辑态焦点在start(OK从分切过来):顺时针拉回小时编辑,仿日期时间页(2026-10-21);
                    浏览态不在此列,旋转仍按 时/分/start 整组循环 */
@@ -1569,11 +1576,18 @@ void process_key(uint8_t key)
                 lv_group_focus_obj(ds->hour);
                 nav_edit_session_enter(ds->hour);
             } else if (ds && df == ds->hour && nav_edit_session_active()) {
-                delay_hour--;
-                if (delay_hour < 0) delay_hour = 23;
+                /* 24h 窗口内 -1 小时;出窗(已到"现在")只响无效音 */
+                if (!delayset_shift_minutes(-60)) {
+                    g_send.buzzer_req = BUZZER_KEY_INVALID;
+                    uart_print();
+                    break;
+                }
             } else if (ds && df == ds->min && nav_edit_session_active()) {
-                delay_min--;
-                if (delay_min < 0) delay_min = 59;
+                if (!delayset_shift_minutes(-1)) {
+                    g_send.buzzer_req = BUZZER_KEY_INVALID;
+                    uart_print();
+                    break;
+                }
             } else if (ds && df == ds->start && nav_edit_session_active()) {
                 /* 编辑态焦点在start:逆时针也拉回小时编辑(两方向同一定向,2026-10-21) */
                 lv_group_focus_obj(ds->hour);

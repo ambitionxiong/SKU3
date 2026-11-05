@@ -79,6 +79,8 @@ void delay_cancel_to_stop_back(void);
 void delay_start_cook(void);
 void fav_snapshot_save(void);   /* 收藏:进入 cooking 时快照初始参数(nav_favorites.c) */
 void delayset_refresh_display(delayset_t *ds);
+/* 预约设置页时间窗(2026-11-05):以当前 RTC 为起点的 24h 线性窗口,越界不动 */
+int  delayset_shift_minutes(int delta);
 extern uint8_t nav_delayset_fresh;   /* 刚进入 delayset 定向标志:首次旋转(顺/逆皆)直进小时编辑 */
 void edit_clear(void);
 void edit_register(lv_obj_t *label, lv_obj_t *ind_s, lv_obj_t *ind_l, int *value, int min, int max, int step, const char *fmt);
