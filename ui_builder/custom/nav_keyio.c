@@ -165,6 +165,11 @@ static void nav_key1_power_action(void)
     if (factory_prog_running()) return;   /* 恢复出厂进度 5s:电源动作(关机确认/关机)吞掉,不打断进度 */
     if (g_send.iface_status == IFACE_SLEEP) {
         nav_power_on();
+    } else if (nav_childlock_active()) {
+        /* 童锁中电源键直达关机(2026-11-05 用户):锁层吞掉一切按键,弹"结束当前
+           任务并关机"也确认不了(3s 后自动取消,表现为只提示不关机);锁定态不做
+           确认直接关。Set_Lock 保持,再开机按它恢复锁层 */
+        nav_power_off();
     } else if (nav_poweroff_ask_needed()) {
         g_send.buzzer_req = BUZZER_KEY_VALID;
         nav_poweroff_ask_return_run();   /* 非运行页先退回运行页再弹(设置覆盖层功能键"先关层"同口径,2026-10-29) */
