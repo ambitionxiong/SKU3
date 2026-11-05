@@ -32,7 +32,7 @@ void jump_to_pizza_complete(void);
 
 static void pizza_set_status(lv_obj_t *label, int temp, int hour, int min)
 {
-    /* 名字走词条:繁体=急凍薄餅,EN=Pizzas(用户定稿,词典裸行),CN=披萨 */
+    /* 名字走词条:繁体=薄餅,EN=Pizzas(用户定稿,词典裸行),CN=披萨 */
     const char *name = tr("披萨");
     if (hour == 0)
         lv_label_set_text_fmt(label, tr("| %s | %d℃ | %d分钟"), name, temp, min);

@@ -20,7 +20,7 @@ static void descriptionmenu_layout(descriptionmenu_t *dm)
 {
     if (!dm || !dm->container_1) return;
 
-    /* 左上角菜名(六感薄饼繁体"薄餅"定点已收敛进six_chick_name,2026-10-22) */
+    /* 左上角菜名(六感薄饼繁体"薄餅"改由词典统一,2026-11-05) */
     if (dm->label_19) {
         lv_label_set_text(dm->label_19, six_current_name());
     }

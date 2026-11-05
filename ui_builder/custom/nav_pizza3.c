@@ -27,7 +27,7 @@ void jump_to_pizza3_complete(void);
 
 static void pizza3_set_status(lv_obj_t *label, int temp, int hour, int min)
 {
-    /* 名字走词条:繁体=急凍薄餅,EN=Pizzas,CN=披萨(与 cook4/特殊烹饪披萨同源) */
+    /* 名字走词条:繁体=薄餅,EN=Pizzas,CN=披萨(与 cook4/特殊烹饪披萨同源) */
     const char *name = tr("披萨");
     if (hour == 0)
         lv_label_set_text_fmt(label, tr("| %s | %d℃ | %d分钟"), name, temp, min);

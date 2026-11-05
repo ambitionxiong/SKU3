@@ -115,8 +115,8 @@ const char *fav_mode_name(const Fun_favorites_Value *fav)
 /* ===================== 收藏卡标题分类前缀（2026-11-04 用户） =====================
  * 同一道菜出现在多个菜单时，收藏卡标题一模一样分不清（披萨 4 家、千层面/果馅卷
  * 各 2 家）。收藏卡标题前加"分类-"区分：COOK4 / 冷冻烘焙 / 特殊功能 / 第六感。
- * 只在**当前语言下确实同名**时才加：繁体第六感的披萨定点叫"薄餅"，与其余三家的
- * "急凍薄餅"不同名，就不加前缀（用户 2026-11-04 明确该口径）。 */
+ * 只在**当前语言下确实同名**时才加：繁体披萨 2026-11-05 起四家统一叫"薄餅"，
+ * 四家都加（此前第六感定点"薄餅"、其余三家"急凍薄餅"不同名，第六感不加）。 */
 const char *fav_category_tag(const Fun_favorites_Value *fav)
 {
     switch (fav->PengTiaoMode_name) {
@@ -134,7 +134,7 @@ int fav_title_need_tag(const Fun_favorites_Value *fav)
 
     if (m == FAV_MODE_SIX) {
         if ((uint8_t)fav->Six_Cook_Fun == SIX_PIZZA) {
-            /* 繁体六感披萨=薄餅，与其余三家不同名 → 不加 */
+            /* 六感披萨与其余三家同名(繁体 2026-11-05 起统一"薄餅") → 加前缀 */
             uint8_t old = g_six_bread_type;
             g_six_bread_type = (uint8_t)fav->Six_Cook_Fun;
             const char *n = six_current_name();
