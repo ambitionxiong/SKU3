@@ -126,7 +126,7 @@ void west_stop_back_create(ui_manager_t *ui)
 
     // Init scr->label_190
     scr->label_190 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_190, "回到主页");
+    lv_label_set_text(scr->label_190, "返回主页？");
     lv_label_set_long_mode(scr->label_190, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->label_190, 895, 198);
     lv_obj_set_size(scr->label_190, 252, 36);

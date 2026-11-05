@@ -126,7 +126,7 @@ void heatcontain_stop_back_create(ui_manager_t *ui)
 
     // Init scr->label_629
     scr->label_629 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_629, "回到主页");
+    lv_label_set_text(scr->label_629, "返回主页？");
     lv_label_set_long_mode(scr->label_629, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->label_629, 895, 198);
     lv_obj_set_size(scr->label_629, 252, 36);

@@ -149,7 +149,7 @@ void somecook_cooking_create(ui_manager_t *ui)
 
     // Init scr->text2
     scr->text2 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->text2, "回到主页");
+    lv_label_set_text(scr->text2, "返回主页？");
     lv_label_set_long_mode(scr->text2, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->text2, 895, 198);
     lv_obj_set_size(scr->text2, 252, 36);

@@ -141,7 +141,7 @@ void hotcleanmiddle_stop_back_create(ui_manager_t *ui)
 
     // Init scr->label_13
     scr->label_13 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_13, "回到主页");
+    lv_label_set_text(scr->label_13, "返回主页？");
     lv_label_set_long_mode(scr->label_13, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->label_13, 895, 198);
     lv_obj_set_size(scr->label_13, 252, 36);

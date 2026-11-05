@@ -126,7 +126,7 @@ void slowcook_stop_back_create(ui_manager_t *ui)
 
     // Init scr->label_433
     scr->label_433 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_433, "回到主页");
+    lv_label_set_text(scr->label_433, "返回主页？");
     lv_label_set_long_mode(scr->label_433, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->label_433, 895, 198);
     lv_obj_set_size(scr->label_433, 252, 36);
