@@ -551,7 +551,7 @@ void jump_to_cookie_stop_back(void)
         if (g_delay_cancel_to_stop_back) {
             g_delay_cancel_to_stop_back = 0;
             lv_label_set_text(back->label_139, tr("预约中..."));
-            lv_label_set_text(back->label_141, g_delay_cancel_btn ? tr("返回上一页？") : tr("返回主页？"));
+            lv_label_set_text(back->label_141, g_delay_cancel_btn ? tr("回到上一页？") : tr("回到主页？"));
             lv_obj_add_flag(back->bar_6, LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(back->image_68, LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(back->button_29, LV_OBJ_FLAG_HIDDEN);

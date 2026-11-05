@@ -126,7 +126,7 @@ void updown_bbq_stop_back_create(ui_manager_t *ui)
 
     // Init scr->label_11
     scr->label_11 = lv_label_create(scr->obj);
-    lv_label_set_text(scr->label_11, "返回主页？");
+    lv_label_set_text(scr->label_11, "回到主页？");
     lv_label_set_long_mode(scr->label_11, LV_LABEL_LONG_WRAP);
     lv_obj_set_pos(scr->label_11, 895, 198);
     lv_obj_set_size(scr->label_11, 252, 36);

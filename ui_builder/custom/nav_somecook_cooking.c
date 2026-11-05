@@ -139,7 +139,7 @@ static void somecook_cooking_set_state(int state, int from)
         lv_obj_clear_flag(sc->text1, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(sc->text2, LV_OBJ_FLAG_HIDDEN);
         lv_label_set_text(sc->text1, tr("是否结束当前任务"));
-        lv_label_set_text(sc->text2, tr("返回主页？"));
+        lv_label_set_text(sc->text2, tr("回到主页？"));
         if (bl) lv_label_set_text(bl, tr("确 定"));
         if (from == SMC_COMPLETE)      lv_label_set_text(sc->cookstatus, tr("已完成"));
         /* EN 暂停源进遮罩保持 Pause...(生成 stopback cls==2 口径,同 SMC_STOP 态写法;

@@ -1818,7 +1818,7 @@ static void six_chick_apply_display(void)
         if (show_tip) {
             lv_obj_clear_flag(ck->text2, LV_OBJ_FLAG_HIDDEN);
             lv_label_set_text(ck->text2, (s_chick_done && !s_chick_overlay) ?
-                              tr("请缓慢打开门体！") : tr("返回主页？"));
+                              tr("请缓慢打开门体！") : tr("回到主页？"));
         } else {
             lv_obj_add_flag(ck->text2, LV_OBJ_FLAG_HIDDEN);
         }

@@ -426,7 +426,7 @@ static void six_cook_apply_display(void)
         lv_obj_clear_flag(sc->text1, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(sc->text2, LV_OBJ_FLAG_HIDDEN);
         lv_label_set_text(sc->text1, tr("是否结束当前任务"));
-        lv_label_set_text(sc->text2, tr("返回主页？"));
+        lv_label_set_text(sc->text2, tr("回到主页？"));
         /* 确认层:按钮恢复显示并加回焦点组(可操作) */
         lv_obj_clear_flag(sc->stop, LV_OBJ_FLAG_HIDDEN);
         if (g_six_cooking) {

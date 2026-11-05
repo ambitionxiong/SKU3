@@ -198,8 +198,8 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "可以额外上色", "Extra browning available" },
         { "可颂", "Croissant" },
         { "否", "No" },
-        { "返回上一页？", "current program?" },   /* 与"是否结束当前任务"→"Cancel the" 拼成完整句;原"Back"成 "Cancel the Back" 病句 */
-        { "返回主页？", "current program?" },
+        { "回到上一页？", "current program?" },   /* 与"是否结束当前任务"→"Cancel the" 拼成完整句;原"Back"成 "Cancel the Back" 病句 */
+        { "回到主页？", "current program?" },
         { "土司", "Toast" },
         { "烹饪说明：\n均匀分布在深盘中。\n现在将食物放在第3层。\n使用深盘。", "Cooking Instruction:\nDistribute evenly in the deep tray.\nInsert the food now on level 3.\nUse deep tray." },
         { "型号", "Model" },
