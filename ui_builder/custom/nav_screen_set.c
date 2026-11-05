@@ -352,8 +352,9 @@ static void on_set_ts_click(lv_event_t *e)
 {
     (void)e;
     static const char *const opts[2] = { "开", "关" };
-    /* 选项行序 开(row0)/关(row1):选中行 = 1-锁状态(锁开→高亮"开") */
-    sel_popup_create(SEL_WHERE_TS, SET_Data.Set_Lock ? 0 : 1, 2, "童锁", opts);
+    /* 选项行序 开(row0)/关(row1);默认光标停在"开"(2026-11-05 用户):
+       锁定态根本进不了本弹窗,所以这里恒从"开"起步——一按确认就上锁 */
+    sel_popup_create(SEL_WHERE_TS, 0, 2, "童锁", opts);
 }
 
 static void on_set_six_click(lv_event_t *e)
