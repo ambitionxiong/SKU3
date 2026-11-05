@@ -5243,9 +5243,16 @@ void delaycooking_lang_tune(void)
        nav_cook_icon_align,这里也保留 rebuild_delaycooking 算好的对齐结果 */
     switch (g_send.cook_mode) {
     case MODE_CORN:
-    case MODE_HEATCONTAIN:
     case MODE_UNFROZEN:
     case MODE_PIZZA_2:
+        break;
+    case MODE_HEATCONTAIN:
+        /* 保温:与 cooking/stop_back 页英文口径一致——"Delayed Start…/Keep Warm"
+           标题长,压 little 设置小钮,同款整体左移 12(先 align 复位再移,幂等);
+           CN 标题短,保持 icon+35 不动(同 heatcontain_cooking_lang_tune 注释) */
+        nav_cook_icon_align(pg->icon, pg->label_14, pg->status);
+        lv_obj_set_x(pg->label_14, lv_obj_get_x(pg->label_14) - 12);
+        lv_obj_set_x(pg->status, lv_obj_get_x(pg->status) - 12);
         break;
     default:
         lv_obj_set_x(pg->label_14, 273);
