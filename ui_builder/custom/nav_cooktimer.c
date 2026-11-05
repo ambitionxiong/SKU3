@@ -335,9 +335,9 @@ void cooking_timer_cb(lv_timer_t *timer)
             if (back) {
                 int probe = get_probe_temp();
                 int range = probe_target_temp - cook_start_probe;
-                int p = range > 0 ? 3 + (int)((int64_t)(probe - cook_start_probe) * 97 / range) : 3;
+                int p = range > 0 ? 13 + (int)((int64_t)87 * (probe - cook_start_probe) / range) : 13;
                 if (p > 100) p = 100;
-                if (p < 3) p = 3;
+                if (p < 13) p = 13;
                 lv_bar_set_value(back->bar_3, p, LV_ANIM_OFF);
                 lv_obj_invalidate(lv_scr_act());
             }
@@ -347,8 +347,8 @@ void cooking_timer_cb(lv_timer_t *timer)
             if (back) {
                 int probe = get_probe_temp();
                 int range = probe_target_temp - cook_start_probe;
-                int p = range > 0 ? 3 + (int)((int64_t)(probe - cook_start_probe) * 97 / range) : 3;
-                if (p > 100) p = 100; if (p < 3) p = 3;
+                int p = range > 0 ? 13 + (int)((int64_t)87 * (probe - cook_start_probe) / range) : 13;
+                if (p > 100) p = 100; if (p < 13) p = 13;
                 lv_bar_set_value(back->bar_3, p, LV_ANIM_OFF);
                 lv_obj_invalidate(lv_scr_act());
             }
@@ -358,8 +358,8 @@ void cooking_timer_cb(lv_timer_t *timer)
             if (back) {
                 int probe = get_probe_temp();
                 int range = probe_target_temp - cook_start_probe;
-                int p = range > 0 ? 3 + (int)((int64_t)(probe - cook_start_probe) * 97 / range) : 3;
-                if (p > 100) p = 100; if (p < 3) p = 3;
+                int p = range > 0 ? 13 + (int)((int64_t)87 * (probe - cook_start_probe) / range) : 13;
+                if (p > 100) p = 100; if (p < 13) p = 13;
                 lv_bar_set_value(back->bar_7, p, LV_ANIM_OFF);
                 lv_obj_invalidate(lv_scr_act());
             }
@@ -369,8 +369,8 @@ void cooking_timer_cb(lv_timer_t *timer)
             if (back) {
                 int probe = get_probe_temp();
                 int range = probe_target_temp - cook_start_probe;
-                int p = range > 0 ? 3 + (int)((int64_t)(probe - cook_start_probe) * 97 / range) : 3;
-                if (p > 100) p = 100; if (p < 3) p = 3;
+                int p = range > 0 ? 13 + (int)((int64_t)87 * (probe - cook_start_probe) / range) : 13;
+                if (p > 100) p = 100; if (p < 13) p = 13;
                 lv_bar_set_value(back->bar_11, p, LV_ANIM_OFF);
                 lv_obj_invalidate(lv_scr_act());
             }
@@ -654,12 +654,12 @@ void cooking_timer_cb(lv_timer_t *timer)
         updown_bbq_cooking_probe_t *cook = updown_bbq_cooking_probe_get(&ui_manager);
         if (cook) {
             int range = probe_target_temp - cook_start_probe;
-            int p = range > 0 ? 3 + (int)((int64_t)(probe - cook_start_probe) * 97 / range) : 3;
+            int p = range > 0 ? 13 + (int)((int64_t)87 * (probe - cook_start_probe) / range) : 13;
             if (p > 100) p = 100;
-            if (p < 3) p = 3;
+            if (p < 13) p = 13;
             lv_bar_set_value(cook->bar_1, p, LV_ANIM_OFF);
             int display = probe > probe_target_temp ? probe_target_temp : probe;
-            lv_label_set_text_fmt(cook->temp, tr("%d℃"), display);
+            nav_probe_bartemp(cook->bar_1, p, display);   /* 进度条气泡=实时探针温度 */
             lv_obj_invalidate(lv_scr_act());
         }
             if (probe >= probe_target_temp && probe_target_temp >= 30 && probe >= cook_start_probe && cook_timer) {
@@ -677,11 +677,11 @@ void cooking_timer_cb(lv_timer_t *timer)
         hot_bbq_cooking_probe_t *cook = hot_bbq_cooking_probe_get(&ui_manager);
         if (cook) {
             int range = probe_target_temp - cook_start_probe;
-            int p = range > 0 ? 3 + (int)((int64_t)(probe - cook_start_probe) * 97 / range) : 3;
-            if (p > 100) p = 100; if (p < 3) p = 3;
+            int p = range > 0 ? 13 + (int)((int64_t)87 * (probe - cook_start_probe) / range) : 13;
+            if (p > 100) p = 100; if (p < 13) p = 13;
             lv_bar_set_value(cook->bar_1, p, LV_ANIM_OFF);
             int display = probe > probe_target_temp ? probe_target_temp : probe;
-            lv_label_set_text_fmt(cook->temp, tr("%d℃"), display);
+            nav_probe_bartemp(cook->bar_1, p, display);   /* 进度条气泡=实时探针温度 */
             lv_obj_invalidate(lv_scr_act());
         }
         if (probe >= probe_target_temp && probe_target_temp >= 30 && probe >= cook_start_probe && cook_timer) {
@@ -697,11 +697,11 @@ void cooking_timer_cb(lv_timer_t *timer)
         bottom_bbq_cooking_probe_t *cook = bottom_bbq_cooking_probe_get(&ui_manager);
         if (cook) {
             int range = probe_target_temp - cook_start_probe;
-            int p = range > 0 ? 3 + (int)((int64_t)(probe - cook_start_probe) * 97 / range) : 3;
-            if (p > 100) p = 100; if (p < 3) p = 3;
+            int p = range > 0 ? 13 + (int)((int64_t)87 * (probe - cook_start_probe) / range) : 13;
+            if (p > 100) p = 100; if (p < 13) p = 13;
             lv_bar_set_value(cook->bar_5, p, LV_ANIM_OFF);
             int display = probe > probe_target_temp ? probe_target_temp : probe;
-            lv_label_set_text_fmt(cook->temp, tr("%d℃"), display);
+            nav_probe_bartemp(cook->bar_5, p, display);   /* 进度条气泡=实时探针温度 */
             lv_obj_invalidate(lv_scr_act());
         }
         if (probe >= probe_target_temp && probe_target_temp >= 30 && probe >= cook_start_probe && cook_timer) {
@@ -717,11 +717,11 @@ void cooking_timer_cb(lv_timer_t *timer)
         slowcook_cooking_probe_t *cook = slowcook_cooking_probe_get(&ui_manager);
         if (cook) {
             int range = probe_target_temp - cook_start_probe;
-            int p = range > 0 ? 3 + (int)((int64_t)(probe - cook_start_probe) * 97 / range) : 3;
-            if (p > 100) p = 100; if (p < 3) p = 3;
+            int p = range > 0 ? 13 + (int)((int64_t)87 * (probe - cook_start_probe) / range) : 13;
+            if (p > 100) p = 100; if (p < 13) p = 13;
             lv_bar_set_value(cook->bar_9, p, LV_ANIM_OFF);
             int display = probe > probe_target_temp ? probe_target_temp : probe;
-            lv_label_set_text_fmt(cook->temp, tr("%d℃"), display);
+            nav_probe_bartemp(cook->bar_9, p, display);   /* 进度条气泡=实时探针温度 */
             lv_obj_invalidate(lv_scr_act());
         }
         if (probe >= probe_target_temp && probe_target_temp >= 30 && probe >= cook_start_probe && cook_timer) {

@@ -1352,6 +1352,37 @@ void nav_probeset_refit(lv_obj_t *temp, lv_obj_t *icon2, lv_obj_t *icon3,
     lv_obj_set_size(probec, LV_SIZE_CONTENT, 28);
 }
 
+/* 探针烹饪页进度条温度气泡(2026-11-05 用户需求:右侧大字=探针设置温度、进度条上显示实时温度+数字,
+ * 参考预热页 bartemp)。气泡挂在 bar 自身下:页面重建/销毁随父对象回收,无需外部指针或有效性判断;
+ * OVERFLOW_VISIBLE 让它能画到进度条范围外(上沿上 3px、指示器右缘左 80px),与 preheat/six_chicken
+ * 的 bartemp 同口径——24 号黑字右对齐 66x24,落在白色填充上。percent=进度百分比,temp_c=摄氏温度
+ * (℉ 换算由 lv_label_set_text_fmt 出口宏完成)。重复调用只更新文本/位置 */
+lv_obj_t *nav_probe_bartemp(lv_obj_t *bar, int percent, int temp_c)
+{
+    lv_obj_t *lbl;
+
+    if (!bar) return NULL;
+    lbl = lv_obj_get_child(bar, 0);
+    if (!lbl) {
+        lv_obj_add_flag(bar, LV_OBJ_FLAG_OVERFLOW_VISIBLE);
+        lbl = lv_label_create(bar);
+        lv_obj_set_size(lbl, 66, 24);
+        lv_obj_set_style_text_font(lbl, &c_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_text_color(lbl, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_text_align(lbl, LV_TEXT_ALIGN_RIGHT, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_clear_flag(lbl, LV_OBJ_FLAG_CLICKABLE);
+    }
+    if (percent < 0) percent = 0;
+    if (percent > 100) percent = 100;
+    {
+        int bx = (637 * percent) / 100 - 80;   /* 指示器右缘左 80px(bar 637 宽,子对象相对坐标) */
+        if (bx < 0) bx = 0;
+        lv_obj_set_pos(lbl, bx, -3);           /* 绝对 (122+bx,323):进度条胶囊上沿上 3px */
+    }
+    lv_label_set_text_fmt(lbl, tr("%d℃"), temp_c);
+    return lbl;
+}
+
 /* probe menu 单下划线按显示位数换源/移位:华氏三位(99°C→210°F)时 120px 短线短一截。
  * 直接复用探针行原生线控件(渲染已被证实),不新建控件;右缘 CN 1011/EN 1009 与 ℃ 对齐。
  * 只对 src 含 "underline" 的线生效——其它单线指示字段自动跳过零影响。

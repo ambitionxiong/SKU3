@@ -7,10 +7,10 @@
 
 static inline int probe_progress(int probe_val) {
     int range = probe_target_temp - cook_start_probe;
-    if (range <= 0) return 3;
-    int p = 3 + (int)((int64_t)(probe_val - cook_start_probe) * 97 / range);
+    if (range <= 0) return 13;   /* 13 起=进度条胶囊左圆头之外(与预热/烤全鸡同基准),气泡才落在白填充上 */
+    int p = 13 + (int)((int64_t)87 * (probe_val - cook_start_probe) / range);
     if (p > 100) p = 100;
-    if (p < 3) p = 3;
+    if (p < 13) p = 13;
     return p;
 }
 
@@ -274,10 +274,11 @@ void jump_to_hot_bbq_cooking_probe(void)
         cook_start_probe = get_probe_temp();
 
         lv_label_set_text_fmt(cook->status, tr("| 热风烧烤 | %d℃ | %d℃"), set_temp, probe_target_temp);
-        {int tp = get_probe_temp(); if (tp > probe_target_temp) tp = probe_target_temp; lv_label_set_text_fmt(cook->temp, tr("%d℃"), tp);}
+        lv_label_set_text_fmt(cook->temp, tr("%d℃"), probe_target_temp);   /* 右侧大字=探针设置温度(实时值改由进度条气泡显示) */
 
         lv_bar_set_range(cook->bar_1, 0, 100);
-        lv_bar_set_value(cook->bar_1, 3, LV_ANIM_OFF);
+        lv_bar_set_value(cook->bar_1, 13, LV_ANIM_OFF);
+        nav_probe_bartemp(cook->bar_1, 13, get_probe_temp());   /* 进度条气泡=实时探针温度(预热同款,黑字落在白填充上) */
     }
 
     g_send.cook_flag = 2;
@@ -445,11 +446,12 @@ void hot_bbq_probe_resume_cooking(void)
                             LV_EVENT_CLICKED, NULL);
 
         lv_label_set_text_fmt(cook->status, tr("| 热风烧烤 | %d℃ | %d℃"), set_temp, probe_target_temp);
-        {int tp = get_probe_temp(); if (tp > probe_target_temp) tp = probe_target_temp; lv_label_set_text_fmt(cook->temp, tr("%d℃"), tp);}
+        lv_label_set_text_fmt(cook->temp, tr("%d℃"), probe_target_temp);   /* 右侧大字=探针设置温度(实时值改由进度条气泡显示) */
 
         lv_bar_set_range(cook->bar_1, 0, 100);
         if (cook_bar_saved > 100) cook_bar_saved = 100;
         lv_bar_set_value(cook->bar_1, cook_bar_saved, LV_ANIM_OFF);
+        nav_probe_bartemp(cook->bar_1, cook_bar_saved, get_probe_temp());
     }
 
     cook_start_time = lv_tick_get() - cook_elapsed_saved;
@@ -594,12 +596,13 @@ void hot_bbq_probe_rebuild_cooking(page_id_t child)
                             LV_EVENT_CLICKED, NULL);
 
         lv_label_set_text_fmt(cook->status, tr("| 热风烧烤 | %d℃ | %d℃"), set_temp, probe_target_temp);
-        {int tp = get_probe_temp(); if (tp > probe_target_temp) tp = probe_target_temp; lv_label_set_text_fmt(cook->temp, tr("%d℃"), tp);}
+        lv_label_set_text_fmt(cook->temp, tr("%d℃"), probe_target_temp);   /* 右侧大字=探针设置温度(实时值改由进度条气泡显示) */
 
         lv_bar_set_range(cook->bar_1, 0, 100);
         int bar_val = probe_progress(get_probe_temp());
         if (bar_val > 100) bar_val = 100;
         lv_bar_set_value(cook->bar_1, bar_val, LV_ANIM_OFF);
+        nav_probe_bartemp(cook->bar_1, bar_val, get_probe_temp());
     }
     current_group = g_hot_bbq_cooking_probe;
     lang_scr_load_anim(hot_bbq_cooking_probe_get(&ui_manager)->obj,
