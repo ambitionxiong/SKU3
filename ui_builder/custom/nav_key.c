@@ -1366,14 +1366,12 @@ void process_key(uint8_t key)
                 lv_group_focus_obj(ds->hour);
                 nav_edit_session_enter(ds->hour);
             } else if (ds && df == ds->hour && nav_edit_session_active()) {
-                /* 24h 窗口内 +1 小时;出窗(已到"明天此刻-1 分")只响无效音 */
-                if (!delayset_shift_minutes(60)) {
-                    g_send.buzzer_req = BUZZER_KEY_INVALID;
-                    uart_print();
-                    break;
-                }
+                /* 时字段独立循环 0-23(不联动分,也不按窗口取值拦;2026-11-05 用户) */
+                delay_hour++;
+                if (delay_hour > 23) delay_hour = 0;
             } else if (ds && df == ds->min && nav_edit_session_active()) {
-                if (!delayset_shift_minutes(1)) {
+                /* 分字段 0-59 独立回绕(不进位到时);只在窗口两端挡一下 */
+                if (!delayset_step_minute(1)) {
                     g_send.buzzer_req = BUZZER_KEY_INVALID;
                     uart_print();
                     break;
@@ -1576,14 +1574,12 @@ void process_key(uint8_t key)
                 lv_group_focus_obj(ds->hour);
                 nav_edit_session_enter(ds->hour);
             } else if (ds && df == ds->hour && nav_edit_session_active()) {
-                /* 24h 窗口内 -1 小时;出窗(已到"现在")只响无效音 */
-                if (!delayset_shift_minutes(-60)) {
-                    g_send.buzzer_req = BUZZER_KEY_INVALID;
-                    uart_print();
-                    break;
-                }
+                /* 时字段独立循环 0-23(不联动分,也不按窗口取值拦;2026-11-05 用户) */
+                delay_hour--;
+                if (delay_hour < 0) delay_hour = 23;
             } else if (ds && df == ds->min && nav_edit_session_active()) {
-                if (!delayset_shift_minutes(-1)) {
+                /* 分字段 0-59 独立回绕;只在窗口两端挡一下 */
+                if (!delayset_step_minute(-1)) {
                     g_send.buzzer_req = BUZZER_KEY_INVALID;
                     uart_print();
                     break;
