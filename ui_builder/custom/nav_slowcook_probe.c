@@ -320,11 +320,12 @@ void jump_to_slowcook_stop_probe(void)
                             LV_EVENT_CLICKED, NULL);
 
         lv_label_set_text_fmt(stop->label_101, tr("| 慢煮 | %d℃ | %d℃"), set_temp, probe_target_temp);
-        {int tp = probe_temp; if (tp > probe_target_temp) tp = probe_target_temp; lv_label_set_text_fmt(stop->temp, tr("%d℃"), tp);}
+        lv_label_set_text_fmt(stop->temp, tr("%d℃"), probe_target_temp);   /* 右侧大字=探针设置温度(实时值在进度条气泡) */
 
         lv_bar_set_range(stop->bar_10, 0, 100);
         if (cook_bar_saved > 100) cook_bar_saved = 100;
         lv_bar_set_value(stop->bar_10, cook_bar_saved, LV_ANIM_OFF);
+        nav_probe_bartemp(stop->bar_10, cook_bar_saved, get_probe_temp());   /* 气泡=实时探针温度 */
     }
     current_group = g_slowcook_stop_probe;
 
@@ -362,6 +363,7 @@ void jump_to_slowcook_stop_back_probe(void)
 
         lv_bar_set_range(back->bar_11, 0, 100);
         lv_bar_set_value(back->bar_11, bar_val, LV_ANIM_OFF);
+        nav_probe_bartemp(back->bar_11, bar_val, get_probe_temp());
         if (g_send.iface_status == IFACE_COOKING)
             lv_label_set_text(back->label_105, tr("烹饪中..."));
 
@@ -614,11 +616,12 @@ void slowcook_probe_rebuild_stop(void)
                             LV_EVENT_CLICKED, NULL);
 
         lv_label_set_text_fmt(stop->label_101, tr("| 慢煮 | %d℃ | %d℃"), set_temp, probe_target_temp);
-        {int tp = get_probe_temp(); if (tp > probe_target_temp) tp = probe_target_temp; lv_label_set_text_fmt(stop->temp, tr("%d℃"), tp);}
+        lv_label_set_text_fmt(stop->temp, tr("%d℃"), probe_target_temp);   /* 右侧大字=探针设置温度(实时值在进度条气泡) */
 
         lv_bar_set_range(stop->bar_10, 0, 100);
         if (cook_bar_saved > 100) cook_bar_saved = 100;
         lv_bar_set_value(stop->bar_10, cook_bar_saved, LV_ANIM_OFF);
+        nav_probe_bartemp(stop->bar_10, cook_bar_saved, get_probe_temp());   /* 气泡=实时探针温度 */
     }
     current_group = g_slowcook_stop_probe;
     lang_scr_load_anim(slowcook_stop_probe_get(&ui_manager)->obj,
@@ -648,6 +651,7 @@ void slowcook_probe_rebuild_stop_back(void)
 
         lv_bar_set_range(back->bar_11, 0, 100);
         lv_bar_set_value(back->bar_11, bar_val, LV_ANIM_OFF);
+        nav_probe_bartemp(back->bar_11, bar_val, get_probe_temp());
 
         if (g_send.iface_status == IFACE_COOKING)
             lv_label_set_text(back->label_105, tr("烹饪中..."));

@@ -339,6 +339,7 @@ void cooking_timer_cb(lv_timer_t *timer)
                 if (p > 100) p = 100;
                 if (p < 13) p = 13;
                 lv_bar_set_value(back->bar_3, p, LV_ANIM_OFF);
+                nav_probe_bartemp(back->bar_3, p, probe);   /* 气泡=实时探针温度 */
                 lv_obj_invalidate(lv_scr_act());
             }
         }
@@ -350,6 +351,7 @@ void cooking_timer_cb(lv_timer_t *timer)
                 int p = range > 0 ? 13 + (int)((int64_t)87 * (probe - cook_start_probe) / range) : 13;
                 if (p > 100) p = 100; if (p < 13) p = 13;
                 lv_bar_set_value(back->bar_3, p, LV_ANIM_OFF);
+                nav_probe_bartemp(back->bar_3, p, probe);   /* 气泡=实时探针温度 */
                 lv_obj_invalidate(lv_scr_act());
             }
         }
@@ -361,6 +363,7 @@ void cooking_timer_cb(lv_timer_t *timer)
                 int p = range > 0 ? 13 + (int)((int64_t)87 * (probe - cook_start_probe) / range) : 13;
                 if (p > 100) p = 100; if (p < 13) p = 13;
                 lv_bar_set_value(back->bar_7, p, LV_ANIM_OFF);
+                nav_probe_bartemp(back->bar_7, p, probe);   /* 气泡=实时探针温度 */
                 lv_obj_invalidate(lv_scr_act());
             }
         }
@@ -372,6 +375,7 @@ void cooking_timer_cb(lv_timer_t *timer)
                 int p = range > 0 ? 13 + (int)((int64_t)87 * (probe - cook_start_probe) / range) : 13;
                 if (p > 100) p = 100; if (p < 13) p = 13;
                 lv_bar_set_value(back->bar_11, p, LV_ANIM_OFF);
+                nav_probe_bartemp(back->bar_11, p, probe);   /* 气泡=实时探针温度 */
                 lv_obj_invalidate(lv_scr_act());
             }
         }
