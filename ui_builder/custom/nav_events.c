@@ -315,21 +315,24 @@ static uint8_t delayset_pick_tomorrow(void)
 
 /* ===================== 预约时间窗(2026-11-05 用户) =====================
  * 时/分是两组独立循环(时 0-23、分 0-59 各自回绕,分不进位到时——用户明确不做
- * 时/分联动),只在"以当前 RTC 为起点的 24h 窗口"两端各挡一次:
- *   offset 0   (=现在)         再减 1 分钟 → 不动 + 无效音;
- *   offset 1439(=明天此刻-1分) 再加 1 分钟 → 不动 + 无效音。
- * 旧的时/分循环在这两点会绕成 +23:59 / -23:59,现在挡住。
- * 今天/明天标签仍由 delayset_pick_tomorrow 实时比较得出。 */
-static int delayset_window_offset(void)
+ * 时/分联动),但两端都按"以当前 RTC 为起点的 24h 窗口"拦住:
+ *   逆向最多到"现在"(offset 0),顺向最多到"明天此刻-1分"(offset 1439)。
+ * 分字段只在正好这两个端点挡;时字段按方向判——绕回窗口另一端(=时间反而变早/
+ * 变晚)就挡,所以朝两端走都会停住。今天/明天标签仍由 delayset_pick_tomorrow
+ * 实时比较得出。 */
+static int delayset_offset_of(int h, int m)
 {
     rtc_time_t now;
-    int cur, base, off;
+    int off;
     if (rtc_get_time(&now) != 0) return -1;
-    cur  = (delay_hour % 24) * 60 + delay_min;
-    base = now.hour * 60 + now.min;
-    off  = cur - base;
+    off = (h * 60 + m) - (now.hour * 60 + now.min);
     if (off < 0) off += 1440;
     return off;
+}
+
+static int delayset_window_offset(void)
+{
+    return delayset_offset_of(delay_hour % 24, delay_min);
 }
 
 /* 分字段 ±1:0-59 独立回绕(不进位到时);仅窗口两端挡一下。
@@ -343,6 +346,26 @@ int delayset_step_minute(int delta)
     delay_min += delta;
     if (delay_min > 59) delay_min = 0;
     if (delay_min < 0) delay_min = 59;
+    return 1;
+}
+
+/* 时字段 ±1:0-23 独立循环,分钟不动;绕回窗口另一端(=偏移反而变小/变大)即拦。
+   返回 0=不动(调用方发无效音),1=已更新 */
+int delayset_step_hour(int delta)
+{
+    int cur = delayset_window_offset();
+    int nh  = (delay_hour + delta) % 24;
+    int no;
+
+    if (nh < 0) nh += 24;
+    no = delayset_offset_of(nh, delay_min);
+    if (cur < 0 || no < 0) {          /* RTC 读失败:退回无界循环,不影响可调性 */
+        delay_hour = nh;
+        return 1;
+    }
+    if (delta > 0 && no <= cur) return 0;   /* 顺时针绕回窗口起点:实际变早 → 拦 */
+    if (delta < 0 && no >= cur) return 0;   /* 逆时针绕回窗口终点:实际变晚 → 拦 */
+    delay_hour = nh;
     return 1;
 }
 
