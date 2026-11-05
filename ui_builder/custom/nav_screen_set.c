@@ -216,8 +216,8 @@ static void sel_popup_apply(void)
         screen_set_ts_lb_sync();   /* TS_Lb 童锁值回显(按 Set_Lock 显示 开/关) */
         nav_childlock_set(SET_Data.Set_Lock);   /* 开→立即全屏锁定层;关→解锁 */
         if (SET_Data.Set_Lock && s_was_running) {
-            /* 运行态开童锁:不留在设置页,覆盖层立即退回运行页,锁层(lv_layer_top)压在其上 */
-            screen_set_popup_reset();   /* 弹窗对象随覆盖层销毁,只清指针防悬空 */
+            /* 运行态开童锁:不留在设置页,覆盖层立即退回运行页,锁层(lv_layer_top)压在其上
+               (弹窗状态由 screen_set_back 统一复位,弹窗对象随覆盖层销毁) */
             screen_set_back();          /* 复用返回链:删覆盖层+恢复下层运行页焦点组 */
         }
         break;
@@ -582,6 +582,14 @@ void jump_to_screen_set(void)
 void screen_set_back(void)
 {
     if (depth <= 0 || page_stack[depth - 1] != PAGE_SCREEN_SET) return;
+
+    /* 选项弹窗(童锁/风扇/炉灯/功率/语言/待机时间)还开着时整层退出:空闲 1 分钟
+       自动回运行页直接调本函数,弹窗不像 BACK 那样先被关掉,是覆盖层的子对象,
+       随父一起销毁——这里只清状态指针。漏清时 s_sel_where 残留 →
+       screen_set_popup_active() 恒真,之后所有功能键都被弹窗旧状态吞成无效音
+       (用户实测:烹调中开童锁弹窗静置 1 分钟自动回烹调页后,收藏/设置键失效,
+       按一次返回键才恢复;2026-11-05) */
+    screen_set_popup_reset();
 
     /* 删除覆盖层 */
     if (screen_SET.obj) {
