@@ -1735,6 +1735,7 @@ lv_obj_t *nav_favorites_page_obj(void);    /* 收藏页页对象(探针小标挂
 lv_obj_t *nav_favorites_title_obj(void);   /* 收藏页标题控件 */
 void nav_cook4_card_icons(void);   /* cook4 四卡恢复原版图标+独立标签,藏按键内联文字(全语言,2026-10-15) */
 void nav_frozen_card_icons(void);   /* 冷冻烘焙六卡铺图标+标签,藏简繁位图长条图(全语言,2026-10-15) */
+void nav_hotclean_card_icons(void);   /* 热解自清洁三卡铺 80 高图标+文字(全语言,2026-11-06) */
 void nav_chickmenutz_en_refit(void);   /* 探针二级菜单(共用 chickmenutz 页)EN 小字规则 24px+整体居中(仅英文,2026-10-15) */
 void updown_set_refit(updown_bbq_set_t *set);   /* updown set 排版精修:数字统一 30 号+↑/↓ 换 dirup/dirdown 图(仅构建路径调用) */
 void top_bbq_set_refit(top_bbq_set_t *set);   /* top_bbq set 数字改小 30 号(其余模式 set 页试点,镜像 updown 样式;仅构建路径调用) */

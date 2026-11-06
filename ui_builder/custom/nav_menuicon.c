@@ -412,3 +412,45 @@ void nav_frozen_card_icons(void)
         }
     }
 }
+
+/* 热解自清洁三卡(节能/中/高): 生成层瓦片里只有一行内联文字,没有图标控件。
+ * 素材库有原版三张图标(132/135x101),按定版规则等比缩到高 80(预缩 *_s80.png,
+ * 设备端不跑 transform);图标作瓦片子控件铺上,水平居中,与文字墨迹间距 25px,
+ * 图标+文字整组瓦内垂直居中——与普通模式菜单瓦片同款(2026-11-06)。
+ * 简繁维持 30px taiwanpearl(盒顶补偿 5),EN 按小字规则 24px aktiv(补偿 7);
+ * 重复进入同一页只更新不重挂(换语言时本函数会在已建页上重跑)。 */
+void nav_hotclean_card_icons(void)
+{
+    if (depth <= 0 || page_stack[depth - 1] != PAGE_HOTCLEAN_MENU) return;
+    hotclean_menu_t *pg = hotclean_menu_get(&ui_manager);
+    if (!pg || !pg->obj) return;
+
+    lv_obj_t *btns[3] = { pg->hotcleansave, pg->hotclean_middle, pg->hotclean_high };
+    const char *src[3] = {
+        LVGL_IMAGE_PATH(hotcleansaveicon_s80.png),
+        LVGL_IMAGE_PATH(hotcleanmiddleicon_s80.png),
+        LVGL_IMAGE_PATH(hotcleanhighicon_s80.png),
+    };
+    const int art_w[3] = { 105, 107, 107 };
+    int icon_y = 141, lab_y = 241;   /* 简繁 30px: 群组 80+25+29, 瓦 439x417 */
+    if (is_english()) { icon_y = 147; lab_y = 245; }   /* EN 24px: 群组 80+25+17 */
+
+    for (int i = 0; i < 3; i++) {
+        lv_obj_t *btn = btns[i];
+        if (!btn) continue;
+        lv_obj_t *ic = lv_obj_get_child(btn, 1);
+        if (ic && lv_obj_check_type(ic, &lv_image_class)) {   /* 已挂过: 只更新 */
+            lv_img_set_src(ic, src[i]);
+            lv_obj_set_pos(ic, (439 - art_w[i]) / 2, icon_y);
+        } else {
+            menu_icon_add(btn, src[i], 439, art_w[i], icon_y);
+        }
+        lv_obj_t *lbl = lv_obj_get_child(btn, 0);
+        if (lbl && lv_obj_check_type(lbl, &lv_label_class)) {
+            lv_obj_align(lbl, LV_ALIGN_TOP_MID, 0, lab_y);
+            lv_obj_set_style_text_font(lbl,
+                is_english() ? &c_aktivgroteskmedium_24 : &c_taiwanpearl_regular_30,
+                LV_PART_MAIN | LV_STATE_DEFAULT);
+        }
+    }
+}

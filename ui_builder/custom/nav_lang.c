@@ -586,6 +586,7 @@ void lang_on_page_built(void)
     nav_menuicon_refit();   /* EN major/cook/six/special+探针三菜单独立图标+24px居中排版(规范图实测位置表,2026-10-10) */
     nav_cook4_card_icons();    /* cook4 四卡恢复原版图标+标签(全语言,2026-10-15) */
     nav_frozen_card_icons();   /* 冷冻烘焙六卡铺图标+标签(全语言,2026-10-15) */
+    nav_hotclean_card_icons();   /* 热解自清洁三卡铺 80 高图标+文字(全语言,2026-11-06) */
     nav_chickmenutz_en_refit();   /* 探针二级菜单 EN 小字规则(仅英文,2026-10-15) */
     nav_probe_badge_refit();      /* 探针插入时菜单页标题右侧补 tanzhen 小标(全语言,2026-11-03) */
     nav_complete_btn_unfocus(current_group);   /* 完成页 setting 钮默认不亮,首次旋动编码器再选中(2026-11-04) */
