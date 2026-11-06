@@ -46,13 +46,17 @@ static void cookie_preheat_toggle(lv_event_t *e)
     if (!set) return;
     preheat_on = !preheat_on;
     if (preheat_on) {
-        lv_obj_add_flag(set->offcontain, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_clear_flag(set->oncontain, LV_OBJ_FLAG_HIDDEN);
-        lv_group_focus_obj(set->oncontain);
+        /* 互斥：开预热关延时(与普通模式同口径) */
+        delay_on = 0;
+        apply_toggle_state(set->offdelay, set->ondelay, delay_on);
+        mode_set_apply_delay_label(set->ondelay);
+        lv_obj_add_flag(set->offpreheat, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(set->onpreheat, LV_OBJ_FLAG_HIDDEN);
+        lv_group_focus_obj(set->onpreheat);
     } else {
-        lv_obj_add_flag(set->oncontain, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_clear_flag(set->offcontain, LV_OBJ_FLAG_HIDDEN);
-        lv_group_focus_obj(set->offcontain);
+        lv_obj_add_flag(set->onpreheat, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(set->offpreheat, LV_OBJ_FLAG_HIDDEN);
+        lv_group_focus_obj(set->offpreheat);
     }
 }
 
@@ -120,6 +124,8 @@ static void on_cookie_set_sure_click(lv_event_t *e)
     if (!screen_is_loading(act_scr)) {
         if (delay_on)
             jump_to_delaycooking();
+        else if (preheat_on)
+            jump_to_preheat_cooking();
         else
             jump_to_cookie_cooking();
     }
@@ -264,12 +270,13 @@ void jump_to_cookie_set(void)
     if (set) {
         lv_obj_t *btns[] = {
             set->sure,
+            set->offpreheat, set->onpreheat,
             set->offdelay, set->ondelay,
             set->offcontain, set->oncontain,
         };
         if (g_cookie_set) lv_group_del(g_cookie_set);
-        g_cookie_set = group_create_for_page(btns, 5);
-        clear_focus_states(btns, 5);
+        g_cookie_set = group_create_for_page(btns, 7);
+        clear_focus_states(btns, 7);
         lv_group_focus_obj(set->sure);
 
         lv_label_set_text_fmt(set->temp, "%d", temp_disp_c(set_temp));
@@ -293,6 +300,7 @@ void jump_to_cookie_set(void)
         lv_obj_set_pos(set->label_105, 427, 269);
     }
 
+        apply_toggle_state(set->offpreheat, set->onpreheat, preheat_on);
         apply_toggle_state(set->offdelay, set->ondelay, delay_on);
         mode_set_apply_delay_label(set->ondelay);
     if (set_hour == 0) {
@@ -308,6 +316,8 @@ void jump_to_cookie_set(void)
     }
         apply_toggle_state(set->offcontain, set->oncontain, contain_on);
 
+        lv_obj_add_event_cb(set->offpreheat, cookie_preheat_toggle, LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->onpreheat, cookie_preheat_toggle, LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(set->offdelay, cookie_delay_toggle, LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(set->ondelay, cookie_delay_toggle, LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(set->offcontain, cookie_contain_toggle, LV_EVENT_CLICKED, NULL);
@@ -804,12 +814,13 @@ void cookie_rebuild_set(page_id_t child)
     if (set) {
         lv_obj_t *btns[] = {
             set->sure,
+            set->offpreheat, set->onpreheat,
             set->offdelay, set->ondelay,
             set->offcontain, set->oncontain,
         };
         if (g_cookie_set) lv_group_del(g_cookie_set);
-        g_cookie_set = group_create_for_page(btns, 5);
-        clear_focus_states(btns, 5);
+        g_cookie_set = group_create_for_page(btns, 7);
+        clear_focus_states(btns, 7);
         lv_group_focus_obj(set->sure);
 
         lv_label_set_text_fmt(set->temp, "%d", temp_disp_c(set_temp));
@@ -833,6 +844,7 @@ void cookie_rebuild_set(page_id_t child)
         lv_obj_set_pos(set->label_105, 427, 269);
     }
 
+        apply_toggle_state(set->offpreheat, set->onpreheat, preheat_on);
         apply_toggle_state(set->offdelay, set->ondelay, delay_on);
         mode_set_apply_delay_label(set->ondelay);
     if (set_hour == 0) {
@@ -848,6 +860,8 @@ void cookie_rebuild_set(page_id_t child)
     }
         apply_toggle_state(set->offcontain, set->oncontain, contain_on);
 
+        lv_obj_add_event_cb(set->offpreheat, cookie_preheat_toggle, LV_EVENT_CLICKED, NULL);
+        lv_obj_add_event_cb(set->onpreheat, cookie_preheat_toggle, LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(set->offdelay, cookie_delay_toggle, LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(set->ondelay, cookie_delay_toggle, LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(set->offcontain, cookie_contain_toggle, LV_EVENT_CLICKED, NULL);

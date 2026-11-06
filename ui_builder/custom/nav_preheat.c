@@ -101,6 +101,23 @@ static void preheat_apply_mode_ui(lv_obj_t *icon, lv_obj_t *status)
         if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(cornicon.png));
         txt = tr("| 干果 |");
         break;
+    case MODE_COOK4:
+        /* cook4 四组共用 MODE_COOK4:按设置页来源取子类图标/名字 */
+        if (g_delay_source_page == PAGE_WEST_SET) {
+            if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(westicon.png));
+            if (status) lv_label_set_text_fmt(status, "| %s |", tr("西式塔"));
+        } else if (g_delay_source_page == PAGE_PIZZA_SET) {
+            if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(pizzaicon.png));
+            if (status) lv_label_set_text_fmt(status, "| %s |", tr("披萨"));
+        } else if (g_delay_source_page == PAGE_MENU_COOK_SET) {
+            if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(menuicon.png));
+            if (status) lv_label_set_text_fmt(status, "| %s |", tr("菜单"));
+        } else {
+            if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(cookieicon.png));
+            if (status) lv_label_set_text_fmt(status, "| %s |", tr("饼干"));
+        }
+        return;
+
     case MODE_HEATCONTAIN:
         if (icon) lv_img_set_src(icon, LVGL_IMAGE_PATH(heatcontainicon.png));
         txt = tr("| 保温 |");
@@ -203,6 +220,12 @@ static void on_preheat_complete_sure_click(lv_event_t *e)
         case MODE_RISING:         jump_to_rising_cooking(); break;
         case MODE_CORN:           jump_to_corn_cooking(); break;
         case MODE_HEATCONTAIN:    jump_to_heatcontain_cooking(); break;
+        case MODE_COOK4:
+            if (g_delay_source_page == PAGE_WEST_SET)           jump_to_west_cooking();
+            else if (g_delay_source_page == PAGE_PIZZA_SET)     jump_to_pizza_cooking();
+            else if (g_delay_source_page == PAGE_MENU_COOK_SET) jump_to_menu_cooking();
+            else                                                jump_to_cookie_cooking();
+            break;
         default:                  preheat_complete_exit(); break;
         }
         return;

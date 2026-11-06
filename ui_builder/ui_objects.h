@@ -1445,6 +1445,9 @@ typedef struct {
     lv_obj_t *oncontain;
     lv_obj_t *icon3;
     lv_obj_t *icon2;
+    lv_obj_t *preheat_label;
+    lv_obj_t *offpreheat;
+    lv_obj_t *onpreheat;
 } cookie_set_t;
 
 typedef struct {
@@ -1562,6 +1565,9 @@ typedef struct {
     lv_obj_t *oncontain;
     lv_obj_t *icon3;
     lv_obj_t *icon2;
+    lv_obj_t *preheat_label;
+    lv_obj_t *offpreheat;
+    lv_obj_t *onpreheat;
 } west_set_t;
 
 typedef struct {
@@ -1679,6 +1685,9 @@ typedef struct {
     lv_obj_t *oncontain;
     lv_obj_t *icon3;
     lv_obj_t *icon2;
+    lv_obj_t *preheat_label;
+    lv_obj_t *offpreheat;
+    lv_obj_t *onpreheat;
 } pizza_set_t;
 
 typedef struct {
@@ -1796,6 +1805,9 @@ typedef struct {
     lv_obj_t *oncontain;
     lv_obj_t *icon3;
     lv_obj_t *icon2;
+    lv_obj_t *preheat_label;
+    lv_obj_t *offpreheat;
+    lv_obj_t *onpreheat;
 } menu_set_t;
 
 typedef struct {

@@ -163,7 +163,7 @@ void cookie_set_create(ui_manager_t *ui)
     scr->label_108 = lv_label_create(scr->obj);
     lv_label_set_text(scr->label_108, "延");
     lv_label_set_long_mode(scr->label_108, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_108, 840, 154);
+    lv_obj_set_pos(scr->label_108, 840, 270);
     lv_obj_set_size(scr->label_108, 26, 32);
 
     // Set style of scr->label_108
@@ -174,7 +174,7 @@ void cookie_set_create(ui_manager_t *ui)
     scr->label_109 = lv_label_create(scr->obj);
     lv_label_set_text(scr->label_109, "迟");
     lv_label_set_long_mode(scr->label_109, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_109, 930, 154);
+    lv_obj_set_pos(scr->label_109, 930, 270);
     lv_obj_set_size(scr->label_109, 26, 32);
 
     // Set style of scr->label_109
@@ -185,8 +185,8 @@ void cookie_set_create(ui_manager_t *ui)
     scr->label_110 = lv_label_create(scr->obj);
     lv_label_set_text(scr->label_110, "自动保温");
     lv_label_set_long_mode(scr->label_110, LV_LABEL_LONG_WRAP);
-    lv_obj_set_pos(scr->label_110, 831, 270);
-    lv_obj_set_size(scr->label_110, 130, 32);
+    lv_obj_set_pos(scr->label_110, 841, 381);
+    lv_obj_set_size(scr->label_110, 120, 32);
 
     // Set style of scr->label_110
     lv_obj_set_style_text_font(scr->label_110, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -198,7 +198,7 @@ void cookie_set_create(ui_manager_t *ui)
     lv_obj_t *offdelay_label = lv_label_create(scr->offdelay);
     lv_label_set_text(offdelay_label, "");
     lv_obj_align(offdelay_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->offdelay, 983, 144);
+    lv_obj_set_pos(scr->offdelay, 983, 260);
     lv_obj_set_size(scr->offdelay, 135, 53);
 
     // Set style of scr->offdelay
@@ -215,7 +215,7 @@ void cookie_set_create(ui_manager_t *ui)
     lv_obj_t *offcontain_label = lv_label_create(scr->offcontain);
     lv_label_set_text(offcontain_label, "");
     lv_obj_align(offcontain_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->offcontain, 983, 260);
+    lv_obj_set_pos(scr->offcontain, 983, 372);
     lv_obj_set_size(scr->offcontain, 135, 53);
 
     // Set style of scr->offcontain
@@ -255,7 +255,7 @@ void cookie_set_create(ui_manager_t *ui)
     lv_obj_t *ondelay_label = lv_label_create(scr->ondelay);
     lv_label_set_text(ondelay_label, "");
     lv_obj_align(ondelay_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->ondelay, 983, 144);
+    lv_obj_set_pos(scr->ondelay, 983, 260);
     lv_obj_set_size(scr->ondelay, 135, 53);
     lv_obj_add_flag(scr->ondelay, LV_OBJ_FLAG_HIDDEN);
 
@@ -273,7 +273,7 @@ void cookie_set_create(ui_manager_t *ui)
     lv_obj_t *oncontain_label = lv_label_create(scr->oncontain);
     lv_label_set_text(oncontain_label, "");
     lv_obj_align(oncontain_label, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_set_pos(scr->oncontain, 983, 260);
+    lv_obj_set_pos(scr->oncontain, 983, 372);
     lv_obj_set_size(scr->oncontain, 135, 53);
     lv_obj_add_flag(scr->oncontain, LV_OBJ_FLAG_HIDDEN);
 
@@ -311,6 +311,52 @@ void cookie_set_create(ui_manager_t *ui)
     lv_obj_set_style_text_align(scr->icon2, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
 
 
+    // Init scr->preheat_label
+    scr->preheat_label = lv_label_create(scr->obj);
+    lv_label_set_text(scr->preheat_label, "快速预热");
+    lv_label_set_long_mode(scr->preheat_label, LV_LABEL_LONG_WRAP);
+    lv_obj_set_pos(scr->preheat_label, 840, 154);
+    lv_obj_set_size(scr->preheat_label, 120, 32);
+
+    // Set style of scr->preheat_label
+    lv_obj_set_style_text_font(scr->preheat_label, &c_taiwanpearl_regular_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(scr->preheat_label, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(scr->preheat_label, 3, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // Init scr->offpreheat
+    scr->offpreheat = lv_btn_create(scr->obj);
+    lv_obj_t *offpreheat_label = lv_label_create(scr->offpreheat);
+    lv_label_set_text(offpreheat_label, "");
+    lv_obj_align(offpreheat_label, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_pos(scr->offpreheat, 983, 144);
+    lv_obj_set_size(scr->offpreheat, 135, 53);
+
+    // Set style of scr->offpreheat
+    lv_obj_set_style_bg_opa(scr->offpreheat, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->offpreheat, LVGL_IMAGE_PATH(off.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->offpreheat, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(scr->offpreheat, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(scr->offpreheat, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(scr->offpreheat, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->offpreheat, LVGL_IMAGE_PATH(focusoff.png), LV_PART_MAIN | LV_STATE_FOCUSED);
+
+    // Init scr->onpreheat
+    scr->onpreheat = lv_btn_create(scr->obj);
+    lv_obj_t *onpreheat_label = lv_label_create(scr->onpreheat);
+    lv_label_set_text(onpreheat_label, "");
+    lv_obj_align(onpreheat_label, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_pos(scr->onpreheat, 983, 144);
+    lv_obj_set_size(scr->onpreheat, 135, 53);
+    lv_obj_add_flag(scr->onpreheat, LV_OBJ_FLAG_HIDDEN);
+
+    // Set style of scr->onpreheat
+    lv_obj_set_style_bg_opa(scr->onpreheat, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_img_src(scr->onpreheat, LVGL_IMAGE_PATH(on1.png), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(scr->onpreheat, &c_montserratmedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(scr->onpreheat, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(scr->onpreheat, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(scr->onpreheat, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
+    lv_obj_set_style_bg_img_src(scr->onpreheat, LVGL_IMAGE_PATH(on2.png), LV_PART_MAIN | LV_STATE_FOCUSED);
 }
 
 
