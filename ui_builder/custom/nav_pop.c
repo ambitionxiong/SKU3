@@ -763,6 +763,7 @@ void page_pop(void)
                 lv_group_focus_obj(done->image_31);
                 lv_label_set_text_fmt(done->label_74, tr("| 上下烧烤 | %d℃ | %d℃"), set_temp, probe_target_temp);
                 lv_bar_set_value(done->bar_4, 100, LV_ANIM_OFF);
+                nav_probe_complete_bartemp(done->bar_4);   /* 完成页进度条气泡=结束时探针温度 */
             }
             current_group = g_updown_bbq_complete_probe;
             lang_scr_load_anim(updown_bbq_complete_probe_get(&ui_manager)->obj,
@@ -805,6 +806,7 @@ void page_pop(void)
                 lv_group_focus_obj(done->image_15);
                 lv_label_set_text_fmt(done->status, tr("| 热风烧烤 | %d℃ | %d℃"), set_temp, probe_target_temp);
                 lv_bar_set_value(done->bar_4, 100, LV_ANIM_OFF);
+                nav_probe_complete_bartemp(done->bar_4);   /* 完成页进度条气泡=结束时探针温度 */
             }
             current_group = g_hot_bbq_complete_probe;
             lang_scr_load_anim(hot_bbq_complete_probe_get(&ui_manager)->obj,
@@ -847,6 +849,7 @@ void page_pop(void)
                 lv_group_focus_obj(done->image_32);
                 lv_label_set_text_fmt(done->status, tr("| 底部烧烤 | %d℃ | %d℃"), set_temp, probe_target_temp);
                 lv_bar_set_value(done->bar_8, 100, LV_ANIM_OFF);
+                nav_probe_complete_bartemp(done->bar_8);   /* 完成页进度条气泡=结束时探针温度 */
             }
             current_group = g_bottom_bbq_complete_probe;
             lang_scr_load_anim(bottom_bbq_complete_probe_get(&ui_manager)->obj,
@@ -889,6 +892,7 @@ void page_pop(void)
                 lv_group_focus_obj(done->image_48);
                 lv_label_set_text_fmt(done->status, tr("| 慢煮 | %d℃ | %d℃"), set_temp, probe_target_temp);
                 lv_bar_set_value(done->bar_12, 100, LV_ANIM_OFF);
+                nav_probe_complete_bartemp(done->bar_12);   /* 完成页进度条气泡=结束时探针温度 */
             }
             current_group = g_slowcook_complete_probe;
             lang_scr_load_anim(slowcook_complete_probe_get(&ui_manager)->obj,

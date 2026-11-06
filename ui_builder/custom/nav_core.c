@@ -1383,6 +1383,17 @@ lv_obj_t *nav_probe_bartemp(lv_obj_t *bar, int percent, int temp_c)
     return lbl;
 }
 
+/* 探针完成页进度条温度气泡(2026-11-06 用户需求:完成页进度条也要显示温度)。
+ * 完成页进度条固定满格,气泡取结束时的探针读数——与烹饪页同口径,读数封顶到设置温度
+ * (到温瞬间的超调值不往气泡上顶,保证与跳完成前最后一屏的数字连续)。
+ * 完成时 cook_timer 已删,页面静态,只在建页/返回重建时刷新一次 */
+lv_obj_t *nav_probe_complete_bartemp(lv_obj_t *bar)
+{
+    int probe = get_probe_temp();
+    if (probe > probe_target_temp) probe = probe_target_temp;
+    return nav_probe_bartemp(bar, 100, probe);
+}
+
 /* probe menu 单下划线按显示位数换源/移位:华氏三位(99°C→210°F)时 120px 短线短一截。
  * 直接复用探针行原生线控件(渲染已被证实),不新建控件;右缘 CN 1011/EN 1009 与 ℃ 对齐。
  * 只对 src 含 "underline" 的线生效——其它单线指示字段自动跳过零影响。

@@ -414,6 +414,7 @@ void jump_to_bottom_bbq_complete_probe(void)
                                 LV_EVENT_CLICKED, NULL);
             lv_label_set_text_fmt(complete->status, tr("| 底部烧烤 | %d℃ | %d℃"), set_temp, probe_target_temp);
             lv_bar_set_value(complete->bar_8, 100, LV_ANIM_OFF);
+            nav_probe_complete_bartemp(complete->bar_8);   /* 完成页进度条气泡=结束时探针温度 */
         }
     }
     current_group = g_bottom_bbq_complete_probe;
