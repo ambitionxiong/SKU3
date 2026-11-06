@@ -1054,8 +1054,23 @@ void on_contain_toggle(lv_event_t *e)
         lv_group_focus_obj(set->contain_button);
     }
 }
+/* 烹饪进度条动画执行体(全部模式共用:进入/暂停恢复/返回重建三路都挂这个 cb)。
+ * 2026-11-06 修"热解自清洁启动后进度条不动":LVGL v9 的 lv_anim_path_linear 用
+ * lv_map(act_time, 0, duration, 0, 1024),其中的 act_time*1024 是 int32 乘法——
+ * duration 超过 2^31/1024≈34.9 分钟(2097152ms)后乘积溢出变负,动画值跟着变负/错乱,
+ * 进度条被 bar 钳到 0(回空)或跳到很小的错值,并且每 ~70 分钟重复一次。
+ * 热解三档 75/100/120 分钟整段都在溢出区(实测 40 分钟时算出来是负值、75 分钟只有 9%),
+ * 4 小时档的长程序同样中招。
+ * 长程序(duration>2097152ms)且烹饪定时器在跑时,改按 elapsed 现算(int64 安全,
+ * 与返回确认页 stop_back_progress 同口径,起点同为 3%);短程序与暂停/确认页仍走动画值,
+ * 现有行为零变化。 */
 void anim_bar_set_value(void *obj, int32_t v)
 {
+    if (cook_total_ms > 2097152 && cook_timer) {
+        int p = stop_back_progress(lv_tick_get() - cook_start_time, cook_total_ms);
+        if (p > 100) p = 100;
+        v = p;
+    }
     lv_bar_set_value((lv_obj_t *)obj, v, LV_ANIM_OFF);
 }
 void on_sure_click(lv_event_t *e)
