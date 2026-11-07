@@ -347,7 +347,9 @@ static void on_set_power_click(lv_event_t *e)
     (void)e;
     int flag = (Machine_Set_num & Send_MachineState_Power_xxA) ? 1 : 0;   /* 0=13A 1=16A */
     static const char *const opts[2] = { "13A", "16A" };
-    sel_popup_create(SEL_WHERE_POWER, flag, 2, "功率", opts);
+    /* 弹窗标题与设置行同名(2026-11-07 用户定):行底图烙字"电源管理",
+       弹窗标题原只写"功率" */
+    sel_popup_create(SEL_WHERE_POWER, flag, 2, "电源管理", opts);
 }
 
 static void on_set_ts_click(lv_event_t *e)
