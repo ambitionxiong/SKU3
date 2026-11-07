@@ -389,6 +389,19 @@ void encoder_count_down_action(uint8_t key)
             lv_arc_set_value(scr->Count_Down_Arc, (int32_t)s_cd_total);
             count_down_running_visual();
             count_down_edit_visual(1);
+            /* 启动即把编辑区归零(2026-11-07 用户定稿):时/分/秒 清 00 再淡出。
+               原值留着会和下方倒计时(如 00:59:11)同屏矛盾;总秒数上面已取走,
+               圆弧/倒计时不受影响。下划线同时退回"时"位,下次编辑从这里起步 */
+            s_dhour = s_dmin = s_dsec = 0;
+            lv_label_set_text(scr->Hour_Lb, "00");
+            lv_label_set_text(scr->Min_Lb, "00");
+            lv_label_set_text(scr->Second_Lb, "00");
+            s_set_where = 1;
+            cd_underline_place(scr, 1);
+            cd_blink_register(0);
+            /* 立即置运行态:首秒(定时器还没走第一拍)转旋钮/再按确定不再被当待编辑,
+               否则 clock_sync 会用清过的 00 覆盖掉下方正在走的倒计时 */
+            s_run = 1;
         } else {
             g_send.buzzer_req = BUZZER_KEY_INVALID;   /* 0 秒不可启动 */
         }
