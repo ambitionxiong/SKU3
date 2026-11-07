@@ -382,7 +382,9 @@ static void on_set_djtime_click(lv_event_t *e)
 {
     (void)e;
     static const char *const opts[3] = { "开", "关", "夜间模式" };
-    sel_popup_create(SEL_WHERE_DJ, SET_Data.Set_StandbyTime, 3, "待机显示", opts);
+    /* 弹窗标题与设置行同名(2026-11-07 用户定):行底图烙字"待机时间显示",
+       弹窗标题原只写"待机显示",少了"时间"两个字 */
+    sel_popup_create(SEL_WHERE_DJ, SET_Data.Set_StandbyTime, 3, "待机时间显示", opts);
 }
 
 /* 语言按钮:弹出语言三选项弹窗(English/繁體中文/简体中文),语言名保持原文不过翻译表 */

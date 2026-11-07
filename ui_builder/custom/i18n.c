@@ -244,7 +244,7 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "开/关/夜间模式", "on/off/Night Dimming" },
         { "开始", "Start" },
         { "开机欢迎音", "Welcome Melody" },
-        { "待机时间显示", "Time Display" },
+        { "待机时间显示", "Clock Format" },
         { "微波", "Microwave" },
         { "微波 + 上下烧烤", "Microwave + Conventional" },
         { "微波+热风烤", "Microwave + Turbo Grill" },
