@@ -321,7 +321,9 @@ static void on_set_tflqyx_click(lv_event_t *e)
     (void)e;
     int flag = (Machine_Set_num & Send_MachineState_CoolingFanRun) ? 1 : 0;   /* 0=温度控制(BIT清) 1=时间控制(BIT置),与选项行序一致 */
     static const char *const opts[2] = { "温度控制", "时间控制" };
-    sel_popup_create(SEL_WHERE_FAN, flag, 2, "通风冷却", opts);
+    /* 弹窗标题与设置行同名(2026-11-07 用户定):行底图烙字"通风冷却运行",
+       弹窗标题原只写"通风冷却",少了"运行"两个字 */
+    sel_popup_create(SEL_WHERE_FAN, flag, 2, "通风冷却运行", opts);
 }
 
 static void on_set_ldg_click(lv_event_t *e)
