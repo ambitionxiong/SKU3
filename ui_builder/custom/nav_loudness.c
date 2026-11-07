@@ -485,7 +485,7 @@ void screen_Loudness_create(ui_manager_t *ui)
 
     // Init scr->kaijihuanyinqu_CH_Lb
     scr->kaijihuanyinqu_CH_Lb = lv_label_create(scr->obj);
-    lv_label_set_text(scr->kaijihuanyinqu_CH_Lb, tr("开机欢迎曲"));
+    lv_label_set_text(scr->kaijihuanyinqu_CH_Lb, tr("开机欢迎音"));
     lv_label_set_long_mode(scr->kaijihuanyinqu_CH_Lb, LV_LABEL_LONG_WRAP);
     // lv_obj_set_pos(scr->kaijihuanyinqu_CH_Lb, 230, 382);
     lv_obj_set_size(scr->kaijihuanyinqu_CH_Lb, 250, 32);
