@@ -994,6 +994,8 @@ const char *six_current_desc(void); /* 当前六感说明：烤鸡走独立名�
 int six_desc_is_wide_dish(void);    /* 当前说明属泡芙/千层酥(EN 说明页加宽仅此两页,2026-10-27) */
 int six_desc_is_millefeuille(void); /* 当前说明属千层酥(9 行页收行距/flex 距用,2026-10-27) */
 void jump_to_probeneedtip(void);    /* 烤鸡探针提示页：未插探针时进入 */
+void probeneedtip_cancel_auto_dismiss(void);   /* 烤鸡探针提示:取消 5 秒自动关闭定时器 */
+void probeneedtip_dismiss_now(void);           /* 烤鸡探针提示:立即关闭(取消定时器+回上一页) */
 int toastcolor_weight_value(void);   /* 当前选中份量克数(-1=未选/非份量组) */
 void jump_to_chick_cooking(void);   /* 烤全鸡烹饪页（探针温度标记完成） */
 void six_chick_handle_back(void);   /* 烤鸡烹饪页 BACK：遮罩确认/完成退出 */

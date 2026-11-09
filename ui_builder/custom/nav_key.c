@@ -378,9 +378,8 @@ void process_key(uint8_t key)
     /* 腔温过热提示页:仅 BACK 有效(temptip_dismiss_now 提前结束),功能键静默忽略 */
     if (depth > 0 && page_stack[depth - 1] == PAGE_TEMPTIP && key != KEY_BACK)
         return;
-    /* 烤鸡探针提示页:仅 BACK / 确定(编码器按下=点击 sure)有效，其余功能键静默忽略 */
-    if (depth > 0 && page_stack[depth - 1] == PAGE_PROBENEEDTIP &&
-        key != KEY_BACK && key != KEY_ENCODER_PRESS)
+    /* 烤鸡探针提示页:仅 BACK 有效(其余功能键静默忽略);页面 5 秒自动退出 */
+    if (depth > 0 && page_stack[depth - 1] == PAGE_PROBENEEDTIP && key != KEY_BACK)
         return;
     /* 离开关于机器页(功能键/SET):先把界面状态从版本查询态(7)恢复设置界面态(1)。
      * 各目标页入口多假定来自设置态而不自行置标志,从 7 直接跳会把 7 带进目标页 */
@@ -1039,6 +1038,9 @@ void process_key(uint8_t key)
             }
             else if (cur == PAGE_TEMPTIP) {
                 temptip_dismiss_now();   /* 温度提示:BACK 提前结束(恢复 iface + 回 prev) */
+            }
+            else if (cur == PAGE_PROBENEEDTIP) {
+                probeneedtip_dismiss_now();   /* 烤鸡探针提示:BACK 提前结束(同时取消 5 秒自动关闭) */
             }
             else if (cur == PAGE_LOUDNESS) {
                 return_Loudness_action();   /* 声音页 BACK:弹窗开则关弹窗,否则回设置覆盖层 */

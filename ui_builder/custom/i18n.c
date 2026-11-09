@@ -531,6 +531,7 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "需 要", "Need" },   /* 2026-10-26 样张:烤色询问确认钮(仅 nav_six_cook 使用) */
         { "需要插入探针才能继续", "Insert probe to continue" },
         { "需要插入温度探针才能使用", "Insert probe to use" },
+        { "需要插入温度探针才能继续", "Insert probe to continue" },
         { "面包", "Bread" },
         { "面包卷", "Bread roll" },
         { "顶部烧烤", "Grill" },

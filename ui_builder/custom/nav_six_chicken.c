@@ -635,7 +635,6 @@ static void on_meattz_mutton_click(lv_event_t *e);
 static void on_probe_dish_click(lv_event_t *e);
 static void on_chickenmenu_weight_dish_click(lv_event_t *e);
 static void on_duckmenu_wholeduck_click(lv_event_t *e);
-static void on_probeneedtip_sure_click(lv_event_t *e);
 
 /* ================= chick6menu（家禽：鸡/鸭） ================= */
 
@@ -1559,20 +1558,31 @@ void jump_to_sidedish_menu(void)
 }
 
 /* ================= probeneedtip（烤鸡探针提示页） =================
- * 未插探针时的提示页：仅 sure 进焦点组；点 sure 或 BACK 都回到 chickenmenu。 */
+ * 未插探针时的提示页（2026-11-09 用户需求）：
+ *   只留居中的提示语（"需要插入温度探针才能继续"），不显示左上菜名、不显示右上"确定"；
+ *   页面停留 5 秒自动返回上一页，BACK 可提前返回。 */
+static lv_timer_t *s_probeneedtip_timer = NULL;
 
-/* 探针提示页左上角菜名（按进入的菜） */
-static const char *probeneedtip_dish_name(void)
+void probeneedtip_cancel_auto_dismiss(void)
 {
-    switch (g_six_bread_type) {
-    case SIX_CHICK_WHOLE:        return tr("烤全鸡");
-    case SIX_CHICK_DUCK_WHOLE:   return tr("烤全鸭");
-    case SIX_MEAT_GRILL_STEAK:   return tr("烤牛排");
-    case SIX_MEAT_GRILL_BEEF:    return tr("烤牛肉");
-    case SIX_MEAT_GRILL_LEG:     return tr("烤羊腿");
-    case SIX_MEAT_GRILL_LAMBS:   return tr("烤羊排");
-    default:                     return tr("第六感");
+    if (s_probeneedtip_timer) {
+        lv_timer_del(s_probeneedtip_timer);
+        s_probeneedtip_timer = NULL;
     }
+}
+
+/* 提前/到点关闭:取消定时器 + 回上一页 */
+void probeneedtip_dismiss_now(void)
+{
+    probeneedtip_cancel_auto_dismiss();
+    if (depth > 0 && page_stack[depth - 1] == PAGE_PROBENEEDTIP)
+        page_pop();
+}
+
+static void auto_dismiss_probeneedtip(lv_timer_t *timer)
+{
+    (void)timer;
+    probeneedtip_dismiss_now();
 }
 
 void jump_to_probeneedtip(void)
@@ -1583,38 +1593,31 @@ void jump_to_probeneedtip(void)
 
     probeneedtip_t *pt = probeneedtip_get(&ui_manager);
     if (pt) {
-        /* 左上角显示进入时的菜名 */
+        /* 提示语固定一句（与菜品无关） */
+        lv_obj_t *msg = pt->button_20 ? lv_obj_get_child(pt->button_20, 0) : NULL;
+        if (msg)
+            lv_label_set_text(msg, tr("需要插入温度探针才能继续"));
+        /* 左上菜名、右上"确定"都不显示 */
         if (pt->name)
-            lv_label_set_text(pt->name, tr(probeneedtip_dish_name()));
-
-        lv_obj_t *btns[] = { pt->sure };
-        const int n = (int)(sizeof(btns) / sizeof(btns[0]));
-        for (int k = 0; k < n; k++) {
-            if (btns[k]) lv_group_remove_obj(btns[k]);
-        }
-        if (g_probeneedtip) lv_group_del(g_probeneedtip);
-        g_probeneedtip = group_create_for_page(btns, n);
-        clear_focus_states(btns, n);
-
+            lv_obj_add_flag(pt->name, LV_OBJ_FLAG_HIDDEN);
         if (pt->sure) {
-            lv_obj_add_event_cb(pt->sure, on_probeneedtip_sure_click, LV_EVENT_CLICKED, NULL);
-            lv_group_focus_obj(pt->sure);
+            lv_group_remove_obj(pt->sure);
+            lv_obj_add_flag(pt->sure, LV_OBJ_FLAG_HIDDEN);
         }
     }
-    current_group = g_probeneedtip;
+    if (g_probeneedtip) {
+        lv_group_del(g_probeneedtip);
+        g_probeneedtip = NULL;
+    }
+    current_group = NULL;   /* 无可聚焦控件:按键由 nav_key.c 栈顶守卫分流 */
 
     lang_scr_load_anim(probeneedtip_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
+    /* 5 秒自动退出；BACK 可提前返回 */
+    probeneedtip_cancel_auto_dismiss();
+    s_probeneedtip_timer = lv_timer_create(auto_dismiss_probeneedtip, 5000, NULL);
     printf("[six_chicken] jump: probeneedtip\n");
-}
-
-/* sure：弹出提示页，回到 chickenmenu（与 BACK 行为一致） */
-static void on_probeneedtip_sure_click(lv_event_t *e)
-{
-    if (screen_is_loading(lv_scr_act())) return;
-    page_pop();
-    printf("[six_chicken] probeneedtip sure -> back to chickenmenu\n");
 }
 
 /* ================= 烤全鸡烹饪页（chickencooking UI） =================
