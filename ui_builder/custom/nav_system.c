@@ -176,7 +176,8 @@ static void system_timer_cb(lv_timer_t *timer)
     }
 
     if (g_send.iface_status == IFACE_SLEEP) {
-        jump_to_probetip(probe_now ? tr("探针已插入") : tr("探针已拔出"));
+        /* 关机(待机显示)状态:插拔探针只记边沿(probe_last 已更新),不弹提示、
+           不重建页面,保持关机界面不唤醒(2026-11-09 用户) */
         return;
     }
 
