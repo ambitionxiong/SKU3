@@ -31,7 +31,7 @@ void probeneedtip_create(ui_manager_t *ui)
     // Init scr->button_20
     scr->button_20 = lv_btn_create(scr->obj);
     lv_obj_t *button_20_label = lv_label_create(scr->button_20);
-    lv_label_set_text(button_20_label, "需要插入温度探针才能使用");
+    lv_label_set_text(button_20_label, "需要插入温度探针才能继续");
     lv_obj_align(button_20_label, LV_ALIGN_CENTER, 0, 0);
     lv_obj_set_pos(scr->button_20, 19, 113);
     lv_obj_set_size(scr->button_20, 1243, 347);

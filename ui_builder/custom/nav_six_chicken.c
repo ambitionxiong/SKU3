@@ -1593,10 +1593,7 @@ void jump_to_probeneedtip(void)
 
     probeneedtip_t *pt = probeneedtip_get(&ui_manager);
     if (pt) {
-        /* 提示语固定一句（与菜品无关） */
-        lv_obj_t *msg = pt->button_20 ? lv_obj_get_child(pt->button_20, 0) : NULL;
-        if (msg)
-            lv_label_set_text(msg, tr("需要插入温度探针才能继续"));
+        /* 提示语已直接改在生成页 probeneedtip.c（上位机不再覆盖），此处只控制显隐 */
         /* 左上菜名、右上"确定"都不显示 */
         if (pt->name)
             lv_obj_add_flag(pt->name, LV_OBJ_FLAG_HIDDEN);
