@@ -12723,7 +12723,7 @@ void screen_SET_lang_tune(void)
 
     /* TXT_Img: 图片 | (48,112) | img: set_bg_txt.png */
     lv_obj_set_pos(pg->TXT_Img, 48, 112-17);
-    /* 2026-11-09 用户:EN 两张底图内 Date&Time 已改为 "Date & Time"(图内字距重排) */
+    /* 2026-11-09 用户:EN 两张底图内 Date&Time 已按标准图改为 "Date & Time"(字距 9/8px) */
     /* 运行态(烹饪/暂停/完成/预约)用运行版底图,对应 screen_set_rebuild 的中文分支 */
     if (screen_set_was_running())
         lv_image_set_src(pg->TXT_Img, LVGL_IMAGE_PATH(set_work_bg_txt_en.png));
