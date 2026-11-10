@@ -500,7 +500,7 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "下午", "PM" },
         { "年", "Year" },
         { "月", "Month" },
-        { "日", "Date" },
+        { "日", "Day" },   /* 2026-11-10 用户:日期页日数值后的单位改 Day(原 Date;全项目仅此一处用"日") */
         { "时制", "Clock" },
         { "时间", "Time" },
         { "设定模式/设定温度/设定时间", "Set Function/Set Temperature/Set Time" },
