@@ -42,7 +42,7 @@ void cake6menu_create(ui_manager_t *ui)
     // Init scr->swissroll
     scr->swissroll = lv_btn_create(scr->obj);
     lv_obj_t *swissroll_label = lv_label_create(scr->swissroll);
-    lv_label_set_text(swissroll_label, "瑞士卷");
+    lv_label_set_text(swissroll_label, "海绵蛋糕");   /* 2026-11-10 用户:与 spongecake 换位(左竖瓦片放海绵蛋糕) */
     lv_obj_align(swissroll_label, LV_ALIGN_CENTER, 0, 0);
     lv_obj_set_pos(scr->swissroll, 22, 79);
     lv_obj_set_size(scr->swissroll, 203, 378);
@@ -112,7 +112,7 @@ void cake6menu_create(ui_manager_t *ui)
     // Init scr->spongecake
     scr->spongecake = lv_btn_create(scr->obj);
     lv_obj_t *spongecake_label = lv_label_create(scr->spongecake);
-    lv_label_set_text(spongecake_label, "海绵蛋糕");
+    lv_label_set_text(spongecake_label, "瑞士卷");   /* 2026-11-10 用户:与 swissroll 换位(此处放瑞士卷) */
     lv_obj_align(spongecake_label, LV_ALIGN_CENTER, 0, 0);
     lv_obj_set_pos(scr->spongecake, 642, 77);
     lv_obj_set_size(scr->spongecake, 205, 191);

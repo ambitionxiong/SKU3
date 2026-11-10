@@ -37,11 +37,11 @@ void jump_to_cake6menu(void)
         clear_focus_states(btns, n);
 
         /* 绑定 11 个蛋糕按钮, user_data = 菜类型 */
-        if (ck->swissroll)     lv_obj_add_event_cb(ck->swissroll, on_cake6menu_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CAKE_SWISSROLL);
+        if (ck->swissroll)     lv_obj_add_event_cb(ck->swissroll, on_cake6menu_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CAKE_SPONGECAKE);   /* 2026-11-10 换位:左竖瓦片=海绵蛋糕 */
         if (ck->strudel)       lv_obj_add_event_cb(ck->strudel, on_cake6menu_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CAKE_STRUDEL);
         if (ck->muffin)        lv_obj_add_event_cb(ck->muffin, on_cake6menu_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CAKE_MUFFIN);
         if (ck->madeleine)     lv_obj_add_event_cb(ck->madeleine, on_cake6menu_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CAKE_MADELEINE);
-        if (ck->spongecake)    lv_obj_add_event_cb(ck->spongecake, on_cake6menu_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CAKE_SPONGECAKE);
+        if (ck->spongecake)    lv_obj_add_event_cb(ck->spongecake, on_cake6menu_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CAKE_SWISSROLL);   /* 2026-11-10 换位:此处=瑞士卷 */
         if (ck->cupcake)       lv_obj_add_event_cb(ck->cupcake, on_cake6menu_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CAKE_CUPCAKE);
         if (ck->chocolatecake) lv_obj_add_event_cb(ck->chocolatecake, on_cake6menu_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CAKE_CHOCOLATECAKE);
         if (ck->creampuff)     lv_obj_add_event_cb(ck->creampuff, on_cake6menu_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CAKE_CREAMPUFF);
@@ -79,11 +79,11 @@ void cake6menu_rebuild(page_id_t child)
         clear_focus_states(btns, n);
 
         /* 绑定 11 个蛋糕按钮, user_data = 菜类型 */
-        if (ck->swissroll)     lv_obj_add_event_cb(ck->swissroll, on_cake6menu_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CAKE_SWISSROLL);
+        if (ck->swissroll)     lv_obj_add_event_cb(ck->swissroll, on_cake6menu_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CAKE_SPONGECAKE);   /* 2026-11-10 换位:左竖瓦片=海绵蛋糕 */
         if (ck->strudel)       lv_obj_add_event_cb(ck->strudel, on_cake6menu_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CAKE_STRUDEL);
         if (ck->muffin)        lv_obj_add_event_cb(ck->muffin, on_cake6menu_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CAKE_MUFFIN);
         if (ck->madeleine)     lv_obj_add_event_cb(ck->madeleine, on_cake6menu_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CAKE_MADELEINE);
-        if (ck->spongecake)    lv_obj_add_event_cb(ck->spongecake, on_cake6menu_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CAKE_SPONGECAKE);
+        if (ck->spongecake)    lv_obj_add_event_cb(ck->spongecake, on_cake6menu_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CAKE_SWISSROLL);   /* 2026-11-10 换位:此处=瑞士卷 */
         if (ck->cupcake)       lv_obj_add_event_cb(ck->cupcake, on_cake6menu_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CAKE_CUPCAKE);
         if (ck->chocolatecake) lv_obj_add_event_cb(ck->chocolatecake, on_cake6menu_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CAKE_CHOCOLATECAKE);
         if (ck->creampuff)     lv_obj_add_event_cb(ck->creampuff, on_cake6menu_click, LV_EVENT_CLICKED, (void *)(intptr_t)SIX_CAKE_CREAMPUFF);
@@ -93,11 +93,11 @@ void cake6menu_rebuild(page_id_t child)
         /* 返回时恢复进入时的菜焦点 */
         lv_obj_t *focus_cake = NULL;
         switch (g_six_bread_type) {
-        case SIX_CAKE_SWISSROLL:     focus_cake = ck->swissroll; break;
+        case SIX_CAKE_SWISSROLL:     focus_cake = ck->spongecake; break;   /* 2026-11-10 换位 */
         case SIX_CAKE_STRUDEL:       focus_cake = ck->strudel; break;
         case SIX_CAKE_MUFFIN:        focus_cake = ck->muffin; break;
         case SIX_CAKE_MADELEINE:     focus_cake = ck->madeleine; break;
-        case SIX_CAKE_SPONGECAKE:    focus_cake = ck->spongecake; break;
+        case SIX_CAKE_SPONGECAKE:    focus_cake = ck->swissroll; break;    /* 2026-11-10 换位 */
         case SIX_CAKE_CUPCAKE:       focus_cake = ck->cupcake; break;
         case SIX_CAKE_CHOCOLATECAKE: focus_cake = ck->chocolatecake; break;
         case SIX_CAKE_CREAMPUFF:     focus_cake = ck->creampuff; break;
