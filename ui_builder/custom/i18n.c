@@ -189,7 +189,7 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "千层酥", "Millefeuille" },
         { "千层面", "Lasagna" },
         { "卡内罗尼", "Cannelloni" },
-        { "砂锅菜/烤意面", "Casseroles & Baked Pasta" },
+        { "砂锅菜/烤意面", "Baked Pasta" },   /* 2026-11-10 用户:英文去掉 Casseroles &,子菜单标题/收藏同取此值 */
         { "发酵", "Rising" },
         { "发酵中...", "Rising..." },
         { "发酵中…", "Rising" },
@@ -206,7 +206,7 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "增加蒸汽：开/关/低/中/高", "Added Steam: ON/OFF/Low/Mid/High" },
         { "声音", "Sound" },
         { "声音设置", "Sound Settings" },
-        { "多段烹饪", "Multi-step\nCooking" },
+        { "多段烹饪", "Multi-stage\nCooking" },   /* 2026-11-10 用户:Multi-step→Multi-stage */
         { "安息日", "Sabbath Mode" },
         { "家禽", "Poultry" },
         { "小结：\n份量：%dg\n", "Summary:\nPortion: %dg\n" },
@@ -485,7 +485,7 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "蒸汽解冻", "Steam Defrost" },
         { "蒸汽预热", "Steam Preheat" },
         { "蔬菜", "Vegetables" },
-        { "蔬菜/配菜", "Vegetables & Side Dishes" },   /* 2026-10-10 规范新命名(sixmenu 瓦片+子菜单标题),原 Veg/Sides */
+        { "蔬菜/配菜", "Vegetables" },   /* 2026-10-10 规范新命名(sixmenu 瓦片+子菜单标题),原 Veg/Sides;2026-11-10 用户:英文去掉 & Side Dishes */
         { "薯条", "French Fries" },
         { "蛋挞", "Egg Tart" },
         { "蛋糕", "Cake" },
@@ -591,7 +591,7 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "收藏功能", "Favorites" },
         { "启动", "Start" },
         { "删除", "Delete" },
-        { "多段烹饪", "Multi-Stage Cooking" },
+        { "多段烹饪", "Multi-stage\nCooking" },   /* 重复键:线性查表首个命中在上方 Multi-stage 条,此条同步值防歧义 */
         { "步骤一：", "Step 1: " },
         { "步骤二：", "Step 2: " },
         { "步骤三：", "Step 3: " },

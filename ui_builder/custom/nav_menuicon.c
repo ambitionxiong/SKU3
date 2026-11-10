@@ -136,8 +136,8 @@ void nav_menuicon_refit(void)
         menu_label_fit(sp->corn_label, 516, 402, 248, 44);
         menu_label_fit(sp->heat_contain_label, 764, 402, 248, 44);
         menu_label_fit(sp->some_cook_label, 1012, 387, 248, 58);
-        /* 多段烹饪词典首个命中即两行版(Multi-step\nCooking),直设保准(收藏页共用词典值不改) */
-        if (sp->some_cook_label) lv_label_set_text(sp->some_cook_label, "Multi-step\nCooking");
+        /* 多段烹饪词典首个命中即两行版(Multi-stage\nCooking),直设保准(收藏页共用词典值不改) */
+        if (sp->some_cook_label) lv_label_set_text(sp->some_cook_label, "Multi-stage\nCooking");
         /* 页标题: 24px 单行放下(保持左对齐) */
         if (sp->special_label) {
             lv_obj_set_pos(sp->special_label, 24, 24);
@@ -170,11 +170,12 @@ void nav_menuicon_refit(void)
             menu_icon_add(sm->fish, LVGL_IMAGE_PATH(fishseafood_icon.png), 248, 161, 35);
             six_tile_label(sm->fish, tr("鱼/海鲜"), 35 + 81 + MENU_GAP - MENU_INK_OFF, 44, 248);
         }
-        /* 行2 248x193 y268: 单行 label_rel=134; 蔬菜/砂锅两行: 图标对齐同排(icon_rel=35),
-         * 两行文字中心对齐单行中心(label_rel=120, h58) */
+        /* 行2 248x193 y268: 单行 label_rel=134
+         * (2026-11-10 用户:英文 Vegetables & Side Dishes→Vegetables、Casseroles & Baked Pasta→Baked Pasta,
+         *  改回单行排法,与同排 Pizzas/Snacks 同一基线;原两行块 label_rel=120/h58 不再用) */
         if (sm->vegetable) {
             menu_icon_add(sm->vegetable, LVGL_IMAGE_PATH(vegetables_icon.png), 248, 90, 35);
-            six_tile_label(sm->vegetable, "Vegetables &\nSide Dishes", 120, 58, 248);
+            six_tile_label(sm->vegetable, "Vegetables", 35 + 81 + MENU_GAP - MENU_INK_OFF, 44, 248);
         }
         if (sm->pizza6) {
             menu_icon_add(sm->pizza6, LVGL_IMAGE_PATH(pizzas_icon.png), 248, 129, 35);
@@ -182,7 +183,7 @@ void nav_menuicon_refit(void)
         }
         if (sm->pasta) {
             menu_icon_add(sm->pasta, LVGL_IMAGE_PATH(casseroles_icon.png), 248, 102, 35);
-            six_tile_label(sm->pasta, "Casseroles &\nBaked Pasta", 120, 58, 248);
+            six_tile_label(sm->pasta, "Baked Pasta", 35 + 81 + MENU_GAP - MENU_INK_OFF, 44, 248);
         }
         if (sm->snack) {
             menu_icon_add(sm->snack, LVGL_IMAGE_PATH(snack_icon.png), 248, 118, 35);

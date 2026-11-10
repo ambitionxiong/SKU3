@@ -2584,7 +2584,7 @@ void chick6menu_lang_tune(void)
 
     /* label_1: 标签 | "家禽" | (24,24) | 118x25 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_1, 24, 24);
-    lv_obj_set_size(pg->label_1, 430, 25);   /* EN 复用本页做鱼/蔬菜/意面标题:放得下 "Vegetables & Side Dishes"(2026-10-10) */
+    lv_obj_set_size(pg->label_1, 430, 25);   /* EN 复用本页做鱼/蔬菜/意面标题:2026-11-10 起英文蔬菜=Vegetables、意面=Baked Pasta,430 仍够单行 */
 
     /* chicken: 按钮 | (12,75) | 638x387 | font taiwanpearl_regular_30 | bg: div230bg.png */
     lv_obj_set_pos(pg->chicken, 12, 75);
@@ -2601,8 +2601,8 @@ void chick6menu_lang_tune(void)
        蔬菜/配菜首页:       第六感→蔬菜/配菜
        砂锅菜/烤意面首页:   第六感→意面(千层面/卡内罗尼) ---- */
     if (six_chick_get_vegetable_mode() || six_chick_get_pasta_mode()) {
-        /* 蔬菜配菜 / 砂锅菜烤意面: 标题文字较长,词典 2026-10-10 换 "Vegetables & Side Dishes"/
-           "Casseroles & Baked Pasta",label_1 已加宽 430 单行放下 */
+        /* 蔬菜配菜 / 砂锅菜烤意面: 标题走词典(2026-11-10 起英文简化为 Vegetables / Baked Pasta),
+           label_1 430 宽单行放下 */
     } else if (six_chick_get_fish_mode()) {
         /* 鱼海鲜首页 / 烤鱼子页 */
         /* TODO: 英文实测后按需调整 */
@@ -5536,7 +5536,7 @@ void duckmenu_lang_tune(void)
         /* label_1: 标签 | "鸭" | (24,24) | 97x25 | font taiwanpearl_regular_24 */
         lv_obj_set_pos(pg->label_1, 24, 24);
         lv_obj_set_size(pg->label_1, 250, 25);
-        /* TODO: 英文实测后调整(label_1 文字 Snacks/Side Dishes/Meat 较长, 可能需加宽) */
+        /* 250 宽:英文 Snacks/Vegetables/Meat 均单行放下(Vegetables 2026-11-10 去 & Side Dishes) */
     } else {
         /* 默认: 家禽→烤全鸭 */
         /* wholeduck: 按钮 | (18,68) | 624x400 | font taiwanpearl_regular_30 | bg: div2bk30.png */
@@ -13876,7 +13876,7 @@ void somecook_lang_tune(void)
     /* label_1: 标签 | "多段烹饪" | (24,24) | 103x22 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_1, 24, 24);
     lv_obj_set_size(pg->label_1, 250, 22);
-    lv_label_set_text(pg->label_1, "Multi-step Cooking");
+    lv_label_set_text(pg->label_1, "Multi-stage Cooking");   /* 2026-11-10 用户:Multi-step→Multi-stage */
 
     /* plus1: 图片 | (201,262) | img: plus.png */
     lv_obj_set_pos(pg->plus1, 201, 262);
@@ -14396,7 +14396,7 @@ void stepset_lang_tune(void)
     /* label_1: 标签 | "多段烹饪" | (24,24) | 144x32 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_1, 24, 24);
     lv_obj_set_size(pg->label_1, 250, 32);
-    lv_label_set_text(pg->label_1, "Multi-step Cooking");
+    lv_label_set_text(pg->label_1, "Multi-stage Cooking");   /* 2026-11-10 用户:Multi-step→Multi-stage */
 
     /* stepname: 标签 | "步骤一" | (596,139) | 144x32 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->stepname, 596, 139);
