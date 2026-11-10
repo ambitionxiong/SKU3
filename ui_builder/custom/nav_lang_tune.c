@@ -1404,7 +1404,9 @@ void bottom_bbq_stop_back_probe_lang_tune(void)
 
     /* label_72: 标签 | "暂停中..." | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_72, 273, 157);
-    lv_obj_set_size(pg->label_72, 350, 60);
+    /* 2026-11-10 固定 350 宽装不下 "Delayed Start..."(约 420px),WRAP 折成两行后
+       第二行被裁/压到状态行;改按内容宽度(与 updown_bbq_stop_back 同口径),单行不折 */
+    lv_obj_set_size(pg->label_72, LV_SIZE_CONTENT, 60);
 
     /* container_2: 容器 | (0,0) | 1280x480 */
     lv_obj_set_pos(pg->container_2, 0, 0);
@@ -7008,7 +7010,9 @@ void hot_bbq_stop_back_probe_lang_tune(void)
 
     /* label_39: 标签 | "暂停中..." | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_39, 273, 157);
-    lv_obj_set_size(pg->label_39, 350, 60);
+    /* 2026-11-10 固定 350 宽装不下 "Delayed Start..."(约 420px),WRAP 折成两行后
+       第二行被裁/压到状态行;改按内容宽度(与 updown_bbq_stop_back 同口径),单行不折 */
+    lv_obj_set_size(pg->label_39, LV_SIZE_CONTENT, 60);
 
     /* container_1: 容器 | (0,0) | 1280x480 */
     lv_obj_set_pos(pg->container_1, 0, 0);
@@ -13748,7 +13752,9 @@ void slowcook_stop_back_probe_lang_tune(void)
 
     /* label_105: 标签 | "暂停中..." | (273,157) | 235x60 | font taiwanpearl_regular_60 | 动态定位(需微调见文件头模板) */
     /* 位置由业务动态控制, 微调按文件头模板 */
-    lv_obj_set_size(pg->label_105, 350, 60);
+    /* 2026-11-10 固定 350 宽装不下 "Delayed Start..."(约 420px),WRAP 折成两行后
+       第二行被裁/压到状态行;改按内容宽度(与 updown_bbq_stop_back 同口径),单行不折 */
+    lv_obj_set_size(pg->label_105, LV_SIZE_CONTENT, 60);
 
     /* container_3: 容器 | (0,0) | 1280x480 */
     lv_obj_set_pos(pg->container_3, 0, 0);
@@ -17321,7 +17327,9 @@ void updown_bbq_stop_back_probe_lang_tune(void)
 
     /* label_71: 标签 | "暂停中..." | (273,157) | 235x60 | font taiwanpearl_regular_60 */
     lv_obj_set_pos(pg->label_71, 273, 157);
-    lv_obj_set_size(pg->label_71, 350, 60);
+    /* 2026-11-10 固定 350 宽装不下 "Delayed Start..."(约 420px),WRAP 折成两行后
+       第二行被裁/压到状态行;改按内容宽度(与 updown_bbq_stop_back 同口径),单行不折 */
+    lv_obj_set_size(pg->label_71, LV_SIZE_CONTENT, 60);
 
     /* container_3: 容器 | (0,0) | 1280x480 */
     lv_obj_set_pos(pg->container_3, 0, 0);
