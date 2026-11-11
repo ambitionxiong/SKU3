@@ -312,7 +312,8 @@ typedef enum {
     PAGE_FACTORY_RESET,     /* 出厂设置确认页（独立屏幕） */
     PAGE_ABOUT,             /* 关于机器页（独立屏幕，无按钮） */
     PAGE_ALARM,             /* 警报页（独立屏幕,吞全部键仅长按开关机） */
-    PAGE_LANG_PICK,         /* 首次上电语言选择页（独立屏幕,确认后进主菜单） */
+    PAGE_LANG_PICK,         /* 首次上电语言选择页（独立屏幕,确认后进功率页） */
+    PAGE_POWER_PICK,        /* 首次上电功率(电源管理)选择页（独立屏幕,确认后进日期页） */
 } page_id_t;
 
 extern page_id_t page_stack[];
@@ -723,10 +724,20 @@ extern uint8_t g_langpick_date_mode;      /* 首次上电链路:语言已确认�
 void screen_Langpick_create(ui_manager_t *ui);
 lv_obj_t *screen_Langpick_obj(void);
 lv_group_t *langpick_page_group(void);
-void langpick_reenter(void);              /* 日期页 BACK 返回语言页(首次上电链路内往返) */
+void langpick_reenter(void);              /* 功率页 BACK 返回语言页(首次上电链路内往返) */
 void langpick_enter_from_standby(void);   /* 首设未完成:从待机页改道重进语言页(wait 页非关机键/KEY1 长按唤醒共用) */
 void langpick_encoder_action(char key);
 void langpick_confirm(void);
+
+/* 首次上电功率(电源管理)选择页（nav_powerpick.c 实现，PAGE_POWER_PICK）
+   链路:语言页确认 → 本页 → 日期页 OK → 主菜单;BACK 回语言页 */
+void jump_to_power_pick(void);            /* 语言页确认:进功率页 */
+void powerpick_reenter(void);             /* 日期页 BACK:回功率页(链路内往返) */
+void screen_Powerpick_create(ui_manager_t *ui);
+lv_obj_t *screen_Powerpick_obj(void);
+lv_group_t *powerpick_page_group(void);
+void powerpick_encoder_action(char key);
+void powerpick_confirm(void);
 
 /* 计时器子页（nav_count_down.c 实现，PAGE_SET_COUNT） */
 void jump_to_count_down(void);

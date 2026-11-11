@@ -5,8 +5,9 @@
  * 全页底图 bg.png，中央面板 preheatbg.png（与预热页同图同位），左上固定双语标题，
  * 面板内 English/繁體中文/简体中文 三项滚轮（lv_roller，样式与 stepset 滚轮一致：
  * 未选中 24 号灰 0x89817d / 选中 36 号白，行距 84px，默认选中 English），编码器
- * 滚动（到端点无效音）、按下确认后写语言并进入首次上电日期设置页（nav_systime.c
- * 复用，date_mode 分支）；日期页 OK 写 RTC + firstboot=1 落盘后进 waitmenu 待机页。
+ * 滚动（到端点无效音）、按下确认后写语言并进入首次上电功率选择页
+ * (nav_powerpick.c)，功率确认后进日期设置页(nav_systime.c，date_mode 分支)；
+ * 日期页 OK 写 RTC + firstboot=1 落盘后直接进主菜单（不再落待机时钟页）。
  * 选中项带呼吸闪烁（全 UI 统一 blink 系统）：滚轮进闪烁组后选中行走 SELECTED
  * text_opa 通道、下划线图走 img_opa 通道，同相位；由焦点组 FOCUSED 事件驱动。
  * 下划线固定在中央行下方（roller 选中恒居中，线不随动）。
@@ -150,7 +151,7 @@ lv_obj_t *screen_Langpick_obj(void)
     return s_pick_page.obj;
 }
 
-/* 日期页 BACK 返回语言页(首次上电链路内往返):整屏重建。
+/* 功率页 BACK 返回语言页(首次上电链路内往返):整屏重建。
  * 语言页对象在上次确认时已被 lv_obj_clean 清掉子对象(焦点组也随之释放),
  * 先弃旧屏指针/删残留屏再重建;page_push 自带 nav_blink_forget 清旧注册,
  * create 内重建闪烁组/焦点组,默认选中 English */
@@ -224,9 +225,9 @@ void langpick_encoder_action(char key)
     g_send.buzzer_req = BUZZER_ENCODER;
 }
 
-/* 编码器按下确认:写语言状态并进入首次上电日期设置页(蜂鸣由 nav_key.c 分支给 BUZZER_KEY_VALID)。
- * g_langpick_done 此处不置 1:flash 完成标志代表"语言+日期全流程完成",只在日期页 OK 时落盘——
- * 语言确认后、日期 OK 前断电重上电,firstboot= 仍为 0,会重新进设置 */
+/* 编码器按下确认:写语言状态并进入首次上电功率(电源管理)选择页(蜂鸣由 nav_key.c 分支给
+ * BUZZER_KEY_VALID)。g_langpick_done 此处不置 1:flash 完成标志代表"语言+功率+日期全流程
+ * 已完成",只在日期页 OK 时落盘——中途断电重上电,firstboot= 仍为 0,会重新进设置 */
 void langpick_confirm(void)
 {
     int sel = (int)lv_roller_get_selected(s_pick_page.Roller);
@@ -236,7 +237,6 @@ void langpick_confirm(void)
 #ifndef LV_USE_AIC_SIMULATOR
     config_save();   /* 保存语言选择(firstboot= 仍写 0) */
 #endif
-    printf("[langpick] confirm sel=%d lang=%d en=%u -> systime\n", sel, SET_Data.Set_Language, g_lang_en);
-    g_langpick_date_mode = 1;
-    jump_to_systime();   /* 复用日期设置页(nav_systime.c):date_mode 分支免弹设置覆盖层 */
+    printf("[langpick] confirm sel=%d lang=%d en=%u -> powerpick\n", sel, SET_Data.Set_Language, g_lang_en);
+    jump_to_power_pick();   /* 新增链路页:功率(电源管理)选择(PAGE_POWER_PICK) */
 }

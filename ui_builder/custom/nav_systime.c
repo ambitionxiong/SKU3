@@ -11,7 +11,7 @@
 #include "protocol.h"
 #include "custom_defs.h"
 #include "nav_internal.h"
-#include "nav_idle.h"     /* nav_enter_standby:首次上电链路 OK 后进 waitmenu */
+#include "nav_idle.h"     /* nav_goto_major_menu:首次上电/断电补设 OK 后进主菜单 */
 #include "screen_SET.h"   /* 返回设置层后焦点定位 Time_Btn 用 */
 #ifndef LV_USE_AIC_SIMULATOR
 #include "sd8568.h"       /* 真机 RTC 写入（rt_err_t 接口） */
@@ -50,7 +50,7 @@ static int s_hour = 0;
 static int s_min = 0;
 
 /* 断电重启开机模式:首设已完成(g_langpick_done=1)的每次冷启,RTC 因 VL 位被重置
- * 走时不可信,先进本页只补设日期时间,OK 后进待机页。RAM 态不落盘——本次开机
+ * 走时不可信,先进本页只补设日期时间,OK 后进主菜单。RAM 态不落盘——本次开机
  * 时间设完即清;没设完就关机的,唤醒(nav_power_on)凭它回本页补设 */
 uint8_t g_systime_boot_mode = 0;
 
@@ -237,23 +237,24 @@ void encoder_systime_action(uint8_t key)
             uart_print();   /* 立即上报新状态帧(时制位) */
             nav_topflag_clock_force();   /* 右上角时制排版立即切换(不等 500ms tick) */
             if (g_langpick_date_mode) {
-                /* 首次上电链路:语言+日期至此全部完成,完成标志在此刻才落盘
-                 * (此前断电 firstboot= 仍 0,重上电重新进设置),然后进 waitmenu 待机页 */
+                /* 首次上电链路(语言→功率→日期)至此全部完成,完成标志在此刻才落盘
+                 * (此前断电 firstboot= 仍 0,重上电重新进设置),然后直接进主菜单
+                 * (2026-11-11 用户:不再落待机时钟页) */
                 g_langpick_date_mode = 0;
                 g_langpick_done = 1;
 #ifndef LV_USE_AIC_SIMULATOR
                 config_save();   /* firstboot=1 立即落盘,不等 persist 线程 1s 轮询 */
 #endif
-                printf("[systime] firstboot setup done -> waitmenu\n");
-                nav_enter_standby();
+                printf("[systime] firstboot setup done -> major_menu\n");
+                nav_goto_major_menu();
                 return;
             }
             if (g_systime_boot_mode) {
-                /* 断电重启开机链路:时间补设完成即进系统,落待机页(与首设完成一致);
+                /* 断电重启开机链路:时间补设完成即进系统,直接落主菜单(与首设完成一致);
                  * 首设标志早已落盘,不再动 g_langpick_done/config_save */
                 g_systime_boot_mode = 0;
-                printf("[systime] boot time set -> waitmenu\n");
-                nav_enter_standby();
+                printf("[systime] boot time set -> major_menu\n");
+                nav_goto_major_menu();
                 return;
             }
             page_pop();
@@ -401,13 +402,17 @@ void jump_to_systime(void)
     lv_obj_set_style_img_opa(scr->set_time_bg_txt_Img, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_pos(scr->set_time_bg_txt_Img, 24, 24);
 
-    /* 开机链路(首设日期页/断电重启补设页)EN:左上角标题从烙字 "Date & Time" 换显
-     * "Set Date and Time"(2026-10-24 用户)。烙字在底图内无法单独换,该区域页面
-     * 背景为纯色(bg.png 实测 0x181918),同色矩形盖掉烙字后叠 24 号白字;
-     * 设置层进入的子页保持原烙字标题,简繁仍用各自底图 */
-    if ((g_langpick_date_mode || g_systime_boot_mode) && is_english()) {
+    /* 开机链路(首设日期页/断电重启补设页)左上角标题改写(2026-11-11 用户):
+     * EN 由烙字 "Date & Time" 换 "Set Date and Time"(2026-10-24),简/繁由烙字
+     * "日期时间/日期時間" 换 "设置日期和时间/設定日期和時間"——设置层进入的子页
+     * 仍用各自底图原烙字。烙字在底图内无法单独换,该区域页面背景为纯色
+     * (bg.png 实测 0x181918),同色矩形盖掉烙字后叠 24 号白字 */
+    if (g_langpick_date_mode || g_systime_boot_mode) {
+        const char *title_txt = is_english() ? "Set Date and Time" :
+                                ((SET_Data.Set_Language == 1) ? "設定日期和時間" :
+                                 "设置日期和时间");
         lv_obj_t *cover = lv_obj_create(scr->obj);
-        lv_obj_set_pos(cover, 24, 24);          /* 烙字带实测:屏幕 x26..158,y27..44 */
+        lv_obj_set_pos(cover, 24, 24);          /* 烙字带实测:屏幕 x26..158,y27..44(简繁 x27..118,y26..49) */
         lv_obj_set_size(cover, 150, 26);
         lv_obj_set_style_bg_color(cover, lv_color_hex(0x181918), LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_set_style_bg_opa(cover, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -415,7 +420,7 @@ void jump_to_systime(void)
         lv_obj_set_style_radius(cover, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_clear_flag(cover, LV_OBJ_FLAG_SCROLLABLE);
         lv_obj_t *title = lv_label_create(scr->obj);
-        lv_label_set_text(title, "Set Date and Time");
+        lv_label_set_text(title, title_txt);
         lv_obj_set_style_text_font(title, &c_taiwanpearl_regular_24, LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_set_style_text_color(title, lv_color_hex(0xffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_set_pos(title, 26, 24);
@@ -579,7 +584,7 @@ void jump_to_systime(void)
 
 /* 断电重启开机链路入口(首设已完成,g_langpick_done=1):冷启 nav_init/SLEEP 唤醒
  * nav_power_on/待机页改道守卫(nav_key.c)三处共用。置开机模式后走日期页直入栈
- * 分支;OK 进待机页时清标志(见 OK 臂)。栈形 [WAITMENU_24, SET_SYSTIME] 与
+ * 分支;OK 进主菜单时清标志(见 OK 臂)。栈形 [WAITMENU_24, SET_SYSTIME] 与
  * langpick_enter_from_standby 同构 */
 void systime_enter_boot_mode(void)
 {

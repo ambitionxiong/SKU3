@@ -261,7 +261,7 @@ void nav_init(void)
     depth = 0;
     page_push(PAGE_WAITMENU_24);        // 根页 = waitmenu_24
     if (!g_langpick_done) {
-        /* 首次上电:先进语言选择页,确认(langpick_confirm)后经 nav_goto_major_menu 进主菜单;
+        /* 首次上电:语言页→功率页→日期页,日期页 OK 后经 nav_goto_major_menu 进主菜单;
          * major_menu_create/groups_create/bind_events 由其内部补做,此处不重复 */
         page_push(PAGE_LANG_PICK);
         lv_obj_clean(lv_scr_act());
@@ -272,7 +272,7 @@ void nav_init(void)
                          ui_manager.auto_del);
     } else {
         /* 断电/复位重启的冷启(首设已完成):RTC 因 VL 位被重置走时不可信,
-         * 一律先进日期时间页只补设日期时间,OK 后进待机页——不再直接进主菜单 */
+         * 一律先进日期时间页只补设日期时间,OK 后直接进主菜单(2026-11-11 用户改) */
         systime_enter_boot_mode();
     }
 
@@ -315,10 +315,10 @@ void topflag_update_visibility(void)
 {
     topflagpage_t *tf = topflagpage_get(&ui_manager);
     if (!tf || !tf->obj) return;
-    /* 首次上电设置链路(语言页/日期页)与断电重启开机日期页:整层隐藏——时钟未
-       设置无意义,且日期页 OK 按钮就在右上角不能被时钟压住;进 waitmenu 后
-       恢复既有显隐规则 */
+    /* 首次上电设置链路(语言页/功率页/日期页)与断电重启开机日期页:整层隐藏——时钟未
+       设置无意义,且日期页 OK 按钮就在右上角不能被时钟压住;进主菜单后恢复既有显隐规则 */
     if (depth > 0 && (page_stack[depth - 1] == PAGE_LANG_PICK ||
+                      page_stack[depth - 1] == PAGE_POWER_PICK ||
                       (page_stack[depth - 1] == PAGE_SET_SYSTIME &&
                        (g_langpick_date_mode || g_systime_boot_mode)))) {
         lv_obj_add_flag(tf->obj, LV_OBJ_FLAG_HIDDEN);

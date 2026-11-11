@@ -285,6 +285,15 @@ void process_key(uint8_t key)
         uart_print();
         return;
     }
+    /* 功率选择页(首次上电链路第二页):放行编码器三键与 BACK(BACK 回语言页),
+       其余键吞掉——与语言页同口径,链路内不能跳进其它界面 */
+    if (depth > 0 && page_stack[depth - 1] == PAGE_POWER_PICK &&
+        key != KEY_ENCODER_CW && key != KEY_ENCODER_CCW &&
+        key != KEY_ENCODER_PRESS && key != KEY_BACK) {
+        g_send.buzzer_req = BUZZER_KEY_INVALID;
+        uart_print();
+        return;
+    }
     if (depth > 0 && page_stack[depth - 1] == PAGE_SET_SYSTIME &&
         (g_langpick_date_mode || g_systime_boot_mode) &&
         key != KEY_ENCODER_CW && key != KEY_ENCODER_CCW &&
@@ -853,6 +862,14 @@ void process_key(uint8_t key)
             uart_print();
             break;
         }
+        /* 首设功率选择页:BACK 直接回语言页——选择页没有"编辑/浏览"两态,
+         * 必须先于下面的编辑态守卫,否则第一下被当成"退编辑"吞掉(2026-11-11 用户) */
+        if (depth > 0 && page_stack[depth - 1] == PAGE_POWER_PICK) {
+            g_send.buzzer_req = BUZZER_KEY_VALID;
+            langpick_reenter();
+            uart_print();
+            break;
+        }
         if (current_group && nav_edit_session_active() &&
             nav_editable_target(lv_group_get_focused(current_group))) {
             /* 编辑态 BACK:退回浏览模式(数值保留/焦点不动/停闪),不弹页。
@@ -1067,7 +1084,7 @@ void process_key(uint8_t key)
             }
             else if (cur == PAGE_SET_SYSTIME) {
                 if (g_langpick_date_mode) {
-                    langpick_reenter();   /* 首次上电链路:BACK 回语言设置页(链路内往返) */
+                    powerpick_reenter();  /* 首次上电链路:BACK 回功率选择页(链路内往返) */
                 } else if (g_systime_boot_mode) {
                     /* 断电重启开机日期页:BACK 不放行(时间必须设完;编辑态 BACK
                        已由通用编辑守卫接管退编辑,走不到这里)。错误音由链尾统一上报 */
@@ -1304,6 +1321,12 @@ void process_key(uint8_t key)
             uart_print();
             break;
         }
+        /* 功率选择页(首次上电链路第二页):同滚轮口径 */
+        if (depth > 0 && page_stack[depth - 1] == PAGE_POWER_PICK) {
+            powerpick_encoder_action(KEY_ENCODER_CW);
+            uart_print();
+            break;
+        }
         if (!current_group) {
             g_send.buzzer_req = BUZZER_KEY_INVALID;
             uart_print();
@@ -1513,6 +1536,12 @@ void process_key(uint8_t key)
         /* 语言选择页(首次上电):按栈分流,蜂鸣由 langpick_encoder_action 决定 */
         if (depth > 0 && page_stack[depth - 1] == PAGE_LANG_PICK) {
             langpick_encoder_action(KEY_ENCODER_CCW);
+            uart_print();
+            break;
+        }
+        /* 功率选择页(首次上电链路第二页):同滚轮口径 */
+        if (depth > 0 && page_stack[depth - 1] == PAGE_POWER_PICK) {
+            powerpick_encoder_action(KEY_ENCODER_CCW);
             uart_print();
             break;
         }
@@ -2187,6 +2216,13 @@ void process_key(uint8_t key)
         if (depth > 0 && page_stack[depth - 1] == PAGE_LANG_PICK) {
             g_send.buzzer_req = BUZZER_KEY_VALID;
             langpick_confirm();
+            uart_print();
+            break;
+        }
+        /* 功率选择页(首次上电第二页)PRESS:确认功率+进日期页 */
+        if (depth > 0 && page_stack[depth - 1] == PAGE_POWER_PICK) {
+            g_send.buzzer_req = BUZZER_KEY_VALID;
+            powerpick_confirm();
             uart_print();
             break;
         }
