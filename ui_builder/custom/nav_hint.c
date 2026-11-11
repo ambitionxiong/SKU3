@@ -487,12 +487,13 @@ int nav_favask_get_mode(void)
 }
 
 /* ==============================
- * 关机确认弹层（topflag 顶层遮罩+tip1+tip2+sure,不自动消失）
+ * 关机确认弹层（topflag 顶层遮罩+tip1+tip2+sure,无操作 1 分钟自动取消回运行页）
  * 运行中(烹饪/暂停/预约/完成+保温)按住电源键 0.25s 弹出
  * (nav_keyio.c nav_key1_power_action):tip1="目前正在烹饪中，"
  * tip2="停止烹饪并关机吗？"(设计稿两行) sure="关 机"
  * PRESS=确认(nav_power_off 清全部运行状态落 SLEEP 待机)
  * BACK=取消继续运行;其余键忽略(nav_key.c 模态守卫)。
+ * 超时由 nav_idle.c 的 NAV_IDLE_CONFIRM_TO_COOKING_S 统一计时(2026-11-11 改 1 分钟)
  * ============================== */
 static int g_pwroff_ask_active = 0;
 /* 童锁期弹窗的遮罩层级:锁定中弹窗把 container_1 提到层顶(标语/确认钮压遮罩下),

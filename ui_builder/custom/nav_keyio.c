@@ -167,7 +167,7 @@ static void nav_key1_power_action(void)
         nav_power_on();
     } else if (nav_childlock_active()) {
         /* 童锁中电源键直达关机(2026-11-05 用户):锁层吞掉一切按键,弹"结束当前
-           任务并关机"也确认不了(3s 后自动取消,表现为只提示不关机);锁定态不做
+           任务并关机"也确认不了(1 分钟无操作后自动取消,表现为只提示不关机);锁定态不做
            确认直接关。Set_Lock 保持,再开机按它恢复锁层 */
         nav_power_off();
     } else if (nav_poweroff_ask_needed()) {
