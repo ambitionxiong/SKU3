@@ -3346,6 +3346,11 @@ void clean_menu_lang_tune(void)
     /* label_1: 标签 | "清洁" | (24,24) | 97x25 | font taiwanpearl_regular_24 */
     lv_obj_set_pos(pg->label_1, 24, 24);
     lv_obj_set_size(pg->label_1, 97, 25);
+    /* 英文标题按用户定稿改 "Cleaning Functions"(2026-11-11):
+     * 词典 清洁→Clean 是共享词条(其它页面在用),不能改词条;本页直设并放开宽度,
+     * 原 97x25 盒按中文两字定宽,"Cleaning Functions" 24 号约 190px 会被折行裁掉 */
+    lv_label_set_text(pg->label_1, "Cleaning Functions");
+    lv_obj_set_size(pg->label_1, LV_SIZE_CONTENT, 25);
 
     /* waterclean: 按钮 | (12,75) | 638x387 | font montserratmedium_16 | bg: div230bg.png */
     lv_obj_set_pos(pg->waterclean, 12, 75);
