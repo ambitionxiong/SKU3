@@ -571,33 +571,6 @@ void nav_poweroff_ask_show(void)
                              (int32_t)lv_obj_get_child_count(lv_obj_get_parent(tf->container_1)) - 1);
     }
     nav_favtip_collect_hide();   /* 完成页+保温时 tip1 与右侧防烫组件同位,藏掉关闭时恢复 */
-    /* 自清洁"冷却中"复用 STOP_BACK 页的叠字修复(2026-11-11 用户截图):冷却页 BACK 后
-     * 栈顶是 STOP_BACK 页但 g_on_stop_back 已清 0,电源确认弹窗会直接叠在这页上;
-     * 该页英文标语被 nav_lang.c bskin 换装挪到 x=770(<800 几何阈值),
-     * nav_favtip_collect_hide 的几何收集漏掉 → 弹窗 tip1/tip2 与页面两行标语叠字。
-     * 按三档结构显式补收标语+确认钮(几何收集已收的由 favtip_collect_add 去重),
-     * 弹窗取消时 nav_favtip_restore_elems 一并还原;简体/繁体位置同样适用 */
-    if (depth > 0 && !g_on_stop_back) {
-        switch (page_stack[depth - 1]) {
-        case PAGE_HOTCLEANSAVE_STOP_BACK:
-            favtip_collect_add(ui_manager.hotcleansave_stop_back.label_22);
-            favtip_collect_add(ui_manager.hotcleansave_stop_back.label_23);
-            favtip_collect_add(ui_manager.hotcleansave_stop_back.sure);
-            break;
-        case PAGE_HOTCLEANMIDDLE_STOP_BACK:
-            favtip_collect_add(ui_manager.hotcleanmiddle_stop_back.label_12);
-            favtip_collect_add(ui_manager.hotcleanmiddle_stop_back.label_13);
-            favtip_collect_add(ui_manager.hotcleanmiddle_stop_back.sure);
-            break;
-        case PAGE_HOTCLEANHIGH_STOP_BACK:
-            favtip_collect_add(ui_manager.hotcleanhigh_stop_back.label_17);
-            favtip_collect_add(ui_manager.hotcleanhigh_stop_back.label_18);
-            favtip_collect_add(ui_manager.hotcleanhigh_stop_back.sure);
-            break;
-        default:
-            break;
-        }
-    }
     g_pwroff_ask_active = 1;
     printf("[hint] poweroff ask show\n");
 }

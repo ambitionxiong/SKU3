@@ -52,6 +52,17 @@ int is_cook_setting_page(page_id_t cur)
     }
 }
 
+/* 自清洁"冷却中"把 STOP_BACK 页当冷却展示页复用(nav_key.c 冷却页 BACK:
+   jump_to_*_stop_back 后把 g_on_stop_back 清 0):页面 id 是确认页,但内容/语义是
+   冷却展示页,退页判定不能只看 g_on_stop_back */
+static int is_hotclean_cooling_page(page_id_t p)
+{
+    if (g_on_stop_back) return 0;
+    return (p == PAGE_HOTCLEANSAVE_STOP_BACK ||
+            p == PAGE_HOTCLEANMIDDLE_STOP_BACK ||
+            p == PAGE_HOTCLEANHIGH_STOP_BACK);
+}
+
 /* 关机确认弹窗前"先返回运行页"(2026-10-29 用户定稿):弹窗 tip1/tip2/sure 与多数
  * 页面右栏内容(设置页开关列/stopback 标语/倒计时)同位,原地弹要靠 collector 逐页
  * 藏元素补漏;改为弹窗前把非运行页按各自 BACK 同口径退回运行页(cooking/stop),
@@ -97,10 +108,13 @@ void nav_poweroff_ask_return_run(void)
     }
     /* 模式设置页(烹饪中小按钮进入)与单模式 stopback 确认页(g_on_stop_back 置位族):
      * BACK 即 page_pop 重建运行页(恢复保存值、cook_timer 未删沿走、清 stopback 标志)。
-     * 两层循环:设置页可叠在 stopback 之上,须连退两步才落运行页 */
+     * 两层循环:设置页可叠在 stopback 之上,须连退两步才落运行页。
+     * 自清洁"冷却中"复用 STOP_BACK 页(nav_key.c 冷却页 BACK 把 g_on_stop_back 清 0)
+     * 靠标志认不出来,单列判断按 BACK 同口径退回冷却页——与其它模式"先回运行页再弹"
+     * 一致(2026-11-11 用户:冷却页按电源不该把弹窗叠在确认页上) */
     for (int i = 0; i < 2 && depth > 1; i++) {
         cur = page_stack[depth - 1];
-        if (is_cook_setting_page(cur) || g_on_stop_back)
+        if (is_cook_setting_page(cur) || g_on_stop_back || is_hotclean_cooling_page(cur))
             page_pop();
         else
             break;
