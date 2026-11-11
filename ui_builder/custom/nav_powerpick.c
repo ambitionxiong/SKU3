@@ -109,11 +109,13 @@ void screen_Powerpick_create(ui_manager_t *ui)
     lv_obj_set_style_text_color(scr->Roller, lv_color_hex(0xffffff), LV_PART_SELECTED | LV_STATE_DEFAULT);
     lv_obj_set_style_text_line_space(scr->Roller, 51, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Init scr->Line  选中下划线(与语言页同位置同宽)
+    // Init scr->Line  选中下划线:按选项文字宽度收窄(2026-11-11 用户)
+    // "16A/13A" 48 号实测墨迹 78px(602..679),线取 90px(2×45),两侧各余 6px;
+    // 语言页那条 190px 是按 "English" 墨迹配的,本页两项都短,沿用会明显长一截
     scr->Line = lv_image_create(scr->obj);
     lv_image_set_src(scr->Line, LVGL_IMAGE_PATH(underline_135x4.png));
     lv_obj_set_pos(scr->Line, POWERPICK_LINE_X, POWERPICK_LINE_Y);
-    lv_image_set_scale_x(scr->Line, 360);   /* 135*360/256≈190,缩放绕中心,线仍居中 */
+    lv_image_set_scale_x(scr->Line, 171);   /* 135*171/256≈90,缩放绕中心,线仍居中 */
 
     /* 默认选中当前设置:Set_Power 1=16A(出厂默认) / 0=13A */
     lv_roller_set_selected(scr->Roller, SET_Data.Set_Power ? 0 : 1, LV_ANIM_OFF);
