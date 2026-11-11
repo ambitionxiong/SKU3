@@ -186,7 +186,7 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "烹饪说明：\n刷油，抹上盐和胡椒。根据个人喜好，用蒜和香草调味。\n现在将食物放在第3层。\n使用烤盘。", "Cooking Instruction:\nBrush with oil and rub with salt and pepper. Season with garlic and herbs as you prefer.\nInsert the food now on level 3.\nUse a baking tray." },
         { "烹饪说明：\n刷油，根据个人喜好，撒上盐、烧烤料、孜然。在烤盘内均匀铺开。\n现在将食物放在第3层。\n使用深盘。", "Cooking Instruction:\nBrush with oil and season with salt, barbecue seasoning and cumin as you prefer before insert into the oven.\nInsert the food now on level 3.\nUse deep tray." },
         { "加强热风", "Convection Bake" },
-        { "千层酥", "Millefeuille" },
+        { "千层酥", "Mille-feuille" },
         { "千层面", "Lasagna" },
         { "卡内罗尼", "Cannelloni" },
         { "砂锅菜/烤意面", "Baked Pasta" },   /* 2026-11-10 用户:英文去掉 Casseroles &,子菜单标题/收藏同取此值 */
