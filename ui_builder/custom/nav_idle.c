@@ -77,25 +77,14 @@ int nav_is_cook_above_page(page_id_t p)
     return is_cook_setting_page(p);
 }
 
-/* 自清洁三档"冷却中"把 STOP_BACK 页当冷却展示页复用(nav_key.c 冷却页 BACK:
-   jump_to_*_stop_back 后把 g_on_stop_back 清 0):此时它不是确认页,不参与无操作
-   自动回页——冷却完成判定要求它留在栈顶(nav_cooktimer.c 按栈顶页判定),
-   被弹走会漏掉冷却完成跳转(2026-11-11 用户);
-   冷却页仍可正常显示,电源确认弹窗叠上去的叠字由 nav_hint.c 补收处理 */
-static int is_hotclean_cooling_reuse(page_id_t p)
-{
-    if (g_on_stop_back) return 0;
-    return (p == PAGE_HOTCLEANSAVE_STOP_BACK ||
-            p == PAGE_HOTCLEANMIDDLE_STOP_BACK ||
-            p == PAGE_HOTCLEANHIGH_STOP_BACK);
-}
-
 /* 返回确认页族:烹饪/预约/预热/清洁/上色各模式 STOP_BACK(共 35 页,BACK 或停止键
    从运行页进入的"确认退出"页)。1 分钟无操作自动 page_pop 回运行页(nav_idle_timer_cb);
-   清单与 nav_pop.c 的 g_on_stop_back 清场 switch 同源,新增模式两处同步 */
+   清单与 nav_pop.c 的 g_on_stop_back 清场 switch 同源,新增模式两处同步。
+   自清洁三档"冷却中"复用 STOP_BACK 页(nav_key.c 冷却页 BACK:jump_to_*_stop_back 后
+   把 g_on_stop_back 清 0)也走这一路:page_pop 的父页正是冷却页(nav_pop.c
+   PAGE_HOTCLEANSAVE_COOLING),1 分钟无操作即回冷却显示,冷却流程不受影响 */
 static int is_stop_back_page(page_id_t p)
 {
-    if (is_hotclean_cooling_reuse(p)) return 0;
     switch (p) {
     case PAGE_UPDOWN_BBQ_STOP_BACK:
     case PAGE_TOP_BBQ_STOP_BACK:
