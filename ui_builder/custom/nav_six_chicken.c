@@ -1891,6 +1891,12 @@ void six_chick_handle_back(void)
     printf("[six_chicken] overlay\n");
 }
 
+/* 烤鸡类返回确认遮罩态(空闲策略 1 分钟自动收遮罩用,2026-11-11) */
+int six_chick_is_overlay(void)
+{
+    return s_chick_overlay;
+}
+
 /* 退出：回到第六感主菜单（弹掉 cooking + toastcolor，不残留栈） */
 static void six_chick_exit_to_menu(void)
 {

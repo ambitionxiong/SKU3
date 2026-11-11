@@ -6,7 +6,8 @@
  *      含被童锁/SLEEP 吞掉的键——有按键动作就算活动）
  *   2. nav_idle_init：创建常驻 1s 调度定时器（nav_init 调用，一次创建永不重建）
  *   3. 三规则（nav_idle_timer_cb）：
- *      确认层（关机确认弹窗/各模式返回确认页）60s 无操作 → 回运行页；
+ *      确认层（关机确认弹窗/各模式返回确认页/六感·多段·烤鸡同页遮罩确认）
+ *      60s 无操作 → 回运行页；
  *      收藏确认弹层（重复收藏/收藏夹已满）60s 无操作 → 关闭回完成页；
  *      烹饪会话（含完成页）60s 无操作 → 逐层退出设置覆盖层/子页回烹饪层/完成页；
  *      非烹饪 300s 无操作 → 进待机页；
@@ -76,11 +77,25 @@ int nav_is_cook_above_page(page_id_t p)
     return is_cook_setting_page(p);
 }
 
+/* 自清洁三档"冷却中"把 STOP_BACK 页当冷却展示页复用(nav_key.c 冷却页 BACK:
+   jump_to_*_stop_back 后把 g_on_stop_back 清 0):此时它不是确认页,不参与无操作
+   自动回页——冷却完成判定要求它留在栈顶(nav_cooktimer.c 按栈顶页判定),
+   被弹走会漏掉冷却完成跳转(2026-11-11 用户);
+   冷却页仍可正常显示,电源确认弹窗叠上去的叠字由 nav_hint.c 补收处理 */
+static int is_hotclean_cooling_reuse(page_id_t p)
+{
+    if (g_on_stop_back) return 0;
+    return (p == PAGE_HOTCLEANSAVE_STOP_BACK ||
+            p == PAGE_HOTCLEANMIDDLE_STOP_BACK ||
+            p == PAGE_HOTCLEANHIGH_STOP_BACK);
+}
+
 /* 返回确认页族:烹饪/预约/预热/清洁/上色各模式 STOP_BACK(共 35 页,BACK 或停止键
    从运行页进入的"确认退出"页)。1 分钟无操作自动 page_pop 回运行页(nav_idle_timer_cb);
    清单与 nav_pop.c 的 g_on_stop_back 清场 switch 同源,新增模式两处同步 */
 static int is_stop_back_page(page_id_t p)
 {
+    if (is_hotclean_cooling_reuse(p)) return 0;
     switch (p) {
     case PAGE_UPDOWN_BBQ_STOP_BACK:
     case PAGE_TOP_BBQ_STOP_BACK:
@@ -225,6 +240,27 @@ static void nav_idle_timer_cb(lv_timer_t *t)
             nav_favask_cancel();
         }
         return;
+    }
+
+    /* 同页遮罩确认(六感/多段/烤鸡):与返回确认页同口径,无操作 1 分钟收遮罩回运行/完成
+     * 显示(2026-11-11 用户)。这三类的"确认退出"是同页遮罩,不是独立 STOP_BACK 页,
+     * 页面 id 仍是烹饪页 → 不在 is_stop_back_page 清单、也不在 nav_is_cook_above_page,
+     * 若不在此拦截会被下方"坐烹饪层每秒重打点"永久按住,永远到不了超时
+     * (历史行为:这三处从来没有自动回,一直等按键) */
+    {
+        int ovl = 0;
+        if (top == PAGE_SIX_COOKING && six_cook_is_overlay()) ovl = 1;
+        else if (top == PAGE_SOMECOOK_COOKING && somecook_cooking_is_stopback()) ovl = 1;
+        else if (top == PAGE_CHICKENCOOKING && six_chick_is_overlay()) ovl = 1;
+        if (ovl) {
+            if (idle_s >= NAV_IDLE_CONFIRM_TO_COOKING_S) {
+                printf("[idle] overlay stopback no-op %ds -> close\n", NAV_IDLE_CONFIRM_TO_COOKING_S);
+                if (top == PAGE_SIX_COOKING) six_cook_handle_back();
+                else if (top == PAGE_SOMECOOK_COOKING) somecook_cooking_handle_back();
+                else six_chick_handle_back();
+            }
+            return;
+        }
     }
 
     /* 烹饪会话进行中且已坐在烹饪层:机器工作视为用户活动,持续刷新活动时钟——
