@@ -1621,7 +1621,8 @@ void jump_to_probeneedtip(void)
  * 探针温度标记完成（无倒计时）：
  *   进度条 = 实时探针温度 → 设置探针温度的进度，bar 从 13 起、bartemp 跟随，
  *   与 preheatcooking 的 preheat_progress/preheat_update_bar 逻辑一致（13+87×推进）。
- * BACK → 遮罩确认（text1/2 + 按钮变"确 定"）；完成 → text1/2 高温防烫提示 + 隐藏按钮。 */
+ * BACK → 遮罩确认（text1/2 + 按钮变"确 定"）；完成 → text1/2 高温防烫提示 + 隐藏按钮。
+ * 限时 = 菜谱最长防护分钟，从开始烹饪连续计，暂停/开门不冻结（2026-11-12 用户）。 */
 
 lv_group_t *g_chick_cooking = NULL;
 static uint8_t s_chick_running = 0;   /* 运行中 */
@@ -1629,6 +1630,7 @@ static uint8_t s_chick_paused = 0;    /* 暂停中 */
 static uint8_t s_chick_overlay = 0;   /* 遮罩确认态 */
 static uint8_t s_chick_done = 0;      /* 完成态（高温防烫提示，按钮隐藏） */
 static int s_chick_start_probe = 0;   /* 进入时起始探针温度（进度条 13 基准） */
+static uint32_t s_chick_max_start = 0;   /* 限时起点:开始烹饪即计,暂停/开门不冻结(2026-11-12) */
 
 static void six_chick_timer_cb(lv_timer_t *timer);
 static void six_chick_apply_display(void);
@@ -1643,10 +1645,10 @@ static void on_chick_cooking_stop_click(lv_event_t *e)
         return;
     }
     if (!s_chick_paused) {
-        /* 暂停 */
+        /* 暂停:限时连续计(2026-11-12 用户),定时器保留每秒查上限;
+           烹饪用时仍存 cook_elapsed_saved 供恢复续计 */
         if (is_door_open()) { g_send.buzzer_req = BUZZER_KEY_INVALID; return; }
         cook_elapsed_saved = lv_tick_get() - cook_start_time;
-        if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
         s_chick_paused = 1;
         g_send.iface_status = IFACE_PAUSE;
     } else {
@@ -1656,8 +1658,8 @@ static void on_chick_cooking_stop_click(lv_event_t *e)
         s_chick_paused = 0;
         s_chick_running = 1;
         g_send.iface_status = IFACE_COOKING;
-        if (cook_timer) lv_timer_del(cook_timer);
-        cook_timer = lv_timer_create(six_chick_timer_cb, 1000, NULL);
+        if (cook_timer == NULL)   /* 暂停期间定时器常驻,仅异常缺失时补建 */
+            cook_timer = lv_timer_create(six_chick_timer_cb, 1000, NULL);
     }
     six_chick_apply_display();
 }
@@ -1702,7 +1704,8 @@ void jump_to_chick_cooking(void)
     s_chick_start_probe = get_probe_temp();   /* 进度条起点：起始探针温度 */
     cook_elapsed_saved = 0;
     cook_start_time = lv_tick_get();
-    cook_total_ms = six_probe_max_min() * 60 * 1000;   /* 探针异常时兜底(牛排30/牛肉100/鸡鸭80)，非倒计时 */
+    s_chick_max_start = cook_start_time;   /* 限时起点=开始烹饪:暂停/开门不重置(2026-11-12) */
+    cook_total_ms = six_probe_max_min() * 60 * 1000;   /* 最长限时(牛排30/牛肉100/鸡鸭80等):开始烹饪连续计,暂停不冻结(2026-11-12) */
 
     g_send.iface_status = IFACE_COOKING;
     g_send.cook_mode = six_chick_mode();   /* 烤全鸡/烤全鸭:热风对流 */
@@ -1837,34 +1840,50 @@ static void six_chick_apply_display(void)
     }
 }
 
-/* 1s 定时器：探针温度标记完成（无倒计时；最长时长仅兜底） */
+/* 探针菜完成(探针到温/超最长限时共用):删定时器+完成态+完成音 */
+static void six_chick_finish(void)
+{
+    if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
+    s_chick_running = 0;
+    s_chick_paused = 0;
+    s_chick_done = 1;
+    s_chick_overlay = 0;   /* 完成页:高温防烫提示、按钮隐藏、无遮罩；BACK 再进返回确定页 */
+    g_send.iface_status = IFACE_COMPLETE;
+    g_send.cook_flag = 0;               /* 退出探针模式标记 */
+    g_send.remaining_ms = 0;
+    g_send.buzzer_req = BUZZER_COOK_DONE;
+    six_chick_apply_display();
+}
+
+/* 1s 定时器：探针温度标记完成（无倒计时）。
+   最长限时从开始烹饪连续计，暂停/开门期间也每秒检查（2026-11-12 用户：
+   暂停算在限时内，时间不停） */
 static void six_chick_timer_cb(lv_timer_t *timer)
 {
     (void)timer;
-    if (!s_chick_running || s_chick_paused) return;
+    if (s_chick_done) return;   /* 防御:完成态定时器应已删 */
 
-    /* 门开自动暂停 */
+    /* 限时：只要开始烹饪就连续计时，暂停/开门不冻结，到点强制完成 */
+    if ((uint32_t)(lv_tick_get() - s_chick_max_start) >= (uint32_t)cook_total_ms) {
+        printf("[six_chicken] max cook time reached -> complete\n");
+        six_chick_finish();
+        return;
+    }
+
+    if (!s_chick_running || s_chick_paused) return;   /* 暂停:只走上面的限时检查 */
+
+    /* 门开自动暂停(定时器保留:限时继续计) */
     if (is_door_open()) {
         cook_elapsed_saved = lv_tick_get() - cook_start_time;
-        if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
         s_chick_paused = 1;
         g_send.iface_status = IFACE_PAUSE;
         six_chick_apply_display();
         return;
     }
 
-    uint32_t elapsed = lv_tick_get() - cook_start_time;
-    /* 完成：探针达到目标温度；或超最长安全时间（探针异常兜底） */
-    if (get_probe_temp() >= g_six_probe_temp || elapsed >= (uint32_t)cook_total_ms) {
-        if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
-        s_chick_running = 0;
-        s_chick_done = 1;
-        s_chick_overlay = 0;   /* 完成页:高温防烫提示、按钮隐藏、无遮罩；BACK 再进返回确定页 */
-        g_send.iface_status = IFACE_COMPLETE;
-        g_send.cook_flag = 0;               /* 退出探针模式标记 */
-        g_send.remaining_ms = 0;
-        g_send.buzzer_req = BUZZER_COOK_DONE;
-        six_chick_apply_display();
+    /* 完成：探针达到目标温度 */
+    if (get_probe_temp() >= g_six_probe_temp) {
+        six_chick_finish();
         return;
     }
     g_send.remaining_ms = 0;   /* 探针驱动：无剩余时间 */
@@ -1905,6 +1924,7 @@ static void six_chick_exit_to_menu(void)
     s_chick_overlay = 0;
     s_chick_done = 0;
     s_chick_start_probe = 0;
+    s_chick_max_start = 0;   /* 限时起点复位:下次烹饪重新起算 */
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
     cook_elapsed_saved = 0; cook_bar_saved = 0; cook_total_ms = 0;
     set_temp = 180; set_temp_up = 180; set_temp_down = 180; set_hour = 0; set_min = 30;
