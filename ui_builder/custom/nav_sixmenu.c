@@ -157,8 +157,8 @@ void sixmenu_rebuild(page_id_t child)
             lv_group_focus_obj(sm->vegetable); /* 从蔬菜/配菜菜单返回 */
         else if (six_chick_get_pasta_mode() && child == PAGE_CHICK6MENU && sm->pasta)
             lv_group_focus_obj(sm->pasta);     /* 从砂锅菜/烤意面菜单返回 */
-        else if (six_chick_get_snack_mode() && child == PAGE_DUCK6MENU && sm->snack)
-            lv_group_focus_obj(sm->snack);     /* 从零食子页返回 */
+        else if (six_chick_get_snack_mode() && child == PAGE_CHICK6MENU && sm->snack)
+            lv_group_focus_obj(sm->snack);     /* 从零食页(复用 chick6menu)返回 */
         else if (!six_chick_get_fish_mode() && child == PAGE_CHICK6MENU && sm->chick)
             lv_group_focus_obj(sm->chick);     /* 从鸡菜单返回 */
         else if (child == PAGE_CAKE6MENU && sm->cake)
@@ -244,7 +244,7 @@ static void on_sixmenu_pasta_click(lv_event_t *e)
     jump_to_pasta_menu();
 }
 
-/* 零食:复用 duckmenu(炸鸡米花,份量驱动) */
+/* 零食:复用 chick6menu 两卡(炸鸡米花/炸薯条,2026-11-12 薯条由配菜移入) */
 static void on_sixmenu_snack_click(lv_event_t *e)
 {
     (void)e;

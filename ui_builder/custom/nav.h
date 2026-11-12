@@ -975,13 +975,12 @@ void jump_to_pasta_menu(void);          /* 砂锅菜/烤意面首页(复用 chic
 /* ---- 复用页面场景标志访问器(nav_lang_tune 排版分支用,只读) ---- */
 int six_chick_get_pasta_mode(void);
 int six_chick_get_meatdish_mode(void);     /* duckmenu 复用:肉菜模式 */
-int six_chick_get_sidedish_mode(void);     /* duckmenu 复用:配菜模式 */
 int six_op3_get_kind(void);                /* sixop3page 复用:SIX_OP3_KIND_*(MEAT_TZ=探针版) */
 int six_tz_get_meat_mode(void);            /* chickmenutz 复用:0家禽 1牛肉 2羊肉 3猪肉 */
 int six_menu_get_meat_kind(void);          /* bread6menu 复用肉菜单:0牛肉 1羊肉 2猪肉 3肉菜 */
 int six_menu_is_meat_mode(void);           /* bread6menu 当前是否为肉菜单 */
 int six_chick_get_seafood_mode(void);      /* chickenmenu 复用:海鲜子页 */
-void jump_to_snack_menu(void);          /* 零食子页(复用 duckmenu:炸鸡米花) */
+void jump_to_snack_menu(void);          /* 零食页(复用 chick6menu:炸鸡米花/炸薯条两卡) */
 int six_chick_get_snack_mode(void);
 int jacket_cook_min(void);              /* 当前份量×程度对应分钟 */
 int jacket_weight(void);                /* 当前份量 g */

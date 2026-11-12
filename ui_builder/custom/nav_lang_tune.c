@@ -5528,11 +5528,10 @@ void duckmenu_lang_tune(void)
 
     /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
-    /* ---- 场景分支: 本页被四处复用 ----
-       复用态(零食/配菜/肉菜): 第六感→零食(炸鸡米花) / 蔬菜配菜→配菜(炸薯条) / 蔬菜配菜→肉菜(烤香肠)
-         运行时隐藏 label_2/image_2, 只显示 label_1+按钮
-       默认: 家禽菜单→烤全鸭(label_2/image_2 可见) ---- */
-    if (six_chick_get_snack_mode() || six_chick_get_sidedish_mode() || six_chick_get_meatdish_mode()) {
+    /* ---- 场景分支: 本页被两处复用 ----
+       复用态(肉菜): 蔬菜配菜→肉菜(烤香肠),运行时隐藏 label_2/image_2, 只显示 label_1+按钮
+       默认: 家禽菜单→烤全鸭(label_2/image_2 可见);零食页已改复用 chick6menu(2026-11-12) ---- */
+    if (six_chick_get_meatdish_mode()) {
         /* 复用态: 只排 label_1 + 按钮 */
         /* wholeduck: 按钮 | (18,68) | 624x400 | font taiwanpearl_regular_30 | bg: div2bk30.png */
         lv_obj_set_pos(pg->wholeduck, 18, 68);
@@ -5541,7 +5540,7 @@ void duckmenu_lang_tune(void)
         /* label_1: 标签 | "鸭" | (24,24) | 97x25 | font taiwanpearl_regular_24 */
         lv_obj_set_pos(pg->label_1, 24, 24);
         lv_obj_set_size(pg->label_1, 250, 25);
-        /* 250 宽:英文 Snacks/Vegetables/Meat 均单行放下(Vegetables 2026-11-10 去 & Side Dishes) */
+        /* 250 宽:英文 Meat 单行放下(零食/配菜已不再复用本页,2026-11-12) */
     } else {
         /* 默认: 家禽→烤全鸭 */
         /* wholeduck: 按钮 | (18,68) | 624x400 | font taiwanpearl_regular_30 | bg: div2bk30.png */
