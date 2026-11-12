@@ -1764,6 +1764,12 @@ static void six_chick_apply_display(void)
     chickencooking_t *ck = chickencooking_get(&ui_manager);
     if (!ck) return;
 
+    /* 顶层确认弹层(关机/收藏)与运行中"烤箱运行时不可用"提示期间跳过
+       (2026-11-12 用户问"限时到时有弹窗会不会冲突"):弹层已几何藏掉右侧列,
+       这里再清 HIDDEN 会把"高温防烫/请缓慢打开门体"露出,与弹窗 tip1/tip2 同位
+       叠字;弹层关闭时由 six_chick_refresh_display 重放 */
+    if (nav_poweroff_ask_active() || nav_favask_active() || nav_hint_active()) return;
+
     /* 探针实时温度（无效/未插按 0，封顶到目标温度） */
     int cur = get_probe_temp();
     if (cur < 0) cur = 0;
@@ -1838,6 +1844,13 @@ static void six_chick_apply_display(void)
             lv_obj_set_pos(ck->bartemp, bx, 323 + lang_dyn_dy());
         }
     }
+}
+
+/* 确认弹层关闭后重放页面显隐(弹层期间 apply 被跳过;2026-11-12) */
+void six_chick_refresh_display(void)
+{
+    if (current_group != g_chick_cooking) return;
+    six_chick_apply_display();
 }
 
 /* 探针菜完成(探针到温/超最长限时共用):删定时器+完成态+完成音 */

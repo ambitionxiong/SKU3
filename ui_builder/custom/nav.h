@@ -1011,6 +1011,7 @@ int toastcolor_weight_value(void);   /* 当前选中份量克数(-1=未选/非�
 void jump_to_chick_cooking(void);   /* 烤全鸡烹饪页（探针温度标记完成） */
 void six_chick_handle_back(void);   /* 烤鸡烹饪页 BACK：遮罩确认/完成退出 */
 int  six_chick_is_overlay(void);    /* 烤鸡返回确认遮罩态(空闲策略 1 分钟自动收遮罩用,2026-11-11) */
+void six_chick_refresh_display(void);   /* 关机/收藏弹层关闭后重放探针菜完成页显隐(2026-11-12) */
 /* 六选项3页（nav_sixop3page.c 实现，可复用：牛肉/羊肉等子菜单） */
 extern lv_group_t *g_sixop3page;
 #define SIX_OP3_KIND_BEEF     0  /* 牛肉 */

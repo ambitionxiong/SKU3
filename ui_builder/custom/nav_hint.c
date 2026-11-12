@@ -152,6 +152,8 @@ static void nav_hint_restore(void)
         six_cook_refresh_display();
     else if (current_group == g_somecook_cooking)
         somecook_cooking_refresh();
+    else if (current_group == g_chick_cooking)
+        six_chick_refresh_display();   /* 探针菜:提示期间跳过的状态刷新在此重放(2026-11-12) */
     g_hint_n = 0;
     g_hint_group = NULL;
 
@@ -473,6 +475,8 @@ void nav_favask_cancel(void)
     if (tf->container_1 && !nav_childlock_active())
         lv_obj_add_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);   /* 童锁期归锁层,不随提示收回 */
     nav_favtip_restore_elems();
+    if (current_group == g_chick_cooking)
+        six_chick_refresh_display();   /* 探针菜:弹层期间跳过的状态刷新在此重放(2026-11-12) */
     printf("[hint] fav ask cancel\n");
 }
 
@@ -604,6 +608,8 @@ void nav_poweroff_ask_cancel(void)
     if (tf->container_1 && !nav_childlock_active())
         lv_obj_add_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);   /* 童锁期归锁层,不随提示收回 */
     nav_favtip_restore_elems();
+    if (current_group == g_chick_cooking)
+        six_chick_refresh_display();   /* 探针菜:弹层期间跳过的状态刷新在此重放(2026-11-12) */
     printf("[hint] poweroff ask cancel\n");
 }
 
