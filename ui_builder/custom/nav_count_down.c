@@ -48,6 +48,7 @@ static uint32_t s_cd_total = 0;       /* 总秒数(圆弧/指针基准) */
 static uint32_t s_cd_left = 0;        /* 剩余秒数 */
 static uint8_t  s_dhour = 0, s_dmin = 0, s_dsec = 0;   /* 编辑中的时/分/秒 */
 static uint8_t  s_set_where = 0;      /* 下划线字段 1=时 2=分 3=秒 */
+static uint8_t  s_where_at_max = 0;   /* 分/秒位编辑门槛:进入该位时时==24(上限联动,2026-11-12) */
 static uint8_t  s_run = 0;            /* 倒计时进行中 */
 static uint8_t  s_overtime = 0;       /* 超时层显示中 */
 static uint16_t s_overtime_sec = 1;
@@ -323,8 +324,19 @@ static void cd_underline_place(count_down_page_t *scr, int where)
     lv_obj_set_width(scr->Underline_Btn, is_english() ? w_en[where] : 102);
 }
 
+/* 上限(24:00:00)边界联动门槛(2026-11-12 用户,与烹饪时间分钟特判同口径):
+   分/秒位在"时==24"进入编辑时置位;该字段会话内 CCW 借位到 23:xx 后仍保持,
+   23:59 分/23:59:59 秒 CW 可进位回 24:00:00;离开该位(换位/回确定/启动/清零/
+   退浏览/重进页)清位。其余位置进编辑时,分/秒维持本字段 0-59 循环绕回不动时。 */
+static void cd_max_gate_update(void)
+{
+    s_where_at_max = (s_dhour == 24 && (s_set_where == 2 || s_set_where == 3)) ? 1 : 0;
+}
+
 /* 编码器处理(CW/CCW/PRESS 由 nav_key.c 按组分流)
- * 拒绝路径(24h 禁改分秒/0 秒启动/超时层只响一声)内部改无效/提示音 */
+ * 上限 24:00:00:时位 0..24 循环、到 24 清分秒;上限态分/秒 CW 只响无效音、
+ * CCW 借位到 23:59:00/23:59:59;借位会话内 23:59(秒 23:59:59)CW 进位回上限。
+ * 拒绝路径(0 秒启动/超时层只响一声)内部改无效/提示音 */
 void encoder_count_down_action(uint8_t key)
 {
     count_down_page_t *scr = count_down_get(&ui_manager);
@@ -342,6 +354,7 @@ void encoder_count_down_action(uint8_t key)
             else {
                 lv_group_focus_obj(scr->Underline_Btn);    /* 待编辑:转去时长 */
                 s_set_where = 1;
+                cd_max_gate_update();   /* 换到"时"位:清除分/秒上限门槛 */
                 cd_blink_register(1);   /* 下划线已聚焦:立即起"时"呼吸组 */
             }
         } else if (focused == scr->Underline_Btn) {
@@ -354,13 +367,45 @@ void encoder_count_down_action(uint8_t key)
                 }
                 lv_label_set_text_fmt(scr->Hour_Lb, "%02d", s_dhour);
             } else if (s_set_where == 2) {
-                if (s_dhour == 24) { g_send.buzzer_req = BUZZER_KEY_INVALID; return; }
-                s_dmin = (uint8_t)((s_dmin + (key == KEY_ENCODER_CW ? 1 : 59)) % 60);
-                lv_label_set_text_fmt(scr->Min_Lb, "%02d", s_dmin);
+                if (s_dhour == 24) {              /* 上限态:分不可增,CCW 借位到 23:59 */
+                    if (key == KEY_ENCODER_CW) { g_send.buzzer_req = BUZZER_KEY_INVALID; return; }
+                    s_dhour = 23;
+                    s_dmin = 59;
+                    lv_label_set_text_fmt(scr->Hour_Lb, "%02d", s_dhour);
+                    lv_label_set_text_fmt(scr->Min_Lb, "%02d", s_dmin);
+                    s_where_at_max = 1;           /* 借位会话内 23:59 CW 可进位回上限 */
+                } else if (s_where_at_max && s_dhour == 23 && s_dmin == 59 &&
+                           key == KEY_ENCODER_CW) {
+                    s_dhour = 24;                 /* 上限前一分钟 CW:进位回 24:00:00 */
+                    s_dmin = s_dsec = 0;
+                    lv_label_set_text_fmt(scr->Hour_Lb, "%02d", s_dhour);
+                    lv_label_set_text_fmt(scr->Min_Lb, "%02d", s_dmin);
+                    lv_label_set_text_fmt(scr->Second_Lb, "%02d", s_dsec);
+                } else {
+                    s_dmin = (uint8_t)((s_dmin + (key == KEY_ENCODER_CW ? 1 : 59)) % 60);
+                    lv_label_set_text_fmt(scr->Min_Lb, "%02d", s_dmin);
+                }
             } else if (s_set_where == 3) {
-                if (s_dhour == 24) { g_send.buzzer_req = BUZZER_KEY_INVALID; return; }
-                s_dsec = (uint8_t)((s_dsec + (key == KEY_ENCODER_CW ? 1 : 59)) % 60);
-                lv_label_set_text_fmt(scr->Second_Lb, "%02d", s_dsec);
+                if (s_dhour == 24) {              /* 上限态:秒不可增,CCW 借位到 23:59:59 */
+                    if (key == KEY_ENCODER_CW) { g_send.buzzer_req = BUZZER_KEY_INVALID; return; }
+                    s_dhour = 23;
+                    s_dmin = 59;
+                    s_dsec = 59;
+                    lv_label_set_text_fmt(scr->Hour_Lb, "%02d", s_dhour);
+                    lv_label_set_text_fmt(scr->Min_Lb, "%02d", s_dmin);
+                    lv_label_set_text_fmt(scr->Second_Lb, "%02d", s_dsec);
+                    s_where_at_max = 1;           /* 借位会话内 23:59:59 CW 可进位回上限 */
+                } else if (s_where_at_max && s_dhour == 23 && s_dmin == 59 && s_dsec == 59 &&
+                           key == KEY_ENCODER_CW) {
+                    s_dhour = 24;                 /* 上限前一秒 CW:进位回 24:00:00 */
+                    s_dmin = s_dsec = 0;
+                    lv_label_set_text_fmt(scr->Hour_Lb, "%02d", s_dhour);
+                    lv_label_set_text_fmt(scr->Min_Lb, "%02d", s_dmin);
+                    lv_label_set_text_fmt(scr->Second_Lb, "%02d", s_dsec);
+                } else {
+                    s_dsec = (uint8_t)((s_dsec + (key == KEY_ENCODER_CW ? 1 : 59)) % 60);
+                    lv_label_set_text_fmt(scr->Second_Lb, "%02d", s_dsec);
+                }
             }
         } else if (focused == scr->Reset_icon_Btn) {
             lv_group_focus_obj(scr->Yes_Btn);
@@ -393,6 +438,7 @@ void encoder_count_down_action(uint8_t key)
                原值留着会和下方倒计时(如 00:59:11)同屏矛盾;总秒数上面已取走,
                圆弧/倒计时不受影响。下划线同时退回"时"位,下次编辑从这里起步 */
             s_dhour = s_dmin = s_dsec = 0;
+            s_where_at_max = 0;   /* 启动即离开编辑:上限联动门槛收回 */
             lv_label_set_text(scr->Hour_Lb, "00");
             lv_label_set_text(scr->Min_Lb, "00");
             lv_label_set_text(scr->Second_Lb, "00");
@@ -411,14 +457,17 @@ void encoder_count_down_action(uint8_t key)
            每次换位重登记呼吸组:只闪当前编辑位(数值+单位+下划线) */
         if (s_set_where == 1) {
             s_set_where = 2;
+            cd_max_gate_update();   /* 进入"分"位:时==24 才启用上限联动 */
             cd_underline_place(scr, 2);
             cd_blink_register(1);
         } else if (s_set_where == 2) {
             s_set_where = 3;
+            cd_max_gate_update();   /* 进入"秒"位:时==24 才启用上限联动 */
             cd_underline_place(scr, 3);
             cd_blink_register(1);
         } else {
             s_set_where = 1;
+            cd_max_gate_update();   /* 回到"时"位:清除上限联动门槛 */
             lv_group_focus_obj(scr->Yes_Btn);   /* 秒后确认:先移焦点(线随 FOCUSED 消失+停闪),再挪线不闪影 */
             cd_underline_place(scr, 1);
             cd_blink_register(0);   /* 只换组:下次进"时"编辑前预登记 */
@@ -429,6 +478,7 @@ void encoder_count_down_action(uint8_t key)
         lv_group_focus_obj(scr->Underline_Btn);
         s_cd_total = s_cd_left = 0;
         s_dhour = s_dmin = s_dsec = 0;
+        s_where_at_max = 0;   /* 清零后离开编辑:上限联动门槛收回 */
         s_run = 0;
         lv_arc_set_value(scr->Count_Down_Arc, 0);
         lv_image_set_rotation(scr->Count_Down_Pointer_icon, 0);
@@ -448,6 +498,7 @@ void encoder_count_down_action(uint8_t key)
 static void cd_browse_to_underline(count_down_page_t *scr)
 {
     cd_underline_place(scr, s_set_where);   /* 时/分/秒 下划线横坐标+宽度(EN 随单位自适应) */
+    cd_max_gate_update();   /* 浏览换位:按新位+当前时重算上限联动门槛 */
     cd_blink_register(0);   /* 换位同步呼吸组(浏览态不刷新=不闪,按下确认才起闪) */
     lv_group_focus_obj(scr->Underline_Btn);
 }
@@ -462,6 +513,7 @@ void count_down_browse_action(uint8_t key)
     if (s_run) {
         if (focused == scr->Yes_Btn) lv_group_focus_obj(scr->Reset_icon_Btn);
         else if (scr->Yes_Btn) lv_group_focus_obj(scr->Yes_Btn);
+        s_where_at_max = 0;
         return;
     }
     /* 未运行:重置无意义不可选中,环游不含清零——确定→时→分→秒→确定 */
@@ -473,10 +525,10 @@ void count_down_browse_action(uint8_t key)
         if (w < 1 || w > 3) w = 1;
         if (fwd) {
             if (w < 3) { s_set_where = w + 1; cd_browse_to_underline(scr); }
-            else if (scr->Yes_Btn) lv_group_focus_obj(scr->Yes_Btn);   /* 秒→确定 */
+            else if (scr->Yes_Btn) { lv_group_focus_obj(scr->Yes_Btn); s_where_at_max = 0; }   /* 秒→确定 */
         } else {
             if (w > 1) { s_set_where = w - 1; cd_browse_to_underline(scr); }
-            else if (scr->Yes_Btn) lv_group_focus_obj(scr->Yes_Btn);   /* 时→确定 */
+            else if (scr->Yes_Btn) { lv_group_focus_obj(scr->Yes_Btn); s_where_at_max = 0; }   /* 时→确定 */
         }
     }
     count_down_clock_sync();   /* 浏览换位:左下角亮度/镜像跟焦点走 */
@@ -490,6 +542,7 @@ void count_down_browse_press(void)
     lv_obj_t *focused = lv_group_get_focused(scr->group);
     if (focused == scr->Underline_Btn && !s_run) {
         nav_edit_session_enter(focused);
+        cd_max_gate_update();   /* 浏览进编辑:按当前位+当前时重算上限联动门槛 */
         return;
     }
     encoder_count_down_action(KEY_ENCODER_PRESS);
@@ -510,6 +563,7 @@ void count_down_back_action(void)
         lv_obj_t *focused = (current_group && scr) ? lv_group_get_focused(current_group) : NULL;
         if (nav_edit_session_active() && scr && focused == scr->Underline_Btn) {
             nav_edit_session_exit();
+            s_where_at_max = 0;   /* 出编辑会话:上限联动门槛收回 */
             return;
         }
     }
@@ -552,6 +606,7 @@ void jump_to_count_down(void)
         s_run = 0;
         s_get_out_scr = 1;
         s_return_scr = NULL;
+        s_where_at_max = 0;   /* 重进页:上限联动门槛从 0 起步 */
     }
     screen_set_reset();          /* 清设置覆盖层对象/指针 */
     /* 记录下层页面(此时 current_group 已被 screen_set_reset 还原为下层页组):
