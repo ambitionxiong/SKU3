@@ -2811,6 +2811,34 @@ void chickenmenu_lang_tune(void)
     /* image_2: 图片 | (192,213) | img: probeiconbig.png */
     lv_obj_set_pos(pg->image_2, 192, 213);
 
+    /* 2026-11-13 用户:第六感子菜单菜名与图标瓦片同字号 24px(原 30 显大)。
+     * 必须放在下面 En modify 的 align_to 之前:lv_obj_align_to 是一次性定位,
+     * 先居中后退字号会把盒左缘钉住、文字整行偏左(实测 Grilled Whole Chicken 偏左约 30px),
+     * 先定字号再居中才正。五个页面级 label + 海鲜复用态的按钮子 label 两套都要改 */
+    {
+        lv_obj_t *labs[] = { pg->label_4, pg->label_5, pg->label_6, pg->label_7, pg->label_8 };
+        for (int i = 0; i < (int)(sizeof(labs) / sizeof(labs[0])); i++) {
+            if (labs[i])
+                lv_obj_set_style_text_font(labs[i], &c_aktivgroteskmedium_24,
+                                           LV_PART_MAIN | LV_STATE_DEFAULT);
+        }
+    }
+    /* 海鲜复用态:隐藏上述页面级 label,菜名写进按钮内子 label(继承按钮字体,pass2 烙 aktiv30),
+     * 同样要改子 label 字体;家禽态子 label 是空串,设了无影响 */
+    {
+        lv_obj_t *btns[] = {
+            pg->wholechicken, pg->grillchickenwing, pg->friedchickenwing,
+            pg->friedchickenleg, pg->grillchickenbreast,
+        };
+        for (int i = 0; i < (int)(sizeof(btns) / sizeof(btns[0])); i++) {
+            if (!btns[i]) continue;
+            lv_obj_t *lbl = lv_obj_get_child(btns[i], 0);
+            if (lbl && lv_obj_check_type(lbl, &lv_label_class))
+                lv_obj_set_style_text_font(lbl, &c_aktivgroteskmedium_24,
+                                           LV_PART_MAIN | LV_STATE_DEFAULT);
+        }
+    }
+
     /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ En modify ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
     lv_obj_t *obj = NULL;
     obj = pg->label_2;
@@ -2852,32 +2880,6 @@ void chickenmenu_lang_tune(void)
     if (six_chick_get_seafood_mode()) {
         /* 海鲜子页 */
         /* TODO: 英文实测后调整(Grilled Scallops 等文本宽度) */
-    }
-
-    /* 2026-11-13 用户:第六感子菜单菜名与图标瓦片同字号 24px(原 30 显大);
-     * 五个标签是页面级独立 label(按钮内文字为空),pass2 已烙 aktiv30,直接改字体 */
-    {
-        lv_obj_t *labs[] = { pg->label_4, pg->label_5, pg->label_6, pg->label_7, pg->label_8 };
-        for (int i = 0; i < (int)(sizeof(labs) / sizeof(labs[0])); i++) {
-            if (labs[i])
-                lv_obj_set_style_text_font(labs[i], &c_aktivgroteskmedium_24,
-                                           LV_PART_MAIN | LV_STATE_DEFAULT);
-        }
-    }
-    /* 海鲜复用态:隐藏上述页面级 label,菜名写进按钮内子 label(继承按钮字体,pass2 烙 aktiv30),
-     * 同样要改子 label 字体;家禽态子 label 是空串,设了无影响 */
-    {
-        lv_obj_t *btns[] = {
-            pg->wholechicken, pg->grillchickenwing, pg->friedchickenwing,
-            pg->friedchickenleg, pg->grillchickenbreast,
-        };
-        for (int i = 0; i < (int)(sizeof(btns) / sizeof(btns[0])); i++) {
-            if (!btns[i]) continue;
-            lv_obj_t *lbl = lv_obj_get_child(btns[i], 0);
-            if (lbl && lv_obj_check_type(lbl, &lv_label_class))
-                lv_obj_set_style_text_font(lbl, &c_aktivgroteskmedium_24,
-                                           LV_PART_MAIN | LV_STATE_DEFAULT);
-        }
     }
 }
 
@@ -5603,6 +5605,20 @@ void duckmenu_lang_tune(void)
     duckmenu_t *pg = duckmenu_get(&ui_manager);
     if (!pg) return;
 
+    /* 2026-11-13 用户:第六感子菜单菜名与图标瓦片同字号 24px(原 30 显大)。
+     * 必须放在下面分支的 align_to 之前:lv_obj_align_to 是一次性定位,先居中后退字号
+     * 会把盒左缘钉住、文字整行偏左;默认态可见文字是独立 label_2(烤全鸭),
+     * 肉菜复用态可见文字是按钮内子 label(烤香肠),pass2 已烙 aktiv30,两处都改 */
+    {
+        lv_obj_t *lbl = lv_obj_get_child(pg->wholeduck, 0);
+        if (lbl && lv_obj_check_type(lbl, &lv_label_class))
+            lv_obj_set_style_text_font(lbl, &c_aktivgroteskmedium_24,
+                                       LV_PART_MAIN | LV_STATE_DEFAULT);
+        if (pg->label_2)
+            lv_obj_set_style_text_font(pg->label_2, &c_aktivgroteskmedium_24,
+                                       LV_PART_MAIN | LV_STATE_DEFAULT);
+    }
+
     /* 页面背景: 背景图 bg.png | 底色 0xfcfcfc | opa 255（设置于 scr->obj 根部；换背景改生成文件或自行加 set_style_bg_img_src） */
 
     /* ---- 场景分支: 本页被两处复用 ----
@@ -5643,19 +5659,6 @@ void duckmenu_lang_tune(void)
          lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_CENTER, 0);
          lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
          lv_obj_align_to(obj, parent, LV_ALIGN_CENTER, 0, 18);
-    }
-
-    /* 2026-11-13 用户:第六感子菜单菜名与图标瓦片同字号 24px(原 30 显大)。
-     * 默认态可见文字是独立 label_2(烤全鸭);肉菜复用态可见文字是按钮内子 label(烤香肠),
-     * pass2 已烙 aktiv30,两处都直接改字体 */
-    {
-        lv_obj_t *lbl = lv_obj_get_child(pg->wholeduck, 0);
-        if (lbl && lv_obj_check_type(lbl, &lv_label_class))
-            lv_obj_set_style_text_font(lbl, &c_aktivgroteskmedium_24,
-                                       LV_PART_MAIN | LV_STATE_DEFAULT);
-        if (pg->label_2)
-            lv_obj_set_style_text_font(pg->label_2, &c_aktivgroteskmedium_24,
-                                       LV_PART_MAIN | LV_STATE_DEFAULT);
     }
 }
 
