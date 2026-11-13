@@ -4,7 +4,8 @@
  * 页面流程：菜单(menu) → 设置(set) → 烹饪(cooking) → 暂停(stop) → 确认退出(stop_back) → 完成(complete)
  *   cooking 页可点设置按钮进入 setting 页(运行时改参数)。
  * 模式标识：MODE_HEATCONTAIN，通讯/图标/描述均按此分发。
- * 支持：延迟预约(ondelay)、保温(contain)、预热(preheat)入口与聚焦移动。
+ * 支持：延迟预约(ondelay)、保温(contain)入口与聚焦移动。
+ * 2026-11-13 用户:保温不需要预热,set 页取消预热选项(label_602+off/onpreheat 隐藏,不入组)。
  */
 #include "protocol.h"
 #include "nav.h"
@@ -23,7 +24,6 @@ static void on_heatcontain_stop_back_sure_click(lv_event_t *e);
 static void on_heatcontain_edit_focus(lv_event_t *e);
 void update_heatcontain_dir_icon(heatcontain_setting_t *set);
 static void heatcontain_set_status(lv_obj_t *label, int temp, int hour, int min);
-static void heatcontain_preheat_toggle(lv_event_t *e);
 static void heatcontain_delay_toggle(lv_event_t *e);
 static void heatcontain_contain_toggle(lv_event_t *e);
 void jump_to_heatcontain_cooking(void);
@@ -35,26 +35,6 @@ static void heatcontain_set_status(lv_obj_t *label, int temp, int hour, int min)
         lv_label_set_text_fmt(label, tr("| 保温 | %d℃ | %d分钟"), temp, min);
     else
         nav_status_info_fmt(label, tr("| 保温 | %d℃ | %d小时%d分钟"), temp, hour, min);
-}
-
-static void heatcontain_preheat_toggle(lv_event_t *e)
-{
-    heatcontain_set_t *set = heatcontain_set_get(&ui_manager);
-    if (!set) return;
-    preheat_on = !preheat_on;
-    if (preheat_on) {
-        /* 互斥：开预热关延时 */
-        delay_on = 0;
-        apply_toggle_state(set->offdelay, set->ondelay, delay_on);
-        mode_set_apply_delay_label(set->ondelay);
-        lv_obj_add_flag(set->offpreheat, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_clear_flag(set->onpreheat, LV_OBJ_FLAG_HIDDEN);
-        lv_group_focus_obj(set->onpreheat);
-    } else {
-        lv_obj_add_flag(set->onpreheat, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_clear_flag(set->offpreheat, LV_OBJ_FLAG_HIDDEN);
-        lv_group_focus_obj(set->offpreheat);
-    }
 }
 
 static void heatcontain_delay_toggle(lv_event_t *e)
@@ -121,8 +101,6 @@ static void on_heatcontain_set_sure_click(lv_event_t *e)
     if (!screen_is_loading(act_scr)) {
         if (delay_on)
             jump_to_delaycooking();
-        else if (preheat_on)
-            jump_to_preheat_cooking();
         else
             jump_to_heatcontain_cooking();
     }
@@ -264,15 +242,18 @@ void jump_to_heatcontain_set(void)
 
     heatcontain_set_t *set = heatcontain_set_get(&ui_manager);
     if (set) {
+        /* 2026-11-13 用户:保温不需要预热——取消预热选项(标签+off/on 开关隐藏,不入焦点组) */
+        if (set->label_602) lv_obj_add_flag(set->label_602, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->offpreheat, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->onpreheat, LV_OBJ_FLAG_HIDDEN);
         lv_obj_t *btns[] = {
             set->sure,
-            set->offpreheat, set->onpreheat,
             set->offdelay, set->ondelay,
             set->offcontain, set->oncontain,
         };
         if (g_heatcontain_set) lv_group_del(g_heatcontain_set);
-        g_heatcontain_set = group_create_for_page(btns, 7);
-        clear_focus_states(btns, 7);
+        g_heatcontain_set = group_create_for_page(btns, 5);
+        clear_focus_states(btns, 5);
         lv_group_focus_obj(set->sure);
 
         lv_label_set_text_fmt(set->temp, "%d", temp_disp_c(set_temp));
@@ -296,7 +277,7 @@ void jump_to_heatcontain_set(void)
         lv_obj_set_pos(set->label_600, 427, 269);
     }
 
-        apply_toggle_state(set->offpreheat, set->onpreheat, preheat_on);
+
     if (set_hour == 0) {
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->label_599, LV_OBJ_FLAG_HIDDEN);
@@ -321,8 +302,6 @@ void jump_to_heatcontain_set(void)
     }
         apply_toggle_state(set->offcontain, set->oncontain, contain_on);
 
-        lv_obj_add_event_cb(set->offpreheat, heatcontain_preheat_toggle, LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(set->onpreheat, heatcontain_preheat_toggle, LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(set->offdelay, heatcontain_delay_toggle, LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(set->ondelay, heatcontain_delay_toggle, LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(set->offcontain, heatcontain_contain_toggle, LV_EVENT_CLICKED, NULL);
@@ -830,15 +809,18 @@ void heatcontain_rebuild_set(page_id_t child)
     { heatcontain_set_t *ms = heatcontain_set_get(&ui_manager); if (ms) nav_modeset_refit(ms->temp, ms->hour, ms->min, ms->icon2, ms->icon3, ms->label_599, ms->label_600); }   /* 数字 30 号排版(top_bbq 验证终值,EN 由 tune 覆盖) */
     heatcontain_set_t *set = heatcontain_set_get(&ui_manager);
     if (set) {
+        /* 2026-11-13 用户:保温不需要预热——取消预热选项(标签+off/on 开关隐藏,不入焦点组) */
+        if (set->label_602) lv_obj_add_flag(set->label_602, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->offpreheat, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(set->onpreheat, LV_OBJ_FLAG_HIDDEN);
         lv_obj_t *btns[] = {
             set->sure,
-            set->offpreheat, set->onpreheat,
             set->offdelay, set->ondelay,
             set->offcontain, set->oncontain,
         };
         if (g_heatcontain_set) lv_group_del(g_heatcontain_set);
-        g_heatcontain_set = group_create_for_page(btns, 7);
-        clear_focus_states(btns, 7);
+        g_heatcontain_set = group_create_for_page(btns, 5);
+        clear_focus_states(btns, 5);
         lv_group_focus_obj(set->sure);
 
         lv_label_set_text_fmt(set->temp, "%d", temp_disp_c(set_temp));
@@ -862,7 +844,7 @@ void heatcontain_rebuild_set(page_id_t child)
         lv_obj_set_pos(set->label_600, 427, 269);
     }
 
-        apply_toggle_state(set->offpreheat, set->onpreheat, preheat_on);
+
     if (set_hour == 0) {
         lv_obj_add_flag(set->label_599, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(set->hour, LV_OBJ_FLAG_HIDDEN);
@@ -889,8 +871,6 @@ void heatcontain_rebuild_set(page_id_t child)
     }
         apply_toggle_state(set->offcontain, set->oncontain, contain_on);
 
-        lv_obj_add_event_cb(set->offpreheat, heatcontain_preheat_toggle, LV_EVENT_CLICKED, NULL);
-        lv_obj_add_event_cb(set->onpreheat, heatcontain_preheat_toggle, LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(set->offdelay, heatcontain_delay_toggle, LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(set->ondelay, heatcontain_delay_toggle, LV_EVENT_CLICKED, NULL);
         lv_obj_add_event_cb(set->offcontain, heatcontain_contain_toggle, LV_EVENT_CLICKED, NULL);
