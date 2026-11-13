@@ -37,6 +37,20 @@ static void air_set_status(lv_obj_t *label, int temp, int hour, int min)
         nav_status_info_fmt(label, tr("| 空气炸 | %d℃ | %d小时%d分钟"), temp, hour, min);
 }
 
+/* 2026-11-13 用户:取消预热后延时/自动保温依次上移(延→原预热行 144/154,保温→原延时行 260/270)。
+ * 必须在 lang_scr_load_anim 之后调用——EN tune 会把三行摆回 144/260/372,先摆会被覆盖 */
+static void air_set_rows_up(air_set_t *set)
+{
+    if (!set) return;
+    if (set->label_309) lv_obj_set_y(set->label_309, 154);
+    if (set->label_310) lv_obj_set_y(set->label_310, 154);
+    if (set->offdelay)  lv_obj_set_y(set->offdelay, 144);
+    if (set->ondelay)   lv_obj_set_y(set->ondelay, 144);
+    if (set->label_311) lv_obj_set_y(set->label_311, 270);
+    if (set->offcontain) lv_obj_set_y(set->offcontain, 260);
+    if (set->oncontain)  lv_obj_set_y(set->oncontain, 260);
+}
+
 static void air_delay_toggle(lv_event_t *e)
 {
     air_set_t *set = air_set_get(&ui_manager);
@@ -314,6 +328,7 @@ void jump_to_air_set(void)
     lang_scr_load_anim(air_set_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
+    air_set_rows_up(air_set_get(&ui_manager));   /* 取消预热:延时/保温两行依次上移(tune 之后) */
     printf("[air] jump: menu -> air_set\n");
 }
 
@@ -873,6 +888,7 @@ void air_rebuild_set(page_id_t child)
     lang_scr_load_anim(air_set_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
+    air_set_rows_up(air_set_get(&ui_manager));   /* 取消预热:延时/保温两行依次上移(tune 之后) */
     printf("[air] back to air_set\n");
 }
 
