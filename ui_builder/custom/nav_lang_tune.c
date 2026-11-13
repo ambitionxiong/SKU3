@@ -2057,18 +2057,17 @@ void cake6menu_lang_tune(void)
      /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ En modify ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
      lv_obj_t *obj = pg->chocolatecake;
      obj = lv_obj_get_child(obj, 0);
-     /* "Chocolate Cake" 宽盒约束:标签是内容尺寸+创建时烙下的持久 CENTER 对齐,
-      * 不约束宽度时翻译变宽仍按整串宽重新居中,左右溢出卡片(30px 整串约220px>卡205px);
-      * 原 30px 版给 170 强制折两行(换行居中由持久对齐完成);
-      * 2026-11-13 瓦片文字改 24px 后整串约 172px,170 盒仍折两行,放宽到 190 保证单行,
-      * 卡宽 205 内不溢出,与其余单行瓦片一致 */
-     lv_obj_set_width(obj, 190);
+     /* "Chocolate Cake" 强制两行(用户 2026-11-13:"这一页 chocolate cake 要换行"):
+      * 24px 整串约 172px 单行几乎顶满 205 宽卡;显式 "Chocolate\nCake" 折行最稳
+      * (靠 170 宽度卡边界会随字体度量在单/双行之间跳);盒恢复内容尺寸+持久 CENTER 居中,
+      * 两行由 text_align CENTER 居中,外观与原 30px 两行版一致 */
+     lv_label_set_text(obj, "Chocolate\nCake");
+     lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
      lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_CENTER, 0);
 
      /* 2026-11-13 用户:第六感分类页(蛋糕/糕点)瓦片文字与带图标瓦片同款 24px(原 30 显大)。
       * pass2 字体映射在本 tune 之前已把子 label 烙成 aktiv30 本地样式,改按钮字体
-      * 被子 label 覆盖无效,逐瓦片直接改子 label(上面 chocolatecake 的 190 宽盒保留,
-      * 24px 下 "Chocolate Cake" 实测单行,不再折行) */
+      * 被子 label 覆盖无效,逐瓦片直接改子 label(chocolatecake 已在上面强制两行,字体照改 24px) */
      {
          lv_obj_t *tiles[] = {
              pg->swissroll, pg->strudel, pg->muffin, pg->madeleine,
