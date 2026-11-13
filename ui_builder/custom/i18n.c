@@ -520,7 +520,7 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "请问需要增加", "Need browning" },   /* 2026-10-26 样张:Need browning enhancement? */
         { "运行界面各类", "提示语" },
         { "迟", " " },
-        { "选择烤色程度", "Select extra browning level" },
+        { "选择烤色程度", "Browning Level" },   /* 2026-11-13 用户:原 Select extra browning level 改 Browning Level;第六感份量+烤色二维页(sixset2)与探针烤色页(toastcolor degree)共用本词条 */
         { "选择相应模式！", "choose cooking mode!" },
         { "通风冷却运行", "Cooling Fan Run-on" },
         { "通风冷却", "Fan Cooling" },
