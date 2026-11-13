@@ -13038,6 +13038,20 @@ void sixop3page_lang_tune(void)
         }
     }
 
+    /* 2026-11-13 用户:探针版肉分类页(MEAT_TZ) 三栏文字写在按钮内子 label(按钮字体 30 号,
+     * pass2 烙 aktiv30),上一版只改了非探针 op 标签漏了这里;无猪肉 MEAT 分类页同样把
+     * 文字放进按钮子 label,一并覆盖;非探针版子 label 是空串,设了无影响 */
+    {
+        lv_obj_t *bts[] = { pg->bt1, pg->bt2, pg->bt3 };
+        for (int i = 0; i < (int)(sizeof(bts) / sizeof(bts[0])); i++) {
+            if (!bts[i]) continue;
+            lv_obj_t *lbl = lv_obj_get_child(bts[i], 0);
+            if (lbl && lv_obj_check_type(lbl, &lv_label_class))
+                lv_obj_set_style_text_font(lbl, &c_aktivgroteskmedium_24,
+                                           LV_PART_MAIN | LV_STATE_DEFAULT);
+        }
+    }
+
 }
 
 
