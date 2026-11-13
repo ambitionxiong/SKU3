@@ -2645,6 +2645,21 @@ void chick6menu_lang_tune(void)
     }
     /* 家禽首页用基准值 */
 
+     /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Eng modify ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+     /* 2026-11-13 用户:第六感子菜单瓦片文字统一为图标瓦片同款 24px(原 30 显大)。
+      * 本页两卡被多处复用(家禽/鱼海鲜/烤鱼/蔬菜/意面/零食/肉),文字运行时换,
+      * 字体在此统一改子 label;pass2 已把子 label 烙成 aktiv30 本地样式,改按钮继承无效 */
+     {
+         lv_obj_t *cards[] = { pg->chicken, pg->duck };
+         for (int i = 0; i < (int)(sizeof(cards) / sizeof(cards[0])); i++) {
+             if (!cards[i]) continue;
+             lv_obj_t *lbl = lv_obj_get_child(cards[i], 0);
+             if (lbl && lv_obj_check_type(lbl, &lv_label_class))
+                 lv_obj_set_style_text_font(lbl, &c_aktivgroteskmedium_24,
+                                            LV_PART_MAIN | LV_STATE_DEFAULT);
+         }
+     }
+
 }
 
 
@@ -2837,6 +2852,32 @@ void chickenmenu_lang_tune(void)
     if (six_chick_get_seafood_mode()) {
         /* 海鲜子页 */
         /* TODO: 英文实测后调整(Grilled Scallops 等文本宽度) */
+    }
+
+    /* 2026-11-13 用户:第六感子菜单菜名与图标瓦片同字号 24px(原 30 显大);
+     * 五个标签是页面级独立 label(按钮内文字为空),pass2 已烙 aktiv30,直接改字体 */
+    {
+        lv_obj_t *labs[] = { pg->label_4, pg->label_5, pg->label_6, pg->label_7, pg->label_8 };
+        for (int i = 0; i < (int)(sizeof(labs) / sizeof(labs[0])); i++) {
+            if (labs[i])
+                lv_obj_set_style_text_font(labs[i], &c_aktivgroteskmedium_24,
+                                           LV_PART_MAIN | LV_STATE_DEFAULT);
+        }
+    }
+    /* 海鲜复用态:隐藏上述页面级 label,菜名写进按钮内子 label(继承按钮字体,pass2 烙 aktiv30),
+     * 同样要改子 label 字体;家禽态子 label 是空串,设了无影响 */
+    {
+        lv_obj_t *btns[] = {
+            pg->wholechicken, pg->grillchickenwing, pg->friedchickenwing,
+            pg->friedchickenleg, pg->grillchickenbreast,
+        };
+        for (int i = 0; i < (int)(sizeof(btns) / sizeof(btns[0])); i++) {
+            if (!btns[i]) continue;
+            lv_obj_t *lbl = lv_obj_get_child(btns[i], 0);
+            if (lbl && lv_obj_check_type(lbl, &lv_label_class))
+                lv_obj_set_style_text_font(lbl, &c_aktivgroteskmedium_24,
+                                           LV_PART_MAIN | LV_STATE_DEFAULT);
+        }
     }
 }
 
@@ -5602,6 +5643,19 @@ void duckmenu_lang_tune(void)
          lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_CENTER, 0);
          lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
          lv_obj_align_to(obj, parent, LV_ALIGN_CENTER, 0, 18);
+    }
+
+    /* 2026-11-13 用户:第六感子菜单菜名与图标瓦片同字号 24px(原 30 显大)。
+     * 默认态可见文字是独立 label_2(烤全鸭);肉菜复用态可见文字是按钮内子 label(烤香肠),
+     * pass2 已烙 aktiv30,两处都直接改字体 */
+    {
+        lv_obj_t *lbl = lv_obj_get_child(pg->wholeduck, 0);
+        if (lbl && lv_obj_check_type(lbl, &lv_label_class))
+            lv_obj_set_style_text_font(lbl, &c_aktivgroteskmedium_24,
+                                       LV_PART_MAIN | LV_STATE_DEFAULT);
+        if (pg->label_2)
+            lv_obj_set_style_text_font(pg->label_2, &c_aktivgroteskmedium_24,
+                                       LV_PART_MAIN | LV_STATE_DEFAULT);
     }
 }
 
@@ -12967,6 +13021,18 @@ void sixop3page_lang_tune(void)
 
         /* probe3: 图片 | (1020,213) | img: probeiconbig.png */
         lv_obj_set_pos(pg->probe3, 1020, 213);
+
+        /* 2026-11-13 用户:第六感子菜单三栏菜名与图标瓦片同字号 24px(原 30 显大)。
+         * 本页 op 文字运行时换成菜名(烤牛排/炸牛排/烤牛肉 等),pass2 已烙 aktiv30,
+         * 350 宽盒 + 居中不变,只改字号;探针版(MEAT_TZ)op 全隐藏,不用改 */
+        {
+            lv_obj_t *labs[] = { pg->op1, pg->op2, pg->op3 };
+            for (int i = 0; i < (int)(sizeof(labs) / sizeof(labs[0])); i++) {
+                if (labs[i])
+                    lv_obj_set_style_text_font(labs[i], &c_aktivgroteskmedium_24,
+                                               LV_PART_MAIN | LV_STATE_DEFAULT);
+            }
+        }
     }
 
 }
@@ -17467,11 +17533,12 @@ void vegetablemenu_lang_tune(void)
     lv_obj_set_size(pg->button_16, 310, 193);
     lv_obj_t *b16_lbl = lv_obj_get_child(pg->button_16, 0);
     if (b16_lbl) {
-    lv_label_set_text(b16_lbl, "Grilled\nMixed Vegetables");
-    /* 行内居中：每行文本在 label 内居中（默认是左对齐） */
+    /* 2026-11-13 瓦片字号改 24 后整串约 250px，310 宽卡内单行放下（原 30 号需折两行） */
+    lv_label_set_text(b16_lbl, "Grilled Mixed Vegetables");
+    /* 行内居中（默认是左对齐） */
     lv_obj_set_style_text_align(b16_lbl, LV_TEXT_ALIGN_CENTER,
                                 LV_PART_MAIN | LV_STATE_DEFAULT);
-    /* 撑到按钮宽，保证两行都以按钮中心为基准居中 */
+    /* 撑到按钮宽，保证以按钮中心为基准居中 */
     lv_obj_set_width(b16_lbl, 310);
 }
 
@@ -17491,6 +17558,22 @@ void vegetablemenu_lang_tune(void)
      lv_obj_t *obj = NULL;
      obj = pg->label_7;
      lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+
+     /* 2026-11-13 用户:第六感子菜单瓦片文字统一为图标瓦片同款 24px(原 30 显大);
+      * 七道菜单名是按钮内子 label,pass2 已烙 aktiv30,改按钮继承无效,逐卡直改 */
+     {
+         lv_obj_t *cards[] = {
+             pg->bt1, pg->button_11, pg->button_15, pg->button_16,
+             pg->button_17, pg->button_18, pg->button_19,
+         };
+         for (int i = 0; i < (int)(sizeof(cards) / sizeof(cards[0])); i++) {
+             if (!cards[i]) continue;
+             lv_obj_t *lbl = lv_obj_get_child(cards[i], 0);
+             if (lbl && lv_obj_check_type(lbl, &lv_label_class))
+                 lv_obj_set_style_text_font(lbl, &c_aktivgroteskmedium_24,
+                                            LV_PART_MAIN | LV_STATE_DEFAULT);
+         }
+     }
 }
 
 
