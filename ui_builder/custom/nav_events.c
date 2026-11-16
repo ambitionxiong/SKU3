@@ -640,9 +640,9 @@ void delayset_page_build(void)
             s_delayset_live_timer = lv_timer_create(delayset_live_tick_cb, 1000, NULL);
     }
     current_group = g_delayset;
-    /* 延迟页入口定义:焦点在 start 的浏览态。族分类(edit_browse_reset)对本页走
-       "其余页面进页即编辑"默认,会话带进来后首次旋转会落兜底分支绕错方向——
-       此处显式退浏览:首次旋转(顺/逆)定向进小时编辑,BACK 退编辑后整组循环 */
+    /* 延迟页入口定义:焦点在 start 的浏览态(2026-11-16 起 edit_browse_reset 已把
+       PAGE_DELAYSET 归浏览族):首次旋转(顺/逆)只定向到小时,按下确认才进编辑;
+       BACK 退编辑后整组循环 */
     nav_edit_session_exit();
 
     lang_scr_load_anim(delayset_get(&ui_manager)->obj,

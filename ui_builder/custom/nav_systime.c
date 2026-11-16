@@ -276,17 +276,20 @@ void encoder_systime_action(uint8_t key)
         nav_edit_session_enter(focused);   /* 浏览态按确认:重新进编辑(起改当前位) */
         return;
     }
-    /* 编辑中:字段循环 年→月→日→时制→时→分→确定,确定位再按=写 RTC(与计时器页一致)。
-       分→确定不挪线:线失焦即隐身,停在分位;下次 dive 前先摆位再聚焦,杜绝闪影 */
+    /* 编辑中:字段逐步推进 年→月→日→时制→时→分→确定;每步提交后回浏览态,
+       只换下划线位置不闪,再按一下才进该位编辑(2026-11-16 照 menu 口径)。
+       末位确认后焦点落"确定"浏览态,再按确定才写 RTC */
     if (s_where_time >= 6) {
         s_where_time = 0;
         if (scr->Yes_Btn)
             lv_group_focus_obj(scr->Yes_Btn);
+        nav_edit_session_exit();
         return;
     }
     s_where_time++;
     systime_underline_pos(s_where_time);
-    systime_blink_register(1);   /* 换位重登记呼吸组:只闪当前位 */
+    systime_blink_register(0);   /* 预登记下一位呼吸组,不起闪 */
+    nav_edit_session_exit();
 }
 
 /* ---- 浏览模式:确定→年→月→日→时制→时→分→确定 环游 ----
@@ -308,8 +311,8 @@ void systime_browse_action(uint8_t key)
     uint8_t fwd = (key == KEY_ENCODER_CW);
 
     if (focused == scr->Yes_Btn) {
-        s_where_time = fwd ? 1 : 6;
-        systime_browse_to_underline(scr);   /* 确定→年 / 确定→分 */
+        s_where_time = 1;   /* 确定位上顺/逆都先回最左"年"(2026-11-16 用户,照 menu 口径) */
+        systime_browse_to_underline(scr);
     } else {
         if (fwd) {
             if (s_where_time >= 6) { if (scr->Yes_Btn) lv_group_focus_obj(scr->Yes_Btn); }  /* 分→确定 */
@@ -351,7 +354,7 @@ lv_group_t *systime_page_group(void) { return s_st.group; }
 void jump_to_systime(void)
 {
     rtc_time_t t;
-    s_where_time = 0;   /* 进页停在"确定",会话为编辑态:转旋钮直接进入"年"编辑 */
+    s_where_time = 0;   /* 进页停在"确定"浏览态(2026-11-16):转旋钮只落"年"焦点,按下才进编辑 */
     if (nav_clock_time_unset()) {
         /* 时间未设置(首设链路/断电补设未完成):进页一律从默认 2027-01-01 00:00
          * 开始编辑,不跟随 RTC 里累积的走时(2026-11-04 用户定) */
@@ -577,7 +580,7 @@ void jump_to_systime(void)
     nav_editable_extra_register(scr->Underline_Btn);   /* 两态:下划线=可编辑对象(page_push 已清表,此处补登记) */
 
     current_group = scr->group;
-    if (scr->Yes_Btn) lv_group_focus_obj(scr->Yes_Btn);   /* 进页聚焦确定;会话=编辑态,转旋钮直接进"年"编辑 */
+    if (scr->Yes_Btn) lv_group_focus_obj(scr->Yes_Btn);   /* 进页聚焦确定;会话=浏览态,转旋钮只落"年"焦点 */
     lang_scr_load_anim(scr->obj, LV_SCR_LOAD_ANIM_NONE, 0, 0, ui_manager.auto_del);
     printf("[systime] jump\n");
 }

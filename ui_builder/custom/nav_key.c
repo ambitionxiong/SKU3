@@ -145,6 +145,27 @@ int is_menu_edit_page(page_id_t cur)
     }
 }
 
+/* 焦点"回最左"(2026-11-16 用户定稿,menu/setting 两族先行):
+ * 两族页面组内除动作钮(下一步/确定)外都是已注册编辑字段,故"焦点不是字段"
+ * 即焦点停在动作钮上;此时顺/逆时针都先跳到最左字段(编辑注册表首条——各页
+ * 均按左→右顺序 edit_register)。返回 NULL 表示当前页/焦点不适用。
+ * 其余编辑页(延迟/六感二维/计时器/日期时间)在各自分支按同口径处理。 */
+static lv_obj_t *nav_page_button_home(void)
+{
+    if (depth <= 0 || !current_group) return NULL;
+    page_id_t cur = page_stack[depth - 1];
+    if (!is_menu_edit_page(cur) && !is_cook_setting_page(cur)) return NULL;
+
+    lv_obj_t *focused = lv_group_get_focused(current_group);
+    if (!focused || find_edit_field(focused)) return NULL;   /* 停在字段上:正常移焦点/调值 */
+
+    for (int i = 0; i < edit_count; i++) {
+        if (edit_fields[i].label && lv_obj_is_valid(edit_fields[i].label))
+            return edit_fields[i].label;
+    }
+    return NULL;
+}
+
 /* 是否停在完成页(nav.h 全部 35 个 *_COMPLETE 家族页面,与 KEY_BACK 链全集一致):
  * 完成页按键直通用——BACK 不再经 stop_back 确认页,功能键白名单放行 */
 static int nav_on_complete_page(void)
@@ -1399,11 +1420,10 @@ void process_key(uint8_t key)
             lv_obj_t *df = lv_group_get_focused(current_group);
             delayset_t *ds = delayset_get(&ui_manager);
             if (ds && nav_delayset_fresh && !nav_edit_session_active()) {
-                /* 刚进入(焦点在start,浏览态):顺时针定向到小时并直接进编辑(2026-10-21);
-                   BACK 退出编辑后的浏览态旋转则按 时/分/start 整组循环移焦点 */
+                /* 刚进入(焦点在start,浏览态):顺时针先定向到小时,只落焦点不进编辑
+                   (2026-11-16 用户:照 menu 口径,按下确认才进编辑) */
                 nav_delayset_fresh = 0;
                 lv_group_focus_obj(ds->hour);
-                nav_edit_session_enter(ds->hour);
             } else if (ds && df == ds->hour && nav_edit_session_active()) {
                 /* 时字段独立循环,但两端按 24h 窗口拦(绕回另一端=无效音) */
                 if (!delayset_step_hour(1)) {
@@ -1470,6 +1490,18 @@ void process_key(uint8_t key)
                 break;
             }
             /* temp/hour/min/next:放行到通用逻辑(编辑字段调值 / 焦点移动) */
+        }
+        /* menu/setting:焦点在动作钮(下一步/确定)上,顺时针也先回最左字段——
+           与逆时针同口径(2026-11-16 用户:顺逆都要先到最左边的选项) */
+        {
+            lv_obj_t *home = nav_page_button_home();
+            if (home) {
+                g_send.buzzer_req = BUZZER_ENCODER;
+                lv_group_focus_obj(home);
+                printf("[nav] focus home (cw)\n");
+                uart_print();
+                break;
+            }
         }
         lv_obj_t *focused = lv_group_get_focused(current_group);
         edit_field_t *ef = find_edit_field(focused);
@@ -1587,10 +1619,17 @@ void process_key(uint8_t key)
             break;
         }
         if (current_group == g_sixset2) {
-            if (nav_edit_session_active())
+            if (nav_edit_session_active()) {
                 sixset2_cycle(-1);   /* 编辑态:按焦点分派,选择对象上切值 */
-            else
-                lv_group_focus_prev(current_group);   /* 浏览模式:转动只移焦点 */
+            } else {
+                /* 浏览模式:焦点在"下一步"时逆时针也先回最左(中间组),不退回烤色程度 */
+                lv_obj_t *df = lv_group_get_focused(current_group);
+                sixset2_t *pg = sixset2_get(&ui_manager);
+                if (pg && df == pg->next)
+                    sixset2_press_focus();   /* next → 中间组(份量/成熟度) */
+                else
+                    lv_group_focus_prev(current_group);
+            }
             g_send.buzzer_req = BUZZER_ENCODER;
             uart_print();
             break;
@@ -1617,10 +1656,10 @@ void process_key(uint8_t key)
             lv_obj_t *df = lv_group_get_focused(current_group);
             delayset_t *ds = delayset_get(&ui_manager);
             if (ds && nav_delayset_fresh && !nav_edit_session_active()) {
-                /* 刚进入(焦点在start,浏览态):逆时针也定向到小时并直接进编辑(两方向同一定向,2026-10-21) */
+                /* 刚进入(焦点在start,浏览态):逆时针也定向到小时,只落焦点不进编辑
+                   (两方向同一定向,2026-11-16 照 menu 口径) */
                 nav_delayset_fresh = 0;
                 lv_group_focus_obj(ds->hour);
-                nav_edit_session_enter(ds->hour);
             } else if (ds && df == ds->hour && nav_edit_session_active()) {
                 /* 时字段独立循环,但两端按 24h 窗口拦(绕回另一端=无效音) */
                 if (!delayset_step_hour(-1)) {
@@ -1640,7 +1679,10 @@ void process_key(uint8_t key)
                 lv_group_focus_obj(ds->hour);
             } else {
                 g_send.buzzer_req = BUZZER_ENCODER;
-                lv_group_focus_prev(current_group);   /* 浏览模式:移焦点 */
+                if (ds && df == ds->start)
+                    lv_group_focus_obj(ds->hour);        /* 开始位:逆时针也回最左小时,不退回分钟 */
+                else
+                    lv_group_focus_prev(current_group);  /* 浏览模式:移焦点 */
                 uart_print();
                 break;
             }
@@ -1692,6 +1734,18 @@ void process_key(uint8_t key)
                 break;
             }
             /* temp/hour/min/next:放行到通用逻辑(编辑字段调值 / 焦点移动) */
+        }
+        /* menu/setting:焦点在动作钮(下一步/确定)上,逆时针也先回最左字段,
+           不再退到最后一个字段(2026-11-16 用户定稿) */
+        {
+            lv_obj_t *home = nav_page_button_home();
+            if (home) {
+                g_send.buzzer_req = BUZZER_ENCODER;
+                lv_group_focus_obj(home);
+                printf("[nav] focus home (ccw)\n");
+                uart_print();
+                break;
+            }
         }
         lv_obj_t *focused = lv_group_get_focused(current_group);
         edit_field_t *ef = find_edit_field(focused);
@@ -2241,7 +2295,8 @@ void process_key(uint8_t key)
                 g_send.buzzer_req = BUZZER_KEY_VALID;
             } else {
                 g_send.buzzer_req = BUZZER_KEY_VALID;
-                lv_group_focus_next(current_group);   /* 编辑中:确认切下一焦点 */
+                nav_edit_session_exit();              /* 确认后回浏览(2026-11-16 照 menu 口径) */
+                lv_group_focus_next(current_group);   /* 焦点移到下一字段;分→开始 */
             }
             uart_print();
             break;
@@ -2294,10 +2349,12 @@ void process_key(uint8_t key)
             sixset2_t *pg = sixset2_get(&ui_manager);
             if (pg && (df == pg->weight || df == pg->maturity || df == pg->degree)) {
                 g_send.buzzer_req = BUZZER_KEY_VALID;
-                if (!nav_edit_session_active())
+                if (!nav_edit_session_active()) {
                     nav_edit_session_enter(df);   /* 浏览模式:确认进编辑(焦点不动,起闪) */
-                else
+                } else {
                     sixset2_press_focus();   /* 编辑中:焦点循环 weight/maturity→degree→next */
+                    nav_edit_session_exit(); /* 确认后回浏览:下一字段只亮线不闪,再按才编辑 */
+                }
                 uart_print();
                 break;
             }

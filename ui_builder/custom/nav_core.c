@@ -449,11 +449,17 @@ static uint8_t s_min_edit_at_max = 0;
 
 /* 进页编辑/浏览默认(用户定稿):menu/setting 编辑字段族页面进页即浏览,
  * 其余页面维持进页即编辑。edit_clear/nav_blink_forget 两处复位点统一走此,
- * 按当前栈顶页面族判定(push 建页/pop 返回时栈顶即目标页) */
+ * 按当前栈顶页面族判定(push 建页/pop 返回时栈顶即目标页)。
+ * 2026-11-16 用户:延迟/第六感二维/计时器/日期时间 四页也照 menu/setting 口径,
+ * 进页停在动作钮(开始/下一步/确定)的浏览态——先转旋钮只移焦点,按下才进编辑 */
 static void edit_browse_reset(void)
 {
     if (depth > 0 && (is_cook_setting_page(page_stack[depth - 1]) ||
-                      is_menu_edit_page(page_stack[depth - 1])))
+                      is_menu_edit_page(page_stack[depth - 1]) ||
+                      page_stack[depth - 1] == PAGE_DELAYSET ||
+                      page_stack[depth - 1] == PAGE_SIXSET2 ||
+                      page_stack[depth - 1] == PAGE_SET_COUNT ||
+                      page_stack[depth - 1] == PAGE_SET_SYSTIME))
         s_edit_browse = 1;
     else
         s_edit_browse = 0;

@@ -452,25 +452,28 @@ void encoder_count_down_action(uint8_t key)
             g_send.buzzer_req = BUZZER_KEY_INVALID;   /* 0 秒不可启动 */
         }
     } else if (focused == scr->Underline_Btn) {
-        /* 下划线 时→分→秒 循环,焦点留在横线;秒后回绕到"时"保持编辑
-           (两态统一:确认=推进编辑位,启动走浏览态选 Yes)。
-           每次换位重登记呼吸组:只闪当前编辑位(数值+单位+下划线) */
+        /* 下划线 时→分→秒 推进:每次确认=提交本位、焦点落下一字段并回浏览态
+           (下划线常亮不闪,再按一下才进该位编辑——2026-11-16 照 menu 口径);
+           秒后确认回"确定"浏览态,再按确定才启动 */
         if (s_set_where == 1) {
             s_set_where = 2;
             cd_max_gate_update();   /* 进入"分"位:时==24 才启用上限联动 */
             cd_underline_place(scr, 2);
-            cd_blink_register(1);
+            cd_blink_register(0);   /* 预登记下一字段呼吸组,不起闪 */
+            nav_edit_session_exit();
         } else if (s_set_where == 2) {
             s_set_where = 3;
             cd_max_gate_update();   /* 进入"秒"位:时==24 才启用上限联动 */
             cd_underline_place(scr, 3);
-            cd_blink_register(1);
+            cd_blink_register(0);
+            nav_edit_session_exit();
         } else {
             s_set_where = 1;
             cd_max_gate_update();   /* 回到"时"位:清除上限联动门槛 */
             lv_group_focus_obj(scr->Yes_Btn);   /* 秒后确认:先移焦点(线随 FOCUSED 消失+停闪),再挪线不闪影 */
             cd_underline_place(scr, 1);
             cd_blink_register(0);   /* 只换组:下次进"时"编辑前预登记 */
+            nav_edit_session_exit();
         }
         count_down_clock_sync();   /* 回确定位:时长=0 灰 / >0 亮 */
     } else if (focused == scr->Reset_icon_Btn) {
@@ -516,10 +519,11 @@ void count_down_browse_action(uint8_t key)
         s_where_at_max = 0;
         return;
     }
-    /* 未运行:重置无意义不可选中,环游不含清零——确定→时→分→秒→确定 */
+    /* 未运行:重置无意义不可选中,环游不含清零——确定→时→分→秒→确定。
+       确定位上顺/逆都先回最左"时"(2026-11-16 用户:照 menu 口径) */
     if (focused == scr->Yes_Btn) {
-        if (fwd) { s_set_where = 1; cd_browse_to_underline(scr); }   /* 确定→时 */
-        else { s_set_where = 3; cd_browse_to_underline(scr); }       /* 确定→秒 */
+        s_set_where = 1;
+        cd_browse_to_underline(scr);   /* 确定→时(两方向同一落点) */
     } else {   /* 下划线:数字位间走,两端接确定 */
         uint8_t w = s_set_where;
         if (w < 1 || w > 3) w = 1;
@@ -602,7 +606,7 @@ void jump_to_count_down(void)
     if (!restore_run) {
         s_cd_total = s_cd_left = 0;
         s_dhour = s_dmin = s_dsec = 0;
-        s_set_where = 1;   /* 两态:进页即编辑"时"(原 0=停在 Yes) */
+        s_set_where = 1;   /* 下划线下次进编辑从"时"起步;进页会话=浏览态(焦点在确定) */
         s_run = 0;
         s_get_out_scr = 1;
         s_return_scr = NULL;
@@ -624,7 +628,7 @@ void jump_to_count_down(void)
         count_down_edit_visual(1);
     }
     current_group = s_cd.group;
-    if (s_cd.Yes_Btn) lv_group_focus_obj(s_cd.Yes_Btn);   /* 进页聚焦确定;会话=编辑态,转旋钮直接进"时"编辑 */
+    if (s_cd.Yes_Btn) lv_group_focus_obj(s_cd.Yes_Btn);   /* 进页聚焦确定;会话=浏览态,转旋钮只落"时"焦点 */
     count_down_clock_sync();   /* 进页初始:时长=0 左下角灰显 00:00:00(后台运行恢复走 running_visual) */
     lang_scr_load_anim(s_cd.obj, LV_SCR_LOAD_ANIM_NONE, 0, 0, false);   /* false:保留下层页面(返回免重建) */
     nav_topflag_demo_sync();   /* 本页已在前台:顶栏 timer 图标立即收起(不等 500ms tick 闪一下) */
