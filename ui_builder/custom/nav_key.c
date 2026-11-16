@@ -1456,6 +1456,14 @@ void process_key(uint8_t key)
         if (current_group == g_stepset) {
             lv_obj_t *df = lv_group_get_focused(current_group);
             stepset_t *ss = stepset_get(&ui_manager);
+            if (ss && df == ss->next) {
+                /* 下一步:顺/逆都先回最左"设定模式"大类(2026-11-16 用户,与上电日期页同口径) */
+                g_send.buzzer_req = BUZZER_ENCODER;
+                lv_group_focus_obj(ss->roller_main);
+                nav_edit_min_gate_refocus(ss->roller_main);
+                uart_print();
+                break;
+            }
             if (!nav_edit_session_active()) {
                 g_send.buzzer_req = BUZZER_ENCODER;
                 lv_group_focus_next(current_group);   /* 浏览模式:roller 也是焦点项,移焦点 */
@@ -1694,8 +1702,8 @@ void process_key(uint8_t key)
         if (current_group == g_stepset) {
             lv_obj_t *df = lv_group_get_focused(current_group);
             stepset_t *ss = stepset_get(&ui_manager);
-            if (ss && df == ss->next && nav_edit_session_active()) {
-                /* 仿 updown menu:从 next 左转跳到 mainroller */
+            if (ss && df == ss->next) {
+                /* 下一步:顺/逆都先回最左"设定模式"大类(不再按编辑态区分) */
                 lv_group_focus_obj(ss->roller_main);
                 nav_edit_min_gate_refocus(ss->roller_main);   /* 落焦非分钟字段,收门槛防残留 */
                 g_send.buzzer_req = BUZZER_ENCODER;

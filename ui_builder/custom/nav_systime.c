@@ -332,10 +332,7 @@ void systime_browse_action(uint8_t key)
     uint8_t fwd = (key == KEY_ENCODER_CW);
 
     if (focused == scr->Yes_Btn) {
-        if (systime_setup_path())
-            s_where_time = fwd ? 1 : 6;   /* 首设/断电补设:旧逻辑 确定→年 / 确定→分 */
-        else
-            s_where_time = 1;             /* 设置层:顺/逆都先回最左"年"(2026-11-16 照 menu 口径) */
+        s_where_time = 1;   /* 确定位上顺/逆都先回最左"年"(首设/设置层同口径,2026-11-16 用户) */
         systime_browse_to_underline(scr);
     } else {
         if (fwd) {
