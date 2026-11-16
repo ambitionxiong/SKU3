@@ -264,7 +264,7 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "成熟度", "Doneness" },
         { "成熟度：五分熟", "Doneness: Medium" },
         { "所选功能需要烤箱处于冷却状态，", "This function requires the oven to be cool. " },
-        { "披萨", "Pizzas" },
+        { "披萨", "Pizza" },
         { "持续15秒", "On for 15 secs" },
         { "按键音", "Keypad Tone" },
         { "探针已拔出", "Probe removed" },
