@@ -1088,9 +1088,39 @@ typedef struct {
 
 static status_line_t s_status_lines[STATUS_LINE_SLOTS];
 
-static void status_line_scroll_exec(void *var, int32_t v)
+/* 全局滚动相位:同一烹饪会话内所有页共用 cook_start_time 起算的时间轴,
+ * 同一瞬间各页裁到的温度段完全一致(暂停按已走时长,恢复后相位连续)。
+ * 单定时器 20ms 步进,没有在滚的状态行时自行退出。 */
+#define STATUS_LINE_STEP_MS 20
+static lv_timer_t *s_status_line_timer = NULL;
+
+static int status_line_phase(int period)
 {
-    lv_obj_set_x((lv_obj_t *)var, -v);
+    if (period <= 0) return 0;
+    return (int)(((lv_tick_get() - cook_start_time) / STATUS_LINE_STEP_MS) % (uint32_t)period);
+}
+
+static void status_line_timer_cb(lv_timer_t *t)
+{
+    int any = 0;
+    for (int i = 0; i < STATUS_LINE_SLOTS; i++) {
+        status_line_t *c = &s_status_lines[i];
+        if (!c->in_use || !c->active || c->period <= 0 || !c->strip) continue;
+        if (!lv_obj_is_valid(c->strip)) continue;
+        any = 1;
+        int x = -status_line_phase(c->period);
+        if (lv_obj_get_x(c->strip) != x) lv_obj_set_x(c->strip, x);
+    }
+    if (!any) {
+        lv_timer_del(t);
+        if (s_status_line_timer == t) s_status_line_timer = NULL;
+    }
+}
+
+static void status_line_timer_ensure(void)
+{
+    if (!s_status_line_timer)
+        s_status_line_timer = lv_timer_create(status_line_timer_cb, STATUS_LINE_STEP_MS, NULL);
 }
 
 static lv_coord_t status_line_text_w(const char *txt, const lv_font_t *font, lv_coord_t ls)
@@ -1135,8 +1165,6 @@ static void status_line_deleted(lv_event_t *e)
 {
     status_line_t *c = (status_line_t *)lv_event_get_user_data(e);
     if (!c) return;
-    if (c->strip && lv_obj_is_valid(c->strip))
-        lv_anim_del(c->strip, status_line_scroll_exec);
     memset(c, 0, sizeof(*c));
 }
 
@@ -1264,7 +1292,7 @@ static void status_line_refit(status_line_t *c)
     /* 同标签被六感/预约分支改写:让位原标签,不再显示双温布局 */
     const char *ht = lv_label_get_text(c->host);
     if (!ht || strcmp(ht, " ") != 0) {
-        if (c->strip) lv_anim_del(c->strip, status_line_scroll_exec);
+        if (c->strip) lv_obj_set_x(c->strip, 0);
         lv_obj_add_flag(c->cont, LV_OBJ_FLAG_HIDDEN);
         c->active = 0;
         c->period = 0;
@@ -1325,7 +1353,6 @@ static void status_line_refit(status_line_t *c)
         lv_obj_set_width(c->win, copy_w);
         lv_obj_set_pos(c->time, mode_w + space_w + copy_w + space_w, 0);
         lv_obj_set_x(c->strip, 0);
-        lv_anim_del(c->strip, status_line_scroll_exec);
         c->period = 0;
     } else {
         /* 超宽:模式在左、时长贴右,中间温度窗口滚动 */
@@ -1343,21 +1370,9 @@ static void status_line_refit(status_line_t *c)
         lv_obj_set_pos(c->time, tx, 0);
 
         if (period > ww) {
-            lv_anim_t *a = lv_anim_get(c->strip, status_line_scroll_exec);
-            if (!a || c->period != (int)period) {
-                lv_anim_t an;
-                lv_anim_del(c->strip, status_line_scroll_exec);
-                lv_obj_set_x(c->strip, 0);
-                lv_anim_init(&an);
-                lv_anim_set_var(&an, c->strip);
-                lv_anim_set_exec_cb(&an, status_line_scroll_exec);
-                lv_anim_set_values(&an, 0, period);
-                lv_anim_set_time(&an, (uint32_t)period * 20);
-                lv_anim_set_path_cb(&an, lv_anim_path_linear);
-                lv_anim_set_repeat_count(&an, LV_ANIM_REPEAT_INFINITE);
-                lv_anim_start(&an);
-            }
             c->period = (int)period;
+            status_line_timer_ensure();
+            lv_obj_set_x(c->strip, -status_line_phase(c->period));
         } else {
             /* 温度段本身放得下(只是模式+时长占满):不滚,收起第二组 */
             lv_obj_add_flag(c->spacer, LV_OBJ_FLAG_HIDDEN);
@@ -1367,7 +1382,6 @@ static void status_line_refit(status_line_t *c)
             }
             lv_obj_add_flag(c->seps[1], LV_OBJ_FLAG_HIDDEN);
             lv_obj_set_x(c->strip, 0);
-            lv_anim_del(c->strip, status_line_scroll_exec);
             c->period = 0;
         }
     }
@@ -1401,7 +1415,7 @@ static void status_line_hide(lv_obj_t *label)
 {
     status_line_t *c = status_line_find(label);
     if (!c) return;
-    if (c->strip) lv_anim_del(c->strip, status_line_scroll_exec);
+    if (c->strip) lv_obj_set_x(c->strip, 0);
     if (c->cont) lv_obj_add_flag(c->cont, LV_OBJ_FLAG_HIDDEN);
     c->active = 0;
     c->period = 0;

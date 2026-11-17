@@ -235,6 +235,7 @@ void stop_resume_cooking(void)
     updown_bbq_cooking_create(&ui_manager);
 
     updown_bbq_cooking_t *cook = updown_bbq_cooking_get(&ui_manager);
+    cook_start_time = lv_tick_get() - cook_elapsed_saved;   /* 先起时间轴:相位从暂停点连续走 */
     if (cook) {
         lv_obj_t *btns[] = { cook->stop_button, cook->little_button };
         if (g_updown_bbq_cooking) lv_group_del(g_updown_bbq_cooking);
@@ -272,7 +273,6 @@ void stop_resume_cooking(void)
     }
 
     /* 恢复定时器 */
-    cook_start_time = lv_tick_get() - cook_elapsed_saved;
     if (cook_timer) lv_timer_del(cook_timer);
     cook_timer = lv_timer_create(cooking_timer_cb, 1000, NULL);
 
