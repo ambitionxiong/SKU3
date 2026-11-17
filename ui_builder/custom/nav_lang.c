@@ -316,6 +316,7 @@ void lang_scr_load_anim(lv_obj_t *scr, lv_scr_load_anim_t anim_type,
     lv_scr_load_anim(scr, anim_type, time, delay, auto_del);
     lang_on_page_built();
     nav_tempunit_refresh_screen(scr);   /* 温度单位兜底:新屏烙死的 ℃ 标签/占位值重写(中英文都要跑) */
+    nav_status_line_refit_screen();     /* 上下温双温状态行:字体/单位/标签宽已落定,重量宽决定滚/停 */
     nav_topflag_demo_sync();   /* 新屏已激活:演示徽标立即重定位(否则500ms内旧位置与新页标题重叠) */
 }
 
@@ -584,6 +585,7 @@ void lang_on_page_built(void)
     nav_dirimg_refit();     /* menu_top/low+setting 箭头换图+下划线加长:全语言统一(EN 须在 tune 之后覆盖 tune 的 dir/line 行) */
     nav_btnskin_refit();    /* EN 运行/暂停/stopback/预约按钮换 pause/resume/stopcooking/cancel 底图+文案(2026-10-09) */
     screen_fav_updown_font_resync();   /* 收藏上下温组合行小标签字体随宿主补同步(EN/TW 树遍历后才落字体) */
+    nav_status_line_refit_screen();    /* 上下温双温状态行:语言切换/字体落定后重量宽(覆盖层切语言也走这里) */
     nav_menuicon_refit();   /* EN major/cook/six/special+探针三菜单独立图标+24px居中排版(规范图实测位置表,2026-10-10) */
     nav_cook4_card_icons();    /* cook4 四卡恢复原版图标+标签(全语言,2026-10-15) */
     nav_frozen_card_icons();   /* 冷冻烘焙六卡铺图标+标签(全语言,2026-10-15) */

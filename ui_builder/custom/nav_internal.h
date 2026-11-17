@@ -151,6 +151,7 @@ int screen_set_popup_key(uint8_t key);     /* 弹窗按键路由,返回1=已消�
 void screen_set_popup_reset(void);         /* 覆盖层销毁时复位弹窗状态 */   /* 各模式 SETTING 页(烹饪中小按钮进入,nav_key.c) */
 void rebuild_delaycooking(void);
 void set_status_label_min(lv_obj_t *label, int temp_up, int temp_down, int hour, int min);
+void nav_status_line_refit_screen(void);   /* 上下温双温状态行:语言/单位重排后重量宽(滚/停) */
 void setup_set_temp_display(updown_bbq_set_t *set);
 void topflag_update_visibility(void);
 void uart_print(void);

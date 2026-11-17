@@ -1052,10 +1052,381 @@ static void set_status_label(lv_obj_t *label, int temp, int hour, int min)
     else
         nav_status_info_fmt(label, tr("| 上下烧烤 | %d℃ | %d小时%d分钟"), temp, hour, min);
 }
+/* ==============================
+ * 上下烧烤状态行:上下温不同 → 双温+上下管图标;整行超宽 → 温度段循环滚动
+ * 2026-11-17 用户定稿:
+ *   同温:沿用原单温整串(与旧版逐像素一致,无图标);
+ *   异温:| 上下烧烤 | [上图标]180℃/[下图标]200℃ | 时长;
+ *   整串超状态栏宽(490;EN stopback 570)时,模式与时长钉住,温度段在中间
+ *   窗口内无缝左移循环;不超宽静止。
+ * 实现:生成页状态标签文本置空格,容器作其子对象(继承 z 序——stopback 的
+ *   113/255 遮罩在标签之后创建,容器若挂屏幕根会跑到遮罩上方);
+ *   温度段两组相同内容,超宽时显示第二组并整体左移一个周期,接缝与起点重合。
+ * ============================== */
+#define STATUS_LINE_SLOTS       4
+#define STATUS_LINE_ICON_ZOOM   512      /* 8x6/7x6 素材 2 倍显示(16x12/14x12) */
+#define STATUS_LINE_ICON_GAP    2
+#define STATUS_LINE_COPY_GAP    24
+
+typedef struct {
+    lv_obj_t *host;          /* 生成页原状态标签(文本置空格,容器作其子对象) */
+    lv_obj_t *cont;
+    lv_obj_t *mode;
+    lv_obj_t *win;           /* 温度段裁剪窗口 */
+    lv_obj_t *strip;         /* 温度段内容带(两组相同内容) */
+    lv_obj_t *time;
+    lv_obj_t *spacer;
+    lv_obj_t *icons[4];      /* A/B 组:上管、下管 */
+    lv_obj_t *templ[4];      /* A/B 组:上温、下温 */
+    lv_obj_t *seps[2];       /* A/B 组分隔符 */
+    int up, down, hour, min; /* 原始摄氏值/时长 */
+    int period;              /* 当前滚动周期(0=静止) */
+    uint8_t in_use;
+    uint8_t active;
+} status_line_t;
+
+static status_line_t s_status_lines[STATUS_LINE_SLOTS];
+
+static void status_line_scroll_exec(void *var, int32_t v)
+{
+    lv_obj_set_x((lv_obj_t *)var, -v);
+}
+
+static lv_coord_t status_line_text_w(const char *txt, const lv_font_t *font, lv_coord_t ls)
+{
+    lv_point_t sz = { 0, 0 };
+    if (!txt || !font) return 0;
+    lv_txt_get_size(&sz, txt, font, ls, 0, LV_COORD_MAX, LV_TEXT_FLAG_NONE);
+    return sz.x;
+}
+
+static lv_obj_t *status_line_box(lv_obj_t *parent)
+{
+    lv_obj_t *o = lv_obj_create(parent);
+    lv_obj_remove_style_all(o);
+    lv_obj_set_style_bg_opa(o, 0, 0);
+    lv_obj_set_style_border_width(o, 0, 0);
+    lv_obj_set_style_pad_all(o, 0, 0);
+    lv_obj_clear_flag(o, LV_OBJ_FLAG_SCROLLABLE);
+    return o;
+}
+
+static lv_obj_t *status_line_make_label(lv_obj_t *parent)
+{
+    lv_obj_t *l = lv_label_create(parent);
+    lv_label_set_long_mode(l, LV_LABEL_LONG_CLIP);
+    lv_obj_set_style_pad_all(l, 0, 0);
+    lv_obj_set_width(l, LV_SIZE_CONTENT);
+    return l;
+}
+
+static lv_obj_t *status_line_make_icon(lv_obj_t *parent, const char *src, lv_coord_t w)
+{
+    lv_obj_t *box = status_line_box(parent);
+    lv_obj_set_size(box, w, 12);
+    lv_obj_t *img = lv_img_create(box);
+    lv_img_set_src(img, src);
+    lv_image_set_pivot(img, 0, 0);
+    lv_image_set_scale(img, STATUS_LINE_ICON_ZOOM);
+    lv_obj_set_pos(img, 0, 0);
+    return box;
+}
+
+static void status_line_deleted(lv_event_t *e)
+{
+    status_line_t *c = (status_line_t *)lv_event_get_user_data(e);
+    if (!c) return;
+    if (c->strip && lv_obj_is_valid(c->strip))
+        lv_anim_del(c->strip, status_line_scroll_exec);
+    memset(c, 0, sizeof(*c));
+}
+
+static status_line_t *status_line_find(lv_obj_t *host)
+{
+    for (int i = 0; i < STATUS_LINE_SLOTS; i++) {
+        status_line_t *c = &s_status_lines[i];
+        if (!c->in_use || c->host != host) continue;
+        if (c->cont && lv_obj_is_valid(c->cont)) return c;
+        memset(c, 0, sizeof(*c));
+    }
+    return NULL;
+}
+
+static status_line_t *status_line_create(lv_obj_t *host)
+{
+    status_line_t *c = NULL;
+    for (int i = 0; i < STATUS_LINE_SLOTS; i++) {
+        if (!s_status_lines[i].in_use) { c = &s_status_lines[i]; break; }
+    }
+    if (!c || !host) return NULL;
+
+    memset(c, 0, sizeof(*c));
+    c->host = host;
+    c->cont = status_line_box(host);
+    lv_obj_set_pos(c->cont, 0, 0);
+    lv_obj_set_size(c->cont, lv_obj_get_content_width(host), lv_obj_get_content_height(host));
+
+    c->mode = status_line_make_label(c->cont);
+
+    c->win = status_line_box(c->cont);
+    lv_obj_set_pos(c->win, 0, 0);
+    lv_obj_set_size(c->win, 1, lv_obj_get_content_height(host));
+
+    c->strip = status_line_box(c->win);
+    lv_obj_set_pos(c->strip, 0, 0);
+    lv_obj_set_width(c->strip, LV_SIZE_CONTENT);
+    lv_obj_set_height(c->strip, lv_obj_get_content_height(host));
+    lv_obj_set_flex_flow(c->strip, LV_FLEX_FLOW_ROW);
+    lv_obj_set_flex_align(c->strip, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+    lv_obj_set_style_pad_column(c->strip, STATUS_LINE_ICON_GAP, 0);
+    lv_obj_set_style_pad_row(c->strip, 0, 0);
+
+    /* A 组 */
+    c->icons[0] = status_line_make_icon(c->strip, LVGL_IMAGE_PATH(cookingtopicon.png), 16);
+    c->templ[0] = status_line_make_label(c->strip);
+    c->seps[0]  = status_line_make_label(c->strip);
+    c->icons[1] = status_line_make_icon(c->strip, LVGL_IMAGE_PATH(cookingloeicon.png), 14);
+    c->templ[1] = status_line_make_label(c->strip);
+
+    c->spacer = status_line_box(c->strip);
+    lv_obj_set_size(c->spacer, STATUS_LINE_COPY_GAP, 1);
+
+    /* B 组(与 A 组相同;静止时隐藏) */
+    c->icons[2] = status_line_make_icon(c->strip, LVGL_IMAGE_PATH(cookingtopicon.png), 16);
+    c->templ[2] = status_line_make_label(c->strip);
+    c->seps[1]  = status_line_make_label(c->strip);
+    c->icons[3] = status_line_make_icon(c->strip, LVGL_IMAGE_PATH(cookingloeicon.png), 14);
+    c->templ[3] = status_line_make_label(c->strip);
+
+    c->time = status_line_make_label(c->cont);
+
+    c->in_use = 1;
+    lv_obj_add_event_cb(c->cont, status_line_deleted, LV_EVENT_DELETE, c);
+    return c;
+}
+
+/* 从既有整串词条里截出"| 时长"段:翻译/繁简/整小时裁剪与旧版完全同源 */
+static void status_line_time_text(char *out, size_t cap, int hour, int min)
+{
+    char full[192];
+    if (!out || cap == 0) return;
+    out[0] = '\0';
+    if (hour <= 0)
+        snprintf(full, sizeof(full), tr("| 上下烧烤 | %d℃ | %d分钟"), 0, min);
+    else
+        snprintf(full, sizeof(full), tr("| 上下烧烤 | %d℃ | %d小时%d分钟"), 0, hour, min);
+    nav_strip_wholehour_tail(full);
+    const char *p = strrchr(full, '|');
+    snprintf(out, cap, "%s", p ? p : "");
+}
+
+static void status_line_apply_text(status_line_t *c)
+{
+    if (!c || !c->host) return;
+    const lv_font_t *font = lv_obj_get_style_text_font(c->host, 0);
+    lv_color_t color = lv_obj_get_style_text_color(c->host, 0);
+    lv_coord_t ls = lv_obj_get_style_text_letter_space(c->host, 0);
+    lv_coord_t h = lv_obj_get_content_height(c->host);
+    char deg[8], t1[24], t2[24], tt[96];
+    const char *sep = is_english() ? " & " : "/";
+    lv_obj_t *labels[] = {
+        c->mode, c->templ[0], c->templ[1], c->templ[2], c->templ[3],
+        c->seps[0], c->seps[1], c->time
+    };
+    if (!font) return;
+
+    for (unsigned i = 0; i < sizeof(labels) / sizeof(labels[0]); i++) {
+        lv_obj_set_style_text_font(labels[i], font, 0);
+        lv_obj_set_style_text_color(labels[i], color, 0);
+        lv_obj_set_style_text_letter_space(labels[i], ls, 0);
+        lv_obj_set_height(labels[i], h);
+    }
+
+    snprintf(deg, sizeof(deg), "%s", tr("℃"));
+    snprintf(t1, sizeof(t1), "%d%s", temp_disp_c(c->up), deg);
+    snprintf(t2, sizeof(t2), "%d%s", temp_disp_c(c->down), deg);
+    status_line_time_text(tt, sizeof(tt), c->hour, c->min);
+
+    lv_label_set_text(c->mode, tr("| 上下烧烤 |"));
+    lv_label_set_text(c->templ[0], t1);
+    lv_label_set_text(c->templ[1], t2);
+    lv_label_set_text(c->templ[2], t1);
+    lv_label_set_text(c->templ[3], t2);
+    lv_label_set_text(c->seps[0], sep);
+    lv_label_set_text(c->seps[1], sep);
+    lv_label_set_text(c->time, tt);
+}
+
+static void status_line_refit(status_line_t *c)
+{
+    if (!c || !c->in_use || !c->host || !c->cont) return;
+    if (!lv_obj_is_valid(c->host) || !lv_obj_is_valid(c->cont)) return;
+
+    /* 同标签被六感/预约分支改写:让位原标签,不再显示双温布局 */
+    const char *ht = lv_label_get_text(c->host);
+    if (!ht || strcmp(ht, " ") != 0) {
+        if (c->strip) lv_anim_del(c->strip, status_line_scroll_exec);
+        lv_obj_add_flag(c->cont, LV_OBJ_FLAG_HIDDEN);
+        c->active = 0;
+        c->period = 0;
+        return;
+    }
+
+    lv_coord_t W = lv_obj_get_content_width(c->host);
+    lv_coord_t H = lv_obj_get_content_height(c->host);
+    const lv_font_t *font = lv_obj_get_style_text_font(c->host, 0);
+    lv_coord_t ls = lv_obj_get_style_text_letter_space(c->host, 0);
+    if (W <= 0 || H <= 0 || !font) return;
+
+    lv_obj_set_size(c->cont, W, H);
+    lv_obj_set_height(c->win, H);
+    lv_obj_set_height(c->strip, H);
+    lv_obj_set_height(c->mode, H);
+    lv_obj_set_height(c->time, H);
+    lv_obj_set_style_pad_column(c->strip, STATUS_LINE_ICON_GAP, 0);
+
+    /* 先全部展开量宽(A/B 两组内容相同,量出单组宽与一周期位移) */
+    lv_obj_clear_flag(c->cont, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(c->spacer, LV_OBJ_FLAG_HIDDEN);
+    for (int i = 2; i < 4; i++) {
+        lv_obj_clear_flag(c->icons[i], LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(c->templ[i], LV_OBJ_FLAG_HIDDEN);
+    }
+    lv_obj_clear_flag(c->seps[1], LV_OBJ_FLAG_HIDDEN);
+    lv_obj_set_x(c->strip, 0);
+    lv_obj_set_pos(c->mode, 0, 0);
+    lv_obj_set_pos(c->win, 0, 0);
+    lv_obj_set_pos(c->time, 0, 0);
+    lv_obj_update_layout(c->cont);
+
+    lv_coord_t mode_w = lv_obj_get_width(c->mode);
+    lv_coord_t time_w = lv_obj_get_width(c->time);
+    lv_coord_t copy_w = lv_obj_get_x(c->spacer) - STATUS_LINE_ICON_GAP;
+    lv_coord_t period = lv_obj_get_x(c->icons[2]);
+    lv_coord_t space_w = status_line_text_w(" ", font, ls);
+    lv_coord_t total;
+
+    if (space_w <= 0) space_w = 6;
+    if (copy_w <= 0) copy_w = 1;
+    total = mode_w + space_w + copy_w + space_w + time_w;
+
+    if (total <= W) {
+        /* 放得下:静态排成一段,第二组收起 */
+        lv_obj_add_flag(c->spacer, LV_OBJ_FLAG_HIDDEN);
+        for (int i = 2; i < 4; i++) {
+            lv_obj_add_flag(c->icons[i], LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(c->templ[i], LV_OBJ_FLAG_HIDDEN);
+        }
+        lv_obj_add_flag(c->seps[1], LV_OBJ_FLAG_HIDDEN);
+        lv_obj_set_pos(c->win, mode_w + space_w, 0);
+        lv_obj_set_width(c->win, copy_w);
+        lv_obj_set_pos(c->time, mode_w + space_w + copy_w + space_w, 0);
+        lv_obj_set_x(c->strip, 0);
+        lv_anim_del(c->strip, status_line_scroll_exec);
+        c->period = 0;
+    } else {
+        /* 超宽:模式在左、时长贴右,中间温度窗口滚动 */
+        lv_coord_t tx = W - time_w;
+        lv_coord_t wx = mode_w + space_w;
+        lv_coord_t ww;
+        if (tx < 0) tx = 0;
+        ww = tx - space_w - wx;
+        if (ww < 24) ww = tx - wx;      /* 极窄:省掉时长前空格 */
+        if (ww < 1) ww = 1;
+        if (period <= 0) period = copy_w + STATUS_LINE_ICON_GAP * 2 + STATUS_LINE_COPY_GAP;
+
+        lv_obj_set_pos(c->win, wx, 0);
+        lv_obj_set_width(c->win, ww);
+        lv_obj_set_pos(c->time, tx, 0);
+
+        if (period > ww) {
+            lv_anim_t *a = lv_anim_get(c->strip, status_line_scroll_exec);
+            if (!a || c->period != (int)period) {
+                lv_anim_t an;
+                lv_anim_del(c->strip, status_line_scroll_exec);
+                lv_obj_set_x(c->strip, 0);
+                lv_anim_init(&an);
+                lv_anim_set_var(&an, c->strip);
+                lv_anim_set_exec_cb(&an, status_line_scroll_exec);
+                lv_anim_set_values(&an, 0, period);
+                lv_anim_set_time(&an, (uint32_t)period * 20);
+                lv_anim_set_path_cb(&an, lv_anim_path_linear);
+                lv_anim_set_repeat_count(&an, LV_ANIM_REPEAT_INFINITE);
+                lv_anim_start(&an);
+            }
+            c->period = (int)period;
+        } else {
+            /* 温度段本身放得下(只是模式+时长占满):不滚,收起第二组 */
+            lv_obj_add_flag(c->spacer, LV_OBJ_FLAG_HIDDEN);
+            for (int i = 2; i < 4; i++) {
+                lv_obj_add_flag(c->icons[i], LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(c->templ[i], LV_OBJ_FLAG_HIDDEN);
+            }
+            lv_obj_add_flag(c->seps[1], LV_OBJ_FLAG_HIDDEN);
+            lv_obj_set_x(c->strip, 0);
+            lv_anim_del(c->strip, status_line_scroll_exec);
+            c->period = 0;
+        }
+    }
+    c->active = 1;
+    lv_obj_update_layout(c->cont);
+}
+
+static void status_line_show(lv_obj_t *label, int up, int down, int hour, int min)
+{
+    status_line_t *c = status_line_find(label);
+    if (!c) c = status_line_create(label);
+    if (!c) {   /* 槽位耗尽兜底:退回单温,不挡页面 */
+        int t = up < down ? up : down;
+        set_status_label(label, t, hour, min);
+        return;
+    }
+    c->up = up;
+    c->down = down;
+    c->hour = hour;
+    c->min = min;
+
+    const char *txt = lv_label_get_text(label);
+    if (!txt || strcmp(txt, " ") != 0) lv_label_set_text(label, " ");
+    lv_obj_clear_flag(c->cont, LV_OBJ_FLAG_HIDDEN);
+    c->active = 1;
+    status_line_apply_text(c);
+    status_line_refit(c);
+}
+
+static void status_line_hide(lv_obj_t *label)
+{
+    status_line_t *c = status_line_find(label);
+    if (!c) return;
+    if (c->strip) lv_anim_del(c->strip, status_line_scroll_exec);
+    if (c->cont) lv_obj_add_flag(c->cont, LV_OBJ_FLAG_HIDDEN);
+    c->active = 0;
+    c->period = 0;
+}
+
+/* 页面构建出口(语言/字体/单位重排后)调用:同步字体并重量宽,决定滚/停 */
+void nav_status_line_refit_screen(void)
+{
+    lv_obj_t *scr = lv_scr_act();
+    if (!scr) return;
+    for (int i = 0; i < STATUS_LINE_SLOTS; i++) {
+        status_line_t *c = &s_status_lines[i];
+        if (!c->in_use || !c->active) continue;
+        if (!c->host || !c->cont || !lv_obj_is_valid(c->host) || !lv_obj_is_valid(c->cont)) continue;
+        if (lv_obj_get_parent(c->host) != scr) continue;
+        status_line_refit(c);
+    }
+}
+
 void set_status_label_min(lv_obj_t *label, int temp_up, int temp_down, int hour, int min)
 {
-    int t = temp_up < temp_down ? temp_up : temp_down;
-    set_status_label(label, t, hour, min);
+    if (temp_disp_c(temp_up) != temp_disp_c(temp_down)) {
+        status_line_show(label, temp_up, temp_down, hour, min);
+    } else {
+        int t = temp_up < temp_down ? temp_up : temp_down;
+        status_line_hide(label);
+        set_status_label(label, t, hour, min);
+    }
 }
 void set_time_label(lv_obj_t *label, int remaining_ms)
 {

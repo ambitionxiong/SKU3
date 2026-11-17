@@ -378,6 +378,7 @@ static void on_set_wddw_click(lv_event_t *e)
     screen_SET_t *ss = screen_SET_get(&ui_manager);
     if (ss && ss->WDDW_Lb) lv_label_set_text(ss->WDDW_Lb, tr(SET_Data.Set_TempUnit ? "°F" : "°C"));
     nav_tempunit_refresh_screen(lv_scr_act());   /* 全屏立即换算:覆盖层+下层页面的温度文本一次重写 */
+    nav_status_line_refit_screen();              /* 双温状态行:单位符号/数字宽度变了,重量宽决定滚/停 */
 }
 
 static void on_set_djtime_click(lv_event_t *e)
