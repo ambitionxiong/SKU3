@@ -521,6 +521,7 @@ void page_pop(void)
     case PAGE_UPDOWN_BBQ_STOP:
         g_on_stop_back = 0;
         g_stop_back_complete = NULL;
+        g_send.iface_status = IFACE_PAUSE;   /* 先置暂停态:状态行相位冻结在 cook_elapsed_saved */
         if (child == PAGE_UPDOWN_BBQ_SETTING) {
             set_temp_up = updown_setting_saved_temp_up;
             set_temp_down = updown_setting_saved_temp_down;
@@ -561,7 +562,6 @@ void page_pop(void)
                          LV_SCR_LOAD_ANIM_NONE, 0, 0,
                          ui_manager.auto_del);
         printf("[nav] back to updown_bbq_stop\n");
-        g_send.iface_status = IFACE_PAUSE;
         break;
 
     case PAGE_UPDOWN_BBQ_STOP_BACK:

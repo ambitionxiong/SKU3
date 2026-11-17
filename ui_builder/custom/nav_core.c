@@ -1096,8 +1096,14 @@ static lv_timer_t *s_status_line_timer = NULL;
 
 static int status_line_phase(int period)
 {
+    uint32_t elapsed;
     if (period <= 0) return 0;
-    return (int)(((lv_tick_get() - cook_start_time) / STATUS_LINE_STEP_MS) % (uint32_t)period);
+    /* 暂停时相位冻结在暂停点(不跟墙钟继续走),恢复后从同一点接着走;
+     * 暂停页/暂停来源的返回确认页/恢复瞬间都用 cook_elapsed_saved,三处一致 */
+    elapsed = (g_send.iface_status == IFACE_PAUSE)
+              ? cook_elapsed_saved
+              : (lv_tick_get() - cook_start_time);
+    return (int)((elapsed / STATUS_LINE_STEP_MS) % (uint32_t)period);
 }
 
 static void status_line_timer_cb(lv_timer_t *t)

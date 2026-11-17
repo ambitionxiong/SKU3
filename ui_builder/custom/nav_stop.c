@@ -31,6 +31,7 @@ void jump_to_updown_bbq_stop(void)
 {
     edit_clear();
     cook_elapsed_saved = lv_tick_get() - cook_start_time;
+    g_send.iface_status = IFACE_PAUSE;   /* 先置暂停态:状态行相位冻结在 cook_elapsed_saved */
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
 
     /* 保存 cooking bar 的实际值（3→100，与 cooking 页动画一致） */
@@ -72,7 +73,6 @@ void jump_to_updown_bbq_stop(void)
     lang_scr_load_anim(updown_bbq_stop_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    g_send.iface_status = IFACE_PAUSE;
     g_send.remaining_ms = (cook_total_ms > (int)cook_elapsed_saved)
                           ? cook_total_ms - (int)cook_elapsed_saved : 0;
     printf("[nav] jump: cooking -> updown_bbq_stop (pause)\n");
