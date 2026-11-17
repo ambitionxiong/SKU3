@@ -5,6 +5,7 @@
 #include "nav.h"
 #include "protocol.h"
 #include "custom_defs.h"
+#include <string.h>
 
 /* ==============================
  * 第六感-烹饪说明页（descriptionmenu）
@@ -15,6 +16,153 @@ lv_group_t *g_descriptionmenu = NULL;
 
 static void on_description_start_click(lv_event_t *e);
 static void on_description_delay_click(lv_event_t *e);
+
+/* ==============================
+ * 中文折行禁则：行首不留句末标点
+ * ------------------------------
+ * LVGL 对 CJK 是“一字一词”贪心断行，句子末尾恰好差半个字宽时，
+ * “。”会被单独挤到下一行(用户 2026-11-17 报繁中炸排骨说明页：
+ *  “…一層煮食油” / “。” / “將食物放入第 3 層。”)。
+ * 版面定稿后逐行量一遍：行首若是句末标点，就按“上一行+该标点”的实际
+ * 像素宽把标签加宽(最多 +40px，且不越过卡片内容宽；+40 后右缘≤982，
+ * 仍不侵入右下延迟钮 x983)，把这一个标点收回上一行。
+ * 加宽到上限仍收不回(2D 菜已是满宽)时，退一步收紧字距 1~2px。
+ * 简中句短不触发；英文按整词折行不会出现行首标点，同样不受影响。
+ * ============================== */
+#define DESC_FIT_MAX_EXTRA   40   /* 加宽上限(px)，约 1.5 个字宽 */
+#define DESC_FIT_MAX_TRY     3
+
+/* 折行禁则里的“句末标点”:行首出现即回拉(严格说不含开引号/开括号) */
+static bool desc_tail_punct(uint32_t cp)
+{
+    switch (cp) {
+    case 0x3002:   /* 。 */
+    case 0xFF0C:   /* ， */
+    case 0x3001:   /* 、 */
+    case 0xFF1B:   /* ； */
+    case 0xFF1A:   /* ： */
+    case 0xFF1F:   /* ？ */
+    case 0xFF01:   /* ！ */
+    case 0xFF09:   /* ） */
+    case 0xFF3D:   /* ］ */
+    case 0x300D:   /* 」 */
+    case 0x300F:   /* 』 */
+    case 0x3011:   /* 】 */
+    case 0x300B:   /* 》 */
+    case 0x2026:   /* … */
+        return true;
+    default:
+        return false;
+    }
+}
+
+/* UTF-8 解一个码点,len 回填字节数 */
+static uint32_t desc_utf8_next(const char *s, int *len)
+{
+    const unsigned char *p = (const unsigned char *)s;
+    uint32_t cp;
+    int n;
+    if (p[0] < 0x80) { *len = 1; return p[0]; }
+    if ((p[0] & 0xE0) == 0xC0)      { n = 2; cp = p[0] & 0x1F; }
+    else if ((p[0] & 0xF0) == 0xE0) { n = 3; cp = p[0] & 0x0F; }
+    else if ((p[0] & 0xF8) == 0xF0) { n = 4; cp = p[0] & 0x07; }
+    else { *len = 1; return p[0]; }
+    for (int i = 1; i < n; i++) {
+        if ((p[i] & 0xC0) != 0x80) { *len = 1; return p[0]; }
+        cp = (cp << 6) | (uint32_t)(p[i] & 0x3F);
+    }
+    *len = n;
+    return cp;
+}
+
+/* 当前宽/字距下，为把行首标点收回上一行还需多少像素(0=无需加宽)
+ * 行号用 lv_label_get_letter_pos 的 y 变化判定，与渲染的折行完全一致 */
+static int32_t desc_wrap_need(lv_obj_t *lbl, const char *txt,
+                              const lv_font_t *font, int32_t ls)
+{
+    const int32_t cw = lv_obj_get_content_width(lbl);
+    int32_t need = 0;
+    int32_t line_start = 0;    /* 当前行行首字节偏移 */
+    int32_t last_y = 0;
+    uint32_t li = 0;           /* 字序号(lv_label_get_letter_pos 用) */
+    int32_t bo = 0;            /* 字节偏移 */
+    while (txt[bo] != '\0') {
+        lv_point_t pos;
+        int clen = 0;
+        uint32_t cp = desc_utf8_next(txt + bo, &clen);
+        lv_label_get_letter_pos(lbl, li, &pos);
+        if (li > 0 && pos.y != last_y) {
+            /* 新行行首：自动折行(上一字节不是换行符)且是句末标点才处理。
+             * 上一行 = 刚结束的这一行，行首即 line_start */
+            if (txt[bo - 1] != '\n' && txt[bo - 1] != '\r' && desc_tail_punct(cp)) {
+                int32_t w = lv_text_get_width(txt + line_start,
+                                              (uint32_t)(bo + clen - line_start),
+                                              font, ls);
+                if (w - cw > need) need = w - cw;
+            }
+            line_start = bo;
+        }
+        last_y = pos.y;
+        li++;
+        bo += clen;
+    }
+    return need;
+}
+
+static void desc_kinsoku_fit(lv_obj_t *lbl)
+{
+    if (!lbl) return;
+    if (lv_label_get_long_mode(lbl) != LV_LABEL_LONG_WRAP) return;
+
+    const char *txt = lv_label_get_text(lbl);
+    if (!txt || txt[0] == '\0') return;
+
+    const lv_font_t *font = lv_obj_get_style_text_font(lbl, LV_PART_MAIN);
+    int32_t ls = lv_obj_get_style_text_letter_space(lbl, LV_PART_MAIN);
+    lv_obj_update_layout(lbl);            /* 先落一次版面，lv_obj_get_width 才是生成稿的 894 */
+    int32_t base_w = lv_obj_get_width(lbl);
+    if (base_w <= 0) return;
+
+    /* 快路径：整串没有换行且一行放得下 → 不会折行，省掉逐字定位 */
+    if (strchr(txt, '\n') == NULL &&
+        lv_text_get_width(txt, (uint32_t)strlen(txt), font, ls) <= base_w) return;
+
+    int32_t limit = base_w + DESC_FIT_MAX_EXTRA;
+
+    /* 不越过卡片内容宽(容器 pad_left 已算在内容区外) */
+    lv_obj_t *par = lv_obj_get_parent(lbl);
+    if (par) {
+        int32_t pw = lv_obj_get_content_width(par);
+        if (pw > 0 && pw < limit) limit = pw;
+    }
+
+    /* 第一轮：加宽 */
+    int32_t w = base_w;
+    for (int i = 0; i < DESC_FIT_MAX_TRY; i++) {
+        lv_obj_set_width(lbl, w);
+        lv_obj_update_layout(lbl);
+        int32_t need = desc_wrap_need(lbl, txt, font, ls);
+        if (need <= 0) return;
+        int32_t nw = w + need + 1;      /* +1: 贪心判定用 > max_w */
+        if (nw > limit) nw = limit;
+        if (nw <= w) break;             /* 已到上限 */
+        w = nw;
+    }
+
+    /* 第二轮：满宽仍收不回，收紧字距(每字 1px，一个标点约需一个字宽) */
+    lv_obj_set_width(lbl, w);
+    lv_obj_update_layout(lbl);
+    if (desc_wrap_need(lbl, txt, font, ls) > 0) {
+        bool ok = false;
+        for (int k = 1; k <= 2 && !ok; k++) {
+            lv_obj_set_style_text_letter_space(lbl, ls - k, 0);
+            lv_obj_update_layout(lbl);
+            ok = (desc_wrap_need(lbl, txt, font, ls - k) <= 0);
+        }
+        if (!ok) lv_obj_set_style_text_letter_space(lbl, ls, 0);   /* 收不回落回原字距 */
+        lv_obj_update_layout(lbl);
+    }
+}
 
 static void descriptionmenu_layout(descriptionmenu_t *dm)
 {
@@ -129,6 +277,9 @@ static void descriptionmenu_layout(descriptionmenu_t *dm)
      * 说明标签放宽到容器内容宽(1233-24 左距=1209),折行减少给小结底部留距 */
     if (six_chick_is_2d() && dm->cookdescriptin)
         lv_obj_set_width(dm->cookdescriptin, 1209);
+    /* 繁中长句折行后句末“。”可能被挤到行首单独成行(2026-11-17 炸排骨页)，
+     * 这一段定稿后按实际字宽把标点收回上一行 */
+    desc_kinsoku_fit(dm->cookdescriptin);
     /* 探针菜:隐藏时间后，说明与小结整体上移顶对齐（隐藏项不占 flex 位） */
     if (six_chick_is_probe()) {
         if (dm->cookdescriptin) lv_obj_move_to_index(dm->cookdescriptin, 0);
