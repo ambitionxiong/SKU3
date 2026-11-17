@@ -1088,22 +1088,23 @@ typedef struct {
 
 static status_line_t s_status_lines[STATUS_LINE_SLOTS];
 
-/* 全局滚动相位:同一烹饪会话内所有页共用 cook_start_time 起算的时间轴,
- * 同一瞬间各页裁到的温度段完全一致(暂停按已走时长,恢复后相位连续)。
- * 单定时器 20ms 步进,没有在滚的状态行时自行退出。 */
+/* 全局滚动相位:所有页共用同一条“状态行时间轴”。它与 cook_start_time 解耦:
+ * 暂停时仍按墙钟走(暂停页继续动),恢复时不被 cook_start_time 的
+ * now-cook_elapsed_saved 回拨,所以暂停→继续相位是连续的。
+ * 只有开始烹饪/设置确定(重新起锅)时 reset 到 0。 */
 #define STATUS_LINE_STEP_MS 20
 static lv_timer_t *s_status_line_timer = NULL;
+static uint32_t s_status_line_epoch = 0;
+
+void nav_status_line_reset_phase(void)
+{
+    s_status_line_epoch = lv_tick_get();
+}
 
 static int status_line_phase(int period)
 {
-    uint32_t elapsed;
     if (period <= 0) return 0;
-    /* 暂停时相位冻结在暂停点(不跟墙钟继续走),恢复后从同一点接着走;
-     * 暂停页/暂停来源的返回确认页/恢复瞬间都用 cook_elapsed_saved,三处一致 */
-    elapsed = (g_send.iface_status == IFACE_PAUSE)
-              ? cook_elapsed_saved
-              : (lv_tick_get() - cook_start_time);
-    return (int)((elapsed / STATUS_LINE_STEP_MS) % (uint32_t)period);
+    return (int)(((lv_tick_get() - s_status_line_epoch) / STATUS_LINE_STEP_MS) % (uint32_t)period);
 }
 
 static void status_line_timer_cb(lv_timer_t *t)

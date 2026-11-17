@@ -294,6 +294,7 @@ void jump_to_updown_bbq_cooking(void)
 
     updown_bbq_cooking_t *cook = updown_bbq_cooking_get(&ui_manager);
     cook_start_time = lv_tick_get();   /* 先起时间轴:双温状态行相位以它为 0 */
+    nav_status_line_reset_phase();     /* 新一轮烹饪:滚动相位归 0 */
     if (cook) {
         lv_obj_t *btns[] = {
             cook->stop_button, cook->little_button,
