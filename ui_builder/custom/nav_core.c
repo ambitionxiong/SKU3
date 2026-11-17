@@ -1064,7 +1064,8 @@ static void set_status_label(lv_obj_t *label, int temp, int hour, int min)
  *   温度段两组相同内容,超宽时显示第二组并整体左移一个周期,接缝与起点重合。
  * ============================== */
 #define STATUS_LINE_SLOTS       4
-#define STATUS_LINE_ICON_ZOOM   512      /* 8x6/7x6 素材 2 倍显示(16x12/14x12) */
+#define STATUS_LINE_ICON_W      18      /* 2026-11-17 用户换高清素材:18x14 原生 1 倍显示 */
+#define STATUS_LINE_ICON_H      14
 #define STATUS_LINE_ICON_GAP    2
 #define STATUS_LINE_COPY_GAP    24
 
@@ -1120,14 +1121,12 @@ static lv_obj_t *status_line_make_label(lv_obj_t *parent)
     return l;
 }
 
-static lv_obj_t *status_line_make_icon(lv_obj_t *parent, const char *src, lv_coord_t w)
+static lv_obj_t *status_line_make_icon(lv_obj_t *parent, const char *src)
 {
     lv_obj_t *box = status_line_box(parent);
-    lv_obj_set_size(box, w, 12);
+    lv_obj_set_size(box, STATUS_LINE_ICON_W, STATUS_LINE_ICON_H);
     lv_obj_t *img = lv_img_create(box);
     lv_img_set_src(img, src);
-    lv_image_set_pivot(img, 0, 0);
-    lv_image_set_scale(img, STATUS_LINE_ICON_ZOOM);
     lv_obj_set_pos(img, 0, 0);
     return box;
 }
@@ -1182,20 +1181,20 @@ static status_line_t *status_line_create(lv_obj_t *host)
     lv_obj_set_style_pad_row(c->strip, 0, 0);
 
     /* A 组 */
-    c->icons[0] = status_line_make_icon(c->strip, LVGL_IMAGE_PATH(cookingtopicon.png), 16);
+    c->icons[0] = status_line_make_icon(c->strip, LVGL_IMAGE_PATH(cookingtopicon.png));
     c->templ[0] = status_line_make_label(c->strip);
     c->seps[0]  = status_line_make_label(c->strip);
-    c->icons[1] = status_line_make_icon(c->strip, LVGL_IMAGE_PATH(cookingloeicon.png), 14);
+    c->icons[1] = status_line_make_icon(c->strip, LVGL_IMAGE_PATH(cookingloeicon.png));
     c->templ[1] = status_line_make_label(c->strip);
 
     c->spacer = status_line_box(c->strip);
     lv_obj_set_size(c->spacer, STATUS_LINE_COPY_GAP, 1);
 
     /* B 组(与 A 组相同;静止时隐藏) */
-    c->icons[2] = status_line_make_icon(c->strip, LVGL_IMAGE_PATH(cookingtopicon.png), 16);
+    c->icons[2] = status_line_make_icon(c->strip, LVGL_IMAGE_PATH(cookingtopicon.png));
     c->templ[2] = status_line_make_label(c->strip);
     c->seps[1]  = status_line_make_label(c->strip);
-    c->icons[3] = status_line_make_icon(c->strip, LVGL_IMAGE_PATH(cookingloeicon.png), 14);
+    c->icons[3] = status_line_make_icon(c->strip, LVGL_IMAGE_PATH(cookingloeicon.png));
     c->templ[3] = status_line_make_label(c->strip);
 
     c->time = status_line_make_label(c->cont);
@@ -1277,6 +1276,10 @@ static void status_line_refit(status_line_t *c)
     const lv_font_t *font = lv_obj_get_style_text_font(c->host, 0);
     lv_coord_t ls = lv_obj_get_style_text_letter_space(c->host, 0);
     if (W <= 0 || H <= 0 || !font) return;
+    /* EN stopback tune 把共享状态标签加宽到 570(给六感长菜名用);上下烧烤异温
+     * 状态行固定按烹饪页/进度条同宽 490 排,这样暂停、返回确认和烹饪中三页
+     * 行宽/换行/滚动判据完全一致,也不会越过进度条右端(2026-11-17 用户反馈) */
+    if (W > 490) W = 490;
 
     lv_obj_set_size(c->cont, W, H);
     lv_obj_set_height(c->win, H);
