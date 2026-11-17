@@ -456,7 +456,8 @@ void page_pop(void)
                              ui_manager.auto_del);
             printf("[nav] back from setting -> updown_bbq_cooking\n");
             g_send.iface_status = IFACE_COOKING;
-            g_send.set_temp = set_temp;
+            g_send.set_temp = (uint16_t)set_temp_up;        /* 上下烧烤协议上发热管=SET_TEMP;不能用主温 set_temp(常为下温),否则 BACK 后上温被改成 180 */
+            g_send.set_temp_lower = (uint16_t)set_temp_down;
             {
                 uint32_t e = lv_tick_get() - cook_start_time;
                 int rem = (int)(cook_total_ms > (int)e ? cook_total_ms - (int)e : 0);

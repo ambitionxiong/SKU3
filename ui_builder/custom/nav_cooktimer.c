@@ -14,6 +14,10 @@
 #include "nav.h"
 #include "nav_internal.h"
 
+/* 调试一键完成:只把本次回调的 elapsed 视作到点,不回拨 cook_start_time。
+ * 回拨会把双温状态行的全局相位整体跳一个烹饪时长,完成页动态位置不连续。 */
+static uint8_t s_sim_force_done = 0;
+
 /* 门开自动暂停：当前为烹饪页时跳入对应暂停页(各模式 stop) */
 static void auto_pause_on_door(void)
 {
@@ -985,19 +989,25 @@ void cooking_timer_cb(lv_timer_t *timer)
 
     if (!time_label) return;
 
-    uint32_t elapsed = lv_tick_get() - cook_start_time;
+    uint32_t elapsed = s_sim_force_done ? (uint32_t)cook_total_ms
+                                        : (lv_tick_get() - cook_start_time);
     if (elapsed >= (uint32_t)cook_total_ms) {
         lv_timer_del(cook_timer);
         cook_timer = NULL;
         g_send.buzzer_req = BUZZER_COOK_DONE;
         nav_topflag_popups_yield();   /* 完成跳页让位:弹窗悬浮 layer_top,换屏前先收(2026-10-30) */
-        /* 完成页参数=本次运行确认值(2026-10-15):setting 覆盖层编辑态未确认的调值
+        /* 完成页参数=本次运行确认值(2026-10-15):设置页编辑态未确认的调值
          * 不带入——编辑直接写 set_temp 等显示变量,协议镜像 g_send 仍是确认值
-         * (实测:setting 调 185 未确认,到点完成页显示 185℃/真值 180);
+         * (实测:setting 调 185 未确认,到点完成页显示 185℃/真值 180)。
          * 时长回读 cook_total_ms(真实运行时长,编辑不改变它)。
-         * 仅编辑态生效:非编辑态各模式显示变量与确认值一致,不动
-         * (避开 somecook 等无逐段镜像同步链路) */
-        if (nav_edit_session_active()) {
+         * 上下烧烤单独判 edit_count>0(当前页是否真有编辑字段),不能只用
+         * nav_edit_session_active():从 setting BACK 回 cooking 后 page_pop 的
+         * edit_clear 把 s_edit_browse 复位成编辑态,但 cooking 页没有任何字段,
+         * 会在到点把 set_temp_up 覆写成 g_send.set_temp(上温变 180 的根因);
+         * 其它模式维持原判据,避免影响 somecook 等无逐段镜像的链路。 */
+        int updown_page = (current_group == g_updown_bbq_cooking ||
+                           current_group == g_updown_bbq_setting);
+        if (updown_page ? (edit_count > 0) : nav_edit_session_active()) {
             set_temp      = g_send.set_temp;
             set_temp_up   = g_send.set_temp;        /* 上下烧烤:协议上发热管=SET_TEMP */
             set_temp_down = g_send.set_temp_lower;
@@ -1328,8 +1338,16 @@ void sim_force_cook_done(void)
         six_cook_force_done();
         return;
     }
-    cook_start_time -= cook_total_ms;   /* 回拨起点（无符号回绕安全） */
     printf("[sim] force cook done\n");
-    cooking_timer_cb(NULL);
+    /* 上下烧烤:不改 cook_start_time,否则双温状态行的全局相位会整体跳一个烹饪时长;
+     * 其它模式保持原回拨行为,避免影响各自完成页的 elapsed 计算。 */
+    if (current_group == g_updown_bbq_cooking || current_group == g_updown_bbq_setting) {
+        s_sim_force_done = 1;
+        cooking_timer_cb(NULL);
+        s_sim_force_done = 0;
+    } else {
+        cook_start_time -= cook_total_ms;   /* 回拨起点（无符号回绕安全） */
+        cooking_timer_cb(NULL);
+    }
 }
 
