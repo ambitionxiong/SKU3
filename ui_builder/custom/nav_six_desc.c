@@ -187,31 +187,38 @@ static bool desc_cp_period(uint32_t cp)
  * plain=true 时退化成纯铺满(LVGL 自动折行同款),行数超标时兜底用。
  * maxw_out 回填最长行宽,调用方据此把标签加宽(只要不超过框)。 */
 static int desc_pack(const desc_tok_t *tk, int ntok, int32_t max_w, int32_t wlimit,
-                     int32_t ls, bool plain, int16_t *lb, int16_t *le, int32_t *maxw_out)
+                     int32_t ls, bool plain, int merge, int16_t *lb, int16_t *le,
+                     int32_t *maxw_out)
 {
     int i = 0, L = 0;
     int32_t maxw = 0;
+    int merge_left = merge;            /* 只在第一行生效:前 merge 个句号不换行 */
     while (i < ntok && L < DESC_TOK_MAX) {
         int32_t w = tk[i].w;
         int fit = i;
         int punct_in = -1, punct_beyond = -1;
         int first_per = -1;
+        int per_seen = 0;
         for (int k = i + 1; k < ntok; k++) {
             int32_t add = tk[k].sp_w + tk[k].w + (ls > 0 ? ls : 0);
             int32_t nw = w + add;
-            if (nw > wlimit) break;
+            bool merging = (merge_left > 0);        /* 合并行:越过基本宽也要把第 N+1 句读进来 */
+            if (nw > wlimit && !merging) break;
             if (nw <= max_w) {
                 fit = k;
                 if (tk[k].punct) punct_in = k;
-            } else if (punct_beyond < 0 && tk[k].punct) {
+            } else if (!merging && punct_beyond < 0 && tk[k].punct) {
                 punct_beyond = k;
             }
-            if (tk[k].punct && desc_cp_period(tk[k].last) && first_per < 0) first_per = k;
+            if (tk[k].punct && desc_cp_period(tk[k].last)) {
+                per_seen++;
+                if (per_seen == merge_left + 1) { first_per = k; break; }
+            }
             w = nw;
         }
         int end = fit;
         if (!plain) {
-            /* ① 一句一行:框内第一个句号(整句独占一行,不跨行) */
+            /* ① 一句一行:框内第 (merge+1) 个句号(前 merge 句并到同一行) */
             if (first_per >= 0) end = first_per;
             /* ② 这一句长到框里放不下:退到句内最后一个逗号,下一行接着这句 */
             else if (punct_in >= 0) end = punct_in;
@@ -221,6 +228,7 @@ static int desc_pack(const desc_tok_t *tk, int ntok, int32_t max_w, int32_t wlim
         if (end < i) end = i;
         int32_t lw = desc_line_w(tk, i, end, ls);
         if (lw > maxw) maxw = lw;
+        merge_left = 0;                /* 只有第一行合并 */
         lb[L] = (int16_t)i;
         le[L] = (int16_t)end;
         L++;
@@ -247,7 +255,7 @@ static int desc_lvgl_lines(const char *txt, const lv_font_t *font, int32_t ls, i
 
 /* 按 max_w 断行、允许加宽到 wlimit;返回总行数(-1=溢出) */
 static int desc_build(const char *txt, const lv_font_t *font, int32_t ls, int32_t space_w,
-                      int32_t max_w, int32_t wlimit, bool plain,
+                      int32_t max_w, int32_t wlimit, bool plain, int merge,
                       char *buf, int bufsz, int32_t *maxw_out)
 {
     int out = 0, total = 0;
@@ -276,7 +284,7 @@ static int desc_build(const char *txt, const lv_font_t *font, int32_t ls, int32_
             }
         } else {
             int32_t pmax = 0;
-            int L = desc_pack(s_tok, ntok, max_w, wlimit, ls, plain, s_lb, s_le, &pmax);
+            int L = desc_pack(s_tok, ntok, max_w, wlimit, ls, plain, merge, s_lb, s_le, &pmax);
             if (pmax > maxw) maxw = pmax;
             for (int k = 0; k < L; k++) {
                 int a = ps + s_tok[s_lb[k]].off;
@@ -318,6 +326,35 @@ static int32_t desc_avail_h(lv_obj_t *lbl)
     return ch - used - pad_row * vis;
 }
 
+/* ==============================
+ * 逐页断行微调（2026-11-18 用户逐页截图）
+ * ------------------------------
+ * key    = 该页文本里一段唯一子串
+ * merge  = 该页第一段前 merge 个句号不换行（把几句并成一行）
+ * 命中后若这一行放不进卡片框，会逐级收紧字距（-1/-2）再试。
+ * ============================== */
+typedef struct {
+    const char *key;
+    int merge;
+} desc_merge_t;
+
+static const desc_merge_t s_desc_merge[] = {
+    { "在焗盤上擠出約2吋大小的圓形",        2 },   /* 泡芙：前 3 句并一行 */
+    { "將麵團分成等份小球",                 1 },   /* 蛋撻：前 2 句并一行 */
+    { "將酥皮放上焗盤並灑上糖霜",           1 },   /* 千層酥：前 2 句并一行 */
+    { "平鋪在氣炸盤上，並在表面輕輕噴上一層煮食油", 1 },   /* 炸排骨：前 2 句并一行 */
+    { "按個人喜好灑上鹽和燒烤調味料",       2 },   /* 燜薯片：前 3 句并一行 */
+    { "按個人喜好加入蒜蓉醬、鹽和油調味",   1 },   /* 烤茄子：前 2 句并一行 */
+    { "將忌廉均勻倒在表面，並灑上芝士",     1 },   /* 法式燜薯仔：前 2 句并一行 */
+};
+
+static int desc_merge_of(const char *txt)
+{
+    for (unsigned i = 0; i < sizeof(s_desc_merge) / sizeof(s_desc_merge[0]); i++)
+        if (strstr(txt, s_desc_merge[i].key)) return s_desc_merge[i].merge;
+    return 0;
+}
+
 static void desc_reflow(lv_obj_t *lbl)
 {
     if (!lbl) return;
@@ -345,11 +382,19 @@ static void desc_reflow(lv_obj_t *lbl)
 
     bool cjk = desc_has_wide(txt);
     int32_t space_w = lv_text_get_width(" ", 1, font, ls);
+    int merge = desc_merge_of(txt);
 
     int32_t maxw = 0;
     bool punct_mode = cjk;                 /* 中文按标点断;英文保持整词铺满 */
-    int total = desc_build(txt, font, ls, space_w, width, wlimit, !punct_mode,
+    int32_t ls_use = ls;
+    int total = desc_build(txt, font, ls_use, space_w, width, wlimit, !punct_mode, merge,
                            s_reflow, DESC_BUF_SIZE, &maxw);
+    while (merge > 0 && maxw > wlimit && ls_use - ls > -3) {  /* 合并后一行放不下:收紧字距 */
+        ls_use--;
+        total = desc_build(txt, font, ls_use, space_w, width, wlimit, !punct_mode, merge,
+                           s_reflow, DESC_BUF_SIZE, &maxw);
+    }
+    if (ls_use != ls) lv_obj_set_style_text_letter_space(lbl, ls_use, 0);
     if (total <= 0) return;
     int32_t new_w = (maxw > width) ? maxw : width;
     if (new_w > wlimit) new_w = wlimit;
@@ -359,8 +404,9 @@ static void desc_reflow(lv_obj_t *lbl)
         int32_t avail = desc_avail_h(lbl);
         int32_t lh = lv_font_get_line_height(font) +
                      lv_obj_get_style_text_line_space(lbl, LV_PART_MAIN);
+        if (avail > 0 && total * lh > avail && total <= auto_n + 2) avail = total * lh;  /* 最多容许多 2 行 */
         if (avail <= 0 || total * lh > avail) {
-            total = desc_build(txt, font, ls, space_w, width, width, true,
+            total = desc_build(txt, font, ls_use, space_w, width, width, true, 0,
                                s_reflow, DESC_BUF_SIZE, &maxw);
             if (total <= 0) return;
             new_w = width;
