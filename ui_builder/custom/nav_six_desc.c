@@ -172,74 +172,62 @@ static int32_t desc_line_w(const desc_tok_t *tk, int b, int e, int32_t ls)
     return w;
 }
 
-/* 贪心断行:标点优先 → 空格优先 → 装满
- * allow = 为落到标点/空格最多回退几个词(中文 2/1/0 逐级降,英文恒 0 不丢词)
- * need_out 回填“要消掉行首标点还差多少像素”(0=没有行首标点)
- * push=true 时不加宽,直接把上一行末词推下来保证行首不是标点 */
-static int desc_pack(const desc_tok_t *tk, int ntok, int32_t max_w, int32_t ls, bool cjk,
-                     int allow, int16_t *lb, int16_t *le, int32_t *need_out, bool push)
+/* 一级断点(句末):。！？ . ! ?；其余标点(，、；：,;:)算二级断点 */
+static bool desc_cp_period(uint32_t cp)
+{
+    return cp == 0x3002 || cp == 0xFF01 || cp == 0xFF1F ||
+           cp == '.' || cp == '!' || cp == '?';
+}
+
+/* 断行:一律断在标点处,能整句就整句
+ *  ① 基本宽 max_w 内最后一个句号(且本行不太空) → 断
+ *  ② 其次基本宽内最后一个标点(逗号/顿号/分号…)
+ *  ③ 基本宽内一个标点都没有 → 加宽到框内(wlimit)第一个标点
+ *  ④ 框内也没有标点 → 按基本宽铺满(极少数超长无标点句)
+ * plain=true 时退化成纯铺满(LVGL 自动折行同款),行数超标时兜底用。
+ * maxw_out 回填最长行宽,调用方据此把标签加宽(只要不超过框)。 */
+static int desc_pack(const desc_tok_t *tk, int ntok, int32_t max_w, int32_t wlimit,
+                     int32_t ls, bool plain, int16_t *lb, int16_t *le, int32_t *maxw_out)
 {
     int i = 0, L = 0;
-    int32_t need = 0;
-    int32_t limit = max_w;             /* 行宽上限:下一行不长过本行(整体呈上长下短) */
-    if (!cjk) allow = 0;               /* 英文按整词断,不回退丢词 */
+    int32_t maxw = 0;
     while (i < ntok && L < DESC_TOK_MAX) {
         int32_t w = tk[i].w;
         int fit = i;
+        int punct_in = -1, punct_beyond = -1;
+        int per_any = -1;
+        int32_t w_per = 0;
         for (int k = i + 1; k < ntok; k++) {
             int32_t add = tk[k].sp_w + tk[k].w + (ls > 0 ? ls : 0);
-            if (w + add > limit) break;
-            w += add;
-            fit = k;
+            int32_t nw = w + add;
+            if (nw > wlimit) break;
+            if (nw <= max_w) {
+                fit = k;
+                if (tk[k].punct) punct_in = k;
+            } else if (punct_beyond < 0 && tk[k].punct) {
+                punct_beyond = k;
+            }
+            if (tk[k].punct && desc_cp_period(tk[k].last)) { per_any = k; w_per = nw; }
+            w = nw;
         }
         int end = fit;
-        for (int k = fit; k > i && (fit - k) <= allow; k--) {
-            if (tk[k].punct) { end = k; break; }
+        if (!plain) {
+            /* ① 整句优先:框内最后一个句号(行别太空,至少占框宽一半) */
+            if (per_any >= 0 && w_per * 2 >= wlimit) end = per_any;
+            /* ② 其次:基本宽内最后一个标点 */
+            else if (punct_in >= 0) end = punct_in;
+            /* ③ 基本宽内没标点:加宽到框内第一个标点 */
+            else if (punct_beyond >= 0) end = punct_beyond;
         }
-        if (end == fit && cjk && allow > 0) {   /* 其次:空格处(如“第 3 層”这类短语边界) */
-            for (int k = fit; k > i && (fit - k) <= allow; k--) {
-                if (tk[k].space) { end = k; break; }
-            }
-        }
-        /* 下一行开头若是句末标点、或“粉。”这种两字残句:优先把标签加宽一点
-         * 把它整个拉回本行(用户 2026-11-18:移标点比把字推下去好);加不动才下推 */
-        if (end + 1 < ntok) {
-            int32_t extra = 0;
-            if (desc_cp_close(tk[end + 1].first)) {
-                extra = tk[end + 1].w + (ls > 0 ? ls : 0);
-            } else if (end + 2 < ntok && tk[end + 1].space == 0 &&
-                       desc_cp_wide(tk[end + 1].first) && !desc_cp_close(tk[end + 1].first) &&
-                       desc_cp_close(tk[end + 2].first)) {
-                extra = tk[end + 1].w + tk[end + 2].w + (ls > 0 ? ls : 0) * 2;
-            }
-            if (extra > 0) {
-                int32_t full = desc_line_w(tk, i, end, ls) + extra;
-                if (full - max_w > need) need = full - max_w;
-                if (push) {                        /* 加不动:把字推下去,行首不留标点 */
-                    int guard = 0;
-                    while (end > i && guard++ < 8) {
-                        if (desc_cp_close(tk[end + 1].first)) { end--; continue; }
-                        if (end + 2 < ntok && tk[end + 1].space == 0 &&
-                            desc_cp_wide(tk[end + 1].first) && !desc_cp_close(tk[end + 1].first) &&
-                            desc_cp_close(tk[end + 2].first)) { end--; continue; }
-                        break;
-                    }
-                }
-            }
-        }
+        if (end < i) end = i;
         int32_t lw = desc_line_w(tk, i, end, ls);
+        if (lw > maxw) maxw = lw;
         lb[L] = (int16_t)i;
         le[L] = (int16_t)end;
         L++;
         i = end + 1;
-        if (cjk && lw < limit) {           /* 中文:下一行不长过本行(留 1 个字宽余量,
-                                            * 免得为了严格递减把词切断),整体从上到下递减 */
-            int32_t tol = (i < ntok) ? tk[i].w : 0;
-            limit = lw + tol;
-            if (limit > max_w) limit = max_w;   /* 但绝不超盒宽,否则会被 LVGL 再折一次 */
-        }
     }
-    *need_out = need;
+    *maxw_out = maxw;
     return L;
 }
 
@@ -258,13 +246,13 @@ static int desc_lvgl_lines(const char *txt, const lv_font_t *font, int32_t ls, i
     return n;
 }
 
-/* 按 width 把整串重排进 buf,返回总行数(-1=溢出) */
+/* 按 max_w 断行、允许加宽到 wlimit;返回总行数(-1=溢出) */
 static int desc_build(const char *txt, const lv_font_t *font, int32_t ls, int32_t space_w,
-                      int32_t width, bool cjk, int allow, bool push, char *buf, int bufsz,
-                      int32_t *need_out)
+                      int32_t max_w, int32_t wlimit, bool plain,
+                      char *buf, int bufsz, int32_t *maxw_out)
 {
     int out = 0, total = 0;
-    int32_t need_max = 0;
+    int32_t maxw = 0;
     int i = 0;
     int n = (int)strlen(txt);
     if (n + 2 >= bufsz) return -1;
@@ -279,31 +267,18 @@ static int desc_build(const char *txt, const lv_font_t *font, int32_t ls, int32_
 
         if (ntok <= 1) {                     /* 空行/单字:原样搬 */
             int len = pe - ps;
-            if (out + len + 1 >= bufsz) return -1;
+            if (out + len + 2 >= bufsz) return -1;
             memcpy(buf + out, txt + ps, (size_t)len);
             out += len;
             total += 1;
-        } else {
-            int32_t need = 0;
-            int L = desc_pack(s_tok, ntok, width, ls, cjk, allow, s_lb, s_le, &need, push);
-            if (need > need_max) need_max = need;
-
-            /* 孤行:末行太短就把上一行末尾的词挪下来(不能把标点挪到行首) */
-            if (L >= 2 && s_le[L - 2] - s_lb[L - 2] >= 2) {
-                int32_t wl = desc_line_w(s_tok, s_lb[L - 1], s_le[L - 1], ls);
-                int first = s_lb[L - 1];
-                for (int moved = 0; moved < 2 && wl * DESC_ORPHAN_DIV < width; moved++) {
-                    int cand = s_le[L - 2];
-                    if (cand <= s_lb[L - 2]) break;          /* 上一行至少留一个词 */
-                    if (s_tok[cand].punct) break;            /* 标点不许落行首 */
-                    int32_t add = s_tok[first].sp_w + s_tok[cand].w + (ls > 0 ? ls : 0);
-                    if (wl + add > width) break;
-                    wl += add;
-                    s_le[L - 2]--;
-                    s_lb[L - 1] = (int16_t)cand;
-                }
+            if (len > 0) {
+                int32_t lw = lv_text_get_width(txt + ps, (uint32_t)len, font, ls);
+                if (lw > maxw) maxw = lw;
             }
-
+        } else {
+            int32_t pmax = 0;
+            int L = desc_pack(s_tok, ntok, max_w, wlimit, ls, plain, s_lb, s_le, &pmax);
+            if (pmax > maxw) maxw = pmax;
             for (int k = 0; k < L; k++) {
                 int a = ps + s_tok[s_lb[k]].off;
                 int b = ps + s_tok[s_le[k]].off + s_tok[s_le[k]].len;
@@ -319,43 +294,29 @@ static int desc_build(const char *txt, const lv_font_t *font, int32_t ls, int32_
         else break;
     }
     buf[out] = '\0';
-    *need_out = need_max;
+    *maxw_out = maxw;
     return total;
 }
 
-/* 核心:在 [base_w, wlimit] 内把 txt 排好,返回行数;*out_w 回填最终盒宽(-1=放弃)
- * allow 从 2 降到 0:优先保住“不变高”,再尽量让行尾落在标点处 */
-static int desc_layout(const char *txt, const lv_font_t *font, int32_t ls,
-                       int32_t base_w, int32_t wlimit, bool cjk,
-                       char *buf, int bufsz, int32_t *out_w)
+/* 说明标签在卡片里还剩多少可用高度(用于判断多折一行会不会顶到框底) */
+static int32_t desc_avail_h(lv_obj_t *lbl)
 {
-    int32_t space_w = lv_text_get_width(" ", 1, font, ls);
-    int last_total = -1;
-    int32_t last_w = base_w;
-    for (int allow = 2; allow >= 0; allow--) {
-        int32_t width = base_w, need = 0;
-        int total = desc_build(txt, font, ls, space_w, width, cjk, allow, false,
-                               buf, bufsz, &need);
-        if (total <= 0) return -1;
-        if (need > 0 && width + need + 1 <= wlimit) {   /* 行首标点:先加宽一点再排 */
-            width += need + 1;
-            total = desc_build(txt, font, ls, space_w, width, cjk, allow, false,
-                               buf, bufsz, &need);
-        }
-        if (total > 0 && need > 0) {                    /* 加不动了:把上一行末词推下来 */
-            total = desc_build(txt, font, ls, space_w, width, cjk, allow, true,
-                               buf, bufsz, &need);
-        }
-        if (total <= 0) return -1;
-        last_total = total;
-        last_w = width;
-        if (total <= desc_lvgl_lines(txt, font, ls, width)) {   /* 不变高:采用 */
-            *out_w = width;
-            return total;
-        }
+    lv_obj_t *par = lv_obj_get_parent(lbl);
+    if (!par) return 0;
+    lv_obj_update_layout(par);
+    int32_t ch = lv_obj_get_content_height(par);
+    int32_t pad_row = lv_obj_get_style_pad_row(par, LV_PART_MAIN);
+    int32_t used = 0;
+    int vis = 0;
+    uint32_t n = lv_obj_get_child_count(par);
+    for (uint32_t k = 0; k < n; k++) {
+        lv_obj_t *c = lv_obj_get_child(par, k);
+        if (!c || c == lbl) continue;
+        if (lv_obj_has_flag(c, LV_OBJ_FLAG_HIDDEN)) continue;
+        used += lv_obj_get_height(c);
+        vis++;
     }
-    *out_w = last_w;
-    return last_total;
+    return ch - used - pad_row * vis;
 }
 
 static void desc_reflow(lv_obj_t *lbl)
@@ -372,28 +333,43 @@ static void desc_reflow(lv_obj_t *lbl)
     int32_t base_w = lv_obj_get_width(lbl);
     if (base_w <= 0) return;
 
-    /* 英文说明页最终盒宽由 lang_tune 定(宽菜 1100,其余 930),这里先用最终值排,
-     * 否则按 894 排好再被 tune 放宽,会变成一排短行 */
+    /* 英文说明页最终盒宽由 lang_tune 定(宽菜 1100,其余 930);中文保持生成稿宽,
+     * 需要时按行宽加宽(只要不越过卡片内容宽) */
     int32_t width = is_english() ? (six_desc_is_wide_dish() ? 1100 : 930) : base_w;
-    int32_t wlimit = width + DESC_WIDEN_MAX;
+    int32_t wlimit = width;
     lv_obj_t *par = lv_obj_get_parent(lbl);
-    if (par) {                            /* 不越过卡片内容宽 */
+    if (par) {
         int32_t pw = lv_obj_get_content_width(par);
-        if (pw > 0 && pw < wlimit) wlimit = pw;
+        if (pw > wlimit) wlimit = pw;
     }
+    if (is_english()) wlimit = width;     /* 英文不借宽,保持原版面 */
 
     bool cjk = desc_has_wide(txt);
-    int32_t out_w = width;
-    int total = desc_layout(txt, font, ls, width, wlimit, cjk,
-                            s_reflow, DESC_BUF_SIZE, &out_w);
+    int32_t space_w = lv_text_get_width(" ", 1, font, ls);
+
+    int32_t maxw = 0;
+    bool punct_mode = cjk;                 /* 中文按标点断;英文保持整词铺满 */
+    int total = desc_build(txt, font, ls, space_w, width, wlimit, !punct_mode,
+                           s_reflow, DESC_BUF_SIZE, &maxw);
     if (total <= 0) return;
+    int32_t new_w = (maxw > width) ? maxw : width;
+    if (new_w > wlimit) new_w = wlimit;
 
-    int auto_n = desc_lvgl_lines(txt, font, ls, out_w);
-    if (total > auto_n) return;           /* 会变高:整体放弃,保持 LVGL 自动折行 */
+    int auto_n = desc_lvgl_lines(txt, font, ls, new_w);
+    if (total > auto_n) {                 /* 折行变多:框里还有余量就留,没有就退回铺满 */
+        int32_t avail = desc_avail_h(lbl);
+        int32_t lh = lv_font_get_line_height(font) +
+                     lv_obj_get_style_text_line_space(lbl, LV_PART_MAIN);
+        if (avail <= 0 || total * lh > avail) {
+            total = desc_build(txt, font, ls, space_w, width, width, true,
+                               s_reflow, DESC_BUF_SIZE, &maxw);
+            if (total <= 0) return;
+            new_w = width;
+        }
+    }
 
-    if (out_w != base_w) lv_obj_set_width(lbl, out_w);
-    if (strcmp(s_reflow, txt) == 0) return;
-    lv_label_set_text(lbl, s_reflow);
+    lv_obj_set_width(lbl, new_w);
+    if (strcmp(s_reflow, txt) != 0) lv_label_set_text(lbl, s_reflow);
     lv_obj_update_layout(lbl);
 }
 
