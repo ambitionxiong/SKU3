@@ -591,7 +591,7 @@ const char *six_chick_desc(void)
         return tr("烹饪说明：\n用叉子刺红薯6到8次。\n现在将食物放在第3层。\n使用烤盘。");   /* 2026-10-12 用户定稿:去掉抹油撒盐句 */
     if (six_chick_is_seafood()) {
         const seafood_dish_t *sd = seafood_dish_cfg();
-        if (sd) return sd->desc;
+        if (sd) return tr(sd->desc);   /* 2026-11-18 表内说明也要过 tr:英文页面曾直接漏出中文 */
     }
     {
         const mat_probe_t *mp = mat_probe_cfg();
@@ -606,9 +606,9 @@ const char *six_chick_desc(void)
         if (sd) return tr(sd->desc);
     }
     const chick_dish_t *c = chick_dish_cfg();
-    if (c) return c->desc;
+    if (c) return tr(c->desc);   /* 2026-11-18 烤鸡翅/炸鸡中翅/炸鸡腿/烤鸡胸肉:表内说明补 tr(英文页曾显示中文) */
     const chick_probe_t *p = chick_probe_cfg();
-    if (p) return p->desc;
+    if (p) return tr(p->desc);
     return tr("烹饪说明：\n刷油，并根据个人喜好进行调味。抹上盐和胡椒。放入烤箱，胸脯面朝上。\n现在将食物放在第2层。\n使用深盘。");
 }
 
