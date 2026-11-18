@@ -210,7 +210,10 @@ static int desc_pack(const desc_tok_t *tk, int ntok, int32_t max_w, int32_t wlim
             } else if (!merging && punct_beyond < 0 && tk[k].punct) {
                 punct_beyond = k;
             }
-            if (tk[k].punct && desc_cp_period(tk[k].last)) {
+            /* 中文(plain=false)按句断:扫到第 (merge+1) 个句号就停,整句一行。
+             * 英文(plain=true)不参与:否则扫描被句号提前截断,"Coat" 这种放得下的词
+             * 也不再装进本行,行数凭空多一行(2026-11-18 炸鸡中翅 Summary 被顶出面板) */
+            if (!plain && tk[k].punct && desc_cp_period(tk[k].last)) {
                 per_seen++;
                 if (per_seen == merge_left + 1) { first_per = k; break; }
             }
