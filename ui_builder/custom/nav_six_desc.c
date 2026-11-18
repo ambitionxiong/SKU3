@@ -195,8 +195,7 @@ static int desc_pack(const desc_tok_t *tk, int ntok, int32_t max_w, int32_t wlim
         int32_t w = tk[i].w;
         int fit = i;
         int punct_in = -1, punct_beyond = -1;
-        int per_any = -1;
-        int32_t w_per = 0;
+        int first_per = -1;
         for (int k = i + 1; k < ntok; k++) {
             int32_t add = tk[k].sp_w + tk[k].w + (ls > 0 ? ls : 0);
             int32_t nw = w + add;
@@ -207,14 +206,14 @@ static int desc_pack(const desc_tok_t *tk, int ntok, int32_t max_w, int32_t wlim
             } else if (punct_beyond < 0 && tk[k].punct) {
                 punct_beyond = k;
             }
-            if (tk[k].punct && desc_cp_period(tk[k].last)) { per_any = k; w_per = nw; }
+            if (tk[k].punct && desc_cp_period(tk[k].last) && first_per < 0) first_per = k;
             w = nw;
         }
         int end = fit;
         if (!plain) {
-            /* ① 整句优先:框内最后一个句号(行别太空,至少占框宽一半) */
-            if (per_any >= 0 && w_per * 2 >= wlimit) end = per_any;
-            /* ② 其次:基本宽内最后一个标点 */
+            /* ① 一句一行:框内第一个句号(整句独占一行,不跨行) */
+            if (first_per >= 0) end = first_per;
+            /* ② 这一句长到框里放不下:退到句内最后一个逗号,下一行接着这句 */
             else if (punct_in >= 0) end = punct_in;
             /* ③ 基本宽内没标点:加宽到框内第一个标点 */
             else if (punct_beyond >= 0) end = punct_beyond;
