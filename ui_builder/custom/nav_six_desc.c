@@ -318,55 +318,6 @@ static int32_t desc_avail_h(lv_obj_t *lbl)
     return ch - used - pad_row * vis;
 }
 
-/* ==============================
- * 逐页微调：个别页算法排不出想要的行，就在这里写死断行
- * ------------------------------
- * key = 该页文本里一段唯一的子串；layout = 期望的整段文本(已用 \n 断好)。
- * 命中就把整段换成 layout、不再走算法；按页追加即可，不影响其它页。
- * ============================== */
-typedef struct {
-    const char *key;
-    const char *layout;
-} desc_layout_ov_t;
-
-static const desc_layout_ov_t s_desc_layout[] = {
-    /* 瑪德蓮（繁中，2026-11-18 用户）：前两句并成一行 */
-    { "瑪德蓮焗盤各個貝殼模中央",
-      "烹調指引：\n"
-      "按個人喜好的食譜準備麵糊並冷藏。將冷麵糊直接倒入已抹油的瑪德蓮焗盤各個貝殼模中央。\n"
-      "烹調完成後，立即將焗盤倒扣在網架上以取出瑪德蓮。\n"
-      "先放涼，再灑上糖霜即可享用。\n"
-      "將食物放入第 3 層。\n"
-      "使用網架及焗盤。" }
-};
-
-/* 命中返回写死的布局串 */
-static const char *desc_layout_override(const char *txt)
-{
-    for (unsigned i = 0; i < sizeof(s_desc_layout) / sizeof(s_desc_layout[0]); i++) {
-        if (strstr(txt, s_desc_layout[i].key)) return s_desc_layout[i].layout;
-    }
-    return NULL;
-}
-
-/* 一段文本里最宽一行(按 \n 分行) */
-static int32_t desc_text_maxw(const char *s, const lv_font_t *font, int32_t ls)
-{
-    int32_t maxw = 0;
-    const char *p = s;
-    while (*p) {
-        const char *e = strchr(p, '\n');
-        int len = e ? (int)(e - p) : (int)strlen(p);
-        if (len > 0) {
-            int32_t w = lv_text_get_width(p, (uint32_t)len, font, ls);
-            if (w > maxw) maxw = w;
-        }
-        if (!e) break;
-        p = e + 1;
-    }
-    return maxw;
-}
-
 static void desc_reflow(lv_obj_t *lbl)
 {
     if (!lbl) return;
@@ -391,27 +342,6 @@ static void desc_reflow(lv_obj_t *lbl)
         if (pw > wlimit) wlimit = pw;
     }
     if (is_english()) wlimit = width;     /* 英文不借宽,保持原版面 */
-
-    /* 逐页写死的布局优先 */
-    {
-        const char *ov = desc_layout_override(txt);
-        if (ov) {
-            int32_t ow = desc_text_maxw(ov, font, ls);
-            int32_t ls_use = ls;
-            while (ow + 16 > wlimit && ls_use - ls > -3) {   /* 差一点就收紧字距,别让标点掉下一行 */
-                ls_use--;
-                ow = desc_text_maxw(ov, font, ls_use);
-            }
-            if (ls_use != ls) lv_obj_set_style_text_letter_space(lbl, ls_use, 0);
-            ow += 16;                                        /* 留一点余量,免得差 1~2px 又折行 */
-            if (ow > wlimit) ow = wlimit;
-            if (ow < base_w) ow = base_w;
-            lv_obj_set_width(lbl, ow);
-            lv_label_set_text(lbl, ov);
-            lv_obj_update_layout(lbl);
-            return;
-        }
-    }
 
     bool cjk = desc_has_wide(txt);
     int32_t space_w = lv_text_get_width(" ", 1, font, ls);
