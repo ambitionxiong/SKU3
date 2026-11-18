@@ -181,13 +181,14 @@ static int desc_pack(const desc_tok_t *tk, int ntok, int32_t max_w, int32_t ls, 
 {
     int i = 0, L = 0;
     int32_t need = 0;
+    int32_t limit = max_w;             /* 行宽上限:下一行不长过本行(整体呈上长下短) */
     if (!cjk) allow = 0;               /* 英文按整词断,不回退丢词 */
     while (i < ntok && L < DESC_TOK_MAX) {
         int32_t w = tk[i].w;
         int fit = i;
         for (int k = i + 1; k < ntok; k++) {
             int32_t add = tk[k].sp_w + tk[k].w + (ls > 0 ? ls : 0);
-            if (w + add > max_w) break;
+            if (w + add > limit) break;
             w += add;
             fit = k;
         }
@@ -200,25 +201,43 @@ static int desc_pack(const desc_tok_t *tk, int ntok, int32_t max_w, int32_t ls, 
                 if (tk[k].space) { end = k; break; }
             }
         }
-        if (end + 1 < ntok && desc_cp_close(tk[end + 1].first)) {
-            int32_t full = desc_line_w(tk, i, end, ls) + tk[end + 1].w + (ls > 0 ? ls : 0);
-            if (full - max_w > need) need = full - max_w;
-            if (push) {
-                while (end > i && desc_cp_close(tk[end + 1].first)) end--;
+        /* 下一行开头若是句末标点、或“粉。”这种两字残句:优先把标签加宽一点
+         * 把它整个拉回本行(用户 2026-11-18:移标点比把字推下去好);加不动才下推 */
+        if (end + 1 < ntok) {
+            int32_t extra = 0;
+            if (desc_cp_close(tk[end + 1].first)) {
+                extra = tk[end + 1].w + (ls > 0 ? ls : 0);
+            } else if (end + 2 < ntok && tk[end + 1].space == 0 &&
+                       desc_cp_wide(tk[end + 1].first) && !desc_cp_close(tk[end + 1].first) &&
+                       desc_cp_close(tk[end + 2].first)) {
+                extra = tk[end + 1].w + tk[end + 2].w + (ls > 0 ? ls : 0) * 2;
+            }
+            if (extra > 0) {
+                int32_t full = desc_line_w(tk, i, end, ls) + extra;
+                if (full - max_w > need) need = full - max_w;
+                if (push) {                        /* 加不动:把字推下去,行首不留标点 */
+                    int guard = 0;
+                    while (end > i && guard++ < 8) {
+                        if (desc_cp_close(tk[end + 1].first)) { end--; continue; }
+                        if (end + 2 < ntok && tk[end + 1].space == 0 &&
+                            desc_cp_wide(tk[end + 1].first) && !desc_cp_close(tk[end + 1].first) &&
+                            desc_cp_close(tk[end + 2].first)) { end--; continue; }
+                        break;
+                    }
+                }
             }
         }
-        /* 别让下一行只剩“粉。”这种两字残句:把前一个字也挪下去,保住“糖粉。” */
-        if (allow > 0 && end > i && end + 2 < ntok &&
-            desc_cp_wide(tk[end + 1].first) && !desc_cp_close(tk[end + 1].first) &&
-            tk[end + 1].space == 0 && desc_cp_close(tk[end + 2].first)) {
-            end--;
-            if (end + 1 < ntok && desc_cp_close(tk[end + 1].first)) end--;   /* 别把标点留行首 */
-            if (end < i) end = i;
-        }
+        int32_t lw = desc_line_w(tk, i, end, ls);
         lb[L] = (int16_t)i;
         le[L] = (int16_t)end;
         L++;
         i = end + 1;
+        if (cjk && lw < limit) {           /* 中文:下一行不长过本行(留 1 个字宽余量,
+                                            * 免得为了严格递减把词切断),整体从上到下递减 */
+            int32_t tol = (i < ntok) ? tk[i].w : 0;
+            limit = lw + tol;
+            if (limit > max_w) limit = max_w;   /* 但绝不超盒宽,否则会被 LVGL 再折一次 */
+        }
     }
     *need_out = need;
     return L;
