@@ -34,6 +34,18 @@ static void on_description_delay_click(lv_event_t *e);
  * ============================== */
 #define DESC_TOK_MAX     384
 #define DESC_BUF_SIZE    2048
+
+/* 2026-11-18 英文说明页盒宽:按页自动选(见 desc_reflow),lang_tune 通过
+ * six_desc_en_width() 取同一个值——"切行宽度 = 显示宽度",不一致的话宽了也不生效。 */
+#define DESC_EN_W_MAX    1209   /* 卡片内容宽:容器 1233 - 左内距 24 */
+#define DESC_EN_W_FALL   930    /* 兜底宽度(原普通页宽) */
+static int32_t s_en_w = DESC_EN_W_FALL;
+
+int32_t six_desc_en_width(void)
+{
+    return s_en_w;
+}
+
 #define DESC_WIDEN_MAX   40     /* 为“行首标点”最多加宽 px */
 #define DESC_ORPHAN_DIV  3      /* 末行 < 盒宽/3 视为孤行 */
 
@@ -382,29 +394,86 @@ static void desc_reflow(lv_obj_t *lbl)
     int32_t base_w = lv_obj_get_width(lbl);
     if (base_w <= 0) return;
 
-    /* 英文说明页最终盒宽由 lang_tune 定(宽菜 1100,其余 930);中文保持生成稿宽,
-     * 需要时按行宽加宽(只要不越过卡片内容宽) */
-    int32_t width = is_english() ? (six_desc_is_wide_dish() ? 1100 : 930) : base_w;
-    int32_t wlimit = width;
-    lv_obj_t *par = lv_obj_get_parent(lbl);
-    if (par) {
-        int32_t pw = lv_obj_get_content_width(par);
-        if (pw > wlimit) wlimit = pw;
-    }
-    if (is_english()) wlimit = width;     /* 英文不借宽,保持原版面 */
+    /* 英文量宽字体:lang_refresh_screen 会把 taiwanpearl_30 换成 aktivgrotesk_30,
+     * 换完字宽会变;若还用中文量宽字体切行,切好的行在 aktiv 下会再折一次
+     * (2026-11-18 泡芙按 1209 切 7 行、显示却 8 行且末行压 Delay 钮)。
+     * 这里直接按最终字体 + 最终字距量,切出来的行渲染时正好放下。 */
+    const lv_font_t *mfont = font;
+    if (is_english() && font == &c_taiwanpearl_regular_30)
+        mfont = &c_aktivgroteskmedium_30;
 
     bool cjk = desc_has_wide(txt);
-    int32_t space_w = lv_text_get_width(" ", 1, font, ls);
+    int32_t space_w = lv_text_get_width(" ", 1, mfont, ls);
     int merge = desc_merge_of(txt);
+
+    /* 英文说明页盒宽 2026-11-18:按页自动选(1209/1100/1000 里能整段放进卡片的最宽一档),
+     * 一档都放不下退回 930;中文保持生成稿宽,需要时按行宽加宽(只要不越过卡片内容宽) */
+    int32_t width = base_w;
+    int32_t wlimit = base_w;
+    s_en_w = DESC_EN_W_FALL;
+
+    if (is_english()) {
+        /* 英文页 lang_tune 会把三个标签字距统一压到 -2(千层酥 -4):排版必须按这个字距量宽,
+         * 否则按 layout 时的 -5 切好的行,渲染时变宽会再折一行 */
+        int32_t ls_en = six_desc_is_millefeuille() ? -4 : -2;
+        if (ls_en != ls) {
+            ls = ls_en;
+            lv_obj_set_style_text_letter_space(lbl, ls, 0);
+            space_w = lv_text_get_width(" ", 1, mfont, ls);
+        }
+        /* 选宽规则(保守):只接受"不比 930 多折行"且"整段放得进卡片(含小结)"的更宽档。
+         * 加宽只让每行更满、绝不增加行数 → 不会比原版面更高,也不会把小结顶出卡片。
+         * 可用行数 = (卡片高 - 上内距 - 时间/小结占位 - 行间距) / 行高
+         * (不用 desc_avail_h:它把 pad_row 按子对象数多扣了隐藏项那份) */
+        static const int32_t cand[] = { DESC_EN_W_MAX, 1100, 1000 };
+        int32_t lh = lv_font_get_line_height(mfont) + ls;
+        int32_t avail = 0;
+        lv_obj_t *par2 = lv_obj_get_parent(lbl);
+        if (par2) {
+            lv_obj_update_layout(par2);
+            int32_t other = 0, vis = 0;
+            uint32_t cn = lv_obj_get_child_count(par2);
+            for (uint32_t k = 0; k < cn; k++) {
+                lv_obj_t *c = lv_obj_get_child(par2, k);
+                if (!c || c == lbl || lv_obj_has_flag(c, LV_OBJ_FLAG_HIDDEN)) continue;
+                other += lv_obj_get_height(c);
+                vis++;
+            }
+            avail = lv_obj_get_height(par2) - lv_obj_get_style_pad_top(par2, LV_PART_MAIN)
+                    - other - lv_obj_get_style_pad_row(par2, LV_PART_MAIN) * vis;
+        }
+        int32_t mw930 = 0;
+        int n930 = desc_build(txt, mfont, ls, space_w, DESC_EN_W_FALL, DESC_EN_W_FALL, true, 0,
+                              s_reflow, DESC_BUF_SIZE, &mw930);
+        int max_lines = (avail > 0 && lh > 0) ? (int)(avail / lh) : 7;
+        width = DESC_EN_W_FALL;
+        for (unsigned i = 0; i < sizeof(cand) / sizeof(cand[0]); i++) {
+            int32_t mw = 0;
+            int n = desc_build(txt, mfont, ls, space_w, cand[i], cand[i], true, 0,
+                               s_reflow, DESC_BUF_SIZE, &mw);
+            if (n > 0 && n930 > 0 && n <= n930 && n <= max_lines) {
+                width = cand[i];
+                break;
+            }
+        }
+        wlimit = width;
+        s_en_w = width;
+    } else {
+        lv_obj_t *par = lv_obj_get_parent(lbl);
+        if (par) {
+            int32_t pw = lv_obj_get_content_width(par);
+            if (pw > wlimit) wlimit = pw;
+        }
+    }
 
     int32_t maxw = 0;
     bool punct_mode = cjk;                 /* 中文按标点断;英文保持整词铺满 */
     int32_t ls_use = ls;
-    int total = desc_build(txt, font, ls_use, space_w, width, wlimit, !punct_mode, merge,
+    int total = desc_build(txt, mfont, ls_use, space_w, width, wlimit, !punct_mode, merge,
                            s_reflow, DESC_BUF_SIZE, &maxw);
     while (merge > 0 && maxw > wlimit && ls_use - ls > -3) {  /* 合并后一行放不下:收紧字距 */
         ls_use--;
-        total = desc_build(txt, font, ls_use, space_w, width, wlimit, !punct_mode, merge,
+        total = desc_build(txt, mfont, ls_use, space_w, width, wlimit, !punct_mode, merge,
                            s_reflow, DESC_BUF_SIZE, &maxw);
     }
     if (ls_use != ls) lv_obj_set_style_text_letter_space(lbl, ls_use, 0);
@@ -412,14 +481,14 @@ static void desc_reflow(lv_obj_t *lbl)
     int32_t new_w = (maxw > width) ? maxw : width;
     if (new_w > wlimit) new_w = wlimit;
 
-    int auto_n = desc_lvgl_lines(txt, font, ls, new_w);
+    int auto_n = desc_lvgl_lines(txt, mfont, ls, new_w);
     if (total > auto_n) {                 /* 折行变多:框里还有余量就留,没有就退回铺满 */
         int32_t avail = desc_avail_h(lbl);
-        int32_t lh = lv_font_get_line_height(font) +
+        int32_t lh = lv_font_get_line_height(mfont) +
                      lv_obj_get_style_text_line_space(lbl, LV_PART_MAIN);
         if (avail > 0 && total * lh > avail && total <= auto_n + 2) avail = total * lh;  /* 最多容许多 2 行 */
         if (avail <= 0 || total * lh > avail) {
-            total = desc_build(txt, font, ls_use, space_w, width, width, true, 0,
+            total = desc_build(txt, mfont, ls_use, space_w, width, width, true, 0,
                                s_reflow, DESC_BUF_SIZE, &maxw);
             if (total <= 0) return;
             new_w = width;

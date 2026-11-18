@@ -5554,8 +5554,12 @@ void descriptionmenu_lang_tune(void)
     // lv_obj_set_size(pg->cookdescriptin, 894, 122);
     /* 2026-10-27 加宽仅限泡芙/千层酥两页(用户样张红框右缘≈1147并明确其余菜不加宽):
      * 930 下长说明折行太多顶到面板底(泡芙 9 行),1100 下泡芙 8/千层酥断行后 9 行,
-     * 末行均为短句居中,不侵入右下 Delay 钮(x≥984 y≥396);其余菜维持原 930 */
-    lv_obj_set_size(pg->cookdescriptin, six_desc_is_wide_dish() ? 1100 : 930, LV_SIZE_CONTENT);
+     * 末行均为短句居中,不侵入右下 Delay 钮(x≥984 y≥396);其余菜维持原 930
+     * 2026-11-18 用户:"把英文模式下的 cooking instruction 的文本框调宽看看"——
+     * 英文按页自动选宽(1209/1100/1000/930 里能整段放进卡片的最宽一档),
+     * 具体值由 nav_six_desc.c 的 desc_reflow 选定并经 six_desc_en_width() 取出;
+     * 这里只是套用同一个值,保证"切行宽度 = 显示宽度" */
+    lv_obj_set_size(pg->cookdescriptin, six_desc_en_width(), LV_SIZE_CONTENT);
 
     /* cooktime: 标签 | "预计烹饪时间：25分钟" | (0,0) | 628x30 | font taiwanpearl_regular_30 */
     lv_obj_set_pos(pg->cooktime, 0, 0);
