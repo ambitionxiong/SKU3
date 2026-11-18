@@ -397,7 +397,8 @@ static void desc_reflow(lv_obj_t *lbl)
     /* 英文量宽字体:lang_refresh_screen 会把 taiwanpearl_30 换成 aktivgrotesk_30,
      * 换完字宽会变;若还用中文量宽字体切行,切好的行在 aktiv 下会再折一次
      * (2026-11-18 泡芙按 1209 切 7 行、显示却 8 行且末行压 Delay 钮)。
-     * 这里直接按最终字体 + 最终字距量,切出来的行渲染时正好放下。 */
+     * 只换量宽字体,字距/行距都保持原样——英文页的字距一直是默认 0,
+     * lang_tune 里那句 -2 压的是行距(text_line_space),不是字距(2026-11-18 修)。 */
     const lv_font_t *mfont = font;
     if (is_english() && font == &c_taiwanpearl_regular_30)
         mfont = &c_aktivgroteskmedium_30;
@@ -413,47 +414,33 @@ static void desc_reflow(lv_obj_t *lbl)
     s_en_w = DESC_EN_W_FALL;
 
     if (is_english()) {
-        /* 英文页 lang_tune 会把三个标签字距统一压到 -2(千层酥 -4):排版必须按这个字距量宽,
-         * 否则按 layout 时的 -5 切好的行,渲染时变宽会再折一行 */
-        int32_t ls_en = six_desc_is_millefeuille() ? -4 : -2;
-        if (ls_en != ls) {
-            ls = ls_en;
-            lv_obj_set_style_text_letter_space(lbl, ls, 0);
-            space_w = lv_text_get_width(" ", 1, mfont, ls);
-        }
-        /* 选宽规则(保守):只接受"不比 930 多折行"且"整段放得进卡片(含小结)"的更宽档。
-         * 加宽只让每行更满、绝不增加行数 → 不会比原版面更高,也不会把小结顶出卡片。
-         * 可用行数 = (卡片高 - 上内距 - 时间/小结占位 - 行间距) / 行高
-         * (不用 desc_avail_h:它把 pad_row 按子对象数多扣了隐藏项那份) */
+        /* 选宽规则:从最宽 1209 往下试,试排完真的量一遍版面——卡片里所有可见子对象
+         * (时间行/说明/小结)都不越过卡片下沿才算放得下,放不下就退一档,一路不行退回 930。
+         * 试排发生在建页过程里、页面还没显示,不影响"显示后不再改文本"这条底线。 */
         static const int32_t cand[] = { DESC_EN_W_MAX, 1100, 1000 };
-        int32_t lh = lv_font_get_line_height(mfont) + ls;
-        int32_t avail = 0;
         lv_obj_t *par2 = lv_obj_get_parent(lbl);
-        if (par2) {
-            lv_obj_update_layout(par2);
-            int32_t other = 0, vis = 0;
-            uint32_t cn = lv_obj_get_child_count(par2);
-            for (uint32_t k = 0; k < cn; k++) {
-                lv_obj_t *c = lv_obj_get_child(par2, k);
-                if (!c || c == lbl || lv_obj_has_flag(c, LV_OBJ_FLAG_HIDDEN)) continue;
-                other += lv_obj_get_height(c);
-                vis++;
-            }
-            avail = lv_obj_get_height(par2) - lv_obj_get_style_pad_top(par2, LV_PART_MAIN)
-                    - other - lv_obj_get_style_pad_row(par2, LV_PART_MAIN) * vis;
-        }
-        int32_t mw930 = 0;
-        int n930 = desc_build(txt, mfont, ls, space_w, DESC_EN_W_FALL, DESC_EN_W_FALL, true, 0,
-                              s_reflow, DESC_BUF_SIZE, &mw930);
-        int max_lines = (avail > 0 && lh > 0) ? (int)(avail / lh) : 7;
         width = DESC_EN_W_FALL;
-        for (unsigned i = 0; i < sizeof(cand) / sizeof(cand[0]); i++) {
-            int32_t mw = 0;
-            int n = desc_build(txt, mfont, ls, space_w, cand[i], cand[i], true, 0,
-                               s_reflow, DESC_BUF_SIZE, &mw);
-            if (n > 0 && n930 > 0 && n <= n930 && n <= max_lines) {
-                width = cand[i];
-                break;
+        if (par2) {
+            for (unsigned i = 0; i < sizeof(cand) / sizeof(cand[0]); i++) {
+                int32_t mw = 0;
+                int n = desc_build(txt, mfont, ls, space_w, cand[i], cand[i], true, 0,
+                                   s_reflow, DESC_BUF_SIZE, &mw);
+                if (n <= 0) continue;
+                lv_obj_set_width(lbl, cand[i]);
+                lv_label_set_text(lbl, s_reflow);
+                lv_obj_update_layout(par2);
+                lv_area_t pa;
+                lv_obj_get_coords(par2, &pa);
+                bool ok = true;
+                uint32_t cn = lv_obj_get_child_count(par2);
+                for (uint32_t k = 0; k < cn && ok; k++) {
+                    lv_obj_t *c = lv_obj_get_child(par2, k);
+                    if (!c || lv_obj_has_flag(c, LV_OBJ_FLAG_HIDDEN)) continue;
+                    lv_area_t ca;
+                    lv_obj_get_coords(c, &ca);
+                    if (ca.y2 > pa.y2) ok = false;    /* 越过卡片下沿 */
+                }
+                if (ok) { width = cand[i]; break; }
             }
         }
         wlimit = width;
