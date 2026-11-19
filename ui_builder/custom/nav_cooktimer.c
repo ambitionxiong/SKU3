@@ -206,9 +206,9 @@ void cooking_timer_cb(lv_timer_t *timer)
        返回时 screen_set_back 会补刷一次,行为不丢 */
     if (depth > 0 && page_stack[depth - 1] == PAGE_SCREEN_SET)
         return;
-    /* 多段运行中"设置"覆盖层(2026-11-19):只刷本段倒计时,到点不切段——
-     * 批注口径"进入此界面后步骤一烹饪时间结束也不进步骤二",退出覆盖层时再由
-     * somecook_cooking_rebuild 按标志推进。下层运行页的到点检测一律跳过。 */
+    /* 多段运行中"设置"覆盖层(2026-11-19):只刷总倒计时;本段到点时后台直接切暂停
+     * (somecook_setting_stage_expired,本段记为已走满),覆盖页/关机弹窗都不动,
+     * 之后主动返回或 1 分钟无操作自动返回,落到的是"本段计时结束"的暂停页。 */
     if (depth > 0 && page_stack[depth - 1] == PAGE_SOMECOOK_SETTING) {
         if (cook_timer && cook_total_ms > 0) {
             uint32_t sel = lv_tick_get() - cook_start_time;

@@ -30,11 +30,13 @@ void on_somecook_setting_sure_click(lv_event_t *e);
 /* ===== 运行中"设置"覆盖层（2026-11-19 用户要求）=====
  * 其它模式烹饪页都有中间那枚"设置"小按钮，多段页生成层没有，这里运行时补；
  * 点开复用 hot_bbq_setting 的"单温 + 烹饪时间 + 确定"覆盖页（上下烧烤也只一份温度）。
- * 覆盖层打开时本段到点不切段（记标志，确定=按新参数重跑本段，退出=按原规则切下一段）。 */
+ * 覆盖层打开期间本段到点(2026-11-19 用户定):后台直接切"暂停"并把本段记为已走满,
+ * 不动覆盖页/关机弹窗;之后不论主动返回还是 1 分钟无操作自动返回,落到的是
+ * "本段计时结束"的暂停态(暂停中 + 00:00:00 + 开始),不自动切下一段。 */
 lv_group_t *g_somecook_setting = NULL;   /* 覆盖层焦点组 */
 static lv_obj_t *s_little_btn = NULL;    /* 运行页"设置"小按钮(生成层没有,运行时建) */
 static int s_little_in_group = 0;        /* 小按钮当前是否在焦点组里(返回确认遮罩时摘出) */
-static int s_stage_expired = 0;          /* 覆盖层打开期间本段到点 */
+static int s_stage_done_pause = 0;       /* 覆盖层期间本段到点:返回后进"本段到点"暂停态 */
 
 // 所有已设置步骤总时间（进度条分母）
 static int64_t somecook_total_time_ms(void)
@@ -365,6 +367,9 @@ static void on_somecook_setting_click(lv_event_t *e)
 // 进入当前段 cooking
 void somecook_cooking_start(void)
 {
+    /* 覆盖层"确定"路径:上一刻可能已因本段到点切成暂停,起跑必须显式回运行态 */
+    g_somecook_state = SMC_COOKING;
+    g_somecook_from = SMC_COOKING;
     /* 空洞步骤:从 run_idx 向后找第一个已设置步骤再启动 */
     int i = g_somecook_run_idx;
     while (i < 3 && !g_steps[i].set) i++;
@@ -494,9 +499,8 @@ int somecook_setting_is_open(void)
 
 int somecook_setting_stage_was_expired(void)
 {
-    return s_stage_expired;
+    return s_stage_done_pause;
 }
-
 /* 覆盖页右侧倒计时=多段总剩余(用户 2026-11-19:打开设置温度时间时右边显示总时间就行;
  * 本段到达 00:00:00 的判据仍在 cooking_timer_cb 里用本段 cook_total_ms) */
 void somecook_setting_update_countdown(void)
@@ -508,12 +512,18 @@ void somecook_setting_update_countdown(void)
     lv_label_set_text_fmt(set->timelabel, "%02d:%02d:%02d", s / 3600, (s % 3600) / 60, s % 60);
 }
 
-/* 覆盖层期间本段到点：不清页、不切段，只记标志(倒计时按总剩余继续显示) */
+/* 覆盖层期间本段到点(2026-11-19 用户定):后台直接切暂停,本段记为"已走满"。
+ * 这里不碰覆盖页控件(页面对象是覆盖层的),只改运行态;返回后由 rebuild 按暂停态重建。 */
 void somecook_setting_stage_expired(void)
 {
-    s_stage_expired = 1;
+    s_stage_done_pause = 1;              /* 返回时落到"本段计时结束"的暂停态 */
+    cook_elapsed_saved = cook_total_ms;  /* 本段剩余 = 0(暂停态倒计时显示 00:00:00) */
+    g_somecook_state = SMC_STOP;         /* 后台状态:暂停 */
+    g_somecook_from = SMC_COOKING;
+    g_send.iface_status = IFACE_PAUSE;
+    g_send.remaining_ms = 0;
     somecook_setting_update_countdown();
-    printf("[somecook_cooking] setting: stage time ended -> hold\n");
+    printf("[somecook_cooking] setting: stage time ended -> background pause\n");
 }
 
 /* 覆盖层焦点：下划线随焦点，℃ 单位按位数显隐（与各模式设置页同款） */
@@ -530,7 +540,7 @@ void jump_to_somecook_setting(void)
     if (g_somecook_run_idx < 0 || g_somecook_run_idx > 2) return;
     if (!g_steps[g_somecook_run_idx].set) return;
 
-    s_stage_expired = 0;
+    s_stage_done_pause = 0;
     page_push(PAGE_SOMECOOK_SETTING);
     lv_obj_clean(lv_scr_act());
     hot_bbq_setting_create(&ui_manager);
@@ -593,7 +603,7 @@ void on_somecook_setting_sure_click(lv_event_t *e)
     g_steps[i].temp = set_temp;
     g_steps[i].hour = set_hour;
     g_steps[i].min  = set_min;
-    s_stage_expired = 0;
+    s_stage_done_pause = 0;
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
 
     /* 退出覆盖层 + 旧运行页，再按新参数重建（与切段同一路径：先裁栈再 start） */
@@ -605,18 +615,13 @@ void on_somecook_setting_sure_click(lv_event_t *e)
 }
 
 /* 从覆盖层/子页返回运行页（nav_pop 的 PAGE_SOMECOOK_COOKING 分支调用）：
- * 未确定的编辑丢弃（按 g_steps 原值重建）；覆盖层期间本段已到点则按原规则切下一段。 */
+ * 未确定的编辑丢弃（按 g_steps 原值重建）；覆盖层期间本段到点的话，后台已在
+ * somecook_setting_stage_expired 里切成暂停，这里按暂停态重建即可（用户 2026-11-19：
+ * 主动返回/自动返回都落到"本段计时结束"的暂停页，不再自动切下一段）。 */
 void somecook_cooking_rebuild(page_id_t child)
 {
-    int expired = s_stage_expired;
-    s_stage_expired = 0;
-
-    if (expired && g_somecook_running) {
-        /* 到点 + 退出覆盖层 = 原"到点自动切段"：直接进入下一段（全部做完则完成页） */
-        somecook_cooking_next_step();
-        printf("[somecook_cooking] back from setting, stage ended -> next step\n");
-        return;
-    }
+    int was_done = s_stage_done_pause;
+    s_stage_done_pause = 0;
 
     int i = g_somecook_run_idx;
     if (i >= 0 && i < 3 && g_steps[i].set) {
@@ -634,6 +639,7 @@ void somecook_cooking_rebuild(page_id_t child)
                        LV_SCR_LOAD_ANIM_NONE, 0, 0,
                        ui_manager.auto_del);
     g_send.iface_status = (g_somecook_state == SMC_STOP) ? IFACE_PAUSE : IFACE_COOKING;
-    printf("[somecook_cooking] back from setting -> cooking (step %d)\n", i);
+    printf("[somecook_cooking] back from setting -> %s (step %d)\n",
+           was_done ? "paused(stage ended)" : "cooking", i);
 }
 
