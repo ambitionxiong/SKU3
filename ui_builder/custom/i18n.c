@@ -581,7 +581,7 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "烹饪说明：\n刷油，擦盐和胡椒。根据个人喜好，用蒜和香草调味。烹调结束后，在分切前至少静止15分钟。\n现在将食物放在第3层。\n使用深盘。", "Cooking Instruction:\nBrush with oil and rub with salt and pepper.\nSeason with garlic and herbs as you prefer.\nAt the end of cooking let rest for at least 15 minutes before carving.\nInsert the food now on level 3.\nUse deep tray." },
         { "烹饪说明：\n刷油，抹上盐和胡椒。根据个人喜好，用蒜和香草调味。烹调结束后，在分切前至少静止15分钟。\n现在将食物放在第2层。\n使用深盘。", "Cooking Instruction:\nBrush with oil and rub with salt and pepper.\nSeason with garlic and herbs as you prefer.\nAt the end of cooking let rest for at least 15 minutes before carving.\nInsert the food now on level 2.\nUse deep tray." },
         { "烹饪说明：\n刷油，擦盐和胡椒。根据个人喜好，用蒜和香草调味。烹调结束后，在分切前至少静止15分钟。\n现在将食物放在第2层。\n使用深盘。", "Cooking Instruction:\nBrush with oil and rub with salt and pepper.\nSeason with garlic and herbs as you prefer.\nAt the end of cooking let rest for at least 15 minutes before carving.\nInsert the food now on level 2.\nUse deep tray." },
-        { "烹饪说明：\n在放入烤箱之前，刷上油，加盐和烧烤调料调味。\n现在将食物放在第3层。\n使用深盘。", "Cooking Instruction:\nBrush with oil and season with salt and barbecue\nseasoning as you prefer before insert into the oven.\nInsert the food now on level 3.\nUse deep tray." },
+        { "烹饪说明：\n在放入烤箱之前，刷上油，加盐和烧烤调料调味。\n现在将食物放在第3层。\n使用深盘。", "Cooking Instruction:\nBrush with oil and season with salt and barbecue seasoning\nas you prefer before insert into the oven.\nInsert the food now on level 3.\nUse deep tray." },
         { "饼干", "Cookies" },
         { "高温蒸", "Steam Plus" },
         { "高温防烫", "Caution" },   /* 2026-10-09 同上:与"请缓慢打开门体！"成对新文案 */
