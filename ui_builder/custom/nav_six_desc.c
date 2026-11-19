@@ -35,10 +35,11 @@ static void on_description_delay_click(lv_event_t *e);
 #define DESC_TOK_MAX     384
 #define DESC_BUF_SIZE    2048
 
-/* 2026-11-18 英文说明页盒宽:按页自动选(见 desc_reflow),lang_tune 通过
- * six_desc_en_width() 取同一个值——"切行宽度 = 显示宽度",不一致的话宽了也不生效。 */
-#define DESC_EN_W_MAX    1209   /* 卡片内容宽:容器 1233 - 左内距 24 */
-#define DESC_EN_W_FALL   930    /* 兜底宽度(原普通页宽) */
+/* 说明页盒宽；lang_tune 通过 six_desc_en_width() 取同一个值——"切行宽度 = 显示宽度"。
+ * 2026-11-19 用户定：英文不再自动选宽，固定用卡片内容宽，折行交 LVGL，断点手写进词条；
+ * 中/繁沿用 930(生成稿 894 需要时按行宽加宽)。 */
+#define DESC_EN_W_MAX    1209   /* 卡片内容宽:容器 1233 - 左内距 24(英文说明页固定用) */
+#define DESC_EN_W_FALL   930    /* 中/繁说明页盒宽(lang_tune 套用) */
 static int32_t s_en_w = DESC_EN_W_FALL;
 
 int32_t six_desc_en_width(void)
@@ -395,68 +396,36 @@ static void desc_reflow(lv_obj_t *lbl)
     int32_t base_w = lv_obj_get_width(lbl);
     if (base_w <= 0) return;
 
-    /* 2026-11-19 修"同一页有时进来是另一种排版":下面选宽试排会 lv_label_set_text() 改写标签
-     * 文本,LVGL 会把旧串 free 掉,原来那个 txt 指针随之失效。后面再拿它去重排,读到的可能
-     * 已经是"上一档试排切好的文本"(同一块内存被复用),等于把切过一次的文本再切一次——
-     * 于是每行末词被挤到下一行(用户截图:Divide / from / filling it 各自单独一行,末行超出卡片)。
-     * 是否复用取决于当时的堆状态,所以表现为"有时候"。这里先把原文抄进自己的缓冲,
-     * txt 之后只指向副本,标签怎么改写都不影响重排输入。 */
+    /* 2026-11-19 用户定：英文说明页不再由程序自己排版——只把盒子放宽到卡片内容宽(1209)，
+     * 折行交给 LVGL 自动折行；哪里换行由用户逐页指定，直接写进 i18n 英文词条的 \n。
+     * 比算法断行准(算法在英文上总有"末行只剩一个词""句子从中间被切开"的观感)，
+     * 也顺带避开试排改写标签文本带来的副作用(见 11.19.1)。中/繁仍走下面的按页合并+断行。 */
+    if (is_english()) {
+        s_en_w = DESC_EN_W_MAX;
+        lv_obj_set_width(lbl, DESC_EN_W_MAX);
+        lv_obj_update_layout(lbl);
+        return;
+    }
+
+    /* 简体/繁体：量宽字体就是渲染字体(lang_refresh_screen 只在英文模式换 aktiv) */
+    const lv_font_t *mfont = font;
+
+    /* 2026-11-19 原文副本：下面虽然不再改写标签文本，仍统一用副本量宽，
+     * 标签被谁改写过都不影响这次切行的输入(11.19.1 的悬空指针问题就此绝迹)。 */
     if (strlen(txt) + 1 > sizeof(s_src)) return;   /* 超长(理论上不会):放弃重排,保持自动折行 */
     strcpy(s_src, txt);
     txt = s_src;
 
-    /* 英文量宽字体:lang_refresh_screen 会把 taiwanpearl_30 换成 aktivgrotesk_30,
-     * 换完字宽会变;若还用中文量宽字体切行,切好的行在 aktiv 下会再折一次
-     * (2026-11-18 泡芙按 1209 切 7 行、显示却 8 行且末行压 Delay 钮)。
-     * 只换量宽字体,字距/行距都保持原样——英文页的字距一直是默认 0,
-     * lang_tune 里那句 -2 压的是行距(text_line_space),不是字距(2026-11-18 修)。 */
-    const lv_font_t *mfont = font;
-    if (is_english() && font == &c_taiwanpearl_regular_30)
-        mfont = &c_aktivgroteskmedium_30;
+    s_en_w = DESC_EN_W_FALL;              /* 英文在上面早退时改成 1209；中繁沿用 930 */
 
     bool cjk = desc_has_wide(txt);
     int32_t space_w = lv_text_get_width(" ", 1, mfont, ls);
     int merge = desc_merge_of(txt);
 
-    /* 英文说明页盒宽 2026-11-18:按页自动选(1209/1100/1000 里能整段放进卡片的最宽一档),
-     * 一档都放不下退回 930;中文保持生成稿宽,需要时按行宽加宽(只要不越过卡片内容宽) */
+    /* 中文保持生成稿宽(894)，需要时按行宽加宽，但不超过卡片内容宽 */
     int32_t width = base_w;
     int32_t wlimit = base_w;
-    s_en_w = DESC_EN_W_FALL;
-
-    if (is_english()) {
-        /* 选宽规则:从最宽 1209 往下试,试排完真的量一遍版面——卡片里所有可见子对象
-         * (时间行/说明/小结)都不越过卡片下沿才算放得下,放不下就退一档,一路不行退回 930。
-         * 试排发生在建页过程里、页面还没显示,不影响"显示后不再改文本"这条底线。 */
-        static const int32_t cand[] = { DESC_EN_W_MAX, 1100, 1000 };
-        lv_obj_t *par2 = lv_obj_get_parent(lbl);
-        width = DESC_EN_W_FALL;
-        if (par2) {
-            for (unsigned i = 0; i < sizeof(cand) / sizeof(cand[0]); i++) {
-                int32_t mw = 0;
-                int n = desc_build(txt, mfont, ls, space_w, cand[i], cand[i], true, 0,
-                                   s_reflow, DESC_BUF_SIZE, &mw);
-                if (n <= 0) continue;
-                lv_obj_set_width(lbl, cand[i]);
-                lv_label_set_text(lbl, s_reflow);
-                lv_obj_update_layout(par2);
-                lv_area_t pa;
-                lv_obj_get_coords(par2, &pa);
-                bool ok = true;
-                uint32_t cn = lv_obj_get_child_count(par2);
-                for (uint32_t k = 0; k < cn && ok; k++) {
-                    lv_obj_t *c = lv_obj_get_child(par2, k);
-                    if (!c || lv_obj_has_flag(c, LV_OBJ_FLAG_HIDDEN)) continue;
-                    lv_area_t ca;
-                    lv_obj_get_coords(c, &ca);
-                    if (ca.y2 > pa.y2) ok = false;    /* 越过卡片下沿 */
-                }
-                if (ok) { width = cand[i]; break; }
-            }
-        }
-        wlimit = width;
-        s_en_w = width;
-    } else {
+    {
         lv_obj_t *par = lv_obj_get_parent(lbl);
         if (par) {
             int32_t pw = lv_obj_get_content_width(par);
