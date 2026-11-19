@@ -310,6 +310,10 @@ void nav_probe_badge_refit(void)
     PB_ENTRY(PAGE_SIXOP3PAGE,            sixop3page_t,            sixop3page_get,            name)
     PB_ENTRY(PAGE_DESCRIPTIONMENU,       descriptionmenu_t,       descriptionmenu_get,       label_19)
     PB_ENTRY(PAGE_TOASTCOLOR,            toastcolor_t,            toastcolor_get,            label_24)
+    /* 2026-11-19 用户:探针模式下"双选项页"(成熟度×烤色程度 / 份量×烤色程度)左上角没有探针小标,
+     * 而单选项页(烤牛排,走 toastcolor)有。两页都复用 sixset2 UI,标题是 label_18(24,24),
+     * 与其它页同一口算(标题文字宽 +24)即可对齐。 */
+    PB_ENTRY(PAGE_SIXSET2,               sixset2_t,               sixset2_get,               label_18)
     PB_ENTRY(PAGE_COLOR_MENU,            preheatmenu_t,           preheatmenu_get,           label_69)
     case PAGE_FAVORITES:   /* 收藏页独立于 ui_manager,走 nav_favorites 的两个取值入口 */
         page = nav_favorites_page_obj();
