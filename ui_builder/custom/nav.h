@@ -1002,7 +1002,7 @@ const char *six_chick_desc(void);   /* 烤鸡类烹饪说明（探针菜含烤�
 const char *six_current_name(void); /* 当前六感菜名：烤鸡走独立名，其余走面包/蛋糕表 */
 const char *six_current_desc(void); /* 当前六感说明：烤鸡走独立名，其余走面包/蛋糕表 */
 int six_desc_is_wide_dish(void);    /* 当前说明属泡芙/千层酥(EN 说明页加宽仅此两页,2026-10-27) */
-int six_desc_is_millefeuille(void); /* 当前说明属千层酥(9 行页收行距/flex 距用,2026-10-27) */
+int six_desc_is_millefeuille(void); /* 当前说明属千层酥(2026-11-19 起不再做行距/flex 专属压缩,保留判定备用) */
 int32_t six_desc_en_width(void);    /* 英文说明页本次选定的盒宽(重排与 lang_tune 必须同值,2026-11-18) */
 void jump_to_probeneedtip(void);    /* 烤鸡探针提示页：未插探针时进入 */
 void probeneedtip_cancel_auto_dismiss(void);   /* 烤鸡探针提示:取消 5 秒自动关闭定时器 */

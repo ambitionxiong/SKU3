@@ -5583,15 +5583,10 @@ void descriptionmenu_lang_tune(void)
             if (lbls[k]) lv_obj_set_style_text_line_space(lbls[k], -2, 0);
     }
 
-    /* 2026-10-27 千层酥专属:断行后 9 行,行距 30 底部贴面板沿(余~2px)。
-     * 行距 -4(28,避开 -5/27 叠字区)+ flex 行距 16→10,共回收 ~22px,末行底余 ~24px;
-     * 泡芙 8 行不压(用户指定),维持 -2/30+16;其余菜同不变 */
-    if (six_desc_is_millefeuille()) {
-        if (pg->cookdescriptin)
-            lv_obj_set_style_text_line_space(pg->cookdescriptin, -4, 0);
-        if (pg->container_1)
-            lv_obj_set_style_pad_row(pg->container_1, 10, 0);
-    }
+    /* 2026-11-19 用户:千层酥页的间距改回和其它说明页一样,原来那条"行距 -4 + flex 行距 10"
+     * 的专属补偿整段撤掉(当年是因为该页 9 行、末行贴面板沿才加的;现在英文统一 1209 宽后
+     * 该页只剩 7 行,行距 30 + 行间距 16 也一样放得下)。若哪天又要压,再按页加回。
+     * 中/繁本来就走 descriptionmenu_layout 的 -5(35-5=30),与这里无关。 */
 
     //  obj = pg->cooktime;
 
