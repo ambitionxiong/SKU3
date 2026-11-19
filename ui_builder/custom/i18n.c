@@ -183,7 +183,7 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "分钟", "min" },   /* 树遍历按生成层标签当前文本查表(set 页单位标签生成文本是"分钟") */
         { "删除", "Delete" },
         { "删除/编辑", "Delete/Edit" },
-        { "烹饪说明：\n刷油，抹上盐和胡椒。根据个人喜好，用蒜和香草调味。\n现在将食物放在第3层。\n使用烤盘。", "Cooking Instruction:\nBrush with oil and rub with salt and pepper. Season with garlic and herbs as you prefer.\nInsert the food now on level 3.\nUse a baking tray." },
+        { "烹饪说明：\n刷油，抹上盐和胡椒。根据个人喜好，用蒜和香草调味。\n现在将食物放在第3层。\n使用烤盘。", "Cooking Instruction:\nBrush with oil and rub with salt and pepper.\nSeason with garlic and herbs as you prefer.\nInsert the food now on level 3.\nUse a baking tray." },
         { "烹饪说明：\n刷油，根据个人喜好，撒上盐、烧烤料、孜然。在烤盘内均匀铺开。\n现在将食物放在第3层。\n使用深盘。", "Cooking Instruction:\nBrush with oil and season with salt,\nbarbecue seasoning and cumin as you prefer before insert into the oven.\nInsert the food now on level 3.\nUse deep tray." },
         { "加强热风", "Convection Bake" },
         { "千层酥", "Mille-feuille" },
