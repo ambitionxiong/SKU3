@@ -64,6 +64,7 @@ static desc_tok_t s_tok[DESC_TOK_MAX];
 static int16_t    s_lb[DESC_TOK_MAX];   /* 每行起止词号 */
 static int16_t    s_le[DESC_TOK_MAX];
 static char       s_reflow[DESC_BUF_SIZE];
+static char       s_src[DESC_BUF_SIZE]; /* 原文副本:试排会改写标签文本,原指针会失效(2026-11-19) */
 
 /* 中文/全角:一字一词,字间可断行 */
 static bool desc_cp_wide(uint32_t cp)
@@ -394,6 +395,16 @@ static void desc_reflow(lv_obj_t *lbl)
     int32_t base_w = lv_obj_get_width(lbl);
     if (base_w <= 0) return;
 
+    /* 2026-11-19 修"同一页有时进来是另一种排版":下面选宽试排会 lv_label_set_text() 改写标签
+     * 文本,LVGL 会把旧串 free 掉,原来那个 txt 指针随之失效。后面再拿它去重排,读到的可能
+     * 已经是"上一档试排切好的文本"(同一块内存被复用),等于把切过一次的文本再切一次——
+     * 于是每行末词被挤到下一行(用户截图:Divide / from / filling it 各自单独一行,末行超出卡片)。
+     * 是否复用取决于当时的堆状态,所以表现为"有时候"。这里先把原文抄进自己的缓冲,
+     * txt 之后只指向副本,标签怎么改写都不影响重排输入。 */
+    if (strlen(txt) + 1 > sizeof(s_src)) return;   /* 超长(理论上不会):放弃重排,保持自动折行 */
+    strcpy(s_src, txt);
+    txt = s_src;
+
     /* 英文量宽字体:lang_refresh_screen 会把 taiwanpearl_30 换成 aktivgrotesk_30,
      * 换完字宽会变;若还用中文量宽字体切行,切好的行在 aktiv 下会再折一次
      * (2026-11-18 泡芙按 1209 切 7 行、显示却 8 行且末行压 Delay 钮)。
@@ -483,7 +494,12 @@ static void desc_reflow(lv_obj_t *lbl)
     }
 
     lv_obj_set_width(lbl, new_w);
-    if (strcmp(s_reflow, txt) != 0) lv_label_set_text(lbl, s_reflow);
+    /* 2026-11-19:要和"标签此刻的文本"比,不能和原文比——试排已经把标签换成某一档的切法了,
+     * 若最终文本恰好等于原文(短页常见)就会跳过写回,标签留着试排那一档的切法配新宽度。 */
+    {
+        const char *cur = lv_label_get_text(lbl);
+        if (!cur || strcmp(s_reflow, cur) != 0) lv_label_set_text(lbl, s_reflow);
+    }
     lv_obj_update_layout(lbl);
 }
 
