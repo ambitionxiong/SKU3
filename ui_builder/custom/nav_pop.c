@@ -269,6 +269,11 @@ void page_pop(void)
         somecook_rebuild(child);
         break;
 
+    case PAGE_SOMECOOK_COOKING:   /* 多段运行页之上只有"设置"覆盖层(2026-11-19):重建运行页,
+                                    覆盖层期间本段到点则由 rebuild 内部切下一段 */
+        somecook_cooking_rebuild(child);
+        break;
+
     case PAGE_SIXMENU:
         sixmenu_rebuild(child);
         break;

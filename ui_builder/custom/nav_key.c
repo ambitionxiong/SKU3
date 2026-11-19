@@ -46,6 +46,7 @@ int is_cook_setting_page(page_id_t cur)
     case PAGE_STRUDEL_SETTING: case PAGE_BREAD_SETTING: case PAGE_PIZZA3_SETTING:
     case PAGE_CHIP_SETTING: case PAGE_CUSTOM_SETTING:
     case PAGE_AIR_SETTING:   /* 2026-10-12 补漏:全项目唯一漏归档的 SETTING 页(此前按普通页被钳最小 5 分钟,其余 SETTING 页均下限 1) */
+    case PAGE_SOMECOOK_SETTING:   /* 多段运行中"设置"覆盖页(2026-11-19):同属 cooking 家族,功能键无效音 */
         return 1;
     default:
         return 0;

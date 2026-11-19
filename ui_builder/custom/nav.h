@@ -286,6 +286,7 @@ typedef enum {
     PAGE_SOMECOOK,          /* 多段烹饪主页面 */
     PAGE_STEPSET,           /* 多段烹饪步骤设置页 */
     PAGE_SOMECOOK_COOKING,  /* 多段烹饪运行页（单页五态） */
+    PAGE_SOMECOOK_SETTING,  /* 多段运行中"设置"覆盖页（单温+时间,复用 hot_bbq_setting UI,2026-11-19） */
     PAGE_SCREEN_SET,        /* 设置页（覆盖层，任何页面可进） */
     PAGE_SIXMENU,           /* 第六感菜单 */
     PAGE_BREAD6MENU,        /* 第六感-面包 */
@@ -688,6 +689,14 @@ void somecook_cooking_update_timer(somecook_cooking_t *sc);
 void on_somecook_sure_click(lv_event_t *e);
 void somecook_cooking_refresh(void);
 int somecook_cooking_is_stopback(void);
+/* 多段运行中设置覆盖层(2026-11-19 用户:补上和其它模式一样的"设置"按钮):
+ * 编辑当前段的温度/时间(上下烧烤也只有一份温度),确定=按新参数重跑本段 */
+extern lv_group_t *g_somecook_setting;
+void jump_to_somecook_setting(void);
+void somecook_cooking_rebuild(page_id_t child);   /* 覆盖层/子页返回时重建运行页 */
+int somecook_setting_is_open(void);
+void somecook_setting_stage_expired(void);        /* 覆盖层打开期间本段到点:不切段 */
+int somecook_setting_stage_was_expired(void);
 
 /* 设置页（覆盖层，nav_screen_set.c 实现） */
 extern lv_group_t *g_screen_set;

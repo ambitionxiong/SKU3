@@ -6904,7 +6904,8 @@ void hot_bbq_set_probe_lang_tune(void)
  * ============================================================================== */
 void hot_bbq_setting_lang_tune(void)
 {
-    if (depth <= 0 || page_stack[depth - 1] != PAGE_HOT_BBQ_SETTING) return;
+    if (depth <= 0 || (page_stack[depth - 1] != PAGE_HOT_BBQ_SETTING &&
+                       page_stack[depth - 1] != PAGE_SOMECOOK_SETTING)) return;   /* 多段运行中设置覆盖页复用同一套版式(2026-11-19) */
     hot_bbq_setting_t *pg = hot_bbq_setting_get(&ui_manager);
     if (!pg) return;
     /* 2026-10-24 EN 样张重排:标题 y180(面板顶+65) 数字 y242 单位 y254/256 下划线 y297(面板底-69);温度组中心对样张 30.2% 参考线(EN 卡换 settingbk_en 711x251@(84,114)),时间组 48px 间隙右锚(整组随卡右缘 +29) */
@@ -19311,6 +19312,7 @@ const struct { page_id_t page; lang_tune_fn fn; int dx, dy; } s_tune_tab[] = {
     { PAGE_HOT_BBQ_SET, hot_bbq_set_lang_tune, 0, 0 },   /*  */
     { PAGE_HOT_BBQ_SET_PROBE, hot_bbq_set_probe_lang_tune, 0, 0 },   /*  */
     { PAGE_HOT_BBQ_SETTING, hot_bbq_setting_lang_tune, 0, 0 },   /*  */
+    { PAGE_SOMECOOK_SETTING, hot_bbq_setting_lang_tune, 0, 0 },  /* 多段运行中设置覆盖页:复用单温+时间版式(2026-11-19) */
     { PAGE_HOT_BBQ_STOP, hot_bbq_stop_lang_tune, 0, 0 },   /*  */
     { PAGE_HOT_BBQ_STOP_BACK, hot_bbq_stop_back_lang_tune, 0, 0 },   /*  */
     { PAGE_HOT_BBQ_STOP_BACK_PROBE, hot_bbq_stop_back_probe_lang_tune, 0, 0 },   /*  */
