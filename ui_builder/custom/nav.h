@@ -697,6 +697,7 @@ void somecook_cooking_rebuild(page_id_t child);   /* 覆盖层/子页返回时�
 int somecook_setting_is_open(void);
 void somecook_setting_stage_expired(void);        /* 覆盖层打开期间本段到点:不切段 */
 int somecook_setting_stage_was_expired(void);
+void somecook_setting_update_countdown(void);     /* 覆盖页右侧倒计时=多段总剩余 */
 
 /* 设置页（覆盖层，nav_screen_set.c 实现） */
 extern lv_group_t *g_screen_set;

@@ -33,6 +33,7 @@ void on_somecook_setting_sure_click(lv_event_t *e);
  * 覆盖层打开时本段到点不切段（记标志，确定=按新参数重跑本段，退出=按原规则切下一段）。 */
 lv_group_t *g_somecook_setting = NULL;   /* 覆盖层焦点组 */
 static lv_obj_t *s_little_btn = NULL;    /* 运行页"设置"小按钮(生成层没有,运行时建) */
+static int s_little_in_group = 0;        /* 小按钮当前是否在焦点组里(返回确认遮罩时摘出) */
 static int s_stage_expired = 0;          /* 覆盖层打开期间本段到点 */
 
 // 所有已设置步骤总时间（进度条分母）
@@ -173,13 +174,34 @@ static void somecook_cooking_set_state(int state, int from)
     default: break;
     }
 
-    /* 设置小按钮(2026-11-19):运行/暂停态可点;退出确认遮罩与完成态收起(完成态按原逻辑
-       只留标语,避免"确定"重跑已完成的最后一段) */
+    /* 设置小按钮(2026-11-19):
+     *  - 运行/暂停:可点、在焦点组里;
+     *  - 返回确认(同页遮罩):仍然显示,但压在遮罩层下面(变暗)且不参与焦点、不可点
+     *    (用户:返回确认页显示按钮在遮罩下面,但是不能选中操作);
+     *  - 完成态:收起(避免"确定"把已完成的最后一段再跑一遍)。 */
     if (s_little_btn && lv_obj_is_valid(s_little_btn)) {
-        if (state == SMC_STOPBACK || state == SMC_COMPLETE)
-            lv_obj_add_flag(s_little_btn, LV_OBJ_FLAG_HIDDEN);
-        else
+        if (state == SMC_STOPBACK) {
             lv_obj_clear_flag(s_little_btn, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(s_little_btn, LV_OBJ_FLAG_CLICKABLE);
+            if (s_little_in_group) {
+                lv_group_remove_obj(s_little_btn);
+                s_little_in_group = 0;
+            }
+            if (sc->stop) lv_group_focus_obj(sc->stop);   /* 遮罩里只有"确定"可操作 */
+        } else if (state == SMC_COMPLETE) {
+            lv_obj_add_flag(s_little_btn, LV_OBJ_FLAG_HIDDEN);
+            if (s_little_in_group) {
+                lv_group_remove_obj(s_little_btn);
+                s_little_in_group = 0;
+            }
+        } else {
+            lv_obj_clear_flag(s_little_btn, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(s_little_btn, LV_OBJ_FLAG_CLICKABLE);
+            if (!s_little_in_group && g_somecook_cooking) {
+                lv_group_add_obj(g_somecook_cooking, s_little_btn);
+                s_little_in_group = 1;
+            }
+        }
     }
 
     /* EN 取消遮罩换装/还原:进遮罩换新文案+Stop Cooking 底图,退出遮罩还原构建
@@ -293,6 +315,10 @@ static void somecook_cooking_add_little(somecook_cooking_t *sc)
     lv_obj_set_style_bg_opa(btn, 0, LV_PART_MAIN | LV_STATE_FOCUSED);
     lv_obj_set_style_bg_img_src(btn, LVGL_IMAGE_PATH(little100.png), LV_PART_MAIN | LV_STATE_FOCUSED);
     lv_obj_add_event_cb(btn, on_somecook_setting_click, LV_EVENT_CLICKED, NULL);
+    /* 图层次序:插到遮罩容器(container_1)之前,让"返回确认"的整屏遮罩盖住它变暗;
+     * 遮罩隐藏时不影响正常显示(用户:返回确认页显示按钮在遮罩下面)。 */
+    if (sc->container_1 && lv_obj_is_valid(sc->container_1))
+        lv_obj_move_to_index(btn, lv_obj_get_index(sc->container_1));
     s_little_btn = btn;
 }
 
@@ -309,6 +335,7 @@ static void somecook_cooking_build_page(somecook_cooking_t *sc)
     if (s_little_btn) btns[n++] = s_little_btn;
     if (g_somecook_cooking) { lv_group_del(g_somecook_cooking); g_somecook_cooking = NULL; }
     g_somecook_cooking = group_create_for_page(btns, n);
+    s_little_in_group = (s_little_btn != NULL) ? 1 : 0;
     clear_focus_states(btns, n);
     if (sc->stop) {
         lv_group_focus_obj(sc->stop);
@@ -470,12 +497,22 @@ int somecook_setting_stage_was_expired(void)
     return s_stage_expired;
 }
 
-/* 覆盖层期间本段到点：不清页、不切段，只把倒计时归零并记标志 */
+/* 覆盖页右侧倒计时=多段总剩余(用户 2026-11-19:打开设置温度时间时右边显示总时间就行;
+ * 本段到达 00:00:00 的判据仍在 cooking_timer_cb 里用本段 cook_total_ms) */
+void somecook_setting_update_countdown(void)
+{
+    hot_bbq_setting_t *set = hot_bbq_setting_get(&ui_manager);
+    if (!set || !set->timelabel) return;
+    int s = (int)((somecook_total_remaining_ms() + 500) / 1000);
+    if (s < 0) s = 0;
+    lv_label_set_text_fmt(set->timelabel, "%02d:%02d:%02d", s / 3600, (s % 3600) / 60, s % 60);
+}
+
+/* 覆盖层期间本段到点：不清页、不切段，只记标志(倒计时按总剩余继续显示) */
 void somecook_setting_stage_expired(void)
 {
     s_stage_expired = 1;
-    hot_bbq_setting_t *set = hot_bbq_setting_get(&ui_manager);
-    if (set && set->timelabel) lv_label_set_text(set->timelabel, "00:00:00");
+    somecook_setting_update_countdown();
     printf("[somecook_cooking] setting: stage time ended -> hold\n");
 }
 
@@ -520,14 +557,8 @@ void jump_to_somecook_setting(void)
         lv_obj_add_event_cb(set->sure, on_somecook_setting_focus, LV_EVENT_FOCUSED, NULL);
         lv_obj_add_event_cb(set->sure, on_somecook_setting_sure_click, LV_EVENT_CLICKED, NULL);
 
-        /* 倒计时=本段剩余(多段运行页那份是"总剩余";本段到点=批注里的"步骤一烹饪时间结束") */
-        uint32_t elapsed = (g_somecook_state == SMC_STOP) ? (uint32_t)cook_elapsed_saved
-                                                          : (lv_tick_get() - cook_start_time);
-        int64_t rem_ms = cook_total_ms - (int64_t)elapsed;
-        if (rem_ms < 0) rem_ms = 0;
-        int rem = (int)((rem_ms + 500) / 1000);
-        lv_label_set_text_fmt(set->timelabel, "%02d:%02d:%02d",
-                              rem / 3600, (rem % 3600) / 60, rem % 60);
+        /* 右侧倒计时=多段总剩余(用户 2026-11-19 定:打开设置温度时间时显示总时间) */
+        somecook_setting_update_countdown();
         lv_label_set_text_fmt(set->temp, "%d", temp_disp_c(set_temp));
         lv_label_set_text_fmt(set->hour, "%02d", set_hour);
         lv_label_set_text_fmt(set->min, "%02d", set_min);

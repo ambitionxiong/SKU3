@@ -210,18 +210,14 @@ void cooking_timer_cb(lv_timer_t *timer)
      * 批注口径"进入此界面后步骤一烹饪时间结束也不进步骤二",退出覆盖层时再由
      * somecook_cooking_rebuild 按标志推进。下层运行页的到点检测一律跳过。 */
     if (depth > 0 && page_stack[depth - 1] == PAGE_SOMECOOK_SETTING) {
-        hot_bbq_setting_t *sset = hot_bbq_setting_get(&ui_manager);
         if (cook_timer && cook_total_ms > 0) {
             uint32_t sel = lv_tick_get() - cook_start_time;
             if (sel >= (uint32_t)cook_total_ms) {
                 lv_timer_del(cook_timer);
                 cook_timer = NULL;
                 somecook_setting_stage_expired();
-            } else if (sset && sset->timelabel) {
-                int rem = (int)(((int64_t)cook_total_ms - (int64_t)sel + 500) / 1000);
-                if (rem < 0) rem = 0;
-                lv_label_set_text_fmt(sset->timelabel, "%02d:%02d:%02d",
-                                      rem / 3600, (rem % 3600) / 60, rem % 60);
+            } else {
+                somecook_setting_update_countdown();   /* 右侧=多段总剩余(2026-11-19 用户) */
             }
         }
         return;
