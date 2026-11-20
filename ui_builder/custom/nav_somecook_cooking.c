@@ -552,9 +552,19 @@ void jump_to_somecook_setting(void)
         g_somecook_setting = group_create_for_page(btns, 4);
 
         edit_clear();
-        edit_register_temp(set->temp, set->templine2, set->templine3,
-                           &set_temp, 30, 300, 5, "%d");
-        edit_register(set->hour, set->hourline, NULL, &set_hour, 0, 4, 1, "%02d");
+        /* 温度/小时范围跟当前段的模式走(用户 2026-11-20:不同模式的温度/时间限制不同)。
+         * 与步骤设置页共用 stepset 范围表;模式下限可能高于当前值(如节能热风 125℃ 起),
+         * 先夹一下再注册,免得初始值超出可调范围 */
+        {
+            int tmin = 30, tmax = 300, hmax = 4;
+            stepset_mode_range(g_steps[g_somecook_run_idx].mode, &tmin, &tmax, &hmax);
+            if (set_temp < tmin) set_temp = tmin;
+            if (set_temp > tmax) set_temp = tmax;
+            if (set_hour > hmax) set_hour = hmax;
+            edit_register_temp(set->temp, set->templine2, set->templine3,
+                               &set_temp, tmin, tmax, 5, "%d");
+            edit_register(set->hour, set->hourline, NULL, &set_hour, 0, hmax, 1, "%02d");
+        }
         edit_register(set->min, set->minline, NULL, &set_min, 0, 59, 1, "%02d");
         nav_blink_extra(set->temp, set->icon2);
         nav_blink_extra(set->temp, set->icon3);
@@ -589,6 +599,18 @@ void jump_to_somecook_setting(void)
     lang_scr_load_anim(hot_bbq_setting_get(&ui_manager)->obj,
                        LV_SCR_LOAD_ANIM_NONE, 0, 0,
                        ui_manager.auto_del);
+
+    /* 右侧倒计时与运行页同位(用户 2026-11-20:两页位置要一致)。
+     * 运行页 EN 在 somecook_cooking_common 里把 timelabel 挪到 (902,162)、尺寸=内容;
+     * 覆盖页复用 hot_bbq_setting 的 timelabel,EN tune 给的是 (907,157)+257x60,差 (5,-5)。
+     * 中/繁两页都用生成值 (907,157)+235x60,本来一致,不动 */
+    if (is_english()) {
+        hot_bbq_setting_t *tset = hot_bbq_setting_get(&ui_manager);
+        if (tset && tset->timelabel) {
+            lv_obj_set_pos(tset->timelabel, 902, 162);
+            lv_obj_set_size(tset->timelabel, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+        }
+    }
     printf("[somecook_cooking] jump: cooking -> setting (step %d)\n", g_somecook_run_idx);
 }
 

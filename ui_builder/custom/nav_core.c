@@ -838,6 +838,12 @@ void adjust_value(edit_field_t *f, int delta)
         hot_bbq_setting_t *set = hot_bbq_setting_get(&ui_manager);
         update_hot_bbq_dir_icon(set);
     }
+    /* 多段运行中"设置"覆盖页(复用 hot_bbq_setting 版式):℃ 随两位数/三位数换位
+       (用户 2026-11-20:温度单位要跟位数一起移动;原来只在聚焦时算一次) */
+    if (current_group == g_somecook_setting) {
+        hot_bbq_setting_t *set = hot_bbq_setting_get(&ui_manager);
+        update_hot_bbq_dir_icon(set);
+    }
     if (current_group == g_hotwind_bbq_setting) {
         hotwind_bbq_setting_t *set = hotwind_bbq_setting_get(&ui_manager);
         update_hotwind_bbq_dir_icon(set);

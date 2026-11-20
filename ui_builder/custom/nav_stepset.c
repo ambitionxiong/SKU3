@@ -68,6 +68,16 @@ static const stepset_range_t *stepset_find_range(uint8_t mode)
     return &g_stepset_ranges[0];
 }
 
+/* 按模式取温度/小时范围(多段运行中"设置"覆盖页复用同一张表,用户 2026-11-20:
+ * 不同模式的温度/时间限制不同,覆盖页要跟当前段模式一起变) */
+void stepset_mode_range(uint8_t mode, int *tmin, int *tmax, int *hmax)
+{
+    const stepset_range_t *r = stepset_find_range(mode);
+    if (tmin) *tmin = r->tmin;
+    if (tmax) *tmax = r->tmax;
+    if (hmax) *hmax = r->hmax;
+}
+
 // 应用当前选中模式：cook_mode + 范围重注册 + 温度/时间设置
 // restore=true(进入 stepset)：已设置步骤回填已保存值；restore=false(切换模式)：切为该模式默认
 void stepset_apply_sel_mode(bool restore)

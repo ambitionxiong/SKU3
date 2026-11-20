@@ -689,6 +689,7 @@ extern lv_group_t *g_somecook_btns;
 extern lv_group_t *g_somecook_edit;
 extern lv_group_t *g_stepset;
 void jump_to_stepset(int i);
+void stepset_mode_range(uint8_t mode, int *tmin, int *tmax, int *hmax);   /* 模式→温度/小时范围(步骤设置页与多段设置覆盖页共用) */
 void somecook_back_to_btns(int focus_btn);
 void somecook_rebuild(page_id_t child);
 extern lv_group_t *g_somecook_cooking;
