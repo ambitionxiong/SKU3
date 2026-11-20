@@ -593,4 +593,5 @@ void lang_on_page_built(void)
     nav_chickmenutz_en_refit();   /* 探针二级菜单 EN 小字规则(仅英文,2026-10-15) */
     nav_probe_badge_refit();      /* 探针插入时菜单页标题右侧补 tanzhen 小标(全语言,2026-11-03) */
     nav_complete_btn_unfocus(current_group);   /* 完成页 setting 钮默认不亮,首次旋动编码器再选中(2026-11-04) */
+    nav_color_complete_tip_refit();   /* 额外上色完成页:右侧整图换 tips 只留防烫,一次上色后不再提示(全语言,2026-11-20) */
 }

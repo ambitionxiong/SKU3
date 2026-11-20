@@ -559,7 +559,7 @@ void process_key(uint8_t key)
             }
         }
         if (g_send.iface_status == IFACE_COMPLETE) {
-            /* 完成状态：特定模式完成页可再次上色（直接开始上色，不进确认页） */
+            /* 完成状态：特定模式完成页可上色一次（直接开始上色，不进确认页） */
             /* 排除：预热完成页(设置场景预热段刚结束,烹饪未开始,无可上色对象;
              * 此时 cook_mode 已是真实烹饪模式,下方模式白名单拦不住,2026-10-22) */
             if (depth > 0 && page_stack[depth - 1] == PAGE_PREHEAT_COMPLETE) {
@@ -571,12 +571,14 @@ void process_key(uint8_t key)
                 g_send.buzzer_req = BUZZER_KEY_INVALID;
                 break;
             }
+            /* 额外上色只做一次(用户 2026-11-20):cook_mode 已经是 MODE_EXTRA_COLOR 说明
+               本轮上过色了,完成页不再给第二次;该页右侧提示整图也换成 tips(仅防烫),
+               见 nav_color_complete_tip_refit() */
             if (g_send.cook_mode != MODE_UPDOWN_BBQ &&
                 g_send.cook_mode != MODE_HOTWIND_BBQ &&
                 g_send.cook_mode != MODE_WINDCHANGE_BBQ &&
                 g_send.cook_mode != MODE_PIZZA_2 &&
-                g_send.cook_mode != MODE_COOK4 &&
-                g_send.cook_mode != MODE_EXTRA_COLOR) {   /* 额外上色完成后可再次上色 */
+                g_send.cook_mode != MODE_COOK4) {
                 g_send.buzzer_req = BUZZER_KEY_INVALID;
                 break;
             }

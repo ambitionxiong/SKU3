@@ -3614,6 +3614,35 @@ void colorcooking_complete_lang_tune(void)
 
 
 /* ==============================================================================
+ * colorcooking_complete 额外上色提示收尾（用户 2026-11-20 定稿，全语言）
+ * 额外上色只做一次：上色做完的这一页不再提示"点击 +5' 可以额外上色"，右侧整图由
+ * hotcare*（防烫文案 + 上色提示两段一张图）换成 tips*（只有防烫文案），
+ * 防烫文案墨迹位置与原来完全重合（tips 原点 = hotcare 原点 + 文案段偏移）：
+ *   简/繁: tips(.png/_tw.png) 241x81 @(902,160)
+ *          hotcare 文案段 x58..285 + 845 = 903..1130，tips 段 x1..228 + 902 = 903..1130
+ *   英文  : tips_en.png 261x87 @(880,161)
+ *          hotcare_en 文案段 x61..317 + 820 = 881..1137，tips_en 段 x1..260 + 880 = 881..1140
+ *          y: hotcare_en 文案顶 5+160，tips_en 顶 4+161（实测墨迹 881/165 两者重合）
+ * 挂 lang_on_page_built 末位（全语言、幂等）：EN tune 先把 image_3 设回 hotcare_en，
+ * 本函数在其后覆盖。
+ * ============================================================================== */
+void nav_color_complete_tip_refit(void)
+{
+    if (depth <= 0 || page_stack[depth - 1] != PAGE_COLOR_COOKING_COMPLETE) return;
+    colorcooking_complete_t *pg = colorcooking_complete_get(&ui_manager);
+    if (!pg || !pg->image_3 || !lv_obj_is_valid(pg->image_3)) return;
+
+    if (is_english()) {
+        lv_image_set_src(pg->image_3, LVGL_IMAGE_PATH(tips_en.png));
+        lv_obj_set_pos(pg->image_3, 880, 161);
+    } else {
+        lv_image_set_src(pg->image_3, lang_img_src("tips.png"));   /* 繁體自动取 tips_tw.png */
+        lv_obj_set_pos(pg->image_3, 902, 160);
+    }
+}
+
+
+/* ==============================================================================
  * cook4menu 英文布局基准（对应 PAGE_COOK4_MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */

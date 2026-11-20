@@ -349,20 +349,15 @@ static void six_cook_apply_display(void)
         lv_obj_add_flag(sc->timelabel, LV_OBJ_FLAG_HIDDEN);
         six_label_status(sc);   /* 完成询问态保持最后烹饪信息 */
         lv_label_set_text(sc->cookstatus, tr("已完成"));
-        if (six_bread_has_color()) {
-            /* 有烤色:显示烤色询问 */
-            if (g_six_phase == SIX_PHASE_ASK) {
-                lv_label_set_text(sc->text1, tr("请问需要增加"));
-                lv_label_set_text(sc->text2, tr("烤色吗!"));
-            } else {
-                lv_label_set_text(sc->text1, tr("请问还需要增加"));
-                lv_label_set_text(sc->text2, tr("烤色吗!"));
-            }
+        if (six_bread_has_color() && g_six_phase == SIX_PHASE_ASK) {
+            /* 有烤色:只问一次是否加烤色(用户 2026-11-20:一次上色做完不再问第二次) */
+            lv_label_set_text(sc->text1, tr("请问需要增加"));
+            lv_label_set_text(sc->text2, tr("烤色吗!"));
             lv_obj_clear_flag(sc->text1, LV_OBJ_FLAG_HIDDEN);
             lv_obj_clear_flag(sc->text2, LV_OBJ_FLAG_HIDDEN);
             if (bl) lv_label_set_text(bl, tr("需 要"));
         } else {
-            /* 无烤色:完成提示,彻底隐藏按钮(移出焦点组,按确定不再触发) */
+            /* 无烤色 / 上色已完成:纯完成提示,彻底隐藏按钮(移出焦点组,按确定不再触发) */
             lv_obj_add_flag(sc->stop, LV_OBJ_FLAG_HIDDEN);
             if (g_six_cooking) lv_group_remove_obj(sc->stop);
             lv_obj_clear_flag(sc->text1, LV_OBJ_FLAG_HIDDEN);
@@ -580,13 +575,16 @@ static void on_six_stop_click(lv_event_t *e)
         }
         break;
     case SIX_PHASE_ASK:
-    case SIX_PHASE_ASK_COLOR:
         if (six_bread_has_color()) {
             jump_to_toastcolor();
         } else {
             /* 无烤色:进入确认(遮罩),确认后再退出,避免直接返回 */
             six_cook_handle_back();
         }
+        break;
+    case SIX_PHASE_ASK_COLOR:
+        /* 一次上色做完不再询问:按钮已隐藏并移出焦点组,兜底走退出确认 */
+        six_cook_handle_back();
         break;
     case SIX_PHASE_COLOR_SETUP:
         /* 已废弃:准备页取消后此态不再进入(保留枚举占位),开始逻辑移至 six_cook_goto_setup */
