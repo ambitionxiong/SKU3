@@ -160,6 +160,7 @@ void nav_enter_standby(void)
     temptip_cancel_auto_dismiss();
     if (nav_favask_active()) nav_favask_cancel();
     nav_poweroff_ask_cancel();
+    nav_kwask_hide();                     /* 保温询问框同款:进待机前收起 */
     screen_set_reset();                   /* 覆盖层若开着:清理对象/组/焦点指针 */
     depth = 0;
     page_push(PAGE_WAITMENU_24);

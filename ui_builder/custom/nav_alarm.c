@@ -31,6 +31,7 @@ static void alarm_stop_all(void)
     count_down_poweroff_reset();      /* 计时器后台/超时状态一并清 */
     if (nav_favask_active()) nav_favask_cancel();   /* 弹层标志随清理收起(残留会吞键) */
     nav_poweroff_ask_cancel();
+    nav_kwask_hide();                 /* 保温询问框同款:报警抢屏时收起,免浮在警报页上吞键 */
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
     g_on_stop_back = 0;
     g_complete_to_stop_back = 0;

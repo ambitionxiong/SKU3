@@ -36,6 +36,7 @@ void nav_power_off(void)
     count_down_poweroff_reset();      /* 计时器后台/超时状态一并清:防关机后到期自动退出拽屏 */
     if (nav_favask_active()) nav_favask_cancel();   /* 收藏确认弹层随关机收起(标志残留会吞键) */
     nav_poweroff_ask_cancel();        /* 关机确认弹层同款卫生 */
+    nav_kwask_hide();                 /* 保温询问框同款卫生(保温状态由下面清零,这里只收界面) */
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
     g_on_stop_back = 0;
     g_complete_to_stop_back = 0;

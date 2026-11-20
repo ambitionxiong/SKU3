@@ -205,6 +205,7 @@ static void system_timer_cb(lv_timer_t *timer)
     count_down_overtime_reset();      /* 只清超时层(标志+回屏指针,防吞键/悬空),后台计时器保留照跑(2026-10-21) */
     if (nav_favask_active()) nav_favask_cancel();   /* 确认弹层标志残留会吞键(PRESS误触确认) */
     nav_poweroff_ask_cancel();        /* 关机确认弹层同款(PRESS残留=直接关机) */
+    nav_kwask_hide();                 /* 保温询问框同款:探针插拔抢屏时收起,免浮在主菜单/探针提示页上吞键 */
     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
     set_temp = 180; set_temp_up = 180; set_temp_down = 180;
     set_hour = 0; set_min = 30;

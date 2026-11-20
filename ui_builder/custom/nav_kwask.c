@@ -89,7 +89,10 @@ static void kwask_build(void)
 
 void nav_kwask_show(void)
 {
-    if (s_active) return;
+    if (s_active) {               /* 已弹着又开关一次门:门动作算用户操作,1 分钟重新计 */
+        s_touch_ms = lv_tick_get();
+        return;
+    }
     kwask_build();
     if (!s_mask) return;
 
