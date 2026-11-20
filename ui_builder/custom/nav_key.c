@@ -450,9 +450,19 @@ void process_key(uint8_t key)
     if (depth > 1 && page_stack[depth - 1] == PAGE_SCREEN_SET &&
         (key == KEY_MENU || key == KEY_SIXMENU || key == KEY_PREHEAT ||
          key == KEY_EXTRA_COLOR || key == KEY_CLEAN || key == KEY_FAV)) {
+        int lang_dirty = screen_set_take_lang_dirty();   /* 先取:下面清理会复位覆盖层状态 */
         screen_set_reset();   /* 清覆盖层对象/指针,防悬空 */
-        depth--;              /* 弹掉 PAGE_SCREEN_SET,栈顶恢复下层页面 */
-        topflag_update_visibility();   /* 与 page_pop 一致刷新 topflag 显隐 */
+        if (lang_dirty) {
+            /* 2026-11-20 用户:设置页里改过语言后直接按功能键,下层页仍是旧语言文本
+             * (译表以简体为键、tr_tw 只简→繁,均不可逆,补翻译只会半中半英;EN 下还会
+             * 只切到非中文标签的字体→第二行断行被盒子裁掉)。整页重建后再按功能键跳转,
+             * 不能让旧屏留在栈顶被本键的"已在目标页"守卫吞掉。
+             * page_pop:depth-- + 清屏 + 按 prev 页 id 重建(新语言)+ lang_scr_load_anim */
+            page_pop();
+        } else {
+            depth--;              /* 弹掉 PAGE_SCREEN_SET,栈顶恢复下层页面 */
+            topflag_update_visibility();   /* 与 page_pop 一致刷新 topflag 显隐 */
+        }
         if (key == KEY_FAV && depth > 0 && page_stack[depth - 1] == PAGE_FAVORITES) {
             /* 覆盖层底下就是收藏页:整页重建(按当前语言全新渲染)。不能落回 KEY_FAV
              * 守卫——current_group 已被 screen_set_reset 恢复成收藏组,会被

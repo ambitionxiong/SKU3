@@ -64,6 +64,10 @@ static uint8_t s_sel_notrans = 0;    /* 选项文本不过翻译表(语言弹窗
 static const char *const s_lang_names[3] = { "English", "繁體中文", "简体中文" };
 /* YY_Lb 显示名:English 在 125 宽值标签折行难看,2026-10-13 用户定稿缩写 Eng 单行(与弹窗选项分开) */
 static const char *const s_lang_yy_names[3] = { "Eng", "繁體中文", "简体中文" };
+/* 2026-11-20 用户(设置页改语言后按功能键跳页显示错):覆盖层打开期间改过语言 → 覆盖层底下
+ * 那页仍是切语言前渲染的文本(英文表以简体为键、tr_tw 只简→繁,均不可逆),关闭覆盖层时
+ * 必须整页重建而不能再沿用旧屏。此标志由 sel_popup_apply 置位,关闭路径取走(读后清零)。 */
+static uint8_t s_lang_dirty = 0;
 
 static void sel_icons_refresh(void)
 {
@@ -231,9 +235,10 @@ static void sel_popup_apply(void)
         nav_topflag_demo_sync();        /* 徽标立即显隐/定位(不等 500ms tick) */
         topflag_update_visibility();    /* 待机页下开/关演示需联动整层显隐(徽标放行/收回) */
         break;
-    case SEL_WHERE_LANG:
+    case SEL_WHERE_LANG: {
         /* s_sel_flag: 0=English 1=繁體 2=简体(与 Set_Language 字段注释一致)
          * 繁體: tr() 出口简转繁(i18n_tw.c 词组+字表), 排版/字体同简体, 图片走 _tw 素材 */
+        int lang_changed = (s_sel_flag != SET_Data.Set_Language);
         SET_Data.Set_Language = s_sel_flag;
         g_lang_en = (s_sel_flag == 0) ? 1 : 0;
         if (g_lang_en) {
@@ -250,10 +255,14 @@ static void sel_popup_apply(void)
             if (SET_Data.Set_Language == 1) lang_on_page_built();
             if (ss && ss->YY_Btn) lv_group_focus_obj(ss->YY_Btn);   /* 焦点回语言按钮 */
         }
+        /* 覆盖层底下那页只在建页时按当时语言渲染过,树遍历只能简→英/简→繁,不可逆:
+         * 语言一变,关闭覆盖层时下层页必须整页重建(见 screen_set_take_lang_dirty) */
+        if (lang_changed) s_lang_dirty = 1;
         if (ss && ss->YY_Lb) lv_label_set_text(ss->YY_Lb, tr(s_lang_yy_names[s_sel_flag]));
         nav_topflag_demo_sync();   /* 演示徽标图/位置立即跟随语言(覆盖层路径不经过 lang_scr_load_anim,否则等 500ms tick) */
         nav_topflag_clock_force();   /* 右上角 PM/下午立即跟随语言(时钟变更判定不感知弹窗切语言) */
         break;
+    }
     default: break;
     }
     sel_popup_close();
@@ -580,6 +589,7 @@ void screen_set_ts_lb_sync(void)
 
 void jump_to_screen_set(void)
 {
+    s_lang_dirty = 0;       /* 每次进入覆盖层重新计:只有本次打开期间改过语言才需要重建下层页 */
     screen_set_rebuild();   /* 含防重入/运行态记录/覆盖层构建 */
     page_push(PAGE_SCREEN_SET);
     lang_on_page_built();   /* 覆盖层挂当前屏、无 screen load:进页补跑翻译+英文排版 */
@@ -587,9 +597,22 @@ void jump_to_screen_set(void)
     printf("[screen_set] enter (overlay, running=%d)\n", s_was_running);
 }
 
+/* 取"覆盖层打开期间改过语言"标志并清零。关闭覆盖层的两条路径(nav_key 功能键弹层 /
+ * screen_set_back 返回键·空闲超时)都先取走:语言已变则下层页按新语言整页重建,
+ * 不能再沿用旧屏(旧屏文本是切语言前渲染的,简→英/繁不可逆,只补翻译会半中半英) */
+int screen_set_take_lang_dirty(void)
+{
+    int d = s_lang_dirty;
+    s_lang_dirty = 0;
+    return d;
+}
+
 void screen_set_back(void)
 {
     if (depth <= 0 || page_stack[depth - 1] != PAGE_SCREEN_SET) return;
+
+    /* 语言改过:先取标志(下面的清理/重建会复位覆盖层状态) */
+    int lang_dirty = screen_set_take_lang_dirty();
 
     /* 选项弹窗(童锁/风扇/炉灯/功率/语言/待机时间)还开着时整层退出:空闲 1 分钟
        自动回运行页直接调本函数,弹窗不像 BACK 那样先被关掉,是覆盖层的子对象,
@@ -610,13 +633,21 @@ void screen_set_back(void)
     }
 
     if (s_was_running) {
-        /* 运行态(烹饪/暂停/完成/预约):回原页面,下层原样保留 */
+        /* 运行态(烹饪/暂停/完成/预约):回原页面,下层原样保留。
+           (运行态设置页只放行计时器/童锁/保温三键,语言项不在焦点组,走不到切语言) */
         current_group = s_prev_group;
         s_prev_group = NULL;
         depth--;   /* 仅弹栈，不重建（下层页面未被销毁） */
         /* 覆盖期间下层运行页显示未刷新,立即补刷一次,避免返回时短暂显示旧倒计时 */
         cooking_timer_cb(NULL);
         printf("[screen_set] back (restore prev)\n");
+    } else if (lang_dirty) {
+        /* 语言已切:下层页整页重建(按新语言全新渲染),走 page_pop 的按页 id 重建链,
+           回的是进设置前的原页(如第六感菜单),而不是一律回主菜单 */
+        current_group = s_prev_group;
+        s_prev_group = NULL;
+        page_pop();
+        printf("[screen_set] back (rebuild prev, lang changed)\n");
     } else {
         /* 非运行态:回主菜单(返回链终点=主菜单,不再回待机页;
            栈重置为 [WAITMENU_24, MAJOR_MENU(_TZ)],IFACE_SETTING) */
