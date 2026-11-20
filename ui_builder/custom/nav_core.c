@@ -2320,7 +2320,10 @@ void nav_dirimg_refit(void)
     } else if (id == PAGE_HEATCONTAIN_SETTING) {
         { heatcontain_setting_t *pg = heatcontain_setting_get(&ui_manager); if (pg) nav_setting_title_refit(pg->label_614, 278, pg->label_615, 521); }
 
-    } else if (id == PAGE_HOT_BBQ_SETTING) {
+    } else if (id == PAGE_HOT_BBQ_SETTING || id == PAGE_SOMECOOK_SETTING) {
+        /* 多段运行中"设置"覆盖页复用 hot_bbq_setting 版式:同走本页 refit,
+           否则 EN 只跑到 tune 的一半——卡还是 settingbk(651@115)、标题是字典首个
+           命中"Temp",其他模式是 settingbk_en(711@84)+"Temperature"(用户 2026-11-20 报) */
         { hot_bbq_setting_t *pg = hot_bbq_setting_get(&ui_manager); if (pg) nav_setting_title_refit(pg->label_187, 278, pg->label_188, 521); }
 
     } else if (id == PAGE_HOTWIND_BBQ_SETTING) {
