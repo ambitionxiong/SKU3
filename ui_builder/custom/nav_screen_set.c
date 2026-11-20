@@ -611,8 +611,9 @@ void screen_set_back(void)
 {
     if (depth <= 0 || page_stack[depth - 1] != PAGE_SCREEN_SET) return;
 
-    /* 语言改过:先取标志(下面的清理/重建会复位覆盖层状态) */
-    int lang_dirty = screen_set_take_lang_dirty();
+    /* 语言改过:只取走标志(清掉),返回链行为不变——非运行态一律回主菜单,
+     * nav_goto_major_menu() 本身就是整页重建,新语言自然生效,不存在旧屏残留 */
+    (void)screen_set_take_lang_dirty();
 
     /* 选项弹窗(童锁/风扇/炉灯/功率/语言/待机时间)还开着时整层退出:空闲 1 分钟
        自动回运行页直接调本函数,弹窗不像 BACK 那样先被关掉,是覆盖层的子对象,
@@ -641,13 +642,6 @@ void screen_set_back(void)
         /* 覆盖期间下层运行页显示未刷新,立即补刷一次,避免返回时短暂显示旧倒计时 */
         cooking_timer_cb(NULL);
         printf("[screen_set] back (restore prev)\n");
-    } else if (lang_dirty) {
-        /* 语言已切:下层页整页重建(按新语言全新渲染),走 page_pop 的按页 id 重建链,
-           回的是进设置前的原页(如第六感菜单),而不是一律回主菜单 */
-        current_group = s_prev_group;
-        s_prev_group = NULL;
-        page_pop();
-        printf("[screen_set] back (rebuild prev, lang changed)\n");
     } else {
         /* 非运行态:回主菜单(返回链终点=主菜单,不再回待机页;
            栈重置为 [WAITMENU_24, MAJOR_MENU(_TZ)],IFACE_SETTING) */
