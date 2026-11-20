@@ -614,7 +614,13 @@ void cooking_timer_cb(lv_timer_t *timer)
                 lv_timer_del(cook_timer);
                 cook_timer = NULL;
                 /* 段间切换不出声:完成音在 next_step 的"全部完成"分支里发 */
-                somecook_cooking_next_step();
+                /* 从多段"设置"覆盖页进入的关机确认(用户 2026-11-20):到点只做后台暂停,
+                   确认框原样保留、不切下一段(与"设置页到点"同口径);单独在运行页按电源
+                   进入的确认仍按原逻辑:收弹窗并切下一段 */
+                if (nav_poweroff_ask_active() && nav_poweroff_ask_from_smc_setting())
+                    somecook_powerask_stage_expired();
+                else
+                    somecook_cooking_next_step();
             }
         }
     }

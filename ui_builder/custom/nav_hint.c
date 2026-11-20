@@ -500,6 +500,23 @@ int nav_favask_get_mode(void)
  * 超时由 nav_idle.c 的 NAV_IDLE_CONFIRM_TO_COOKING_S 统一计时(2026-11-11 改 1 分钟)
  * ============================== */
 static int g_pwroff_ask_active = 0;
+/* 本次关机确认的来源(用户 2026-11-20 定):1 = 从多段运行中"设置"覆盖页进入
+   (电源键先把覆盖页按 BACK 退回运行页再弹确认)。这种来源的确认下本段到点要按
+   "设置页到点"处理——后台暂停、确认框原样保留、不切下一段;单独在运行页按电源
+   的确认(来源 0)保持原逻辑:到点收弹窗并切下一段。由 nav_keyio 电源动作记下,
+   确认收起时清 0。 */
+static int g_pwroff_from_smc_setting = 0;
+
+void nav_poweroff_ask_set_from_smc_setting(int v)
+{
+    g_pwroff_from_smc_setting = v ? 1 : 0;
+}
+
+int nav_poweroff_ask_from_smc_setting(void)
+{
+    return g_pwroff_from_smc_setting;
+}
+
 /* 童锁期弹窗的遮罩层级:锁定中弹窗把 container_1 提到层顶(标语/确认钮压遮罩下),
    记住原序,取消时放回防残留压住后续提示/收藏弹窗 */
 static int32_t s_pwroff_mask_idx = -1;
@@ -583,6 +600,7 @@ void nav_poweroff_ask_show(void)
 void nav_poweroff_ask_cancel(void)
 {
     topflagpage_t *tf;
+    g_pwroff_from_smc_setting = 0;   /* 来源随确认收起一并清(下次电源动作重新记) */
     if (!g_pwroff_ask_active) return;
     g_pwroff_ask_active = 0;
     tf = topflagpage_get(&ui_manager);
@@ -608,6 +626,14 @@ void nav_poweroff_ask_cancel(void)
     if (tf->container_1 && !nav_childlock_active())
         lv_obj_add_flag(tf->container_1, LV_OBJ_FLAG_HIDDEN);   /* 童锁期归锁层,不随提示收回 */
     nav_favtip_restore_elems();
+    /* 多段运行页:show() 的 collector 收栏把右栏(倒计时/暂停·开始钮)藏起来过,收栏后焦点
+       可能已落到"设置"小按钮,取消后按旋钮会先弹设置覆盖页(用户 2026-11-20 实测)。
+       这里把焦点还给暂停/开始钮,恢复成运行/暂停页的正常操作位 */
+    if (current_group == g_somecook_cooking) {
+        somecook_cooking_t *sc = somecook_cooking_get(&ui_manager);
+        if (sc && sc->stop && lv_obj_is_valid(sc->stop))
+            lv_group_focus_obj(sc->stop);
+    }
     if (current_group == g_chick_cooking)
         six_chick_refresh_display();   /* 探针菜:弹层期间跳过的状态刷新在此重放(2026-11-12) */
     printf("[hint] poweroff ask cancel\n");

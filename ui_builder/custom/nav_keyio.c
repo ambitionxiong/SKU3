@@ -174,6 +174,10 @@ static void nav_key1_power_action(void)
         nav_power_off();
     } else if (nav_poweroff_ask_needed()) {
         g_send.buzzer_req = BUZZER_KEY_VALID;
+        /* 记确认来源(用户 2026-11-20):从多段"设置"覆盖页按电源,下面 return_run 会先按 BACK
+           把覆盖页退回运行页再弹确认;这种来源下本段到点要后台暂停、确认框保留,不切下一段。
+           单独在运行页按电源(栈顶不是覆盖页)记 0,到点仍按原逻辑收弹窗并切段 */
+        nav_poweroff_ask_set_from_smc_setting(somecook_setting_is_open());
         nav_poweroff_ask_return_run();   /* 非运行页先退回运行页再弹(设置覆盖层功能键"先关层"同口径,2026-10-29) */
         nav_poweroff_ask_show();
     } else {

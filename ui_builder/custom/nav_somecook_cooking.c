@@ -526,6 +526,30 @@ void somecook_setting_stage_expired(void)
     printf("[somecook_cooking] setting: stage time ended -> background pause\n");
 }
 
+/* 从"设置"覆盖页进入的关机确认(用户 2026-11-20):本段到点只做后台暂停 —— 与设置页到点
+ * 同口径(本段记满/状态暂停/iface=PAUSE),确认框原样保留、不切下一段。
+ * 页面就地切暂停态而不是重建:确认框的 collector 收的是本页右栏对象(倒计时/开始),
+ * 重建会让它指向已删对象;就地切完重新收一次右栏,取消确认后看到的就是"本段到点"
+ * 暂停页(倒计时=后续段总时长,按原规则冻结)。到点后按"开始"仍走原路:起点按已走满
+ * 恢复,下一秒切下一段。 */
+void somecook_powerask_stage_expired(void)
+{
+    s_stage_done_pause = 1;
+    cook_elapsed_saved = cook_total_ms;
+    g_somecook_state = SMC_STOP;
+    g_somecook_from = SMC_COOKING;
+    g_send.iface_status = IFACE_PAUSE;
+    g_send.remaining_ms = 0;
+
+    somecook_cooking_t *sc = somecook_cooking_get(&ui_manager);
+    if (sc && sc->obj && lv_obj_is_valid(sc->obj)) {
+        somecook_cooking_set_state(SMC_STOP, SMC_COOKING);
+        somecook_cooking_update_timer(sc);
+        nav_favtip_collect_hide();   /* set_state 回显了被弹窗藏掉的右栏(倒计时/开始):重新收栏 */
+    }
+    printf("[somecook_cooking] power ask (from setting): stage time ended -> background pause\n");
+}
+
 /* 覆盖层焦点：下划线随焦点，℃ 单位按位数显隐（与各模式设置页同款） */
 static void on_somecook_setting_focus(lv_event_t *e)
 {

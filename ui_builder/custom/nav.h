@@ -709,6 +709,7 @@ void jump_to_somecook_setting(void);
 void somecook_cooking_rebuild(page_id_t child);   /* 覆盖层/子页返回时重建运行页 */
 int somecook_setting_is_open(void);
 void somecook_setting_stage_expired(void);        /* 覆盖层打开期间本段到点:不切段 */
+void somecook_powerask_stage_expired(void);       /* 设置页进入的关机确认期间本段到点:后台暂停不切段 */
 int somecook_setting_stage_was_expired(void);
 void somecook_setting_update_countdown(void);     /* 覆盖页右侧倒计时=多段总剩余 */
 
@@ -839,6 +840,10 @@ void nav_poweroff_ask_cancel(void);   /* BACK 取消/关机·警报清理共用 
 int  nav_poweroff_ask_active(void);
 void nav_poweroff_ask_confirm(void);  /* 确认(PRESS):收起+nav_power_off */
 void nav_poweroff_ask_return_run(void); /* 弹窗前:非运行页按 BACK 同口径先退回运行页(nav_key.c) */
+/* 关机确认来源(2026-11-20 用户):1=从多段运行中"设置"覆盖页进入——这种确认下本段到点
+   按"设置页到点"处理(后台暂停、确认框保留、不切下一段);0=单独在运行页按电源(原行为) */
+void nav_poweroff_ask_set_from_smc_setting(int v);
+int  nav_poweroff_ask_from_smc_setting(void);
 void nav_topflag_popups_yield(void); /* 异步换屏前:收掉活动的顶层弹窗防新屏叠印(nav_hint.c) */
 
 /* 童锁（topflag 顶层弹窗级,nav_hint.c 实现） */
