@@ -18,6 +18,14 @@
  * 回拨会把双温状态行的全局相位整体跳一个烹饪时长,完成页动态位置不连续。 */
 static uint8_t s_sim_force_done = 0;
 
+/* 保温立即收尾(2026-11-20 询问框):把计时推到 15 分钟,下一拍 cooking_timer_cb
+ * 走正常结束支(文案回"已完成"、删 cook_timer、BUF[17]=0)——不在这里重复那条
+ * 按 current_group 找标签的长链;询问框的超时/取消都经它收尾 */
+void nav_keepwarm_finish(void)
+{
+    if (g_keepwarm_active) g_keepwarm_sec = 900;
+}
+
 /* 门开自动暂停：当前为烹饪页时跳入对应暂停页(各模式 stop) */
 static void auto_pause_on_door(void)
 {
@@ -186,6 +194,7 @@ void cooking_timer_cb(lv_timer_t *timer)
             } else {
                 if (g_keepwarm_sec >= 900) {   /* 保温持续 15 分钟(原 60 秒测试值,对齐注释) */
                     g_keepwarm_active = 0;
+                    if (nav_kwask_active()) nav_kwask_hide();   /* 保温中开门弹出的询问框:到点一并收起(2026-11-20) */
                     lv_label_set_text(kw_label, tr("已完成"));
                     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
                     printf("[keepwarm] END: sec=%d active=%d buf17=%d timer=%p\n",

@@ -163,6 +163,7 @@ static void nav_power_on(void)
 static void nav_key1_power_action(void)
 {
     if (factory_prog_running()) return;   /* 恢复出厂进度 5s:电源动作(关机确认/关机)吞掉,不打断进度 */
+    if (nav_kwask_active()) return;       /* 保温询问框优先:不让关机确认叠在它上面(2026-11-20) */
     if (g_send.iface_status == IFACE_SLEEP) {
         nav_power_on();
     } else if (nav_childlock_active()) {

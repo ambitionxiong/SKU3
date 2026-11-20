@@ -158,6 +158,7 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "份量", "Portion" },
         { "你想启动安息日烘焙吗", "Start Sabbath Bake?" },
         { "保温", "Keep Warm" },
+        { "要继续保温吗？", "Continue Keep Warm?" },   /* 保温中开门→关门的询问框(nav_kwask.c,2026-11-20) */
         { "保温中...", "Keep Warm" },
         { "保温中", "Keep Warm" },
         { "全熟", "Well Done" },

@@ -249,7 +249,7 @@ static void favtip_collect_add(lv_obj_t *obj)
 /* 收集并隐藏当前完成页右侧组件(防烫图标/文字等)。
  * 完成页 30+ 张、右侧组件字段名各异(image_3/6/26/70、text1/2...),
  * 按几何位置通用识别:屏幕直属子对象 x>=800 即右侧列(同 nav_hint_collect 思路) */
-static void nav_favtip_collect_hide(void)
+void nav_favtip_collect_hide(void)
 {
     g_favtip_n = 0;
     lv_obj_t *scr = lv_scr_act();
@@ -278,7 +278,7 @@ static void nav_favtip_collect_hide(void)
 }
 
 /* 恢复被隐藏的完成页右侧组件(只还原我们藏掉的,本就隐藏的保持原状) */
-static void nav_favtip_restore_elems(void)
+void nav_favtip_restore_elems(void)
 {
     for (int i = 0; i < g_favtip_n; i++)
         if (g_favtip_objs[i] && !g_favtip_was[i])
@@ -636,6 +636,7 @@ void nav_poweroff_ask_confirm(void)
  * ============================== */
 void nav_topflag_popups_yield(void)
 {
+    if (nav_kwask_active())        nav_kwask_hide();   /* 保温询问框:只收界面,保温照旧(2026-11-20) */
     if (nav_poweroff_ask_active()) nav_poweroff_ask_cancel();
     if (nav_favask_active())       nav_favask_cancel();
     if (nav_hint_active())         nav_hint_cancel();

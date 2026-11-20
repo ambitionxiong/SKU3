@@ -194,6 +194,17 @@ static void nav_idle_timer_cb(lv_timer_t *t)
     /* 警报页:空闲策略不生效(待机/关机都不允许拽走警报),仅长按开关机 */
     if (top == PAGE_ALARM) return;
 
+    /* 保温询问框(完成页保温中开门→关门弹出):1 分钟无按键 → 结束保温回完成页(2026-11-20 用户)。
+       必须拦在下面"完成页每秒刷新活动时钟"之前:否则闲时被每秒重打点,永远到不了 60s
+       (与关机确认/收藏确认同款冻结活动时钟;按键在 nav_kwask_key 里重新打点) */
+    if (nav_kwask_active()) {
+        if (lv_tick_get() - nav_kwask_touch_ms() >= 60000) {
+            printf("[idle] keepwarm ask no-op 60s -> end keep warm\n");
+            nav_kwask_timeout();
+        }
+        return;
+    }
+
     /* 关机确认弹窗:无操作 1 分钟自动取消回烹饪层(2026-11-11 用户,原 3s;
      * 3s 为 2026-10-26 所改)。弹窗非页面,栈顶仍是烹饪层,
      * 下面的活动刷新会每秒重置闲时——必须在其之前拦截并冻结活动时钟

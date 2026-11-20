@@ -430,6 +430,18 @@ extern lv_group_t *g_delaycooking;
 extern uint8_t g_delay_cancel_to_stop_back;
 extern uint8_t g_keepwarm_active;
 extern int g_keepwarm_sec;
+
+/* 完成页保温中开门→关门的「要继续保温吗？」询问框(nav_kwask.c,2026-11-20 用户设计)
+ * 取消/BACK=结束保温回主目录;继续=保温原样继续;零操作 1 分钟或满 15 分钟=结束保温回完成页 */
+void nav_kwask_show(void);
+void nav_kwask_hide(void);
+int  nav_kwask_active(void);
+uint32_t nav_kwask_touch_ms(void);
+void nav_kwask_key(uint8_t key);
+void nav_kwask_resume(void);
+void nav_kwask_cancel(void);
+void nav_kwask_timeout(void);
+void nav_keepwarm_finish(void);   /* 保温立即收尾:计时推到 15 分钟,下一拍走正常结束支(nav_cooktimer.c) */
 extern page_id_t g_delay_source_page;
 extern lv_group_t *g_updown_bbq_cooking;
 extern lv_group_t *g_updown_bbq_complete;
@@ -808,6 +820,10 @@ void nav_show_fav_cancel_tip(void);   /* 取消收藏提示:同收藏成功样�
 void nav_show_state_tip(const char *text);   /* 通用状态提示:右侧 tip3 显示文本 2 秒(nav_hint.c) */
 void nav_favtip_cancel(void);  /* BACK 提前关闭收藏提示 */
 int nav_favtip_active(void);
+/* 完成页右侧组件(防烫图标/文字、额外上色提示)整体藏/还原:弹层与它们同位时用
+ * (nav_hint.c 实现;收藏确认/关机确认/保温询问框共用,成对调用) */
+void nav_favtip_collect_hide(void);
+void nav_favtip_restore_elems(void);
 void nav_show_fav_ask(void);   /* 重复收藏确认:topflag 顶层遮罩+tip1+tip2+sure,不自动消失(nav_hint.c) */
 void nav_show_fav_full(void);  /* 收藏夹已满确认:确认后进收藏夹删除界面(nav_hint.c) */
 void nav_favask_cancel(void);  /* 关闭确认弹层(BACK;完成页在弹层之下) */

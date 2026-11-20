@@ -111,6 +111,7 @@ static void system_timer_cb(lv_timer_t *timer)
 
     // 门状态边沿检测（预热完成等待放食材阶段：门开又关 → 重建 complete 显示 sure）
     static int door_last = -1;
+    static int s_kw_door_seen = 0;   /* 保温中开过门:关门那一下再问是否继续保温(2026-11-20) */
     int door_now = is_door_open();
     if (door_now != door_last) {
         door_last = door_now;
@@ -122,6 +123,18 @@ static void system_timer_cb(lv_timer_t *timer)
                          g_send.iface_status == IFACE_PAUSE)) {
             g_send.buzzer_req = BUZZER_KEY_VALID;
             uart_print();     /* 模拟器即时出帧;真机由 100ms 定时器统一发送 */
+        }
+        /* 完成页保温中开门→关门:弹「要继续保温吗？」(2026-11-20 用户设计)。
+           只在保温还没结束时问:开门这一下只记标志,关门边沿才弹;保温已结束/别的页一律不问 */
+        if (g_send.iface_status == IFACE_COMPLETE && g_keepwarm_active) {
+            if (door_now) {
+                s_kw_door_seen = 1;
+            } else if (s_kw_door_seen) {
+                s_kw_door_seen = 0;
+                nav_kwask_show();
+            }
+        } else {
+            s_kw_door_seen = 0;
         }
         if (preheat_wait_door && !door_now) {
             preheat_wait_door = 0;

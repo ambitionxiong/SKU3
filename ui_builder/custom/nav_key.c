@@ -364,6 +364,12 @@ void process_key(uint8_t key)
         uart_print();
         return;
     }
+    /* 保温询问框(完成页保温中开门→关门弹出):模态。CW/CCW=在 取消/继续 间选,
+       PRESS=执行选中项,BACK=取消(结束保温回主目录),其余键无效音(2026-11-20 用户设计) */
+    if (nav_kwask_active()) {
+        nav_kwask_key(key);   /* 内部已置蜂鸣并 uart_print */
+        return;
+    }
     /* 关机确认弹层(运行中单触电源键弹出):模态。PRESS=确认结束运行并关机,
        BACK=取消继续运行,其余键忽略。
        两臂都响:BACK 取消=有效音+发帧;PRESS 确认先单独发一帧有效音再进关机
