@@ -514,6 +514,10 @@ extern int probe_target_temp;
 extern int cook_start_probe;
 extern int g_complete_to_stop_back;
 extern int g_cooling_to_stop_back;
+/* 热解自清洁提前结束(腔温仍高)的冷却等待:1=正在等冷却,降到 HOTCLEAN_COOL_TEMP 以下
+   回清洁菜单(而不是完成页)。只由 hotclean_abort_to_cooling 置位、冷却到温取用 */
+extern int g_hotclean_cool_to_menu;
+#define HOTCLEAN_COOL_TEMP   270   /* 热解冷却安全温度:高于它关门锁门,低于它可回菜单/解锁 */
 extern int g_extra_color_to_stop_back;
 extern int set_temp_up;
 extern int set_temp_down;
@@ -1705,6 +1709,12 @@ void on_clean_water_click(lv_event_t *e);
 void on_clean_hot_click(lv_event_t *e);
 void jump_to_clean_menu(void);
 void clean_rebuild(page_id_t child);
+/* 热解自清洁三档共用:结束任务回清洁菜单(原 stop_back 确定分支的收尾,md5 一致的三份副本
+   统一到这里)。tier 默认时长由调用方给(节能 1:15 / 常规 1:40 / 强力 2:00) */
+void hotclean_end_to_clean_menu(int set_hour_def, int set_min_def);
+/* 热解提前结束且腔温高于 HOTCLEAN_COOL_TEMP:先停火+进冷却页,降到 270 以下自动回清洁菜单
+   (2026-11-21 用户:运行中确认返回直接回主菜单,要加腔温判断) */
+void hotclean_abort_to_cooling(void);
 
 void jump_to_wc_set(void);
 void jump_to_wc_cooking(void);

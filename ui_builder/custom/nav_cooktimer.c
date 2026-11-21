@@ -637,11 +637,17 @@ void cooking_timer_cb(lv_timer_t *timer)
         hotcleansave_cooling_t *cool = hotcleansave_cooling_get(&ui_manager);
         if (cool) {
             uint16_t cavity = get_cavity_temp();
-            if (cavity <= 270 && cook_timer) {
+            if (cavity <= HOTCLEAN_COOL_TEMP && cook_timer) {
                 lv_timer_del(cook_timer);
                 cook_timer = NULL;
-                g_send.buzzer_req = BUZZER_COOK_DONE;
                 nav_topflag_popups_yield();   /* 冷却完跳完成让位:换屏前先收弹窗(2026-10-30) */
+                if (g_hotclean_cool_to_menu) {
+                    /* 提前结束(腔温曾>270)的冷却等待:到温回清洁菜单,不发完成音、不进完成页 */
+                    printf("[hcs] cooling done -> clean_menu (aborted cycle)\n");
+                    hotclean_end_to_clean_menu(1, 15);
+                    return;
+                }
+                g_send.buzzer_req = BUZZER_COOK_DONE;
                 jump_to_hcs_complete();
             }
         }
@@ -652,11 +658,17 @@ void cooking_timer_cb(lv_timer_t *timer)
         hotcleanmiddle_cooling_t *cool = hotcleanmiddle_cooling_get(&ui_manager);
         if (cool) {
             uint16_t cavity = get_cavity_temp();
-            if (cavity <= 270 && cook_timer) {
+            if (cavity <= HOTCLEAN_COOL_TEMP && cook_timer) {
                 lv_timer_del(cook_timer);
                 cook_timer = NULL;
-                g_send.buzzer_req = BUZZER_COOK_DONE;
                 nav_topflag_popups_yield();   /* 冷却完跳完成让位:换屏前先收弹窗(2026-10-30) */
+                if (g_hotclean_cool_to_menu) {
+                    /* 提前结束(腔温曾>270)的冷却等待:到温回清洁菜单,不发完成音、不进完成页 */
+                    printf("[hcm] cooling done -> clean_menu (aborted cycle)\n");
+                    hotclean_end_to_clean_menu(1, 40);
+                    return;
+                }
+                g_send.buzzer_req = BUZZER_COOK_DONE;
                 jump_to_hcm_complete();
             }
         }
@@ -667,11 +679,17 @@ void cooking_timer_cb(lv_timer_t *timer)
         hotcleanhigh_cooling_t *cool = hotcleanhigh_cooling_get(&ui_manager);
         if (cool) {
             uint16_t cavity = get_cavity_temp();
-            if (cavity <= 270 && cook_timer) {
+            if (cavity <= HOTCLEAN_COOL_TEMP && cook_timer) {
                 lv_timer_del(cook_timer);
                 cook_timer = NULL;
-                g_send.buzzer_req = BUZZER_COOK_DONE;
                 nav_topflag_popups_yield();   /* 冷却完跳完成让位:换屏前先收弹窗(2026-10-30) */
+                if (g_hotclean_cool_to_menu) {
+                    /* 提前结束(腔温曾>270)的冷却等待:到温回清洁菜单,不发完成音、不进完成页 */
+                    printf("[hch] cooling done -> clean_menu (aborted cycle)\n");
+                    hotclean_end_to_clean_menu(2, 0);
+                    return;
+                }
+                g_send.buzzer_req = BUZZER_COOK_DONE;
                 jump_to_hch_complete();
             }
         }

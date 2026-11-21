@@ -41,6 +41,7 @@ void nav_power_off(void)
     g_on_stop_back = 0;
     g_complete_to_stop_back = 0;
     g_cooling_to_stop_back = 0;
+    g_hotclean_cool_to_menu = 0;      /* 热解提前结束的冷却等待标志:关机复位(2026-11-21) */
     g_extra_color_to_stop_back = 0;
     g_keepwarm_active = 0;
     g_keepwarm_sec = 0;

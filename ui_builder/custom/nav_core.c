@@ -33,6 +33,7 @@ int preheat_wait_door = 0;
 int hc_wait_door = 0;   /* 高温清洁开门检测等待页:关门边沿自动开始(nav_system.c 消费) */
 int g_complete_to_stop_back = 0;
 int g_cooling_to_stop_back = 0;
+int g_hotclean_cool_to_menu = 0;   /* 热解提前结束:冷却到 270 以下回清洁菜单(nav.h 声明) */
 int g_extra_color_to_stop_back = 0;
 int g_color_from_probe = 0;   // 进入额外上色时是否为探针模式（color 返回时跳探针主菜单）
 
