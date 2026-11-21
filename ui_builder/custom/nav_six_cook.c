@@ -777,10 +777,19 @@ void six_cooking_rebuild(page_id_t child)
     g_six_overlay = 0;
     g_six_paused = 0;
 
+    /* 文案先写、语言遍历后走(2026-11-21 用户:第六感额外烤色页状态行是中文的字体):
+       语言树遍历的字体映射只看"建页时"文本,本页 label_12 建页文本是中文占位
+       ("|      | 180℃ | 1小时20分钟"),模糊状态条翻译认不出(模式段为空)就保留 CJK、
+       跳过 taiwanpearl→aktiv 映射;本路径原本先 load(走遍历)后写英文文案,英文就挂在
+       30 号中文字体上——同页 jump 路径(先写后 load)是 Aktiv,重建路径却是 TaiwanPearl
+       (实测状态行墨迹宽 468 vs 475、竖线高 26 vs 34)。与 jump_to_six_cooking 同口径,
+       load 之前先把当前语言文案写进控件。 */
+    six_cook_apply_display();
+
     lang_scr_load_anim(somecook_cooking_get(&ui_manager)->obj,
                      LV_SCR_LOAD_ANIM_NONE, 0, 0,
                      ui_manager.auto_del);
-    /* 显示刷新放 load_anim(EN 排版微调)之后:微调会把名窗设成默认留白的锚定宽,
+    /* 再刷一次放 load_anim(EN 排版微调)之后:微调会把名窗设成默认留白的锚定宽,
        上色页自适应留白更窄——先刷再微调首帧名窗偏宽叠字,下一秒才被助手收紧(实测) */
     six_cook_apply_display();
     printf("[six_cook] rebuild: child=%d\n", (int)child);
