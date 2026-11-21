@@ -3647,6 +3647,7 @@ void nav_color_complete_tip_refit(void)
  *   图标  place_1.png(57x49,单层示意) → cook4place.png(57x57,4.5/1.2 双层示意)
  *   文案  "烤架位置 3" → "烤架位置1.2.4.5"（英文 "Rack Position 1.2.4.5"）
  *   盒宽  148(简繁)/220(EN tune) → 420（一行放得下,x=232 不动,右缘 652 仍在卡片内）
+ *   竖向  文案 385 → 381（与右侧"自动保温"行同高）、图标 376 → 368（箱心 396 = 文案墨迹中心）
  * 涉及页（COOK 4 四卡）:
  *   PAGE_COOKIE_SET  cookie_set_t  image_57 / label_106
  *   PAGE_WEST_SET    west_set_t    image_78 / label_162
@@ -3692,9 +3693,16 @@ void nav_cook4_place_refit(void)
         /* 生成层是 text_align=3(AUTO):窄盒时代看不出,盒宽放到 420 后文字会跑到盒中间;
            用户定稿文案紧贴图标右侧 → 钉左对齐,x=232 不动(图标右缘 221) */
         lv_obj_set_style_text_align(lb, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
+        /* 竖向对齐(用户 2026-11-21 二轮):生成层 y=385 比右侧"自动保温"行(生成层/EN tune
+           都钉 381)低 4px,实测墨迹中心 400 vs 396 → 统一到 381,两行同高 */
+        lv_obj_set_pos(lb, 232, 381);
     }
-    if (img && lv_obj_is_valid(img))
+    if (img && lv_obj_is_valid(img)) {
         lv_image_set_src(img, LVGL_IMAGE_PATH(cook4place.png));
+        /* 图标 57x57 且墨迹满幅(alpha bbox 0..56,中心 28):箱心 368+28=396
+           = 文案墨迹中心(381 盒 + 30 号字实测中心 396),图标中间与文字水平对齐 */
+        lv_obj_set_pos(img, 164, 368);
+    }
 }
 
 
