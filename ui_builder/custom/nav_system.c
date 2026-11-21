@@ -298,6 +298,11 @@ void nav_init(void)
     {
         topflagpage_t *tf = topflagpage_get(&ui_manager);
         if (tf) {
+            /* 炉灯图标换新素材(用户 2026-11-21:light_n.png 替代 light):
+               生成层 topflagpage.c 烙的是 light.png(39x31,灯座被裁掉一截);
+               新图 34x33 是完整灯座。topflag 整层只在 nav_init 建一次,这里换掉即可;
+               链式排布每次 sync 按图宽重算,无需改生成层,也不影响其它图标 */
+            if (tf->light) lv_image_set_src(tf->light, LVGL_IMAGE_PATH(light_n.png));
             /* 状态图标先全隐:500ms tick 的 nav_topflag_demo_sync 按状态放行/排布 */
             if (tf->demo)   lv_obj_add_flag(tf->demo, LV_OBJ_FLAG_HIDDEN);
             if (tf->timer)  lv_obj_add_flag(tf->timer, LV_OBJ_FLAG_HIDDEN);
