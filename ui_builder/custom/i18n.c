@@ -374,6 +374,7 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "烤扇贝", "Grilled Scallops" },
         { "烤架位置", "Rack position" },
         { "烤架位置 3", "Rack position 3" },
+        { "烤架位置1.2.4.5", "Rack Position 1.2.4.5" },
         { "烤海鲜", "Grilled Seafood" },
         { "烤牛排", "Grilled Steak" },
         { "烤牛肉", "Roast Beef" },

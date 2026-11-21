@@ -3643,6 +3643,62 @@ void nav_color_complete_tip_refit(void)
 
 
 /* ==============================================================================
+ * COOK 4 四个模式的"烤架位置"行:图标 + 文案（用户 2026-11-21 定稿）
+ *   图标  place_1.png(57x49,单层示意) → cook4place.png(57x57,4.5/1.2 双层示意)
+ *   文案  "烤架位置 3" → "烤架位置1.2.4.5"（英文 "Rack Position 1.2.4.5"）
+ *   盒宽  148(简繁)/220(EN tune) → 420（一行放得下,x=232 不动,右缘 652 仍在卡片内）
+ * 涉及页（COOK 4 四卡）:
+ *   PAGE_COOKIE_SET  cookie_set_t  image_57 / label_106
+ *   PAGE_WEST_SET    west_set_t    image_78 / label_162
+ *   PAGE_PIZZA_SET   pizza_set_t   image_99 / label_211
+ *   PAGE_MENU_COOK_SET menu_set_t  image_120 / label_259
+ * 全语言幂等(简/繁/英都要换),挂 lang_on_page_built 末位——EN tune 的 220 会被这里覆盖;
+ * 字体不在此处理:EN 走树遍历(旧文本"烤架位置 3"查表成英文→无 CJK→换 aktiv30),
+ * 简繁保持 taiwanpearl30,本函数只改图/文案/盒宽。
+ * ============================================================================== */
+void nav_cook4_place_refit(void)
+{
+    if (depth <= 0) return;
+
+    lv_obj_t *img = NULL, *lb = NULL;
+    switch (page_stack[depth - 1]) {
+    case PAGE_COOKIE_SET: {
+        cookie_set_t *pg = cookie_set_get(&ui_manager);
+        if (pg) { img = pg->image_57; lb = pg->label_106; }
+        break;
+    }
+    case PAGE_WEST_SET: {
+        west_set_t *pg = west_set_get(&ui_manager);
+        if (pg) { img = pg->image_78; lb = pg->label_162; }
+        break;
+    }
+    case PAGE_PIZZA_SET: {
+        pizza_set_t *pg = pizza_set_get(&ui_manager);
+        if (pg) { img = pg->image_99; lb = pg->label_211; }
+        break;
+    }
+    case PAGE_MENU_COOK_SET: {
+        menu_set_t *pg = menu_set_get(&ui_manager);
+        if (pg) { img = pg->image_120; lb = pg->label_259; }
+        break;
+    }
+    default:
+        return;
+    }
+
+    if (lb && lv_obj_is_valid(lb)) {
+        lv_label_set_text(lb, tr("烤架位置1.2.4.5"));   /* EN 表 → Rack Position 1.2.4.5 */
+        lv_obj_set_size(lb, 420, 32);
+        /* 生成层是 text_align=3(AUTO):窄盒时代看不出,盒宽放到 420 后文字会跑到盒中间;
+           用户定稿文案紧贴图标右侧 → 钉左对齐,x=232 不动(图标右缘 221) */
+        lv_obj_set_style_text_align(lb, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
+    }
+    if (img && lv_obj_is_valid(img))
+        lv_image_set_src(img, LVGL_IMAGE_PATH(cook4place.png));
+}
+
+
+/* ==============================================================================
  * cook4menu 英文布局基准（对应 PAGE_COOK4_MENU ）
  * 数据 = 中文布局原值；改数值即改英文版布局（仅英文模式执行）
  * ============================================================================== */

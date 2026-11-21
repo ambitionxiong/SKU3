@@ -1794,6 +1794,7 @@ lv_obj_t *nav_probe_complete_bartemp(lv_obj_t *bar);   /* 探针完成页进度�
 void nav_underline_fit(lv_obj_t *line, int disp);   /* probe menu 探针单下划线按显示位数换源/移位(华氏三位),仅对 underline 素材生效;带 4 探针 menu 页门禁,其它页(时/分线)跳过 */
 void nav_hotclean_title_refit(void);   /* hotclean_menu 标题盒 LV_SIZE_CONTENT:TW 意译 6 字裁尾(全语言幂等) */
 void nav_color_complete_tip_refit(void);   /* 额外上色完成页右侧整图 hotcare*→tips*:一次上色后不再提示"点击+5'可额外上色"(全语言幂等,2026-11-20) */
+void nav_cook4_place_refit(void);   /* COOK4 四模式设置页"烤架位置"行:图标换 cook4place.png、文案换"烤架位置1.2.4.5"(全语言幂等,2026-11-21) */
 lv_obj_t *updown_dir_img_get(int i);   /* updown set 方向箭头图(0=up2 1=down2 2=up3 3=down3),EN tune 位移用 */
 
 /* ==================== 温度显示单位（℉）====================
