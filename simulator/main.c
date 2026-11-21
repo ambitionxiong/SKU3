@@ -244,6 +244,10 @@ int main(int argc, char **argv)
 	(void)argc; /*Unused*/
 	(void)argv; /*Unused*/
 
+	/* 日志不缓冲:自动测试把 stdout 重定向到文件时也能实时看到 [KEY]/[UART] 行
+	   (默认整块缓冲,重定向后日志要攒满 4KB 才落盘,抓不到按键时序) */
+	setvbuf(stdout, NULL, _IONBF, 0);
+
 #ifdef _WIN32
 	SetUnhandledExceptionFilter(crash_handler);
 	/* 看门狗（仅模拟器）：独立线程监测主循环心跳，卡死（lv_timer_handler 死循环/渲染卡住）时打印定位日志 */
@@ -288,20 +292,37 @@ int main(int argc, char **argv)
 		uint8_t cur_c = keys[SDL_SCANCODE_C];      /* C=烹饪立即完成（调试） */
 		uint8_t cur_l = keys[SDL_SCANCODE_L];      /* L=炉灯开/关（模拟电源板发 BUF[14] BIT0） */
 		uint8_t cur_e = keys[SDL_SCANCODE_E];      /* E=故障注入/解除（模拟电源板发 BUF[12] 报警序号 0<->3） */
-		if      (keys[SDL_SCANCODE_TAB])       sim_key = KEY_MENU;
-		else if (keys[SDL_SCANCODE_5])         sim_key = KEY_EXTRA_COLOR;
-		else if (keys[SDL_SCANCODE_ESCAPE])    sim_key = KEY_BACK;
-		else if (keys[SDL_SCANCODE_RIGHT] ||
-		         keys[SDL_SCANCODE_DOWN])   sim_key = KEY_ENCODER_CW;
-		else if (keys[SDL_SCANCODE_LEFT]  ||
-		         keys[SDL_SCANCODE_UP])     sim_key = KEY_ENCODER_CCW;
-		else if (keys[SDL_SCANCODE_SPACE])  sim_key = KEY_ENCODER_PRESS;
-		else if (keys[SDL_SCANCODE_1])      sim_key = KEY1;
-		else if (keys[SDL_SCANCODE_2])      sim_key = KEY_SIXMENU;
-		else if (keys[SDL_SCANCODE_4])      sim_key = KEY_PREHEAT;
-		else if (keys[SDL_SCANCODE_7])      sim_key = KEY_CLEAN;
-		else if (keys[SDL_SCANCODE_3])      sim_key = KEY_FAV;
-		else if (keys[SDL_SCANCODE_F9])     sim_key = KEY_SET;
+		/* 串口按键是"电平式当前键值"(电源板 BUF[15] 每帧只带一个键,松手报 0):
+		   按键表按"最近按下优先"报码,松开后回落到仍按着的键。模拟器同口径合成
+		   sim_key——原来用固定优先级链(总是 TAB 优先),"按住某键再转旋钮"永远
+		   只报住的那个键,复现不出真机帧序列 K,CW,K,...(2026-11-21 长按+旋钮) */
+		{
+			static const struct { int sc0, sc1; uint8_t code; } ktab[] = {
+				{ SDL_SCANCODE_TAB,    -1, KEY_MENU },
+				{ SDL_SCANCODE_5,      -1, KEY_EXTRA_COLOR },
+				{ SDL_SCANCODE_ESCAPE, -1, KEY_BACK },
+				{ SDL_SCANCODE_RIGHT,  SDL_SCANCODE_DOWN, KEY_ENCODER_CW },
+				{ SDL_SCANCODE_LEFT,   SDL_SCANCODE_UP,   KEY_ENCODER_CCW },
+				{ SDL_SCANCODE_SPACE,  -1, KEY_ENCODER_PRESS },
+				{ SDL_SCANCODE_1,      -1, KEY1 },
+				{ SDL_SCANCODE_2,      -1, KEY_SIXMENU },
+				{ SDL_SCANCODE_4,      -1, KEY_PREHEAT },
+				{ SDL_SCANCODE_7,      -1, KEY_CLEAN },
+				{ SDL_SCANCODE_3,      -1, KEY_FAV },
+				{ SDL_SCANCODE_F9,     -1, KEY_SET },
+			};
+			enum { K_NUM = (int)(sizeof(ktab) / sizeof(ktab[0])) };
+			static uint32_t kseq[K_NUM];      /* 每个候选键的按下序号,0=当前没按 */
+			static uint32_t kseq_tick = 0;
+			uint32_t best = 0;
+			for (int i = 0; i < K_NUM; i++) {
+				int down = keys[ktab[i].sc0] ||
+				           (ktab[i].sc1 >= 0 && keys[ktab[i].sc1]);
+				if (!down) { kseq[i] = 0; continue; }
+				if (kseq[i] == 0) kseq[i] = ++kseq_tick;   /* 新按下:记最新序号 */
+				if (kseq[i] > best) { best = kseq[i]; sim_key = ktab[i].code; }
+			}
+		}
 		if (cur_8 && !prev_8) {
 			uart_data_receive[Receive_data_Probe_Temp_L] += 5;
 			printf("[sim] probe temp +=5 -> %d\n",

@@ -220,9 +220,38 @@ void nav_childlock_hold_poll(void)
         }
     }
 }
-/* 按键状态机：KEY_IDLE 首按→记键值+调 process_key；
-   KEY_PRESSED 按住→编码器按 50ms 重复、KEY1 按住 0.25s 触发电源动作；
-   松开回 KEY_IDLE(KEY1 松开沿无动作)。 */
+/* 串口按键是"电平式当前键值"(BUF[15]:电源板每帧报当前按着的键,松手报 0),
+   同一帧只带一个键。按住某键再转旋钮时,帧序列变成 K,CW,K,CW……(旋钮帧插进来,
+   下一帧又回到仍按着的 K),所以"键值变了"不等于"换了一次按下"。两类输入分开记:
+     - 编码器 CW/CCW:一次性脉冲,只按 ENC_REPEAT_MS 限速(快速连转时电源板会连续
+       报同向码),不进触摸键的按住状态;
+     - 触摸键:按住状态记在 active_key,只有收到 0 帧(松手)才算松开,之后再出现
+       同一码才是新的一次按下;中间插进来的编码器帧既不打断按住(KEY1 0.25s /
+       旋钮 3s 长按计时照走),也不会让该键重复触发。
+   旧实现把"帧里的键值变了"当成换键:长按某键再转旋钮时,每帧插回来的 K 都被当成
+   一次新按下——旋钮动作与该键动作(无效音)同时执行(2026-11-21 用户反馈)。 */
+static uint8_t s_enc_key = 0;      /* 上一帧的编码器码(0=上一帧不是编码器帧) */
+static uint32_t s_enc_time = 0;    /* 上次编码器动作时刻(同向连续报码限速用) */
+
+/* 编码器脉冲:一次性动作,不碰触摸键的按住状态。
+   同向连续报码(快速连转)按 ENC_REPEAT_MS 限速;中间夹了触摸键帧或松手帧(见
+   nav_handle_key 里 s_enc_key 清零)就算新的一格,不受限速影响,不丢格 */
+static void nav_key_encoder_pulse(uint8_t key, uint32_t now)
+{
+    int burst = (key == s_enc_key) && (now - s_enc_time < ENC_REPEAT_MS);
+
+    s_enc_key = key;
+    if (burst) return;
+    s_enc_time = now;
+#ifdef LV_USE_AIC_SIMULATOR
+    printf("[KEY] %s (%d)\n", key == KEY_ENCODER_CW ? "CW" : "CCW", key);
+#endif
+    process_key(key);
+}
+
+/* 按键状态机：编码器脉冲→一次性动作(不入按住状态)；
+   其余各键 KEY_IDLE 首按→记键值+调 process_key，KEY_PRESSED 按住→KEY1 0.25s
+   触发电源动作，松开(0 帧)回 KEY_IDLE(KEY1 松开沿无动作)。 */
 void nav_handle_key(uint8_t key)
 {
     uint32_t now = lv_tick_get();
@@ -235,6 +264,13 @@ void nav_handle_key(uint8_t key)
         if (!s_clean_done_hold)
             nav_hint_tone_cancel();
     }
+
+    /* 编码器帧:一次性脉冲,处理完就返回——不参与下面的按住/松开判定 */
+    if (key == KEY_ENCODER_CW || key == KEY_ENCODER_CCW) {
+        nav_key_encoder_pulse(key, now);
+        return;
+    }
+    s_enc_key = 0;   /* 触摸键帧或松手帧:下一帧同向编码器算新的一格(不丢格) */
 
     switch (key_state) {
     case KEY_IDLE:
@@ -272,14 +308,9 @@ void nav_handle_key(uint8_t key)
             active_key = 0;
             s_clean_done_hold = 0;   /* 松开即恢复协议 3.1:后续按键照常取消提示音 */
         } else if (key == active_key) {
-            // 同键按住
+            // 同一个触摸键按住(编码器帧在上面已返回,不会进到这里)
             uint32_t interval = now - active_key_time;
-            int is_encoder = (key == KEY_ENCODER_CW || key == KEY_ENCODER_CCW);
 
-            if (is_encoder && interval >= ENC_REPEAT_MS) {
-                active_key_time = now;
-                process_key(key);
-            }
             if (active_key == KEY1 && !s_key1_fired && interval >= KEY1_HOLD_MS) {
                 active_key_time = now;
                 nav_key1_hold_trigger();
@@ -308,7 +339,8 @@ void nav_handle_key(uint8_t key)
             }
             // 触控键按住不重复（只有 KEY_IDLE 后的第一次触发）
         } else {
-            // 键值变化（如编码器方向切换）
+            /* 换成了另一个触摸键(同一帧只报一个键:按住 A 又按下 B 时直接报 B)
+               → 按 B 的一次新按下处理 */
             active_key = key;
             active_key_time = now;
             if (key == KEY1) {
