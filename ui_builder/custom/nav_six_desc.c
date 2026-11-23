@@ -356,7 +356,7 @@ typedef struct {
 } desc_merge_t;
 
 static const desc_merge_t s_desc_merge[] = {
-    { "在焗盤上擠出約2吋大小的圓形",        2 },   /* 泡芙：前 3 句并一行 */
+    { "在焗盤上擠出約2吋大小的圓形",        1 },   /* 泡芙：前 2 句并一行（2026-11-23 用户框选换行，原 2 会压字距） */
     { "將麵團分成等份小球",                 1 },   /* 蛋撻：前 2 句并一行 */
     { "將酥皮放上焗盤並灑上糖霜",           1 },   /* 千層酥：前 2 句并一行 */
     { "平鋪在氣炸盤上，並在表面輕輕噴上一層煮食油", 1 },   /* 炸排骨：前 2 句并一行 */
@@ -366,7 +366,7 @@ static const desc_merge_t s_desc_merge[] = {
     { "把鸡翅裹上蛋液，然后裹上面包屑",     1 },   /* 炸雞翼（简中词条）：前 2 句并一行 */
     { "把鸡腿裹上蛋液，然后裹上面包屑",     1 },   /* 炸雞髀（简中词条）：前 2 句并一行 */
     { "將雞翼沾上蛋液，然後裹上麵包糠",     1 },   /* 炸雞翼（繁中词条）：前 2 句并一行(2026-11-19) */
-    { "将2英寸的面团放到烤盘上",                 2 },   /* 泡芙（简中）：前 3 句并一行 */
+    { "将2英寸的面团放到烤盘上",                 1 },   /* 泡芙（简中）：前 2 句并一行（2026-11-23 同上） */
     { "把面团分成相等的球",                       1 },   /* 蛋挞（简中）：前 2 句并一行 */
     { "将酥皮放在烤盘上，撒上糖粉",               1 },   /* 千层酥（简中）：前 2 句并一行 */
     { "根据喜好用蒜蓉酱、盐和油调味",             1 },   /* 烤茄子（简中）：前 2 句并一行 */
@@ -387,6 +387,51 @@ static int desc_merge_of(const char *txt)
 {
     for (unsigned i = 0; i < sizeof(s_desc_merge) / sizeof(s_desc_merge[0]); i++)
         if (strstr(txt, s_desc_merge[i].key)) return s_desc_merge[i].merge;
+    return 0;
+}
+
+/* ==============================
+ * 逐页强制换行（2026-11-23 用户框选）
+ * ------------------------------
+ * key   = 该页文本里的一段唯一子串（命中即整条生效）
+ * brk[] = 在这些子串前插一个 \n（就地改重排缓冲，最多 3 处）
+ * 泡芙页原来靠「前 3 句并一行」，合并后首行 1275px 超过卡片内容宽 1209px，
+ * desc_reflow 只能把字距一路收到 -3 才塞下（用户：字挤得很紧）；
+ * 改成 4 行后每行 600~1020px，字距回到 0。
+ * ============================== */
+typedef struct {
+    const char *key;
+    const char *brk[3];
+} desc_break_t;
+
+static const desc_break_t s_desc_break[] = {
+    /* 泡芙（繁中）：前两句 / 第三句+半句 / 后半句 / 末句 */
+    { "焗盤上擠出約2吋", { "用微濕的手指", "並在每個的側面或底部", "完全放涼後" } },
+    /* 泡芙（简中）：键必须是简中原文的子串「将2英寸的面团放到烤盘上」 */
+    { "将2英寸的面团放到烤盘上", { "用潮湿的手指", "刺破每个", "待其完全冷却" } },
+};
+
+/* 在 needle 前插 \n；needle 找不到或已在行首则不动 */
+static bool desc_break_before(char *buf, const char *needle)
+{
+    char *p = strstr(buf, needle);
+    if (!p || p == buf || p[-1] == '\n') return false;
+    size_t tail = strlen(p);
+    if (strlen(buf) + 2 >= DESC_BUF_SIZE) return false;
+    memmove(p + 1, p, tail + 1);
+    *p = '\n';
+    return true;
+}
+
+static int desc_break_apply(char *buf)
+{
+    for (unsigned i = 0; i < sizeof(s_desc_break) / sizeof(s_desc_break[0]); i++) {
+        if (!strstr(buf, s_desc_break[i].key)) continue;
+        int n = 0;
+        for (int k = 0; k < 3; k++)
+            if (s_desc_break[i].brk[k] && desc_break_before(buf, s_desc_break[i].brk[k])) n++;
+        return n;
+    }
     return 0;
 }
 
@@ -424,6 +469,9 @@ static void desc_reflow(lv_obj_t *lbl)
     strcpy(s_src, txt);
     txt = s_src;
 
+    /* 2026-11-23 用户框选：泡芙页按指定位置强制换行（先插 \n，再按段排版） */
+    int nbrk = desc_break_apply(s_src);
+
     s_en_w = DESC_EN_W_FALL;              /* 英文在上面早退时改成 1209；中繁沿用 930 */
 
     bool cjk = desc_has_wide(txt);
@@ -440,6 +488,8 @@ static void desc_reflow(lv_obj_t *lbl)
             if (pw > wlimit) wlimit = pw;
         }
     }
+    /* 强制换行的页：每段按卡片满宽排，保证断点之间不再二次折行（段宽 ≤1020 < 1209） */
+    if (nbrk > 0) width = wlimit;
 
     int32_t maxw = 0;
     bool punct_mode = cjk;                 /* 中文按标点断;英文保持整词铺满 */
