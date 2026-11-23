@@ -318,11 +318,12 @@ void nav_handle_key(uint8_t key)
             }
             /* 测试钩子(2026-10-15):烹饪运行中长按清洁键 1s=立即完成,复用
              * sim_force_cook_done 走真实完成链(完成音/跳完成页/协议同步;多段逐段跳)。
-             * 2026-10-19 用户要求关闭(联调期通道,勿留量产):置 1 恢复。
+             * 2026-10-19 用户要求关闭(联调期通道,勿留量产);2026-11-23 用户要求重新打开
+             * 方便实机调试(置 1),量产前务必改回 0。
              * 童锁中也有效(用户定稿 2026-10-15:童锁只吞界面操作,不拦这个测试通道);
              * 短按行为照旧(烹饪中=无效提示弹窗,随强制完成收掉,定时器不在新页闪);
              * 非烹饪态长按无作用(函数自带 IFACE_COOKING+cook_timer 守卫) */
-#define NAV_CLEAN_DONE_HOOK 0
+#define NAV_CLEAN_DONE_HOOK 1
             if (NAV_CLEAN_DONE_HOOK &&
                 active_key == KEY_CLEAN && !s_clean_done_fired && interval >= 1000) {
                 s_clean_done_fired = 1;
