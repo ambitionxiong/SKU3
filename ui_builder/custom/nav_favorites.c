@@ -296,6 +296,21 @@ void favorites_start_selected(void)
     }
     Fun_favorites_Value *fav = &Fav_Cur->favorites_val[idx];
 
+    /* 发酵类启动前的腔温门槛(2026-11-23 用户):收藏的单独发酵模式、或多段第一步是发酵,
+     * 腔温>50℃ 先抢"腔体过热"提示页;5 秒后 page_pop 回收藏页(重建,焦点回第一张卡),
+     * 不消费收藏、不改收藏页状态。须在任何清组/清栈/参数回填之前判 */
+    if (fav->PengTiaoMode_name == FAV_MODE_MULTI) {
+        int first = 0;
+        while (first < 3 && *fav_num_ptr(&Favorites_Value, first) < 0) first++;
+        if (first < 3 &&
+            fav_step_ptr(&Favorites_Value, first)->PengTiaoMode_num == MODE_RISING &&
+            nav_temptip_block_if_hot())
+            return;
+    } else if (fav->PengTiao_Mode == MODE_RISING &&
+               nav_temptip_block_if_hot()) {
+        return;
+    }
+
     favo_safety_group_delete();
     edit_clear();
 

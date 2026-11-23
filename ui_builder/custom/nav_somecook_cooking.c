@@ -474,6 +474,15 @@ void on_somecook_sure_click(lv_event_t *e)
     int nset = 0;
     for (int i = 0; i < 3; i++) if (g_steps[i].set) nset++;
     if (nset < 2) return;
+    /* 第一步是发酵:腔温>50℃ 先抢"腔体过热"提示页(与单独发酵模式同口径,2026-11-23 用户)。
+     * 须在清栈/起跑之前判:5 秒后 page_pop 重建本页,已设步骤原样保留 */
+    {
+        int first = 0;
+        while (first < 3 && !g_steps[first].set) first++;
+        if (first < 3 && g_steps[first].mode == MODE_RISING &&
+            nav_temptip_block_if_hot())
+            return;
+    }
     g_somecook_running = 1;
     g_somecook_run_idx = 0;
     if (depth > 0 && page_stack[depth - 1] == PAGE_SOMECOOK)

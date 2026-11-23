@@ -628,6 +628,10 @@ void probetip_dismiss_now(void);
 /* 腔温过热提示页（nav_temptip.c 实现） */
 extern lv_group_t *g_temptip;
 void jump_to_temptip(void);
+/* 发酵类功能启动前的腔温门槛:腔温>50℃ 就抢提示页并返回 true(调用方直接 return 不启动)。
+ * 共用五处:特殊功能→发酵、多段第一步是发酵、六感选"是"发酵后开始、收藏的发酵模式、
+ * 收藏的多段第一步是发酵(2026-11-23 用户) */
+bool nav_temptip_block_if_hot(void);
 void temptip_rebuild(page_id_t child);
 void temptip_cancel_auto_dismiss(void);
 void temptip_dismiss_now(void);

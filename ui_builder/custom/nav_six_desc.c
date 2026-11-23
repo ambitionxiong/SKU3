@@ -736,6 +736,12 @@ void descriptionmenu_rebuild(page_id_t child)
 static void on_description_start_click(lv_event_t *e)
 {
     if (screen_is_loading(lv_scr_act())) return;
+    /* 选了发酵(是)再开始:腔温>50℃ 先抢"腔体过热"提示页(与单独发酵模式同口径,
+     * 2026-11-23 用户);须在起跑前判——jump_to_six_cooking 进页即发 45℃ 发酵段。
+     * 5 秒后 page_pop 重建本说明页,发酵选择(g_rising_choice)原样保留 */
+    if (six_bread_has_rising() && g_rising_choice == 1 &&
+        nav_temptip_block_if_hot())
+        return;
     if (six_chick_is_probe())
         jump_to_chick_cooking();   /* 探针菜(烤全鸡/烤全鸭):探针温度驱动烹饪页 */
     else

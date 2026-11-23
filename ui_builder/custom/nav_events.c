@@ -215,11 +215,9 @@ void on_rising_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
     if (screen_is_loading(act_scr)) return;
-    /* 发酵需冷却状态:腔温>50℃ 跳温度提示页(5秒自动返回,可 BACK 提前返回) */
-    if (get_cavity_temp() > 50) {
-        jump_to_temptip();
-        return;
-    }
+    /* 发酵需冷却状态:腔温>50℃ 跳温度提示页(5秒自动返回,可 BACK 提前返回)。
+     * 门槛与多段/六感/收藏共用 nav_temptip_block_if_hot()(2026-11-23) */
+    if (nav_temptip_block_if_hot()) return;
     jump_to_rising_menu();
 }
 void on_corn_click(lv_event_t *e)
