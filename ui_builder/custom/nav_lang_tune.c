@@ -5681,6 +5681,15 @@ void descriptionmenu_lang_tune(void)
      * 该页只剩 7 行,行距 30 + 行间距 16 也一样放得下)。若哪天又要压,再按页加回。
      * 中/繁本来就走 descriptionmenu_layout 的 -5(35-5=30),与这里无关。 */
 
+    /* 2026-11-23 用户:"调成视觉上的 16px"(标签之间,按"说明→小结"那处量)。
+     * 英文行盒 32、墨迹 21:单行"预计烹饪时间"盒内下余 5px,说明末行有 y/g 只余 1px,
+     * 与中/繁"上下各余 6px"不同,单靠 pad_row 凑不出两处等距。所以这里 pad_row 11
+     * (中文/繁体用 nav_six_desc.c 的 8) + 单行时间标签盒高 30→26。
+     * 用户定:英文不再按有无下伸字母分档,统一按"时间行没有下伸"的形态取 16px。
+     * 时间行带 g/p/q/y 的页(如 bread roll 的 rising ... cooking)下伸会吃掉 4px,看着约 10px。 */
+    if (pg->cooktime) lv_obj_set_size(pg->cooktime, 628, 26);
+    if (pg->container_1) lv_obj_set_style_pad_row(pg->container_1, 11, 0);
+
     //  obj = pg->cooktime;
 
 }

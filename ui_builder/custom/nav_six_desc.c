@@ -571,11 +571,17 @@ static void descriptionmenu_layout(descriptionmenu_t *dm)
         lv_label_set_text(dm->cookdescriptin, six_current_desc());
     }
 
-    /* 容器 Flex 竖排：左/上边距 24，垂直间距 16 */
+    /* 容器 Flex 竖排：左/上边距 24，垂直间距 16→8（中文/繁体）
+     * 2026-11-23 用户："调成视觉上的 16px，按 21 那处（说明→小结）调成 16px，
+     * 改掉 16px 的设置"。量图口径（1280x480, 1:1，墨迹行到行，标签盒之间只是 flex 间距）：
+     *   原 pad_row 16：英文 上 25 / 下 21，中文 上 24 / 下 24；
+     *   中繁行盒 35、墨迹 27，盒内上下各余 6px，pad_row 8 → 两处都是 16px（实测 16/16）；
+     *   英文行盒 32、墨迹 21，单行"预计烹饪时间"盒内下余 5px、说明末行只余 1px，
+     *   所以在 descriptionmenu_lang_tune 里单独用 pad_row 11 + 单行标签盒高 26 凑成 16/16。 */
     lv_obj_set_flex_flow(dm->container_1, LV_FLEX_FLOW_COLUMN);
     lv_obj_set_style_pad_left(dm->container_1, 24, 0);
     lv_obj_set_style_pad_top(dm->container_1, 24, 0);
-    lv_obj_set_style_pad_row(dm->container_1, 16, 0);
+    lv_obj_set_style_pad_row(dm->container_1, 8, 0);
 
     /* Flex 按子对象顺序排列:调整顺序为 cooktime → cookdescriptin → summary */
     if (dm->cooktime) lv_obj_move_to_index(dm->cooktime, 0);
