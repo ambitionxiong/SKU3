@@ -16,6 +16,7 @@
 #include "protocol.h"
 #include "custom_defs.h"
 #include "nav_internal.h"
+#include "nav_idle.h"   /* nav_idle_touch:超时层退出时重置闲时打点(2026-11-23) */
 
 typedef struct {
     lv_obj_t *obj;
@@ -128,6 +129,9 @@ static void count_down_timer_cb(lv_timer_t *timer)
                 count_down_leave_fast(); /* 到期在本页:快速返回(不重建,下层烹饪倒计时不重置) */
                 jump_to_screen_set();    /* 回设置覆盖层(同 KEY_SET 入口) */
             }
+            /* 2026-11-23 用户:超时层这 5 分钟不算"无操作"——退出时把闲时打点重置,
+               回到原界面后再无操作 5 分钟才回时钟待机页(原来攒满 5 分钟秒进待机) */
+            nav_idle_touch();
         } else if (scr->Over_Time_Lb && scr->obj && lv_obj_is_valid(scr->Over_Time_Lb)) {
             char buf[16];
             snprintf(buf, sizeof(buf), "%02d:%02d", (int)((s_overtime_sec % 3600) / 60), (int)(s_overtime_sec % 60));
@@ -258,6 +262,7 @@ static void overtime_dismiss(void)
         count_down_leave_fast();   /* 到期在本页:用记录的下层屏切回(免 page_pop 重建) */
         jump_to_screen_set();      /* 计时器从设置层进入:回设置覆盖层 */
     }
+    nav_idle_touch();   /* 超时层停留时间不计入无操作闲时(自动退出同款,2026-11-23) */
 }
 
 /* 编辑态可视复位(Reset/启动后数字区淡出共用) */
