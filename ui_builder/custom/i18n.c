@@ -159,7 +159,7 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "你想启动安息日烘焙吗", "Start Sabbath Bake?" },
         { "保温", "Keep Warm" },
         { "要继续保温吗？", "Continue Keep Warm?" },   /* 保温中开门→关门的询问框(nav_kwask.c,2026-11-20) */
-        { "保温中...", "Keep Warm" },
+        { "保温中...", "Keep Warm..." },   /* 标题带省略号(2026-11-24 用户:完成页 Keep Warm 后面差 "...");裸"保温中"那条留给状态行 */
         { "保温中", "Keep Warm" },
         { "全熟", "Well Done" },
         { "全部", "All" },
@@ -178,7 +178,7 @@ extern const lv_font_t c_aktivgroteskmedium_24;
         { "冷冻烘培", "Frozen Bake" },
         { "冷冻烘焙", "Frozen Bake" },
         { "冷却", "Cooling" },
-        { "冷却中...", "Cooling" },
+        { "冷却中...", "Cooling..." },   /* 标题带省略号(2026-11-24 用户:冷却页 Cooling 后面差 "...");裸"冷却"那条留给状态/风扇行 */
         { "出厂设置", "Factory Reset" },
         { "分", "min" },
         { "分钟", "min" },   /* 树遍历按生成层标签当前文本查表(set 页单位标签生成文本是"分钟") */

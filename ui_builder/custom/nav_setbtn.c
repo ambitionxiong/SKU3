@@ -22,6 +22,9 @@
  * 五花八门)，只看结构特征：按钮 + DEFAULT 态底图 little.png + 50x43；
  * 标题取"同一条水平带上、钮左侧、墨迹右缘最靠右"的标签——全工程 85 屏
  * (烹饪/暂停/返回确认/完成 四类 × 21 种模式 + 探针变体)都只命中一个。
+ *
+ * 顺带：标题盒装不下一整行时按内容放开宽度(WRAP 会在空格处折行、第二行被 60 高盒裁掉,
+ * "Keep Warm..."/"Delayed Start..." 这类带空格的 EN 长标题都靠这一步保一行)。
  */
 #include "protocol.h"
 #include "nav.h"
@@ -198,6 +201,18 @@ void nav_setbtn_refit(void)
 
     lv_obj_t *title = setbtn_find_title(scr, btn);
     if (!title) return;
+
+    /* 标题盒放不下整行就按内容放开:WRAP 模式会在空格处折行,第二行被 60 高盒裁掉
+       (2026-11-24:EN 标题补上省略号后 "Keep Warm..."≈365px 撑破 330 宽的盒,
+       渲染成 "Keep"/"Warm..." 两行;带空格的 "Delayed Start..." 同理)。
+       只对单行标题生效(含 \n 的不动),宽度放开后齿轮仍按文字墨迹算,位置不受影响。 */
+    if (lv_label_get_long_mode(title) == LV_LABEL_LONG_WRAP) {
+        const char *t = lv_label_get_text(title);
+        int32_t adv = 0;
+        (void)setbtn_text_ink(title, &adv);
+        if (t && !strchr(t, '\n') && adv > lv_obj_get_width(title))
+            lv_obj_set_width(title, LV_SIZE_CONTENT);
+    }
 
     int32_t x = setbtn_text_right(title) + SETBTN_GAP - setbtn_img_pad(btn);
     if (x == lv_obj_get_x(btn)) return;
