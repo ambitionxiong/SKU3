@@ -141,14 +141,24 @@ int fav_title_need_tag(const Fun_favorites_Value *fav)
             g_six_bread_type = old;
             return (n != NULL && strcmp(n, tr("披萨")) == 0);
         }
+        /* 曲奇饼干(六感) / 炸薯条(六感零食) 与 COOK4 饼干、冷冻烘焙 薯条 在英文、繁体下同名
+         * (简体"曲奇饼干"≠"饼干"、"炸薯条"≠"薯条" 不同名,不加) —— 2026-11-24 用户:
+         * cookies 和 french fries 各有两种,收藏里没做区分 */
+        if ((uint8_t)fav->Six_Cook_Fun == SIX_CAKE_COOKIES)
+            return strcmp(tr("曲奇饼干"), tr("饼干")) == 0;
+        if ((uint8_t)fav->Six_Cook_Fun == SIX_SNACK_FRIES)
+            return strcmp(tr("炸薯条"), tr("薯条")) == 0;
         return (uint8_t)fav->Six_Cook_Fun == SIX_PASTA_LASAGNA ||
                (uint8_t)fav->Six_Cook_Fun == SIX_CAKE_STRUDEL;
     }
     if (m == MODE_COOK4)
-        return (page_id_t)fav->source_page == PAGE_PIZZA_SET;
+        return (page_id_t)fav->source_page == PAGE_PIZZA_SET ||
+               ((page_id_t)fav->source_page == PAGE_COOKIE_SET &&
+                strcmp(tr("饼干"), tr("曲奇饼干")) == 0);   /* 英文/繁体与六感曲奇饼干同名 */
     if (m == MODE_FROZEN_BAKE) {
         page_id_t p = (page_id_t)fav->source_page;
-        return p == PAGE_PIZZA3_SET || p == PAGE_LASAGNA_SET || p == PAGE_STRUDEL_SET;
+        return p == PAGE_PIZZA3_SET || p == PAGE_LASAGNA_SET || p == PAGE_STRUDEL_SET ||
+               (p == PAGE_CHIP_SET && strcmp(tr("薯条"), tr("炸薯条")) == 0);   /* 英文/繁体与六感炸薯条同名 */
     }
     if (m == MODE_PIZZA_2)
         return 1;   /* 特殊功能披萨:与 COOK4 / 冷冻烘焙同名 */
