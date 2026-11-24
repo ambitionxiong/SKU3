@@ -226,3 +226,17 @@ void hotclean_abort_to_cooling(void)
     g_send.remaining_ms = -1;
     printf("[clean] hotclean abort (cavity > %dC) -> cooling page\n", HOTCLEAN_COOL_TEMP);
 }
+
+/* 冷却页 BACK 进返回确认、再按"确定"的收尾(三档共用)。
+ * 冷却页上任务其实已经结束,这里只是等腔温降到 HOTCLEAN_COOL_TEMP 以下自动回菜单;
+ * 用户按确定=不再等,直接收尾回清洁菜单。原实现不看来源,一律 hotclean_abort_to_cooling()
+ * 再压一层冷却页,每按一次返回确定就多两层,页面栈 16 层溢出后卡死(2026-11-24 用户实测)。
+ * 判定用页面栈:冷却页 BACK 会 push 一层 stop_back,所以 stop_back 底下那层就是同档冷却页。
+ * 返回 1 = 已处理,调用方直接 return。 */
+int hotclean_stop_back_sure_from_cooling(page_id_t cooling, int set_hour_def, int set_min_def)
+{
+    if (depth < 2 || page_stack[depth - 2] != cooling) return 0;
+    printf("[clean] cooling stop_back sure -> end task (back to clean_menu)\n");
+    hotclean_end_to_clean_menu(set_hour_def, set_min_def);
+    return 1;
+}

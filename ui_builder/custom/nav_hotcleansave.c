@@ -37,6 +37,8 @@ static void on_hcs_stop_back_sure_click(lv_event_t *e)
 {
     lv_obj_t *act_scr = lv_scr_act();
     if (screen_is_loading(act_scr)) return;
+    /* 冷却页返回确认的"确定":任务早已结束,直接收尾回清洁菜单(2026-11-24 用户:无法退出且会撑爆页面栈) */
+    if (hotclean_stop_back_sure_from_cooling(PAGE_HOTCLEANSAVE_COOLING, 1, 15)) return;
     /* 腔温仍高于 270℃:先进冷却页等降温,降到 270 以下由 nav_cooktimer 的冷却分支
        自动回清洁菜单(2026-11-21 用户);不高于则与原来一致直接回清洁菜单 */
     if (get_cavity_temp() > HOTCLEAN_COOL_TEMP) {

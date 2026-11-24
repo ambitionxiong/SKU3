@@ -1719,6 +1719,10 @@ void hotclean_end_to_clean_menu(int set_hour_def, int set_min_def);
 /* 热解提前结束且腔温高于 HOTCLEAN_COOL_TEMP:先停火+进冷却页,降到 270 以下自动回清洁菜单
    (2026-11-21 用户:运行中确认返回直接回主菜单,要加腔温判断) */
 void hotclean_abort_to_cooling(void);
+/* 冷却页 BACK 进返回确认后按"确定":任务早已结束,直接收尾回清洁菜单,不再压一层冷却页。
+   判定=页面栈里 stop_back 底下那层就是同档冷却页(cooling 由调用方给)。已处理返回 1。
+   2026-11-24 用户:冷却页返回确定无法退出,每按一次再压一层,页面栈 16 层溢出后卡死 */
+int hotclean_stop_back_sure_from_cooling(page_id_t cooling, int set_hour_def, int set_min_def);
 
 void jump_to_wc_set(void);
 void jump_to_wc_cooking(void);
