@@ -1723,6 +1723,9 @@ void hotclean_abort_to_cooling(void);
    判定=页面栈里 stop_back 底下那层就是同档冷却页(cooling 由调用方给)。已处理返回 1。
    2026-11-24 用户:冷却页返回确定无法退出,每按一次再压一层,页面栈 16 层溢出后卡死 */
 int hotclean_stop_back_sure_from_cooling(page_id_t cooling, int set_hour_def, int set_min_def);
+/* 当前确认页是否从冷却页进来(页栈下两层判定):是则进度条直接满格、标题"冷却中...",
+   不再按 elapsed 算——冷却页 timer 还在跑,否则会显示一段还在变长的烹饪进度 */
+int hotclean_stop_back_from_cooling(page_id_t cooling);
 
 void jump_to_wc_set(void);
 void jump_to_wc_cooking(void);

@@ -272,9 +272,11 @@ void jump_to_hcs_stop_back(void)
             lv_obj_add_flag(back->button_7, LV_OBJ_FLAG_HIDDEN);
         }
 
-        if (g_cooling_to_stop_back) {
+        if (g_cooling_to_stop_back || hotclean_stop_back_from_cooling(PAGE_HOTCLEANSAVE_COOLING)) {
             g_cooling_to_stop_back = 0;
             lv_label_set_text(back->label_21, tr("冷却中..."));
+            /* 从冷却页进来:任务已结束,进度条满格(否则按 elapsed 显示一段还在变长的烹饪进度) */
+            lv_bar_set_value(back->bar_4, 100, LV_ANIM_OFF);
         }
 
         if (back->sure) lv_group_focus_obj(back->sure);
@@ -489,9 +491,11 @@ void hcs_rebuild_stop_back(void)
             lv_obj_add_flag(back->button_7, LV_OBJ_FLAG_HIDDEN);
         }
 
-        if (g_cooling_to_stop_back) {
+        if (g_cooling_to_stop_back || hotclean_stop_back_from_cooling(PAGE_HOTCLEANSAVE_COOLING)) {
             g_cooling_to_stop_back = 0;
             lv_label_set_text(back->label_21, tr("冷却中..."));
+            /* 从冷却页进来:任务已结束,进度条满格(否则按 elapsed 显示一段还在变长的烹饪进度) */
+            lv_bar_set_value(back->bar_4, 100, LV_ANIM_OFF);
         }
 
         if (back->sure) lv_group_focus_obj(back->sure);

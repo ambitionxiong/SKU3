@@ -240,3 +240,14 @@ int hotclean_stop_back_sure_from_cooling(page_id_t cooling, int set_hour_def, in
     hotclean_end_to_clean_menu(set_hour_def, set_min_def);
     return 1;
 }
+
+/* 当前确认页是不是从冷却页进来的(任务已结束、只在等降温)。
+ * 判定同上:页栈里 stop_back 底下那层就是同档冷却页——冷却页 BACK 会 push 一层确认页,
+ * 重建路径(nav_pop 的 *_rebuild_stop_back)栈形也一样。
+ * 冷却页的 cook_timer 还在跑(冷却轮询用)、cook_start_time 还是清洁开始时刻,
+ * 确认页若照常按 elapsed 算进度,会显示一段"烹饪进度"且每开一次都变长
+ * (2026-11-24 用户:返回确认下面显示的是烹饪时的长度,还会变长,计时没停吗)。 */
+int hotclean_stop_back_from_cooling(page_id_t cooling)
+{
+    return (depth >= 2 && page_stack[depth - 2] == cooling);
+}
