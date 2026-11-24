@@ -27,10 +27,11 @@ void jump_to_chip_complete(void);
 
 static void chip_set_status(lv_obj_t *label, int temp, int hour, int min)
 {
+    /* 2026-11-24 用户:冷冻烘焙这档简体也叫"炸薯条"(菜单卡上写的就是炸薯条,内外不一致) */
     if (hour == 0)
-        lv_label_set_text_fmt(label, tr("| 薯条 | %d℃ | %d分钟"), temp, min);
+        lv_label_set_text_fmt(label, tr("| 炸薯条 | %d℃ | %d分钟"), temp, min);
     else
-        nav_status_info_fmt(label, tr("| 薯条 | %d℃ | %d小时%d分钟"), temp, hour, min);
+        nav_status_info_fmt(label, tr("| 炸薯条 | %d℃ | %d小时%d分钟"), temp, hour, min);
 }
 
 static void chip_delay_toggle(lv_event_t *e)

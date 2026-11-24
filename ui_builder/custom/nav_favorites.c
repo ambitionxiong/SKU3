@@ -78,7 +78,7 @@ const char *fav_mode_name(const Fun_favorites_Value *fav)
         case PAGE_STRUDEL_SET: return tr("果馅卷");
         case PAGE_BREAD_SET:   return tr("面包");
         case PAGE_PIZZA3_SET:  return tr("披萨");
-        case PAGE_CHIP_SET:    return tr("薯条");
+        case PAGE_CHIP_SET:    return tr("炸薯条");   /* 2026-11-24 用户:冷冻烘焙这档简体改叫炸薯条(菜单卡同名) */
         case PAGE_CUSTOM_SET:  return tr("自定义");
         default:               return tr("冷冻烘焙");   /* 与预约/事件链路 mode_display_name 同名（Frozen Bake） */
         }
@@ -141,13 +141,14 @@ int fav_title_need_tag(const Fun_favorites_Value *fav)
             g_six_bread_type = old;
             return (n != NULL && strcmp(n, tr("披萨")) == 0);
         }
-        /* 曲奇饼干(六感) / 炸薯条(六感零食) 与 COOK4 饼干、冷冻烘焙 薯条 在英文、繁体下同名
-         * (简体"曲奇饼干"≠"饼干"、"炸薯条"≠"薯条" 不同名,不加) —— 2026-11-24 用户:
-         * cookies 和 french fries 各有两种,收藏里没做区分 */
+        /* 曲奇饼干(六感) / 炸薯条(六感零食) 与 COOK4 饼干、冷冻烘焙 炸薯条 同名才加前缀。
+         * 曲奇饼干简繁不同名(简体"曲奇饼干"≠"饼干"), 按当前语言实测;
+         * 炸薯条 2026-11-24 起冷冻烘焙这档简体也改叫"炸薯条"(用户:菜单卡外面就写的炸薯条),
+         * 三种语言都和六感重名, 无条件加 */
         if ((uint8_t)fav->Six_Cook_Fun == SIX_CAKE_COOKIES)
             return strcmp(tr("曲奇饼干"), tr("饼干")) == 0;
         if ((uint8_t)fav->Six_Cook_Fun == SIX_SNACK_FRIES)
-            return strcmp(tr("炸薯条"), tr("薯条")) == 0;
+            return 1;
         return (uint8_t)fav->Six_Cook_Fun == SIX_PASTA_LASAGNA ||
                (uint8_t)fav->Six_Cook_Fun == SIX_CAKE_STRUDEL;
     }
@@ -158,7 +159,7 @@ int fav_title_need_tag(const Fun_favorites_Value *fav)
     if (m == MODE_FROZEN_BAKE) {
         page_id_t p = (page_id_t)fav->source_page;
         return p == PAGE_PIZZA3_SET || p == PAGE_LASAGNA_SET || p == PAGE_STRUDEL_SET ||
-               (p == PAGE_CHIP_SET && strcmp(tr("薯条"), tr("炸薯条")) == 0);   /* 英文/繁体与六感炸薯条同名 */
+               p == PAGE_CHIP_SET;   /* 2026-11-24:冷冻薯条简体也改叫"炸薯条",与六感炸薯条同名 */
     }
     if (m == MODE_PIZZA_2)
         return 1;   /* 特殊功能披萨:与 COOK4 / 冷冻烘焙同名 */

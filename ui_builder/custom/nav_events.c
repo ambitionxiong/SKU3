@@ -704,7 +704,7 @@ const char *mode_display_name(void)
         case PAGE_STRUDEL_SET: return tr("果馅卷");
         case PAGE_BREAD_SET:   return tr("面包");
         case PAGE_PIZZA3_SET:  return tr("披萨");
-        case PAGE_CHIP_SET:    return tr("薯条");
+        case PAGE_CHIP_SET:    return tr("炸薯条");   /* 2026-11-24 用户:与冷冻烘焙菜单卡、内页文案统一 */
         case PAGE_CUSTOM_SET:  return tr("自定义");
         default:               return tr("冷冻烘焙");
         }
