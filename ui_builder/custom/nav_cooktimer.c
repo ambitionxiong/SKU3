@@ -187,6 +187,7 @@ void cooking_timer_cb(lv_timer_t *timer)
                     g_keepwarm_active = 1;
                     g_keepwarm_sec = 0;
                     lv_label_set_text(kw_label, tr("保温中..."));
+                    nav_setbtn_refit();   /* 标题变长(保温中...),设置齿轮钮跟着右移 */
                     printf("[keepwarm] START: sec=%d active=%d buf17=%d timer=%p\n",
                            g_keepwarm_sec, g_keepwarm_active,
                            g_keepwarm_active ? 0x01 : 0x00, (void *)cook_timer);
@@ -196,6 +197,7 @@ void cooking_timer_cb(lv_timer_t *timer)
                     g_keepwarm_active = 0;
                     if (nav_kwask_active()) nav_kwask_hide();   /* 保温中开门弹出的询问框:到点一并收起(2026-11-20) */
                     lv_label_set_text(kw_label, tr("已完成"));
+                    nav_setbtn_refit();   /* 标题回"已完成",齿轮钮跟着回贴 */
                     if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
                     printf("[keepwarm] END: sec=%d active=%d buf17=%d timer=%p\n",
                            g_keepwarm_sec, g_keepwarm_active,
@@ -207,6 +209,7 @@ void cooking_timer_cb(lv_timer_t *timer)
             g_keepwarm_active = 0;
             g_keepwarm_sec = 0;
             lv_label_set_text(kw_label, tr("已完成"));
+            nav_setbtn_refit();   /* 保温被关:标题回"已完成",齿轮钮跟着回贴 */
             if (cook_timer) { lv_timer_del(cook_timer); cook_timer = NULL; }
         }
         return;
