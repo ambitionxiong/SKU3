@@ -216,6 +216,15 @@ static void somecook_cooking_set_state(int state, int from)
 
     if (state == SMC_STOP)       g_send.iface_status = IFACE_PAUSE;
     else if (state == SMC_COMPLETE) g_send.iface_status = IFACE_COMPLETE;
+
+    /* 设置齿轮重贴(2026-11-24 用户:多段烹饪没做 48px):
+     * 本页一屏五态,标题(烹饪中.../暂停中.../已完成)在页内改写,进页那一次
+     * nav_setbtn_refit 按"烹饪中..."贴好后再没人管——暂停时齿轮还留在
+     * Cooking... 的位置,量到 115px。这里每次状态落地按当前标题重贴(幂等,
+     * 位置没变不写样式);完成态齿轮收起,setbtn_find 跳过隐藏钮 = 空操作,
+     * 完成→确认退出(齿轮又显示,标题已完成)那次会按"已完成"重贴。
+     * 放在遮罩换装之后:EN 遮罩态会把标题改回 Cooking... */
+    nav_setbtn_refit_on(sc->obj);
 }
 
 // 提示恢复后重放当前状态显隐(供 nav_hint.c 调用)

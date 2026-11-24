@@ -18,6 +18,9 @@
  * "文字墨迹右缘"按字形盒算(max(笔位 + ofs_x + box_w))，不用 advance 宽度:
  * 标题多以 "..." 收尾，advance 里带着末字的右侧留白，直接用会多出 3-4px。
  *
+ * 一屏五态的页(多段烹饪 烹饪/暂停/确认/完成/编辑)标题在页内改，进页那一次贴完
+ * 还得跟着改——nav_setbtn_refit_on(屏) 供这类页在状态落地后自己重贴。
+ *
  * 判定不看生成层成员名(各页 little / littlebutton / little_button / button_43 …
  * 五花八门)，只看结构特征：按钮 + DEFAULT 态底图 little.png + 50x43；
  * 标题取"同一条水平带上、钮左侧、墨迹右缘最靠右"的标签——全工程 85 屏
@@ -190,10 +193,11 @@ static int32_t setbtn_img_pad(lv_obj_t *btn)
     return pad > 0 ? pad : 0;
 }
 
-/* 当前页贴一次(幂等；没有这颗钮的页面直接返回) */
-void nav_setbtn_refit(void)
+/* 指定屏贴一次(幂等；没有这颗钮的页面直接返回)。
+ * 不取 lv_scr_act():同页多态页(多段烹饪 五态)标题在页内改,改完要按自己那张屏算,
+ * 这时屏可能还没激活/或者算的是别的屏。 */
+void nav_setbtn_refit_on(lv_obj_t *scr)
 {
-    lv_obj_t *scr = lv_scr_act();
     if (!scr) return;
 
     lv_obj_t *btn = setbtn_find(scr);
@@ -221,4 +225,10 @@ void nav_setbtn_refit(void)
            lv_label_get_text(title), (int)setbtn_text_right(title),
            (int)lv_obj_get_x(btn), (int)x);
     lv_obj_set_x(btn, x);
+}
+
+/* 当前页贴一次(进页/语言热切走 lang_on_page_built) */
+void nav_setbtn_refit(void)
+{
+    nav_setbtn_refit_on(lv_scr_act());
 }
